@@ -13,6 +13,8 @@
 		14E19A4A1D60EF100030B366 /* proxy.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 14E19A481D60EF100030B366 /* proxy.xcdatamodeld */; };
 		14E19A4C1D60EF100030B366 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 14E19A4B1D60EF100030B366 /* Assets.xcassets */; };
 		14E19A4F1D60EF100030B366 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 14E19A4D1D60EF100030B366 /* LaunchScreen.storyboard */; };
+		14E19A581D61012C0030B366 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E19A571D61012C0030B366 /* SignUpViewController.swift */; };
+		F8601D08682CD23B0A712CAD /* Pods_proxy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38C5C6B48B79F08C65113251 /* Pods_proxy.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +26,11 @@
 		14E19A4B1D60EF100030B366 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		14E19A4E1D60EF100030B366 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		14E19A501D60EF100030B366 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		14E19A561D60F07A0030B366 /* Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Header.h; sourceTree = "<group>"; };
+		14E19A571D61012C0030B366 /* SignUpViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
+		197B015D4173F5D5144C2ADC /* Pods-proxy.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-proxy.release.xcconfig"; path = "Pods/Target Support Files/Pods-proxy/Pods-proxy.release.xcconfig"; sourceTree = "<group>"; };
+		38C5C6B48B79F08C65113251 /* Pods_proxy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_proxy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D44F5C36773BB980E0E0A068 /* Pods-proxy.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-proxy.debug.xcconfig"; path = "Pods/Target Support Files/Pods-proxy/Pods-proxy.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,6 +38,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F8601D08682CD23B0A712CAD /* Pods_proxy.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -42,6 +50,8 @@
 			children = (
 				14E19A401D60EF100030B366 /* proxy */,
 				14E19A3F1D60EF100030B366 /* Products */,
+				8C58ABB3C024E5AA096A4135 /* Pods */,
+				D428DCAD961DE668E1D7D394 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -58,13 +68,32 @@
 			children = (
 				14E19A411D60EF100030B366 /* AppDelegate.swift */,
 				14E19A431D60EF100030B366 /* ViewController.swift */,
+				14E19A571D61012C0030B366 /* SignUpViewController.swift */,
 				14E19A451D60EF100030B366 /* Main.storyboard */,
 				14E19A4B1D60EF100030B366 /* Assets.xcassets */,
 				14E19A4D1D60EF100030B366 /* LaunchScreen.storyboard */,
 				14E19A501D60EF100030B366 /* Info.plist */,
 				14E19A481D60EF100030B366 /* proxy.xcdatamodeld */,
+				14E19A561D60F07A0030B366 /* Header.h */,
 			);
 			path = proxy;
+			sourceTree = "<group>";
+		};
+		8C58ABB3C024E5AA096A4135 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				D44F5C36773BB980E0E0A068 /* Pods-proxy.debug.xcconfig */,
+				197B015D4173F5D5144C2ADC /* Pods-proxy.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		D428DCAD961DE668E1D7D394 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				38C5C6B48B79F08C65113251 /* Pods_proxy.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -74,9 +103,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 14E19A531D60EF100030B366 /* Build configuration list for PBXNativeTarget "proxy" */;
 			buildPhases = (
+				83D232E1070CCAD859B42900 /* [CP] Check Pods Manifest.lock */,
 				14E19A3A1D60EF100030B366 /* Sources */,
 				14E19A3B1D60EF100030B366 /* Frameworks */,
 				14E19A3C1D60EF100030B366 /* Resources */,
+				846E7DA1B37D3C9D1AC7926C /* [CP] Embed Pods Frameworks */,
+				C70F166D59BC8F8E02158227 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -133,6 +165,54 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		83D232E1070CCAD859B42900 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		846E7DA1B37D3C9D1AC7926C /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-proxy/Pods-proxy-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C70F166D59BC8F8E02158227 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-proxy/Pods-proxy-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		14E19A3A1D60EF100030B366 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -140,6 +220,7 @@
 			files = (
 				14E19A4A1D60EF100030B366 /* proxy.xcdatamodeld in Sources */,
 				14E19A441D60EF100030B366 /* ViewController.swift in Sources */,
+				14E19A581D61012C0030B366 /* SignUpViewController.swift in Sources */,
 				14E19A421D60EF100030B366 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -253,23 +334,27 @@
 		};
 		14E19A541D60EF100030B366 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D44F5C36773BB980E0E0A068 /* Pods-proxy.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = proxy/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.quanvo.proxy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = proxy/Header.h;
 			};
 			name = Debug;
 		};
 		14E19A551D60EF100030B366 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 197B015D4173F5D5144C2ADC /* Pods-proxy.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = proxy/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.quanvo.proxy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = proxy/Header.h;
 			};
 			name = Release;
 		};
@@ -292,6 +377,7 @@
 				14E19A551D60EF100030B366 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 

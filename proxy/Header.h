@@ -9,5 +9,9 @@
 #ifndef Header_h
 #define Header_h
 
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <FBSDKLoginKit/FBSDKLoginKit.h>
+#import <FBSDKShareKit/FBSDKShareKit.h>
+#import <KinveyKit/KinveyKit.h>
 
 #endif /* Header_h */

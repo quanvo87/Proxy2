@@ -1,0 +1,1 @@
+../../../KinveyKit/KinveyKit-1.40.8/include/KinveyKit/KCSRequestConfiguration.h
