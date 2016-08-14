@@ -22,7 +22,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             usingOptions: nil
         )
         
+        signUp()
+        
         return FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
+    }
+    
+    func signUp() {
+        if (KCSUser.activeUser() == nil) {
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            let signUpViewController = storyboard.instantiateViewControllerWithIdentifier("Sign Up") as! SignUpViewController
+            window?.rootViewController = signUpViewController
+        }
     }
     
     func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {

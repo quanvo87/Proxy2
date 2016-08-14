@@ -9,7 +9,7 @@
         <!--Sign Up View Controller-->
         <scene sceneID="KpD-I8-wXj">
             <objects>
-                <viewController id="sjW-YU-fmh" customClass="SignUpViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Sign Up" id="sjW-YU-fmh" customClass="SignUpViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Bvm-Q4-VsS"/>
                         <viewControllerLayoutGuide type="bottom" id="wIr-b4-xYr"/>
@@ -80,10 +80,10 @@
             </objects>
             <point key="canvasLocation" x="-397" y="284"/>
         </scene>
-        <!--View Controller-->
+        <!--Home View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="HomeViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
