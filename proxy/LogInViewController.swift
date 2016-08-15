@@ -1,5 +1,5 @@
 //
-//  SignUpViewController.swift
+//  LogInViewController.swift
 //  proxy
 //
 //  Created by Quan Vo on 8/14/16.
@@ -9,8 +9,8 @@
 import UIKit
 import FacebookLogin
 
-class SignUpViewController: UIViewController, UITextFieldDelegate {
-    
+class LogInViewController: UIViewController, UITextFieldDelegate {
+
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
@@ -25,8 +25,8 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
         bottomConstraint.constant = view.frame.size.height / 3
         bottomConstraintConstant = bottomConstraint.constant
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SignUpViewController.keyboardWillShow(_:)), name:UIKeyboardWillShowNotification, object: self.view.window)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SignUpViewController.keyboardWillHide(_:)), name:UIKeyboardWillHideNotification, object: self.view.window)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LogInViewController.keyboardWillShow(_:)), name:UIKeyboardWillShowNotification, object: self.view.window)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LogInViewController.keyboardWillHide(_:)), name:UIKeyboardWillHideNotification, object: self.view.window)
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -34,25 +34,24 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
         NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object: self.view.window)
     }
     
-    @IBAction func tapSignUpButton(sender: AnyObject) {
+    @IBAction func tapLogInButton(sender: AnyObject) {
         self.passwordTextField.resignFirstResponder()
-        signUp()
+        logIn()
     }
     
-    func signUp() {
+    func logIn() {
         let email = emailTextField.text
         let password = passwordTextField.text
         
         if isValidEmail(email!) && password != "" {
-            KCSUser.userWithUsername(
+            KCSUser.loginWithUsername(
                 email,
                 password: password,
-                fieldsAndValues: nil,
                 withCompletionBlock: { (user: KCSUser!, errorOrNil: NSError!, result: KCSUserActionResult) -> Void in
                     if errorOrNil == nil {
                         self.presentHomeScreen()
                     } else {
-                        self.showAlert("There is already an account with that email.")
+                        self.showAlert("That email/password was incorrect. Please try again.")
                     }
                 }
             )
@@ -67,7 +66,7 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
         return emailTest.evaluateWithObject(testStr)
     }
     
-    @IBAction func tapFacebookSignUpButton(sender: AnyObject) {
+    @IBAction func tapFacebookLogInButton(sender: AnyObject) {
         let loginManager = LoginManager()
         loginManager.logIn([ .PublicProfile ], viewController: self) { loginResult in
             switch loginResult {
@@ -99,16 +98,14 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
         appDelegate.window?.rootViewController = navigationController
     }
     
-    @IBAction func tapLogInButton(sender: AnyObject) {
-        if let logInViewController = storyboard?.instantiateViewControllerWithIdentifier("Log In") as! LogInViewController? {
-            self.presentViewController(logInViewController, animated: true, completion: nil)
-        }
+    @IBAction func tapCreateAccountButton(sender: AnyObject) {
+        self.dismissViewControllerAnimated(true, completion: nil)
     }
     
     // MARK: - Keyboard
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         self.passwordTextField.resignFirstResponder()
-        signUp()
+        logIn()
         return true
     }
     
