@@ -14,6 +14,7 @@
 		14E19A4F1D60EF100030B366 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 14E19A4D1D60EF100030B366 /* LaunchScreen.storyboard */; };
 		14E19A581D61012C0030B366 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E19A571D61012C0030B366 /* SignUpViewController.swift */; };
 		14E19A5A1D61034A0030B366 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E19A591D61034A0030B366 /* HomeViewController.swift */; };
+		14E19A5C1D612CE80030B366 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E19A5B1D612CE80030B366 /* Extensions.swift */; };
 		F8601D08682CD23B0A712CAD /* Pods_proxy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38C5C6B48B79F08C65113251 /* Pods_proxy.framework */; };
 /* End PBXBuildFile section */
 
@@ -28,6 +29,7 @@
 		14E19A561D60F07A0030B366 /* Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Header.h; sourceTree = "<group>"; };
 		14E19A571D61012C0030B366 /* SignUpViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		14E19A591D61034A0030B366 /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		14E19A5B1D612CE80030B366 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		197B015D4173F5D5144C2ADC /* Pods-proxy.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-proxy.release.xcconfig"; path = "Pods/Target Support Files/Pods-proxy/Pods-proxy.release.xcconfig"; sourceTree = "<group>"; };
 		38C5C6B48B79F08C65113251 /* Pods_proxy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_proxy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D44F5C36773BB980E0E0A068 /* Pods-proxy.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-proxy.debug.xcconfig"; path = "Pods/Target Support Files/Pods-proxy/Pods-proxy.debug.xcconfig"; sourceTree = "<group>"; };
@@ -69,6 +71,7 @@
 				14E19A411D60EF100030B366 /* AppDelegate.swift */,
 				14E19A571D61012C0030B366 /* SignUpViewController.swift */,
 				14E19A591D61034A0030B366 /* HomeViewController.swift */,
+				14E19A5B1D612CE80030B366 /* Extensions.swift */,
 				14E19A451D60EF100030B366 /* Main.storyboard */,
 				14E19A4B1D60EF100030B366 /* Assets.xcassets */,
 				14E19A4D1D60EF100030B366 /* LaunchScreen.storyboard */,
@@ -218,6 +221,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				14E19A5C1D612CE80030B366 /* Extensions.swift in Sources */,
 				14E19A5A1D61034A0030B366 /* HomeViewController.swift in Sources */,
 				14E19A4A1D60EF100030B366 /* proxy.xcdatamodeld in Sources */,
 				14E19A581D61012C0030B366 /* SignUpViewController.swift in Sources */,

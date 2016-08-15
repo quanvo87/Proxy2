@@ -7,12 +7,24 @@
 //
 
 import UIKit
+import FacebookLogin
 
 class HomeViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+    }
+    
+    @IBAction func logout(sender: AnyObject) {
         
+        let loginManager = LoginManager()
+        loginManager.logOut()
+        
+        KCSUser.activeUser().logout()
+        
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let signUpViewController  = storyboard.instantiateViewControllerWithIdentifier("Sign Up") as! SignUpViewController
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate.window?.rootViewController = signUpViewController
     }
 }
