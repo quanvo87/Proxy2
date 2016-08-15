@@ -7,24 +7,19 @@
 //
 
 import UIKit
-import FacebookLogin
+import CoreData
 
 class HomeViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        setUp()
+        
+        ProxyAPI.sharedInstance.createProxy("testing", nickname: "123")
     }
     
-    @IBAction func logout(sender: AnyObject) {
-        
-        let loginManager = LoginManager()
-        loginManager.logOut()
-        
-        KCSUser.activeUser().logout()
-        
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let signUpViewController  = storyboard.instantiateViewControllerWithIdentifier("Sign Up") as! SignUpViewController
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.window?.rootViewController = signUpViewController
+    func setUp() {
+        self.navigationItem.title = "My Proxies"
     }
+    
 }
