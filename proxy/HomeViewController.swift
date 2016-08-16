@@ -38,7 +38,9 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     @IBAction func tapCreateNewProxy(sender: AnyObject) {
-        
+        if let createNewProxyViewController = storyboard?.instantiateViewControllerWithIdentifier("Create New Proxy") as! CreateNewProxyViewController? {
+            self.presentViewController(createNewProxyViewController, animated: true, completion: nil)
+        }
     }
     
     // MARK: - Table view data source

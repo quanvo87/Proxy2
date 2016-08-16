@@ -214,7 +214,7 @@
         <!--Create New Proxy View Controller-->
         <scene sceneID="6GZ-F7-Bb9">
             <objects>
-                <viewController id="80k-ew-HY1" userLabel="Create New Proxy View Controller" customClass="CreateNewProxyViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Create New Proxy" id="80k-ew-HY1" userLabel="Create New Proxy View Controller" customClass="CreateNewProxyViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="nEC-wO-sIs"/>
                         <viewControllerLayoutGuide type="bottom" id="fEK-Fd-ytj"/>
@@ -226,6 +226,9 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="C9e-5o-9gK">
                                 <rect key="frame" x="527" y="25" width="48" height="30"/>
                                 <state key="normal" title="Cancel"/>
+                                <connections>
+                                    <action selector="tapCancelButton:" destination="80k-ew-HY1" eventType="touchUpInside" id="AAN-0q-LF3"/>
+                                </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Create New Proxy" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Yli-Kb-F9r">
                                 <rect key="frame" x="231" y="120" width="137" height="21"/>
@@ -242,6 +245,9 @@
                             <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="751" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GXb-6i-CAT">
                                 <rect key="frame" x="517" y="186" width="53" height="30"/>
                                 <state key="normal" title="Refresh"/>
+                                <connections>
+                                    <action selector="tapRefreshNewProxyButton:" destination="80k-ew-HY1" eventType="touchUpInside" id="t78-ld-ZhC"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Yoi-Lq-q2L">
                                 <rect key="frame" x="30" y="302" width="540" height="30"/>
@@ -271,6 +277,10 @@
                             <constraint firstItem="C9e-5o-9gK" firstAttribute="top" secondItem="nEC-wO-sIs" secondAttribute="bottom" constant="5" id="yOt-ut-vVc"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="newProxyLabel" destination="87g-ME-Pq9" id="hxK-Aa-UZv"/>
+                        <outlet property="nicknameTextField" destination="GKm-S7-iiX" id="56k-Vi-uAH"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QvR-bq-rFe" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

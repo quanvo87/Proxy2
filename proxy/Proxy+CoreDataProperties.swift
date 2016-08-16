@@ -22,5 +22,4 @@ extension Proxy {
     @NSManaged var lastEventTime: NSDate?
     @NSManaged var conversationsWith: String?
     @NSManaged var invites: String?
-
 }
