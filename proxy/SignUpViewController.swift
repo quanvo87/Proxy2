@@ -42,7 +42,6 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
     func signUp() {
         let email = emailTextField.text
         let password = passwordTextField.text
-        
         if isValidEmail(email!) && password != "" {
             KCSUser.userWithUsername(
                 email,

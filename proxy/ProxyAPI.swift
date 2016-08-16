@@ -10,7 +10,8 @@ import UIKit
 
 class ProxyAPI: NSObject {
 
-    let proxyKinveyManager: ProxyKinveyManager
+    let proxyKinveyManager: KinveyManager
+    let coreDataManager: CoreDataManager
     
     class var sharedInstance: ProxyAPI {
         struct Singleton {
@@ -20,8 +21,13 @@ class ProxyAPI: NSObject {
     }
     
     override init() {
-        proxyKinveyManager = ProxyKinveyManager()
+        proxyKinveyManager = KinveyManager()
+        coreDataManager = CoreDataManager()
         super.init()
+    }
+    
+    func getProxies() -> [Proxy] {
+        return coreDataManager.getProxies()
     }
     
     func createProxy(name: String, nickname: String) {

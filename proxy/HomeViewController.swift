@@ -9,17 +9,52 @@
 import UIKit
 import CoreData
 
-class HomeViewController: UIViewController {
-
+class HomeViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+    
+    @IBOutlet weak var homeTableView: UITableView!
+    var proxies = [Proxy]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        setUp()
         
-        ProxyAPI.sharedInstance.createProxy("testing", nickname: "123")
-    }
-    
-    func setUp() {
         self.navigationItem.title = "My Proxies"
+        
+        automaticallyAdjustsScrollViewInsets = false
+        
+        homeTableView.delegate = self
+        homeTableView.dataSource = self
+        loadTable()
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(HomeViewController.loadTable), name: "ProxiesUpdated", object: nil)
     }
     
+    override func viewWillDisappear(animated: Bool) {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
+    func loadTable() {
+        proxies = ProxyAPI.sharedInstance.getProxies()
+        homeTableView.reloadData()
+    }
+    
+    @IBAction func tapCreateNewProxy(sender: AnyObject) {
+        
+    }
+    
+    // MARK: - Table view data source
+    
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return proxies.count
+    }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier("Home Table View Cell", forIndexPath: indexPath) as! HomeTableViewCell
+        let proxy = proxies[indexPath.row]
+        cell.textLabel?.text = proxy.name
+        return cell
+    }
 }

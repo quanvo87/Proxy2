@@ -1,5 +1,5 @@
 //
-//  ProxyKinveyManager.swift
+//  KinveyManager.swift
 //  proxy
 //
 //  Created by Quan Vo on 8/15/16.
@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-class ProxyKinveyManager: NSObject {
+class KinveyManager: NSObject {
     
     private var store: KCSAppdataStore
     
@@ -36,6 +36,7 @@ class ProxyKinveyManager: NSObject {
                     proxy.id = (objectsOrNil[0] as! NSObject).kinveyObjectId()
                     do {
                         try context.save()
+                        NSNotificationCenter.defaultCenter().postNotificationName("ProxiesUpdated", object: self, userInfo: nil)
                     } catch let error as NSError  {
                         print("Could not save \(error), \(error.userInfo)")
                     }

@@ -168,13 +168,113 @@
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="mwz-89-6i1">
+                                <rect key="frame" x="0.0" y="64" width="600" height="496"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Home Table View Cell" id="VzB-HW-Aw5" customClass="HomeTableViewCell" customModule="proxy" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="92" width="600" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="VzB-HW-Aw5" id="fg6-MY-aif">
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5gc-Qf-bNi">
+                                <rect key="frame" x="25" y="565" width="550" height="30"/>
+                                <state key="normal" title="Create New Proxy!"/>
+                                <connections>
+                                    <action selector="tapCreateNewProxy:" destination="BYZ-38-t0r" eventType="touchUpInside" id="eWx-jZ-Ula"/>
+                                </connections>
+                            </button>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="5gc-Qf-bNi" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="5" id="3i8-lL-6EF"/>
+                            <constraint firstAttribute="trailing" secondItem="mwz-89-6i1" secondAttribute="trailing" id="8Jf-tt-7ge"/>
+                            <constraint firstItem="mwz-89-6i1" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="98Y-c7-b4Y"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="5gc-Qf-bNi" secondAttribute="bottom" constant="5" id="JGf-yV-dyP"/>
+                            <constraint firstItem="5gc-Qf-bNi" firstAttribute="top" secondItem="mwz-89-6i1" secondAttribute="bottom" constant="5" id="OYv-QQ-MHi"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="5gc-Qf-bNi" secondAttribute="trailing" constant="5" id="bo4-oL-yez"/>
+                            <constraint firstItem="mwz-89-6i1" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="twn-op-cKf"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="8NA-RN-yoF"/>
+                    <connections>
+                        <outlet property="homeTableView" destination="mwz-89-6i1" id="PPC-GY-e9U"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="185" y="736"/>
+        </scene>
+        <!--Create New Proxy View Controller-->
+        <scene sceneID="6GZ-F7-Bb9">
+            <objects>
+                <viewController id="80k-ew-HY1" userLabel="Create New Proxy View Controller" customClass="CreateNewProxyViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="nEC-wO-sIs"/>
+                        <viewControllerLayoutGuide type="bottom" id="fEK-Fd-ytj"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="vP9-zg-m4D">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="C9e-5o-9gK">
+                                <rect key="frame" x="527" y="25" width="48" height="30"/>
+                                <state key="normal" title="Cancel"/>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Create New Proxy" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Yli-Kb-F9r">
+                                <rect key="frame" x="231" y="120" width="137" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="New Proxy" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="87g-ME-Pq9">
+                                <rect key="frame" x="30" y="191" width="82" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="751" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GXb-6i-CAT">
+                                <rect key="frame" x="517" y="186" width="53" height="30"/>
+                                <state key="normal" title="Refresh"/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Yoi-Lq-q2L">
+                                <rect key="frame" x="30" y="302" width="540" height="30"/>
+                                <state key="normal" title="Create!"/>
+                            </button>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Nickname (optional)" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="GKm-S7-iiX" userLabel="Nickname">
+                                <rect key="frame" x="30" y="252" width="540" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="Yoi-Lq-q2L" firstAttribute="width" secondItem="GKm-S7-iiX" secondAttribute="width" id="4RD-Np-Wpx"/>
+                            <constraint firstItem="Yli-Kb-F9r" firstAttribute="top" secondItem="nEC-wO-sIs" secondAttribute="bottom" constant="100" id="DWc-8a-2xu"/>
+                            <constraint firstItem="87g-ME-Pq9" firstAttribute="leading" secondItem="vP9-zg-m4D" secondAttribute="leadingMargin" constant="10" id="FAq-hP-FY5"/>
+                            <constraint firstItem="Yli-Kb-F9r" firstAttribute="centerX" secondItem="vP9-zg-m4D" secondAttribute="centerX" id="Kod-Be-XCv"/>
+                            <constraint firstItem="Yoi-Lq-q2L" firstAttribute="centerX" secondItem="vP9-zg-m4D" secondAttribute="centerX" id="Nez-f5-9RV"/>
+                            <constraint firstItem="Yoi-Lq-q2L" firstAttribute="top" secondItem="GKm-S7-iiX" secondAttribute="bottom" constant="20" id="Ozo-25-jyt"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="GXb-6i-CAT" secondAttribute="trailing" constant="10" id="P1W-hM-Del"/>
+                            <constraint firstItem="GKm-S7-iiX" firstAttribute="top" secondItem="87g-ME-Pq9" secondAttribute="bottom" constant="40" id="WkU-lN-aYK"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="C9e-5o-9gK" secondAttribute="trailing" constant="5" id="g40-dI-UPJ"/>
+                            <constraint firstItem="GXb-6i-CAT" firstAttribute="centerY" secondItem="87g-ME-Pq9" secondAttribute="centerY" id="hRD-dO-gLE"/>
+                            <constraint firstItem="87g-ME-Pq9" firstAttribute="top" secondItem="Yli-Kb-F9r" secondAttribute="bottom" constant="50" id="joR-RJ-Gl1"/>
+                            <constraint firstItem="GKm-S7-iiX" firstAttribute="trailing" secondItem="GXb-6i-CAT" secondAttribute="trailing" id="uOM-qd-hAO"/>
+                            <constraint firstItem="GKm-S7-iiX" firstAttribute="leading" secondItem="87g-ME-Pq9" secondAttribute="leading" id="w1K-3A-Axx"/>
+                            <constraint firstItem="C9e-5o-9gK" firstAttribute="top" secondItem="nEC-wO-sIs" secondAttribute="bottom" constant="5" id="yOt-ut-vVc"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="QvR-bq-rFe" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="185" y="1442"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="QnD-3o-vWi">

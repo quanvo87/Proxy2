@@ -42,7 +42,6 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
     func logIn() {
         let email = emailTextField.text
         let password = passwordTextField.text
-        
         if isValidEmail(email!) && password != "" {
             KCSUser.loginWithUsername(
                 email,
