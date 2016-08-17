@@ -13,18 +13,29 @@ class CoreDataManager: NSObject {
     
     func getProxies() -> [Proxy] {
         var proxies = [Proxy]()
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        let context = appDelegate.managedObjectContext
         let fetchRequest = NSFetchRequest(entityName: "Proxy")
         let sortDescriptor = NSSortDescriptor(key: "lastEventTime", ascending: true)
         fetchRequest.sortDescriptors = [sortDescriptor]
         do {
-            let result = try context.executeFetchRequest(fetchRequest)
+            let result = try ProxyAPI.sharedInstance.context.executeFetchRequest(fetchRequest)
             proxies = result as! [Proxy]
         } catch {
             let fetchError = error as NSError
             print(fetchError)
         }
         return proxies
+    }
+    
+    func saveContext() {
+        do {
+            try ProxyAPI.sharedInstance.context.save()
+        } catch let error as NSError  {
+            print("Could not save \(error), \(error.userInfo)")
+        }
+    }
+    
+    func deleteProxy(proxy: Proxy) {
+        ProxyAPI.sharedInstance.context.deleteObject(proxy as NSManagedObject)
+        saveContext()
     }
 }

@@ -19,13 +19,13 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         self.navigationItem.title = "My Proxies"
         
+        NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(HomeViewController.loadTable), name: "Proxies Updated", object: nil)
+        
         automaticallyAdjustsScrollViewInsets = false
         
         homeTableView.delegate = self
         homeTableView.dataSource = self
         loadTable()
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(HomeViewController.loadTable), name: "ProxiesUpdated", object: nil)
     }
     
     override func viewWillDisappear(animated: Bool) {

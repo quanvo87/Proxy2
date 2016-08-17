@@ -252,6 +252,9 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Yoi-Lq-q2L">
                                 <rect key="frame" x="30" y="302" width="540" height="30"/>
                                 <state key="normal" title="Create!"/>
+                                <connections>
+                                    <action selector="tapCreateButton:" destination="80k-ew-HY1" eventType="touchUpInside" id="Idj-k9-GJ6"/>
+                                </connections>
                             </button>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Nickname (optional)" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="GKm-S7-iiX" userLabel="Nickname">
                                 <rect key="frame" x="30" y="252" width="540" height="30"/>

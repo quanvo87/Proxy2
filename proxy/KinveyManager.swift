@@ -11,40 +11,88 @@ import CoreData
 
 class KinveyManager: NSObject {
     
-    private var store: KCSAppdataStore
+    private var proxyStore: KCSAppdataStore
+//    private let context: NSManagedObjectContext
+    private let proxyNameGenerator: ProxyNameGenerator
     
     override init() {
-        store = KCSAppdataStore.storeWithOptions([
+        proxyStore = KCSAppdataStore.storeWithOptions([
             KCSStoreKeyCollectionName : "Proxies",
             KCSStoreKeyCollectionTemplateClass : Proxy.self
             ])
+//        context = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+        proxyNameGenerator = ProxyNameGenerator()
     }
     
-    func createProxy(name: String, nickname: String) {
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        let context = appDelegate.managedObjectContext
-        let entity =  NSEntityDescription.entityForName("Proxy", inManagedObjectContext: context)
-        let proxy = Proxy(entity: entity!, insertIntoManagedObjectContext: context)
-        proxy.owner = KCSUser.activeUser().userId
-        proxy.name = name
-        proxy.nickname = nickname
-        proxy.lastEventTime = NSDate()
-        store.saveObject(
+    func getProxy() {
+        let entity =  NSEntityDescription.entityForName("Proxy", inManagedObjectContext: ProxyAPI.sharedInstance.context)
+        let proxy = Proxy(entity: entity!, insertIntoManagedObjectContext: ProxyAPI.sharedInstance.context)
+        var tryProxy = (Proxy(), Bool())
+        repeat {
+            tryProxy = createProxy(proxyNameGenerator.generateProxyName())
+        } while (!tryProxy.1 || !isUniqueProxy(tryProxy.0))
+        NSNotificationCenter.defaultCenter().postNotificationName("Proxy Created", object: self, userInfo: ["proxy": tryProxy.0])
+    }
+    
+    func isUniqueProxy(proxy: Proxy) -> Bool {
+        var result = true
+        let query = KCSQuery(onField: "name", withExactMatchForValue: proxy.name)
+        proxyStore.countWithQuery(query, completion: { (count: UInt, errorOrNil: NSError!) -> Void in
+            if count > 1 {
+                result = false
+                self.deleteProxy(proxy)
+            }
+        })
+        return result
+    }
+    
+    func deleteProxy(proxy: Proxy) {
+        proxyStore.removeObject(
             proxy,
-            withCompletionBlock: { (objectsOrNil: [AnyObject]!, errorOrNil: NSError!) -> Void in
-                if errorOrNil == nil {
-                    proxy.id = (objectsOrNil[0] as! NSObject).kinveyObjectId()
-                    do {
-                        try context.save()
-                        NSNotificationCenter.defaultCenter().postNotificationName("ProxiesUpdated", object: self, userInfo: nil)
-                    } catch let error as NSError  {
-                        print("Could not save \(error), \(error.userInfo)")
-                    }
+            withDeletionBlock: { (deletionDictOrNil: [NSObject : AnyObject]!, errorOrNil: NSError!) -> Void in
+                if errorOrNil != nil {
+                    print("Delete failed, with error: %@", errorOrNil.localizedFailureReason)
                 } else {
-                    print("Save failed, with error: %@", errorOrNil.localizedFailureReason)
+                    NSLog("deleted response: %@", deletionDictOrNil)
+                    ProxyAPI.sharedInstance.deleteProxyLocal(proxy)
                 }
             },
             withProgressBlock: nil
         )
+    }
+    
+    func isUniqueProxyName(name: String) -> Bool {
+        var result = false
+        let query = KCSQuery(onField: "name", withExactMatchForValue: name)
+        proxyStore.countWithQuery(query, completion: { (count: UInt, errorOrNil: NSError!) -> Void in
+            if count == 0 {
+                result = true
+            }
+        })
+        return result
+    }
+    
+    func createProxy(name: String) -> (Proxy, Bool) {
+        var success = false
+        let entity =  NSEntityDescription.entityForName("Proxy", inManagedObjectContext: ProxyAPI.sharedInstance.context)
+        let proxy = Proxy(entity: entity!, insertIntoManagedObjectContext: ProxyAPI.sharedInstance.context)
+        proxy.owner = KCSUser.activeUser().userId
+        proxy.name = name
+        proxy.lastEventTime = NSDate()
+        proxyStore.saveObject(
+            proxy,
+            withCompletionBlock: { (objectsOrNil: [AnyObject]!, errorOrNil: NSError!) -> Void in
+                if errorOrNil == nil {
+                    proxy.id = (objectsOrNil[0] as! NSObject).kinveyObjectId()
+                    success = true
+                    ProxyAPI.sharedInstance.saveLocal()
+                } else {
+                    print("Save failed, with error: %@", errorOrNil.localizedFailureReason)
+                    ProxyAPI.sharedInstance.deleteProxyLocal(proxy)
+                }
+            },
+            withProgressBlock: nil
+        )
+        return (proxy, success)
     }
 }
