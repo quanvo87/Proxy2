@@ -25,6 +25,9 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         homeTableView.delegate = self
         homeTableView.dataSource = self
+    }
+    
+    override func viewWillAppear(animated: Bool) {
         loadTable()
     }
     

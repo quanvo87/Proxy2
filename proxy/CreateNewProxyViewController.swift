@@ -12,43 +12,47 @@ class CreateNewProxyViewController: UIViewController {
     
     @IBOutlet weak var newProxyLabel: UILabel!
     @IBOutlet weak var nicknameTextField: UITextField!
-    var proxy = Proxy()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(CreateNewProxyViewController.useProxyData), name: "Proxy Created", object: nil)
         
-        ProxyAPI.sharedInstance.getProxy()
+        createProxy()
     }
     
     override func viewWillDisappear(animated: Bool) {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
+    func createProxy() {
+        ProxyAPI.sharedInstance.createProxy()
+    }
+    
     func useProxyData(notification: NSNotification) {
-        let userInfo = notification.userInfo as! [String: AnyObject]
-        proxy = userInfo["proxy"] as! Proxy
+        let userInfo = notification.userInfo as! [String: Proxy]
+        let proxy = userInfo["proxy"]!
         newProxyLabel.text = proxy.name
+    }
+    
+    func deleteProxy() {
+        if let proxyName = newProxyLabel.text {
+//            ProxyAPI.sharedInstance.deleteProxyWithName(proxyName)
+        }
     }
     
     @IBAction func tapCancelButton(sender: AnyObject) {
         deleteProxy()
-        self.dismissViewControllerAnimated(true, completion: nil)
+        dismissViewControllerAnimated(true, completion: nil)
     }
     
     @IBAction func tapRefreshNewProxyButton(sender: AnyObject) {
         deleteProxy()
-        // get new one
+        createProxy()
         // enable/disable button
     }
     
-    func deleteProxy() {
-        ProxyAPI.sharedInstance.deleteProxy(proxy)
-    }
-    
     @IBAction func tapCreateButton(sender: AnyObject) {
-        NSNotificationCenter.defaultCenter().postNotificationName("Proxies Updated", object: self, userInfo: nil)
-        self.dismissViewControllerAnimated(true, completion: nil)
+        dismissViewControllerAnimated(true, completion: nil)
     }
 }

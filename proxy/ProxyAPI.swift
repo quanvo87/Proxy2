@@ -33,16 +33,16 @@ class ProxyAPI: NSObject {
         return coreDataManager.getProxies()
     }
     
-    func getProxy() {
-        kinveyManager.getProxy()
+    func createProxy() {
+        kinveyManager.createProxy()
     }
     
     func saveLocal() {
         coreDataManager.saveContext()
     }
     
-    func deleteProxy(proxy: Proxy) {
-        kinveyManager.deleteProxy(proxy)
+    func deleteProxyWithName(name: String) {
+        kinveyManager.deleteProxyWithName(name)
     }
     
     func deleteProxyLocal(proxy: Proxy) {
