@@ -7,13 +7,10 @@
 //
 
 import UIKit
-import CoreData
 
 class ProxyAPI: NSObject {
     
-    let kinveyManager: KinveyManager
-    let coreDataManager: CoreDataManager
-    let context: NSManagedObjectContext
+    private let kinveyManager = KinveyManager()
     
     class var sharedInstance: ProxyAPI {
         struct Singleton {
@@ -22,30 +19,15 @@ class ProxyAPI: NSObject {
         return Singleton.instance
     }
     
-    override init() {
-        kinveyManager = KinveyManager()
-        coreDataManager = CoreDataManager()
-        context = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
-        super.init()
-    }
-    
-    func getProxies() -> [Proxy] {
-        return coreDataManager.getProxies()
+    func getProxies() {
+        kinveyManager.getProxies()
     }
     
     func createProxy() {
         kinveyManager.createProxy()
     }
     
-    func saveLocal() {
-        coreDataManager.saveContext()
-    }
-    
     func deleteProxyWithName(name: String) {
         kinveyManager.deleteProxyWithName(name)
-    }
-    
-    func deleteProxyLocal(proxy: Proxy) {
-        coreDataManager.deleteProxy(proxy)
     }
 }

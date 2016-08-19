@@ -281,8 +281,10 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="cancelCreateNewProxyButton" destination="C9e-5o-9gK" id="liq-vx-2I0"/>
                         <outlet property="newProxyLabel" destination="87g-ME-Pq9" id="hxK-Aa-UZv"/>
                         <outlet property="nicknameTextField" destination="GKm-S7-iiX" id="56k-Vi-uAH"/>
+                        <outlet property="refreshProxyButton" destination="GXb-6i-CAT" id="pdq-cO-A5k"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QvR-bq-rFe" userLabel="First Responder" sceneMemberID="firstResponder"/>

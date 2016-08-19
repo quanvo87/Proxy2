@@ -14,7 +14,7 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
-    var bottomConstraintConstant: CGFloat = 0
+    var bottomConstraintConstant: CGFloat = 0.0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,8 +30,7 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
     }
     
     override func viewWillDisappear(animated: Bool) {
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillShowNotification, object: self.view.window)
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object: self.view.window)
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
     @IBAction func tapLogInButton(sender: AnyObject) {
@@ -82,7 +81,7 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
                         if errorOrNil == nil {
                             self.presentHomeScreen()
                         } else {
-                            print(errorOrNil)
+                            print("Login to Facebook failed: \(errorOrNil)")
                         }
                     }
                 )

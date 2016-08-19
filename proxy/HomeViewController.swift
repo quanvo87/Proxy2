@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import CoreData
 
 class HomeViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
@@ -19,8 +18,6 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         self.navigationItem.title = "My Proxies"
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(HomeViewController.loadTable), name: "Proxies Updated", object: nil)
-        
         automaticallyAdjustsScrollViewInsets = false
         
         homeTableView.delegate = self
@@ -28,15 +25,21 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     override func viewWillAppear(animated: Bool) {
-        loadTable()
+        NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(HomeViewController.loadTable), name: "Proxies Fetched", object: nil)
+        getProxies()
     }
     
     override func viewWillDisappear(animated: Bool) {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
-    func loadTable() {
-        proxies = ProxyAPI.sharedInstance.getProxies()
+    func getProxies() {
+        ProxyAPI.sharedInstance.getProxies()
+    }
+    
+    func loadTable(notification: NSNotification) {
+        let userInfo = notification.userInfo as! [String: [Proxy]]
+        proxies = userInfo["proxies"]!
         homeTableView.reloadData()
     }
     

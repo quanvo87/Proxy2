@@ -7,37 +7,47 @@
 //
 
 import UIKit
-import CoreData
 
 class KinveyManager: NSObject {
     
     private var proxyStore: KCSAppdataStore
-    private let proxyNameGenerator: ProxyNameGenerator
+    private let proxyNameGenerator = ProxyNameGenerator()
     
     override init() {
         proxyStore = KCSAppdataStore.storeWithOptions([
             KCSStoreKeyCollectionName : "Proxies",
             KCSStoreKeyCollectionTemplateClass : Proxy.self
             ])
-        proxyNameGenerator = ProxyNameGenerator()
+    }
+    
+    func getProxies() {
+        let query = KCSQuery(onField: "owner", withExactMatchForValue: KCSUser.activeUser().userId)
+        let dataSort = KCSQuerySortModifier(field: "lastEventTime", inDirection: KCSSortDirection.Descending)
+        query.addSortModifier(dataSort)
+        proxyStore.queryWithQuery(
+            query,
+            withCompletionBlock: { (objectsOrNil: [AnyObject]!, errorOrNil: NSError!) -> Void in
+                if errorOrNil == nil {
+                    NSNotificationCenter.defaultCenter().postNotificationName("Proxies Fetched", object: self, userInfo: ["proxies": objectsOrNil as! [Proxy]])
+                } else {
+                    print("Fetch proxies failed: \(errorOrNil)")
+                }
+            },
+            withProgressBlock: nil
+        )
     }
     
     func createProxy() {
-        let entity =  NSEntityDescription.entityForName("Proxy", inManagedObjectContext: ProxyAPI.sharedInstance.context)
-        let proxy = Proxy(entity: entity!, insertIntoManagedObjectContext: ProxyAPI.sharedInstance.context)
-        proxy.owner = KCSUser.activeUser().userId
+        var proxy = Proxy()
         proxy.name = proxyNameGenerator.generateProxyName()
-        proxy.lastEventTime = NSDate()
         proxyStore.saveObject(
             proxy,
             withCompletionBlock: { (objectsOrNil: [AnyObject]!, errorOrNil: NSError!) -> Void in
                 if errorOrNil == nil {
-                    proxy.id = (objectsOrNil[0] as! NSObject).kinveyObjectId()
-                    ProxyAPI.sharedInstance.saveLocal()
+                    proxy = objectsOrNil[0] as! Proxy
                     self.isUniqueProxy(proxy)
                 } else {
-                    print("Save failed, with error: %@", errorOrNil.localizedFailureReason)
-                    ProxyAPI.sharedInstance.deleteProxyLocal(proxy)
+                    print("Save proxy to Kinvey failed: \(errorOrNil)")
                 }
             },
             withProgressBlock: nil
@@ -49,13 +59,13 @@ class KinveyManager: NSObject {
         proxyStore.countWithQuery(query, completion: { (count: UInt, errorOrNil: NSError!) -> Void in
             if errorOrNil == nil {
                 if count == 1 {
-                    NSNotificationCenter.defaultCenter().postNotificationName("Proxy Created", object: self, userInfo: ["proxy": proxy])
+                    NSNotificationCenter.defaultCenter().postNotificationName("Proxy Created", object: self, userInfo: ["proxyName": proxy.name])
                 } else {
                     self.deleteProxy(proxy)
                     self.createProxy()
                 }
             } else {
-                print("Error fetching proxy just created: %@", errorOrNil.localizedFailureReason)
+                print("Check for other proxies with same name failed: \(errorOrNil)")
             }
         })
     }
@@ -65,10 +75,9 @@ class KinveyManager: NSObject {
             proxy,
             withDeletionBlock: { (deletionDictOrNil: [NSObject : AnyObject]!, errorOrNil: NSError!) -> Void in
                 if errorOrNil == nil {
-                    NSLog("deleted response: %@", deletionDictOrNil)
-                    ProxyAPI.sharedInstance.deleteProxyLocal(proxy)
+                    NSNotificationCenter.defaultCenter().postNotificationName("Proxy Deleted", object: self, userInfo: nil)
                 } else {
-                    print("Delete failed, with error: %@", errorOrNil.localizedFailureReason)
+                    print("Delete proxy from Kinvey failed: \(errorOrNil)")
                 }
             },
             withProgressBlock: nil
@@ -83,7 +92,7 @@ class KinveyManager: NSObject {
                 if errorOrNil == nil {
                     self.deleteProxy(objectsOrNil[0] as! Proxy)
                 } else {
-                    print("Error fetching proxy: %@", errorOrNil.localizedFailureReason)
+                    print("Fetch proxy to delete failed: \(errorOrNil)")
                 }
             },
             withProgressBlock: nil
