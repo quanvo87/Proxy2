@@ -10,14 +10,15 @@ import UIKit
 
 class KinveyManager: NSObject {
     
-    private var proxyStore: KCSAppdataStore
+    private var proxyStore: KCSCachedStore
     private let proxyNameGenerator = ProxyNameGenerator()
     
     override init() {
-        proxyStore = KCSAppdataStore.storeWithOptions([
+        proxyStore = KCSCachedStore.storeWithOptions([
             KCSStoreKeyCollectionName : "Proxies",
             KCSStoreKeyCollectionTemplateClass : Proxy.self
             ])
+        proxyStore.cachePolicy = .Both
     }
     
     func getProxies() {
