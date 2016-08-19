@@ -173,13 +173,53 @@
                                 <rect key="frame" x="0.0" y="64" width="600" height="496"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Home Table View Cell" id="VzB-HW-Aw5" customClass="HomeTableViewCell" customModule="proxy" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="92" width="600" height="44"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Home Table View Cell" rowHeight="60" id="VzB-HW-Aw5" customClass="HomeTableViewCell" customModule="proxy" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="92" width="600" height="60"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="VzB-HW-Aw5" id="fg6-MY-aif">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="59.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Proxy Nickname" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kbY-lR-DUb">
+                                                    <rect key="frame" x="487" y="8" width="104.5" height="17"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <color key="textColor" red="0.50196081400000003" green="0.50196081400000003" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="Last event message" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8Kv-9l-qdn">
+                                                    <rect key="frame" x="8" y="37" width="113" height="15"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                                    <color key="textColor" red="0.50196081400000003" green="0.50196081400000003" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Proxy Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vJD-zL-U60">
+                                                    <rect key="frame" x="8" y="8" width="93" height="19"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="kbY-lR-DUb" firstAttribute="top" secondItem="fg6-MY-aif" secondAttribute="topMargin" id="Awj-P8-hLq"/>
+                                                <constraint firstItem="8Kv-9l-qdn" firstAttribute="leading" secondItem="fg6-MY-aif" secondAttribute="leadingMargin" id="FG8-Eu-cQP"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="8Kv-9l-qdn" secondAttribute="bottom" id="Sl9-iU-Tqa"/>
+                                                <constraint firstItem="vJD-zL-U60" firstAttribute="top" secondItem="fg6-MY-aif" secondAttribute="topMargin" id="cq8-Sf-ful"/>
+                                                <constraint firstItem="8Kv-9l-qdn" firstAttribute="bottom" secondItem="vJD-zL-U60" secondAttribute="bottom" id="gSx-EU-0BD"/>
+                                                <constraint firstItem="8Kv-9l-qdn" firstAttribute="top" secondItem="vJD-zL-U60" secondAttribute="bottom" constant="10" id="iWl-8F-Z7U"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="kbY-lR-DUb" secondAttribute="trailing" id="nse-DT-Wnh"/>
+                                                <constraint firstItem="vJD-zL-U60" firstAttribute="leading" secondItem="fg6-MY-aif" secondAttribute="leadingMargin" id="vIN-jY-xdQ"/>
+                                            </constraints>
+                                            <variation key="default">
+                                                <mask key="constraints">
+                                                    <exclude reference="gSx-EU-0BD"/>
+                                                </mask>
+                                            </variation>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="lastEventMessageLabel" destination="8Kv-9l-qdn" id="hg5-q5-Jey"/>
+                                            <outlet property="proxyNameLabel" destination="vJD-zL-U60" id="8IY-NU-QQE"/>
+                                            <outlet property="proxyNicknameLabel" destination="kbY-lR-DUb" id="GfA-Gk-JI6"/>
+                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
@@ -233,13 +273,13 @@
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Create New Proxy" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Yli-Kb-F9r">
                                 <rect key="frame" x="231" y="120" width="137" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="New Proxy" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="87g-ME-Pq9">
                                 <rect key="frame" x="30" y="191" width="82" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="751" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GXb-6i-CAT">
@@ -282,8 +322,9 @@
                     </view>
                     <connections>
                         <outlet property="cancelCreateNewProxyButton" destination="C9e-5o-9gK" id="liq-vx-2I0"/>
-                        <outlet property="newProxyLabel" destination="87g-ME-Pq9" id="hxK-Aa-UZv"/>
-                        <outlet property="nicknameTextField" destination="GKm-S7-iiX" id="56k-Vi-uAH"/>
+                        <outlet property="createProxyButton" destination="Yoi-Lq-q2L" id="bUd-4y-UUv"/>
+                        <outlet property="newProxyNameLabel" destination="87g-ME-Pq9" id="V51-O0-Qyx"/>
+                        <outlet property="newProxyNicknameTextField" destination="GKm-S7-iiX" id="Ubs-Cq-w5f"/>
                         <outlet property="refreshProxyButton" destination="GXb-6i-CAT" id="pdq-cO-A5k"/>
                     </connections>
                 </viewController>

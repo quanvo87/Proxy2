@@ -22,6 +22,8 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         homeTableView.delegate = self
         homeTableView.dataSource = self
+        homeTableView.rowHeight = UITableViewAutomaticDimension
+        homeTableView.estimatedRowHeight = 60
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -62,7 +64,9 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("Home Table View Cell", forIndexPath: indexPath) as! HomeTableViewCell
         let proxy = proxies[indexPath.row]
-        cell.textLabel?.text = proxy.name
+        cell.proxyNameLabel.text = proxy.name
+        cell.proxyNicknameLabel.text = proxy.nickname
+        cell.lastEventMessageLabel.text = proxy.lastEventMessage
         return cell
     }
 }
