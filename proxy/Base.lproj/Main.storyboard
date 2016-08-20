@@ -170,7 +170,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="mwz-89-6i1">
-                                <rect key="frame" x="0.0" y="64" width="600" height="496"/>
+                                <rect key="frame" x="0.0" y="64" width="600" height="486"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Home Table View Cell" rowHeight="60" id="VzB-HW-Aw5" customClass="HomeTableViewCell" customModule="proxy" customModuleProvider="target">
@@ -180,20 +180,20 @@
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="59.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Proxy Nickname" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kbY-lR-DUb">
-                                                    <rect key="frame" x="487" y="8" width="104.5" height="17"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Proxy Nickname" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kbY-lR-DUb">
+                                                    <rect key="frame" x="111" y="8" width="104.5" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <color key="textColor" red="0.50196081400000003" green="0.50196081400000003" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="Last event message" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8Kv-9l-qdn">
-                                                    <rect key="frame" x="8" y="37" width="113" height="15"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Last event message" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8Kv-9l-qdn">
+                                                    <rect key="frame" x="8" y="38" width="113" height="13.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                                     <color key="textColor" red="0.50196081400000003" green="0.50196081400000003" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Proxy Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vJD-zL-U60">
-                                                    <rect key="frame" x="8" y="8" width="93" height="19"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalCompressionResistancePriority="751" text="Proxy Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vJD-zL-U60">
+                                                    <rect key="frame" x="8" y="8" width="93" height="20.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
@@ -202,11 +202,11 @@
                                             <constraints>
                                                 <constraint firstItem="kbY-lR-DUb" firstAttribute="top" secondItem="fg6-MY-aif" secondAttribute="topMargin" id="Awj-P8-hLq"/>
                                                 <constraint firstItem="8Kv-9l-qdn" firstAttribute="leading" secondItem="fg6-MY-aif" secondAttribute="leadingMargin" id="FG8-Eu-cQP"/>
+                                                <constraint firstItem="kbY-lR-DUb" firstAttribute="leading" secondItem="vJD-zL-U60" secondAttribute="trailing" constant="10" id="Per-Iv-0vS"/>
                                                 <constraint firstAttribute="bottomMargin" secondItem="8Kv-9l-qdn" secondAttribute="bottom" id="Sl9-iU-Tqa"/>
                                                 <constraint firstItem="vJD-zL-U60" firstAttribute="top" secondItem="fg6-MY-aif" secondAttribute="topMargin" id="cq8-Sf-ful"/>
                                                 <constraint firstItem="8Kv-9l-qdn" firstAttribute="bottom" secondItem="vJD-zL-U60" secondAttribute="bottom" id="gSx-EU-0BD"/>
                                                 <constraint firstItem="8Kv-9l-qdn" firstAttribute="top" secondItem="vJD-zL-U60" secondAttribute="bottom" constant="10" id="iWl-8F-Z7U"/>
-                                                <constraint firstAttribute="trailingMargin" secondItem="kbY-lR-DUb" secondAttribute="trailing" id="nse-DT-Wnh"/>
                                                 <constraint firstItem="vJD-zL-U60" firstAttribute="leading" secondItem="fg6-MY-aif" secondAttribute="leadingMargin" id="vIN-jY-xdQ"/>
                                             </constraints>
                                             <variation key="default">
@@ -224,7 +224,7 @@
                                 </prototypes>
                             </tableView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5gc-Qf-bNi">
-                                <rect key="frame" x="25" y="565" width="550" height="30"/>
+                                <rect key="frame" x="25" y="560" width="550" height="30"/>
                                 <state key="normal" title="Create New Proxy!"/>
                                 <connections>
                                     <action selector="tapCreateNewProxy:" destination="BYZ-38-t0r" eventType="touchUpInside" id="eWx-jZ-Ula"/>
@@ -236,8 +236,8 @@
                             <constraint firstItem="5gc-Qf-bNi" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="5" id="3i8-lL-6EF"/>
                             <constraint firstAttribute="trailing" secondItem="mwz-89-6i1" secondAttribute="trailing" id="8Jf-tt-7ge"/>
                             <constraint firstItem="mwz-89-6i1" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="98Y-c7-b4Y"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="5gc-Qf-bNi" secondAttribute="bottom" constant="5" id="JGf-yV-dyP"/>
-                            <constraint firstItem="5gc-Qf-bNi" firstAttribute="top" secondItem="mwz-89-6i1" secondAttribute="bottom" constant="5" id="OYv-QQ-MHi"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="5gc-Qf-bNi" secondAttribute="bottom" constant="10" id="JGf-yV-dyP"/>
+                            <constraint firstItem="5gc-Qf-bNi" firstAttribute="top" secondItem="mwz-89-6i1" secondAttribute="bottom" constant="10" id="OYv-QQ-MHi"/>
                             <constraint firstAttribute="trailingMargin" secondItem="5gc-Qf-bNi" secondAttribute="trailing" constant="5" id="bo4-oL-yez"/>
                             <constraint firstItem="mwz-89-6i1" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="twn-op-cKf"/>
                         </constraints>

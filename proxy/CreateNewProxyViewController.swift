@@ -42,9 +42,7 @@ class CreateNewProxyViewController: UIViewController {
         let userInfo = notification.userInfo as! [String: String]
         let proxyName = userInfo["proxyName"]!
         newProxyNameLabel.text = proxyName
-        refreshProxyButton.enabled = true
-        createProxyButton.enabled = true
-        cancelCreateNewProxyButton.enabled = true
+        enableButtons()
     }
     
     func deleteProxy() {
@@ -54,7 +52,7 @@ class CreateNewProxyViewController: UIViewController {
     }
     
     @IBAction func tapCancelButton(sender: AnyObject) {
-        cancelCreateNewProxyButton.enabled = false
+        disableButtons()
         if newProxyNameLabel.text == "" {
             cancelReady()
         } else {
@@ -69,14 +67,13 @@ class CreateNewProxyViewController: UIViewController {
     }
     
     @IBAction func tapRefreshNewProxyButton(sender: AnyObject) {
-        refreshProxyButton.enabled = false
-        createProxyButton.enabled = false
+        disableButtons()
         deleteProxy()
         createProxy()
     }
     
     @IBAction func tapCreateButton(sender: AnyObject) {
-        createProxyButton.enabled = false
+        disableButtons()
         if newProxyNicknameTextField.text != "" {
             updateProxyNickname(newProxyNameLabel.text!, nickname: newProxyNicknameTextField.text!)
         } else {
@@ -90,5 +87,17 @@ class CreateNewProxyViewController: UIViewController {
     
     func dismissReady() {
         dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func enableButtons() {
+        cancelCreateNewProxyButton.enabled = true
+        refreshProxyButton.enabled = true
+        createProxyButton.enabled = true
+    }
+    
+    func disableButtons() {
+        cancelCreateNewProxyButton.enabled = false
+        refreshProxyButton.enabled = false
+        createProxyButton.enabled = false
     }
 }
