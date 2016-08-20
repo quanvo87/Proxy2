@@ -10,6 +10,7 @@ import UIKit
 
 class HomeViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
+    @IBOutlet weak var menuButton: UIBarButtonItem!
     @IBOutlet weak var homeTableView: UITableView!
     var proxies = [Proxy]()
     
@@ -26,20 +27,30 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         homeTableView.estimatedRowHeight = 60
     }
     
-    override func viewWillAppear(animated: Bool) {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(HomeViewController.loadTable), name: "Proxies Fetched", object: nil)
-        getProxies()
+    override func viewDidAppear(animated: Bool) {
+        menuButton.action = #selector(SWRevealViewController.revealToggle(_:))
+        NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(HomeViewController.loadHomeTableView), name: "Proxies Fetched", object: nil)
+        checkForSignIn()
     }
     
     override func viewWillDisappear(animated: Bool) {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
+    func checkForSignIn() {
+        if KCSUser.activeUser() == nil {
+            let signUpViewController = storyboard!.instantiateViewControllerWithIdentifier("Sign Up") as! SignUpViewController
+            self.parentViewController!.presentViewController(signUpViewController, animated: false, completion: nil)
+        } else {
+            getProxies()
+        }
+    }
+    
     func getProxies() {
         ProxyAPI.sharedInstance.getProxies()
     }
     
-    func loadTable(notification: NSNotification) {
+    func loadHomeTableView(notification: NSNotification) {
         let userInfo = notification.userInfo as! [String: [Proxy]]
         proxies = userInfo["proxies"]!
         homeTableView.reloadData()
@@ -52,10 +63,6 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     // MARK: - Table view data source
-    
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
-    }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return proxies.count

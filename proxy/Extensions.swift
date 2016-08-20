@@ -17,13 +17,3 @@ extension UIViewController {
         self.presentViewController(alert, animated: true, completion: nil)
     }
 }
-
-//let loginManager = LoginManager()
-//loginManager.logOut()
-//
-//KCSUser.activeUser().logout()
-//
-//let storyboard = UIStoryboard(name: "Main", bundle: nil)
-//let signUpViewController  = storyboard.instantiateViewControllerWithIdentifier("Sign Up") as! SignUpViewController
-//let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-//appDelegate.window?.rootViewController = signUpViewController

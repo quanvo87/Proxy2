@@ -91,10 +91,7 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
     }
     
     func presentHomeScreen() {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let navigationController = storyboard.instantiateViewControllerWithIdentifier("Navigation Controller") as! UINavigationController
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.window?.rootViewController = navigationController
+        dismissViewControllerAnimated(true, completion: nil)
     }
     
     @IBAction func tapLogInButton(sender: AnyObject) {

@@ -13,5 +13,6 @@
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import <FBSDKShareKit/FBSDKShareKit.h>
 #import <KinveyKit/KinveyKit.h>
+#import "SWRevealViewController.h"
 
 #endif /* Header_h */

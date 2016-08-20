@@ -13,6 +13,11 @@
 		14265B7C1D63029200B65793 /* CreateNewProxyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14265B7B1D63029200B65793 /* CreateNewProxyViewController.swift */; };
 		1433E8501D664FA1006C00EA /* Proxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1433E84F1D664FA1006C00EA /* Proxy.swift */; };
 		1485C05C1D6399830051E217 /* ProxyNameGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1485C05B1D6399830051E217 /* ProxyNameGenerator.swift */; };
+		14A6F1771D68D03C0015431E /* SWRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F1761D68D03C0015431E /* SWRevealViewController.m */; };
+		14A6F17B1D68D5F20015431E /* SideBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F17A1D68D5F20015431E /* SideBarViewController.swift */; };
+		14A6F17F1D68D8020015431E /* SideBarItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F17E1D68D8020015431E /* SideBarItems.swift */; };
+		14A6F1811D68D8160015431E /* SideBarItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F1801D68D8160015431E /* SideBarItem.swift */; };
+		14A6F1831D68E4E00015431E /* SideBarTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F1821D68E4E00015431E /* SideBarTableViewCell.swift */; };
 		14E19A421D60EF100030B366 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E19A411D60EF100030B366 /* AppDelegate.swift */; };
 		14E19A471D60EF100030B366 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 14E19A451D60EF100030B366 /* Main.storyboard */; };
 		14E19A4C1D60EF100030B366 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 14E19A4B1D60EF100030B366 /* Assets.xcassets */; };
@@ -31,6 +36,12 @@
 		14265B7B1D63029200B65793 /* CreateNewProxyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateNewProxyViewController.swift; sourceTree = "<group>"; };
 		1433E84F1D664FA1006C00EA /* Proxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Proxy.swift; sourceTree = "<group>"; };
 		1485C05B1D6399830051E217 /* ProxyNameGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyNameGenerator.swift; sourceTree = "<group>"; };
+		14A6F1751D68D03C0015431E /* SWRevealViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWRevealViewController.h; sourceTree = "<group>"; };
+		14A6F1761D68D03C0015431E /* SWRevealViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWRevealViewController.m; sourceTree = "<group>"; };
+		14A6F17A1D68D5F20015431E /* SideBarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideBarViewController.swift; sourceTree = "<group>"; };
+		14A6F17E1D68D8020015431E /* SideBarItems.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideBarItems.swift; sourceTree = "<group>"; };
+		14A6F1801D68D8160015431E /* SideBarItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideBarItem.swift; sourceTree = "<group>"; };
+		14A6F1821D68E4E00015431E /* SideBarTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideBarTableViewCell.swift; sourceTree = "<group>"; };
 		14E19A3E1D60EF100030B366 /* proxy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = proxy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		14E19A411D60EF100030B366 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		14E19A461D60EF100030B366 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -83,6 +94,12 @@
 				14E19A411D60EF100030B366 /* AppDelegate.swift */,
 				14E19A571D61012C0030B366 /* SignUpViewController.swift */,
 				14E19A5D1D6148700030B366 /* LogInViewController.swift */,
+				14A6F1751D68D03C0015431E /* SWRevealViewController.h */,
+				14A6F1761D68D03C0015431E /* SWRevealViewController.m */,
+				14A6F17A1D68D5F20015431E /* SideBarViewController.swift */,
+				14A6F1821D68E4E00015431E /* SideBarTableViewCell.swift */,
+				14A6F17E1D68D8020015431E /* SideBarItems.swift */,
+				14A6F1801D68D8160015431E /* SideBarItem.swift */,
 				14E19A591D61034A0030B366 /* HomeViewController.swift */,
 				1415611E1D62A8A3002022BC /* HomeTableViewCell.swift */,
 				14265B7B1D63029200B65793 /* CreateNewProxyViewController.swift */,
@@ -241,15 +258,20 @@
 			files = (
 				14E19A5C1D612CE80030B366 /* Extensions.swift in Sources */,
 				1433E8501D664FA1006C00EA /* Proxy.swift in Sources */,
+				14A6F1831D68E4E00015431E /* SideBarTableViewCell.swift in Sources */,
 				1415611F1D62A8A3002022BC /* HomeTableViewCell.swift in Sources */,
 				14E19A5A1D61034A0030B366 /* HomeViewController.swift in Sources */,
+				14A6F1811D68D8160015431E /* SideBarItem.swift in Sources */,
 				14E19A5E1D6148700030B366 /* LogInViewController.swift in Sources */,
+				14A6F17F1D68D8020015431E /* SideBarItems.swift in Sources */,
 				14265B7C1D63029200B65793 /* CreateNewProxyViewController.swift in Sources */,
 				1485C05C1D6399830051E217 /* ProxyNameGenerator.swift in Sources */,
+				14A6F17B1D68D5F20015431E /* SideBarViewController.swift in Sources */,
 				1415610D1D620DB7002022BC /* ProxyAPI.swift in Sources */,
 				141561111D620E70002022BC /* KinveyManager.swift in Sources */,
 				14E19A581D61012C0030B366 /* SignUpViewController.swift in Sources */,
 				14E19A421D60EF100030B366 /* AppDelegate.swift in Sources */,
+				14A6F1771D68D03C0015431E /* SWRevealViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
