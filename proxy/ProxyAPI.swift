@@ -23,10 +23,6 @@ class ProxyAPI: NSObject {
         return kinveyManager.getUsername()
     }
     
-    func clearUsername() {
-        kinveyManager.clearUsername()
-    }
-    
     func getProxies() {
         kinveyManager.getProxies()
     }

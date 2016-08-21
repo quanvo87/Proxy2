@@ -29,7 +29,7 @@ class SideBarViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     override func viewWillAppear(animated: Bool) {
         if userNameLabel.text == "" {
-            setUserName()
+            setUsername()
         }
     }
     
@@ -37,12 +37,12 @@ class SideBarViewController: UIViewController, UITableViewDelegate, UITableViewD
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
-    func setUserName() {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(SideBarViewController.setUsername), name: "Fetched Username", object: nil)
+    func setUsername() {
+        NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(SideBarViewController.setUsernameFromFacebook), name: "Fetched Username", object: nil)
         userNameLabel.text = ProxyAPI.sharedInstance.getUsername()
     }
     
-    func setUsername(notification: NSNotification) {
+    func setUsernameFromFacebook(notification: NSNotification) {
         let userInfo = notification.userInfo as! [String: String]
         userNameLabel.text = userInfo["username"]
     }
@@ -116,7 +116,6 @@ class SideBarViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     func logOut() {
         userNameLabel.text = ""
-        ProxyAPI.sharedInstance.clearUsername()
         
         let loginManager = LoginManager()
         loginManager.logOut()
