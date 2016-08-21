@@ -12,10 +12,12 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     @IBOutlet weak var menuButton: UIBarButtonItem!
     @IBOutlet weak var homeTableView: UITableView!
-    var proxies = [Proxy]()
+    private var proxies = [Proxy]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
         
         self.navigationItem.title = "My Proxies"
         
@@ -28,8 +30,6 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     override func viewDidAppear(animated: Bool) {
-        menuButton.action = #selector(SWRevealViewController.revealToggle(_:))
-        NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(HomeViewController.loadHomeTableView), name: "Proxies Fetched", object: nil)
         checkForSignIn()
     }
     
@@ -39,9 +39,11 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func checkForSignIn() {
         if KCSUser.activeUser() == nil {
-            let signUpViewController = storyboard!.instantiateViewControllerWithIdentifier("Sign Up") as! SignUpViewController
-            self.parentViewController!.presentViewController(signUpViewController, animated: false, completion: nil)
+            let logInViewController = storyboard!.instantiateViewControllerWithIdentifier("Log In") as! LogInViewController
+            self.parentViewController!.presentViewController(logInViewController, animated: false, completion: nil)
         } else {
+            menuButton.action = #selector(SWRevealViewController.revealToggle(_:))
+            NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(HomeViewController.loadHomeTableView), name: "Proxies Fetched", object: nil)
             getProxies()
         }
     }

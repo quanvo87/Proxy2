@@ -18,11 +18,11 @@
 		14A6F17F1D68D8020015431E /* SideBarItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F17E1D68D8020015431E /* SideBarItems.swift */; };
 		14A6F1811D68D8160015431E /* SideBarItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F1801D68D8160015431E /* SideBarItem.swift */; };
 		14A6F1831D68E4E00015431E /* SideBarTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F1821D68E4E00015431E /* SideBarTableViewCell.swift */; };
+		14A6F1851D6950C50015431E /* EmailSyntaxChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F1841D6950C50015431E /* EmailSyntaxChecker.swift */; };
 		14E19A421D60EF100030B366 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E19A411D60EF100030B366 /* AppDelegate.swift */; };
 		14E19A471D60EF100030B366 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 14E19A451D60EF100030B366 /* Main.storyboard */; };
 		14E19A4C1D60EF100030B366 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 14E19A4B1D60EF100030B366 /* Assets.xcassets */; };
 		14E19A4F1D60EF100030B366 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 14E19A4D1D60EF100030B366 /* LaunchScreen.storyboard */; };
-		14E19A581D61012C0030B366 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E19A571D61012C0030B366 /* SignUpViewController.swift */; };
 		14E19A5A1D61034A0030B366 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E19A591D61034A0030B366 /* HomeViewController.swift */; };
 		14E19A5C1D612CE80030B366 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E19A5B1D612CE80030B366 /* Extensions.swift */; };
 		14E19A5E1D6148700030B366 /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E19A5D1D6148700030B366 /* LogInViewController.swift */; };
@@ -42,6 +42,7 @@
 		14A6F17E1D68D8020015431E /* SideBarItems.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideBarItems.swift; sourceTree = "<group>"; };
 		14A6F1801D68D8160015431E /* SideBarItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideBarItem.swift; sourceTree = "<group>"; };
 		14A6F1821D68E4E00015431E /* SideBarTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideBarTableViewCell.swift; sourceTree = "<group>"; };
+		14A6F1841D6950C50015431E /* EmailSyntaxChecker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmailSyntaxChecker.swift; sourceTree = "<group>"; };
 		14E19A3E1D60EF100030B366 /* proxy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = proxy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		14E19A411D60EF100030B366 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		14E19A461D60EF100030B366 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -49,7 +50,6 @@
 		14E19A4E1D60EF100030B366 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		14E19A501D60EF100030B366 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		14E19A561D60F07A0030B366 /* Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Header.h; sourceTree = "<group>"; };
-		14E19A571D61012C0030B366 /* SignUpViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		14E19A591D61034A0030B366 /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		14E19A5B1D612CE80030B366 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		14E19A5D1D6148700030B366 /* LogInViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
@@ -92,7 +92,6 @@
 			isa = PBXGroup;
 			children = (
 				14E19A411D60EF100030B366 /* AppDelegate.swift */,
-				14E19A571D61012C0030B366 /* SignUpViewController.swift */,
 				14E19A5D1D6148700030B366 /* LogInViewController.swift */,
 				14A6F1751D68D03C0015431E /* SWRevealViewController.h */,
 				14A6F1761D68D03C0015431E /* SWRevealViewController.m */,
@@ -107,6 +106,7 @@
 				1415610C1D620DB7002022BC /* ProxyAPI.swift */,
 				141561101D620E70002022BC /* KinveyManager.swift */,
 				1485C05B1D6399830051E217 /* ProxyNameGenerator.swift */,
+				14A6F1841D6950C50015431E /* EmailSyntaxChecker.swift */,
 				14E19A5B1D612CE80030B366 /* Extensions.swift */,
 				14E19A451D60EF100030B366 /* Main.storyboard */,
 				14E19A4B1D60EF100030B366 /* Assets.xcassets */,
@@ -269,8 +269,8 @@
 				14A6F17B1D68D5F20015431E /* SideBarViewController.swift in Sources */,
 				1415610D1D620DB7002022BC /* ProxyAPI.swift in Sources */,
 				141561111D620E70002022BC /* KinveyManager.swift in Sources */,
-				14E19A581D61012C0030B366 /* SignUpViewController.swift in Sources */,
 				14E19A421D60EF100030B366 /* AppDelegate.swift in Sources */,
+				14A6F1851D6950C50015431E /* EmailSyntaxChecker.swift in Sources */,
 				14A6F1771D68D03C0015431E /* SWRevealViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

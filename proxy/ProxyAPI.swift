@@ -19,6 +19,14 @@ class ProxyAPI: NSObject {
         return Singleton.instance
     }
     
+    func getUsername() -> String {
+        return kinveyManager.getUsername()
+    }
+    
+    func clearUsername() {
+        kinveyManager.clearUsername()
+    }
+    
     func getProxies() {
         kinveyManager.getProxies()
     }

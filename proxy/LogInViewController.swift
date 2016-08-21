@@ -35,10 +35,6 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
     
     @IBAction func tapLogInButton(sender: AnyObject) {
         self.passwordTextField.resignFirstResponder()
-        logIn()
-    }
-    
-    func logIn() {
         let email = emailTextField.text
         let password = passwordTextField.text
         if isValidEmail(email!) && password != "" {
@@ -49,12 +45,33 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
                     if errorOrNil == nil {
                         self.presentHomeScreen()
                     } else {
-                        self.showAlert("That email/password was incorrect. Please try again.")
+                        self.showAlert("Incorrect Email/Password", message: "That email/password was incorrect. Please try again.")
                     }
                 }
             )
         } else {
-            showAlert("Please enter a valid email and password.")
+            showAlert("Invalid Email/Password", message: "Please enter a valid email and password.")
+        }
+    }
+    
+    @IBAction func tapCreateNewAccountButton(sender: AnyObject) {
+        let email = emailTextField.text
+        let password = passwordTextField.text
+        if isValidEmail(email!) && password != "" {
+            KCSUser.userWithUsername(
+                email,
+                password: password,
+                fieldsAndValues: nil,
+                withCompletionBlock: { (user: KCSUser!, errorOrNil: NSError!, result: KCSUserActionResult) -> Void in
+                    if errorOrNil == nil {
+                        self.presentHomeScreen()
+                    } else {
+                        self.showAlert("Email Taken", message: "There is already an account with that email.")
+                    }
+                }
+            )
+        } else {
+            showAlert("Invalid Email/Password", message: "Please enter a valid email and password.")
         }
     }
     
@@ -93,17 +110,7 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
         dismissViewControllerAnimated(true, completion: nil)
     }
     
-    @IBAction func tapCreateAccountButton(sender: AnyObject) {
-        self.dismissViewControllerAnimated(true, completion: nil)
-    }
-    
     // MARK: - Keyboard
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
-        self.passwordTextField.resignFirstResponder()
-        logIn()
-        return true
-    }
-    
     func keyboardWillShow(notification: NSNotification) {
         let info = notification.userInfo!
         let keyboardFrame: CGRect = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()

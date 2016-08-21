@@ -11,17 +11,44 @@ import FacebookLogin
 
 class SideBarViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
+    @IBOutlet weak var userNameLabel: UILabel!
     @IBOutlet weak var sideBarTableView: UITableView!
-    var sideBarItems = [SideBarItem]()
+    private var sideBarItems = [SideBarItem]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        userNameLabel.text = ""
         
         sideBarItems = SideBarItems().getSideBarItems()
         
         sideBarTableView.delegate = self
         sideBarTableView.dataSource = self
         sideBarTableView.reloadData()
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        if userNameLabel.text == "" {
+            setUserName()
+        }
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
+    func setUserName() {
+        NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(SideBarViewController.setUsername), name: "Fetched Username", object: nil)
+        userNameLabel.text = ProxyAPI.sharedInstance.getUsername()
+    }
+    
+    func setUsername(notification: NSNotification) {
+        let userInfo = notification.userInfo as! [String: String]
+        userNameLabel.text = userInfo["username"]
+    }
+    
+    func toggleSideBar() {
+        self.revealViewController().revealToggle(self)
     }
     
     // MARK: - Table view data source
@@ -60,7 +87,7 @@ class SideBarViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func tapHome() {
-        
+        toggleSideBar()
     }
     
     func tapTurnOnNotifications() {
@@ -76,7 +103,7 @@ class SideBarViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func tapLogOut() {
-        let alert = UIAlertController(title: "", message: "Are you sure you want to log out?", preferredStyle: .Alert)
+        let alert = UIAlertController(title: "Log Out", message: "Are you sure you want to log out?", preferredStyle: .Alert)
         let yesButton: UIAlertAction = UIAlertAction(title: "Yes", style: .Default) { action in
             self.logOut()
         }
@@ -88,14 +115,16 @@ class SideBarViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func logOut() {
+        userNameLabel.text = ""
+        ProxyAPI.sharedInstance.clearUsername()
+        
         let loginManager = LoginManager()
         loginManager.logOut()
         
         KCSUser.activeUser().logout()
         
-        if let signUpViewController = storyboard?.instantiateViewControllerWithIdentifier("Sign Up") as! SignUpViewController? {
-            self.presentViewController(signUpViewController, animated: true, completion: nil)
-        }
+        let logInViewController = storyboard!.instantiateViewControllerWithIdentifier("Log In") as! LogInViewController
+        self.presentViewController(logInViewController, animated: true, completion: nil)
     }
     
     func tapDeleteAccount() {
@@ -105,23 +134,4 @@ class SideBarViewController: UIViewController, UITableViewDelegate, UITableViewD
     func tapAbout() {
         
     }
-    
-    //    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-    //        let post = posts[indexPath.section]
-    //        let flags = post["flags"] as! Int
-    //        if flags < 3 {
-    //            showPostDetail(post)
-    //        } else {
-    //            self.showAlert("This post has been flagged as inappropriate and is now closed.")
-    //            getPosts()
-    //        }
-    //    }
-    //
-    //    func showPostDetail(post: PFObject) {
-    //        if let postDetailViewController = storyboard?.instantiateViewControllerWithIdentifier("Post Detail") as! PostDetailViewController? {
-    //            postDetailViewController.post = post
-    //            navigationItem.title = "Home"
-    //            navigationController?.pushViewController(postDetailViewController, animated: true)
-    //        }
-    //    }
 }

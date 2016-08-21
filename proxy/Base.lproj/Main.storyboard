@@ -6,10 +6,10 @@
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--Sign Up View Controller-->
+        <!--Log In View Controller-->
         <scene sceneID="KpD-I8-wXj">
             <objects>
-                <viewController storyboardIdentifier="Sign Up" id="sjW-YU-fmh" customClass="SignUpViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Log In" id="sjW-YU-fmh" userLabel="Log In View Controller" customClass="LogInViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Bvm-Q4-VsS"/>
                         <viewControllerLayoutGuide type="bottom" id="wIr-b4-xYr"/>
@@ -19,58 +19,59 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Email" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Zmp-Od-UCu">
-                                <rect key="frame" x="30" y="230" width="540" height="30"/>
+                                <rect key="frame" x="30" y="250" width="540" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="F9C-uS-p6m">
-                                <rect key="frame" x="30" y="265" width="540" height="30"/>
+                                <rect key="frame" x="30" y="285" width="540" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jeE-Zy-USD">
-                                <rect key="frame" x="30" y="300" width="540" height="30"/>
-                                <state key="normal" title="Sign up!"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lC3-B0-m18">
+                                <rect key="frame" x="30" y="356" width="540" height="30"/>
+                                <state key="normal" title="Create New Account"/>
                                 <connections>
-                                    <action selector="tapSignUpButton:" destination="sjW-YU-fmh" eventType="touchUpInside" id="lKX-G3-Oba"/>
+                                    <action selector="tapCreateNewAccountButton:" destination="sjW-YU-fmh" eventType="touchUpInside" id="dO9-rQ-CQk"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yG1-oX-1g7">
-                                <rect key="frame" x="30" y="335" width="540" height="30"/>
-                                <state key="normal" title="Sign up through Facebook"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4Pt-qC-dIL">
+                                <rect key="frame" x="30" y="391" width="540" height="30"/>
+                                <state key="normal" title="Log In / Sign Up Through Facebook"/>
                                 <connections>
-                                    <action selector="tapFacebookSignUpButton:" destination="sjW-YU-fmh" eventType="touchUpInside" id="cO2-RC-5FG"/>
+                                    <action selector="tapFacebookLogInButton:" destination="sjW-YU-fmh" eventType="touchUpInside" id="Ca2-on-ksq"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OpX-g5-LB2">
-                                <rect key="frame" x="30" y="370" width="540" height="30"/>
-                                <state key="normal" title="Already have an account?"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ant-pc-zQG">
+                                <rect key="frame" x="30" y="321" width="540" height="30"/>
+                                <state key="normal" title="Log In"/>
                                 <connections>
-                                    <action selector="tapLogInButton:" destination="sjW-YU-fmh" eventType="touchUpInside" id="lTZ-V2-JaP"/>
+                                    <action selector="tapLogInButton:" destination="sjW-YU-fmh" eventType="touchUpInside" id="Zi9-AI-And"/>
                                 </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="trailingMargin" secondItem="OpX-g5-LB2" secondAttribute="trailing" constant="10" id="3xk-ee-U5q"/>
-                            <constraint firstItem="yG1-oX-1g7" firstAttribute="width" secondItem="OpX-g5-LB2" secondAttribute="width" id="DeI-b9-FAW"/>
-                            <constraint firstItem="yG1-oX-1g7" firstAttribute="top" secondItem="jeE-Zy-USD" secondAttribute="bottom" constant="5" id="Ep6-n9-R97"/>
-                            <constraint firstItem="F9C-uS-p6m" firstAttribute="top" secondItem="Zmp-Od-UCu" secondAttribute="bottom" constant="5" id="FsV-He-IEh"/>
-                            <constraint firstItem="Zmp-Od-UCu" firstAttribute="centerX" secondItem="DSr-cA-6Ed" secondAttribute="centerX" id="H8z-As-rHD"/>
-                            <constraint firstItem="F9C-uS-p6m" firstAttribute="centerX" secondItem="jeE-Zy-USD" secondAttribute="centerX" id="Ktg-X6-fES"/>
-                            <constraint firstItem="F9C-uS-p6m" firstAttribute="width" secondItem="jeE-Zy-USD" secondAttribute="width" id="LYV-If-5Qa"/>
-                            <constraint firstItem="OpX-g5-LB2" firstAttribute="leading" secondItem="DSr-cA-6Ed" secondAttribute="leadingMargin" constant="10" id="by0-im-i4c"/>
-                            <constraint firstItem="wIr-b4-xYr" firstAttribute="top" secondItem="OpX-g5-LB2" secondAttribute="bottom" constant="200" id="cRw-1J-xvv"/>
-                            <constraint firstItem="jeE-Zy-USD" firstAttribute="top" secondItem="F9C-uS-p6m" secondAttribute="bottom" constant="5" id="e6p-yk-N45"/>
-                            <constraint firstItem="OpX-g5-LB2" firstAttribute="top" secondItem="yG1-oX-1g7" secondAttribute="bottom" constant="5" id="fl3-gn-dHU"/>
-                            <constraint firstItem="jeE-Zy-USD" firstAttribute="width" secondItem="yG1-oX-1g7" secondAttribute="width" id="iTI-9h-U9d"/>
-                            <constraint firstItem="Zmp-Od-UCu" firstAttribute="width" secondItem="F9C-uS-p6m" secondAttribute="width" id="niL-Oi-Ssx"/>
-                            <constraint firstItem="yG1-oX-1g7" firstAttribute="centerX" secondItem="DSr-cA-6Ed" secondAttribute="centerX" id="suY-Vf-Rsj"/>
-                            <constraint firstItem="jeE-Zy-USD" firstAttribute="centerX" secondItem="DSr-cA-6Ed" secondAttribute="centerX" id="vFE-cl-8Cv"/>
+                            <constraint firstItem="Zmp-Od-UCu" firstAttribute="centerX" secondItem="DSr-cA-6Ed" secondAttribute="centerX" id="0JW-Un-3pe"/>
+                            <constraint firstItem="wIr-b4-xYr" firstAttribute="top" secondItem="4Pt-qC-dIL" secondAttribute="bottom" constant="179" id="52l-XR-0WG"/>
+                            <constraint firstItem="lC3-B0-m18" firstAttribute="top" secondItem="Ant-pc-zQG" secondAttribute="bottom" constant="5" id="76T-V3-jtp"/>
+                            <constraint firstItem="lC3-B0-m18" firstAttribute="centerX" secondItem="DSr-cA-6Ed" secondAttribute="centerX" id="9Q5-OD-ldg"/>
+                            <constraint firstItem="F9C-uS-p6m" firstAttribute="top" secondItem="Zmp-Od-UCu" secondAttribute="bottom" constant="5" id="Kqs-gQ-18n"/>
+                            <constraint firstItem="4Pt-qC-dIL" firstAttribute="width" secondItem="lC3-B0-m18" secondAttribute="width" id="MdQ-jN-z4V"/>
+                            <constraint firstItem="4Pt-qC-dIL" firstAttribute="top" secondItem="lC3-B0-m18" secondAttribute="bottom" constant="5" id="SEJ-Rp-sLL"/>
+                            <constraint firstItem="lC3-B0-m18" firstAttribute="width" secondItem="Ant-pc-zQG" secondAttribute="width" id="W4X-lc-qGU"/>
+                            <constraint firstItem="F9C-uS-p6m" firstAttribute="centerY" secondItem="DSr-cA-6Ed" secondAttribute="centerY" id="aB8-Hy-4c1"/>
+                            <constraint firstItem="Zmp-Od-UCu" firstAttribute="width" secondItem="F9C-uS-p6m" secondAttribute="width" id="bHk-03-qLq"/>
+                            <constraint firstItem="Ant-pc-zQG" firstAttribute="centerX" secondItem="DSr-cA-6Ed" secondAttribute="centerX" id="dry-it-Odg"/>
+                            <constraint firstItem="F9C-uS-p6m" firstAttribute="leading" secondItem="DSr-cA-6Ed" secondAttribute="leadingMargin" constant="10" id="eJw-Ew-JgT"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="F9C-uS-p6m" secondAttribute="trailing" constant="10" id="gZw-AT-rdn"/>
+                            <constraint firstItem="Ant-pc-zQG" firstAttribute="top" secondItem="F9C-uS-p6m" secondAttribute="bottom" constant="6" id="hHW-iN-PkA"/>
+                            <constraint firstItem="Ant-pc-zQG" firstAttribute="width" secondItem="F9C-uS-p6m" secondAttribute="width" id="il0-Sz-SDr"/>
+                            <constraint firstItem="4Pt-qC-dIL" firstAttribute="centerX" secondItem="DSr-cA-6Ed" secondAttribute="centerX" id="kys-t1-HVn"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="bottomConstraint" destination="cRw-1J-xvv" id="Pdi-Rc-nCM"/>
+                        <outlet property="bottomConstraint" destination="52l-XR-0WG" id="wP1-eF-ipP"/>
                         <outlet property="emailTextField" destination="Zmp-Od-UCu" id="F1b-3A-NbT"/>
                         <outlet property="passwordTextField" destination="F9C-uS-p6m" id="LpS-BJ-9qs"/>
                     </connections>
@@ -78,84 +79,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="q0Y-h1-qcx" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-513" y="24"/>
-        </scene>
-        <!--Log In View Controller-->
-        <scene sceneID="pc3-OE-WId">
-            <objects>
-                <viewController storyboardIdentifier="Log In" id="wAL-tJ-qU1" userLabel="Log In View Controller" customClass="LogInViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="2pu-AA-f9E"/>
-                        <viewControllerLayoutGuide type="bottom" id="cq6-Mt-0nc"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="IH1-Mo-saV">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Email" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="bzX-ur-4ru">
-                                <rect key="frame" x="25" y="230" width="550" height="30"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="LRH-ap-W89">
-                                <rect key="frame" x="25" y="265" width="550" height="30"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aim-oi-6q1">
-                                <rect key="frame" x="25" y="300" width="550" height="30"/>
-                                <state key="normal" title="Log in!"/>
-                                <connections>
-                                    <action selector="tapLogInButton:" destination="wAL-tJ-qU1" eventType="touchUpInside" id="UPw-lc-26e"/>
-                                    <action selector="tapSignUpButton:" destination="sjW-YU-fmh" eventType="touchUpInside" id="xHe-Cr-lW0"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jt9-Af-pbB">
-                                <rect key="frame" x="25" y="335" width="550" height="30"/>
-                                <state key="normal" title="Log in through Facebook"/>
-                                <connections>
-                                    <action selector="tapFacebookLogInButton:" destination="wAL-tJ-qU1" eventType="touchUpInside" id="cLR-Js-gX0"/>
-                                    <action selector="tapFacebookSignUpButton:" destination="sjW-YU-fmh" eventType="touchUpInside" id="Rpt-9z-YJ6"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="39z-7e-Wi6">
-                                <rect key="frame" x="25" y="370" width="550" height="30"/>
-                                <state key="normal" title="Create an account"/>
-                                <connections>
-                                    <action selector="tapCreateAccountButton:" destination="wAL-tJ-qU1" eventType="touchUpInside" id="Te4-MG-KfM"/>
-                                    <action selector="tapLogInButton:" destination="sjW-YU-fmh" eventType="touchUpInside" id="KYU-QZ-ctt"/>
-                                </connections>
-                            </button>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="bzX-ur-4ru" firstAttribute="centerX" secondItem="IH1-Mo-saV" secondAttribute="centerX" id="1dk-bs-BXA"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="bzX-ur-4ru" secondAttribute="trailing" constant="5" id="27e-jI-oxc"/>
-                            <constraint firstItem="aim-oi-6q1" firstAttribute="centerX" secondItem="IH1-Mo-saV" secondAttribute="centerX" id="AWP-nC-DiL"/>
-                            <constraint firstItem="jt9-Af-pbB" firstAttribute="centerX" secondItem="IH1-Mo-saV" secondAttribute="centerX" id="CTV-t6-bx9"/>
-                            <constraint firstItem="LRH-ap-W89" firstAttribute="top" secondItem="bzX-ur-4ru" secondAttribute="bottom" constant="5" id="KnF-rT-1VB"/>
-                            <constraint firstItem="39z-7e-Wi6" firstAttribute="top" secondItem="jt9-Af-pbB" secondAttribute="bottom" constant="5" id="L4L-TR-g8N"/>
-                            <constraint firstItem="LRH-ap-W89" firstAttribute="width" secondItem="aim-oi-6q1" secondAttribute="width" id="MVc-BF-GBg"/>
-                            <constraint firstItem="LRH-ap-W89" firstAttribute="centerX" secondItem="IH1-Mo-saV" secondAttribute="centerX" id="N75-jL-PKW"/>
-                            <constraint firstItem="jt9-Af-pbB" firstAttribute="width" secondItem="39z-7e-Wi6" secondAttribute="width" id="NfK-hW-WEd"/>
-                            <constraint firstItem="bzX-ur-4ru" firstAttribute="leading" secondItem="IH1-Mo-saV" secondAttribute="leadingMargin" constant="5" id="Oxu-td-ofn"/>
-                            <constraint firstItem="LRH-ap-W89" firstAttribute="centerX" secondItem="aim-oi-6q1" secondAttribute="centerX" id="TZt-1k-BaG"/>
-                            <constraint firstItem="aim-oi-6q1" firstAttribute="width" secondItem="jt9-Af-pbB" secondAttribute="width" id="Vor-xS-LKJ"/>
-                            <constraint firstItem="cq6-Mt-0nc" firstAttribute="top" secondItem="39z-7e-Wi6" secondAttribute="bottom" constant="200" id="gNn-vs-zwK"/>
-                            <constraint firstItem="jt9-Af-pbB" firstAttribute="top" secondItem="aim-oi-6q1" secondAttribute="bottom" constant="5" id="ufq-CU-A8w"/>
-                            <constraint firstItem="39z-7e-Wi6" firstAttribute="centerX" secondItem="IH1-Mo-saV" secondAttribute="centerX" id="x4o-Yq-Ybx"/>
-                            <constraint firstItem="aim-oi-6q1" firstAttribute="top" secondItem="LRH-ap-W89" secondAttribute="bottom" constant="5" id="xGM-u1-vKu"/>
-                            <constraint firstItem="bzX-ur-4ru" firstAttribute="width" secondItem="LRH-ap-W89" secondAttribute="width" id="yLk-XT-MYK"/>
-                        </constraints>
-                    </view>
-                    <connections>
-                        <outlet property="bottomConstraint" destination="gNn-vs-zwK" id="hD0-RQ-UAn"/>
-                        <outlet property="emailTextField" destination="bzX-ur-4ru" id="HPd-LI-wwJ"/>
-                        <outlet property="passwordTextField" destination="LRH-ap-W89" id="KYt-0i-QBY"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="czU-Ks-Xrq" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="185" y="24"/>
         </scene>
         <!--Home View Controller-->
         <scene sceneID="tne-QT-ifu">
@@ -420,6 +343,7 @@
                     </view>
                     <connections>
                         <outlet property="sideBarTableView" destination="kbL-dx-Mjj" id="ST7-qF-Ti7"/>
+                        <outlet property="userNameLabel" destination="5x4-AD-eqb" id="whR-7l-mOb"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jSs-HM-bny" userLabel="First Responder" sceneMemberID="firstResponder"/>

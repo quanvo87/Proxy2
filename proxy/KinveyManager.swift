@@ -17,6 +17,8 @@ class KinveyManager: NSObject {
     
     private let proxyStore: KCSCachedStore
     private let proxyNameGenerator = ProxyNameGenerator()
+    private let emailSyntaxChecker = EmailSyntaxChecker()
+    private var username = ""
     
     override init() {
         proxyStore = KCSCachedStore.storeWithOptions([
@@ -25,6 +27,29 @@ class KinveyManager: NSObject {
             KCSStoreKeyCachePolicy : KCSCachePolicy.Both.rawValue,
             KCSStoreKeyOfflineUpdateEnabled : true
             ])
+    }
+    
+    func getUsername() -> String {
+        if username == "" {
+            let username = KCSUser.activeUser().username
+            if emailSyntaxChecker.isValidEmail(username) {
+                self.username = username
+            } else {
+                let graphRequest = FBSDKGraphRequest(graphPath: "me", parameters: ["fields":"name"])
+                graphRequest.startWithCompletionHandler({ (connection, result, error) -> Void in
+                    if error == nil {
+                        NSNotificationCenter.defaultCenter().postNotificationName("Fetched Username", object: self, userInfo: ["username": result.valueForKey("name")!])
+                    } else {
+                        print("Error fetching Facebook user name: \(error)")
+                    }
+                })
+            }
+        }
+        return username
+    }
+    
+    func clearUsername() {
+        username = ""
     }
     
     func getProxies() {
