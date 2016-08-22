@@ -9,8 +9,9 @@
 import UIKit
 
 enum KinveyAction {
-    case Delete
+    case Refresh
     case Update
+    case Delete
 }
 
 class KinveyManager: NSObject {
@@ -62,6 +63,29 @@ class KinveyManager: NSObject {
         )
     }
     
+    func doActionOnProxyWithName(name: String, action: KinveyAction, extra: String) {
+        let query = KCSQuery(onField: "name", withExactMatchForValue: name)
+        proxyStore.queryWithQuery(
+            query,
+            withCompletionBlock: { (objectsOrNil: [AnyObject]!, errorOrNil: NSError!) -> Void in
+                if errorOrNil == nil {
+                    let proxy = objectsOrNil[0] as! Proxy
+                    switch action {
+                    case .Refresh:
+                        self.refreshProxy(proxy)
+                    case .Update:
+                        self.updateProxyNickname(proxy, nickname: extra)
+                    case .Delete:
+                        self.deleteProxy(proxy, refresh: false)
+                    }
+                } else {
+                    print("Fetch proxy failed: \(errorOrNil)")
+                }
+            },
+            withProgressBlock: nil
+        )
+    }
+    
     func createProxy() {
         var proxy = Proxy()
         proxy.name = proxyNameGenerator.generateProxyName()
@@ -86,8 +110,7 @@ class KinveyManager: NSObject {
                 if count == 1 {
                     NSNotificationCenter.defaultCenter().postNotificationName("New Proxy Created", object: self, userInfo: ["proxyName": proxy.name])
                 } else {
-                    self.deleteProxy(proxy)
-                    self.createProxy()
+                    self.refreshProxy(proxy)
                 }
             } else {
                 print("Check for other proxies with same name failed: \(errorOrNil)")
@@ -95,39 +118,9 @@ class KinveyManager: NSObject {
         })
     }
     
-    func doActionOnProxyWithName(name: String, action: KinveyAction, extra: String) {
-        let query = KCSQuery(onField: "name", withExactMatchForValue: name)
-        proxyStore.queryWithQuery(
-            query,
-            withCompletionBlock: { (objectsOrNil: [AnyObject]!, errorOrNil: NSError!) -> Void in
-                if errorOrNil == nil {
-                    let proxy = objectsOrNil[0] as! Proxy
-                    switch action {
-                    case .Delete:
-                        self.deleteProxy(proxy)
-                    case .Update:
-                        self.updateProxyNickname(proxy, nickname: extra)
-                    }
-                } else {
-                    print("Fetch proxy failed: \(errorOrNil)")
-                }
-            },
-            withProgressBlock: nil
-        )
-    }
-    
-    func deleteProxy(proxy: Proxy) {
-        proxyStore.removeObject(
-            proxy,
-            withDeletionBlock: { (deletionDictOrNil: [NSObject : AnyObject]!, errorOrNil: NSError!) -> Void in
-                if errorOrNil == nil {
-                    NSNotificationCenter.defaultCenter().postNotificationName("New Proxy Deleted", object: self, userInfo: nil)
-                } else {
-                    print("Delete proxy failed: \(errorOrNil)")
-                }
-            },
-            withProgressBlock: nil
-        )
+    func refreshProxy(proxy: Proxy) {
+        self.deleteProxy(proxy, refresh: true)
+        self.createProxy()
     }
     
     func updateProxyNickname(proxy: Proxy, nickname: String) {
@@ -139,6 +132,22 @@ class KinveyManager: NSObject {
                     NSNotificationCenter.defaultCenter().postNotificationName("New Proxy Updated", object: self, userInfo: nil)
                 } else {
                     print("Save proxy failed: \(errorOrNil)")
+                }
+            },
+            withProgressBlock: nil
+        )
+    }
+    
+    func deleteProxy(proxy: Proxy, refresh: Bool) {
+        proxyStore.removeObject(
+            proxy,
+            withDeletionBlock: { (deletionDictOrNil: [NSObject : AnyObject]!, errorOrNil: NSError!) -> Void in
+                if errorOrNil == nil {
+                    if !refresh {
+                        NSNotificationCenter.defaultCenter().postNotificationName("New Proxy Deleted", object: self, userInfo: nil)
+                    }
+                } else {
+                    print("Delete proxy failed: \(errorOrNil)")
                 }
             },
             withProgressBlock: nil

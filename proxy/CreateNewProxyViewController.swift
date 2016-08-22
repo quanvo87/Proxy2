@@ -19,13 +19,15 @@ class CreateNewProxyViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        newProxyNicknameTextField.clearButtonMode = .WhileEditing
+        
         newProxyNameLabel.text = ""
         refreshProxyButton.enabled = false
         createProxyButton.enabled = false
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(CreateNewProxyViewController.getProxyData), name: "New Proxy Created", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(CreateNewProxyViewController.cancelReady), name: "New Proxy Deleted", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(CreateNewProxyViewController.dismissReady), name: "New Proxy Updated", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(CreateNewProxyViewController.dismissCreateNewProxyViewController), name: "New Proxy Updated", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(CreateNewProxyViewController.dismissCreateNewProxyViewController), name: "New Proxy Deleted", object: nil)
         
         createProxy()
     }
@@ -38,6 +40,11 @@ class CreateNewProxyViewController: UIViewController {
         ProxyAPI.sharedInstance.createProxy()
     }
     
+    @IBAction func tapRefreshNewProxyButton(sender: AnyObject) {
+        disableButtons()
+        ProxyAPI.sharedInstance.refreshProxyFromOldProxyWithName(newProxyNameLabel.text!)
+    }
+    
     func getProxyData(notification: NSNotification) {
         let userInfo = notification.userInfo as! [String: String]
         let proxyName = userInfo["proxyName"]!
@@ -45,59 +52,38 @@ class CreateNewProxyViewController: UIViewController {
         enableButtons()
     }
     
-    func deleteProxy() {
-        if newProxyNameLabel.text != "" {
-            ProxyAPI.sharedInstance.deleteProxyWithName(newProxyNameLabel.text!)
+    @IBAction func tapCreateButton(sender: AnyObject) {
+        disableButtons()
+        if newProxyNicknameTextField.text != "" {
+            ProxyAPI.sharedInstance.updateProxyNickname(newProxyNameLabel.text!, nickname: newProxyNicknameTextField.text!)
+        } else {
+            dismissCreateNewProxyViewController()
         }
     }
     
     @IBAction func tapCancelButton(sender: AnyObject) {
         disableButtons()
-        if newProxyNameLabel.text == "" {
-            cancelReady()
+        let newProxyName = newProxyNameLabel.text
+        if newProxyName != "" {
+            ProxyAPI.sharedInstance.deleteProxyWithName(newProxyName!)
         } else {
-            deleteProxy()
+            dismissCreateNewProxyViewController()
         }
     }
     
-    func cancelReady() {
-        if cancelCreateNewProxyButton.enabled == false {
-            dismissReady()
-        }
-    }
-    
-    @IBAction func tapRefreshNewProxyButton(sender: AnyObject) {
-        disableButtons()
-        deleteProxy()
-        createProxy()
-    }
-    
-    @IBAction func tapCreateButton(sender: AnyObject) {
-        disableButtons()
-        if newProxyNicknameTextField.text != "" {
-            updateProxyNickname(newProxyNameLabel.text!, nickname: newProxyNicknameTextField.text!)
-        } else {
-            dismissReady()
-        }
-    }
-    
-    func updateProxyNickname(proxyName: String, nickname: String) {
-        ProxyAPI.sharedInstance.updateProxyNickname(proxyName, nickname: nickname)
-    }
-    
-    func dismissReady() {
+    func dismissCreateNewProxyViewController() {
         dismissViewControllerAnimated(true, completion: nil)
-    }
-    
-    func enableButtons() {
-        cancelCreateNewProxyButton.enabled = true
-        refreshProxyButton.enabled = true
-        createProxyButton.enabled = true
     }
     
     func disableButtons() {
         cancelCreateNewProxyButton.enabled = false
         refreshProxyButton.enabled = false
         createProxyButton.enabled = false
+    }
+    
+    func enableButtons() {
+        cancelCreateNewProxyButton.enabled = true
+        refreshProxyButton.enabled = true
+        createProxyButton.enabled = true
     }
 }

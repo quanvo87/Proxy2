@@ -14,11 +14,15 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
-    var bottomConstraintConstant: CGFloat = 0.0
+    private var bottomConstraintConstant: CGFloat = 0.0
+    private let emailSyntaxChecker = EmailSyntaxChecker()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        emailTextField.clearButtonMode = .WhileEditing
+        
+        passwordTextField.clearButtonMode = .WhileEditing
         passwordTextField.delegate = self
         passwordTextField.secureTextEntry = true
         
@@ -35,9 +39,9 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
     
     @IBAction func tapLogInButton(sender: AnyObject) {
         self.passwordTextField.resignFirstResponder()
-        let email = emailTextField.text
+        let email = emailTextField.text?.lowercaseString
         let password = passwordTextField.text
-        if isValidEmail(email!) && password != "" {
+        if emailSyntaxChecker.isValidEmail(email!) && password != "" {
             KCSUser.loginWithUsername(
                 email,
                 password: password,
@@ -55,9 +59,9 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func tapCreateNewAccountButton(sender: AnyObject) {
-        let email = emailTextField.text
+        let email = emailTextField.text?.lowercaseString
         let password = passwordTextField.text
-        if isValidEmail(email!) && password != "" {
+        if emailSyntaxChecker.isValidEmail(email!) && password != "" {
             KCSUser.userWithUsername(
                 email,
                 password: password,
@@ -73,12 +77,6 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
         } else {
             showAlert("Invalid Email/Password", message: "Please enter a valid email and password.")
         }
-    }
-    
-    func isValidEmail(testStr: String) -> Bool {
-        let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
-        let emailTest = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
-        return emailTest.evaluateWithObject(testStr)
     }
     
     @IBAction func tapFacebookLogInButton(sender: AnyObject) {

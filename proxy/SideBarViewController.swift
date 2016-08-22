@@ -73,8 +73,6 @@ class SideBarViewController: UIViewController, UITableViewDelegate, UITableViewD
             tapTurnOnNotifications()
         case "Trash":
             tapTrash()
-        case "Suggest A Word!":
-            tapSuggestAWord()
         case "Log Out":
             tapLogOut()
         case "Delete Account":

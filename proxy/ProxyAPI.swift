@@ -31,11 +31,15 @@ class ProxyAPI: NSObject {
         kinveyManager.createProxy()
     }
     
-    func deleteProxyWithName(name: String) {
-        kinveyManager.doActionOnProxyWithName(name, action: KinveyAction.Delete, extra: "")
+    func refreshProxyFromOldProxyWithName(oldProxyName: String) {
+        kinveyManager.doActionOnProxyWithName(oldProxyName, action: KinveyAction.Refresh, extra: "")
     }
     
     func updateProxyNickname(name: String, nickname: String) {
         kinveyManager.doActionOnProxyWithName(name, action: KinveyAction.Update, extra: nickname)
+    }
+    
+    func deleteProxyWithName(name: String) {
+        kinveyManager.doActionOnProxyWithName(name, action: KinveyAction.Delete, extra: "")
     }
 }

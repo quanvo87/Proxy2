@@ -52,22 +52,21 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="Zmp-Od-UCu" firstAttribute="centerX" secondItem="DSr-cA-6Ed" secondAttribute="centerX" id="0JW-Un-3pe"/>
+                            <constraint firstItem="4Pt-qC-dIL" firstAttribute="top" secondItem="Ant-pc-zQG" secondAttribute="bottom" constant="40" id="1nd-Cg-XO6"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="4Pt-qC-dIL" secondAttribute="trailing" constant="10" id="2vm-6K-haR"/>
+                            <constraint firstItem="F9C-uS-p6m" firstAttribute="width" secondItem="4Pt-qC-dIL" secondAttribute="width" id="4ke-IZ-JzB"/>
                             <constraint firstItem="wIr-b4-xYr" firstAttribute="top" secondItem="4Pt-qC-dIL" secondAttribute="bottom" constant="179" id="52l-XR-0WG"/>
-                            <constraint firstItem="lC3-B0-m18" firstAttribute="top" secondItem="Ant-pc-zQG" secondAttribute="bottom" constant="5" id="76T-V3-jtp"/>
-                            <constraint firstItem="lC3-B0-m18" firstAttribute="centerX" secondItem="DSr-cA-6Ed" secondAttribute="centerX" id="9Q5-OD-ldg"/>
-                            <constraint firstItem="F9C-uS-p6m" firstAttribute="top" secondItem="Zmp-Od-UCu" secondAttribute="bottom" constant="5" id="Kqs-gQ-18n"/>
-                            <constraint firstItem="4Pt-qC-dIL" firstAttribute="width" secondItem="lC3-B0-m18" secondAttribute="width" id="MdQ-jN-z4V"/>
-                            <constraint firstItem="4Pt-qC-dIL" firstAttribute="top" secondItem="lC3-B0-m18" secondAttribute="bottom" constant="5" id="SEJ-Rp-sLL"/>
-                            <constraint firstItem="lC3-B0-m18" firstAttribute="width" secondItem="Ant-pc-zQG" secondAttribute="width" id="W4X-lc-qGU"/>
-                            <constraint firstItem="F9C-uS-p6m" firstAttribute="centerY" secondItem="DSr-cA-6Ed" secondAttribute="centerY" id="aB8-Hy-4c1"/>
-                            <constraint firstItem="Zmp-Od-UCu" firstAttribute="width" secondItem="F9C-uS-p6m" secondAttribute="width" id="bHk-03-qLq"/>
-                            <constraint firstItem="Ant-pc-zQG" firstAttribute="centerX" secondItem="DSr-cA-6Ed" secondAttribute="centerX" id="dry-it-Odg"/>
-                            <constraint firstItem="F9C-uS-p6m" firstAttribute="leading" secondItem="DSr-cA-6Ed" secondAttribute="leadingMargin" constant="10" id="eJw-Ew-JgT"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="F9C-uS-p6m" secondAttribute="trailing" constant="10" id="gZw-AT-rdn"/>
-                            <constraint firstItem="Ant-pc-zQG" firstAttribute="top" secondItem="F9C-uS-p6m" secondAttribute="bottom" constant="6" id="hHW-iN-PkA"/>
-                            <constraint firstItem="Ant-pc-zQG" firstAttribute="width" secondItem="F9C-uS-p6m" secondAttribute="width" id="il0-Sz-SDr"/>
-                            <constraint firstItem="4Pt-qC-dIL" firstAttribute="centerX" secondItem="DSr-cA-6Ed" secondAttribute="centerX" id="kys-t1-HVn"/>
+                            <constraint firstItem="Zmp-Od-UCu" firstAttribute="width" secondItem="4Pt-qC-dIL" secondAttribute="width" id="66X-vM-pfd"/>
+                            <constraint firstItem="4Pt-qC-dIL" firstAttribute="top" secondItem="Zmp-Od-UCu" secondAttribute="bottom" constant="111" id="IkI-HD-n6O"/>
+                            <constraint firstItem="Ant-pc-zQG" firstAttribute="width" secondItem="4Pt-qC-dIL" secondAttribute="width" id="SEf-di-O4K"/>
+                            <constraint firstItem="lC3-B0-m18" firstAttribute="width" secondItem="4Pt-qC-dIL" secondAttribute="width" id="Tsd-VK-EI2"/>
+                            <constraint firstItem="lC3-B0-m18" firstAttribute="centerX" secondItem="DSr-cA-6Ed" secondAttribute="centerX" id="U1O-FY-3MN"/>
+                            <constraint firstItem="F9C-uS-p6m" firstAttribute="centerX" secondItem="DSr-cA-6Ed" secondAttribute="centerX" id="eqO-Bg-ODO"/>
+                            <constraint firstItem="4Pt-qC-dIL" firstAttribute="leading" secondItem="DSr-cA-6Ed" secondAttribute="leadingMargin" constant="10" id="gXl-pr-I21"/>
+                            <constraint firstItem="4Pt-qC-dIL" firstAttribute="top" secondItem="lC3-B0-m18" secondAttribute="bottom" constant="5" id="iaG-Xp-pyo"/>
+                            <constraint firstItem="4Pt-qC-dIL" firstAttribute="top" secondItem="F9C-uS-p6m" secondAttribute="bottom" constant="76" id="lkh-Sq-OiR"/>
+                            <constraint firstItem="Ant-pc-zQG" firstAttribute="centerX" secondItem="4Pt-qC-dIL" secondAttribute="centerX" id="qaj-gb-3lx"/>
+                            <constraint firstItem="Zmp-Od-UCu" firstAttribute="centerX" secondItem="DSr-cA-6Ed" secondAttribute="centerX" id="xGt-kA-BzX"/>
                         </constraints>
                     </view>
                     <connections>

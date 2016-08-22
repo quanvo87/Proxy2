@@ -10,7 +10,7 @@ import UIKit
 
 class SideBarItems: NSObject {
 
-    private let sideBarItems = [SideBarItem(title: "Home"), SideBarItem(title: "Turn On Notifications"), SideBarItem(title: "Trash"), SideBarItem(title: "Suggest A Word!"), SideBarItem(title: "Log Out"), SideBarItem(title: "Delete Account"), SideBarItem(title: "About")]
+    private let sideBarItems = [SideBarItem(title: "Home"), SideBarItem(title: "Turn On Notifications"), SideBarItem(title: "Report An Issue"), SideBarItem(title: "Trash"), SideBarItem(title: "Log Out"), SideBarItem(title: "Delete Account"), SideBarItem(title: "About")]
     
     func getSideBarItems() -> [SideBarItem] {
         return sideBarItems
