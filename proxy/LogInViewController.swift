@@ -30,14 +30,8 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
         bottomConstraint.constant = view.frame.size.height / 3
         bottomConstraintConstant = bottomConstraint.constant
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LoginViewController.keyboardWillShow(_:)), name:UIKeyboardWillShowNotification, object: self.view.window)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LoginViewController.keyboardWillHide(_:)), name:UIKeyboardWillHideNotification, object: self.view.window)
-    }
-    
-    override func viewDidAppear(animated: Bool) {
-        if let user = FIRAuth.auth()?.currentUser {
-            self.signedIn(user)
-        }
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LogInViewController.keyboardWillShow(_:)), name:UIKeyboardWillShowNotification, object: self.view.window)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LogInViewController.keyboardWillHide(_:)), name:UIKeyboardWillHideNotification, object: self.view.window)
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -52,7 +46,7 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
                 if error == nil {
                     self.logIn(user!)
                 } else {
-                    print("Error logging in: \(error)")
+                    self.showAlert("Error Logging In", message: error!.localizedDescription)
                 }
             }
         } else {
@@ -68,7 +62,7 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
                 if error == nil {
                     self.setDisplayName(user!)
                 } else {
-                    print("Error creating account: \(error)")
+                    self.showAlert("Error Creating Account", message: error!.localizedDescription)
                 }
             }
         } else {
@@ -85,17 +79,31 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
             case .Cancelled:
                 print("User cancelled login.")
             case .Success:
-                let accessToken = FBSDKAccessToken.currentAccessToken().tokenString
-                // login with facebook
+                let credential = FIRFacebookAuthProvider.credentialWithAccessToken(FBSDKAccessToken.currentAccessToken().tokenString)
+                FIRAuth.auth()?.signInWithCredential(credential) { (user, error) in
+                    if let error = error {
+                        self.showAlert("Error Logging Into Facebook", message: error.localizedDescription)
+                    } else {
+                        if let user = FIRAuth.auth()?.currentUser {
+                            self.logIn(user)
+                        }
+                    }
+                }
             }
         }
+        
+        //        FIRAuth.auth().authWithOAuthPopup("facebook", function(error, authData) {
+        //            if (error) {
+        //                console.log("Login Failed!", error)
+        //            } else {
+        //                console.log("Authenticated successfully with payload:", authData)
+        //                print(authData)
+        //            }
+        //            });
     }
     
     func logIn(user: FIRUser) {
-        //        MeasurementHelper.sendLoginEvent()
-        API.sharedInstance.userDisplayName = user.displayName ?? user.email
-        API.sharedInstance.userSignedIn = true
-        NSNotificationCenter.defaultCenter().postNotificationName(Constants.NotificationKeys.UserLoggedIn, object: nil, userInfo: nil)
+//        API.sharedInstance.setUserInfo(user)
         dismissViewControllerAnimated(true, completion: nil)
     }
     
@@ -106,7 +114,7 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
             if error == nil {
                 self.logIn(FIRAuth.auth()!.currentUser!)
             } else {
-                print("Error setting display name for user: \(error)")
+                self.showAlert("Error Setting Display Name For User", message: error!.localizedDescription)
             }
         }
     }

@@ -6,28 +6,35 @@
 //  Copyright © 2016 Quan Vo. All rights reserved.
 //
 
+import FirebaseAuth
+
 class API {
     
     static let sharedInstance = API()
     private init() {}
     
-    var userDisplayName: String?
-    var userLoggedIn = false
-    
-//    class var sharedInstance: API {
-//        struct Singleton {
-//            static let instance = API()
-//        }
-//        return Singleton.instance
+//    private var userDisplayName: String?
+////    private var userLoggedIn = false
+//    
+//    func setUserInfo(user: FIRUser) {
+//        //        MeasurementHelper.sendLoginEvent()
+//        //        NSNotificationCenter.defaultCenter().postNotificationName(Constants.NotificationKeys.UserLoggedIn, object: nil, userInfo: nil)
+//        userDisplayName = user.displayName ?? user.email
+////        userLoggedIn = true
 //    }
-    
-    func getUsername() -> String {
-        return ""
-    }
-    
-    func getProxies() {
-        
-    }
+//    
+//    func clearUserInfo() {
+//        userDisplayName = ""
+////        userLoggedIn = false
+//    }
+//    
+//    func getUserDisplayName() -> String {
+//        return userDisplayName!
+//    }
+//
+//    func getProxies() {
+//        
+//    }
     
     func createProxy() {
         

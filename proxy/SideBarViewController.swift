@@ -19,7 +19,7 @@ class SideBarViewController: UIViewController, UITableViewDelegate, UITableViewD
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        userNameLabel.text = ""
+        //        userNameLabel.text = API.sharedInstance.getUserDisplayName()
         
         sideBarItems = SideBarItems().getSideBarItems()
         
@@ -29,24 +29,26 @@ class SideBarViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     override func viewWillAppear(animated: Bool) {
-        if userNameLabel.text == "" {
-            setUsername()
+        FIRAuth.auth()?.addAuthStateDidChangeListener { auth, user in
+            if let user = user {
+                self.userNameLabel.text = user.displayName
+            }
         }
     }
-    
-    override func viewWillDisappear(animated: Bool) {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
-    }
-    
-    func setUsername() {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(SideBarViewController.setUsernameFromFacebook), name: "Fetched Username", object: nil)
-        userNameLabel.text = API.sharedInstance.getUsername()
-    }
-    
-    func setUsernameFromFacebook(notification: NSNotification) {
-        let userInfo = notification.userInfo as! [String: String]
-        userNameLabel.text = userInfo["username"]
-    }
+    //
+    //    override func viewWillDisappear(animated: Bool) {
+    //        NSNotificationCenter.defaultCenter().removeObserver(self)
+    //    }
+    //
+    //    func setUsername() {
+    //        NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(SideBarViewController.setUsernameFromFacebook), name: "Fetched Username", object: nil)
+    //        userNameLabel.text = API.sharedInstance.getUsername()
+    //    }
+    //
+    //    func setUsernameFromFacebook(notification: NSNotification) {
+    //        let userInfo = notification.userInfo as! [String: String]
+    //        userNameLabel.text = userInfo["username"]
+    //    }
     
     func toggleSideBar() {
         self.revealViewController().revealToggle(self)
@@ -81,7 +83,7 @@ class SideBarViewController: UIViewController, UITableViewDelegate, UITableViewD
         case "About":
             tapAbout()
         default:
-            print("Error selecting Side Bar Menu Item.")
+            self.showAlert("Error", message: "Error selecting Side Bar Menu Item.")
         }
     }
     
@@ -114,21 +116,13 @@ class SideBarViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func logOut() {
-        userNameLabel.text = ""
-        
-        let loginManager = LoginManager()
-        loginManager.logOut()
-        
         let firebaseAuth = FIRAuth.auth()
         do {
             try firebaseAuth?.signOut()
-            API.sharedInstance.userDisplayName = ""
-            API.sharedInstance.userLoggedIn = false
+            userNameLabel.text = ""
             toggleSideBar()
-            let logInViewController = storyboard!.instantiateViewControllerWithIdentifier("Log In") as! LogInViewController
-            self.presentViewController(logInViewController, animated: true, completion: nil)
         } catch let error as NSError {
-            print ("Error signing out: \(error)")
+            self.showAlert("Error Logging Out", message: error.localizedDescription)
         }
     }
     

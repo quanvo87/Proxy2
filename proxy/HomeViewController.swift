@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class HomeViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
@@ -17,40 +18,23 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
+        FIRAuth.auth()?.addAuthStateDidChangeListener { auth, user in
+            if user == nil {
+                let logInViewController = self.storyboard!.instantiateViewControllerWithIdentifier("Log In") as! LogInViewController
+                self.parentViewController!.presentViewController(logInViewController, animated: true, completion: nil)
+            }
+        }
         
         self.navigationItem.title = "My Proxies"
         
-        automaticallyAdjustsScrollViewInsets = false
+        self.menuButton.action = #selector(SWRevealViewController.revealToggle(_:))
+        self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
         
+        automaticallyAdjustsScrollViewInsets = false
         homeTableView.delegate = self
         homeTableView.dataSource = self
         homeTableView.rowHeight = UITableViewAutomaticDimension
         homeTableView.estimatedRowHeight = 60
-    }
-    
-    override func viewDidAppear(animated: Bool) {
-        checkForSignIn()
-    }
-    
-    override func viewWillDisappear(animated: Bool) {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
-    }
-    
-    func checkForSignIn() {
-        // put the sign in check in the api
-//        if KCSUser.activeUser() == nil {
-//            let logInViewController = storyboard!.instantiateViewControllerWithIdentifier("Log In") as! LogInViewController
-//            self.parentViewController!.presentViewController(logInViewController, animated: false, completion: nil)
-//        } else {
-//            menuButton.action = #selector(SWRevealViewController.revealToggle(_:))
-//            NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(HomeViewController.loadHomeTableView), name: "Proxies Fetched", object: nil)
-//            getProxies()
-//        }
-    }
-    
-    func getProxies() {
-        API.sharedInstance.getProxies()
     }
     
     func loadHomeTableView(notification: NSNotification) {
