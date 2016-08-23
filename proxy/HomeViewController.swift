@@ -38,18 +38,19 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func checkForSignIn() {
-        if KCSUser.activeUser() == nil {
-            let logInViewController = storyboard!.instantiateViewControllerWithIdentifier("Log In") as! LogInViewController
-            self.parentViewController!.presentViewController(logInViewController, animated: false, completion: nil)
-        } else {
-            menuButton.action = #selector(SWRevealViewController.revealToggle(_:))
-            NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(HomeViewController.loadHomeTableView), name: "Proxies Fetched", object: nil)
-            getProxies()
-        }
+        // put the sign in check in the api
+//        if KCSUser.activeUser() == nil {
+//            let logInViewController = storyboard!.instantiateViewControllerWithIdentifier("Log In") as! LogInViewController
+//            self.parentViewController!.presentViewController(logInViewController, animated: false, completion: nil)
+//        } else {
+//            menuButton.action = #selector(SWRevealViewController.revealToggle(_:))
+//            NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(HomeViewController.loadHomeTableView), name: "Proxies Fetched", object: nil)
+//            getProxies()
+//        }
     }
     
     func getProxies() {
-        ProxyAPI.sharedInstance.getProxies()
+        API.sharedInstance.getProxies()
     }
     
     func loadHomeTableView(notification: NSNotification) {

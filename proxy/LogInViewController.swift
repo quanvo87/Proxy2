@@ -7,10 +7,11 @@
 //
 
 import UIKit
+import FirebaseAuth
 import FacebookLogin
 
 class LogInViewController: UIViewController, UITextFieldDelegate {
-
+    
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
@@ -29,8 +30,14 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
         bottomConstraint.constant = view.frame.size.height / 3
         bottomConstraintConstant = bottomConstraint.constant
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LogInViewController.keyboardWillShow(_:)), name:UIKeyboardWillShowNotification, object: self.view.window)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LogInViewController.keyboardWillHide(_:)), name:UIKeyboardWillHideNotification, object: self.view.window)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LoginViewController.keyboardWillShow(_:)), name:UIKeyboardWillShowNotification, object: self.view.window)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LoginViewController.keyboardWillHide(_:)), name:UIKeyboardWillHideNotification, object: self.view.window)
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        if let user = FIRAuth.auth()?.currentUser {
+            self.signedIn(user)
+        }
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -38,21 +45,16 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func tapLogInButton(sender: AnyObject) {
-        self.passwordTextField.resignFirstResponder()
         let email = emailTextField.text?.lowercaseString
         let password = passwordTextField.text
         if emailSyntaxChecker.isValidEmail(email!) && password != "" {
-            KCSUser.loginWithUsername(
-                email,
-                password: password,
-                withCompletionBlock: { (user: KCSUser!, errorOrNil: NSError!, result: KCSUserActionResult) -> Void in
-                    if errorOrNil == nil {
-                        self.presentHomeScreen()
-                    } else {
-                        self.showAlert("Incorrect Email/Password", message: "That email/password was incorrect. Please try again.")
-                    }
+            FIRAuth.auth()?.signInWithEmail(email!, password: password!) { (user, error) in
+                if error == nil {
+                    self.logIn(user!)
+                } else {
+                    print("Error logging in: \(error)")
                 }
-            )
+            }
         } else {
             showAlert("Invalid Email/Password", message: "Please enter a valid email and password.")
         }
@@ -62,18 +64,13 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
         let email = emailTextField.text?.lowercaseString
         let password = passwordTextField.text
         if emailSyntaxChecker.isValidEmail(email!) && password != "" {
-            KCSUser.userWithUsername(
-                email,
-                password: password,
-                fieldsAndValues: nil,
-                withCompletionBlock: { (user: KCSUser!, errorOrNil: NSError!, result: KCSUserActionResult) -> Void in
-                    if errorOrNil == nil {
-                        self.presentHomeScreen()
-                    } else {
-                        self.showAlert("Email Taken", message: "There is already an account with that email.")
-                    }
+            FIRAuth.auth()?.createUserWithEmail(email!, password: password!) { (user, error) in
+                if error == nil {
+                    self.setDisplayName(user!)
+                } else {
+                    print("Error creating account: \(error)")
                 }
-            )
+            }
         } else {
             showAlert("Invalid Email/Password", message: "Please enter a valid email and password.")
         }
@@ -89,23 +86,29 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
                 print("User cancelled login.")
             case .Success:
                 let accessToken = FBSDKAccessToken.currentAccessToken().tokenString
-                KCSUser.loginWithSocialIdentity(
-                    KCSUserSocialIdentifyProvider.SocialIDFacebook,
-                    accessDictionary: [ KCSUserAccessTokenKey : accessToken ],
-                    withCompletionBlock: { (user: KCSUser!, errorOrNil: NSError!, result: KCSUserActionResult) -> Void in
-                        if errorOrNil == nil {
-                            self.presentHomeScreen()
-                        } else {
-                            print("Login to Facebook failed: \(errorOrNil)")
-                        }
-                    }
-                )
+                // login with facebook
             }
         }
     }
     
-    func presentHomeScreen() {
+    func logIn(user: FIRUser) {
+        //        MeasurementHelper.sendLoginEvent()
+        API.sharedInstance.userDisplayName = user.displayName ?? user.email
+        API.sharedInstance.userSignedIn = true
+        NSNotificationCenter.defaultCenter().postNotificationName(Constants.NotificationKeys.UserLoggedIn, object: nil, userInfo: nil)
         dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func setDisplayName(user: FIRUser) {
+        let changeRequest = user.profileChangeRequest()
+        changeRequest.displayName = user.email!.componentsSeparatedByString("@")[0]
+        changeRequest.commitChangesWithCompletion(){ (error) in
+            if error == nil {
+                self.logIn(FIRAuth.auth()!.currentUser!)
+            } else {
+                print("Error setting display name for user: \(error)")
+            }
+        }
     }
     
     // MARK: - Keyboard

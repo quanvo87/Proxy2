@@ -8,6 +8,7 @@
 
 import UIKit
 import FacebookLogin
+import Firebase
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,11 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         
-        KCSClient.sharedClient().initializeKinveyServiceForAppKey(
-            "kid_SyWRqz0K",
-            withAppSecret: "7262c3fddf1e4998aab318806a01ca03",
-            usingOptions: nil
-        )
+        FIRApp.configure()
         
         return FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
     }

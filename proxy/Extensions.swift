@@ -6,14 +6,13 @@
 //  Copyright © 2016 Quan Vo. All rights reserved.
 //
 
-import Foundation
-
 extension UIViewController {
     func showAlert(title: String, message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .Alert)
-        let alertButton: UIAlertAction = UIAlertAction(title: "Ok", style: .Default) { action in
+        dispatch_async(dispatch_get_main_queue()) {
+            let alert = UIAlertController(title: title, message: message, preferredStyle: .Alert)
+            let dismissAction = UIAlertAction(title: "Ok", style: .Destructive, handler: nil)
+            alert.addAction(dismissAction)
+            self.presentViewController(alert, animated: true, completion: nil)
         }
-        alert.addAction(alertButton)
-        self.presentViewController(alert, animated: true, completion: nil)
     }
 }

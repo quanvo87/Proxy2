@@ -9,6 +9,7 @@ target 'proxy' do
   pod 'FacebookCore'
   pod 'FacebookLogin'
   pod 'FacebookShare'
-  pod 'KinveyKit'
+  pod 'Firebase'
+  pod 'FirebaseAuth'
 
 end

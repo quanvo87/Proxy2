@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import FirebaseAuth
 import FacebookLogin
 
 class SideBarViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
@@ -39,7 +40,7 @@ class SideBarViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     func setUsername() {
         NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(SideBarViewController.setUsernameFromFacebook), name: "Fetched Username", object: nil)
-        userNameLabel.text = ProxyAPI.sharedInstance.getUsername()
+        userNameLabel.text = API.sharedInstance.getUsername()
     }
     
     func setUsernameFromFacebook(notification: NSNotification) {
@@ -118,10 +119,17 @@ class SideBarViewController: UIViewController, UITableViewDelegate, UITableViewD
         let loginManager = LoginManager()
         loginManager.logOut()
         
-        KCSUser.activeUser().logout()
-        
-        let logInViewController = storyboard!.instantiateViewControllerWithIdentifier("Log In") as! LogInViewController
-        self.presentViewController(logInViewController, animated: true, completion: nil)
+        let firebaseAuth = FIRAuth.auth()
+        do {
+            try firebaseAuth?.signOut()
+            API.sharedInstance.userDisplayName = ""
+            API.sharedInstance.userLoggedIn = false
+            toggleSideBar()
+            let logInViewController = storyboard!.instantiateViewControllerWithIdentifier("Log In") as! LogInViewController
+            self.presentViewController(logInViewController, animated: true, completion: nil)
+        } catch let error as NSError {
+            print ("Error signing out: \(error)")
+        }
     }
     
     func tapDeleteAccount() {

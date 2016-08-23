@@ -37,12 +37,12 @@ class CreateNewProxyViewController: UIViewController {
     }
     
     func createProxy() {
-        ProxyAPI.sharedInstance.createProxy()
+        API.sharedInstance.createProxy()
     }
     
     @IBAction func tapRefreshNewProxyButton(sender: AnyObject) {
         disableButtons()
-        ProxyAPI.sharedInstance.refreshProxyFromOldProxyWithName(newProxyNameLabel.text!)
+        API.sharedInstance.refreshProxyFromOldProxyWithName(newProxyNameLabel.text!)
     }
     
     func getProxyData(notification: NSNotification) {
@@ -55,7 +55,7 @@ class CreateNewProxyViewController: UIViewController {
     @IBAction func tapCreateButton(sender: AnyObject) {
         disableButtons()
         if newProxyNicknameTextField.text != "" {
-            ProxyAPI.sharedInstance.updateProxyNickname(newProxyNameLabel.text!, nickname: newProxyNicknameTextField.text!)
+            API.sharedInstance.updateProxyNickname(newProxyNameLabel.text!, nickname: newProxyNicknameTextField.text!)
         } else {
             dismissCreateNewProxyViewController()
         }
@@ -65,7 +65,7 @@ class CreateNewProxyViewController: UIViewController {
         disableButtons()
         let newProxyName = newProxyNameLabel.text
         if newProxyName != "" {
-            ProxyAPI.sharedInstance.deleteProxyWithName(newProxyName!)
+            API.sharedInstance.deleteProxyWithName(newProxyName!)
         } else {
             dismissCreateNewProxyViewController()
         }

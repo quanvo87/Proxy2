@@ -6,29 +6,12 @@
 //  Copyright © 2016 Quan Vo. All rights reserved.
 //
 
-import UIKit
+class Proxy {
 
-class Proxy: NSObject {
-
-    var id = ""
-    var owner = KCSUser.activeUser().userId
-    var name = ""
-    var nickname = ""
-    var lastEventMessage = ""
+    var name: String?
+    var nickname: String?
+    var lastEventMessage = "Just created!"
     var lastEventTime = NSDate()
     var conversationsWith = [String]()
     var invites = [String]()
-    
-    override func hostToKinveyPropertyMapping() -> [NSObject : AnyObject]! {
-        return [
-            "id" : KCSEntityKeyId,
-            "owner" : "owner",
-            "name" : "name",
-            "nickname" : "nickname",
-            "lastEventMessage" : "lastEventMessage",
-            "lastEventTime" : "lastEventTime",
-            "conversationsWith" : "conversationsWith",
-            "invites" : "invites"
-        ]
-    }
 }
