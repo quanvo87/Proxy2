@@ -19,6 +19,7 @@
 		14A6F1851D6950C50015431E /* EmailSyntaxChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F1841D6950C50015431E /* EmailSyntaxChecker.swift */; };
 		14A6F18E1D6BDA880015431E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F18D1D6BDA880015431E /* Constants.swift */; };
 		14A6F1901D6C21ED0015431E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 14A6F18F1D6C21ED0015431E /* GoogleService-Info.plist */; };
+		14A6F1941D6CF1410015431E /* ProxyNameGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F1931D6CF1410015431E /* ProxyNameGenerator.swift */; };
 		14E19A421D60EF100030B366 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E19A411D60EF100030B366 /* AppDelegate.swift */; };
 		14E19A471D60EF100030B366 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 14E19A451D60EF100030B366 /* Main.storyboard */; };
 		14E19A4C1D60EF100030B366 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 14E19A4B1D60EF100030B366 /* Assets.xcassets */; };
@@ -43,6 +44,7 @@
 		14A6F1841D6950C50015431E /* EmailSyntaxChecker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmailSyntaxChecker.swift; sourceTree = "<group>"; };
 		14A6F18D1D6BDA880015431E /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		14A6F18F1D6C21ED0015431E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		14A6F1931D6CF1410015431E /* ProxyNameGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyNameGenerator.swift; sourceTree = "<group>"; };
 		14E19A3E1D60EF100030B366 /* proxy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = proxy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		14E19A411D60EF100030B366 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		14E19A461D60EF100030B366 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -105,6 +107,7 @@
 				14A6F1841D6950C50015431E /* EmailSyntaxChecker.swift */,
 				1433E84F1D664FA1006C00EA /* Proxy.swift */,
 				1415610C1D620DB7002022BC /* API.swift */,
+				14A6F1931D6CF1410015431E /* ProxyNameGenerator.swift */,
 				14A6F18D1D6BDA880015431E /* Constants.swift */,
 				14E19A5B1D612CE80030B366 /* Extensions.swift */,
 				14E19A451D60EF100030B366 /* Main.storyboard */,
@@ -270,6 +273,7 @@
 				14A6F17B1D68D5F20015431E /* SideBarViewController.swift in Sources */,
 				1415610D1D620DB7002022BC /* API.swift in Sources */,
 				14E19A421D60EF100030B366 /* AppDelegate.swift in Sources */,
+				14A6F1941D6CF1410015431E /* ProxyNameGenerator.swift in Sources */,
 				14A6F1851D6950C50015431E /* EmailSyntaxChecker.swift in Sources */,
 				14A6F1771D68D03C0015431E /* SWRevealViewController.m in Sources */,
 			);

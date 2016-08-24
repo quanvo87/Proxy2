@@ -8,8 +8,8 @@ target 'proxy' do
   # Pods for proxy
   pod 'FacebookCore'
   pod 'FacebookLogin'
-  pod 'FacebookShare'
   pod 'Firebase'
   pod 'FirebaseAuth'
+  pod 'Firebase/Database'
 
 end

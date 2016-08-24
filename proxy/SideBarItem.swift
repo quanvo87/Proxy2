@@ -6,14 +6,15 @@
 //  Copyright © 2016 Quan Vo. All rights reserved.
 //
 
-import UIKit
-
-class SideBarItem: NSObject {
+struct SideBarItem {
     
-    var title = ""
+    private var _title = ""
     
     init(title: String) {
-        super.init()
-        self.title = title
+        _title = title
+    }
+    
+    var title: String {
+        return _title
     }
 }

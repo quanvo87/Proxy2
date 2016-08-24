@@ -8,15 +8,18 @@
 
 import UIKit
 import FirebaseAuth
+import FirebaseDatabase
 import FacebookLogin
 
 class LogInViewController: UIViewController, UITextFieldDelegate {
     
+    private let ref = FIRDatabase.database().reference()
+    private let emailSyntaxChecker = EmailSyntaxChecker()
+    private var bottomConstraintConstant: CGFloat = 0.0
+    
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
-    private var bottomConstraintConstant: CGFloat = 0.0
-    private let emailSyntaxChecker = EmailSyntaxChecker()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,7 +47,7 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
         if emailSyntaxChecker.isValidEmail(email!) && password != "" {
             FIRAuth.auth()?.signInWithEmail(email!, password: password!) { (user, error) in
                 if error == nil {
-                    self.logIn(user!)
+                    self.dismissViewControllerAnimated(true, completion: nil)
                 } else {
                     self.showAlert("Error Logging In", message: error!.localizedDescription)
                 }
@@ -60,7 +63,16 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
         if emailSyntaxChecker.isValidEmail(email!) && password != "" {
             FIRAuth.auth()?.createUserWithEmail(email!, password: password!) { (user, error) in
                 if error == nil {
-                    self.setDisplayName(user!)
+                    let changeRequest = user!.profileChangeRequest()
+                    changeRequest.displayName = user!.email!.componentsSeparatedByString("@")[0]
+                    changeRequest.commitChangesWithCompletion(){ (error) in
+                        if error == nil {
+                            self.ref.child("users").child(user!.uid).setValue(["username": user!.displayName!])
+                            self.dismissViewControllerAnimated(true, completion: nil)
+                        } else {
+                            self.showAlert("Error Setting Display Name For User", message: error!.localizedDescription)
+                        }
+                    }
                 } else {
                     self.showAlert("Error Creating Account", message: error!.localizedDescription)
                 }
@@ -82,39 +94,13 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
                 let credential = FIRFacebookAuthProvider.credentialWithAccessToken(FBSDKAccessToken.currentAccessToken().tokenString)
                 FIRAuth.auth()?.signInWithCredential(credential) { (user, error) in
                     if let error = error {
-                        self.showAlert("Error Logging Into Facebook", message: error.localizedDescription)
+                        self.showAlert("Error Logging In With Facebook", message: error.localizedDescription)
                     } else {
-                        if let user = FIRAuth.auth()?.currentUser {
-                            self.logIn(user)
+                        if (FIRAuth.auth()?.currentUser) != nil {
+                            self.dismissViewControllerAnimated(true, completion: nil)
                         }
                     }
                 }
-            }
-        }
-        
-        //        FIRAuth.auth().authWithOAuthPopup("facebook", function(error, authData) {
-        //            if (error) {
-        //                console.log("Login Failed!", error)
-        //            } else {
-        //                console.log("Authenticated successfully with payload:", authData)
-        //                print(authData)
-        //            }
-        //            });
-    }
-    
-    func logIn(user: FIRUser) {
-//        API.sharedInstance.setUserInfo(user)
-        dismissViewControllerAnimated(true, completion: nil)
-    }
-    
-    func setDisplayName(user: FIRUser) {
-        let changeRequest = user.profileChangeRequest()
-        changeRequest.displayName = user.email!.componentsSeparatedByString("@")[0]
-        changeRequest.commitChangesWithCompletion(){ (error) in
-            if error == nil {
-                self.logIn(FIRAuth.auth()!.currentUser!)
-            } else {
-                self.showAlert("Error Setting Display Name For User", message: error!.localizedDescription)
             }
         }
     }

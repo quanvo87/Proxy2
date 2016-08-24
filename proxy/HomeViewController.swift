@@ -8,12 +8,15 @@
 
 import UIKit
 import FirebaseAuth
+import FirebaseDatabase
 
 class HomeViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
+    private var ref = FIRDatabase.database().reference()
+    private var proxies = [Proxy]()
+    
     @IBOutlet weak var menuButton: UIBarButtonItem!
     @IBOutlet weak var homeTableView: UITableView!
-    private var proxies = [Proxy]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,11 +39,15 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         homeTableView.rowHeight = UITableViewAutomaticDimension
         homeTableView.estimatedRowHeight = 60
     }
+
+//    deinit {
+    
+//    }
     
     func loadHomeTableView(notification: NSNotification) {
-        let userInfo = notification.userInfo as! [String: [Proxy]]
-        proxies = userInfo["proxies"]!
-        homeTableView.reloadData()
+//        let userInfo = notification.userInfo as! [String: [Proxy]]
+//        proxies = userInfo["proxies"]!
+//        homeTableView.reloadData()
     }
     
     @IBAction func tapCreateNewProxy(sender: AnyObject) {

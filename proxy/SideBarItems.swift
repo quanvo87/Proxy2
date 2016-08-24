@@ -6,13 +6,18 @@
 //  Copyright © 2016 Quan Vo. All rights reserved.
 //
 
-import UIKit
+struct SideBarItems {
 
-class SideBarItems: NSObject {
-
-    private let sideBarItems = [SideBarItem(title: "Home"), SideBarItem(title: "Turn On Notifications"), SideBarItem(title: "Report An Issue"), SideBarItem(title: "Trash"), SideBarItem(title: "Log Out"), SideBarItem(title: "Delete Account"), SideBarItem(title: "About")]
+    private let _sideBarItems =
+        [SideBarItem(title: "Home"),
+         SideBarItem(title: "Turn On Notifications"),
+         SideBarItem(title: "Report An Issue"),
+         SideBarItem(title: "Trash"),
+         SideBarItem(title: "Log Out"),
+         SideBarItem(title: "Delete Account"),
+         SideBarItem(title: "About")]
     
-    func getSideBarItems() -> [SideBarItem] {
-        return sideBarItems
+    var sideBarItems: [SideBarItem] {
+        return _sideBarItems
     }
 }

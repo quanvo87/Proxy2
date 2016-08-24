@@ -12,43 +12,28 @@ import FacebookLogin
 
 class SideBarViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    @IBOutlet weak var userNameLabel: UILabel!
-    @IBOutlet weak var sideBarTableView: UITableView!
     private var sideBarItems = [SideBarItem]()
+    
+    @IBOutlet weak var usernameLabel: UILabel!
+    @IBOutlet weak var sideBarTableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //        userNameLabel.text = API.sharedInstance.getUserDisplayName()
-        
-        sideBarItems = SideBarItems().getSideBarItems()
+        sideBarItems = SideBarItems().sideBarItems
         
         sideBarTableView.delegate = self
         sideBarTableView.dataSource = self
         sideBarTableView.reloadData()
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewDidAppear(animated: Bool) {
         FIRAuth.auth()?.addAuthStateDidChangeListener { auth, user in
             if let user = user {
-                self.userNameLabel.text = user.displayName
+                self.usernameLabel.text = user.displayName
             }
         }
     }
-    //
-    //    override func viewWillDisappear(animated: Bool) {
-    //        NSNotificationCenter.defaultCenter().removeObserver(self)
-    //    }
-    //
-    //    func setUsername() {
-    //        NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(SideBarViewController.setUsernameFromFacebook), name: "Fetched Username", object: nil)
-    //        userNameLabel.text = API.sharedInstance.getUsername()
-    //    }
-    //
-    //    func setUsernameFromFacebook(notification: NSNotification) {
-    //        let userInfo = notification.userInfo as! [String: String]
-    //        userNameLabel.text = userInfo["username"]
-    //    }
     
     func toggleSideBar() {
         self.revealViewController().revealToggle(self)
@@ -106,24 +91,20 @@ class SideBarViewController: UIViewController, UITableViewDelegate, UITableViewD
     func tapLogOut() {
         let alert = UIAlertController(title: "Log Out", message: "Are you sure you want to log out?", preferredStyle: .Alert)
         let yesButton: UIAlertAction = UIAlertAction(title: "Yes", style: .Default) { action in
-            self.logOut()
+            let firebaseAuth = FIRAuth.auth()
+            do {
+                try firebaseAuth?.signOut()
+                self.usernameLabel.text = ""
+                self.toggleSideBar()
+            } catch let error as NSError {
+                self.showAlert("Error Logging Out", message: error.localizedDescription)
+            }
         }
         let cancelButton: UIAlertAction = UIAlertAction(title: "Cancel", style: .Cancel) { action in
         }
         alert.addAction(yesButton)
         alert.addAction(cancelButton)
         self.presentViewController(alert, animated: true, completion: nil)
-    }
-    
-    func logOut() {
-        let firebaseAuth = FIRAuth.auth()
-        do {
-            try firebaseAuth?.signOut()
-            userNameLabel.text = ""
-            toggleSideBar()
-        } catch let error as NSError {
-            self.showAlert("Error Logging Out", message: error.localizedDescription)
-        }
     }
     
     func tapDeleteAccount() {

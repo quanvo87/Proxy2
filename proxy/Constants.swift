@@ -9,7 +9,6 @@
 struct Constants {
     
     struct NotificationKeys {
-//        static let UserLoggedIn = "User Logged In"
-        static let UserLoggedOut = "User Logged Out"
+        static let ProxyCreated = "Proxy Created"
     }
 }
