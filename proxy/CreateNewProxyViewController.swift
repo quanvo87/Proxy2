@@ -119,7 +119,9 @@ class CreateNewProxyViewController: UIViewController {
     
     @IBAction func tapCancelButton(sender: AnyObject) {
         disableButtons()
-        api.cancelCreatingProxyWithKey(proxyKey)
+        if newProxyNameLabel.text != "" {
+            api.cancelCreatingProxyWithKey(proxyKey)
+        }
         dismissViewControllerAnimated(true, completion: nil)
     }
     

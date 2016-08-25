@@ -14,56 +14,44 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     private let api = API.sharedInstance
     private let ref = FIRDatabase.database().reference()
-    private var userProxiesReferenceHandle = FIRDatabaseHandle()
+    private var userProxiesRef = FIRDatabaseHandle()
     private var proxies = [Proxy]()
     
     @IBOutlet weak var menuButton: UIBarButtonItem!
     @IBOutlet weak var homeTableView: UITableView!
-    @IBOutlet weak var createNewProxyButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        startSetUpUI()
+        setUpUI()
+        setUpTableView()
         tryLogin()
-        automaticallyAdjustsScrollViewInsets = false
     }
 
     deinit {
-        ref.child("users").child(api.uid).child("proxies").removeObserverWithHandle(userProxiesReferenceHandle)
+        ref.child("users").child(api.uid).child("proxies").removeObserverWithHandle(userProxiesRef)
     }
     
     func tryLogin() {
         FIRAuth.auth()?.addAuthStateDidChangeListener { auth, user in
             if let user = user {
                 self.api.uid = user.uid
-                self.finishSetUpUI()
-                self.setUpTableView()
                 self.configureDatabase()
             } else {
-                self.disableUI()
                 let logInViewController = self.storyboard!.instantiateViewControllerWithIdentifier("Log In") as! LogInViewController
                 self.parentViewController!.presentViewController(logInViewController, animated: true, completion: nil)
             }
         }
     }
     
-    func startSetUpUI() {
+    func setUpUI() {
         self.navigationItem.title = "My Proxies"
         self.menuButton.action = #selector(SWRevealViewController.revealToggle(_:))
         self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
-        self.createNewProxyButton.enabled = false
-    }
-    
-    func finishSetUpUI() {
-        self.createNewProxyButton.enabled = true
-    }
-    
-    func disableUI() {
-        self.createNewProxyButton.enabled = false
     }
     
     func setUpTableView() {
+        automaticallyAdjustsScrollViewInsets = false
         homeTableView.delegate = self
         homeTableView.dataSource = self
         homeTableView.rowHeight = UITableViewAutomaticDimension
@@ -71,15 +59,15 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func configureDatabase() {
-//        userProxiesReferenceHandle = ref.child("users").child(uid).child("proxies").queryOrderedByChild("lastEventTime").observeEventType(.Value, withBlock: { snapshot in
-//            var newProxies = [Proxy]()
-//            for item in snapshot.children {
-//                let proxy = Proxy(snapshot: item as! FIRDataSnapshot)
-//                newProxies.append(proxy)
-//            }
-//            self.proxies = newProxies
-//            self.homeTableView.reloadData()
-//        })
+        userProxiesRef = ref.child("users").child(api.uid).child("proxies").queryOrderedByChild("lastEventTime").observeEventType(.Value, withBlock: { snapshot in
+            var newProxies = [Proxy]()
+            for item in snapshot.children {
+                let proxy = Proxy(snapshot: item as! FIRDataSnapshot)
+                newProxies.append(proxy)
+            }
+            self.proxies = newProxies
+            self.homeTableView.reloadData()
+        })
     }
     
     @IBAction func tapCreateNewProxy(sender: AnyObject) {
@@ -96,10 +84,10 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("Home Table View Cell", forIndexPath: indexPath) as! HomeTableViewCell
-//        let proxy = proxies[indexPath.row]
-//        cell.proxyNameLabel.text = proxy.name
-//        cell.proxyNicknameLabel.text = proxy.nickname
-//        cell.lastEventMessageLabel.text = proxy.lastEventMessage
+        let proxy = proxies[indexPath.row]
+        cell.proxyNameLabel.text = proxy.name
+        cell.proxyNicknameLabel.text = proxy.nickname
+        cell.lastEventMessageLabel.text = proxy.lastEvent
         return cell
     }
 }

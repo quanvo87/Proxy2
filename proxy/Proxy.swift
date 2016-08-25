@@ -16,7 +16,8 @@ struct Proxy {
     var name = ""
     var nickname = ""
     var lastEvent = "Just created!"
-    var lastEventTime = NSDate().timeIntervalSince1970
+    var lastEventTime = 0 - NSDate().timeIntervalSince1970
+    var unreadEvents = 0
     var conversations = ""
     var invites = ""
     
@@ -25,13 +26,14 @@ struct Proxy {
         self.name = name
     }
     
-//    init(snapshot: FIRDataSnapshot) {
-//        key = snapshot.key
-//        name = snapshot.value!["name"] as! String
-//        addedByUser = snapshot.value!["addedByUser"] as! String
-//        completed = snapshot.value!["completed"] as! Bool
-//
-//    }
+    init(snapshot: FIRDataSnapshot) {
+        key = snapshot.key
+        name = snapshot.value!["name"] as! String
+        nickname = snapshot.value!["nickname"] as! String
+        lastEvent = snapshot.value!["lastEvent"] as! String
+        lastEventTime = snapshot.value!["lastEventTime"] as! NSTimeInterval
+        unreadEvents = snapshot.value!["unreadEvents"] as! Int
+    }
     
     func toAnyObject() -> AnyObject {
         return [
@@ -41,6 +43,7 @@ struct Proxy {
             "nickname": nickname,
             "lastEvent": lastEvent,
             "lastEventTime": lastEventTime,
+            "unreadEvents": unreadEvents,
             "conversations": conversations,
             "invites": invites
         ]
