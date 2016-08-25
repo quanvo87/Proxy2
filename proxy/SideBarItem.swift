@@ -8,7 +8,7 @@
 
 struct SideBarItem {
     
-    private var _title = ""
+    private let _title: String
     
     init(title: String) {
         _title = title

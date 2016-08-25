@@ -95,6 +95,7 @@
 			children = (
 				14E19A411D60EF100030B366 /* AppDelegate.swift */,
 				14E19A5D1D6148700030B366 /* LogInViewController.swift */,
+				14A6F1841D6950C50015431E /* EmailSyntaxChecker.swift */,
 				14A6F1751D68D03C0015431E /* SWRevealViewController.h */,
 				14A6F1761D68D03C0015431E /* SWRevealViewController.m */,
 				14A6F17A1D68D5F20015431E /* SideBarViewController.swift */,
@@ -104,7 +105,6 @@
 				14E19A591D61034A0030B366 /* HomeViewController.swift */,
 				1415611E1D62A8A3002022BC /* HomeTableViewCell.swift */,
 				14265B7B1D63029200B65793 /* CreateNewProxyViewController.swift */,
-				14A6F1841D6950C50015431E /* EmailSyntaxChecker.swift */,
 				1433E84F1D664FA1006C00EA /* Proxy.swift */,
 				1415610C1D620DB7002022BC /* API.swift */,
 				14A6F1931D6CF1410015431E /* ProxyNameGenerator.swift */,

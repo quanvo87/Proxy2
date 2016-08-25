@@ -12,7 +12,9 @@ import FirebaseDatabase
 
 class HomeViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    private var ref = FIRDatabase.database().reference()
+    private let ref = FIRDatabase.database().reference()
+    private var userProxiesReferenceHandle = FIRDatabaseHandle()
+    private var uid = ""
     private var proxies = [Proxy]()
     
     @IBOutlet weak var menuButton: UIBarButtonItem!
@@ -21,33 +23,51 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        tryLogin()
+        automaticallyAdjustsScrollViewInsets = false
+    }
+
+    deinit {
+        ref.child("users").child(uid).child("proxies").removeObserverWithHandle(userProxiesReferenceHandle)
+    }
+    
+    func tryLogin() {
         FIRAuth.auth()?.addAuthStateDidChangeListener { auth, user in
-            if user == nil {
+            if let user = user {
+                self.uid = user.uid
+                self.setUpUI()
+                self.setUpTableView()
+                self.configureDatabase()
+            } else {
                 let logInViewController = self.storyboard!.instantiateViewControllerWithIdentifier("Log In") as! LogInViewController
                 self.parentViewController!.presentViewController(logInViewController, animated: true, completion: nil)
             }
         }
-        
+    }
+    
+    func setUpUI() {
         self.navigationItem.title = "My Proxies"
-        
         self.menuButton.action = #selector(SWRevealViewController.revealToggle(_:))
         self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
-        
-        automaticallyAdjustsScrollViewInsets = false
+    }
+    
+    func setUpTableView() {
         homeTableView.delegate = self
         homeTableView.dataSource = self
         homeTableView.rowHeight = UITableViewAutomaticDimension
         homeTableView.estimatedRowHeight = 60
     }
-
-//    deinit {
     
-//    }
-    
-    func loadHomeTableView(notification: NSNotification) {
-//        let userInfo = notification.userInfo as! [String: [Proxy]]
-//        proxies = userInfo["proxies"]!
-//        homeTableView.reloadData()
+    func configureDatabase() {
+//        userProxiesReferenceHandle = ref.child("users").child(uid).child("proxies").queryOrderedByChild("lastEventTime").observeEventType(.Value, withBlock: { snapshot in
+//            var newProxies = [Proxy]()
+//            for item in snapshot.children {
+//                let proxy = Proxy(snapshot: item as! FIRDataSnapshot)
+//                newProxies.append(proxy)
+//            }
+//            self.proxies = newProxies
+//            self.homeTableView.reloadData()
+//        })
     }
     
     @IBAction func tapCreateNewProxy(sender: AnyObject) {
@@ -64,10 +84,10 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("Home Table View Cell", forIndexPath: indexPath) as! HomeTableViewCell
-        let proxy = proxies[indexPath.row]
-        cell.proxyNameLabel.text = proxy.name
-        cell.proxyNicknameLabel.text = proxy.nickname
-        cell.lastEventMessageLabel.text = proxy.lastEventMessage
+//        let proxy = proxies[indexPath.row]
+//        cell.proxyNameLabel.text = proxy.name
+//        cell.proxyNicknameLabel.text = proxy.nickname
+//        cell.lastEventMessageLabel.text = proxy.lastEventMessage
         return cell
     }
 }

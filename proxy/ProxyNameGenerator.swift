@@ -8,51 +8,46 @@
 
 struct ProxyNameGenerator {
     
-    private let endingNumberRange: UInt32 = 100
-    private var adjectives: [String]?
-    private var nouns: [String]?
+    private let _endingNumberRange: UInt32 = 99
+    private var _adjectives = [String]()
+    private var _nouns = [String]()
     private var _wordBankLoaded = false
     
-    init() {
-        let url = NSURL(string: "https://api.myjson.com/bins/1l0zf")!
-        let urlRequest = NSMutableURLRequest(URL: url)
-        let session = NSURLSession.sharedSession()
-        let task = session.dataTaskWithRequest(urlRequest) {
-            (data, response, error) -> Void in
-            let httpResponse = response as! NSHTTPURLResponse
-            let statusCode = httpResponse.statusCode
-            if statusCode == 200 {
-                do {
-                    let json = try NSJSONSerialization.JSONObjectWithData(data!, options: .AllowFragments)
-                    if let adjectives = json["adjectives"] as? [String] {
-                        self.adjectives = adjectives
-                    }
-                    if let nouns = json["nouns"] as? [String] {
-                        self.nouns = nouns
-                    }
-                    self._wordBankLoaded = true
-                } catch {
-                    print("Error with JSON: \(error)")
-                }
-            } else {
-                print("Error fetching words JSON: \(error)")
-            }
+    var adjectives: [String] {
+        get {
+            return _adjectives
         }
-        task.resume()
+        set (newValue) {
+            _adjectives = newValue
+        }
+    }
+    
+    var nouns: [String] {
+        get {
+            return _nouns
+        }
+        set (newValue) {
+            _nouns = newValue
+        }
     }
     
     var wordBankLoaded: Bool {
-        return _wordBankLoaded
+        get {
+            return _wordBankLoaded
+        }
+        set (newValue) {
+            _wordBankLoaded = newValue
+        }
     }
     
     func generateProxyName() -> String {
-        let adjectivesCount = UInt32(adjectives!.count)
-        let nounsCount = UInt32(nouns!.count)
+        let adjectivesCount = UInt32(_adjectives.count)
+        let nounsCount = UInt32(_nouns.count)
         
-        let randomAdjective = adjectives![Int(arc4random_uniform(adjectivesCount))].lowercaseString
-        let randomNoun = nouns![Int(arc4random_uniform(nounsCount))].lowercaseString.capitalizedString
+        let randomAdjective = _adjectives[Int(arc4random_uniform(adjectivesCount))].lowercaseString
+        let randomNoun = _nouns[Int(arc4random_uniform(nounsCount))].lowercaseString.capitalizedString
         
-        let endingNumber = String(Int(arc4random_uniform(endingNumberRange)))
+        let endingNumber = String(Int(arc4random_uniform(_endingNumberRange)) + 1)
         
         return randomAdjective + randomNoun + endingNumber
     }

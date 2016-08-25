@@ -9,6 +9,7 @@
 struct Constants {
     
     struct NotificationKeys {
+        static let WordBankLoaded = "Word Bank Loaded"
         static let ProxyCreated = "Proxy Created"
     }
 }
