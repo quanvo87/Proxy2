@@ -12,43 +12,55 @@ import FirebaseDatabase
 
 class HomeViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
+    private let api = API.sharedInstance
     private let ref = FIRDatabase.database().reference()
     private var userProxiesReferenceHandle = FIRDatabaseHandle()
-    private var uid = ""
     private var proxies = [Proxy]()
     
     @IBOutlet weak var menuButton: UIBarButtonItem!
     @IBOutlet weak var homeTableView: UITableView!
+    @IBOutlet weak var createNewProxyButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        startSetUpUI()
         tryLogin()
         automaticallyAdjustsScrollViewInsets = false
     }
 
     deinit {
-        ref.child("users").child(uid).child("proxies").removeObserverWithHandle(userProxiesReferenceHandle)
+        ref.child("users").child(api.uid).child("proxies").removeObserverWithHandle(userProxiesReferenceHandle)
     }
     
     func tryLogin() {
         FIRAuth.auth()?.addAuthStateDidChangeListener { auth, user in
             if let user = user {
-                self.uid = user.uid
-                self.setUpUI()
+                self.api.uid = user.uid
+                self.finishSetUpUI()
                 self.setUpTableView()
                 self.configureDatabase()
             } else {
+                self.disableUI()
                 let logInViewController = self.storyboard!.instantiateViewControllerWithIdentifier("Log In") as! LogInViewController
                 self.parentViewController!.presentViewController(logInViewController, animated: true, completion: nil)
             }
         }
     }
     
-    func setUpUI() {
+    func startSetUpUI() {
         self.navigationItem.title = "My Proxies"
         self.menuButton.action = #selector(SWRevealViewController.revealToggle(_:))
         self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
+        self.createNewProxyButton.enabled = false
+    }
+    
+    func finishSetUpUI() {
+        self.createNewProxyButton.enabled = true
+    }
+    
+    func disableUI() {
+        self.createNewProxyButton.enabled = false
     }
     
     func setUpTableView() {

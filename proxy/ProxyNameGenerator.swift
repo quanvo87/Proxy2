@@ -43,12 +43,9 @@ struct ProxyNameGenerator {
     func generateProxyName() -> String {
         let adjectivesCount = UInt32(_adjectives.count)
         let nounsCount = UInt32(_nouns.count)
-        
         let randomAdjective = _adjectives[Int(arc4random_uniform(adjectivesCount))].lowercaseString
         let randomNoun = _nouns[Int(arc4random_uniform(nounsCount))].lowercaseString.capitalizedString
-        
         let endingNumber = String(Int(arc4random_uniform(_endingNumberRange)) + 1)
-        
         return randomAdjective + randomNoun + endingNumber
     }
 }

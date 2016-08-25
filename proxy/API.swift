@@ -12,13 +12,23 @@ class API {
     
     static let sharedInstance = API()
     
+    private var _uid = ""
     private let ref = FIRDatabase.database().reference()
     private var proxiesRef = FIRDatabaseReference()
     private var proxyNameGenerator = ProxyNameGenerator()
-    private var _currentlyCreatingProxy = false
+    private var currentlyCreatingProxy = false
     
     private init() {
         proxiesRef = ref.child("proxies")
+    }
+    
+    var uid: String {
+        get {
+            return _uid
+        }
+        set (newValue) {
+            _uid = newValue
+        }
     }
     
     func loadWordBank(adjectives: [String], nouns: [String]) {
@@ -31,38 +41,47 @@ class API {
         return proxyNameGenerator.wordBankLoaded
     }
     
-    var currentlyCreatingProxy: Bool {
-        get {
-            return _currentlyCreatingProxy
-        }
-        set (newValue) {
-            _currentlyCreatingProxy = newValue
-        }
+    func createProxy() {
+        currentlyCreatingProxy = true
+        tryCreateProxy()
     }
     
-    func createProxy() {
+    func tryCreateProxy() {
         let key = proxiesRef.childByAutoId().key
         let proxy = Proxy(key: key, name: proxyNameGenerator.generateProxyName())
         proxiesRef.child(key).setValue(proxy.toAnyObject())
         proxiesRef.queryOrderedByChild("name").queryEqualToValue(proxy.name).observeSingleEventOfType(.Value, withBlock: { snapshot in
             if snapshot.childrenCount == 1 {
-                self._currentlyCreatingProxy = false
-                // save to user proxies
+                self.currentlyCreatingProxy = false
+                self.ref.child("users").child(self.uid).child("proxies").child(key).setValue(proxy.toAnyObject())
                 NSNotificationCenter.defaultCenter().postNotificationName(Constants.NotificationKeys.ProxyCreated, object: self, userInfo: ["proxy": proxy.toAnyObject()])
             } else {
-                self.deleteProxy(proxy)
-                if self._currentlyCreatingProxy {
-                    self.createProxy()
+                self.deleteProxyWithKey(key)
+                if self.currentlyCreatingProxy {
+                    self.tryCreateProxy()
                 }
             }
         })
     }
     
-    func updateProxyNickname(proxy: Proxy, nickname: String) {
-        
+    func updateNicknameForProxyWithKey(key: String, nickname: String) {
+        ref.updateChildValues([
+            "/proxies/\(key)/nickname": nickname,
+            "/users/\(_uid)/proxies/\(key)/nickname": nickname])
     }
     
-    func deleteProxy(proxy: Proxy) {
-        
+    func refreshProxyFromOldProxyWithKey(oldProxyKey: String) {
+        deleteProxyWithKey(oldProxyKey)
+        createProxy()
+    }
+    
+    func deleteProxyWithKey(key: String) {
+        proxiesRef.child(key).removeValue()
+        ref.child("users").child(_uid).child("proxies").child(key).removeValue()
+    }
+    
+    func cancelCreatingProxyWithKey(key: String) {
+        currentlyCreatingProxy = false
+        deleteProxyWithKey(key)
     }
 }

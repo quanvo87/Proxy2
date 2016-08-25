@@ -22,11 +22,10 @@ class CreateNewProxyViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(CreateNewProxyViewController.createProxy), name: Constants.NotificationKeys.WordBankLoaded, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(CreateNewProxyViewController.proxyCreated), name: Constants.NotificationKeys.ProxyCreated, object: nil)
         
         setUpUI()
-        tryCreateProxy()
+        createProxy()
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -40,16 +39,15 @@ class CreateNewProxyViewController: UIViewController {
         createProxyButton.enabled = false
     }
     
-    func tryCreateProxy() {
+    func createProxy() {
         if api.wordBankIsLoaded() == true {
-            createProxy()
+            createProxyFromWordBank()
         } else {
             loadWordBank()
         }
     }
     
-    func createProxy() {
-        api.currentlyCreatingProxy = true
+    func createProxyFromWordBank() {
         api.createProxy()
     }
     
@@ -73,7 +71,7 @@ class CreateNewProxyViewController: UIViewController {
                         nouns = fetchedNouns
                     }
                     self.api.loadWordBank(adjectives, nouns: nouns)
-                    NSNotificationCenter.defaultCenter().postNotificationName(Constants.NotificationKeys.WordBankLoaded, object: self, userInfo: nil)
+                    self.createProxyFromWordBank()
                 } catch {
                     self.showAlert("Error Fetching Word Bank", message: "Please try again later.")
                 }
@@ -106,30 +104,22 @@ class CreateNewProxyViewController: UIViewController {
     }
     
     @IBAction func tapRefreshNewProxyButton(sender: AnyObject) {
-        //        disableButtons()
-        //        API.sharedInstance.refreshProxyFromOldProxyWithName(newProxyNameLabel.text!)
+        disableButtons()
+        api.refreshProxyFromOldProxyWithKey(proxyKey)
     }
     
     @IBAction func tapCreateButton(sender: AnyObject) {
-        //        disableButtons()
-        //        if newProxyNicknameTextField.text != "" {
-        //            API.sharedInstance.updateProxyNickname(newProxyNameLabel.text!, nickname: newProxyNicknameTextField.text!)
-        //        } else {
-        //            dismissCreateNewProxyViewController()
-        //        }
+        disableButtons()
+        let newProxyNickname = newProxyNicknameTextField.text
+        if newProxyNickname != "" {
+            api.updateNicknameForProxyWithKey(proxyKey, nickname: newProxyNickname!)
+        }
+        dismissViewControllerAnimated(true, completion: nil)
     }
     
     @IBAction func tapCancelButton(sender: AnyObject) {
-        //        disableButtons()
-        //        let newProxyName = newProxyNameLabel.text
-        //        if newProxyName != "" {
-        //            API.sharedInstance.deleteProxyWithName(newProxyName!)
-        //        } else {
-        //            dismissCreateNewProxyViewController()
-        //        }
-    }
-    
-    func dismissCreateNewProxyViewController() {
+        disableButtons()
+        api.cancelCreatingProxyWithKey(proxyKey)
         dismissViewControllerAnimated(true, completion: nil)
     }
     

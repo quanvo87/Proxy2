@@ -168,6 +168,7 @@
                         <barButtonItem key="leftBarButtonItem" title="Menu" id="9Wg-Y2-HZe"/>
                     </navigationItem>
                     <connections>
+                        <outlet property="createNewProxyButton" destination="5gc-Qf-bNi" id="gaq-AR-CZz"/>
                         <outlet property="homeTableView" destination="mwz-89-6i1" id="PPC-GY-e9U"/>
                         <outlet property="menuButton" destination="9Wg-Y2-HZe" id="N5U-E5-uOH"/>
                     </connections>
