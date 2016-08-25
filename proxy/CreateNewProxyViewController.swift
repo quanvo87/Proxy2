@@ -6,8 +6,6 @@
 //  Copyright © 2016 Quan Vo. All rights reserved.
 //
 
-import UIKit
-
 class CreateNewProxyViewController: UIViewController {
     
     private let api = API.sharedInstance
@@ -54,31 +52,30 @@ class CreateNewProxyViewController: UIViewController {
         let url = NSURL(string: "https://api.myjson.com/bins/4xqqn")!
         let urlRequest = NSMutableURLRequest(URL: url)
         let session = NSURLSession.sharedSession()
-        let task = session.dataTaskWithRequest(urlRequest) {
-            (data, response, error) -> Void in
-            let httpResponse = response as! NSHTTPURLResponse
-            let statusCode = httpResponse.statusCode
-            if statusCode == 200 {
-                do {
-                    let json = try NSJSONSerialization.JSONObjectWithData(data!, options: .AllowFragments)
-                    if let adjectives = json["adjectives"] as? [String], nouns = json["nouns"] as? [String] {
-                        self.api.loadWordBank(adjectives, nouns: nouns)
-                        self.createProxyFromWordBank()
+        let task = session.dataTaskWithRequest(urlRequest) { data, response, error -> Void in
+            guard
+                let httpResponse = response as? NSHTTPURLResponse
+                where httpResponse.statusCode == 200 else {
+                    dispatch_async(dispatch_get_main_queue()) {
+                        let alert = UIAlertController(title: "Error Fetching Word Bank", message: error!.localizedDescription, preferredStyle: .Alert)
+                        let retryAction = UIAlertAction(title: "Retry", style: .Default, handler: { action in
+                            self.loadWordBank()
+                        })
+                        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+                        alert.addAction(retryAction)
+                        alert.addAction(cancelAction)
+                        self.presentViewController(alert, animated: true, completion: nil)
                     }
-                } catch {
-                    self.showAlert("Error Fetching Word Bank", message: "Please try again later.")
+                    return
+            }
+            do {
+                let json = try NSJSONSerialization.JSONObjectWithData(data!, options: .AllowFragments)
+                if let adjectives = json["adjectives"] as? [String], nouns = json["nouns"] as? [String] {
+                    self.api.loadWordBank(adjectives, nouns: nouns)
+                    self.createProxyFromWordBank()
                 }
-            } else {
-                dispatch_async(dispatch_get_main_queue()) {
-                    let alert = UIAlertController(title: "Error Fetching Word Bank", message: error!.localizedDescription, preferredStyle: .Alert)
-                    let retryAction = UIAlertAction(title: "Retry", style: .Default, handler: { action in
-                        self.loadWordBank()
-                    })
-                    let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
-                    alert.addAction(retryAction)
-                    alert.addAction(cancelAction)
-                    self.presentViewController(alert, animated: true, completion: nil)
-                }
+            } catch {
+                self.showAlert("Error Fetching Word Bank", message: "Please try again later.")
             }
         }
         task.resume()

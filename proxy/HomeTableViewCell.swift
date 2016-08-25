@@ -6,8 +6,6 @@
 //  Copyright © 2016 Quan Vo. All rights reserved.
 //
 
-import UIKit
-
 class HomeTableViewCell: UITableViewCell {
 
     @IBOutlet weak var proxyNameLabel: UILabel!

@@ -6,7 +6,6 @@
 //  Copyright © 2016 Quan Vo. All rights reserved.
 //
 
-import UIKit
 import FirebaseAuth
 import FirebaseDatabase
 import FacebookLogin

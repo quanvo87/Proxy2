@@ -92,7 +92,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="mwz-89-6i1">
-                                <rect key="frame" x="0.0" y="64" width="600" height="486"/>
+                                <rect key="frame" x="0.0" y="64" width="600" height="466"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Home Table View Cell" rowHeight="60" id="VzB-HW-Aw5" customClass="HomeTableViewCell" customModule="proxy" customModuleProvider="target">
@@ -146,8 +146,8 @@
                                 </prototypes>
                             </tableView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5gc-Qf-bNi">
-                                <rect key="frame" x="25" y="560" width="550" height="30"/>
-                                <state key="normal" title="Create New Proxy!"/>
+                                <rect key="frame" x="25" y="550" width="550" height="30"/>
+                                <state key="normal" title="Create New Proxy"/>
                                 <connections>
                                     <action selector="tapCreateNewProxy:" destination="BYZ-38-t0r" eventType="touchUpInside" id="eWx-jZ-Ula"/>
                                 </connections>
@@ -158,8 +158,8 @@
                             <constraint firstItem="5gc-Qf-bNi" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="5" id="3i8-lL-6EF"/>
                             <constraint firstAttribute="trailing" secondItem="mwz-89-6i1" secondAttribute="trailing" id="8Jf-tt-7ge"/>
                             <constraint firstItem="mwz-89-6i1" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="98Y-c7-b4Y"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="5gc-Qf-bNi" secondAttribute="bottom" constant="10" id="JGf-yV-dyP"/>
-                            <constraint firstItem="5gc-Qf-bNi" firstAttribute="top" secondItem="mwz-89-6i1" secondAttribute="bottom" constant="10" id="OYv-QQ-MHi"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="5gc-Qf-bNi" secondAttribute="bottom" constant="20" id="JGf-yV-dyP"/>
+                            <constraint firstItem="5gc-Qf-bNi" firstAttribute="top" secondItem="mwz-89-6i1" secondAttribute="bottom" constant="20" id="OYv-QQ-MHi"/>
                             <constraint firstAttribute="trailingMargin" secondItem="5gc-Qf-bNi" secondAttribute="trailing" constant="5" id="bo4-oL-yez"/>
                             <constraint firstItem="mwz-89-6i1" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="twn-op-cKf"/>
                         </constraints>
@@ -175,6 +175,132 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="185" y="736"/>
+        </scene>
+        <!--Proxy View Controller-->
+        <scene sceneID="Tb3-lz-0xU">
+            <objects>
+                <viewController storyboardIdentifier="Proxy View Controller" id="djG-b3-9q5" userLabel="Proxy View Controller" customClass="ProxyViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="TqT-sY-qSj"/>
+                        <viewControllerLayoutGuide type="bottom" id="ykR-zm-IJO"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="0LW-yi-OqS">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Nickname" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bHB-dd-90w">
+                                <rect key="frame" x="261" y="30" width="77" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.50196081400000003" green="0.50196081400000003" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zwo-bW-G7k">
+                                <rect key="frame" x="368" y="25.5" width="30" height="30"/>
+                                <state key="normal" title="Edit"/>
+                                <connections>
+                                    <action selector="tapEditProxyNicknameButton:" destination="djG-b3-9q5" eventType="touchUpInside" id="joV-eb-AY3"/>
+                                </connections>
+                            </button>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="vic-Nu-OMY">
+                                <rect key="frame" x="198" y="61" width="203" height="29"/>
+                                <segments>
+                                    <segment title="Conversations"/>
+                                    <segment title="Invites"/>
+                                </segments>
+                                <connections>
+                                    <action selector="changeSegmentedControl:" destination="djG-b3-9q5" eventType="valueChanged" id="y1S-xt-IZv"/>
+                                </connections>
+                            </segmentedControl>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="xsu-MQ-lwW">
+                                <rect key="frame" x="0.0" y="109" width="600" height="421"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Home Table View Cell" rowHeight="60" id="afD-wo-hwR" customClass="HomeTableViewCell" customModule="proxy" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="28" width="600" height="60"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="afD-wo-hwR" id="DlM-9c-sbm">
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="59.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Proxy Nickname" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mhp-lZ-Xqn">
+                                                    <rect key="frame" x="111" y="8" width="104.5" height="17"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <color key="textColor" red="0.50196081400000003" green="0.50196081400000003" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Last event message" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JbV-na-qdJ">
+                                                    <rect key="frame" x="8" y="38" width="113" height="13.5"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                                    <color key="textColor" red="0.50196081400000003" green="0.50196081400000003" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalCompressionResistancePriority="751" text="Proxy Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fod-Ut-wmy">
+                                                    <rect key="frame" x="8" y="8" width="93" height="20.5"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="bottomMargin" secondItem="JbV-na-qdJ" secondAttribute="bottom" id="3H6-sL-fJr"/>
+                                                <constraint firstItem="JbV-na-qdJ" firstAttribute="bottom" secondItem="Fod-Ut-wmy" secondAttribute="bottom" id="5ug-ad-dqj"/>
+                                                <constraint firstItem="JbV-na-qdJ" firstAttribute="top" secondItem="Fod-Ut-wmy" secondAttribute="bottom" constant="10" id="7v9-IY-Y11"/>
+                                                <constraint firstItem="Fod-Ut-wmy" firstAttribute="top" secondItem="DlM-9c-sbm" secondAttribute="topMargin" id="CrC-iy-XHb"/>
+                                                <constraint firstItem="mhp-lZ-Xqn" firstAttribute="leading" secondItem="Fod-Ut-wmy" secondAttribute="trailing" constant="10" id="K5U-gW-4oU"/>
+                                                <constraint firstItem="JbV-na-qdJ" firstAttribute="leading" secondItem="DlM-9c-sbm" secondAttribute="leadingMargin" id="Vap-Ee-Zb1"/>
+                                                <constraint firstItem="mhp-lZ-Xqn" firstAttribute="top" secondItem="DlM-9c-sbm" secondAttribute="topMargin" id="hrx-GJ-5YW"/>
+                                                <constraint firstItem="Fod-Ut-wmy" firstAttribute="leading" secondItem="DlM-9c-sbm" secondAttribute="leadingMargin" id="mIX-aW-EzJ"/>
+                                            </constraints>
+                                            <variation key="default">
+                                                <mask key="constraints">
+                                                    <exclude reference="5ug-ad-dqj"/>
+                                                </mask>
+                                            </variation>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="lastEventMessageLabel" destination="JbV-na-qdJ" id="ni5-b9-Ufx"/>
+                                            <outlet property="proxyNameLabel" destination="Fod-Ut-wmy" id="hu3-Sp-fmN"/>
+                                            <outlet property="proxyNicknameLabel" destination="mhp-lZ-Xqn" id="CfR-wT-rW8"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OSw-ZB-7bO">
+                                <rect key="frame" x="25" y="550" width="550" height="30"/>
+                                <state key="normal" title="Start A Conversation"/>
+                                <connections>
+                                    <action selector="tapCreateNewProxy:" destination="BYZ-38-t0r" eventType="touchUpInside" id="FrI-B6-Zv6"/>
+                                    <action selector="tapStartAConversationButton:" destination="djG-b3-9q5" eventType="touchUpInside" id="1YK-ev-M3i"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailingMargin" secondItem="xsu-MQ-lwW" secondAttribute="trailing" constant="-20" id="DZh-hJ-8Cf"/>
+                            <constraint firstItem="OSw-ZB-7bO" firstAttribute="top" secondItem="xsu-MQ-lwW" secondAttribute="bottom" constant="20" id="IaF-5R-6Kj"/>
+                            <constraint firstItem="vic-Nu-OMY" firstAttribute="top" secondItem="bHB-dd-90w" secondAttribute="bottom" constant="10" id="MT1-hC-l1u"/>
+                            <constraint firstItem="zwo-bW-G7k" firstAttribute="centerY" secondItem="bHB-dd-90w" secondAttribute="centerY" id="MZp-dK-XRU"/>
+                            <constraint firstItem="xsu-MQ-lwW" firstAttribute="top" secondItem="vic-Nu-OMY" secondAttribute="bottom" constant="20" id="Ns6-3C-jmo"/>
+                            <constraint firstItem="vic-Nu-OMY" firstAttribute="centerX" secondItem="0LW-yi-OqS" secondAttribute="centerX" id="QxU-su-PGB"/>
+                            <constraint firstItem="OSw-ZB-7bO" firstAttribute="leading" secondItem="0LW-yi-OqS" secondAttribute="leadingMargin" constant="5" id="beq-z9-8cr"/>
+                            <constraint firstItem="zwo-bW-G7k" firstAttribute="leading" secondItem="bHB-dd-90w" secondAttribute="trailing" constant="30" id="ekJ-MA-Vyo"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="OSw-ZB-7bO" secondAttribute="trailing" constant="5" id="j62-RV-Dax"/>
+                            <constraint firstItem="ykR-zm-IJO" firstAttribute="top" secondItem="OSw-ZB-7bO" secondAttribute="bottom" constant="20" id="sRN-JM-8cv"/>
+                            <constraint firstItem="xsu-MQ-lwW" firstAttribute="leading" secondItem="0LW-yi-OqS" secondAttribute="leadingMargin" constant="-20" id="vb7-s0-6MS"/>
+                            <constraint firstItem="bHB-dd-90w" firstAttribute="top" secondItem="TqT-sY-qSj" secondAttribute="bottom" constant="10" id="wI8-rn-iBZ"/>
+                            <constraint firstItem="bHB-dd-90w" firstAttribute="centerX" secondItem="0LW-yi-OqS" secondAttribute="centerX" id="ylN-wR-Wm2"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="editProxyNicknameButton" destination="zwo-bW-G7k" id="URe-PH-kaq"/>
+                        <outlet property="proxyNicknameLabel" destination="bHB-dd-90w" id="0ng-Os-ghd"/>
+                        <outlet property="segmentedControl" destination="vic-Nu-OMY" id="uDf-2h-idC"/>
+                        <outlet property="tableView" destination="xsu-MQ-lwW" id="MVn-W2-Oov"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Lq3-nv-bQe" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="913" y="736"/>
         </scene>
         <!--Create New Proxy View Controller-->
         <scene sceneID="6GZ-F7-Bb9">
@@ -216,7 +342,7 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Yoi-Lq-q2L">
                                 <rect key="frame" x="30" y="302" width="540" height="30"/>
-                                <state key="normal" title="Create!"/>
+                                <state key="normal" title="Create"/>
                                 <connections>
                                     <action selector="tapCreateProxyButton:" destination="80k-ew-HY1" eventType="touchUpInside" id="JdI-jz-QRJ"/>
                                 </connections>

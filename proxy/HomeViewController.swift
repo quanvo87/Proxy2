@@ -6,7 +6,6 @@
 //  Copyright © 2016 Quan Vo. All rights reserved.
 //
 
-import UIKit
 import FirebaseAuth
 import FirebaseDatabase
 
@@ -14,7 +13,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     private let api = API.sharedInstance
     private let ref = FIRDatabase.database().reference()
-    private var userProxiesRefHandle = FIRDatabaseHandle()
+    private var userProxiesReferenceHandle = FIRDatabaseHandle()
     private var proxies = [Proxy]()
     
     @IBOutlet weak var menuButton: UIBarButtonItem!
@@ -27,15 +26,20 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         setUpTableView()
         tryLogin()
     }
-
+    
+    override func viewWillAppear(animated: Bool) {
+        if navigationItem.title == "" {
+            navigationItem.title = "My Proxies"
+        }
+    }
+    
     deinit {
-        ref.child("users").child(api.uid).child("proxies").removeObserverWithHandle(userProxiesRefHandle)
+        ref.child("users").child(api.uid).child("proxies").removeObserverWithHandle(userProxiesReferenceHandle)
     }
     
     func setUpUI() {
-        self.navigationItem.title = "My Proxies"
-        self.menuButton.action = #selector(SWRevealViewController.revealToggle(_:))
-        self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
+        menuButton.action = #selector(SWRevealViewController.revealToggle(_:))
+        view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
     }
     
     func setUpTableView() {
@@ -59,7 +63,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func configureDatabase() {
-        userProxiesRefHandle = ref.child("users").child(api.uid).child("proxies").queryOrderedByChild("lastEventTime").observeEventType(.Value, withBlock: { snapshot in
+        userProxiesReferenceHandle = ref.child("users").child(api.uid).child("proxies").queryOrderedByChild("lastEventTime").observeEventType(.Value, withBlock: { snapshot in
             var newProxies = [Proxy]()
             for item in snapshot.children {
                 let proxy = Proxy(snapshot: item as! FIRDataSnapshot)
@@ -89,5 +93,14 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         cell.proxyNicknameLabel.text = proxy.nickname == "" ? "" : "- \"" + proxy.nickname + "\""
         cell.lastEventMessageLabel.text = proxy.lastEvent
         return cell
+    }
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let proxy = proxies[indexPath.row]
+        if let proxyViewController = storyboard?.instantiateViewControllerWithIdentifier("Proxy View Controller") as? ProxyViewController {
+            proxyViewController.proxyKey = proxy.key
+            navigationItem.title = ""
+            navigationController?.pushViewController(proxyViewController, animated: true)
+        }
     }
 }
