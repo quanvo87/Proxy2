@@ -9,13 +9,13 @@
 struct SideBarItems {
 
     private let _sideBarItems =
-        [SideBarItem(title: "Home"),
-         SideBarItem(title: "Turn On Notifications"),
-         SideBarItem(title: "Report An Issue"),
-         SideBarItem(title: "Trash"),
-         SideBarItem(title: "Log Out"),
-         SideBarItem(title: "Delete Account"),
-         SideBarItem(title: "About")]
+        [SideBarItem(title: Constants.SideBarItemNames.Home),
+         SideBarItem(title: Constants.SideBarItemNames.TurnOnNotifications),
+         SideBarItem(title: Constants.SideBarItemNames.ReportAnIssue),
+         SideBarItem(title: Constants.SideBarItemNames.Trash),
+         SideBarItem(title: Constants.SideBarItemNames.LogOut),
+         SideBarItem(title: Constants.SideBarItemNames.DeleteAccount),
+         SideBarItem(title: Constants.SideBarItemNames.About)]
     
     var sideBarItems: [SideBarItem] {
         return _sideBarItems

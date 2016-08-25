@@ -218,7 +218,7 @@
                                 <rect key="frame" x="30" y="302" width="540" height="30"/>
                                 <state key="normal" title="Create!"/>
                                 <connections>
-                                    <action selector="tapCreateButton:" destination="80k-ew-HY1" eventType="touchUpInside" id="Idj-k9-GJ6"/>
+                                    <action selector="tapCreateProxyButton:" destination="80k-ew-HY1" eventType="touchUpInside" id="JdI-jz-QRJ"/>
                                 </connections>
                             </button>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Nickname (optional)" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="GKm-S7-iiX" userLabel="Nickname">

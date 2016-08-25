@@ -6,10 +6,10 @@ target 'proxy' do
   use_frameworks!
 
   # Pods for proxy
-  pod 'FacebookCore'
-  pod 'FacebookLogin'
   pod 'Firebase'
   pod 'FirebaseAuth'
   pod 'Firebase/Database'
+  pod 'FacebookCore'
+  pod 'FacebookLogin'
 
 end

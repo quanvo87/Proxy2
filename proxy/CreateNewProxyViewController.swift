@@ -10,7 +10,7 @@ import UIKit
 
 class CreateNewProxyViewController: UIViewController {
     
-    let api = API.sharedInstance
+    private let api = API.sharedInstance
     private var proxyKey = ""
     
     @IBOutlet weak var newProxyNameLabel: UILabel!
@@ -23,7 +23,6 @@ class CreateNewProxyViewController: UIViewController {
         super.viewDidLoad()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(CreateNewProxyViewController.proxyCreated), name: Constants.NotificationKeys.ProxyCreated, object: nil)
-        
         setUpUI()
         createProxy()
     }
@@ -61,38 +60,28 @@ class CreateNewProxyViewController: UIViewController {
             let statusCode = httpResponse.statusCode
             if statusCode == 200 {
                 do {
-                    var adjectives = [String]()
-                    var nouns = [String]()
                     let json = try NSJSONSerialization.JSONObjectWithData(data!, options: .AllowFragments)
-                    if let fetchedAdjectives = json["adjectives"] as? [String] {
-                        adjectives = fetchedAdjectives
+                    if let adjectives = json["adjectives"] as? [String], nouns = json["nouns"] as? [String] {
+                        self.api.loadWordBank(adjectives, nouns: nouns)
+                        self.createProxyFromWordBank()
                     }
-                    if let fetchedNouns = json["nouns"] as? [String] {
-                        nouns = fetchedNouns
-                    }
-                    self.api.loadWordBank(adjectives, nouns: nouns)
-                    self.createProxyFromWordBank()
                 } catch {
                     self.showAlert("Error Fetching Word Bank", message: "Please try again later.")
                 }
             } else {
-                self.showRetryLoadWordBank("Error Fetching Word Bank", message: (error?.localizedDescription)!)
+                dispatch_async(dispatch_get_main_queue()) {
+                    let alert = UIAlertController(title: "Error Fetching Word Bank", message: error!.localizedDescription, preferredStyle: .Alert)
+                    let retryAction = UIAlertAction(title: "Retry", style: .Default, handler: { action in
+                        self.loadWordBank()
+                    })
+                    let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+                    alert.addAction(retryAction)
+                    alert.addAction(cancelAction)
+                    self.presentViewController(alert, animated: true, completion: nil)
+                }
             }
         }
         task.resume()
-    }
-    
-    func showRetryLoadWordBank(title: String, message: String) {
-        dispatch_async(dispatch_get_main_queue()) {
-            let alert = UIAlertController(title: title, message: message, preferredStyle: .Alert)
-            let retryAction = UIAlertAction(title: "Retry", style: .Default, handler: { action in
-                
-            })
-            let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
-            alert.addAction(retryAction)
-            alert.addAction(cancelAction)
-            self.presentViewController(alert, animated: true, completion: nil)
-        }
     }
     
     func proxyCreated(notification: NSNotification) {
@@ -108,7 +97,7 @@ class CreateNewProxyViewController: UIViewController {
         api.refreshProxyFromOldProxyWithKey(proxyKey)
     }
     
-    @IBAction func tapCreateButton(sender: AnyObject) {
+    @IBAction func tapCreateProxyButton(sender: AnyObject) {
         disableButtons()
         let newProxyNickname = newProxyNicknameTextField.text
         if newProxyNickname != "" {

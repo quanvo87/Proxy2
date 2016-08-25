@@ -15,7 +15,7 @@ struct Proxy {
     var owner = FIRAuth.auth()?.currentUser?.uid
     var name = ""
     var nickname = ""
-    var lastEvent = "Just created!"
+    var lastEvent = "Just created."
     var lastEventTime = 0 - NSDate().timeIntervalSince1970
     var unreadEvents = 0
     var conversations = ""

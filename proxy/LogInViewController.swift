@@ -68,7 +68,7 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
             FIRAuth.auth()?.createUserWithEmail(email!, password: password!) { (user, error) in
                 if error == nil {
                     let changeRequest = user!.profileChangeRequest()
-                    changeRequest.displayName = user!.email!.componentsSeparatedByString("@")[0]
+                    changeRequest.displayName = user!.email!
                     changeRequest.commitChangesWithCompletion(){ (error) in
                         if error == nil {
                             self.ref.child("users").child(user!.uid).setValue(["username": user!.displayName!])
@@ -90,19 +90,23 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
         let loginManager = LoginManager()
         loginManager.logIn([ .PublicProfile ], viewController: self) { loginResult in
             switch loginResult {
-            case .Failed(let error):
-                print(error)
+            case .Failed:
+                self.showAlert("Error Logging In With Facebook", message: "Please check your Facebook credentials or try again another time.")
             case .Cancelled:
-                print("User cancelled login.")
+                break
             case .Success:
                 let credential = FIRFacebookAuthProvider.credentialWithAccessToken(FBSDKAccessToken.currentAccessToken().tokenString)
-                FIRAuth.auth()?.signInWithCredential(credential) { (user, error) in
-                    if let error = error {
-                        self.showAlert("Error Logging In With Facebook", message: error.localizedDescription)
+                FIRAuth.auth()?.signInWithCredential(credential) { user, error in
+                    if error == nil {
+                        let uid = user?.uid
+                        self.ref.child("users").queryOrderedByKey().queryEqualToValue(uid).observeSingleEventOfType(.Value, withBlock: { snapshot in
+                            if snapshot.childrenCount == 0 {
+                                self.ref.child("users").child(uid!).setValue(["username": user!.displayName!])
+                            }
+                        })
+                        self.dismissViewControllerAnimated(true, completion: nil)
                     } else {
-                        if (FIRAuth.auth()?.currentUser) != nil {
-                            self.dismissViewControllerAnimated(true, completion: nil)
-                        }
+                        self.showAlert("Error Logging In With Facebook", message: error!.localizedDescription)
                     }
                 }
             }

@@ -15,11 +15,12 @@ class API {
     private var _uid = ""
     private let ref = FIRDatabase.database().reference()
     private var proxiesRef = FIRDatabaseReference()
+    private var userProxiesRef = FIRDatabaseReference()
     private var proxyNameGenerator = ProxyNameGenerator()
     private var currentlyCreatingProxy = false
     
     private init() {
-        proxiesRef = ref.child("proxies")
+        self.proxiesRef = self.ref.child("proxies")
     }
     
     var uid: String {
@@ -28,6 +29,7 @@ class API {
         }
         set (newValue) {
             _uid = newValue
+            self.userProxiesRef = self.ref.child("users").child(self.uid).child("proxies")
         }
     }
     
@@ -53,7 +55,7 @@ class API {
         proxiesRef.queryOrderedByChild("name").queryEqualToValue(proxy.name).observeSingleEventOfType(.Value, withBlock: { snapshot in
             if snapshot.childrenCount == 1 {
                 self.currentlyCreatingProxy = false
-                self.ref.child("users").child(self.uid).child("proxies").child(key).setValue(proxy.toAnyObject())
+                self.userProxiesRef.child(key).setValue(proxy.toAnyObject())
                 NSNotificationCenter.defaultCenter().postNotificationName(Constants.NotificationKeys.ProxyCreated, object: self, userInfo: ["proxy": proxy.toAnyObject()])
             } else {
                 self.deleteProxyWithKey(key)
@@ -67,7 +69,7 @@ class API {
     func updateNicknameForProxyWithKey(key: String, nickname: String) {
         ref.updateChildValues([
             "/proxies/\(key)/nickname": nickname,
-            "/users/\(_uid)/proxies/\(key)/nickname": nickname])
+            "/users/\(uid)/proxies/\(key)/nickname": nickname])
     }
     
     func refreshProxyFromOldProxyWithKey(oldProxyKey: String) {
@@ -77,7 +79,7 @@ class API {
     
     func deleteProxyWithKey(key: String) {
         proxiesRef.child(key).removeValue()
-        ref.child("users").child(_uid).child("proxies").child(key).removeValue()
+        userProxiesRef.child(key).removeValue()
     }
     
     func cancelCreatingProxyWithKey(key: String) {

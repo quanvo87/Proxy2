@@ -21,18 +21,21 @@ class SideBarViewController: UIViewController, UITableViewDelegate, UITableViewD
         super.viewDidLoad()
         
         sideBarItems = SideBarItems().sideBarItems
-        
-        sideBarTableView.delegate = self
-        sideBarTableView.dataSource = self
-        sideBarTableView.reloadData()
+        setUpTableView()
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewWillAppear(animated: Bool) {
         FIRAuth.auth()?.addAuthStateDidChangeListener { auth, user in
             if let user = user {
                 self.usernameLabel.text = user.displayName
             }
         }
+    }
+    
+    func setUpTableView() {
+        sideBarTableView.delegate = self
+        sideBarTableView.dataSource = self
+        sideBarTableView.reloadData()
     }
     
     func toggleSideBar() {
@@ -55,17 +58,19 @@ class SideBarViewController: UIViewController, UITableViewDelegate, UITableViewD
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let sideBarItemTitle = sideBarItems[indexPath.row].title
         switch sideBarItemTitle {
-        case "Home":
+        case Constants.SideBarItemNames.Home:
             tapHome()
-        case "Turn On Notifications":
+        case Constants.SideBarItemNames.TurnOnNotifications:
             tapTurnOnNotifications()
-        case "Trash":
+        case Constants.SideBarItemNames.ReportAnIssue:
+            reportAnIssue()
+        case Constants.SideBarItemNames.Trash:
             tapTrash()
-        case "Log Out":
+        case Constants.SideBarItemNames.LogOut:
             tapLogOut()
-        case "Delete Account":
+        case Constants.SideBarItemNames.DeleteAccount:
             tapDeleteAccount()
-        case "About":
+        case Constants.SideBarItemNames.About:
             tapAbout()
         default:
             self.showAlert("Error", message: "Error selecting Side Bar Menu Item.")
@@ -77,6 +82,10 @@ class SideBarViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func tapTurnOnNotifications() {
+        
+    }
+    
+    func reportAnIssue() {
         
     }
     

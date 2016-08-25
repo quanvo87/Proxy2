@@ -14,7 +14,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     private let api = API.sharedInstance
     private let ref = FIRDatabase.database().reference()
-    private var userProxiesRef = FIRDatabaseHandle()
+    private var userProxiesRefHandle = FIRDatabaseHandle()
     private var proxies = [Proxy]()
     
     @IBOutlet weak var menuButton: UIBarButtonItem!
@@ -29,19 +29,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
 
     deinit {
-        ref.child("users").child(api.uid).child("proxies").removeObserverWithHandle(userProxiesRef)
-    }
-    
-    func tryLogin() {
-        FIRAuth.auth()?.addAuthStateDidChangeListener { auth, user in
-            if let user = user {
-                self.api.uid = user.uid
-                self.configureDatabase()
-            } else {
-                let logInViewController = self.storyboard!.instantiateViewControllerWithIdentifier("Log In") as! LogInViewController
-                self.parentViewController!.presentViewController(logInViewController, animated: true, completion: nil)
-            }
-        }
+        ref.child("users").child(api.uid).child("proxies").removeObserverWithHandle(userProxiesRefHandle)
     }
     
     func setUpUI() {
@@ -58,8 +46,20 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         homeTableView.estimatedRowHeight = 60
     }
     
+    func tryLogin() {
+        FIRAuth.auth()?.addAuthStateDidChangeListener { auth, user in
+            if let user = user {
+                self.api.uid = user.uid
+                self.configureDatabase()
+            } else {
+                let logInViewController = self.storyboard!.instantiateViewControllerWithIdentifier("Log In") as! LogInViewController
+                self.parentViewController!.presentViewController(logInViewController, animated: true, completion: nil)
+            }
+        }
+    }
+    
     func configureDatabase() {
-        userProxiesRef = ref.child("users").child(api.uid).child("proxies").queryOrderedByChild("lastEventTime").observeEventType(.Value, withBlock: { snapshot in
+        userProxiesRefHandle = ref.child("users").child(api.uid).child("proxies").queryOrderedByChild("lastEventTime").observeEventType(.Value, withBlock: { snapshot in
             var newProxies = [Proxy]()
             for item in snapshot.children {
                 let proxy = Proxy(snapshot: item as! FIRDataSnapshot)
@@ -86,7 +86,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         let cell = tableView.dequeueReusableCellWithIdentifier("Home Table View Cell", forIndexPath: indexPath) as! HomeTableViewCell
         let proxy = proxies[indexPath.row]
         cell.proxyNameLabel.text = proxy.name
-        cell.proxyNicknameLabel.text = proxy.nickname
+        cell.proxyNicknameLabel.text = proxy.nickname == "" ? "" : "- \"" + proxy.nickname + "\""
         cell.lastEventMessageLabel.text = proxy.lastEvent
         return cell
     }
