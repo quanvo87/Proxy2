@@ -108,8 +108,8 @@
                                                     <color key="textColor" red="0.50196081400000003" green="0.50196081400000003" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Last event message" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8Kv-9l-qdn">
-                                                    <rect key="frame" x="8" y="38" width="113" height="13.5"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Last event" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8Kv-9l-qdn">
+                                                    <rect key="frame" x="8" y="38" width="59" height="13.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                                     <color key="textColor" red="0.50196081400000003" green="0.50196081400000003" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
@@ -138,7 +138,7 @@
                                             </variation>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <outlet property="lastEventMessageLabel" destination="8Kv-9l-qdn" id="hg5-q5-Jey"/>
+                                            <outlet property="lastEventLabel" destination="8Kv-9l-qdn" id="Cp8-6X-zHc"/>
                                             <outlet property="proxyNameLabel" destination="vJD-zL-U60" id="8IY-NU-QQE"/>
                                             <outlet property="proxyNicknameLabel" destination="kbY-lR-DUb" id="GfA-Gk-JI6"/>
                                         </connections>
@@ -168,8 +168,8 @@
                         <barButtonItem key="leftBarButtonItem" title="Menu" id="9Wg-Y2-HZe"/>
                     </navigationItem>
                     <connections>
-                        <outlet property="homeTableView" destination="mwz-89-6i1" id="PPC-GY-e9U"/>
                         <outlet property="menuButton" destination="9Wg-Y2-HZe" id="N5U-E5-uOH"/>
+                        <outlet property="tableView" destination="mwz-89-6i1" id="ks4-fv-j3C"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -195,8 +195,8 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zwo-bW-G7k">
-                                <rect key="frame" x="368" y="25.5" width="30" height="30"/>
-                                <state key="normal" title="Edit"/>
+                                <rect key="frame" x="481" y="25.5" width="99" height="30"/>
+                                <state key="normal" title="Edit Nickname"/>
                                 <connections>
                                     <action selector="tapEditProxyNicknameButton:" destination="djG-b3-9q5" eventType="touchUpInside" id="joV-eb-AY3"/>
                                 </connections>
@@ -282,8 +282,8 @@
                             <constraint firstItem="zwo-bW-G7k" firstAttribute="centerY" secondItem="bHB-dd-90w" secondAttribute="centerY" id="MZp-dK-XRU"/>
                             <constraint firstItem="xsu-MQ-lwW" firstAttribute="top" secondItem="vic-Nu-OMY" secondAttribute="bottom" constant="20" id="Ns6-3C-jmo"/>
                             <constraint firstItem="vic-Nu-OMY" firstAttribute="centerX" secondItem="0LW-yi-OqS" secondAttribute="centerX" id="QxU-su-PGB"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="zwo-bW-G7k" secondAttribute="trailing" id="Vta-pG-C6r"/>
                             <constraint firstItem="OSw-ZB-7bO" firstAttribute="leading" secondItem="0LW-yi-OqS" secondAttribute="leadingMargin" constant="5" id="beq-z9-8cr"/>
-                            <constraint firstItem="zwo-bW-G7k" firstAttribute="leading" secondItem="bHB-dd-90w" secondAttribute="trailing" constant="30" id="ekJ-MA-Vyo"/>
                             <constraint firstAttribute="trailingMargin" secondItem="OSw-ZB-7bO" secondAttribute="trailing" constant="5" id="j62-RV-Dax"/>
                             <constraint firstItem="ykR-zm-IJO" firstAttribute="top" secondItem="OSw-ZB-7bO" secondAttribute="bottom" constant="20" id="sRN-JM-8cv"/>
                             <constraint firstItem="xsu-MQ-lwW" firstAttribute="leading" secondItem="0LW-yi-OqS" secondAttribute="leadingMargin" constant="-20" id="vb7-s0-6MS"/>
@@ -474,6 +474,102 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jSs-HM-bny" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-1293" y="1442"/>
+        </scene>
+        <!--Start A Conversation View Controller-->
+        <scene sceneID="0Gz-RR-aYh">
+            <objects>
+                <viewController storyboardIdentifier="Start A Conversation View Controller" id="t9h-Vt-RKS" userLabel="Start A Conversation View Controller" customClass="StartAConversationViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="HzN-jJ-R1h"/>
+                        <viewControllerLayoutGuide type="bottom" id="uOx-v7-H7n"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="JVl-Bo-Q0q">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Kr3-lf-vdZ" userLabel="Cancel Start A Conversation Button">
+                                <rect key="frame" x="527" y="25" width="48" height="30"/>
+                                <state key="normal" title="Cancel"/>
+                                <connections>
+                                    <action selector="tapCancelStartAConversationButton:" destination="t9h-Vt-RKS" eventType="touchUpInside" id="bDK-Cm-NlF"/>
+                                </connections>
+                            </button>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="First Message (optional)" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="YN9-my-CrD" userLabel="First Message Text">
+                                <rect key="frame" x="30" y="261" width="540" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="First Word" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="m0a-Hi-Vxj">
+                                <rect key="frame" x="30" y="191" width="223.5" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="249" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Second Word" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="2cU-9m-tAW">
+                                <rect key="frame" x="263" y="191" width="223.5" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Number" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Fvv-XE-FPi">
+                                <rect key="frame" x="497" y="191" width="73" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4BS-41-zJP" userLabel="Send Invite Button">
+                                <rect key="frame" x="30" y="311" width="540" height="30"/>
+                                <state key="normal" title="Send Invite"/>
+                                <connections>
+                                    <action selector="tapSendInviteButton:" destination="t9h-Vt-RKS" eventType="touchUpInside" id="JW0-ov-dK8"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Start A Conversation Between..." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SjI-M8-rMb">
+                                <rect key="frame" x="30" y="120" width="540" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="YN9-my-CrD" firstAttribute="top" secondItem="2cU-9m-tAW" secondAttribute="bottom" constant="40" id="0CE-vh-8wz"/>
+                            <constraint firstItem="SjI-M8-rMb" firstAttribute="leading" secondItem="JVl-Bo-Q0q" secondAttribute="leadingMargin" constant="10" id="1A8-9e-gAK"/>
+                            <constraint firstItem="Fvv-XE-FPi" firstAttribute="leading" secondItem="2cU-9m-tAW" secondAttribute="trailing" constant="10" id="2be-4e-Vbc"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="SjI-M8-rMb" secondAttribute="trailing" constant="10" id="8Q5-qh-PH4"/>
+                            <constraint firstItem="4BS-41-zJP" firstAttribute="width" secondItem="YN9-my-CrD" secondAttribute="width" id="A3b-Pc-GTv"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="4BS-41-zJP" secondAttribute="trailing" constant="10" id="IeI-7e-7NH"/>
+                            <constraint firstItem="2cU-9m-tAW" firstAttribute="top" secondItem="SjI-M8-rMb" secondAttribute="bottom" constant="50" id="KbW-Wj-toG"/>
+                            <constraint firstItem="m0a-Hi-Vxj" firstAttribute="width" secondItem="2cU-9m-tAW" secondAttribute="width" id="Pvd-As-AO4"/>
+                            <constraint firstItem="Fvv-XE-FPi" firstAttribute="trailing" secondItem="YN9-my-CrD" secondAttribute="trailing" id="QAC-3Q-O8a"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Kr3-lf-vdZ" secondAttribute="trailing" constant="5" id="Ymb-T6-72x"/>
+                            <constraint firstItem="Fvv-XE-FPi" firstAttribute="centerY" secondItem="2cU-9m-tAW" secondAttribute="centerY" id="Zpu-a7-HX0"/>
+                            <constraint firstItem="4BS-41-zJP" firstAttribute="top" secondItem="YN9-my-CrD" secondAttribute="bottom" constant="20" id="a1h-LR-X4m"/>
+                            <constraint firstItem="m0a-Hi-Vxj" firstAttribute="centerY" secondItem="2cU-9m-tAW" secondAttribute="centerY" id="bhO-5E-p6P"/>
+                            <constraint firstItem="2cU-9m-tAW" firstAttribute="leading" secondItem="m0a-Hi-Vxj" secondAttribute="trailing" constant="10" id="blJ-w9-5Av"/>
+                            <constraint firstItem="Kr3-lf-vdZ" firstAttribute="top" secondItem="HzN-jJ-R1h" secondAttribute="bottom" constant="5" id="che-ge-iFK"/>
+                            <constraint firstItem="m0a-Hi-Vxj" firstAttribute="leading" secondItem="YN9-my-CrD" secondAttribute="leading" id="dek-qk-FWN"/>
+                            <constraint firstItem="SjI-M8-rMb" firstAttribute="centerX" secondItem="JVl-Bo-Q0q" secondAttribute="centerX" id="eJM-DJ-DAd"/>
+                            <constraint firstItem="4BS-41-zJP" firstAttribute="leading" secondItem="JVl-Bo-Q0q" secondAttribute="leadingMargin" constant="10" id="hAw-36-RdL"/>
+                            <constraint firstItem="SjI-M8-rMb" firstAttribute="top" secondItem="HzN-jJ-R1h" secondAttribute="bottom" constant="100" id="kIm-uH-y3f"/>
+                            <constraint firstItem="YN9-my-CrD" firstAttribute="centerX" secondItem="JVl-Bo-Q0q" secondAttribute="centerX" id="nLd-yX-cHY"/>
+                        </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="eJM-DJ-DAd"/>
+                            </mask>
+                        </variation>
+                    </view>
+                    <connections>
+                        <outlet property="cancelStartAConversationButton" destination="Kr3-lf-vdZ" id="UOq-C2-0Bt"/>
+                        <outlet property="firstMessageTextField" destination="YN9-my-CrD" id="EZg-bL-bkt"/>
+                        <outlet property="firstWordTextField" destination="m0a-Hi-Vxj" id="0jm-Ks-YxA"/>
+                        <outlet property="numberTextField" destination="Fvv-XE-FPi" id="JeB-PJ-DNs"/>
+                        <outlet property="secondWordTextField" destination="2cU-9m-tAW" id="X92-ea-Ltd"/>
+                        <outlet property="sendInviteButton" destination="4BS-41-zJP" id="b77-Pp-DHd"/>
+                        <outlet property="startAConversationBetweenLabel" destination="SjI-M8-rMb" id="Zxg-tN-Qqc"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="uSP-F3-p1r" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="913" y="1442"/>
         </scene>
     </scenes>
 </document>

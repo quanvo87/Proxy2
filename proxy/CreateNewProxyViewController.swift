@@ -74,8 +74,8 @@ class CreateNewProxyViewController: UIViewController {
                     self.api.loadWordBank(adjectives, nouns: nouns)
                     self.createProxyFromWordBank()
                 }
-            } catch {
-                self.showAlert("Error Fetching Word Bank", message: "Please try again later.")
+            } catch let error as NSError {
+                self.showAlert("Error Fetching Word Bank", message: error.localizedDescription)
             }
         }
         task.resume()

@@ -50,13 +50,22 @@ class API {
     
     func tryCreateProxy() {
         let key = proxiesRef.childByAutoId().key
-        let proxy = Proxy(key: key, name: proxyNameGenerator.generateProxyName())
-        proxiesRef.child(key).setValue(proxy.toAnyObject())
-        proxiesRef.queryOrderedByChild("name").queryEqualToValue(proxy.name).observeSingleEventOfType(.Value, withBlock: { snapshot in
+        let name = proxyNameGenerator.generateProxyName()
+        let date = NSDate()
+        let proxy = ["key": key,
+                     "owner": uid,
+                     "name": name,
+                     "nickname": "",
+                     "lastEventTime": 0 - date.timeIntervalSince1970,
+                     "lastEvent": "Created at \(date).",
+                     "unreadEvents": 0]
+        
+        proxiesRef.child(key).setValue(proxy)
+        proxiesRef.queryOrderedByChild("name").queryEqualToValue(name).observeSingleEventOfType(.Value, withBlock: { snapshot in
             if snapshot.childrenCount == 1 {
                 self.currentlyCreatingProxy = false
-                self.userProxiesRef.child(key).setValue(proxy.toAnyObject())
-                NSNotificationCenter.defaultCenter().postNotificationName(Constants.NotificationKeys.ProxyCreated, object: self, userInfo: ["proxy": proxy.toAnyObject()])
+                self.userProxiesRef.child(key).setValue(proxy)
+                NSNotificationCenter.defaultCenter().postNotificationName(Constants.NotificationKeys.ProxyCreated, object: self, userInfo: ["proxy": proxy])
             } else {
                 self.deleteProxyWithKey(key)
                 if self.currentlyCreatingProxy {

@@ -10,7 +10,7 @@ class HomeTableViewCell: UITableViewCell {
 
     @IBOutlet weak var proxyNameLabel: UILabel!
     @IBOutlet weak var proxyNicknameLabel: UILabel!
-    @IBOutlet weak var lastEventMessageLabel: UILabel!
+    @IBOutlet weak var lastEventLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()

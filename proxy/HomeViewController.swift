@@ -14,10 +14,10 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     private let api = API.sharedInstance
     private let ref = FIRDatabase.database().reference()
     private var userProxiesReferenceHandle = FIRDatabaseHandle()
-    private var proxies = [Proxy]()
+    private var proxies = [FIRDataSnapshot]()
     
     @IBOutlet weak var menuButton: UIBarButtonItem!
-    @IBOutlet weak var homeTableView: UITableView!
+    @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,10 +44,10 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func setUpTableView() {
         automaticallyAdjustsScrollViewInsets = false
-        homeTableView.delegate = self
-        homeTableView.dataSource = self
-        homeTableView.rowHeight = UITableViewAutomaticDimension
-        homeTableView.estimatedRowHeight = 60
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 60
     }
     
     func tryLogin() {
@@ -64,13 +64,13 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func configureDatabase() {
         userProxiesReferenceHandle = ref.child("users").child(api.uid).child("proxies").queryOrderedByChild("lastEventTime").observeEventType(.Value, withBlock: { snapshot in
-            var newProxies = [Proxy]()
-            for item in snapshot.children {
-                let proxy = Proxy(snapshot: item as! FIRDataSnapshot)
-                newProxies.append(proxy)
+            print(snapshot)
+            var newProxies = [FIRDataSnapshot]()
+            for child in snapshot.children {
+                newProxies.append(child as! FIRDataSnapshot)
             }
             self.proxies = newProxies
-            self.homeTableView.reloadData()
+            self.tableView.reloadData()
         })
     }
     
@@ -88,17 +88,24 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("Home Table View Cell", forIndexPath: indexPath) as! HomeTableViewCell
-        let proxy = proxies[indexPath.row]
-        cell.proxyNameLabel.text = proxy.name
-        cell.proxyNicknameLabel.text = proxy.nickname == "" ? "" : "- \"" + proxy.nickname + "\""
-        cell.lastEventMessageLabel.text = proxy.lastEvent
+        
+        let proxySnapshot = proxies[indexPath.row]
+        let proxy = proxySnapshot.value as! Dictionary<String, AnyObject>
+        let name = proxy["name"] as! String
+        let nickname = proxy["nickname"] as! String
+        let lastEvent = proxy["lastEvent"] as! String
+        
+        cell.proxyNameLabel.text = name
+        cell.proxyNicknameLabel.text = nickname == "" ? "" : "- \"" + nickname + "\""
+        cell.lastEventLabel.text = lastEvent
         return cell
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let proxy = proxies[indexPath.row]
+        let proxySnapshot = proxies[indexPath.row]
+        let proxy = proxySnapshot.value as! Dictionary<String, AnyObject>
         if let proxyViewController = storyboard?.instantiateViewControllerWithIdentifier("Proxy View Controller") as? ProxyViewController {
-            proxyViewController.proxyKey = proxy.key
+            proxyViewController.proxy = proxy
             navigationItem.title = ""
             navigationController?.pushViewController(proxyViewController, animated: true)
         }

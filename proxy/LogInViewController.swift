@@ -10,7 +10,7 @@ import FirebaseAuth
 import FirebaseDatabase
 import FacebookLogin
 
-class LogInViewController: UIViewController, UITextFieldDelegate {
+class LogInViewController: UIViewController {
     
     private let ref = FIRDatabase.database().reference()
     private let emailSyntaxChecker = EmailSyntaxChecker()
@@ -35,11 +35,8 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
     
     func setUpUI() {
         emailTextField.clearButtonMode = .WhileEditing
-        
         passwordTextField.clearButtonMode = .WhileEditing
-        passwordTextField.delegate = self
         passwordTextField.secureTextEntry = true
-        
         bottomConstraint.constant = view.frame.size.height / 3
         bottomConstraintConstant = bottomConstraint.constant
     }
