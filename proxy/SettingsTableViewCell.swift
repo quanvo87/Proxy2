@@ -1,12 +1,12 @@
 //
-//  SideBarTableViewCell.swift
+//  SettingsTableViewCell.swift
 //  proxy
 //
 //  Created by Quan Vo on 8/20/16.
 //  Copyright © 2016 Quan Vo. All rights reserved.
 //
 
-class SideBarTableViewCell: UITableViewCell {
+class SettingsTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()

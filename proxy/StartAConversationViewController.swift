@@ -60,60 +60,60 @@ class StartAConversationViewController: UIViewController {
     }
     
     @IBAction func tapSendInviteButton(sender: AnyObject) {
-        self.sendInviteButton.enabled = false
-        guard
-            let firstWord = firstWordTextField.text,
-            let secondWord = secondWordTextField.text,
-            let number = numberTextField.text
-            
-            // check for blank fields
-            where firstWord != "" && secondWord != "" && number != "" else {
-                self.sendInviteButton.enabled = true
-                showAlert("Empty Fields", message: "Please enter a valid value in all the fields.")
-                return
-        }
-        
-        let proxyName = firstWord.lowercaseString + secondWord.lowercaseString.capitalizedString + number
-        self.ref.child("proxies").queryOrderedByChild("name").queryEqualToValue(proxyName).observeSingleEventOfType(.Value, withBlock: { snapshot in
-            
-            // check if proxy exists
-            guard snapshot.childrenCount > 0 else {
-                self.sendInviteButton.enabled = true
-                self.showAlert("Proxy Doesn't Exist", message: "Please try again.")
-                return
-            }
-            
-//            let receiverProxy = Proxy(snapshot: snapshot.children.nextObject() as! FIRDataSnapshot)
-            
-            // check for proxy not belong to sender
-            guard receiverProxy.owner != self.api.uid else {
-                self.sendInviteButton.enabled = true
-                self.showAlert("Can't Message Yourself", message: "That proxy belongs to you.")
-                return
-            }
-            
-            // check for existing invite for both users
-            self.ref.child("proxies").child(receiverProxy.key).child("invitesFrom").queryOrderedByKey().queryEqualToValue(self.proxy.name).observeSingleEventOfType(.Value, withBlock: { snapshot in
-                
-                guard snapshot.childrenCount == 0 else {
-                    self.sendInviteButton.enabled = true
-                    self.showAlert("Invite Already Exists", message: "An invite already exists between these proxies.")
-                    return
-                }
-                
-                // create the invite
-                let key = self.ref.child("invites").childByAutoId().key
-                let invite = Invite(key: key, senderProxyName: self.proxy.name, receiverId: receiverProxy.owner, receiverProxyName: receiverProxy.name, message: self.firstMessageTextField.text!).toAnyObject()
-                
-                self.ref.updateChildValues([
-                    "/invites/\(key)": invite,
-                    "/users/\(self.api.uid)/proxies/\(self.proxy.key)/invites/\(key)": invite,
-                    "/users/\(self.api.uid)/proxies/\(self.proxy.key)/invitesFrom/\(receiverProxy.name)": true,
-                    "/users/\(receiverProxy.owner)/proxies/\(receiverProxy.key)/invites/\(key)": invite,
-                    "/users/\(receiverProxy.owner)/proxies/\(receiverProxy.key)/invitesFrom/\(self.proxy.name)": true])
-                self.dismissViewControllerAnimated(true, completion: nil)
-            })
-        })
+//        self.sendInviteButton.enabled = false
+//        guard
+//            let firstWord = firstWordTextField.text,
+//            let secondWord = secondWordTextField.text,
+//            let number = numberTextField.text
+//            
+//            // check for blank fields
+//            where firstWord != "" && secondWord != "" && number != "" else {
+//                self.sendInviteButton.enabled = true
+//                showAlert("Empty Fields", message: "Please enter a valid value in all the fields.")
+//                return
+//        }
+//        
+//        let proxyName = firstWord.lowercaseString + secondWord.lowercaseString.capitalizedString + number
+//        self.ref.child("proxies").queryOrderedByChild("name").queryEqualToValue(proxyName).observeSingleEventOfType(.Value, withBlock: { snapshot in
+//            
+//            // check if proxy exists
+//            guard snapshot.childrenCount > 0 else {
+//                self.sendInviteButton.enabled = true
+//                self.showAlert("Proxy Doesn't Exist", message: "Please try again.")
+//                return
+//            }
+//            
+////            let receiverProxy = Proxy(snapshot: snapshot.children.nextObject() as! FIRDataSnapshot)
+//            
+//            // check for proxy not belong to sender
+//            guard receiverProxy.owner != self.api.uid else {
+//                self.sendInviteButton.enabled = true
+//                self.showAlert("Can't Message Yourself", message: "That proxy belongs to you.")
+//                return
+//            }
+//            
+//            // check for existing invite for both users
+//            self.ref.child("proxies").child(receiverProxy.key).child("invitesFrom").queryOrderedByKey().queryEqualToValue(self.proxy.name).observeSingleEventOfType(.Value, withBlock: { snapshot in
+//                
+//                guard snapshot.childrenCount == 0 else {
+//                    self.sendInviteButton.enabled = true
+//                    self.showAlert("Invite Already Exists", message: "An invite already exists between these proxies.")
+//                    return
+//                }
+//                
+//                // create the invite
+//                let key = self.ref.child("invites").childByAutoId().key
+//                let invite = Invite(key: key, senderProxyName: self.proxy.name, receiverId: receiverProxy.owner, receiverProxyName: receiverProxy.name, message: self.firstMessageTextField.text!).toAnyObject()
+//                
+//                self.ref.updateChildValues([
+//                    "/invites/\(key)": invite,
+//                    "/users/\(self.api.uid)/proxies/\(self.proxy.key)/invites/\(key)": invite,
+//                    "/users/\(self.api.uid)/proxies/\(self.proxy.key)/invitesFrom/\(receiverProxy.name)": true,
+//                    "/users/\(receiverProxy.owner)/proxies/\(receiverProxy.key)/invites/\(key)": invite,
+//                    "/users/\(receiverProxy.owner)/proxies/\(receiverProxy.key)/invitesFrom/\(self.proxy.name)": true])
+//                self.dismissViewControllerAnimated(true, completion: nil)
+//            })
+//        })
     }
     
     @IBAction func tapCancelStartAConversationButton(sender: AnyObject) {

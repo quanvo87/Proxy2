@@ -6,32 +6,18 @@
 //  Copyright © 2016 Quan Vo. All rights reserved.
 //
 
+import FirebaseAuth
 import FirebaseDatabase
 
 class API {
     
     static let sharedInstance = API()
     
-    private var _uid = ""
     private let ref = FIRDatabase.database().reference()
-    private var proxiesRef = FIRDatabaseReference()
-    private var userProxiesRef = FIRDatabaseReference()
     private var proxyNameGenerator = ProxyNameGenerator()
     private var currentlyCreatingProxy = false
     
-    private init() {
-        self.proxiesRef = self.ref.child("proxies")
-    }
-    
-    var uid: String {
-        get {
-            return _uid
-        }
-        set (newValue) {
-            _uid = newValue
-            self.userProxiesRef = self.ref.child("users").child(self.uid).child("proxies")
-        }
-    }
+    private init() {}
     
     func loadWordBank(adjectives: [String], nouns: [String]) {
         proxyNameGenerator.adjectives = adjectives
@@ -49,22 +35,25 @@ class API {
     }
     
     func tryCreateProxy() {
+        let uid = FIRAuth.auth()?.currentUser?.uid
+        let proxiesRef = self.ref.child("proxies")
+        let userProxiesRef = self.ref.child("users").child(uid!).child("proxies")
         let key = proxiesRef.childByAutoId().key
         let name = proxyNameGenerator.generateProxyName()
         let date = NSDate()
+        let lastEventTime = 0 - date.timeIntervalSince1970
+        let lastEvent = "Created at \(date)."
         let proxy = ["key": key,
-                     "owner": uid,
+                     "owner": uid!,
                      "name": name,
-                     "nickname": "",
-                     "lastEventTime": 0 - date.timeIntervalSince1970,
-                     "lastEvent": "Created at \(date).",
+                     "lastEventTime": lastEventTime,
+                     "lastEvent": lastEvent,
                      "unreadEvents": 0]
-        
         proxiesRef.child(key).setValue(proxy)
         proxiesRef.queryOrderedByChild("name").queryEqualToValue(name).observeSingleEventOfType(.Value, withBlock: { snapshot in
             if snapshot.childrenCount == 1 {
                 self.currentlyCreatingProxy = false
-                self.userProxiesRef.child(key).setValue(proxy)
+                userProxiesRef.child(key).setValue(proxy)
                 NSNotificationCenter.defaultCenter().postNotificationName(Constants.NotificationKeys.ProxyCreated, object: self, userInfo: ["proxy": proxy])
             } else {
                 self.deleteProxyWithKey(key)
@@ -76,6 +65,7 @@ class API {
     }
     
     func updateNicknameForProxyWithKey(key: String, nickname: String) {
+        let uid = FIRAuth.auth()?.currentUser?.uid
         ref.updateChildValues([
             "/proxies/\(key)/nickname": nickname,
             "/users/\(uid)/proxies/\(key)/nickname": nickname])
@@ -87,6 +77,9 @@ class API {
     }
     
     func deleteProxyWithKey(key: String) {
+        let uid = FIRAuth.auth()?.currentUser?.uid
+        let proxiesRef = self.ref.child("proxies")
+        let userProxiesRef = self.ref.child("users").child(uid!).child("proxies")
         proxiesRef.child(key).removeValue()
         userProxiesRef.child(key).removeValue()
     }

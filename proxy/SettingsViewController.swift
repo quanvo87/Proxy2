@@ -1,5 +1,5 @@
 //
-//  SideBarViewController.swift
+//  SettingsViewController.swift
 //  proxy
 //
 //  Created by Quan Vo on 8/20/16.
@@ -9,9 +9,9 @@
 import FirebaseAuth
 import FacebookLogin
 
-class SideBarViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class SettingsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    private var sideBarItems = [SideBarItem]()
+    private var settingsItems = [SettingsItem]()
     
     @IBOutlet weak var usernameLabel: UILabel!
     @IBOutlet weak var sideBarTableView: UITableView!
@@ -19,65 +19,57 @@ class SideBarViewController: UIViewController, UITableViewDelegate, UITableViewD
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        sideBarItems = SideBarItems().sideBarItems
+        settingsItems = SettingsItems().settingsItems
+        setUpUI()
         setUpTableView()
     }
     
-    override func viewWillAppear(animated: Bool) {
+    func setUpUI() {
         FIRAuth.auth()?.addAuthStateDidChangeListener { auth, user in
             if let user = user {
-                self.usernameLabel.text = user.displayName
+                self.navigationItem.title = user.displayName
+            } else {
+                self.navigationItem.title = ""
             }
         }
     }
     
     func setUpTableView() {
+        self.automaticallyAdjustsScrollViewInsets = false
         sideBarTableView.delegate = self
         sideBarTableView.dataSource = self
         sideBarTableView.reloadData()
     }
     
-    func toggleSideBar() {
-        self.revealViewController().revealToggle(self)
-    }
-    
     // MARK: - Table view data source
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return sideBarItems.count
+        return settingsItems.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("Side Bar Table View Cell", forIndexPath: indexPath) as! SideBarTableViewCell
-        let sideBarItem = sideBarItems[indexPath.row]
-        cell.textLabel?.text = sideBarItem.title
+        let cell = tableView.dequeueReusableCellWithIdentifier("Settings Table View Cell", forIndexPath: indexPath) as! SettingsTableViewCell
+        let settingsItem = settingsItems[indexPath.row]
+        cell.textLabel?.text = settingsItem.title
         return cell
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let sideBarItemTitle = sideBarItems[indexPath.row].title
-        switch sideBarItemTitle {
-        case Constants.SideBarItemNames.Home:
-            tapHome()
-        case Constants.SideBarItemNames.TurnOnNotifications:
+        let settingsItemTitle = settingsItems[indexPath.row].title
+        switch settingsItemTitle {
+        case Constants.SettingsItemNames.TurnOnNotifications:
             tapTurnOnNotifications()
-        case Constants.SideBarItemNames.ReportAnIssue:
+        case Constants.SettingsItemNames.ReportAnIssue:
             reportAnIssue()
-        case Constants.SideBarItemNames.Trash:
-            tapTrash()
-        case Constants.SideBarItemNames.LogOut:
+        case Constants.SettingsItemNames.LogOut:
             tapLogOut()
-        case Constants.SideBarItemNames.DeleteAccount:
+        case Constants.SettingsItemNames.DeleteAccount:
             tapDeleteAccount()
-        case Constants.SideBarItemNames.About:
+        case Constants.SettingsItemNames.About:
             tapAbout()
         default:
             self.showAlert("Error", message: "Error selecting Side Bar Menu Item.")
         }
-    }
-    
-    func tapHome() {
-        toggleSideBar()
     }
     
     func tapTurnOnNotifications() {
@@ -88,22 +80,15 @@ class SideBarViewController: UIViewController, UITableViewDelegate, UITableViewD
         
     }
     
-    func tapTrash() {
-        
-    }
-    
-    func tapSuggestAWord() {
-        
-    }
-    
     func tapLogOut() {
         let alert = UIAlertController(title: "Log Out", message: "Are you sure you want to log out?", preferredStyle: .Alert)
         let yesButton: UIAlertAction = UIAlertAction(title: "Yes", style: .Default) { action in
             let firebaseAuth = FIRAuth.auth()
             do {
                 try firebaseAuth?.signOut()
-                self.usernameLabel.text = ""
-                self.toggleSideBar()
+                let logInViewController  = self.storyboard!.instantiateViewControllerWithIdentifier("Log In View Controller") as! LogInViewController
+                let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+                appDelegate.window?.rootViewController = logInViewController
             } catch let error as NSError {
                 self.showAlert("Error Logging Out", message: error.localizedDescription)
             }

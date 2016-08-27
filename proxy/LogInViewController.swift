@@ -42,43 +42,45 @@ class LogInViewController: UIViewController {
     }
     
     @IBAction func tapLogInButton(sender: AnyObject) {
-        let email = emailTextField.text?.lowercaseString
-        let password = passwordTextField.text
-        if emailSyntaxChecker.isValidEmail(email!) && password != "" {
-            FIRAuth.auth()?.signInWithEmail(email!, password: password!) { (user, error) in
-                if error == nil {
-                    self.dismissViewControllerAnimated(true, completion: nil)
-                } else {
-                    self.showAlert("Error Logging In", message: error!.localizedDescription)
-                }
+        guard
+            let email = emailTextField.text?.lowercaseString,
+            let password = passwordTextField.text
+            where emailSyntaxChecker.isValidEmail(email) && password != "" else {
+                showAlert("Invalid Email/Password", message: "Please enter a valid email and password.")
+                return
+        }
+        FIRAuth.auth()?.signInWithEmail(email, password: password) { user, error in
+            if let error = error {
+                self.showAlert("Error Logging In", message: error.localizedDescription)
+                return
             }
-        } else {
-            showAlert("Invalid Email/Password", message: "Please enter a valid email and password.")
+            self.showHomeScreen()
         }
     }
     
     @IBAction func tapCreateNewAccountButton(sender: AnyObject) {
-        let email = emailTextField.text?.lowercaseString
-        let password = passwordTextField.text
-        if emailSyntaxChecker.isValidEmail(email!) && password != "" {
-            FIRAuth.auth()?.createUserWithEmail(email!, password: password!) { (user, error) in
-                if error == nil {
-                    let changeRequest = user!.profileChangeRequest()
-                    changeRequest.displayName = user!.email!
-                    changeRequest.commitChangesWithCompletion(){ (error) in
-                        if error == nil {
-                            self.ref.child("users").child(user!.uid).setValue(["username": user!.displayName!])
-                            self.dismissViewControllerAnimated(true, completion: nil)
-                        } else {
-                            self.showAlert("Error Setting Display Name For User", message: error!.localizedDescription)
-                        }
-                    }
-                } else {
-                    self.showAlert("Error Creating Account", message: error!.localizedDescription)
-                }
+        guard
+            let email = emailTextField.text?.lowercaseString,
+            let password = passwordTextField.text
+            where emailSyntaxChecker.isValidEmail(email) && password != "" else {
+                showAlert("Invalid Email/Password", message: "Please enter a valid email and password.")
+                return
+        }
+        FIRAuth.auth()?.createUserWithEmail(email, password: password) { user, error in
+            if let error = error {
+                self.showAlert("Error Creating Account", message: error.localizedDescription)
+                return
             }
-        } else {
-            showAlert("Invalid Email/Password", message: "Please enter a valid email and password.")
+            let changeRequest = user!.profileChangeRequest()
+            changeRequest.displayName = user!.email!
+            changeRequest.commitChangesWithCompletion() { error in
+                if let error = error {
+                    self.showAlert("Error Setting Display Name For User", message: error.localizedDescription)
+                    return
+                }
+                self.ref.child("users").child(user!.uid).setValue(["username": user!.displayName!])
+                self.showHomeScreen()
+            }
         }
     }
     
@@ -93,20 +95,26 @@ class LogInViewController: UIViewController {
             case .Success:
                 let credential = FIRFacebookAuthProvider.credentialWithAccessToken(FBSDKAccessToken.currentAccessToken().tokenString)
                 FIRAuth.auth()?.signInWithCredential(credential) { user, error in
-                    if error == nil {
-                        let uid = user?.uid
-                        self.ref.child("users").queryOrderedByKey().queryEqualToValue(uid).observeSingleEventOfType(.Value, withBlock: { snapshot in
-                            if snapshot.childrenCount == 0 {
-                                self.ref.child("users").child(uid!).setValue(["username": user!.displayName!])
-                            }
-                        })
-                        self.dismissViewControllerAnimated(true, completion: nil)
-                    } else {
-                        self.showAlert("Error Logging In With Facebook", message: error!.localizedDescription)
+                    if let error = error {
+                        self.showAlert("Error Logging In With Facebook", message: error.localizedDescription)
+                        return
                     }
+                    let uid = user?.uid
+                    self.ref.child("users").queryOrderedByKey().queryEqualToValue(uid).observeSingleEventOfType(.Value, withBlock: { snapshot in
+                        if snapshot.childrenCount == 0 {
+                            self.ref.child("users").child(uid!).setValue(["username": user!.displayName!])
+                        }
+                    })
+                    self.showHomeScreen()
                 }
             }
         }
+    }
+    
+    func showHomeScreen() {
+        let tabBarController = self.storyboard!.instantiateViewControllerWithIdentifier("Tab Bar Controller") as! UITabBarController
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate.window?.rootViewController = tabBarController
     }
     
     // MARK: - Keyboard
