@@ -11,6 +11,7 @@ import FirebaseAuth
 
 class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
+    private let api = API.sharedInstance
     private var unreadMessages = 0
     
     @IBOutlet weak var homeTableView: UITableView!
@@ -18,12 +19,22 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        FIRAuth.auth()?.addAuthStateDidChangeListener { auth, user in
+            if let user = user {
+                self.api.uid = user.uid
+            } else {
+                let logInViewController  = self.storyboard!.instantiateViewControllerWithIdentifier("Log In View Controller") as! LogInViewController
+                let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+                appDelegate.window?.rootViewController = logInViewController
+            }
+        }
+        
         //        configureDataBase()
         setUpTableView()
     }
     
     override func viewDidAppear(animated: Bool) {
-        navigationItem.title = "Proxy (\(unreadMessages))"
+        navigationItem.title = "Conversations (\(unreadMessages))"
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -34,18 +45,6 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     //        ref.child("users").child(api.uid).child("proxies").child(proxyKey).child("coversations").removeObserverWithHandle(conversationsReferenceHandle)
     //        ref.child("users").child(api.uid).child("proxies").child(proxyKey).child("invites").removeObserverWithHandle(invitesReferenceHandle)
     //    }
-    
-    func tryLogIn() {
-        FIRAuth.auth()?.addAuthStateDidChangeListener { auth, user in
-            if let user = user {
-                //                self.configureDatabase()
-            } else {
-                let logInViewController  = self.storyboard!.instantiateViewControllerWithIdentifier("Log In View Controller") as! LogInViewController
-                let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-                appDelegate.window?.rootViewController = logInViewController
-            }
-        }
-    }
     
     func configureDataBase() {
         // also need observer to total user unread messages

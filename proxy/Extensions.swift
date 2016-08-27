@@ -17,3 +17,39 @@ extension UIViewController {
         }
     }
 }
+
+extension String {
+    
+    func nicknameFormatted() -> String {
+        return self == "" ? "" : " - \"\(self)\""
+    }
+    
+    func lastMessageWithTimestamp(interval: Double) -> String {
+        var lastMessage = self
+        let timestamp = interval.timeAgoFromTimeInterval()
+        if lastMessage == "" {
+            if timestamp == "Just now" {
+                lastMessage = "Created just now."
+            } else {
+                lastMessage = "Created \(timestamp) ago."
+            }
+        }
+        return lastMessage
+    }
+}
+
+extension Double {
+    
+    func timeAgoFromTimeInterval() -> String {
+        let date = NSDate(timeIntervalSince1970: 0 - self)
+        return timeAgoSince(date)
+    }
+}
+
+extension Int {
+    
+    func unreadMessageCountFormatted() -> String {
+        let unreadMessageCount = String(self)
+        return unreadMessageCount == "0" ? "" : unreadMessageCount
+    }
+}

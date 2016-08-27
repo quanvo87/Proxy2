@@ -10,6 +10,7 @@
 		1415610D1D620DB7002022BC /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1415610C1D620DB7002022BC /* API.swift */; };
 		1415611F1D62A8A3002022BC /* ProxyTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1415611E1D62A8A3002022BC /* ProxyTableViewCell.swift */; };
 		14265B7C1D63029200B65793 /* CreateNewProxyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14265B7B1D63029200B65793 /* CreateNewProxyViewController.swift */; };
+		143F76ED1D71EF6200EF305F /* TimeAgo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 143F76EC1D71EF6200EF305F /* TimeAgo.swift */; };
 		14A6F17B1D68D5F20015431E /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F17A1D68D5F20015431E /* SettingsViewController.swift */; };
 		14A6F17F1D68D8020015431E /* SettingsItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F17E1D68D8020015431E /* SettingsItems.swift */; };
 		14A6F1811D68D8160015431E /* SettingsItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F1801D68D8160015431E /* SettingsItem.swift */; };
@@ -34,6 +35,7 @@
 		1415610C1D620DB7002022BC /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		1415611E1D62A8A3002022BC /* ProxyTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyTableViewCell.swift; sourceTree = "<group>"; };
 		14265B7B1D63029200B65793 /* CreateNewProxyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateNewProxyViewController.swift; sourceTree = "<group>"; };
+		143F76EC1D71EF6200EF305F /* TimeAgo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeAgo.swift; sourceTree = "<group>"; };
 		14A6F17A1D68D5F20015431E /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		14A6F17E1D68D8020015431E /* SettingsItems.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsItems.swift; sourceTree = "<group>"; };
 		14A6F1801D68D8160015431E /* SettingsItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsItem.swift; sourceTree = "<group>"; };
@@ -96,9 +98,9 @@
 				14E19A5D1D6148700030B366 /* LogInViewController.swift */,
 				14A6F1841D6950C50015431E /* EmailSyntaxChecker.swift */,
 				14A6F19B1D6F963B0015431E /* HomeViewController.swift */,
-				1415611E1D62A8A3002022BC /* ProxyTableViewCell.swift */,
 				14A6F1A11D6FB5090015431E /* StartAConversationViewController.swift */,
 				14E19A591D61034A0030B366 /* MyProxiesViewController.swift */,
+				1415611E1D62A8A3002022BC /* ProxyTableViewCell.swift */,
 				14265B7B1D63029200B65793 /* CreateNewProxyViewController.swift */,
 				14A6F17A1D68D5F20015431E /* SettingsViewController.swift */,
 				14A6F1821D68E4E00015431E /* SettingsTableViewCell.swift */,
@@ -108,6 +110,7 @@
 				14A6F1931D6CF1410015431E /* ProxyNameGenerator.swift */,
 				14A6F18D1D6BDA880015431E /* Constants.swift */,
 				14E19A5B1D612CE80030B366 /* Extensions.swift */,
+				143F76EC1D71EF6200EF305F /* TimeAgo.swift */,
 				14E19A451D60EF100030B366 /* Main.storyboard */,
 				14E19A4D1D60EF100030B366 /* LaunchScreen.storyboard */,
 				14E19A4B1D60EF100030B366 /* Assets.xcassets */,
@@ -274,6 +277,7 @@
 				14A6F1941D6CF1410015431E /* ProxyNameGenerator.swift in Sources */,
 				14A6F1851D6950C50015431E /* EmailSyntaxChecker.swift in Sources */,
 				14A6F1A21D6FB5090015431E /* StartAConversationViewController.swift in Sources */,
+				143F76ED1D71EF6200EF305F /* TimeAgo.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

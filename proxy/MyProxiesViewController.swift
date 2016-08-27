@@ -11,6 +11,11 @@ import FirebaseDatabase
 
 class MyProxiesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
+    private let api = API.sharedInstance
+    private let ref = FIRDatabase.database().reference()
+    private var userProxiesReferenceHandle = FIRDatabaseHandle()
+    private var userUnreadMessageCountHandle = FIRDatabaseHandle()
+    private var proxies = [FIRDataSnapshot]()
     private var unreadMessages = 0
     
     @IBOutlet weak var myProxiesTableView: UITableView!
@@ -18,12 +23,12 @@ class MyProxiesViewController: UIViewController, UITableViewDelegate, UITableVie
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setUpUI()
         setUpTableView()
+        configureDatabase()
     }
     
     override func viewDidAppear(animated: Bool) {
-        navigationItem.title = "My Proxies (\(unreadMessages))"
+        setTitle()
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -31,11 +36,12 @@ class MyProxiesViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     deinit {
-//        ref.child("users").child(uid!).child("proxies").removeObserverWithHandle(userProxiesReferenceHandle)
+        ref.child("users").child(api.uid).child("proxies").removeObserverWithHandle(userProxiesReferenceHandle)
+        ref.child("users").child(api.uid).child("unreadMessageCount").removeObserverWithHandle(userProxiesReferenceHandle)
     }
     
-    func setUpUI() {
-        
+    func setTitle() {
+        navigationItem.title = "My Proxies (\(unreadMessages))"
     }
     
     func setUpTableView() {
@@ -47,35 +53,61 @@ class MyProxiesViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func configureDatabase() {
-//        userProxiesReferenceHandle = ref.child("users").child(uid!).child("proxies").queryOrderedByChild("lastEventTime").observeEventType(.Value, withBlock: { snapshot in
-//            print(snapshot)
-//            var newProxies = [FIRDataSnapshot]()
-//            for child in snapshot.children {
-//                newProxies.append(child as! FIRDataSnapshot)
-//            }
-//            self.proxies = newProxies
-//            self.tableView.reloadData()
-//        })
-    }
-    
-    @IBAction func tapNewProxyButton(sender: AnyObject) {
+        userProxiesReferenceHandle = ref.child("users").child(api.uid).child("proxies").queryOrderedByChild("lastMessageTime").observeEventType(.Value, withBlock: { snapshot in
+            var newProxies = [FIRDataSnapshot]()
+            for child in snapshot.children {
+                newProxies.append(child as! FIRDataSnapshot)
+            }
+            self.proxies = newProxies
+            self.myProxiesTableView.reloadData()
+        })
         
-    }
-    
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue == "New Proxy Segue" {
-            
-        }
+        userUnreadMessageCountHandle = ref.child("users").child(api.uid).child("unreadMessageCount").observeEventType(.Value, withBlock: { snapshot in
+            self.unreadMessages = snapshot.value as! Int
+            self.setTitle()
+        })
     }
     
     // MARK: - Table view data source
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return proxies.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("Proxy Table View Cell", forIndexPath: indexPath) as! ProxyTableViewCell
+        
+        let proxySnapshot = self.proxies[indexPath.row]
+        let proxy = proxySnapshot.value as! Dictionary<String, AnyObject>
+
+        var name = ""
+        var nickname = ""
+        var lastMessage = ""
+        var timestamp = 0.0
+        var unreadMessageCount = 0
+        
+        if let _name = proxy["name"] {
+            name = _name as! String
+        }
+        if let _nickname = proxy["nickname"] {
+            nickname = _nickname as! String
+        }
+        if let _timestamp = proxy["lastMessageTime"] {
+            timestamp = _timestamp as! Double
+        }
+        if let _lastMessage = proxy["lastMessage"] {
+            lastMessage = _lastMessage as! String
+        }
+        if let _unreadMessageCount = proxy["unreadMessageCount"] {
+            unreadMessageCount = _unreadMessageCount as! Int
+        }
+        
+        cell.nameLabel.text = name
+        cell.nicknameLabel.text = nickname.nicknameFormatted()
+        cell.timestampLabel.text = timestamp.timeAgoFromTimeInterval()
+        cell.lastMessagePreviewLabel.text = lastMessage.lastMessageWithTimestamp(timestamp)
+        cell.unreadMessageCountLabel.text = unreadMessageCount.unreadMessageCountFormatted()
+        
         return cell
     }
     

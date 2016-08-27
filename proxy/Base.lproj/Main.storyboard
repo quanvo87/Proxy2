@@ -102,20 +102,20 @@
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="79.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalCompressionResistancePriority="751" text="Name And Nickname" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X4w-Kw-H0x">
-                                                    <rect key="frame" x="73" y="8" width="136" height="17"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalCompressionResistancePriority="751" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X4w-Kw-H0x">
+                                                    <rect key="frame" x="73" y="8" width="38" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last Message Preview" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qmt-1M-FWN">
-                                                    <rect key="frame" x="73" y="30" width="126" height="14.5"/>
+                                                    <rect key="frame" x="73" y="31" width="126" height="14.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                                     <color key="textColor" red="0.50196081400000003" green="0.50196081400000003" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jg5-Up-Ug5">
-                                                    <rect key="frame" x="578" y="31" width="9" height="17"/>
+                                                    <rect key="frame" x="573" y="31" width="9" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <color key="textColor" red="0.0" green="0.50196081400000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
@@ -133,25 +133,34 @@
                                                         <constraint firstAttribute="height" constant="63" id="g5n-OL-8C1"/>
                                                     </constraints>
                                                 </imageView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalCompressionResistancePriority="751" text="Nickname" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lz8-Fy-Xwy" userLabel="Nickname Label">
+                                                    <rect key="frame" x="116" y="10" width="57" height="14.5"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                                    <color key="textColor" red="0.50196081400000003" green="0.50196081400000003" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="cZo-CS-wO0" firstAttribute="leading" secondItem="zFS-a2-Qcn" secondAttribute="leadingMargin" id="4aQ-nd-BKT"/>
                                                 <constraint firstItem="jg5-Up-Ug5" firstAttribute="centerY" secondItem="zFS-a2-Qcn" secondAttribute="centerY" id="93p-wJ-2nr"/>
-                                                <constraint firstItem="Qmt-1M-FWN" firstAttribute="top" secondItem="X4w-Kw-H0x" secondAttribute="bottom" constant="5" id="Arj-Sn-LMm"/>
+                                                <constraint firstItem="Qmt-1M-FWN" firstAttribute="top" secondItem="X4w-Kw-H0x" secondAttribute="bottom" constant="6" id="Arj-Sn-LMm"/>
                                                 <constraint firstItem="X4w-Kw-H0x" firstAttribute="top" secondItem="zFS-a2-Qcn" secondAttribute="topMargin" id="E7a-U1-PGk"/>
-                                                <constraint firstAttribute="trailingMargin" secondItem="jg5-Up-Ug5" secondAttribute="trailing" constant="5" id="Nss-oJ-6Cf"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="jg5-Up-Ug5" secondAttribute="trailing" constant="10" id="Nss-oJ-6Cf"/>
                                                 <constraint firstItem="cZo-CS-wO0" firstAttribute="top" secondItem="zFS-a2-Qcn" secondAttribute="topMargin" id="UQd-vJ-wwT"/>
                                                 <constraint firstAttribute="bottomMargin" secondItem="cZo-CS-wO0" secondAttribute="bottom" id="Wbg-xH-bVD"/>
                                                 <constraint firstItem="Qmt-1M-FWN" firstAttribute="leading" secondItem="cZo-CS-wO0" secondAttribute="trailing" constant="5" id="cOV-dF-3xi"/>
+                                                <constraint firstItem="Lz8-Fy-Xwy" firstAttribute="baseline" secondItem="X4w-Kw-H0x" secondAttribute="baseline" id="im8-N2-ruJ"/>
+                                                <constraint firstItem="Lz8-Fy-Xwy" firstAttribute="leading" secondItem="X4w-Kw-H0x" secondAttribute="trailing" constant="5" id="nhi-pU-4RO"/>
                                                 <constraint firstItem="X4w-Kw-H0x" firstAttribute="leading" secondItem="cZo-CS-wO0" secondAttribute="trailing" constant="5" id="wiH-z1-Woc"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="e4W-BO-sq5" secondAttribute="trailing" constant="5" id="xOc-gK-hu7"/>
                                                 <constraint firstItem="e4W-BO-sq5" firstAttribute="top" secondItem="zFS-a2-Qcn" secondAttribute="topMargin" id="xcV-gH-xaI"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="iconImage" destination="cZo-CS-wO0" id="CwQ-Qz-J1o"/>
                                             <outlet property="lastMessagePreviewLabel" destination="Qmt-1M-FWN" id="sPy-pZ-LLd"/>
-                                            <outlet property="lastMessageSenderIconImage" destination="zFS-a2-Qcn" id="gjB-Dc-1lG"/>
-                                            <outlet property="nicknameAndMembersLabel" destination="X4w-Kw-H0x" id="MFx-wO-IKQ"/>
+                                            <outlet property="nameLabel" destination="X4w-Kw-H0x" id="YKJ-g3-j4l"/>
+                                            <outlet property="nicknameLabel" destination="Lz8-Fy-Xwy" id="I9Z-fW-xUt"/>
                                             <outlet property="timestampLabel" destination="e4W-BO-sq5" id="Pxg-PD-hui"/>
                                             <outlet property="unreadMessageCountLabel" destination="jg5-Up-Ug5" id="eUJ-Pl-UFa"/>
                                         </connections>
@@ -252,7 +261,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last Message Preview" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZqY-ZY-SmX">
-                                                    <rect key="frame" x="73" y="30" width="126" height="14.5"/>
+                                                    <rect key="frame" x="73" y="31" width="126" height="14.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                                     <color key="textColor" red="0.50196081400000003" green="0.50196081400000003" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
@@ -285,16 +294,16 @@
                                                 <constraint firstItem="O3P-fR-so6" firstAttribute="leading" secondItem="DlM-9c-sbm" secondAttribute="leadingMargin" id="Nsw-Sa-xUt"/>
                                                 <constraint firstItem="B8l-X9-rra" firstAttribute="centerY" secondItem="DlM-9c-sbm" secondAttribute="centerY" id="OZp-Tn-Lff"/>
                                                 <constraint firstItem="Fod-Ut-wmy" firstAttribute="leading" secondItem="O3P-fR-so6" secondAttribute="trailing" constant="5" id="Op4-ep-hSO"/>
-                                                <constraint firstItem="ZqY-ZY-SmX" firstAttribute="top" secondItem="Fod-Ut-wmy" secondAttribute="bottom" constant="5" id="Rcu-zA-QfJ"/>
+                                                <constraint firstItem="ZqY-ZY-SmX" firstAttribute="top" secondItem="Fod-Ut-wmy" secondAttribute="bottom" constant="6" id="Rcu-zA-QfJ"/>
                                                 <constraint firstItem="x7F-YR-sQc" firstAttribute="top" secondItem="DlM-9c-sbm" secondAttribute="topMargin" id="gT3-uM-lTO"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="x7F-YR-sQc" secondAttribute="trailing" constant="5" id="vkd-UX-XvT"/>
                                                 <constraint firstItem="Fod-Ut-wmy" firstAttribute="top" secondItem="DlM-9c-sbm" secondAttribute="topMargin" id="wdm-o4-4TL"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="iconImage" destination="O3P-fR-so6" id="CVk-66-Q9P"/>
                                             <outlet property="lastMessagePreviewLabel" destination="ZqY-ZY-SmX" id="uCz-sL-8uD"/>
-                                            <outlet property="lastMessageSenderIconImage" destination="DlM-9c-sbm" id="DL7-xQ-qwf"/>
-                                            <outlet property="nicknameAndMembersLabel" destination="Fod-Ut-wmy" id="DVx-6i-tKi"/>
+                                            <outlet property="nameLabel" destination="Fod-Ut-wmy" id="zpL-B5-Gmy"/>
                                             <outlet property="timestampLabel" destination="x7F-YR-sQc" id="9m7-WS-cgT"/>
                                             <outlet property="unreadMessageCountLabel" destination="B8l-X9-rra" id="9mn-ha-4wI"/>
                                         </connections>

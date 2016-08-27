@@ -8,8 +8,9 @@
 
 class ProxyTableViewCell: UITableViewCell {
 
-    @IBOutlet weak var lastMessageSenderIconImage: UIView!
-    @IBOutlet weak var nicknameAndMembersLabel: UILabel!
+    @IBOutlet weak var iconImage: UIView!
+    @IBOutlet weak var nameLabel: UILabel!
+    @IBOutlet weak var nicknameLabel: UILabel!
     @IBOutlet weak var lastMessagePreviewLabel: UILabel!
     @IBOutlet weak var timestampLabel: UILabel!
     @IBOutlet weak var unreadMessageCountLabel: UILabel!
