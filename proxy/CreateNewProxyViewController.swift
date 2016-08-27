@@ -37,6 +37,7 @@ class CreateNewProxyViewController: UIViewController, UITextFieldDelegate {
         newProxyNameLabel.text = "Fetching Proxy..."
         newProxyNicknameTextField.delegate = self
         newProxyNicknameTextField.clearButtonMode = .WhileEditing
+        newProxyNicknameTextField.returnKeyType = .Done
         newProxyNicknameTextField.becomeFirstResponder()
         refreshProxyButton.enabled = false
         createProxyButton.enabled = false
@@ -105,7 +106,7 @@ class CreateNewProxyViewController: UIViewController, UITextFieldDelegate {
         savingProxy = true
         let newProxyNickname = newProxyNicknameTextField.text
         if newProxyNickname != "" {
-            api.updateNicknameForProxyWithKey(proxyKey, nickname: newProxyNickname!)
+            api.saveProxyWithKeyAndNickname(proxyKey, nickname: newProxyNickname!)
         }
         navigationController?.popViewControllerAnimated(true)
     }

@@ -73,13 +73,19 @@ class API {
         })
     }
     
-    func updateNicknameForProxyWithKey(key: String, nickname: String) {
+    func saveProxyWithKeyAndNickname(key: String, nickname: String) {
         let timestamp = 0 - NSDate().timeIntervalSince1970
         ref.updateChildValues([
             "/proxies/\(key)/nickname": nickname,
             "/proxies/\(key)/lastMessageTime": timestamp,
             "/users/\(uid)/proxies/\(key)/nickname": nickname,
             "/users/\(uid)/proxies/\(key)/lastMessageTime": timestamp])
+    }
+    
+    func updateNicknameForProxyWithKey(key: String, nickname: String) {
+        ref.updateChildValues([
+            "/proxies/\(key)/nickname": nickname,
+            "/users/\(uid)/proxies/\(key)/nickname": nickname])
     }
     
     func refreshProxyFromOldProxyWithKey(oldProxyKey: String) {

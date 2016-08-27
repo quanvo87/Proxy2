@@ -38,7 +38,7 @@ public func timeAgoSince(date: NSDate) -> String {
     }
     
     if components.hour >= 2 {
-        return "\(components.hour) h"
+        return "\(components.hour)h"
     }
     
     if components.hour >= 1 {

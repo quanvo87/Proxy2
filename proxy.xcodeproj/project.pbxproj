@@ -11,6 +11,7 @@
 		1415611F1D62A8A3002022BC /* ProxyTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1415611E1D62A8A3002022BC /* ProxyTableViewCell.swift */; };
 		14265B7C1D63029200B65793 /* CreateNewProxyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14265B7B1D63029200B65793 /* CreateNewProxyViewController.swift */; };
 		143F76ED1D71EF6200EF305F /* TimeAgo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 143F76EC1D71EF6200EF305F /* TimeAgo.swift */; };
+		143F76EF1D72167800EF305F /* ProxyDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 143F76EE1D72167800EF305F /* ProxyDetailViewController.swift */; };
 		14A6F17B1D68D5F20015431E /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F17A1D68D5F20015431E /* SettingsViewController.swift */; };
 		14A6F17F1D68D8020015431E /* SettingsItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F17E1D68D8020015431E /* SettingsItems.swift */; };
 		14A6F1811D68D8160015431E /* SettingsItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F1801D68D8160015431E /* SettingsItem.swift */; };
@@ -36,6 +37,7 @@
 		1415611E1D62A8A3002022BC /* ProxyTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyTableViewCell.swift; sourceTree = "<group>"; };
 		14265B7B1D63029200B65793 /* CreateNewProxyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateNewProxyViewController.swift; sourceTree = "<group>"; };
 		143F76EC1D71EF6200EF305F /* TimeAgo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeAgo.swift; sourceTree = "<group>"; };
+		143F76EE1D72167800EF305F /* ProxyDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyDetailViewController.swift; sourceTree = "<group>"; };
 		14A6F17A1D68D5F20015431E /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		14A6F17E1D68D8020015431E /* SettingsItems.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsItems.swift; sourceTree = "<group>"; };
 		14A6F1801D68D8160015431E /* SettingsItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsItem.swift; sourceTree = "<group>"; };
@@ -100,6 +102,7 @@
 				14A6F19B1D6F963B0015431E /* HomeViewController.swift */,
 				14A6F1A11D6FB5090015431E /* StartAConversationViewController.swift */,
 				14E19A591D61034A0030B366 /* MyProxiesViewController.swift */,
+				143F76EE1D72167800EF305F /* ProxyDetailViewController.swift */,
 				1415611E1D62A8A3002022BC /* ProxyTableViewCell.swift */,
 				14265B7B1D63029200B65793 /* CreateNewProxyViewController.swift */,
 				14A6F17A1D68D5F20015431E /* SettingsViewController.swift */,
@@ -261,6 +264,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				143F76EF1D72167800EF305F /* ProxyDetailViewController.swift in Sources */,
 				14E19A5C1D612CE80030B366 /* Extensions.swift in Sources */,
 				14A6F1831D68E4E00015431E /* SettingsTableViewCell.swift in Sources */,
 				1415611F1D62A8A3002022BC /* ProxyTableViewCell.swift in Sources */,

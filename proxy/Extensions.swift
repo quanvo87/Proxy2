@@ -21,6 +21,10 @@ extension UIViewController {
 extension String {
     
     func nicknameFormatted() -> String {
+        return self == "" ? "" : "\"\(self)\""
+    }
+    
+    func nicknameFormattedWithDash() -> String {
         return self == "" ? "" : " - \"\(self)\""
     }
     
@@ -49,7 +53,10 @@ extension Double {
 extension Int {
     
     func unreadMessageCountFormatted() -> String {
-        let unreadMessageCount = String(self)
-        return unreadMessageCount == "0" ? "" : unreadMessageCount
+        return self == 0 ? "" : String(self)
+    }
+    
+    func titleSuffixFromUnreadMessageCount() -> String {
+        return self == 0 ? "" : "(\(self))"
     }
 }

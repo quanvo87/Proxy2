@@ -29,8 +29,8 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
             }
         }
         
-        //        configureDataBase()
         setUpTableView()
+        configureDataBase()
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -38,7 +38,11 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     override func viewWillDisappear(animated: Bool) {
-        navigationItem.title = "\(unreadMessages)"
+        var title = ""
+        if unreadMessages > 0 {
+            title = "(\(unreadMessages))"
+        }
+        navigationItem.title = title
     }
     
     //    deinit {

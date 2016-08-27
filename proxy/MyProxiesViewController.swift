@@ -32,7 +32,7 @@ class MyProxiesViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     override func viewWillDisappear(animated: Bool) {
-        navigationItem.title = "(\(unreadMessages))"
+        navigationItem.title = unreadMessages.titleSuffixFromUnreadMessageCount()
     }
     
     deinit {
@@ -41,7 +41,7 @@ class MyProxiesViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func setTitle() {
-        navigationItem.title = "My Proxies (\(unreadMessages))"
+        navigationItem.title = "My Proxies \(unreadMessages.titleSuffixFromUnreadMessageCount())"
     }
     
     func setUpTableView() {
@@ -78,8 +78,8 @@ class MyProxiesViewController: UIViewController, UITableViewDelegate, UITableVie
         let cell = tableView.dequeueReusableCellWithIdentifier("Proxy Table View Cell", forIndexPath: indexPath) as! ProxyTableViewCell
         
         let proxySnapshot = self.proxies[indexPath.row]
-        let proxy = proxySnapshot.value as! Dictionary<String, AnyObject>
-
+        let proxy = proxySnapshot.value as! [String: AnyObject]
+        
         var name = ""
         var nickname = ""
         var lastMessage = ""
@@ -103,7 +103,7 @@ class MyProxiesViewController: UIViewController, UITableViewDelegate, UITableVie
         }
         
         cell.nameLabel.text = name
-        cell.nicknameLabel.text = nickname.nicknameFormatted()
+        cell.nicknameLabel.text = nickname.nicknameFormattedWithDash()
         cell.timestampLabel.text = timestamp.timeAgoFromTimeInterval()
         cell.lastMessagePreviewLabel.text = lastMessage.lastMessageWithTimestamp(timestamp)
         cell.unreadMessageCountLabel.text = unreadMessageCount.unreadMessageCountFormatted()
@@ -111,7 +111,13 @@ class MyProxiesViewController: UIViewController, UITableViewDelegate, UITableVie
         return cell
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-       
+    // MARK: - Navigation
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "Proxy Detail Segue",
+            let destination = segue.destinationViewController as? ProxyDetailViewController,
+            index = myProxiesTableView.indexPathForSelectedRow?.row {
+            destination.proxy = proxies[index].value as! [String: AnyObject]
+        }
     }
 }
