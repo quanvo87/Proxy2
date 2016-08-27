@@ -11,13 +11,9 @@ import FirebaseDatabase
 
 class MyProxiesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    private let uid = FIRAuth.auth()?.currentUser?.uid
-    private let ref = FIRDatabase.database().reference()
-    private var userProxiesReferenceHandle = FIRDatabaseHandle()
-    private var proxies = [FIRDataSnapshot]()
+    private var unreadMessages = 0
     
-    @IBOutlet weak var menuButton: UIBarButtonItem!
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var myProxiesTableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,10 +22,12 @@ class MyProxiesViewController: UIViewController, UITableViewDelegate, UITableVie
         setUpTableView()
     }
     
-    override func viewWillAppear(animated: Bool) {
-        if navigationItem.title == "" {
-            navigationItem.title = "My Proxies"
-        }
+    override func viewDidAppear(animated: Bool) {
+        navigationItem.title = "My Proxies (\(unreadMessages))"
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        navigationItem.title = "(\(unreadMessages))"
     }
     
     deinit {
@@ -42,38 +40,42 @@ class MyProxiesViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func setUpTableView() {
         automaticallyAdjustsScrollViewInsets = false
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.estimatedRowHeight = 60
+        myProxiesTableView.delegate = self
+        myProxiesTableView.dataSource = self
+        myProxiesTableView.rowHeight = UITableViewAutomaticDimension
+        myProxiesTableView.estimatedRowHeight = 80
     }
     
     func configureDatabase() {
-        userProxiesReferenceHandle = ref.child("users").child(uid!).child("proxies").queryOrderedByChild("lastEventTime").observeEventType(.Value, withBlock: { snapshot in
-            print(snapshot)
-            var newProxies = [FIRDataSnapshot]()
-            for child in snapshot.children {
-                newProxies.append(child as! FIRDataSnapshot)
-            }
-            self.proxies = newProxies
-            self.tableView.reloadData()
-        })
+//        userProxiesReferenceHandle = ref.child("users").child(uid!).child("proxies").queryOrderedByChild("lastEventTime").observeEventType(.Value, withBlock: { snapshot in
+//            print(snapshot)
+//            var newProxies = [FIRDataSnapshot]()
+//            for child in snapshot.children {
+//                newProxies.append(child as! FIRDataSnapshot)
+//            }
+//            self.proxies = newProxies
+//            self.tableView.reloadData()
+//        })
     }
     
-    @IBAction func tapCreateNewProxy(sender: AnyObject) {
-        if let createNewProxyViewController = storyboard?.instantiateViewControllerWithIdentifier("Create New Proxy") as! CreateNewProxyViewController? {
-            self.presentViewController(createNewProxyViewController, animated: true, completion: nil)
+    @IBAction func tapNewProxyButton(sender: AnyObject) {
+        
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue == "New Proxy Segue" {
+            
         }
     }
     
     // MARK: - Table view data source
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return proxies.count
+        return 1
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("Home Table View Cell", forIndexPath: indexPath) as! HomeTableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("Proxy Table View Cell", forIndexPath: indexPath) as! ProxyTableViewCell
         return cell
     }
     

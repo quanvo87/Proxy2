@@ -6,7 +6,7 @@
 //  Copyright © 2016 Quan Vo. All rights reserved.
 //
 
-class CreateNewProxyViewController: UIViewController {
+class CreateNewProxyViewController: UIViewController, UITextFieldDelegate {
     
     private let api = API.sharedInstance
     private var proxyKey = ""
@@ -15,37 +15,42 @@ class CreateNewProxyViewController: UIViewController {
     @IBOutlet weak var newProxyNicknameTextField: UITextField!
     @IBOutlet weak var refreshProxyButton: UIButton!
     @IBOutlet weak var createProxyButton: UIButton!
-    @IBOutlet weak var cancelCreateNewProxyButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(CreateNewProxyViewController.proxyCreated), name: Constants.NotificationKeys.ProxyCreated, object: nil)
         setUpUI()
-        createProxy()
+        fetchProxy()
     }
     
     override func viewWillDisappear(animated: Bool) {
         NSNotificationCenter.defaultCenter().removeObserver(self)
+        if newProxyNameLabel.text != "..." {
+            api.cancelCreatingProxyWithKey(proxyKey)
+        }
     }
     
     func setUpUI() {
-        newProxyNameLabel.text = ""
+        navigationItem.title = "New Proxy"
+        newProxyNameLabel.text = "..."
+        newProxyNicknameTextField.delegate = self
         newProxyNicknameTextField.clearButtonMode = .WhileEditing
+        newProxyNicknameTextField.becomeFirstResponder()
         refreshProxyButton.enabled = false
         createProxyButton.enabled = false
     }
     
-    func createProxy() {
+    func fetchProxy() {
         if api.wordBankIsLoaded() == true {
-            createProxyFromWordBank()
+            fetchProxyFromWordBank()
         } else {
             loadWordBank()
         }
     }
     
-    func createProxyFromWordBank() {
-        api.createProxy()
+    func fetchProxyFromWordBank() {
+        api.fetchProxy()
     }
     
     func loadWordBank() {
@@ -72,7 +77,7 @@ class CreateNewProxyViewController: UIViewController {
                 let json = try NSJSONSerialization.JSONObjectWithData(data!, options: .AllowFragments)
                 if let adjectives = json["adjectives"] as? [String], nouns = json["nouns"] as? [String] {
                     self.api.loadWordBank(adjectives, nouns: nouns)
-                    self.createProxyFromWordBank()
+                    self.fetchProxyFromWordBank()
                 }
             } catch let error as NSError {
                 self.showAlert("Error Fetching Word Bank", message: error.localizedDescription)
@@ -94,32 +99,31 @@ class CreateNewProxyViewController: UIViewController {
         api.refreshProxyFromOldProxyWithKey(proxyKey)
     }
     
-    @IBAction func tapCreateProxyButton(sender: AnyObject) {
+    func createProxy() {
         disableButtons()
         let newProxyNickname = newProxyNicknameTextField.text
         if newProxyNickname != "" {
             api.updateNicknameForProxyWithKey(proxyKey, nickname: newProxyNickname!)
         }
-        dismissViewControllerAnimated(true, completion: nil)
+        navigationController?.popViewControllerAnimated(true)
     }
     
-    @IBAction func tapCancelButton(sender: AnyObject) {
-        disableButtons()
-        if newProxyNameLabel.text != "" {
-            api.cancelCreatingProxyWithKey(proxyKey)
-        }
-        dismissViewControllerAnimated(true, completion: nil)
+    @IBAction func tapCreateProxyButton(sender: AnyObject) {
+        createProxy()
     }
     
     func disableButtons() {
-        cancelCreateNewProxyButton.enabled = false
         refreshProxyButton.enabled = false
         createProxyButton.enabled = false
     }
     
     func enableButtons() {
-        cancelCreateNewProxyButton.enabled = true
         refreshProxyButton.enabled = true
         createProxyButton.enabled = true
+    }
+    
+    func textFieldShouldReturn(textField: UITextField!) -> Bool {
+        createProxy()
+        return true
     }
 }

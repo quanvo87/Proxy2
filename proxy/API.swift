@@ -15,7 +15,7 @@ class API {
     
     private let ref = FIRDatabase.database().reference()
     private var proxyNameGenerator = ProxyNameGenerator()
-    private var currentlyCreatingProxy = false
+    private var currentlyFetchingProxy = false
     
     private init() {}
     
@@ -29,12 +29,12 @@ class API {
         return proxyNameGenerator.wordBankLoaded
     }
     
-    func createProxy() {
-        currentlyCreatingProxy = true
-        tryCreateProxy()
+    func fetchProxy() {
+        currentlyFetchingProxy = true
+        tryFetchProxy()
     }
     
-    func tryCreateProxy() {
+    func tryFetchProxy() {
         let uid = FIRAuth.auth()?.currentUser?.uid
         let proxiesRef = self.ref.child("proxies")
         let userProxiesRef = self.ref.child("users").child(uid!).child("proxies")
@@ -52,13 +52,13 @@ class API {
         proxiesRef.child(key).setValue(proxy)
         proxiesRef.queryOrderedByChild("name").queryEqualToValue(name).observeSingleEventOfType(.Value, withBlock: { snapshot in
             if snapshot.childrenCount == 1 {
-                self.currentlyCreatingProxy = false
+                self.currentlyFetchingProxy = false
                 userProxiesRef.child(key).setValue(proxy)
                 NSNotificationCenter.defaultCenter().postNotificationName(Constants.NotificationKeys.ProxyCreated, object: self, userInfo: ["proxy": proxy])
             } else {
                 self.deleteProxyWithKey(key)
-                if self.currentlyCreatingProxy {
-                    self.tryCreateProxy()
+                if self.currentlyFetchingProxy {
+                    self.tryFetchProxy()
                 }
             }
         })
@@ -73,7 +73,7 @@ class API {
     
     func refreshProxyFromOldProxyWithKey(oldProxyKey: String) {
         deleteProxyWithKey(oldProxyKey)
-        createProxy()
+        fetchProxy()
     }
     
     func deleteProxyWithKey(key: String) {
@@ -85,7 +85,7 @@ class API {
     }
     
     func cancelCreatingProxyWithKey(key: String) {
-        currentlyCreatingProxy = false
+        currentlyFetchingProxy = false
         deleteProxyWithKey(key)
     }
 }

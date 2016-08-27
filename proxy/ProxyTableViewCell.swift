@@ -1,12 +1,12 @@
 //
-//  HomeTableViewCell.swift
+//  ProxyTableViewCell.swift
 //  proxy
 //
 //  Created by Quan Vo on 8/15/16.
 //  Copyright © 2016 Quan Vo. All rights reserved.
 //
 
-class HomeTableViewCell: UITableViewCell {
+class ProxyTableViewCell: UITableViewCell {
 
     @IBOutlet weak var lastMessageSenderIconImage: UIView!
     @IBOutlet weak var nicknameAndMembersLabel: UILabel!
