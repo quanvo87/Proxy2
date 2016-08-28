@@ -13,7 +13,6 @@ import FacebookLogin
 class LogInViewController: UIViewController {
     
     private let ref = FIRDatabase.database().reference()
-    private let emailSyntaxChecker = EmailSyntaxChecker()
     private var bottomConstraintConstant: CGFloat = 0.0
     
     @IBOutlet weak var emailTextField: UITextField!
@@ -43,7 +42,7 @@ class LogInViewController: UIViewController {
         guard
             let email = emailTextField.text?.lowercaseString,
             let password = passwordTextField.text
-            where emailSyntaxChecker.isValidEmail(email) && password != "" else {
+            where email.isValidEmail() && password != "" else {
                 showAlert("Invalid Email/Password", message: "Please enter a valid email and password.")
                 return
         }
@@ -60,7 +59,7 @@ class LogInViewController: UIViewController {
         guard
             let email = emailTextField.text?.lowercaseString,
             let password = passwordTextField.text
-            where emailSyntaxChecker.isValidEmail(email) && password != "" else {
+            where email.isValidEmail() && password != "" else {
                 showAlert("Invalid Email/Password", message: "Please enter a valid email and password.")
                 return
         }
@@ -115,14 +114,6 @@ class LogInViewController: UIViewController {
         appDelegate.window?.rootViewController = tabBarController
     }
     
-    // MARK: - Keyboard
-    
-    func setUpTextField() {
-        emailTextField.clearButtonMode = .WhileEditing
-        passwordTextField.clearButtonMode = .WhileEditing
-        passwordTextField.secureTextEntry = true
-    }
-    
     func keyboardWillShow(notification: NSNotification) {
         let info = notification.userInfo!
         let keyboardFrame = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
@@ -137,5 +128,13 @@ class LogInViewController: UIViewController {
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         self.view.endEditing(true)
+    }
+    
+    // MARK: - Text field
+    
+    func setUpTextField() {
+        emailTextField.clearButtonMode = .WhileEditing
+        passwordTextField.clearButtonMode = .WhileEditing
+        passwordTextField.secureTextEntry = true
     }
 }

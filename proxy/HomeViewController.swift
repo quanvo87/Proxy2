@@ -53,12 +53,12 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func setTitle() {
-        navigationItem.title = "Conversations \(unread.titleSuffixFromUnreadMessageCount())"
+        navigationItem.title = "Messages \(unread.titleSuffixFromUnreadMessageCount())"
     }
     
     func configureDatabase() {
         convosRef = ref.child("users").child(api.uid).child("convos")
-        convosRefHandle = convosRef.queryOrderedByChild(Constants.ProxyFields.Timestamp).observeEventType(.Value, withBlock: { snapshot in
+        convosRefHandle = convosRef.queryOrderedByChild("timestamp").observeEventType(.Value, withBlock: { snapshot in
             var _convos = [FIRDataSnapshot]()
             for child in snapshot.children {
                 _convos.append(child as! FIRDataSnapshot)
@@ -67,7 +67,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
             self.tableView.reloadData()
         })
         
-        unreadRef = ref.child("users").child(api.uid).child(Constants.ProxyFields.Unread)
+        unreadRef = ref.child("users").child(api.uid).child("unread")
         unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { snapshot in
             self.unread = snapshot.value as! Int
             self.setTitle()

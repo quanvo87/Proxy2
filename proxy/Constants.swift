@@ -9,8 +9,9 @@
 struct Constants {
     
     struct UserFields {
-        static let Username = "username"
         static let UID = "uid"
+        static let Username = "username"
+        static let Proxies = "proxies"
         static let Convos = "convos"
         static let ConvosWith = "convosWith"
         static let Unread = "unread"
@@ -29,7 +30,7 @@ struct Constants {
     struct ConvoFields {
         static let Key = "key"
         static let Name = "name"
-        static let Proxies = "proxies"
+        static let Nickname = "nickname"
         static let Message = "message"
         static let Timestamp = "timestamp"
     }

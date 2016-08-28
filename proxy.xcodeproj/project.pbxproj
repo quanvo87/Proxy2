@@ -12,11 +12,11 @@
 		14265B7C1D63029200B65793 /* CreateNewProxyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14265B7B1D63029200B65793 /* CreateNewProxyViewController.swift */; };
 		143F76ED1D71EF6200EF305F /* TimeAgo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 143F76EC1D71EF6200EF305F /* TimeAgo.swift */; };
 		143F76EF1D72167800EF305F /* ProxyDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 143F76EE1D72167800EF305F /* ProxyDetailViewController.swift */; };
+		143F76FA1D72C0C100EF305F /* SelectProxyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 143F76F91D72C0C100EF305F /* SelectProxyViewController.swift */; };
 		14A6F17B1D68D5F20015431E /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F17A1D68D5F20015431E /* SettingsViewController.swift */; };
 		14A6F17F1D68D8020015431E /* SettingsItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F17E1D68D8020015431E /* SettingsItems.swift */; };
 		14A6F1811D68D8160015431E /* SettingsItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F1801D68D8160015431E /* SettingsItem.swift */; };
 		14A6F1831D68E4E00015431E /* SettingsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F1821D68E4E00015431E /* SettingsTableViewCell.swift */; };
-		14A6F1851D6950C50015431E /* EmailSyntaxChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F1841D6950C50015431E /* EmailSyntaxChecker.swift */; };
 		14A6F18E1D6BDA880015431E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F18D1D6BDA880015431E /* Constants.swift */; };
 		14A6F1901D6C21ED0015431E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 14A6F18F1D6C21ED0015431E /* GoogleService-Info.plist */; };
 		14A6F1941D6CF1410015431E /* ProxyNameGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F1931D6CF1410015431E /* ProxyNameGenerator.swift */; };
@@ -38,11 +38,11 @@
 		14265B7B1D63029200B65793 /* CreateNewProxyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateNewProxyViewController.swift; sourceTree = "<group>"; };
 		143F76EC1D71EF6200EF305F /* TimeAgo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeAgo.swift; sourceTree = "<group>"; };
 		143F76EE1D72167800EF305F /* ProxyDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyDetailViewController.swift; sourceTree = "<group>"; };
+		143F76F91D72C0C100EF305F /* SelectProxyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectProxyViewController.swift; sourceTree = "<group>"; };
 		14A6F17A1D68D5F20015431E /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		14A6F17E1D68D8020015431E /* SettingsItems.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsItems.swift; sourceTree = "<group>"; };
 		14A6F1801D68D8160015431E /* SettingsItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsItem.swift; sourceTree = "<group>"; };
 		14A6F1821D68E4E00015431E /* SettingsTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTableViewCell.swift; sourceTree = "<group>"; };
-		14A6F1841D6950C50015431E /* EmailSyntaxChecker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmailSyntaxChecker.swift; sourceTree = "<group>"; };
 		14A6F18D1D6BDA880015431E /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		14A6F18F1D6C21ED0015431E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		14A6F1931D6CF1410015431E /* ProxyNameGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyNameGenerator.swift; sourceTree = "<group>"; };
@@ -75,6 +75,71 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		143F76F31D72BE0700EF305F /* LogIn */ = {
+			isa = PBXGroup;
+			children = (
+				14E19A5D1D6148700030B366 /* LogInViewController.swift */,
+			);
+			name = LogIn;
+			sourceTree = "<group>";
+		};
+		143F76F41D72BE1D00EF305F /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				14A6F19B1D6F963B0015431E /* HomeViewController.swift */,
+				14A6F1A11D6FB5090015431E /* NewMessageViewController.swift */,
+				143F76F91D72C0C100EF305F /* SelectProxyViewController.swift */,
+			);
+			name = Home;
+			sourceTree = "<group>";
+		};
+		143F76F51D72BE2C00EF305F /* My Proxies */ = {
+			isa = PBXGroup;
+			children = (
+				14E19A591D61034A0030B366 /* MyProxiesViewController.swift */,
+				143F76EE1D72167800EF305F /* ProxyDetailViewController.swift */,
+				14265B7B1D63029200B65793 /* CreateNewProxyViewController.swift */,
+			);
+			name = "My Proxies";
+			sourceTree = "<group>";
+		};
+		143F76F61D72BE4100EF305F /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				14A6F17A1D68D5F20015431E /* SettingsViewController.swift */,
+				14A6F1821D68E4E00015431E /* SettingsTableViewCell.swift */,
+				14A6F17E1D68D8020015431E /* SettingsItems.swift */,
+				14A6F1801D68D8160015431E /* SettingsItem.swift */,
+			);
+			name = Settings;
+			sourceTree = "<group>";
+		};
+		143F76F71D72BE7400EF305F /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				14A6F18D1D6BDA880015431E /* Constants.swift */,
+				1415610C1D620DB7002022BC /* API.swift */,
+				14E19A411D60EF100030B366 /* AppDelegate.swift */,
+				1415611E1D62A8A3002022BC /* ProxyTableViewCell.swift */,
+				14A6F1931D6CF1410015431E /* ProxyNameGenerator.swift */,
+				143F76EC1D71EF6200EF305F /* TimeAgo.swift */,
+				14E19A5B1D612CE80030B366 /* Extensions.swift */,
+			);
+			name = Utility;
+			sourceTree = "<group>";
+		};
+		143F76F81D72BFB800EF305F /* Other */ = {
+			isa = PBXGroup;
+			children = (
+				14E19A4D1D60EF100030B366 /* LaunchScreen.storyboard */,
+				14E19A4B1D60EF100030B366 /* Assets.xcassets */,
+				14E19A501D60EF100030B366 /* Info.plist */,
+				14A6F18F1D6C21ED0015431E /* GoogleService-Info.plist */,
+				14E19A561D60F07A0030B366 /* Header.h */,
+			);
+			name = Other;
+			sourceTree = "<group>";
+		};
 		14E19A351D60EF100030B366 = {
 			isa = PBXGroup;
 			children = (
@@ -96,30 +161,13 @@
 		14E19A401D60EF100030B366 /* proxy */ = {
 			isa = PBXGroup;
 			children = (
-				14E19A411D60EF100030B366 /* AppDelegate.swift */,
-				14E19A5D1D6148700030B366 /* LogInViewController.swift */,
-				14A6F1841D6950C50015431E /* EmailSyntaxChecker.swift */,
-				14A6F19B1D6F963B0015431E /* HomeViewController.swift */,
-				14A6F1A11D6FB5090015431E /* NewMessageViewController.swift */,
-				14E19A591D61034A0030B366 /* MyProxiesViewController.swift */,
-				143F76EE1D72167800EF305F /* ProxyDetailViewController.swift */,
-				1415611E1D62A8A3002022BC /* ProxyTableViewCell.swift */,
-				14265B7B1D63029200B65793 /* CreateNewProxyViewController.swift */,
-				14A6F17A1D68D5F20015431E /* SettingsViewController.swift */,
-				14A6F1821D68E4E00015431E /* SettingsTableViewCell.swift */,
-				14A6F17E1D68D8020015431E /* SettingsItems.swift */,
-				14A6F1801D68D8160015431E /* SettingsItem.swift */,
-				1415610C1D620DB7002022BC /* API.swift */,
-				14A6F1931D6CF1410015431E /* ProxyNameGenerator.swift */,
-				143F76EC1D71EF6200EF305F /* TimeAgo.swift */,
-				14A6F18D1D6BDA880015431E /* Constants.swift */,
-				14E19A5B1D612CE80030B366 /* Extensions.swift */,
+				143F76F31D72BE0700EF305F /* LogIn */,
+				143F76F41D72BE1D00EF305F /* Home */,
+				143F76F51D72BE2C00EF305F /* My Proxies */,
+				143F76F61D72BE4100EF305F /* Settings */,
+				143F76F71D72BE7400EF305F /* Utility */,
+				143F76F81D72BFB800EF305F /* Other */,
 				14E19A451D60EF100030B366 /* Main.storyboard */,
-				14E19A4D1D60EF100030B366 /* LaunchScreen.storyboard */,
-				14E19A4B1D60EF100030B366 /* Assets.xcassets */,
-				14E19A501D60EF100030B366 /* Info.plist */,
-				14A6F18F1D6C21ED0015431E /* GoogleService-Info.plist */,
-				14E19A561D60F07A0030B366 /* Header.h */,
 			);
 			path = proxy;
 			sourceTree = "<group>";
@@ -276,10 +324,10 @@
 				14A6F17F1D68D8020015431E /* SettingsItems.swift in Sources */,
 				14265B7C1D63029200B65793 /* CreateNewProxyViewController.swift in Sources */,
 				14A6F17B1D68D5F20015431E /* SettingsViewController.swift in Sources */,
+				143F76FA1D72C0C100EF305F /* SelectProxyViewController.swift in Sources */,
 				1415610D1D620DB7002022BC /* API.swift in Sources */,
 				14E19A421D60EF100030B366 /* AppDelegate.swift in Sources */,
 				14A6F1941D6CF1410015431E /* ProxyNameGenerator.swift in Sources */,
-				14A6F1851D6950C50015431E /* EmailSyntaxChecker.swift in Sources */,
 				14A6F1A21D6FB5090015431E /* NewMessageViewController.swift in Sources */,
 				143F76ED1D71EF6200EF305F /* TimeAgo.swift in Sources */,
 			);
