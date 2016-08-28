@@ -65,6 +65,8 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
             tapLogOut()
         case Constants.SettingsItemNames.DeleteAccount:
             tapDeleteAccount()
+        case Constants.SettingsItemNames.ReviewInAppStore:
+            tapReview()
         case Constants.SettingsItemNames.About:
             tapAbout()
         default:
@@ -101,6 +103,10 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
     }
     
     func tapDeleteAccount() {
+        
+    }
+    
+    func tapReview() {
         
     }
     

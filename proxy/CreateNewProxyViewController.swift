@@ -9,38 +9,36 @@
 class CreateNewProxyViewController: UIViewController, UITextFieldDelegate {
     
     private let api = API.sharedInstance
-    private var proxyKey = ""
-    private var savingProxy = false
+    private var key = ""
+    private var save = false
     
-    @IBOutlet weak var newProxyNameLabel: UILabel!
-    @IBOutlet weak var newProxyNicknameTextField: UITextField!
-    @IBOutlet weak var refreshProxyButton: UIButton!
-    @IBOutlet weak var createProxyButton: UIButton!
+    @IBOutlet weak var nameLabel: UILabel!
+    @IBOutlet weak var nicknameTextField: UITextField!
+    @IBOutlet weak var refreshButton: UIButton!
+    @IBOutlet weak var createButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(CreateNewProxyViewController.proxyCreated), name: Constants.NotificationKeys.ProxyCreated, object: nil)
+        
         setUpUI()
+        setUpTextField()
         createProxy()
     }
     
     override func viewWillDisappear(animated: Bool) {
         NSNotificationCenter.defaultCenter().removeObserver(self)
-        if newProxyNameLabel.text != "Fetching Proxy..." && !savingProxy {
-            api.cancelCreatingProxyWithKey(proxyKey)
+        if nameLabel.text != "Fetching Proxy..." && !save {
+            api.cancelCreatingProxyWithKey(key)
         }
     }
     
     func setUpUI() {
         navigationItem.title = "New Proxy"
-        newProxyNameLabel.text = "Fetching Proxy..."
-        newProxyNicknameTextField.delegate = self
-        newProxyNicknameTextField.clearButtonMode = .WhileEditing
-        newProxyNicknameTextField.returnKeyType = .Done
-        newProxyNicknameTextField.becomeFirstResponder()
-        refreshProxyButton.enabled = false
-        createProxyButton.enabled = false
+        nameLabel.text = "Fetching Proxy..."
+        refreshButton.enabled = false
+        createButton.enabled = false
     }
     
     func createProxy() {
@@ -77,8 +75,8 @@ class CreateNewProxyViewController: UIViewController, UITextFieldDelegate {
             }
             do {
                 let json = try NSJSONSerialization.JSONObjectWithData(data!, options: .AllowFragments)
-                if let adjectives = json["adjectives"] as? [String], nouns = json["nouns"] as? [String] {
-                    self.api.loadWordBank(adjectives, nouns: nouns)
+                if let adjs = json["adjectives"] as? [String], nouns = json["nouns"] as? [String] {
+                    self.api.loadWordBank(adjs, nouns: nouns)
                     self.createProxyFromWordBank()
                 }
             } catch let error as NSError {
@@ -91,42 +89,51 @@ class CreateNewProxyViewController: UIViewController, UITextFieldDelegate {
     func proxyCreated(notification: NSNotification) {
         let userInfo = notification.userInfo as! [String: AnyObject]
         let proxy = userInfo["proxy"]!
-        newProxyNameLabel.text = proxy["name"] as? String
-        proxyKey = proxy["key"] as! String
+        nameLabel.text = proxy["name"] as? String
+        key = proxy["key"] as! String
         enableButtons()
     }
     
-    @IBAction func tapRefreshNewProxyButton(sender: AnyObject) {
+    @IBAction func tapRefreshButton(sender: AnyObject) {
         disableButtons()
-        api.refreshProxyFromOldProxyWithKey(proxyKey)
+        api.refreshProxyFromOldProxyWithKey(key)
+    }
+    
+    @IBAction func tapCreateButton(sender: AnyObject) {
+        saveProxy()
     }
     
     func saveProxy() {
         disableButtons()
-        savingProxy = true
-        let newProxyNickname = newProxyNicknameTextField.text
+        save = true
+        let newProxyNickname = nicknameTextField.text
         if newProxyNickname != "" {
-            api.saveProxyWithKeyAndNickname(proxyKey, nickname: newProxyNickname!)
+            api.saveProxyWithKeyAndNickname(key, nickname: newProxyNickname!)
         }
         navigationController?.popViewControllerAnimated(true)
     }
     
-    @IBAction func tapCreateProxyButton(sender: AnyObject) {
-        saveProxy()
-    }
-    
     func disableButtons() {
-        refreshProxyButton.enabled = false
-        createProxyButton.enabled = false
+        refreshButton.enabled = false
+        createButton.enabled = false
     }
     
     func enableButtons() {
-        refreshProxyButton.enabled = true
-        createProxyButton.enabled = true
+        refreshButton.enabled = true
+        createButton.enabled = true
+    }
+    
+    // MARK: - Text field
+    
+    func setUpTextField() {
+        nicknameTextField.delegate = self
+        nicknameTextField.clearButtonMode = .WhileEditing
+        nicknameTextField.returnKeyType = .Done
+        nicknameTextField.becomeFirstResponder()
     }
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
-        if createProxyButton.enabled == true {
+        if createButton.enabled == true {
             saveProxy()
         } else {
             navigationController?.popViewControllerAnimated(true)

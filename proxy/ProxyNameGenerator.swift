@@ -8,17 +8,17 @@
 
 struct ProxyNameGenerator {
     
-    private let endingNumberRange: UInt32 = 99
-    private var _adjectives = [String]()
+    private let _num: UInt32 = 99
+    private var _adjs = [String]()
     private var _nouns = [String]()
-    private var _wordBankLoaded = false
+    private var _loaded = false
     
-    var adjectives: [String] {
+    var adjs: [String] {
         get {
-            return _adjectives
+            return _adjs
         }
         set (newValue) {
-            _adjectives = newValue
+            _adjs = newValue
         }
     }
     
@@ -31,21 +31,21 @@ struct ProxyNameGenerator {
         }
     }
     
-    var wordBankLoaded: Bool {
+    var loaded: Bool {
         get {
-            return _wordBankLoaded
+            return _loaded
         }
         set (newValue) {
-            _wordBankLoaded = newValue
+            _loaded = newValue
         }
     }
     
     func generateProxyName() -> String {
-        let adjectivesCount = UInt32(_adjectives.count)
+        let adjsCount = UInt32(_adjs.count)
         let nounsCount = UInt32(_nouns.count)
-        let randomAdjective = _adjectives[Int(arc4random_uniform(adjectivesCount))].lowercaseString
-        let randomNoun = _nouns[Int(arc4random_uniform(nounsCount))].lowercaseString.capitalizedString
-        let endingNumber = String(Int(arc4random_uniform(endingNumberRange)) + 1)
-        return randomAdjective + randomNoun + endingNumber
+        let adj = _adjs[Int(arc4random_uniform(adjsCount))].lowercaseString
+        let noun = _nouns[Int(arc4random_uniform(nounsCount))].lowercaseString.capitalizedString
+        let num = String(Int(arc4random_uniform(_num)) + 1)
+        return adj + noun + num
     }
 }

@@ -39,7 +39,7 @@
                                 <rect key="frame" x="30" y="391" width="540" height="30"/>
                                 <state key="normal" title="Log In / Sign Up Through Facebook"/>
                                 <connections>
-                                    <action selector="tapFacebookLogInButton:" destination="sjW-YU-fmh" eventType="touchUpInside" id="Ca2-on-ksq"/>
+                                    <action selector="tapFacebookButton:" destination="sjW-YU-fmh" eventType="touchUpInside" id="rpB-op-GQS"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ant-pc-zQG">
@@ -109,8 +109,8 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last Message Preview" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qmt-1M-FWN">
-                                                    <rect key="frame" x="73" y="31" width="126" height="14.5"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                                    <rect key="frame" x="73" y="31" width="135" height="16"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <color key="textColor" red="0.50196081400000003" green="0.50196081400000003" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
@@ -181,13 +181,12 @@
                         <barButtonItem key="leftBarButtonItem" title="Edit" id="9Wg-Y2-HZe"/>
                         <barButtonItem key="rightBarButtonItem" title="+" id="ptO-33-QDc">
                             <connections>
-                                <action selector="tapNewProxyButton:" destination="BYZ-38-t0r" id="PKa-uv-H1v"/>
                                 <segue destination="80k-ew-HY1" kind="show" identifier="New Proxy Segue" id="Tpu-nf-bvR"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="myProxiesTableView" destination="5GB-nm-EaJ" id="Df9-DK-Orf"/>
+                        <outlet property="tableView" destination="5GB-nm-EaJ" id="qRO-aB-xFd"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -240,7 +239,7 @@
                                 <rect key="frame" x="557" y="85" width="30" height="30"/>
                                 <state key="normal" title="Edit"/>
                                 <connections>
-                                    <action selector="tapEditProxyNicknameButton:" destination="0PA-SX-Dc2" eventType="touchUpInside" id="w0I-nu-YCm"/>
+                                    <action selector="tapEditButton:" destination="0PA-SX-Dc2" eventType="touchUpInside" id="apU-xL-XRh"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="CONVERSATIONS" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OLd-YX-uDs">
@@ -340,7 +339,7 @@
                                 <rect key="frame" x="553" y="96" width="34" height="30"/>
                                 <state key="normal" title="Save"/>
                                 <connections>
-                                    <action selector="tapSaveNicknameButton:" destination="0PA-SX-Dc2" eventType="touchUpInside" id="WDS-Fo-uu9"/>
+                                    <action selector="tapSaveButton:" destination="0PA-SX-Dc2" eventType="touchUpInside" id="rh0-HX-dLq"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -369,11 +368,11 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="editProxyNicknameButton" destination="GtE-4T-ecb" id="UkM-tk-502"/>
-                        <outlet property="newProxyNicknameTextField" destination="scJ-QY-9s0" id="N5U-s0-wIh"/>
-                        <outlet property="proxyDetailTableView" destination="9xn-Qb-Dme" id="iLY-Sx-6TD"/>
-                        <outlet property="proxyNicknameLabel" destination="eEq-6o-OSl" id="AU1-id-aqI"/>
-                        <outlet property="saveNicknameButton" destination="Tcu-Db-bjA" id="TLf-3U-6Xy"/>
+                        <outlet property="editButton" destination="GtE-4T-ecb" id="8DT-Dd-i0r"/>
+                        <outlet property="nicknameLabel" destination="eEq-6o-OSl" id="ucO-Je-ODG"/>
+                        <outlet property="nicknameTextField" destination="scJ-QY-9s0" id="7ps-j2-KG4"/>
+                        <outlet property="saveButton" destination="Tcu-Db-bjA" id="RcP-hp-yK0"/>
+                        <outlet property="tableView" destination="9xn-Qb-Dme" id="bZ8-VH-11h"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lAb-3p-baT" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -492,7 +491,7 @@
                         <barButtonItem key="rightBarButtonItem" title="+" id="GP9-5r-IRD"/>
                     </navigationItem>
                     <connections>
-                        <outlet property="homeTableView" destination="xsu-MQ-lwW" id="WA1-V9-yUu"/>
+                        <outlet property="tableView" destination="xsu-MQ-lwW" id="MH0-Lq-9rT"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Lq3-nv-bQe" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -515,14 +514,14 @@
                                 <rect key="frame" x="517" y="79" width="53" height="30"/>
                                 <state key="normal" title="Refresh"/>
                                 <connections>
-                                    <action selector="tapRefreshNewProxyButton:" destination="80k-ew-HY1" eventType="touchUpInside" id="t78-ld-ZhC"/>
+                                    <action selector="tapRefreshButton:" destination="80k-ew-HY1" eventType="touchUpInside" id="I0r-Dq-6gK"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Yoi-Lq-q2L">
                                 <rect key="frame" x="30" y="175" width="540" height="30"/>
                                 <state key="normal" title="Create!"/>
                                 <connections>
-                                    <action selector="tapCreateProxyButton:" destination="80k-ew-HY1" eventType="touchUpInside" id="JdI-jz-QRJ"/>
+                                    <action selector="tapCreateButton:" destination="80k-ew-HY1" eventType="touchUpInside" id="46W-59-Obt"/>
                                 </connections>
                             </button>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Nickname (optional)" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="GKm-S7-iiX" userLabel="Nickname">
@@ -551,15 +550,13 @@
                             <constraint firstAttribute="trailingMargin" secondItem="GXb-6i-CAT" secondAttribute="trailing" constant="10" id="rOG-8d-NQs"/>
                         </constraints>
                     </view>
-                    <toolbarItems>
-                        <barButtonItem title="Item" id="wyk-WC-XVK"/>
-                    </toolbarItems>
+                    <toolbarItems/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
-                        <outlet property="createProxyButton" destination="Yoi-Lq-q2L" id="bUd-4y-UUv"/>
-                        <outlet property="newProxyNameLabel" destination="87g-ME-Pq9" id="V51-O0-Qyx"/>
-                        <outlet property="newProxyNicknameTextField" destination="GKm-S7-iiX" id="Ubs-Cq-w5f"/>
-                        <outlet property="refreshProxyButton" destination="GXb-6i-CAT" id="pdq-cO-A5k"/>
+                        <outlet property="createButton" destination="Yoi-Lq-q2L" id="PSX-y6-wFE"/>
+                        <outlet property="nameLabel" destination="87g-ME-Pq9" id="pKk-kg-NBt"/>
+                        <outlet property="nicknameTextField" destination="GKm-S7-iiX" id="a3i-6u-gdf"/>
+                        <outlet property="refreshButton" destination="GXb-6i-CAT" id="0Zj-Ee-VN2"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QvR-bq-rFe" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -629,10 +626,10 @@
             </objects>
             <point key="canvasLocation" x="1723" y="1448"/>
         </scene>
-        <!--Start A Conversation View Controller-->
+        <!--New Message View Controller-->
         <scene sceneID="0Gz-RR-aYh">
             <objects>
-                <viewController storyboardIdentifier="Start A Conversation View Controller" id="t9h-Vt-RKS" userLabel="Start A Conversation View Controller" customClass="StartAConversationViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="New Message View Controller" id="t9h-Vt-RKS" userLabel="New Message View Controller" customClass="NewMessageViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="HzN-jJ-R1h"/>
                         <viewControllerLayoutGuide type="bottom" id="uOx-v7-H7n"/>

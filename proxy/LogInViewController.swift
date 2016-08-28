@@ -24,9 +24,10 @@ class LogInViewController: UIViewController {
         super.viewDidLoad()
         
         setUpUI()
+        setUpTextField()
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LogInViewController.keyboardWillShow(_:)), name:UIKeyboardWillShowNotification, object: self.view.window)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LogInViewController.keyboardWillHide(_:)), name:UIKeyboardWillHideNotification, object: self.view.window)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LogInViewController.keyboardWillShow), name:UIKeyboardWillShowNotification, object: self.view.window)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LogInViewController.keyboardWillHide), name:UIKeyboardWillHideNotification, object: self.view.window)
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -34,9 +35,6 @@ class LogInViewController: UIViewController {
     }
     
     func setUpUI() {
-        emailTextField.clearButtonMode = .WhileEditing
-        passwordTextField.clearButtonMode = .WhileEditing
-        passwordTextField.secureTextEntry = true
         bottomConstraint.constant = view.frame.size.height / 3
         bottomConstraintConstant = bottomConstraint.constant
     }
@@ -78,13 +76,13 @@ class LogInViewController: UIViewController {
                     self.showAlert("Error Setting Display Name For User", message: error.localizedDescription)
                     return
                 }
-                self.ref.child("users").child(user!.uid).setValue(["username": user!.displayName!])
+                self.ref.child("users").child(user!.uid).setValue([Constants.UserFields.Username: user!.displayName!])
                 self.showHomeScreen()
             }
         }
     }
     
-    @IBAction func tapFacebookLogInButton(sender: AnyObject) {
+    @IBAction func tapFacebookButton(sender: AnyObject) {
         let loginManager = LoginManager()
         loginManager.logIn([ .PublicProfile ], viewController: self) { loginResult in
             switch loginResult {
@@ -102,7 +100,7 @@ class LogInViewController: UIViewController {
                     let uid = user?.uid
                     self.ref.child("users").queryOrderedByKey().queryEqualToValue(uid).observeSingleEventOfType(.Value, withBlock: { snapshot in
                         if snapshot.childrenCount == 0 {
-                            self.ref.child("users").child(uid!).setValue(["username": user!.displayName!])
+                            self.ref.child("users").child(uid!).setValue([Constants.UserFields.Username: user!.displayName!])
                         }
                     })
                     self.showHomeScreen()
@@ -112,15 +110,22 @@ class LogInViewController: UIViewController {
     }
     
     func showHomeScreen() {
-        let tabBarController = self.storyboard!.instantiateViewControllerWithIdentifier("Tab Bar Controller") as! UITabBarController
+        let tabBarController = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.TabBarController) as! UITabBarController
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.window?.rootViewController = tabBarController
     }
     
     // MARK: - Keyboard
+    
+    func setUpTextField() {
+        emailTextField.clearButtonMode = .WhileEditing
+        passwordTextField.clearButtonMode = .WhileEditing
+        passwordTextField.secureTextEntry = true
+    }
+    
     func keyboardWillShow(notification: NSNotification) {
         let info = notification.userInfo!
-        let keyboardFrame: CGRect = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
+        let keyboardFrame = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
         UIView.animateWithDuration(0.1, animations: { () -> Void in
             self.bottomConstraint.constant = keyboardFrame.size.height
         })

@@ -12,9 +12,15 @@ import FirebaseAuth
 class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     private let api = API.sharedInstance
-    private var unreadMessages = 0
+    private let ref = FIRDatabase.database().reference()
+    private var convosRef = FIRDatabaseReference()
+    private var unreadRef = FIRDatabaseReference()
+    private var convosRefHandle = FIRDatabaseHandle()
+    private var unreadRefHandle = FIRDatabaseHandle()
+    private var convos = [FIRDataSnapshot]()
+    private var unread = 0
     
-    @IBOutlet weak var homeTableView: UITableView!
+    @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,78 +28,99 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         FIRAuth.auth()?.addAuthStateDidChangeListener { auth, user in
             if let user = user {
                 self.api.uid = user.uid
+                self.configureDatabase()
             } else {
-                let logInViewController  = self.storyboard!.instantiateViewControllerWithIdentifier("Log In View Controller") as! LogInViewController
+                let logInViewController = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.LogInViewController) as! LogInViewController
                 let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
                 appDelegate.window?.rootViewController = logInViewController
             }
         }
         
         setUpTableView()
-        configureDataBase()
     }
     
-    override func viewDidAppear(animated: Bool) {
-        navigationItem.title = "Conversations (\(unreadMessages))"
+    override func viewWillAppear(animated: Bool) {
+        setTitle()
     }
     
     override func viewWillDisappear(animated: Bool) {
-        var title = ""
-        if unreadMessages > 0 {
-            title = "(\(unreadMessages))"
-        }
-        navigationItem.title = title
+        navigationItem.title = unread.titleSuffixFromUnreadMessageCount()
     }
     
-    //    deinit {
-    //        ref.child("users").child(api.uid).child("proxies").child(proxyKey).child("coversations").removeObserverWithHandle(conversationsReferenceHandle)
-    //        ref.child("users").child(api.uid).child("proxies").child(proxyKey).child("invites").removeObserverWithHandle(invitesReferenceHandle)
-    //    }
-    
-    func configureDataBase() {
-        // also need observer to total user unread messages
-        
-        //        conversationsReferenceHandle = ref.child("users").child(api.uid).child("proxies").child(proxyKey).child("conversations").queryOrderedByChild("lastEventTime").observeEventType(.Value, withBlock: { snapshot in
-        //            var newData = [Conversation]()
-        //            for item in snapshot.children {
-        //                let conversation = Conversation()
-        //                newData.append(conversation)
-        //            }
-        //            self.conversations = newData
-        //            self.tableView.reloadData()
-        //        })
-        
-        //        invitesReferenceHandle = ref.child("users").child(api.uid).child("proxies").child(proxyKey).child("invites").queryOrderedByChild("lastEventTime").observeEventType(.Value, withBlock: { snapshot in
-        //            var newData = [Invite]()
-        //            for item in snapshot.children {
-        //                let invite = Invite()
-        //                newData.append(invite)
-        //            }
-        //            self.invites = newData
-        //            self.tableView.reloadData()
-        //        })
+    deinit {
+        convosRef.removeObserverWithHandle(convosRefHandle)
+        unreadRef.removeObserverWithHandle(unreadRefHandle)
     }
+    
+    func setTitle() {
+        navigationItem.title = "Conversations \(unread.titleSuffixFromUnreadMessageCount())"
+    }
+    
+    func configureDatabase() {
+        convosRef = ref.child("users").child(api.uid).child("convos")
+        convosRefHandle = convosRef.queryOrderedByChild(Constants.ProxyFields.Timestamp).observeEventType(.Value, withBlock: { snapshot in
+            var _convos = [FIRDataSnapshot]()
+            for child in snapshot.children {
+                _convos.append(child as! FIRDataSnapshot)
+            }
+            self.convos = _convos
+            self.tableView.reloadData()
+        })
+        
+        unreadRef = ref.child("users").child(api.uid).child(Constants.ProxyFields.Unread)
+        unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { snapshot in
+            self.unread = snapshot.value as! Int
+            self.setTitle()
+        })
+    }
+    
+    // MARK: - Table view
     
     func setUpTableView() {
         automaticallyAdjustsScrollViewInsets = false
-        homeTableView.dataSource = self
-        homeTableView.delegate = self
-        homeTableView.rowHeight = UITableViewAutomaticDimension
-        homeTableView.estimatedRowHeight = 80
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 80
     }
     
-    // MARK: - Table view data source
-    
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return convos.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("Proxy Table View Cell", forIndexPath: indexPath) as! ProxyTableViewCell
-        return cell
-    }
-    
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.ProxyTableViewCell, forIndexPath: indexPath) as! ProxyTableViewCell
         
+//        let conversation = self.convos[indexPath.row].value as! [String: AnyObject]
+//        
+//        var name = ""
+//        var nickname = ""
+//        var lastMessage = ""
+//        var timestamp = 0.0
+//        var unreadMessageCount = 0
+//        
+//        if let _name = conversation["name"] {
+//            name = _name as! String
+//        }
+//        if let _nickname = conversation["nickname"] {
+//            nickname = _nickname as! String
+//        }
+//        if let _timestamp = conversation["lastMessageTime"] {
+//            timestamp = _timestamp as! Double
+//        }
+//        if let _lastMessage = conversation["lastMessage"] {
+//            lastMessage = _lastMessage as! String
+//        }
+//        if let _unreadMessageCount = conversation["unreadMessageCount"] {
+//            unreadMessageCount = _unreadMessageCount as! Int
+//        }
+//        
+//        cell.nameLabel.text = name
+//        cell.nicknameLabel.text = nickname.nicknameFormattedWithDash()
+//        cell.timestampLabel.text = timestamp.timeAgoFromTimeInterval()
+//        cell.lastMessagePreviewLabel.text = lastMessage.lastMessageWithTimestamp(timestamp)
+//        cell.unreadMessageCountLabel.text = unreadMessageCount.unreadMessageCountFormatted()
+        
+        return cell
     }
 }

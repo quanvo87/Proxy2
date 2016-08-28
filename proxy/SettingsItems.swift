@@ -13,6 +13,7 @@ struct SettingsItems {
          SettingsItem(title: Constants.SettingsItemNames.ReportAnIssue),
          SettingsItem(title: Constants.SettingsItemNames.LogOut),
          SettingsItem(title: Constants.SettingsItemNames.DeleteAccount),
+         SettingsItem(title: Constants.SettingsItemNames.ReviewInAppStore),
          SettingsItem(title: Constants.SettingsItemNames.About)]
     
     var settingsItems: [SettingsItem] {

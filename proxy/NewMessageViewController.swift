@@ -1,5 +1,5 @@
 //
-//  StartAConversationViewController.swift
+//  NewMessageViewController.swift
 //  proxy
 //
 //  Created by Quan Vo on 8/25/16.
@@ -8,7 +8,7 @@
 
 import FirebaseDatabase
 
-class StartAConversationViewController: UIViewController {
+class NewMessageViewController: UIViewController {
     
     private let api = API.sharedInstance
     private let ref = FIRDatabase.database().reference()

@@ -18,7 +18,7 @@ class API {
     private var proxiesRef = FIRDatabaseReference()
     private var userProxiesRef = FIRDatabaseReference()
     private var proxyNameGenerator = ProxyNameGenerator()
-    private var currentlyFetchingProxy = false
+    private var fetchingProxy = false
     
     private init() {
         proxiesRef = self.ref.child("proxies")
@@ -34,39 +34,39 @@ class API {
         }
     }
     
-    func loadWordBank(adjectives: [String], nouns: [String]) {
-        proxyNameGenerator.adjectives = adjectives
+    func loadWordBank(adjs: [String], nouns: [String]) {
+        proxyNameGenerator.adjs = adjs
         proxyNameGenerator.nouns = nouns
-        proxyNameGenerator.wordBankLoaded = true
+        proxyNameGenerator.loaded = true
     }
     
     func wordBankIsLoaded() -> Bool {
-        return proxyNameGenerator.wordBankLoaded
+        return proxyNameGenerator.loaded
     }
     
     func createProxy() {
-        currentlyFetchingProxy = true
+        fetchingProxy = true
         tryCreateProxy()
     }
     
     func tryCreateProxy() {
         let key = proxiesRef.childByAutoId().key
         let name = proxyNameGenerator.generateProxyName()
-        let lastMessageTime = 0 - NSDate().timeIntervalSince1970
-        let proxy = ["key": key,
-                     "owner": uid,
-                     "name": name,
-                     "lastMessageTime": lastMessageTime,
-                     "unreadMessageCount": 0]
+        let timestamp = 0 - NSDate().timeIntervalSince1970
+        let proxy = [Constants.ProxyFields.Key: key,
+                     Constants.ProxyFields.Owner: uid,
+                     Constants.ProxyFields.Name: name,
+                     Constants.ProxyFields.Timestamp: timestamp,
+                     Constants.ProxyFields.Unread: 0]
         proxiesRef.child(key).setValue(proxy)
         proxiesRef.queryOrderedByChild("name").queryEqualToValue(name).observeSingleEventOfType(.Value, withBlock: { snapshot in
             if snapshot.childrenCount == 1 {
-                self.currentlyFetchingProxy = false
+                self.fetchingProxy = false
                 self.userProxiesRef.child(key).setValue(proxy)
                 NSNotificationCenter.defaultCenter().postNotificationName(Constants.NotificationKeys.ProxyCreated, object: self, userInfo: ["proxy": proxy])
             } else {
                 self.deleteProxyWithKey(key)
-                if self.currentlyFetchingProxy {
+                if self.fetchingProxy {
                     self.tryCreateProxy()
                 }
             }
@@ -77,9 +77,9 @@ class API {
         let timestamp = 0 - NSDate().timeIntervalSince1970
         ref.updateChildValues([
             "/proxies/\(key)/nickname": nickname,
-            "/proxies/\(key)/lastMessageTime": timestamp,
+            "/proxies/\(key)/timestamp": timestamp,
             "/users/\(uid)/proxies/\(key)/nickname": nickname,
-            "/users/\(uid)/proxies/\(key)/lastMessageTime": timestamp])
+            "/users/\(uid)/proxies/\(key)/timestamp": timestamp])
     }
     
     func updateNicknameForProxyWithKey(key: String, nickname: String) {
@@ -99,7 +99,7 @@ class API {
     }
     
     func cancelCreatingProxyWithKey(key: String) {
-        currentlyFetchingProxy = false
+        fetchingProxy = false
         deleteProxyWithKey(key)
     }
 }

@@ -17,17 +17,18 @@ class ProxyDetailViewController: UIViewController, UITextFieldDelegate {
     private var key = ""
     var proxy = [String: AnyObject]()
     
-    @IBOutlet weak var proxyNicknameLabel: UILabel!
-    @IBOutlet weak var newProxyNicknameTextField: UITextField!
-    @IBOutlet weak var editProxyNicknameButton: UIButton!
-    @IBOutlet weak var saveNicknameButton: UIButton!
-    @IBOutlet weak var proxyDetailTableView: UITableView!
+    @IBOutlet weak var nicknameLabel: UILabel!
+    @IBOutlet weak var nicknameTextField: UITextField!
+    @IBOutlet weak var editButton: UIButton!
+    @IBOutlet weak var saveButton: UIButton!
+    @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setUpUI()
         setProxyData()
+        setUpTextField()
         setUpTableView()
         setUpDatabase()
     }
@@ -37,66 +38,71 @@ class ProxyDetailViewController: UIViewController, UITextFieldDelegate {
     }
     
     func setUpUI() {
-        if let name = proxy["name"] {
+        if let name = proxy[Constants.ProxyFields.Name] {
             navigationItem.title = name as? String
         }
-        newProxyNicknameTextField.delegate = self
-        newProxyNicknameTextField.clearButtonMode = .WhileEditing
-        newProxyNicknameTextField.returnKeyType = .Done
     }
     
     func setProxyData() {
-        if let _key = proxy["key"] {
+        if let _key = proxy[Constants.ProxyFields.Key] {
             key = _key as! String
         }
-    }
-    
-    func setUpTableView() {
-        automaticallyAdjustsScrollViewInsets = false
-        //        proxyDetailTableView.delegate = self
-        //        proxyDetailTableView.dataSource = self
-        proxyDetailTableView.rowHeight = UITableViewAutomaticDimension
-        proxyDetailTableView.estimatedRowHeight = 80
     }
     
     func setUpDatabase() {
         nicknameRef = ref.child("users").child(api.uid).child("proxies").child(key).child("nickname")
         nicknameRefHandle = nicknameRef.observeEventType(.Value, withBlock: { snapshot in
             if let nickname = snapshot.value {
-                self.proxyNicknameLabel.text = nickname as? String
+                self.nicknameLabel.text = nickname as? String
             } else {
-                self.proxyNicknameLabel.text = ""
+                self.nicknameLabel.text = ""
             }
         })
     }
     
-    @IBAction func tapEditProxyNicknameButton(sender: AnyObject) {
-        proxyNicknameLabel.hidden = true
-        newProxyNicknameTextField.hidden = false
-        newProxyNicknameTextField.text = proxyNicknameLabel.text
-        newProxyNicknameTextField.becomeFirstResponder()
-        editProxyNicknameButton.hidden = true
-        saveNicknameButton.hidden = false
+    @IBAction func tapEditButton(sender: AnyObject) {
+        nicknameLabel.hidden = true
+        nicknameTextField.hidden = false
+        nicknameTextField.text = nicknameLabel.text
+        nicknameTextField.becomeFirstResponder()
+        editButton.hidden = true
+        saveButton.hidden = false
     }
     
-    func saveNickname() {
-        endEditingNickname()
-        api.updateNicknameForProxyWithKey(key, nickname: newProxyNicknameTextField.text!)
-    }
-    
-    func endEditingNickname() {
-        proxyNicknameLabel.hidden = false
-        newProxyNicknameTextField.hidden = true
-        editProxyNicknameButton.hidden = false
-        saveNicknameButton.hidden = true
-    }
-    
-    @IBAction func tapSaveNicknameButton(sender: AnyObject) {
+    @IBAction func tapSaveButton(sender: AnyObject) {
         self.view.endEditing(true)
         saveNickname()
     }
     
-    // MARK: - Keyboard
+    func saveNickname() {
+        endEditingNickname()
+        api.updateNicknameForProxyWithKey(key, nickname: nicknameTextField.text!)
+    }
+    
+    func endEditingNickname() {
+        nicknameLabel.hidden = false
+        nicknameTextField.hidden = true
+        editButton.hidden = false
+        saveButton.hidden = true
+    }
+    
+    // MARK: - Table view data source
+    
+    func setUpTableView() {
+        automaticallyAdjustsScrollViewInsets = false
+        //        proxyDetailTableView.delegate = self
+        //        proxyDetailTableView.dataSource = self
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 80
+    }
+    
+    // MARK: - Text field
+    
+    func setUpTextField() {
+        nicknameTextField.delegate = self
+        nicknameTextField.clearButtonMode = .WhileEditing
+        nicknameTextField.returnKeyType = .Done
+    }
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         self.view.endEditing(true)
