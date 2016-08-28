@@ -14,8 +14,7 @@ class ProxyDetailViewController: UIViewController, UITextFieldDelegate {
     private let ref = FIRDatabase.database().reference()
     private var nicknameRef = FIRDatabaseReference()
     private var nicknameRefHandle = FIRDatabaseHandle()
-    private var key = ""
-    var proxy = [String: AnyObject]()
+    var proxy = Proxy()
     
     @IBOutlet weak var nicknameLabel: UILabel!
     @IBOutlet weak var nicknameTextField: UITextField!
@@ -26,8 +25,8 @@ class ProxyDetailViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setUpUI()
-        setProxyData()
+        navigationItem.title = proxy.name
+        
         setUpTextField()
         setUpTableView()
         setUpDatabase()
@@ -37,20 +36,8 @@ class ProxyDetailViewController: UIViewController, UITextFieldDelegate {
         nicknameRef.removeObserverWithHandle(nicknameRefHandle)
     }
     
-    func setUpUI() {
-        if let name = proxy[Constants.ProxyFields.Name] {
-            navigationItem.title = name as? String
-        }
-    }
-    
-    func setProxyData() {
-        if let _key = proxy[Constants.ProxyFields.Key] {
-            key = _key as! String
-        }
-    }
-    
     func setUpDatabase() {
-        nicknameRef = ref.child("users").child(api.uid).child("proxies").child(key).child("nickname")
+        nicknameRef = ref.child("users").child(api.uid).child("proxies").child(proxy.name).child("nickname")
         nicknameRefHandle = nicknameRef.observeEventType(.Value, withBlock: { snapshot in
             if let nickname = snapshot.value {
                 self.nicknameLabel.text = nickname as? String
@@ -76,7 +63,7 @@ class ProxyDetailViewController: UIViewController, UITextFieldDelegate {
     
     func saveNickname() {
         endEditingNickname()
-        api.updateNicknameForProxyWithKey(key, nickname: nicknameTextField.text!)
+        api.updateProxyNickname(proxy, nickname: nicknameTextField.text!)
     }
     
     func endEditingNickname() {

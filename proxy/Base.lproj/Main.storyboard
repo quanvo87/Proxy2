@@ -180,7 +180,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="8NA-RN-yoF">
                         <barButtonItem key="leftBarButtonItem" title="Edit" id="9Wg-Y2-HZe"/>
-                        <barButtonItem key="rightBarButtonItem" title="+" id="ptO-33-QDc">
+                        <barButtonItem key="rightBarButtonItem" title="New" id="ptO-33-QDc">
                             <connections>
                                 <segue destination="80k-ew-HY1" kind="show" identifier="New Proxy Segue" id="Tpu-nf-bvR"/>
                             </connections>
@@ -332,12 +332,12 @@
                                 </state>
                             </button>
                             <textField hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="scJ-QY-9s0">
-                                <rect key="frame" x="13" y="96" width="534" height="30"/>
+                                <rect key="frame" x="13" y="101" width="534" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Tcu-Db-bjA">
-                                <rect key="frame" x="553" y="96" width="34" height="30"/>
+                                <rect key="frame" x="553" y="101" width="34" height="30"/>
                                 <state key="normal" title="Save"/>
                                 <connections>
                                     <action selector="tapSaveButton:" destination="0PA-SX-Dc2" eventType="touchUpInside" id="rh0-HX-dLq"/>
@@ -355,7 +355,7 @@
                             <constraint firstItem="Tcu-Db-bjA" firstAttribute="trailing" secondItem="GtE-4T-ecb" secondAttribute="trailing" id="HJi-ph-SwC"/>
                             <constraint firstAttribute="trailingMargin" secondItem="DnW-TG-8S1" secondAttribute="trailing" constant="10" id="HeZ-rO-ScZ"/>
                             <constraint firstItem="DnW-TG-8S1" firstAttribute="top" secondItem="9xn-Qb-Dme" secondAttribute="bottom" constant="10" id="Lyy-Px-CTx"/>
-                            <constraint firstItem="scJ-QY-9s0" firstAttribute="top" secondItem="chV-w1-BP1" secondAttribute="bottom" constant="10" id="N99-ni-ZO2"/>
+                            <constraint firstItem="scJ-QY-9s0" firstAttribute="top" secondItem="chV-w1-BP1" secondAttribute="bottom" constant="15" id="N99-ni-ZO2"/>
                             <constraint firstItem="chV-w1-BP1" firstAttribute="leading" secondItem="LPa-R3-F99" secondAttribute="leadingMargin" constant="-7" id="NiI-Am-MQe"/>
                             <constraint firstItem="eEq-6o-OSl" firstAttribute="top" secondItem="chV-w1-BP1" secondAttribute="bottom" constant="5" id="R5X-N7-RoC"/>
                             <constraint firstAttribute="trailingMargin" secondItem="GtE-4T-ecb" secondAttribute="trailing" constant="-7" id="SzV-C7-fGV"/>
@@ -489,7 +489,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="Fmh-7q-ABQ">
                         <barButtonItem key="leftBarButtonItem" title="Edit" id="OBr-AD-bU8"/>
-                        <barButtonItem key="rightBarButtonItem" title="+" id="GP9-5r-IRD">
+                        <barButtonItem key="rightBarButtonItem" title="New" id="GP9-5r-IRD">
                             <connections>
                                 <segue destination="t9h-Vt-RKS" kind="show" id="gUC-YC-mf3"/>
                             </connections>
@@ -654,7 +654,7 @@
                                 <state key="normal" title="Select A Proxy"/>
                                 <connections>
                                     <action selector="tapSelectProxy:" destination="t9h-Vt-RKS" eventType="touchUpInside" id="3YD-Ce-kXj"/>
-                                    <segue destination="9cd-P2-YMi" kind="show" id="DVV-ET-uGu"/>
+                                    <segue destination="9cd-P2-YMi" kind="show" identifier="Select Proxy Segue" id="DVV-ET-uGu"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Wjj-lH-XZu">
@@ -671,19 +671,19 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="First Word" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="m0a-Hi-Vxj">
-                                <rect key="frame" x="69.5" y="116" width="220.5" height="30"/>
+                                <rect key="frame" x="69.5" y="116" width="210.5" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="249" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Second Word" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="2cU-9m-tAW">
-                                <rect key="frame" x="300" y="116" width="220" height="30"/>
+                                <rect key="frame" x="290" y="116" width="210" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="##" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Fvv-XE-FPi">
-                                <rect key="frame" x="530" y="116" width="50" height="30"/>
+                                <rect key="frame" x="510" y="116" width="70" height="30"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="50" id="Ai6-i8-enj"/>
+                                    <constraint firstAttribute="width" constant="70" id="Ai6-i8-enj"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
@@ -734,10 +734,11 @@
                         <outlet property="bottomConstraint" destination="3YD-QO-s6S" id="5mi-NV-Tbv"/>
                         <outlet property="firstTextField" destination="m0a-Hi-Vxj" id="q0I-fP-Hkp"/>
                         <outlet property="messageTextView" destination="91z-h3-rmO" id="XPP-fM-Qyd"/>
-                        <outlet property="newButton" destination="zTw-45-3O1" id="vq2-c0-NXB"/>
+                        <outlet property="newButton" destination="Wjj-lH-XZu" id="B5p-BN-z8X"/>
                         <outlet property="numTextField" destination="Fvv-XE-FPi" id="JuE-ja-zFs"/>
                         <outlet property="secondTextField" destination="2cU-9m-tAW" id="cMY-fW-q5d"/>
                         <outlet property="selectProxyButton" destination="cCU-KM-BgS" id="6Dx-P9-huO"/>
+                        <outlet property="sendButton" destination="1by-x2-XdQ" id="HKT-5Z-zly"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uSP-F3-p1r" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -777,24 +778,24 @@
                                                     </constraints>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalCompressionResistancePriority="751" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="l4X-H3-M5h">
-                                                    <rect key="frame" x="78" y="29" width="43" height="20"/>
+                                                    <rect key="frame" x="83" y="13" width="43" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalCompressionResistancePriority="751" text="Nickname" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IIS-xo-Mqh" userLabel="Nickname Label">
-                                                    <rect key="frame" x="126" y="31.5" width="64.5" height="17"/>
+                                                    <rect key="frame" x="83" y="43" width="64.5" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <color key="textColor" red="0.50196081400000003" green="0.50196081400000003" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="l4X-H3-M5h" firstAttribute="centerY" secondItem="0yX-sn-CJU" secondAttribute="centerY" id="2m1-a9-arc"/>
+                                                <constraint firstItem="IIS-xo-Mqh" firstAttribute="top" secondItem="l4X-H3-M5h" secondAttribute="bottom" constant="10" id="8GW-f5-Fi7"/>
                                                 <constraint firstItem="0yX-sn-CJU" firstAttribute="leading" secondItem="LTt-oz-ohx" secondAttribute="leadingMargin" id="IDW-Kx-YSd"/>
-                                                <constraint firstItem="IIS-xo-Mqh" firstAttribute="baseline" secondItem="l4X-H3-M5h" secondAttribute="baseline" id="JQO-V8-ziB"/>
-                                                <constraint firstItem="IIS-xo-Mqh" firstAttribute="leading" secondItem="l4X-H3-M5h" secondAttribute="trailing" constant="5" id="PnP-Bd-lnr"/>
-                                                <constraint firstItem="l4X-H3-M5h" firstAttribute="leading" secondItem="0yX-sn-CJU" secondAttribute="trailing" constant="10" id="R9w-K7-doA"/>
+                                                <constraint firstItem="IIS-xo-Mqh" firstAttribute="leading" secondItem="l4X-H3-M5h" secondAttribute="leading" id="aKa-Sl-ut9"/>
+                                                <constraint firstItem="l4X-H3-M5h" firstAttribute="leading" secondItem="0yX-sn-CJU" secondAttribute="trailing" constant="15" id="gwF-iu-lWO"/>
+                                                <constraint firstItem="l4X-H3-M5h" firstAttribute="top" secondItem="0yX-sn-CJU" secondAttribute="top" constant="5" id="tQ1-yR-KuB"/>
                                                 <constraint firstItem="0yX-sn-CJU" firstAttribute="top" secondItem="LTt-oz-ohx" secondAttribute="topMargin" id="tWu-He-3zJ"/>
                                                 <constraint firstAttribute="bottomMargin" secondItem="0yX-sn-CJU" secondAttribute="bottom" constant="0.5" id="zr9-sr-6m9"/>
                                             </constraints>

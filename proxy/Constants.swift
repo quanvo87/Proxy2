@@ -8,33 +8,6 @@
 
 struct Constants {
     
-    struct UserFields {
-        static let UID = "uid"
-        static let Username = "username"
-        static let Proxies = "proxies"
-        static let Convos = "convos"
-        static let ConvosWith = "convosWith"
-        static let Unread = "unread"
-    }
-    
-    struct ProxyFields {
-        static let Key = "key"
-        static let Owner = "owner"
-        static let Name = "name"
-        static let Nickname = "nickname"
-        static let Message = "message"
-        static let Timestamp = "timestamp"
-        static let Unread = "unread"
-    }
-    
-    struct ConvoFields {
-        static let Key = "key"
-        static let Name = "name"
-        static let Nickname = "nickname"
-        static let Message = "message"
-        static let Timestamp = "timestamp"
-    }
-    
     struct Identifiers {
         static let TabBarController = "Tab Bar Controller"
         static let LogInViewController = "Log In View Controller"
@@ -42,6 +15,7 @@ struct Constants {
     }
     
     struct Segues {
+        static let SelectProxySegue = "Select Proxy Segue"
         static let ProxyDetailSegue = "Proxy Detail Segue"
     }
     

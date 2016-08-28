@@ -14,7 +14,8 @@ class SelectProxyViewController: UIViewController, UITableViewDelegate, UITableV
     private let ref = FIRDatabase.database().reference()
     private var proxiesRef = FIRDatabaseReference()
     private var proxiesRefHandle = FIRDatabaseHandle()
-    private var proxies = [FIRDataSnapshot]()
+    private var proxies = [Proxy]()
+    var delegate: SelectProxyViewControllerDelegate!
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -33,9 +34,10 @@ class SelectProxyViewController: UIViewController, UITableViewDelegate, UITableV
     func configureDatabase() {
         proxiesRef = ref.child("users").child(api.uid).child("proxies")
         proxiesRefHandle = proxiesRef.queryOrderedByChild("timestamp").observeEventType(.Value, withBlock: { snapshot in
-            var _proxies = [FIRDataSnapshot]()
+            var _proxies = [Proxy]()
             for child in snapshot.children {
-                _proxies.append(child as! FIRDataSnapshot)
+                let proxy = Proxy(anyObject: child.value)
+                _proxies.append(proxy)
             }
             self.proxies = _proxies
             self.tableView.reloadData()
@@ -58,22 +60,15 @@ class SelectProxyViewController: UIViewController, UITableViewDelegate, UITableV
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.ProxyTableViewCell, forIndexPath: indexPath) as! ProxyTableViewCell
-        
-        let proxy = self.proxies[indexPath.row].value as! [String: AnyObject]
-        
-        var name = ""
-        var nickname = ""
-        
-        if let _name = proxy[Constants.ProxyFields.Name] {
-            name = _name as! String
-        }
-        if let _nickname = proxy[Constants.ProxyFields.Nickname] {
-            nickname = _nickname as! String
-        }
-        
-        cell.nameLabel.text = name
-        cell.nicknameLabel.text = nickname.nicknameFormattedWithDash()
-        
+        let proxy = self.proxies[indexPath.row]
+        cell.nameLabel.text = proxy.name
+        cell.nicknameLabel.text = proxy.nickname.nicknameFormatted()
         return cell
+    }
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let proxy = self.proxies[indexPath.row]
+        delegate.selectProxy(proxy.name)
+        navigationController?.popViewControllerAnimated(true)
     }
 }

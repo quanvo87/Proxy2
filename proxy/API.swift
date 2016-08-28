@@ -16,9 +16,9 @@ class API {
     private var _uid = ""
     private let ref = FIRDatabase.database().reference()
     private var proxiesRef = FIRDatabaseReference()
-    private var userProxiesRef = FIRDatabaseReference()
     private var proxyNameGenerator = ProxyNameGenerator()
-    private var fetchingProxy = false
+    private var wordsLoaded = false
+    private var creatingProxy = false
     
     private init() {
         proxiesRef = self.ref.child("proxies")
@@ -30,76 +30,90 @@ class API {
         }
         set (newValue) {
             _uid = newValue
-            userProxiesRef = self.ref.child("users").child(uid).child("proxies")
         }
     }
     
-    func loadWordBank(adjs: [String], nouns: [String]) {
-        proxyNameGenerator.adjs = adjs
-        proxyNameGenerator.nouns = nouns
-        proxyNameGenerator.loaded = true
-    }
-    
-    func wordBankIsLoaded() -> Bool {
-        return proxyNameGenerator.loaded
+    func loadWords() {
+        let url = NSURL(string: "https://api.myjson.com/bins/4xqqn")!
+        let urlRequest = NSMutableURLRequest(URL: url)
+        let session = NSURLSession.sharedSession()
+        let task = session.dataTaskWithRequest(urlRequest) { data, response, error -> Void in
+            guard
+                let httpResponse = response as? NSHTTPURLResponse
+                where httpResponse.statusCode == 200 else {
+                    print(error?.localizedDescription)
+                    return
+            }
+            do {
+                let json = try NSJSONSerialization.JSONObjectWithData(data!, options: .AllowFragments)
+                if let adjs = json["adjectives"] as? [String], nouns = json["nouns"] as? [String] {
+                    self.proxyNameGenerator.adjs = adjs
+                    self.proxyNameGenerator.nouns = nouns
+                    self.wordsLoaded = true
+                    self.tryCreateProxy()
+                    
+                }
+            } catch let error as NSError {
+                print(error.localizedDescription)
+            }
+        }
+        task.resume()
     }
     
     func createProxy() {
-        fetchingProxy = true
-        tryCreateProxy()
+        creatingProxy = true
+        if wordsLoaded {
+            tryCreateProxy()
+        } else {
+            loadWords()
+        }
     }
     
     func tryCreateProxy() {
-        let key = proxiesRef.childByAutoId().key
         let name = proxyNameGenerator.generateProxyName()
-        let timestamp = 0 - NSDate().timeIntervalSince1970
-        let proxy = [Constants.ProxyFields.Key: key,
-                     Constants.ProxyFields.Owner: uid,
-                     Constants.ProxyFields.Name: name,
-                     Constants.ProxyFields.Timestamp: timestamp,
-                     Constants.ProxyFields.Unread: 0]
-        proxiesRef.child(key).setValue(proxy)
+        let proxy = Proxy(name: name)
+        proxiesRef.child(name).setValue(proxy.toAnyObject())
         proxiesRef.queryOrderedByChild("name").queryEqualToValue(name).observeSingleEventOfType(.Value, withBlock: { snapshot in
             if snapshot.childrenCount == 1 {
-                self.fetchingProxy = false
-                self.userProxiesRef.child(key).setValue(proxy)
-                NSNotificationCenter.defaultCenter().postNotificationName(Constants.NotificationKeys.ProxyCreated, object: self, userInfo: ["proxy": proxy])
+                self.creatingProxy = false
+                NSNotificationCenter.defaultCenter().postNotificationName(Constants.NotificationKeys.ProxyCreated, object: self, userInfo: ["proxy": proxy.toAnyObject()])
             } else {
-                self.deleteProxyWithKey(key)
-                if self.fetchingProxy {
+                self.deleteProxy(proxy)
+                if self.creatingProxy {
                     self.tryCreateProxy()
                 }
             }
         })
     }
     
-    func saveProxyWithKeyAndNickname(key: String, nickname: String) {
+    func saveProxyWithNickname(proxy: Proxy, nickname: String) {
         let timestamp = 0 - NSDate().timeIntervalSince1970
+        var _proxy = proxy
+        _proxy.nickname = nickname
+        _proxy.timestamp = timestamp
         ref.updateChildValues([
-            "/proxies/\(key)/nickname": nickname,
-            "/proxies/\(key)/timestamp": timestamp,
-            "/users/\(uid)/proxies/\(key)/nickname": nickname,
-            "/users/\(uid)/proxies/\(key)/timestamp": timestamp])
+            "/users/\(uid)/proxies/\(proxy.name)": _proxy.toAnyObject(),
+            "/proxies/\(proxy.name)/nickname": nickname,
+            "/proxies/\(proxy.name)/timestamp": timestamp])
     }
     
-    func updateNicknameForProxyWithKey(key: String, nickname: String) {
+    func updateProxyNickname(proxy: Proxy, nickname: String) {
         ref.updateChildValues([
-            "/proxies/\(key)/nickname": nickname,
-            "/users/\(uid)/proxies/\(key)/nickname": nickname])
+            "/proxies/\(proxy.name)/nickname": nickname,
+            "/users/\(uid)/proxies/\(proxy.name)/nickname": nickname])
     }
     
-    func refreshProxyFromOldProxyWithKey(oldProxyKey: String) {
-        deleteProxyWithKey(oldProxyKey)
+    func refreshProxyFromOldProxy(oldProxy: Proxy) {
+        deleteProxy(oldProxy)
         createProxy()
     }
     
-    func deleteProxyWithKey(key: String) {
-        proxiesRef.child(key).removeValue()
-        userProxiesRef.child(key).removeValue()
+    func deleteProxy(proxy: Proxy) {
+        proxiesRef.child(proxy.name).removeValue()
     }
     
-    func cancelCreatingProxyWithKey(key: String) {
-        fetchingProxy = false
-        deleteProxyWithKey(key)
+    func cancelCreateProxy(proxy: Proxy) {
+        creatingProxy = false
+        deleteProxy(proxy)
     }
 }

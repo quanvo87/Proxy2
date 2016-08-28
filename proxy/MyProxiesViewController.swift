@@ -17,7 +17,7 @@ class MyProxiesViewController: UIViewController, UITableViewDataSource, UITableV
     private var unreadRef = FIRDatabaseReference()
     private var proxiesRefHandle = FIRDatabaseHandle()
     private var unreadRefHandle = FIRDatabaseHandle()
-    private var proxies = [FIRDataSnapshot]()
+    private var proxies = [Proxy]()
     private var unread = 0
     
     @IBOutlet weak var tableView: UITableView!
@@ -49,9 +49,10 @@ class MyProxiesViewController: UIViewController, UITableViewDataSource, UITableV
     func configureDatabase() {
         proxiesRef = ref.child("users").child(api.uid).child("proxies")
         proxiesRefHandle = proxiesRef.queryOrderedByChild("timestamp").observeEventType(.Value, withBlock: { snapshot in
-            var _proxies = [FIRDataSnapshot]()
+            var _proxies = [Proxy]()
             for child in snapshot.children {
-                _proxies.append(child as! FIRDataSnapshot)
+                let proxy = Proxy(anyObject: child.value)
+                _proxies.append(proxy)
             }
             self.proxies = _proxies
             self.tableView.reloadData()
@@ -80,37 +81,12 @@ class MyProxiesViewController: UIViewController, UITableViewDataSource, UITableV
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.ProxyTableViewCell, forIndexPath: indexPath) as! ProxyTableViewCell
-        
-        let proxy = self.proxies[indexPath.row].value as! [String: AnyObject]
-        
-        var name = ""
-        var nickname = ""
-        var lastMessage = ""
-        var timestamp = 0.0
-        var unreadMessageCount = 0
-        
-        if let _name = proxy[Constants.ProxyFields.Name] {
-            name = _name as! String
-        }
-        if let _nickname = proxy[Constants.ProxyFields.Nickname] {
-            nickname = _nickname as! String
-        }
-        if let _timestamp = proxy[Constants.ProxyFields.Timestamp] {
-            timestamp = _timestamp as! Double
-        }
-        if let _lastMessage = proxy[Constants.ProxyFields.Message] {
-            lastMessage = _lastMessage as! String
-        }
-        if let _unreadMessageCount = proxy[Constants.ProxyFields.Unread] {
-            unreadMessageCount = _unreadMessageCount as! Int
-        }
-        
-        cell.nameLabel.text = name
-        cell.nicknameLabel.text = nickname.nicknameFormattedWithDash()
-        cell.timestampLabel.text = timestamp.timeAgoFromTimeInterval()
-        cell.lastMessagePreviewLabel.text = lastMessage.lastMessageWithTimestamp(timestamp)
-        cell.unreadMessageCountLabel.text = unreadMessageCount.unreadMessageCountFormatted()
-        
+        let proxy = self.proxies[indexPath.row]
+        cell.nameLabel.text = proxy.name
+        cell.nicknameLabel.text = proxy.nickname.nicknameFormattedWithDash()
+        cell.timestampLabel.text = proxy.timestamp.timeAgoFromTimeInterval()
+        cell.lastMessagePreviewLabel.text = proxy.message.lastMessageWithTimestamp(proxy.timestamp)
+        cell.unreadMessageCountLabel.text = proxy.unread.unreadMessageCountFormatted()
         return cell
     }
     
@@ -120,7 +96,7 @@ class MyProxiesViewController: UIViewController, UITableViewDataSource, UITableV
         if segue.identifier == Constants.Segues.ProxyDetailSegue,
             let destination = segue.destinationViewController as? ProxyDetailViewController,
             index = tableView.indexPathForSelectedRow?.row {
-            destination.proxy = proxies[index].value as! [String: AnyObject]
+            destination.proxy = proxies[index]
         }
     }
 }
