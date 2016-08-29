@@ -49,19 +49,19 @@ class MyProxiesViewController: UIViewController, UITableViewDataSource, UITableV
     func configureDatabase() {
         proxiesRef = ref.child("users").child(api.uid).child("proxies")
         proxiesRefHandle = proxiesRef.queryOrderedByChild("timestamp").observeEventType(.Value, withBlock: { snapshot in
-            var _proxies = [Proxy]()
+            var proxies = [Proxy]()
             for child in snapshot.children {
                 let proxy = Proxy(anyObject: child.value)
-                _proxies.append(proxy)
+                proxies.append(proxy)
             }
-            self.proxies = _proxies
+            self.proxies = proxies
             self.tableView.reloadData()
         })
         
         unreadRef = ref.child("users").child(api.uid).child("unread")
         unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { snapshot in
-            if let _unread = snapshot.value as? Int {
-                self.unread = _unread
+            if let unread = snapshot.value as? Int {
+                self.unread = unread
                 self.setTitle()
             }
         })
@@ -85,7 +85,7 @@ class MyProxiesViewController: UIViewController, UITableViewDataSource, UITableV
         let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.ProxyTableViewCell, forIndexPath: indexPath) as! ProxyTableViewCell
         let proxy = self.proxies[indexPath.row]
         cell.nameLabel.text = proxy.name
-        cell.nicknameLabel.text = proxy.nickname.nicknameFormattedWithDash()
+        cell.nicknameLabel.text = proxy.nickname.nicknameWithDashBack()
         cell.timestampLabel.text = proxy.timestamp.timeAgoFromTimeInterval()
         cell.lastMessagePreviewLabel.text = proxy.message.lastMessageWithTimestamp(proxy.timestamp)
         cell.unreadMessageCountLabel.text = proxy.unread.unreadMessageCountFormatted()

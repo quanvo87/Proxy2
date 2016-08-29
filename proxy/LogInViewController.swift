@@ -42,8 +42,8 @@ class LogInViewController: UIViewController {
         guard
             let email = emailTextField.text?.lowercaseString,
             let password = passwordTextField.text
-            where email.isValidEmail() && password != "" else {
-                showAlert("Invalid Email/Password", message: "Please enter a valid email and password.")
+            where email != "" && password != "" else {
+                showAlert("Missing Fields", message: "Please enter an email and password.")
                 return
         }
         FIRAuth.auth()?.signInWithEmail(email, password: password) { user, error in
@@ -59,7 +59,7 @@ class LogInViewController: UIViewController {
         guard
             let email = emailTextField.text?.lowercaseString,
             let password = passwordTextField.text
-            where email.isValidEmail() && password != "" else {
+            where email != "" && password != "" else {
                 showAlert("Invalid Email/Password", message: "Please enter a valid email and password.")
                 return
         }

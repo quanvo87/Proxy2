@@ -11,7 +11,6 @@ struct ConvosWith {
     var key = ""
     var proxies = ""
     var convo = ""
-    var unread = 0
     
     init() {}
     
@@ -25,15 +24,13 @@ struct ConvosWith {
         self.key = anyObject["key"] as! String
         self.proxies = anyObject["proxies"] as! String
         self.convo = anyObject["convo"] as! String
-        self.unread = anyObject["unread"] as! Int
     }
     
     func toAnyObject() -> AnyObject {
         return [
             "key": key,
             "proxies": proxies,
-            "convo": convo,
-            "unread": unread
+            "convo": convo
         ]
     }
 }

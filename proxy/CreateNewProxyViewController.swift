@@ -37,7 +37,7 @@ class CreateNewProxyViewController: UIViewController, UITextFieldDelegate {
     
     func setUpUI() {
         navigationItem.title = "New Proxy"
-        nameLabel.text = "Fetching Proxy..."
+        nameLabel.text = "Fetching Names..."
         rerollButton.enabled = false
         createButton.enabled = false
     }

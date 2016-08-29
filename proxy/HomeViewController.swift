@@ -17,7 +17,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     private var unreadRef = FIRDatabaseReference()
     private var convosRefHandle = FIRDatabaseHandle()
     private var unreadRefHandle = FIRDatabaseHandle()
-    private var convos = [FIRDataSnapshot]()
+    private var convos = [Convo]()
     private var unread = 0
     
     @IBOutlet weak var tableView: UITableView!
@@ -59,11 +59,12 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     func configureDatabase() {
         convosRef = ref.child("users").child(api.uid).child("convos")
         convosRefHandle = convosRef.queryOrderedByChild("timestamp").observeEventType(.Value, withBlock: { snapshot in
-            var _convos = [FIRDataSnapshot]()
+            var convos = [Convo]()
             for child in snapshot.children {
-                _convos.append(child as! FIRDataSnapshot)
+                let convo = Convo(anyObject: child.value)
+                convos.append(convo)
             }
-            self.convos = _convos
+            self.convos = convos
             self.tableView.reloadData()
         })
         
@@ -93,35 +94,12 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.ProxyTableViewCell, forIndexPath: indexPath) as! ProxyTableViewCell
         
-//        let conversation = self.convos[indexPath.row].value as! [String: AnyObject]
-//        
-//        var name = ""
-//        var nickname = ""
-//        var lastMessage = ""
-//        var timestamp = 0.0
-//        var unreadMessageCount = 0
-//        
-//        if let _name = conversation["name"] {
-//            name = _name as! String
-//        }
-//        if let _nickname = conversation["nickname"] {
-//            nickname = _nickname as! String
-//        }
-//        if let _timestamp = conversation["lastMessageTime"] {
-//            timestamp = _timestamp as! Double
-//        }
-//        if let _lastMessage = conversation["lastMessage"] {
-//            lastMessage = _lastMessage as! String
-//        }
-//        if let _unreadMessageCount = conversation["unreadMessageCount"] {
-//            unreadMessageCount = _unreadMessageCount as! Int
-//        }
-//        
-//        cell.nameLabel.text = name
-//        cell.nicknameLabel.text = nickname.nicknameFormattedWithDash()
-//        cell.timestampLabel.text = timestamp.timeAgoFromTimeInterval()
-//        cell.lastMessagePreviewLabel.text = lastMessage.lastMessageWithTimestamp(timestamp)
-//        cell.unreadMessageCountLabel.text = unreadMessageCount.unreadMessageCountFormatted()
+        let convo = self.convos[indexPath.row]
+        
+        cell.nameLabel.text = convo.nickname.nicknameWithDashBack() + convo.members
+        cell.timestampLabel.text = convo.timestamp.timeAgoFromTimeInterval()
+        cell.lastMessagePreviewLabel.text = convo.message
+        cell.unreadMessageCountLabel.text = convo.unread.unreadMessageCountFormatted()
         
         return cell
     }
