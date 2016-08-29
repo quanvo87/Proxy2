@@ -8,5 +8,5 @@
 
 protocol SelectProxyViewControllerDelegate {
     
-    func selectProxy(name: String)
+    func selectProxy(proxy: Proxy)
 }

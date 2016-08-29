@@ -60,8 +60,10 @@ class MyProxiesViewController: UIViewController, UITableViewDataSource, UITableV
         
         unreadRef = ref.child("users").child(api.uid).child("unread")
         unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { snapshot in
-            self.unread = snapshot.value as! Int
-            self.setTitle()
+            if let _unread = snapshot.value as? Int {
+                self.unread = _unread
+                self.setTitle()
+            }
         })
     }
     

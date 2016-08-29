@@ -15,7 +15,7 @@ class CreateNewProxyViewController: UIViewController, UITextFieldDelegate {
     
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var nicknameTextField: UITextField!
-    @IBOutlet weak var refreshButton: UIButton!
+    @IBOutlet weak var rerollButton: UIButton!
     @IBOutlet weak var createButton: UIButton!
     
     override func viewDidLoad() {
@@ -38,7 +38,7 @@ class CreateNewProxyViewController: UIViewController, UITextFieldDelegate {
     func setUpUI() {
         navigationItem.title = "New Proxy"
         nameLabel.text = "Fetching Proxy..."
-        refreshButton.enabled = false
+        rerollButton.enabled = false
         createButton.enabled = false
     }
     
@@ -50,9 +50,9 @@ class CreateNewProxyViewController: UIViewController, UITextFieldDelegate {
         enableButtons()
     }
     
-    @IBAction func tapRefreshButton(sender: AnyObject) {
+    @IBAction func tapRerollButton(sender: AnyObject) {
         disableButtons()
-        api.refreshProxyFromOldProxy(proxy)
+        api.rerollProxy(proxy)
     }
     
     @IBAction func tapCreateButton(sender: AnyObject) {
@@ -67,12 +67,12 @@ class CreateNewProxyViewController: UIViewController, UITextFieldDelegate {
     }
     
     func disableButtons() {
-        refreshButton.enabled = false
+        rerollButton.enabled = false
         createButton.enabled = false
     }
     
     func enableButtons() {
-        refreshButton.enabled = true
+        rerollButton.enabled = true
         createButton.enabled = true
     }
     

@@ -12,6 +12,10 @@
 		14265B7C1D63029200B65793 /* CreateNewProxyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14265B7B1D63029200B65793 /* CreateNewProxyViewController.swift */; };
 		14383B0F1D7341070086CA6C /* SelectProxyViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14383B0E1D7341070086CA6C /* SelectProxyViewControllerDelegate.swift */; };
 		14383B121D73802B0086CA6C /* Proxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14383B111D73802B0086CA6C /* Proxy.swift */; };
+		14383B151D73C3AF0086CA6C /* ConvosWith.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14383B141D73C3AF0086CA6C /* ConvosWith.swift */; };
+		14383B171D73D42E0086CA6C /* Convo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14383B161D73D42E0086CA6C /* Convo.swift */; };
+		14383B191D73D8F50086CA6C /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14383B181D73D8F50086CA6C /* Message.swift */; };
+		14383B1B1D73EB370086CA6C /* Member.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14383B1A1D73EB370086CA6C /* Member.swift */; };
 		143F76ED1D71EF6200EF305F /* TimeAgo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 143F76EC1D71EF6200EF305F /* TimeAgo.swift */; };
 		143F76EF1D72167800EF305F /* ProxyDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 143F76EE1D72167800EF305F /* ProxyDetailViewController.swift */; };
 		143F76FA1D72C0C100EF305F /* SelectProxyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 143F76F91D72C0C100EF305F /* SelectProxyViewController.swift */; };
@@ -40,6 +44,10 @@
 		14265B7B1D63029200B65793 /* CreateNewProxyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateNewProxyViewController.swift; sourceTree = "<group>"; };
 		14383B0E1D7341070086CA6C /* SelectProxyViewControllerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectProxyViewControllerDelegate.swift; sourceTree = "<group>"; };
 		14383B111D73802B0086CA6C /* Proxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Proxy.swift; sourceTree = "<group>"; };
+		14383B141D73C3AF0086CA6C /* ConvosWith.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvosWith.swift; sourceTree = "<group>"; };
+		14383B161D73D42E0086CA6C /* Convo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Convo.swift; sourceTree = "<group>"; };
+		14383B181D73D8F50086CA6C /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		14383B1A1D73EB370086CA6C /* Member.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Member.swift; sourceTree = "<group>"; };
 		143F76EC1D71EF6200EF305F /* TimeAgo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeAgo.swift; sourceTree = "<group>"; };
 		143F76EE1D72167800EF305F /* ProxyDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyDetailViewController.swift; sourceTree = "<group>"; };
 		143F76F91D72C0C100EF305F /* SelectProxyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectProxyViewController.swift; sourceTree = "<group>"; };
@@ -83,6 +91,10 @@
 			isa = PBXGroup;
 			children = (
 				14383B111D73802B0086CA6C /* Proxy.swift */,
+				14383B161D73D42E0086CA6C /* Convo.swift */,
+				14383B141D73C3AF0086CA6C /* ConvosWith.swift */,
+				14383B1A1D73EB370086CA6C /* Member.swift */,
+				14383B181D73D8F50086CA6C /* Message.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -156,6 +168,9 @@
 				14E19A501D60EF100030B366 /* Info.plist */,
 				14A6F18F1D6C21ED0015431E /* GoogleService-Info.plist */,
 				14E19A561D60F07A0030B366 /* Header.h */,
+				14E19A3F1D60EF100030B366 /* Products */,
+				8C58ABB3C024E5AA096A4135 /* Pods */,
+				D428DCAD961DE668E1D7D394 /* Frameworks */,
 			);
 			name = Other;
 			sourceTree = "<group>";
@@ -164,9 +179,6 @@
 			isa = PBXGroup;
 			children = (
 				14E19A401D60EF100030B366 /* proxy */,
-				14E19A3F1D60EF100030B366 /* Products */,
-				8C58ABB3C024E5AA096A4135 /* Pods */,
-				D428DCAD961DE668E1D7D394 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -176,6 +188,7 @@
 				14E19A3E1D60EF100030B366 /* proxy.app */,
 			);
 			name = Products;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		14E19A401D60EF100030B366 /* proxy */ = {
@@ -188,8 +201,8 @@
 				14383B101D7380130086CA6C /* Model */,
 				14383B131D73AD1F0086CA6C /* View */,
 				143F76F71D72BE7400EF305F /* Utility */,
-				143F76F81D72BFB800EF305F /* Other */,
 				14E19A451D60EF100030B366 /* Main.storyboard */,
+				143F76F81D72BFB800EF305F /* Other */,
 			);
 			path = proxy;
 			sourceTree = "<group>";
@@ -201,6 +214,7 @@
 				197B015D4173F5D5144C2ADC /* Pods-proxy.release.xcconfig */,
 			);
 			name = Pods;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		D428DCAD961DE668E1D7D394 /* Frameworks */ = {
@@ -209,6 +223,7 @@
 				38C5C6B48B79F08C65113251 /* Pods_proxy.framework */,
 			);
 			name = Frameworks;
+			path = ..;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -334,7 +349,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				14383B151D73C3AF0086CA6C /* ConvosWith.swift in Sources */,
+				14383B171D73D42E0086CA6C /* Convo.swift in Sources */,
 				143F76EF1D72167800EF305F /* ProxyDetailViewController.swift in Sources */,
+				14383B1B1D73EB370086CA6C /* Member.swift in Sources */,
 				14E19A5C1D612CE80030B366 /* Extensions.swift in Sources */,
 				14A6F1831D68E4E00015431E /* SettingsTableViewCell.swift in Sources */,
 				1415611F1D62A8A3002022BC /* ProxyTableViewCell.swift in Sources */,
@@ -349,6 +367,7 @@
 				14A6F17B1D68D5F20015431E /* SettingsViewController.swift in Sources */,
 				143F76FA1D72C0C100EF305F /* SelectProxyViewController.swift in Sources */,
 				1415610D1D620DB7002022BC /* API.swift in Sources */,
+				14383B191D73D8F50086CA6C /* Message.swift in Sources */,
 				14E19A421D60EF100030B366 /* AppDelegate.swift in Sources */,
 				14A6F1941D6CF1410015431E /* ProxyNameGenerator.swift in Sources */,
 				14A6F1A21D6FB5090015431E /* NewMessageViewController.swift in Sources */,

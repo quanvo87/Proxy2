@@ -75,7 +75,7 @@ class LogInViewController: UIViewController {
                     self.showAlert("Error Setting Display Name For User", message: error.localizedDescription)
                     return
                 }
-                self.ref.child("users").child(user!.uid).setValue(["username": user!.displayName!])
+                self.ref.child("users").child((user?.uid)!).setValue(["username": user!.displayName!, "unread": 0])
                 self.showHomeScreen()
             }
         }
@@ -98,8 +98,8 @@ class LogInViewController: UIViewController {
                     }
                     let uid = user?.uid
                     self.ref.child("users").queryOrderedByKey().queryEqualToValue(uid).observeSingleEventOfType(.Value, withBlock: { snapshot in
-                        if snapshot.childrenCount == 0 {
-                            self.ref.child("users").child(uid!).setValue(["username": user!.displayName!])
+                        if !snapshot.hasChildren() {
+                            self.ref.child("users").child(uid!).setValue(["username": user!.displayName!, "unread": 0])
                         }
                     })
                     self.showHomeScreen()

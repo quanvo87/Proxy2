@@ -103,7 +103,7 @@ class API {
             "/users/\(uid)/proxies/\(proxy.name)/nickname": nickname])
     }
     
-    func refreshProxyFromOldProxy(oldProxy: Proxy) {
+    func rerollProxy(oldProxy: Proxy) {
         deleteProxy(oldProxy)
         createProxy()
     }

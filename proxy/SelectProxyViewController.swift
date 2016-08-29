@@ -68,7 +68,7 @@ class SelectProxyViewController: UIViewController, UITableViewDelegate, UITableV
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let proxy = self.proxies[indexPath.row]
-        delegate.selectProxy(proxy.name)
+        delegate.selectProxy(proxy)
         navigationController?.popViewControllerAnimated(true)
     }
 }

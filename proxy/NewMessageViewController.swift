@@ -11,6 +11,7 @@ import FirebaseDatabase
 class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate, SelectProxyViewControllerDelegate {
     
     private let api = API.sharedInstance
+    private let ref = FIRDatabase.database().reference()
     private var proxy = Proxy()
     private var createdNewProxy = false
     private var savingNewProxy = false
@@ -61,20 +62,148 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
         sendButton.enabled = true
     }
     
-    @IBAction func tapSelectProxy(sender: AnyObject) {
-    }
-    
     @IBAction func tapSendButton(sender: AnyObject) {
+        //        disableButtons()
+        
+        guard proxy.name != "" else {
+            showAlert("Select A Proxy", message: "Please select a proxy to send your message from. Or create a new one!")
+            return
+        }
+        
+        // check for empty fields
+        guard
+            let first = firstTextField.text,
+            let second = secondTextField.text,
+            let num = numTextField.text,
+            let messageText = messageTextView.text
+            where first != "" && second != "" && num != "" && messageText != "Message..." else {
+                showAlert("Missing Fields", message: "Please enter a value in each field.")
+                return
+        }
+        
+        // check if receiver exists
+        let receiverName = first.lowercaseString + second.lowercaseString.capitalizedString + num
+        self.ref.child("proxies").queryOrderedByKey().queryEqualToValue(receiverName).observeSingleEventOfType(.Value, withBlock: { snapshot in
+            guard snapshot.hasChildren() else {
+                self.showAlert("Receiving Proxy Not Found", message: "Perhaps there was a spelling error?")
+                return
+            }
+            
+            // check if sender is trying to send to him/herself
+            var receiverProxy = Proxy(anyObject: snapshot.children.nextObject()!.value)
+            guard self.api.uid != receiverProxy.owner else {
+                self.showAlert("Cannot Send To Self", message: "Can't start a conversation with you own proxy. Try messaging someone else!")
+                return
+            }
+            
+            // check if existing convo between the proxies exists
+            let proxies = [self.proxy.name, receiverProxy.name].sort().joinWithSeparator("")
+            
+            self.ref.child("convosWith").child(self.proxy.name).queryOrderedByChild("proxies").queryEqualToValue(proxies).observeSingleEventOfType(.Value, withBlock: { snapshot in
+                
+                var convoExists = false
+                var convosWith = ConvosWith()
+                var convosWithKey = ""
+                var convo = Convo()
+                var convoKey = ""
+                
+                if snapshot.hasChildren() {
+                    
+                    // use existing convo
+                    convoExists = true
+                    convoKey = ConvosWith(anyObject: snapshot.children.nextObject()!.value).convo
+                    
+                } else {
+                    
+                    // else make new convo
+                    convoKey = self.ref.child("users").child(self.api.uid).child("convos").childByAutoId().key
+                    convosWithKey = self.ref.child("users").child(self.api.uid).child("convosWith").childByAutoId().key
+                    convosWith = ConvosWith(key: convosWithKey, proxies: proxies, convo: convoKey)
+                }
+                
+                let timestamp = 0 - NSDate().timeIntervalSince1970
+                
+                
+                // create the message
+                let messageKey = self.ref.child("messages").child(convoKey).childByAutoId().key
+                let message = Message(key: messageKey, sender: self.api.uid, message: messageText, timestamp: timestamp).toAnyObject()
+                 
+                // update message and timestamp for convos and proxies
+                convo.key = convoKey
+                convo.message = messageText
+                convo.timestamp = timestamp
+                let convoDict = convo.toAnyObject()
+                
+                self.proxy.message = messageText
+                self.proxy.timestamp = timestamp
+                let proxyDict = self.proxy.toAnyObject()
+                
+                receiverProxy.message = messageText
+                receiverProxy.timestamp = timestamp
+                let receiverProxyDict = receiverProxy.toAnyObject()
+                
+                // save data atomically
+                if convoExists {
+                    self.ref.updateChildValues([
+                        "/messages/\(convoKey)/\(messageKey)": message,
+                        "/users/\(self.api.uid)/convos/\(convoKey)": convoDict,
+                        "/users/\(receiverProxy.owner)/convos/\(convoKey)": convoDict,
+                        "/convos/\(self.proxy.name)/\(convoKey)": convoDict,
+                        "/convos/\(receiverProxy.name)/\(convoKey)": convoDict,
+                        "/users/\(self.api.uid)/proxies/\(self.proxy.name)": proxyDict,
+                        "/users/\(receiverProxy.owner)/proxies/\(receiverProxy.name)": receiverProxyDict,
+                        "/proxies/\(self.proxy.name)": proxyDict,
+                        "/proxies/\(receiverProxy.name)": receiverProxyDict])
+                    
+                } else {
+                    
+                    let senderMemberKey = self.ref.child("members").child(convoKey).childByAutoId().key
+                    let receiverMemberKey = self.ref.child("members").child(convoKey).childByAutoId().key
+                    let senderMember = Member(key: senderMemberKey, owner: self.api.uid, name: self.proxy.name, nickname: self.proxy.nickname).toAnyObject()
+                    let receiverMember = Member(key: receiverMemberKey, owner: receiverProxy.owner, name: receiverProxy.name, nickname: receiverProxy.nickname).toAnyObject()
+                    let convosWithDict = convosWith.toAnyObject()
+                    
+                    self.ref.updateChildValues([
+                        "/messages/\(convoKey)/\(messageKey)": message,
+                        "/users/\(self.api.uid)/convos/\(convoKey)": convoDict,
+                        "/users/\(receiverProxy.owner)/convos/\(convoKey)": convoDict,
+                        "/convos/\(self.proxy.name)/\(convoKey)": convoDict,
+                        "/convos/\(receiverProxy.name)/\(convoKey)": convoDict,
+                        "/users/\(self.api.uid)/proxies/\(self.proxy.name)": proxyDict,
+                        "/users/\(receiverProxy.owner)/proxies/\(receiverProxy.name)": receiverProxyDict,
+                        "/proxies/\(self.proxy.name)": proxyDict,
+                        "/proxies/\(receiverProxy.name)": receiverProxyDict,
+                        "/convosWith/\(self.proxy.name)/\(convosWithKey)": convosWithDict,
+                        "/convosWith/\(receiverProxy.name)/\(convosWithKey)": convosWithDict,
+                        "/members/\(convoKey)/\(senderMemberKey)": senderMember,
+                        "/members/\(convoKey)/\(receiverMemberKey)": receiverMember
+                        ])
+                }
+ 
+                // save message
+                // save to both users convos
+                // save to both proxy's convos
+                // save both users proxies
+                // update unread for receiver user and proxy
+                
+                // save members
+                // save both proxy's convosWith
+                
+                // segue to convo
+                
+            })
+        })
     }
     
     // MARK: - Select proxy
     
-    func selectProxy(name: String) {
-        selectProxyButton.setTitle(name, forState: .Normal)
+    func selectProxy(proxy: Proxy) {
         if createdNewProxy {
             api.cancelCreateProxy(proxy)
             savingNewProxy = false
         }
+        self.proxy = proxy
+        selectProxyButton.setTitle(proxy.name, forState: .Normal)
     }
     
     // MARK: - New proxy
@@ -82,12 +211,12 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
     @IBAction func tapNewButton(sender: AnyObject) {
         disableButtons()
         if createdNewProxy {
-            api.refreshProxyFromOldProxy(proxy)
+            api.rerollProxy(proxy)
         } else {
             api.createProxy()
         }
     }
-        
+    
     func proxyCreated(notification: NSNotification) {
         createdNewProxy = true
         let userInfo = notification.userInfo as! [String: AnyObject]
@@ -144,6 +273,12 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
     func textViewDidBeginEditing(textView: UITextView) {
         if messageTextView.text == "Message..." {
             messageTextView.text = ""
+        }
+    }
+    
+    func textViewDidEndEditing(textView: UITextView) {
+        if messageTextView.text == "" {
+            messageTextView.text = "Message..."
         }
     }
     
