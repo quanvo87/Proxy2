@@ -12,6 +12,7 @@ struct Convo {
     var nickname = ""
     var message = ""
     var timestamp = 0.0
+    var unread = 0
     
     init() {}
     
@@ -20,6 +21,7 @@ struct Convo {
         self.nickname = anyObject["nickname"] as! String
         self.message = anyObject["message"] as! String
         self.timestamp = anyObject["timestamp"] as! NSTimeInterval
+        self.unread = anyObject["unread"] as! Int
     }
     
     func toAnyObject() -> AnyObject {
@@ -27,7 +29,8 @@ struct Convo {
             "key": key,
             "nickname": nickname,
             "message": message,
-            "timestamp": timestamp
+            "timestamp": timestamp,
+            "unread": unread,
         ]
     }
 }

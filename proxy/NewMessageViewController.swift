@@ -65,6 +65,7 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
     @IBAction func tapSendButton(sender: AnyObject) {
         //        disableButtons()
         
+        // user must select a proxy to send from
         guard proxy.name != "" else {
             showAlert("Select A Proxy", message: "Please select a proxy to send your message from. Or create a new one!")
             return
@@ -98,8 +99,7 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
             
             // check if existing convo between the proxies exists
             let proxies = [self.proxy.name, receiverProxy.name].sort().joinWithSeparator("")
-            
-            self.ref.child("convosWith").child(self.proxy.name).queryOrderedByChild("proxies").queryEqualToValue(proxies).observeSingleEventOfType(.Value, withBlock: { snapshot in
+            self.ref.child("convosWith").child(receiverProxy.name).queryOrderedByChild("proxies").queryEqualToValue(proxies).observeSingleEventOfType(.Value, withBlock: { snapshot in
                 
                 var convoExists = false
                 var convosWith = ConvosWith()
@@ -123,11 +123,10 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
                 
                 let timestamp = 0 - NSDate().timeIntervalSince1970
                 
-                
                 // create the message
                 let messageKey = self.ref.child("messages").child(convoKey).childByAutoId().key
                 let message = Message(key: messageKey, sender: self.api.uid, message: messageText, timestamp: timestamp).toAnyObject()
-                 
+                
                 // update message and timestamp for convos and proxies
                 convo.key = convoKey
                 convo.message = messageText
@@ -144,6 +143,7 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
                 
                 // save data atomically
                 if convoExists {
+                    
                     self.ref.updateChildValues([
                         "/messages/\(convoKey)/\(messageKey)": message,
                         "/users/\(self.api.uid)/convos/\(convoKey)": convoDict,
@@ -179,15 +179,45 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
                         "/members/\(convoKey)/\(receiverMemberKey)": receiverMember
                         ])
                 }
- 
-                // save message
-                // save to both users convos
-                // save to both proxy's convos
-                // save both users proxies
-                // update unread for receiver user and proxy
                 
-                // save members
-                // save both proxy's convosWith
+                // update unread for receiver user, proxy, and convo
+                self.ref.child("users").child(receiverProxy.owner).child("unread").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+                    if var unread = currentData.value as? Int {
+                        unread += 1
+                        currentData.value = unread
+                        return FIRTransactionResult.successWithValue(currentData)
+                    }
+                    return FIRTransactionResult.successWithValue(currentData)
+                }) { (error, committed, snapshot) in
+                    if let error = error {
+                        self.showAlert("Error Updating Unread Message Count", message: error.localizedDescription)
+                    }
+                }
+                self.ref.child("users").child(receiverProxy.owner).child("proxies").child(receiverProxy.name).child("unread").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+                    if var unread = currentData.value as? Int {
+                        unread += 1
+                        currentData.value = unread
+                        return FIRTransactionResult.successWithValue(currentData)
+                    }
+                    return FIRTransactionResult.successWithValue(currentData)
+                }) { (error, committed, snapshot) in
+                    if let error = error {
+                        self.showAlert("Error Updating Unread Message Count", message: error.localizedDescription)
+                    }
+                }
+                
+                self.ref.child("users").child(receiverProxy.owner).child("convos").child(convoKey).child("unread").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+                    if var unread = currentData.value as? Int {
+                        unread += 1
+                        currentData.value = unread
+                        return FIRTransactionResult.successWithValue(currentData)
+                    }
+                    return FIRTransactionResult.successWithValue(currentData)
+                }) { (error, committed, snapshot) in
+                    if let error = error {
+                        self.showAlert("Error Updating Unread Message Count", message: error.localizedDescription)
+                    }
+                }
                 
                 // segue to convo
                 
@@ -219,6 +249,7 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
     
     func proxyCreated(notification: NSNotification) {
         createdNewProxy = true
+        savingNewProxy = true
         let userInfo = notification.userInfo as! [String: AnyObject]
         proxy = Proxy(anyObject: userInfo["proxy"]!)
         selectProxyButton.setTitle(proxy.name, forState: .Normal)
