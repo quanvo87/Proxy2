@@ -149,7 +149,7 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
                         "/proxies/\(receiverProxy.name)": receiverProxyDict]
                     
                     self.ref.updateChildValues(update, withCompletionBlock: { (error, ref) in
-                        self.updateUnreadForReceiver(receiverProxy, convoKey: convo.key)
+                        self.updateUnreadForReceiver(receiverProxy.owner, proxy: receiverProxy.name, convo: convo.key)
                     })
                     
                 } else {
@@ -198,7 +198,7 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
                         "/members/\(convoKey)/\(receiverMemberKey)": receiverMember]
                     
                     self.ref.updateChildValues(update, withCompletionBlock: { (error, ref) in
-                        self.updateUnreadForReceiver(receiverProxy, convoKey: convo.key)
+                        self.updateUnreadForReceiver(receiverProxy.owner, proxy: receiverProxy.name, convo: convo.key)
                     })
                 }
                 
@@ -213,9 +213,9 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
         showAlert(title, message: message)
     }
     
-    func updateUnreadForReceiver(receiverProxy: Proxy, convoKey: String) {
+    func updateUnreadForReceiver(receiver: String, proxy: String, convo: String) {
         
-        self.ref.child("users").child(receiverProxy.owner).child("unread").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+        self.ref.child("users").child(receiver).child("unread").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
             if let unread = currentData.value {
                 let _unread = unread as? Int ?? 0
                 currentData.value = _unread + 1
@@ -228,7 +228,7 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
             }
         }
         
-        self.ref.child("unread").child(receiverProxy.owner).child(convoKey).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+        self.ref.child("unread").child(receiver).child(convo).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
             if let unread = currentData.value {
                 let _unread = unread as? Int ?? 0
                 currentData.value = _unread + 1
@@ -241,7 +241,7 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
             }
         }
         
-        self.ref.child("unread").child(receiverProxy.owner).child(receiverProxy.name).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+        self.ref.child("unread").child(receiver).child(proxy).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
             if let unread = currentData.value {
                 let _unread = unread as? Int ?? 0
                 currentData.value = _unread + 1

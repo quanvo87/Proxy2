@@ -60,9 +60,18 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         convosRef = ref.child("users").child(api.uid).child("convos")
         convosRefHandle = convosRef.queryOrderedByChild("timestamp").observeEventType(.Value, withBlock: { snapshot in
             var convos = [Convo]()
+            var index = -1
             for child in snapshot.children {
-                let convo = Convo(anyObject: child.value)
+                var convo = Convo(anyObject: child.value)
+                self.ref.child("unread").child(self.api.uid).queryOrderedByKey().queryEqualToValue(convo.key).observeSingleEventOfType(.Value, withBlock: { snapshot in
+                    if let unread = snapshot.value as? [String : Int] {
+                        convo.unread = unread[convo.key]! as Int
+                        self.convos[index] = convo
+                        self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: UITableViewRowAnimation.None)
+                    }
+                })
                 convos.append(convo)
+                index += 1
             }
             self.convos = convos
             self.tableView.reloadData()
@@ -99,7 +108,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         cell.nameLabel.text = convo.nickname.nicknameWithDashBack() + convo.members
         cell.timestampLabel.text = convo.timestamp.timeAgoFromTimeInterval()
         cell.lastMessagePreviewLabel.text = convo.message
-//        cell.unreadMessageCountLabel.text = convo.unread.unreadMessageCountFormatted()
+        cell.unreadMessageCountLabel.text = convo.unread.unreadMessageCountFormatted()
         
         return cell
     }

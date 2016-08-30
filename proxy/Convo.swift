@@ -13,6 +13,7 @@ struct Convo {
     var members = ""
     var message = ""
     var timestamp = 0.0
+    var unread = 0
     
     init() {}
     
@@ -30,7 +31,7 @@ struct Convo {
             "nickname": nickname,
             "members": members,
             "message": message,
-            "timestamp": timestamp
+            "timestamp": timestamp,
         ]
     }
 }
