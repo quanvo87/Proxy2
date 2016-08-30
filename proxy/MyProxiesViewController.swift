@@ -88,7 +88,7 @@ class MyProxiesViewController: UIViewController, UITableViewDataSource, UITableV
         cell.nicknameLabel.text = proxy.nickname.nicknameWithDashBack()
         cell.timestampLabel.text = proxy.timestamp.timeAgoFromTimeInterval()
         cell.lastMessagePreviewLabel.text = proxy.message.lastMessageWithTimestamp(proxy.timestamp)
-        cell.unreadMessageCountLabel.text = proxy.unread.unreadMessageCountFormatted()
+//        cell.unreadMessageCountLabel.text = proxy.unread.unreadMessageCountFormatted()
         return cell
     }
     

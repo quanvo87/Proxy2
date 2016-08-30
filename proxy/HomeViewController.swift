@@ -99,7 +99,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         cell.nameLabel.text = convo.nickname.nicknameWithDashBack() + convo.members
         cell.timestampLabel.text = convo.timestamp.timeAgoFromTimeInterval()
         cell.lastMessagePreviewLabel.text = convo.message
-        cell.unreadMessageCountLabel.text = convo.unread.unreadMessageCountFormatted()
+//        cell.unreadMessageCountLabel.text = convo.unread.unreadMessageCountFormatted()
         
         return cell
     }

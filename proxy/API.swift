@@ -13,6 +13,8 @@ class API {
     
     static let sharedInstance = API()
     
+    var connectionStatusAlerter = ConnectionStatusAlerter()
+    
     private var _uid = ""
     private let ref = FIRDatabase.database().reference()
     private var proxiesRef = FIRDatabaseReference()
