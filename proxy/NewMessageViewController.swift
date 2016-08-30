@@ -15,6 +15,7 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
     private var proxy = Proxy()
     private var createdNewProxy = false
     private var savingNewProxy = false
+    var delegate: NewMessageViewControllerDelegate!
     
     @IBOutlet weak var selectProxyButton: UIButton!
     @IBOutlet weak var newButton: UIButton!
@@ -63,7 +64,7 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
     }
     
     @IBAction func tapSendButton(sender: AnyObject) {
-        //        disableButtons()
+        disableButtons()
         
         // user must select a proxy to send from
         guard proxy.name != "" else {
@@ -100,10 +101,11 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
             
             // check if existing convo between the proxies exists
             let members = [self.proxy.name, receiverProxy.name].sort().joinWithSeparator(", ")
-            self.ref.child("users").child(receiverProxy.owner).child("convos").observeSingleEventOfType(.Value, withBlock: { snapshot in
+            self.ref.child("users").child(self.api.uid).child("convos").observeSingleEventOfType(.Value, withBlock: { snapshot in
                 
                 var convo = Convo()
                 var convoExists = false
+                var update:[NSObject : AnyObject] = [:]
                 
                 for child in snapshot.children {
                     let _convo = Convo(anyObject: child.value)
@@ -117,7 +119,7 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
                 // use existing convo
                 if convoExists {
                     
-                    let timestamp = 0 - NSDate().timeIntervalSince1970
+                    let timestamp = NSDate().timeIntervalSince1970
                     
                     // create the message
                     let messageKey = self.ref.child("messages").child(convo.key).childByAutoId().key
@@ -136,8 +138,7 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
                     receiverProxy.timestamp = timestamp
                     let receiverProxyDict = receiverProxy.toAnyObject()
                     
-                    // save data atomically
-                    let update = [
+                    update = [
                         "/messages/\(convo.key)/\(messageKey)": message,
                         "/users/\(self.api.uid)/convos/\(convo.key)": convoDict,
                         "/users/\(receiverProxy.owner)/convos/\(convo.key)": convoDict,
@@ -148,16 +149,12 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
                         "/proxies/\(self.proxy.name)": proxyDict,
                         "/proxies/\(receiverProxy.name)": receiverProxyDict]
                     
-                    self.ref.updateChildValues(update, withCompletionBlock: { (error, ref) in
-                        self.updateUnreadForReceiver(receiverProxy.owner, proxy: receiverProxy.name, convo: convo.key)
-                    })
-                    
                 } else {
                     
-                    // else make new convo
+                    // else use new convo
                     let convoKey = self.ref.child("users").child(self.api.uid).child("convos").childByAutoId().key
                     
-                    let timestamp = 0 - NSDate().timeIntervalSince1970
+                    let timestamp = NSDate().timeIntervalSince1970
                     
                     // create the message
                     let messageKey = self.ref.child("messages").child(convoKey).childByAutoId().key
@@ -183,8 +180,7 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
                     let senderMember = Member(key: senderMemberKey, owner: self.api.uid, name: self.proxy.name, nickname: self.proxy.nickname).toAnyObject()
                     let receiverMember = Member(key: receiverMemberKey, owner: receiverProxy.owner, name: receiverProxy.name, nickname: receiverProxy.nickname).toAnyObject()
                     
-                    // save data atomically
-                    let update = [
+                    update = [
                         "/messages/\(convoKey)/\(messageKey)": message,
                         "/users/\(self.api.uid)/convos/\(convoKey)": convoDict,
                         "/users/\(receiverProxy.owner)/convos/\(convoKey)": convoDict,
@@ -196,14 +192,20 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
                         "/proxies/\(receiverProxy.name)": receiverProxyDict,
                         "/members/\(convoKey)/\(senderMemberKey)": senderMember,
                         "/members/\(convoKey)/\(receiverMemberKey)": receiverMember]
-                    
-                    self.ref.updateChildValues(update, withCompletionBlock: { (error, ref) in
-                        self.updateUnreadForReceiver(receiverProxy.owner, proxy: receiverProxy.name, convo: convo.key)
-                    })
                 }
                 
-                // segue to convo
-                
+                // save data atomically
+                self.ref.updateChildValues(update, withCompletionBlock: { (error, ref) in
+                    if let error = error {
+                        self.enableButtonsAndShowAlert("Error Sending Message", message: error.localizedDescription)
+                        return
+                    }
+                    self.updateUnreadForReceiver(receiverProxy.owner, proxy: receiverProxy.name, convo: convo.key)
+                    
+                    // notify delegate to segue to convo
+                    self.delegate.showNewConvo(convo)
+                    self.dismissViewControllerAnimated(true, completion: nil)
+                })
             })
         })
     }

@@ -11,12 +11,15 @@ struct Constants {
     struct Identifiers {
         static let TabBarController = "Tab Bar Controller"
         static let LogInViewController = "Log In View Controller"
+        static let ConvoViewController = "Convo View Controller"
         static let ProxyTableViewCell = "Proxy Table View Cell"
     }
     
     struct Segues {
+        static let NewMessageSegue = "New Message Segue"
         static let SelectProxySegue = "Select Proxy Segue"
-        static let ProxyDetailSegue = "Proxy Detail Segue"
+        static let ProxySegue = "Proxy Segue"
+        static let ConvoSeg = "Convo Segue"
     }
     
     struct NotificationKeys {

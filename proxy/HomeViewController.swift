@@ -6,10 +6,10 @@
 //  Copyright © 2016 Quan Vo. All rights reserved.
 //
 
-import FirebaseDatabase
 import FirebaseAuth
+import FirebaseDatabase
 
-class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, NewMessageViewControllerDelegate {
     
     private let api = API.sharedInstance
     private let ref = FIRDatabase.database().reference()
@@ -19,6 +19,8 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     private var unreadRefHandle = FIRDatabaseHandle()
     private var convos = [Convo]()
     private var unread = 0
+    private var convo = Convo()
+    private var showConvo = false
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -41,6 +43,15 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     override func viewWillAppear(animated: Bool) {
         setTitle()
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        if showConvo {
+            // push convo onto nav
+            let convoViewController = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.ConvoViewController) as! ConvoViewController
+            convoViewController.convo = convo
+            self.navigationController!.pushViewController(convoViewController, animated: true)
+        }
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -73,14 +84,14 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 convos.append(convo)
                 index += 1
             }
-            self.convos = convos
+            self.convos = convos.reverse()
             self.tableView.reloadData()
         })
         
         unreadRef = ref.child("users").child(api.uid).child("unread")
         unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { snapshot in
-            if let _unread = snapshot.value as? Int {
-                self.unread = _unread
+            if let unread = snapshot.value as? Int {
+                self.unread = unread
                 self.setTitle()
             }
         })
@@ -111,5 +122,19 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         cell.unreadMessageCountLabel.text = convo.unread.unreadMessageCountFormatted()
         
         return cell
+    }
+    
+    // MARK: - Navigation
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == Constants.Segues.NewMessageSegue,
+            let destination = segue.destinationViewController as? NewMessageViewController {
+            destination.delegate = self
+        }
+    }
+    
+    func showNewConvo(convo: Convo) {
+        self.convo = convo
+        showConvo = true
     }
 }

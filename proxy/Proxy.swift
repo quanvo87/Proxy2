@@ -16,7 +16,8 @@ struct Proxy {
     var name = ""
     var nickname = ""
     var message = ""
-    var timestamp = 0 - NSDate().timeIntervalSince1970
+    var timestamp = NSDate().timeIntervalSince1970
+    var unread = 0
     
     init() {}
     
