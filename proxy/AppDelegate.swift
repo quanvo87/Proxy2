@@ -17,6 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     override init() {
         FIRApp.configure()
 //        FIRDatabase.database().persistenceEnabled = true
+//        FIRDatabase.setLoggingEnabled(true)
     }
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {

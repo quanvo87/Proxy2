@@ -7,8 +7,8 @@
 //
 
 class ProxyTableViewCell: UITableViewCell {
-
-    @IBOutlet weak var iconImage: UIView!
+    
+    @IBOutlet weak var iconImage: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var nicknameLabel: UILabel!
     @IBOutlet weak var lastMessagePreviewLabel: UILabel!

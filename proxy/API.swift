@@ -89,7 +89,7 @@ class API {
     }
     
     func saveProxyWithNickname(proxy: Proxy, nickname: String) {
-        let timestamp = 0 - NSDate().timeIntervalSince1970
+        let timestamp = NSDate().timeIntervalSince1970
         var _proxy = proxy
         _proxy.nickname = nickname
         _proxy.timestamp = timestamp

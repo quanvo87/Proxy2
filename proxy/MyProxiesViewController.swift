@@ -34,7 +34,7 @@ class MyProxiesViewController: UIViewController, UITableViewDataSource, UITableV
     }
     
     override func viewWillDisappear(animated: Bool) {
-        navigationItem.title = unread.titleSuffixFromUnreadMessageCount()
+        navigationItem.title = unread.unreadTitleSuffix()
     }
     
     deinit {
@@ -43,25 +43,17 @@ class MyProxiesViewController: UIViewController, UITableViewDataSource, UITableV
     }
     
     func setTitle() {
-        navigationItem.title = "My Proxies \(unread.titleSuffixFromUnreadMessageCount())"
+        navigationItem.title = "My Proxies \(unread.unreadTitleSuffix())"
     }
     
     func configureDatabase() {
         proxiesRef = ref.child("users").child(api.uid).child("proxies")
         proxiesRefHandle = proxiesRef.queryOrderedByChild("timestamp").observeEventType(.Value, withBlock: { snapshot in
             var proxies = [Proxy]()
-            var index = -1
             for child in snapshot.children {
                 var proxy = Proxy(anyObject: child.value)
-                self.ref.child("unread").child(self.api.uid).queryOrderedByKey().queryEqualToValue(proxy.name).observeSingleEventOfType(.Value, withBlock: { snapshot in
-                    if let unread = snapshot.value as? [String : Int] {
-                        proxy.unread = unread[proxy.name]! as Int
-                        self.proxies[index] = proxy
-                        self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: UITableViewRowAnimation.None)
-                    }
-                })
+                proxy.unread = child.value["unread"] as? Int ?? 0
                 proxies.append(proxy)
-                index += 1
             }
             self.proxies = proxies.reverse()
             self.tableView.reloadData()
@@ -97,7 +89,7 @@ class MyProxiesViewController: UIViewController, UITableViewDataSource, UITableV
         cell.nicknameLabel.text = proxy.nickname.nicknameWithDashBack()
         cell.timestampLabel.text = proxy.timestamp.timeAgoFromTimeInterval()
         cell.lastMessagePreviewLabel.text = proxy.message.lastMessageWithTimestamp(proxy.timestamp)
-        cell.unreadMessageCountLabel.text = proxy.unread.unreadMessageCountFormatted()
+        cell.unreadMessageCountLabel.text = proxy.unread.unreadFormatted()
         return cell
     }
     

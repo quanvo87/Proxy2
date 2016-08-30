@@ -47,15 +47,16 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     override func viewDidAppear(animated: Bool) {
         if showConvo {
-            // push convo onto nav
             let convoViewController = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.ConvoViewController) as! ConvoViewController
             convoViewController.convo = convo
+            showConvo = false
+            convo = Convo()
             self.navigationController!.pushViewController(convoViewController, animated: true)
         }
     }
     
     override func viewWillDisappear(animated: Bool) {
-        navigationItem.title = unread.titleSuffixFromUnreadMessageCount()
+        navigationItem.title = unread.unreadTitleSuffix()
     }
     
     deinit {
@@ -64,25 +65,17 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func setTitle() {
-        navigationItem.title = "Messages \(unread.titleSuffixFromUnreadMessageCount())"
+        navigationItem.title = "Messages \(unread.unreadTitleSuffix())"
     }
     
     func configureDatabase() {
         convosRef = ref.child("users").child(api.uid).child("convos")
         convosRefHandle = convosRef.queryOrderedByChild("timestamp").observeEventType(.Value, withBlock: { snapshot in
             var convos = [Convo]()
-            var index = -1
             for child in snapshot.children {
                 var convo = Convo(anyObject: child.value)
-                self.ref.child("unread").child(self.api.uid).queryOrderedByKey().queryEqualToValue(convo.key).observeSingleEventOfType(.Value, withBlock: { snapshot in
-                    if let unread = snapshot.value as? [String : Int] {
-                        convo.unread = unread[convo.key]! as Int
-                        self.convos[index] = convo
-                        self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: UITableViewRowAnimation.None)
-                    }
-                })
+                convo.unread = child.value["unread"] as? Int ?? 0
                 convos.append(convo)
-                index += 1
             }
             self.convos = convos.reverse()
             self.tableView.reloadData()
@@ -103,8 +96,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         automaticallyAdjustsScrollViewInsets = false
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.estimatedRowHeight = 80
+        tableView.rowHeight = 75
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -119,7 +111,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         cell.nameLabel.text = convo.nickname.nicknameWithDashBack() + convo.members
         cell.timestampLabel.text = convo.timestamp.timeAgoFromTimeInterval()
         cell.lastMessagePreviewLabel.text = convo.message
-        cell.unreadMessageCountLabel.text = convo.unread.unreadMessageCountFormatted()
+        cell.unreadMessageCountLabel.text = convo.unread.unreadFormatted()
         
         return cell
     }

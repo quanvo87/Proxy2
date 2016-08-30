@@ -49,18 +49,18 @@ extension String {
 extension Double {
     
     func timeAgoFromTimeInterval() -> String {
-        let date = NSDate(timeIntervalSince1970: 0 - self)
+        let date = NSDate(timeIntervalSince1970: self)
         return timeAgoSince(date)
     }
 }
 
 extension Int {
     
-    func unreadMessageCountFormatted() -> String {
+    func unreadFormatted() -> String {
         return self == 0 ? "" : String(self)
     }
     
-    func titleSuffixFromUnreadMessageCount() -> String {
+    func unreadTitleSuffix() -> String {
         return self == 0 ? "" : "(\(self))"
     }
 }

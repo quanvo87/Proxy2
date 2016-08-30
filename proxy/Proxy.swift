@@ -40,7 +40,7 @@ struct Proxy {
             "name": name,
             "nickname": nickname,
             "message": message,
-            "timestamp": timestamp
+            "timestamp": timestamp,
         ]
     }
 }

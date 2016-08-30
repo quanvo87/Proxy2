@@ -64,7 +64,7 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
     }
     
     @IBAction func tapSendButton(sender: AnyObject) {
-        disableButtons()
+//        disableButtons()
         
         // user must select a proxy to send from
         guard proxy.name != "" else {
@@ -92,7 +92,7 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
             }
             
             // check if sender is trying to send to him/herself
-            var receiverProxy = Proxy(anyObject: snapshot.children.nextObject()!.value)
+            let receiverProxy = Proxy(anyObject: snapshot.children.nextObject()!.value)
             
             guard self.api.uid != receiverProxy.owner else {
                 self.enableButtonsAndShowAlert("Cannot Send To Self", message: "Can't start a conversation with you own proxy. Try messaging someone else!")
@@ -105,7 +105,7 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
                 
                 var convo = Convo()
                 var convoExists = false
-                var update:[NSObject : AnyObject] = [:]
+                var update:[NSObject: AnyObject] = [:]
                 
                 for child in snapshot.children {
                     let _convo = Convo(anyObject: child.value)
@@ -116,10 +116,10 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
                     }
                 }
                 
+                let timestamp = NSDate().timeIntervalSince1970
+                
                 // use existing convo
                 if convoExists {
-                    
-                    let timestamp = NSDate().timeIntervalSince1970
                     
                     // create the message
                     let messageKey = self.ref.child("messages").child(convo.key).childByAutoId().key
@@ -134,27 +134,110 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
                     self.proxy.timestamp = timestamp
                     let proxyDict = self.proxy.toAnyObject()
                     
-                    receiverProxy.message = messageText
-                    receiverProxy.timestamp = timestamp
-                    let receiverProxyDict = receiverProxy.toAnyObject()
+//                    receiverProxy.message = messageText
+//                    receiverProxy.timestamp = timestamp
+//                    let receiverProxyDict = receiverProxy.toAnyObject()
                     
                     update = [
                         "/messages/\(convo.key)/\(messageKey)": message,
                         "/users/\(self.api.uid)/convos/\(convo.key)": convoDict,
-                        "/users/\(receiverProxy.owner)/convos/\(convo.key)": convoDict,
+//                        "/users/\(receiverProxy.owner)/convos/\(convo.key)": convoDict,
                         "/convos/\(self.proxy.name)/\(convo.key)": convoDict,
-                        "/convos/\(receiverProxy.name)/\(convo.key)": convoDict,
+//                        "/convos/\(receiverProxy.name)/\(convo.key)": convoDict,
                         "/users/\(self.api.uid)/proxies/\(self.proxy.name)": proxyDict,
-                        "/users/\(receiverProxy.owner)/proxies/\(receiverProxy.name)": receiverProxyDict,
-                        "/proxies/\(self.proxy.name)": proxyDict,
-                        "/proxies/\(receiverProxy.name)": receiverProxyDict]
+//                        "/users/\(receiverProxy.owner)/proxies/\(receiverProxy.name)": receiverProxyDict,
+//                        "/proxies/\(self.proxy.name)": proxyDict,
+//                        "/proxies/\(receiverProxy.name)": receiverProxyDict]
+                    ]
+                    
+                    self.ref.updateChildValues(update, withCompletionBlock: { (error, ref) in
+                        if let error = error {
+                            print("Error Sending Message: \(error.localizedDescription)")
+                            return
+                        }
+                        
+                        // user unread
+                        self.ref.child("users").child(receiverProxy.owner).child("unread").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+                            if let unread = currentData.value {
+                                let _unread = unread as? Int ?? 0
+                                currentData.value = _unread + 1
+                                return FIRTransactionResult.successWithValue(currentData)
+                            }
+                            return FIRTransactionResult.successWithValue(currentData)
+                        }) { (error, committed, snapshot) in
+                            if let error = error {
+                                print("Error Updating Reciever Unread Count: \(error.localizedDescription)")
+                            }
+                        }
+                        
+                        // convo unread
+                        self.ref.child("users").child(receiverProxy.owner).child("convos").child(convo.key).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+                            
+                            if var convo = currentData.value as? [String: AnyObject] {
+                                
+                                let unread = convo["unread"] as? Int ?? 0
+                                convo["unread"] = unread + 1
+                                convo["message"] = messageText
+                                convo["timestamp"] = timestamp
+                                
+                                currentData.value = convo
+                                
+                                return FIRTransactionResult.successWithValue(currentData)
+                            }
+                            return FIRTransactionResult.successWithValue(currentData)
+                        }) { (error, committed, snapshot) in
+                            if let error = error {
+                                print("Error Updating Receiver Proxy Unread Count: \(error.localizedDescription)")
+                            }
+                        }
+                        
+                        // proxy/convo unread
+                        self.ref.child("convos").child(receiverProxy.name).child(convo.key).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+                            
+                            if var convo = currentData.value as? [String: AnyObject] {
+                                
+                                let unread = convo["unread"] as? Int ?? 0
+                                convo["unread"] = unread + 1
+                                convo["message"] = messageText
+                                convo["timestamp"] = timestamp
+                                
+                                currentData.value = convo
+                                
+                                return FIRTransactionResult.successWithValue(currentData)
+                            }
+                            return FIRTransactionResult.successWithValue(currentData)
+                        }) { (error, committed, snapshot) in
+                            if let error = error {
+                                print("Error Updating Receiver Proxy Unread Count: \(error.localizedDescription)")
+                            }
+                        }
+                        
+                        // proxy unread
+                        self.ref.child("users").child(receiverProxy.owner).child("proxies").child(receiverProxy.name).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+                            
+                            if var proxy = currentData.value as? [String: AnyObject] {
+                                
+                                let unread = proxy["unread"] as? Int ?? 0
+                                proxy["unread"] = unread + 1
+                                proxy["message"] = messageText
+                                proxy["timestamp"] = timestamp
+                                
+                                currentData.value = proxy
+                                
+                                return FIRTransactionResult.successWithValue(currentData)
+                            }
+                            return FIRTransactionResult.successWithValue(currentData)
+                        }) { (error, committed, snapshot) in
+                            if let error = error {
+                                print("Error Updating Receiver Proxy Unread Count: \(error.localizedDescription)")
+                            }
+                        }
+                    })
                     
                 } else {
                     
                     // else use new convo
                     let convoKey = self.ref.child("users").child(self.api.uid).child("convos").childByAutoId().key
-                    
-                    let timestamp = NSDate().timeIntervalSince1970
                     
                     // create the message
                     let messageKey = self.ref.child("messages").child(convoKey).childByAutoId().key
@@ -167,13 +250,16 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
                     convo.members = members
                     let convoDict = convo.toAnyObject()
                     
+                    convo.unread = 1
+                    let receiverConvoDict = convo.toAnyObject()
+                    
                     self.proxy.message = messageText
                     self.proxy.timestamp = timestamp
                     let proxyDict = self.proxy.toAnyObject()
                     
-                    receiverProxy.message = messageText
-                    receiverProxy.timestamp = timestamp
-                    let receiverProxyDict = receiverProxy.toAnyObject()
+//                    receiverProxy.message = messageText
+//                    receiverProxy.timestamp = timestamp
+//                    let receiverProxyDict = receiverProxy.toAnyObject()
                     
                     let senderMemberKey = self.ref.child("members").child(convoKey).childByAutoId().key
                     let receiverMemberKey = self.ref.child("members").child(convoKey).childByAutoId().key
@@ -183,29 +269,64 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
                     update = [
                         "/messages/\(convoKey)/\(messageKey)": message,
                         "/users/\(self.api.uid)/convos/\(convoKey)": convoDict,
-                        "/users/\(receiverProxy.owner)/convos/\(convoKey)": convoDict,
+                        "/users/\(receiverProxy.owner)/convos/\(convoKey)": receiverConvoDict,
                         "/convos/\(self.proxy.name)/\(convoKey)": convoDict,
-                        "/convos/\(receiverProxy.name)/\(convoKey)": convoDict,
+                        "/convos/\(receiverProxy.name)/\(convoKey)": receiverConvoDict,
                         "/users/\(self.api.uid)/proxies/\(self.proxy.name)": proxyDict,
-                        "/users/\(receiverProxy.owner)/proxies/\(receiverProxy.name)": receiverProxyDict,
-                        "/proxies/\(self.proxy.name)": proxyDict,
-                        "/proxies/\(receiverProxy.name)": receiverProxyDict,
+//                        "/users/\(receiverProxy.owner)/proxies/\(receiverProxy.name)": receiverProxyDict,
+//                        "/proxies/\(self.proxy.name)": proxyDict,
+//                        "/proxies/\(receiverProxy.name)": receiverProxyDict,
                         "/members/\(convoKey)/\(senderMemberKey)": senderMember,
                         "/members/\(convoKey)/\(receiverMemberKey)": receiverMember]
+                    
+                    self.ref.updateChildValues(update, withCompletionBlock: { (error, ref) in
+                        if let error = error {
+                            print("Error Sending Message: \(error.localizedDescription)")
+                            return
+                        }
+                        
+                        // user unread
+                        self.ref.child("users").child(receiverProxy.owner).child("unread").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+                            if let unread = currentData.value {
+                                let _unread = unread as? Int ?? 0
+                                currentData.value = _unread + 1
+                                return FIRTransactionResult.successWithValue(currentData)
+                            }
+                            return FIRTransactionResult.successWithValue(currentData)
+                        }) { (error, committed, snapshot) in
+                            if let error = error {
+                                print("Error Updating Reciever Unread Count: \(error.localizedDescription)")
+                            }
+                        }
+                        
+                        // proxy unread
+                        self.ref.child("users").child(receiverProxy.owner).child("proxies").child(receiverProxy.name).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+                            
+                            if var proxy = currentData.value as? [String: AnyObject] {
+                                
+                                let unread = proxy["unread"] as? Int ?? 0
+                                proxy["unread"] = unread + 1
+                                proxy["message"] = messageText
+                                proxy["timestamp"] = timestamp
+                                
+                                currentData.value = proxy
+                                
+                                return FIRTransactionResult.successWithValue(currentData)
+                            }
+                            return FIRTransactionResult.successWithValue(currentData)
+                        }) { (error, committed, snapshot) in
+                            if let error = error {
+                                print("Error Updating Receiver Proxy Unread Count: \(error.localizedDescription)")
+                            }
+                        }
+                    })
                 }
                 
-                // save data atomically
-                self.ref.updateChildValues(update, withCompletionBlock: { (error, ref) in
-                    if let error = error {
-                        self.enableButtonsAndShowAlert("Error Sending Message", message: error.localizedDescription)
-                        return
-                    }
-                    self.updateUnreadForReceiver(receiverProxy.owner, proxy: receiverProxy.name, convo: convo.key)
-                    
-                    // notify delegate to segue to convo
-                    self.delegate.showNewConvo(convo)
-                    self.dismissViewControllerAnimated(true, completion: nil)
-                })
+                
+                // notify delegate to segue to convo
+                //                    self.delegate.showNewConvo(convo)
+                //                    self.resignFirstResponder()
+                //                    self.dismissViewControllerAnimated(true, completion: nil)
             })
         })
     }
@@ -213,48 +334,6 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
     func enableButtonsAndShowAlert(title: String, message: String) {
         enableButtons()
         showAlert(title, message: message)
-    }
-    
-    func updateUnreadForReceiver(receiver: String, proxy: String, convo: String) {
-        
-        self.ref.child("users").child(receiver).child("unread").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
-            if let unread = currentData.value {
-                let _unread = unread as? Int ?? 0
-                currentData.value = _unread + 1
-                return FIRTransactionResult.successWithValue(currentData)
-            }
-            return FIRTransactionResult.successWithValue(currentData)
-        }) { (error, committed, snapshot) in
-            if let error = error {
-                print("Error Updating Unread Message Count: \(error.localizedDescription)")
-            }
-        }
-        
-        self.ref.child("unread").child(receiver).child(convo).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
-            if let unread = currentData.value {
-                let _unread = unread as? Int ?? 0
-                currentData.value = _unread + 1
-                return FIRTransactionResult.successWithValue(currentData)
-            }
-            return FIRTransactionResult.successWithValue(currentData)
-        }) { (error, committed, snapshot) in
-            if let error = error {
-                print("Error Updating Unread Message Count: \(error.localizedDescription)")
-            }
-        }
-        
-        self.ref.child("unread").child(receiver).child(proxy).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
-            if let unread = currentData.value {
-                let _unread = unread as? Int ?? 0
-                currentData.value = _unread + 1
-                return FIRTransactionResult.successWithValue(currentData)
-            }
-            return FIRTransactionResult.successWithValue(currentData)
-        }) { (error, committed, snapshot) in
-            if let error = error {
-                print("Error Updating Unread Message Count: \(error.localizedDescription)")
-            }
-        }
     }
     
     // MARK: - Select proxy

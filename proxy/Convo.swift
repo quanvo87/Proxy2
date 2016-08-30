@@ -23,6 +23,7 @@ struct Convo {
         self.members = anyObject["members"] as! String
         self.message = anyObject["message"] as! String
         self.timestamp = anyObject["timestamp"] as! NSTimeInterval
+        self.unread = anyObject["unread"] as! Int
     }
     
     func toAnyObject() -> AnyObject {
@@ -32,6 +33,7 @@ struct Convo {
             "members": members,
             "message": message,
             "timestamp": timestamp,
+            "unread": unread
         ]
     }
 }
