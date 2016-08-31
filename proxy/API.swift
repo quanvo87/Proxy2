@@ -30,7 +30,7 @@ class API {
         get {
             return _uid
         }
-        set (newValue) {
+        set {
             _uid = newValue
         }
     }

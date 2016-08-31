@@ -64,7 +64,7 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
     }
     
     @IBAction func tapSendButton(sender: AnyObject) {
-//        disableButtons()
+        disableButtons()
         
         // user must select a proxy to send from
         guard proxy.name != "" else {
@@ -134,21 +134,11 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
                     self.proxy.timestamp = timestamp
                     let proxyDict = self.proxy.toAnyObject()
                     
-//                    receiverProxy.message = messageText
-//                    receiverProxy.timestamp = timestamp
-//                    let receiverProxyDict = receiverProxy.toAnyObject()
-                    
                     update = [
                         "/messages/\(convo.key)/\(messageKey)": message,
                         "/users/\(self.api.uid)/convos/\(convo.key)": convoDict,
-//                        "/users/\(receiverProxy.owner)/convos/\(convo.key)": convoDict,
                         "/convos/\(self.proxy.name)/\(convo.key)": convoDict,
-//                        "/convos/\(receiverProxy.name)/\(convo.key)": convoDict,
-                        "/users/\(self.api.uid)/proxies/\(self.proxy.name)": proxyDict,
-//                        "/users/\(receiverProxy.owner)/proxies/\(receiverProxy.name)": receiverProxyDict,
-//                        "/proxies/\(self.proxy.name)": proxyDict,
-//                        "/proxies/\(receiverProxy.name)": receiverProxyDict]
-                    ]
+                        "/users/\(self.api.uid)/proxies/\(self.proxy.name)": proxyDict]
                     
                     self.ref.updateChildValues(update, withCompletionBlock: { (error, ref) in
                         if let error = error {
@@ -257,10 +247,6 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
                     self.proxy.timestamp = timestamp
                     let proxyDict = self.proxy.toAnyObject()
                     
-//                    receiverProxy.message = messageText
-//                    receiverProxy.timestamp = timestamp
-//                    let receiverProxyDict = receiverProxy.toAnyObject()
-                    
                     let senderMemberKey = self.ref.child("members").child(convoKey).childByAutoId().key
                     let receiverMemberKey = self.ref.child("members").child(convoKey).childByAutoId().key
                     let senderMember = Member(key: senderMemberKey, owner: self.api.uid, name: self.proxy.name, nickname: self.proxy.nickname).toAnyObject()
@@ -273,9 +259,6 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
                         "/convos/\(self.proxy.name)/\(convoKey)": convoDict,
                         "/convos/\(receiverProxy.name)/\(convoKey)": receiverConvoDict,
                         "/users/\(self.api.uid)/proxies/\(self.proxy.name)": proxyDict,
-//                        "/users/\(receiverProxy.owner)/proxies/\(receiverProxy.name)": receiverProxyDict,
-//                        "/proxies/\(self.proxy.name)": proxyDict,
-//                        "/proxies/\(receiverProxy.name)": receiverProxyDict,
                         "/members/\(convoKey)/\(senderMemberKey)": senderMember,
                         "/members/\(convoKey)/\(receiverMemberKey)": receiverMember]
                     
@@ -322,11 +305,9 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
                     })
                 }
                 
-                
                 // notify delegate to segue to convo
-                //                    self.delegate.showNewConvo(convo)
-                //                    self.resignFirstResponder()
-                //                    self.dismissViewControllerAnimated(true, completion: nil)
+                self.delegate.showNewConvo(convo)
+                self.navigationController?.popViewControllerAnimated(true)
             })
         })
     }

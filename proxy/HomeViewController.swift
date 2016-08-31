@@ -65,7 +65,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func setTitle() {
-        navigationItem.title = "Messages \(unread.unreadTitleSuffix())"
+        title = "Messages \(unread.unreadTitleSuffix())"
     }
     
     func configureDatabase() {
@@ -119,9 +119,18 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     // MARK: - Navigation
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == Constants.Segues.NewMessageSegue,
-            let destination = segue.destinationViewController as? NewMessageViewController {
-            destination.delegate = self
+        switch segue.identifier! {
+        case Constants.Segues.NewMessageSegue:
+            if let destination = segue.destinationViewController as? NewMessageViewController {
+                destination.delegate = self
+            }
+        case Constants.Segues.ConvoSegue:
+            if let destination = segue.destinationViewController as? ConvoViewController,
+                let index = tableView.indexPathForSelectedRow?.row {
+                    destination.convo = convos[index]
+            }
+        default:
+            return
         }
     }
     

@@ -38,6 +38,7 @@
 		14E19A5A1D61034A0030B366 /* MyProxiesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E19A591D61034A0030B366 /* MyProxiesViewController.swift */; };
 		14E19A5C1D612CE80030B366 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E19A5B1D612CE80030B366 /* Extensions.swift */; };
 		14E19A5E1D6148700030B366 /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E19A5D1D6148700030B366 /* LogInViewController.swift */; };
+		D7B59C0DFB22CA5893158C5B /* Pods_proxy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 42B14E4F2F6BB0AA66125CA8 /* Pods_proxy.framework */; };
 		F8601D08682CD23B0A712CAD /* Pods_proxy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38C5C6B48B79F08C65113251 /* Pods_proxy.framework */; };
 /* End PBXBuildFile section */
 
@@ -77,7 +78,10 @@
 		14E19A5B1D612CE80030B366 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		14E19A5D1D6148700030B366 /* LogInViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
 		197B015D4173F5D5144C2ADC /* Pods-proxy.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-proxy.release.xcconfig"; path = "Pods/Target Support Files/Pods-proxy/Pods-proxy.release.xcconfig"; sourceTree = "<group>"; };
+		21E247E04340B3517641BD5C /* Pods-proxy.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-proxy.release.xcconfig"; path = "Pods/Target Support Files/Pods-proxy/Pods-proxy.release.xcconfig"; sourceTree = "<group>"; };
 		38C5C6B48B79F08C65113251 /* Pods_proxy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_proxy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		42B14E4F2F6BB0AA66125CA8 /* Pods_proxy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_proxy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A04F46FD8A0D68BCC97F95BC /* Pods-proxy.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-proxy.debug.xcconfig"; path = "Pods/Target Support Files/Pods-proxy/Pods-proxy.debug.xcconfig"; sourceTree = "<group>"; };
 		D44F5C36773BB980E0E0A068 /* Pods-proxy.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-proxy.debug.xcconfig"; path = "Pods/Target Support Files/Pods-proxy/Pods-proxy.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -87,6 +91,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F8601D08682CD23B0A712CAD /* Pods_proxy.framework in Frameworks */,
+				D7B59C0DFB22CA5893158C5B /* Pods_proxy.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -157,13 +162,13 @@
 		143F76F71D72BE7400EF305F /* Utility */ = {
 			isa = PBXGroup;
 			children = (
-				14A6F18D1D6BDA880015431E /* Constants.swift */,
-				1415610C1D620DB7002022BC /* API.swift */,
-				14383B221D75075E0086CA6C /* ConnectionStatusAlerter.swift */,
 				14E19A411D60EF100030B366 /* AppDelegate.swift */,
+				14A6F18D1D6BDA880015431E /* Constants.swift */,
+				14E19A5B1D612CE80030B366 /* Extensions.swift */,
+				1415610C1D620DB7002022BC /* API.swift */,
 				14A6F1931D6CF1410015431E /* ProxyNameGenerator.swift */,
 				143F76EC1D71EF6200EF305F /* TimeAgo.swift */,
-				14E19A5B1D612CE80030B366 /* Extensions.swift */,
+				14383B221D75075E0086CA6C /* ConnectionStatusAlerter.swift */,
 			);
 			name = Utility;
 			sourceTree = "<group>";
@@ -188,6 +193,8 @@
 			children = (
 				14E19A401D60EF100030B366 /* proxy */,
 				14383B281D75EA950086CA6C /* todo.swift */,
+				9A83F3C766D4B654D2044BF6 /* Pods */,
+				F07A503573ADA0B0B8E01D98 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -226,6 +233,15 @@
 			path = ..;
 			sourceTree = "<group>";
 		};
+		9A83F3C766D4B654D2044BF6 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				A04F46FD8A0D68BCC97F95BC /* Pods-proxy.debug.xcconfig */,
+				21E247E04340B3517641BD5C /* Pods-proxy.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		D428DCAD961DE668E1D7D394 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -233,6 +249,14 @@
 			);
 			name = Frameworks;
 			path = ..;
+			sourceTree = "<group>";
+		};
+		F07A503573ADA0B0B8E01D98 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				42B14E4F2F6BB0AA66125CA8 /* Pods_proxy.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

@@ -19,7 +19,7 @@ struct Constants {
         static let NewMessageSegue = "New Message Segue"
         static let SelectProxySegue = "Select Proxy Segue"
         static let ProxySegue = "Proxy Segue"
-        static let ConvoSeg = "Convo Segue"
+        static let ConvoSegue = "Convo Segue"
     }
     
     struct NotificationKeys {

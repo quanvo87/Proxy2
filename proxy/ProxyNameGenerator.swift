@@ -16,7 +16,7 @@ struct ProxyNameGenerator {
         get {
             return _adjs
         }
-        set (newValue) {
+        set {
             _adjs = newValue
         }
     }
@@ -25,7 +25,7 @@ struct ProxyNameGenerator {
         get {
             return _nouns
         }
-        set (newValue) {
+        set {
             _nouns = newValue
         }
     }

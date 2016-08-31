@@ -11,5 +11,6 @@ target 'proxy' do
   pod 'Firebase/Database'
   pod 'FacebookCore'
   pod 'FacebookLogin'
+  pod 'JSQMessagesViewController'
 
 end

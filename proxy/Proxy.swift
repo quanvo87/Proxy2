@@ -6,8 +6,6 @@
 //  Copyright © 2016 Quan Vo. All rights reserved.
 //
 
-import FirebaseDatabase
-
 struct Proxy {
     
     private let api = API.sharedInstance
