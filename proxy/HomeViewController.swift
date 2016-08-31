@@ -96,7 +96,8 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         automaticallyAdjustsScrollViewInsets = false
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.rowHeight = 75
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 80
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -108,18 +109,33 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         let convo = self.convos[indexPath.row]
         
-        let nickname = NSMutableAttributedString(string: convo.nickname.nicknameWithDashBack())
-        let attributes = [NSFontAttributeName : UIFont.boldSystemFontOfSize(13)]
-        let you = NSMutableAttributedString(string: convo.senderProxy, attributes:attributes)
-        let them = NSMutableAttributedString(string: ", " + convo.receiverProxy)
+        let title: NSMutableAttributedString
+        let subtitle: NSMutableAttributedString
         
-        nickname.appendAttributedString(you)
-        nickname.appendAttributedString(them)
+        if convo.nickname == "" {
+            let attributes = [NSFontAttributeName : UIFont.boldSystemFontOfSize(14)]
+            let you = NSMutableAttributedString(string: convo.senderProxy, attributes:attributes)
+            let them = NSMutableAttributedString(string: ", " + convo.receiverProxy)
+            you.appendAttributedString(them)
+            title = you
+            subtitle = NSMutableAttributedString(string: "Members")
+        } else {
+            var attributes = [NSFontAttributeName : UIFont.boldSystemFontOfSize(10)]
+            let you = NSMutableAttributedString(string: convo.senderProxy, attributes:attributes)
+            let them = NSMutableAttributedString(string: ", " + convo.receiverProxy)
+            you.appendAttributedString(them)
+            attributes = [NSFontAttributeName : UIFont.boldSystemFontOfSize(14)]
+            title = NSMutableAttributedString(string: convo.nickname, attributes: attributes)
+            subtitle = you
+        }
         
-        cell.nameLabel.attributedText = nickname
+        cell.titleLabel.attributedText = title
+        cell.subtitleLabel.attributedText = subtitle
         cell.timestampLabel.text = convo.timestamp.timeAgoFromTimeInterval()
-        cell.lastMessagePreviewLabel.text = convo.message
-        cell.unreadMessageCountLabel.text = convo.unread.unreadFormatted()
+        cell.messageLabel.text = convo.message
+        cell.unreadLabel.text = convo.unread.unreadFormatted()
+        
+        cell.layoutSubviews()
         
         return cell
     }

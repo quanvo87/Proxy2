@@ -9,11 +9,11 @@
 class ProxyTableViewCell: UITableViewCell {
     
     @IBOutlet weak var iconImage: UIImageView!
-    @IBOutlet weak var nameLabel: UILabel!
-    @IBOutlet weak var nicknameLabel: UILabel!
-    @IBOutlet weak var lastMessagePreviewLabel: UILabel!
+    @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet weak var subtitleLabel: UILabel!
+    @IBOutlet weak var messageLabel: UILabel!
     @IBOutlet weak var timestampLabel: UILabel!
-    @IBOutlet weak var unreadMessageCountLabel: UILabel!
+    @IBOutlet weak var unreadLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
