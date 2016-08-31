@@ -536,7 +536,7 @@
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Yoi-Lq-q2L">
-                                <rect key="frame" x="30" y="160" width="540" height="30"/>
+                                <rect key="frame" x="30" y="520" width="540" height="30"/>
                                 <state key="normal" title="Create!"/>
                                 <connections>
                                     <action selector="tapCreateButton:" destination="80k-ew-HY1" eventType="touchUpInside" id="46W-59-Obt"/>
@@ -548,7 +548,7 @@
                             <constraint firstItem="Yoi-Lq-q2L" firstAttribute="leading" secondItem="vP9-zg-m4D" secondAttribute="leadingMargin" constant="10" id="8a5-ZL-MyC"/>
                             <constraint firstItem="87g-ME-Pq9" firstAttribute="top" secondItem="nEC-wO-sIs" secondAttribute="bottom" constant="15" id="RAL-IJ-3iC"/>
                             <constraint firstItem="GXb-6i-CAT" firstAttribute="centerY" secondItem="87g-ME-Pq9" secondAttribute="centerY" id="SUY-lI-NE8"/>
-                            <constraint firstItem="Yoi-Lq-q2L" firstAttribute="top" secondItem="GKm-S7-iiX" secondAttribute="bottom" constant="15" id="bre-MJ-U2b"/>
+                            <constraint firstAttribute="bottomMargin" secondItem="Yoi-Lq-q2L" secondAttribute="bottom" constant="50" id="TJC-fY-M9V"/>
                             <constraint firstAttribute="trailingMargin" secondItem="GKm-S7-iiX" secondAttribute="trailing" constant="10" id="jIS-NF-cvX"/>
                             <constraint firstItem="87g-ME-Pq9" firstAttribute="leading" secondItem="vP9-zg-m4D" secondAttribute="leadingMargin" constant="10" id="liG-Aa-0nB"/>
                             <constraint firstItem="GKm-S7-iiX" firstAttribute="leading" secondItem="vP9-zg-m4D" secondAttribute="leadingMargin" constant="10" id="nyb-Rn-HK9"/>
@@ -560,6 +560,7 @@
                     <toolbarItems/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
+                        <outlet property="bottomConstraint" destination="TJC-fY-M9V" id="d7y-0J-MCt"/>
                         <outlet property="createButton" destination="Yoi-Lq-q2L" id="PSX-y6-wFE"/>
                         <outlet property="nameLabel" destination="87g-ME-Pq9" id="pKk-kg-NBt"/>
                         <outlet property="nicknameTextField" destination="GKm-S7-iiX" id="a3i-6u-gdf"/>

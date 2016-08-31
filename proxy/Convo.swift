@@ -8,9 +8,14 @@
 
 struct Convo {
     
+    private let api = API.sharedInstance
+    
     var key = ""
     var nickname = ""
-    var members = ""
+    var senderId = ""
+    var senderProxy = ""
+    var receiverId = ""
+    var receiverProxy = ""
     var message = ""
     var timestamp = 0.0
     var unread = 0
@@ -18,19 +23,25 @@ struct Convo {
     init() {}
     
     init(anyObject: AnyObject) {
-        self.key = anyObject["key"] as! String
-        self.nickname = anyObject["nickname"] as! String
-        self.members = anyObject["members"] as! String
-        self.message = anyObject["message"] as! String
-        self.timestamp = anyObject["timestamp"] as! NSTimeInterval
-        self.unread = anyObject["unread"] as! Int
+        self.key = anyObject["key"] as? String ?? ""
+        self.nickname = anyObject["nickname"] as? String ?? ""
+        self.senderId = anyObject["senderId"] as? String ?? ""
+        self.senderProxy = anyObject["senderProxy"] as? String ?? ""
+        self.receiverId = anyObject["receiverId"] as? String ?? ""
+        self.receiverProxy = anyObject["receiverProxy"] as? String ?? ""
+        self.message = anyObject["message"] as? String ?? ""
+        self.timestamp = anyObject["timestamp"] as? Double ?? 0.0
+        self.unread = anyObject["unread"] as? Int ?? 0
     }
     
     func toAnyObject() -> AnyObject {
         return [
             "key": key,
             "nickname": nickname,
-            "members": members,
+            "senderId": senderId,
+            "senderProxy": senderProxy,
+            "receiverId": receiverId,
+            "receiverProxy": receiverProxy,
             "message": message,
             "timestamp": timestamp,
             "unread": unread

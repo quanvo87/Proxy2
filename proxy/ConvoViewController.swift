@@ -21,7 +21,7 @@ class ConvoViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationItem.title = convo.members
+//        navigationItem.title = convo.members
     }
     
 //    override func viewDidLoad() {

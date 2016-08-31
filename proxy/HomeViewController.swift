@@ -108,7 +108,15 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         let convo = self.convos[indexPath.row]
         
-        cell.nameLabel.text = convo.nickname.nicknameWithDashBack() + convo.members
+        let nickname = NSMutableAttributedString(string: convo.nickname.nicknameWithDashBack())
+        let attributes = [NSFontAttributeName : UIFont.boldSystemFontOfSize(13)]
+        let you = NSMutableAttributedString(string: convo.senderProxy, attributes:attributes)
+        let them = NSMutableAttributedString(string: ", " + convo.receiverProxy)
+        
+        nickname.appendAttributedString(you)
+        nickname.appendAttributedString(them)
+        
+        cell.nameLabel.attributedText = nickname
         cell.timestampLabel.text = convo.timestamp.timeAgoFromTimeInterval()
         cell.lastMessagePreviewLabel.text = convo.message
         cell.unreadMessageCountLabel.text = convo.unread.unreadFormatted()

@@ -118,4 +118,88 @@ class API {
         creatingProxy = false
         deleteProxy(proxy)
     }
+    
+    func sendMessage(_convo: Convo, messageText: String, completion: (success: Bool) -> Void) {
+        
+        var convo = _convo
+        
+        let timestamp = NSDate().timeIntervalSince1970
+        
+        let messageKey = self.ref.child("messages").child(convo.key).childByAutoId().key
+        let message = Message(key: messageKey, sender: uid, message: messageText, timestamp: timestamp).toAnyObject()
+        
+        convo.message = messageText
+        convo.timestamp = timestamp
+        let convoDict = convo.toAnyObject()
+        
+        let update = [
+            "/messages/\(convo.key)/\(messageKey)": message,
+            "/users/\(uid)/convos/\(convo.key)": convoDict,
+            "/convos/\(convo.senderProxy)/\(convo.key)": convoDict]
+        
+        self.ref.updateChildValues(update, withCompletionBlock: { (error, ref) in
+            
+            // sender proxy
+            self.ref.child("users").child(self.uid).child("proxies").child(convo.senderProxy).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+                if var proxy = currentData.value as? [String: AnyObject] {
+                    proxy["message"] = messageText
+                    proxy["timestamp"] = timestamp
+                    currentData.value = proxy
+                    return FIRTransactionResult.successWithValue(currentData)
+                }
+                return FIRTransactionResult.successWithValue(currentData)
+            })
+            
+            // receiver user unread
+            self.ref.child("users").child(convo.receiverId).child("unread").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+                if let unread = currentData.value {
+                    let _unread = unread as? Int ?? 0
+                    currentData.value = _unread + 1
+                    return FIRTransactionResult.successWithValue(currentData)
+                }
+                return FIRTransactionResult.successWithValue(currentData)
+            })
+            
+            // receiver convo unread
+            self.ref.child("users").child(convo.receiverId).child("convos").child(convo.key).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+                if var convo = currentData.value as? [String: AnyObject] {
+                    let unread = convo["unread"] as? Int ?? 0
+                    convo["unread"] = unread + 1
+                    convo["message"] = messageText
+                    convo["timestamp"] = timestamp
+                    currentData.value = convo
+                    return FIRTransactionResult.successWithValue(currentData)
+                }
+                return FIRTransactionResult.successWithValue(currentData)
+            })
+            
+            // receiver proxy/convo unread
+            self.ref.child("convos").child(convo.receiverProxy).child(convo.key).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+                if var convo = currentData.value as? [String: AnyObject] {
+                    let unread = convo["unread"] as? Int ?? 0
+                    convo["unread"] = unread + 1
+                    convo["message"] = messageText
+                    convo["timestamp"] = timestamp
+                    currentData.value = convo
+                    return FIRTransactionResult.successWithValue(currentData)
+                }
+                return FIRTransactionResult.successWithValue(currentData)
+            })
+            
+            // receiver proxy unread
+            self.ref.child("users").child(convo.receiverId).child("proxies").child(convo.receiverProxy).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+                if var proxy = currentData.value as? [String: AnyObject] {
+                    let unread = proxy["unread"] as? Int ?? 0
+                    proxy["unread"] = unread + 1
+                    proxy["message"] = messageText
+                    proxy["timestamp"] = timestamp
+                    currentData.value = proxy
+                    return FIRTransactionResult.successWithValue(currentData)
+                }
+                return FIRTransactionResult.successWithValue(currentData)
+            })
+        })
+        
+        completion(success: true)
+    }
 }

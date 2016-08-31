@@ -17,10 +17,13 @@ class CreateNewProxyViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var nicknameTextField: UITextField!
     @IBOutlet weak var rerollButton: UIButton!
     @IBOutlet weak var createButton: UIButton!
+    @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(NewMessageViewController.keyboardWillShow), name:UIKeyboardWillShowNotification, object: self.view.window)
         NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(CreateNewProxyViewController.proxyCreated), name: Constants.NotificationKeys.ProxyCreated, object: nil)
         
         setUpUI()
@@ -92,5 +95,15 @@ class CreateNewProxyViewController: UIViewController, UITextFieldDelegate {
             navigationController?.popViewControllerAnimated(true)
         }
         return true
+    }
+    
+    // MARK: - Keyboard
+    
+    func keyboardWillShow(notification: NSNotification) {
+        let info = notification.userInfo!
+        let keyboardFrame = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
+        UIView.animateWithDuration(0.1, animations: { () -> Void in
+            self.bottomConstraint.constant = keyboardFrame.size.height
+        })
     }
 }
