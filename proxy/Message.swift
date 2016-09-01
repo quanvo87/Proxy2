@@ -20,6 +20,13 @@ struct Message {
         self.timestamp = timestamp
     }
     
+    init(anyObject: AnyObject) {
+        self.key = anyObject["key"] as? String ?? ""
+        self.sender = anyObject["sender"] as? String ?? ""
+        self.message = anyObject["message"] as? String ?? ""
+        self.timestamp = anyObject["timestamp"] as? Double ?? 0.0
+    }
+    
     func toAnyObject() -> AnyObject {
         return [
             "key": key,

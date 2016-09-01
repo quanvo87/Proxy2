@@ -25,11 +25,11 @@ struct Proxy {
     }
     
     init(anyObject: AnyObject) {
-        self.owner = anyObject["owner"] as! String
-        self.name = anyObject["name"] as! String
-        self.nickname = anyObject["nickname"] as! String
-        self.message = anyObject["message"] as! String
-        self.timestamp = anyObject["timestamp"] as! NSTimeInterval
+        self.owner = anyObject["owner"] as? String ?? ""
+        self.name = anyObject["name"] as? String ?? ""
+        self.nickname = anyObject["nickname"] as? String ?? ""
+        self.message = anyObject["message"] as? String ?? ""
+        self.timestamp = anyObject["timestamp"] as? Double ?? 0.0
     }
     
     func toAnyObject() -> AnyObject {
@@ -38,7 +38,6 @@ struct Proxy {
             "name": name,
             "nickname": nickname,
             "message": message,
-            "timestamp": timestamp,
-        ]
+            "timestamp": timestamp]
     }
 }

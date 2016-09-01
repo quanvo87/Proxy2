@@ -104,7 +104,6 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
                 for child in snapshot.children {
                     let convo = Convo(anyObject: child.value)
                     if self.proxy.name == convo.senderProxy && receiverProxy.name == convo.receiverProxy {
-                        print(convo)
                         self.api.sendMessage(convo, messageText: messageText, completion: { (success) -> Void in
                             self.goToConvo(convo)
                         })

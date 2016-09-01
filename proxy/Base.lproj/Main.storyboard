@@ -103,8 +103,8 @@
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="79.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalCompressionResistancePriority="751" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X4w-Kw-H0x">
-                                                    <rect key="frame" x="73" y="8" width="38" height="17"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalCompressionResistancePriority="751" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X4w-Kw-H0x">
+                                                    <rect key="frame" x="73" y="8" width="29" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
@@ -134,8 +134,8 @@
                                                         <constraint firstAttribute="height" constant="63" id="g5n-OL-8C1"/>
                                                     </constraints>
                                                 </imageView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalCompressionResistancePriority="751" text="Nickname" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lz8-Fy-Xwy" userLabel="Nickname Label">
-                                                    <rect key="frame" x="116" y="10" width="57" height="14.5"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalCompressionResistancePriority="751" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lz8-Fy-Xwy" userLabel="Nickname Label">
+                                                    <rect key="frame" x="107" y="10" width="44" height="15"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                                     <color key="textColor" red="0.50196081400000003" green="0.50196081400000003" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
@@ -159,11 +159,11 @@
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="iconImage" destination="cZo-CS-wO0" id="CwQ-Qz-J1o"/>
-                                            <outlet property="lastMessagePreviewLabel" destination="Qmt-1M-FWN" id="sPy-pZ-LLd"/>
-                                            <outlet property="nameLabel" destination="X4w-Kw-H0x" id="YKJ-g3-j4l"/>
-                                            <outlet property="nicknameLabel" destination="Lz8-Fy-Xwy" id="I9Z-fW-xUt"/>
+                                            <outlet property="messageLabel" destination="Qmt-1M-FWN" id="9Lw-R5-YQi"/>
+                                            <outlet property="subtitleLabel" destination="Lz8-Fy-Xwy" id="5Nv-jC-ZLr"/>
                                             <outlet property="timestampLabel" destination="e4W-BO-sq5" id="Pxg-PD-hui"/>
-                                            <outlet property="unreadMessageCountLabel" destination="jg5-Up-Ug5" id="eUJ-Pl-UFa"/>
+                                            <outlet property="titleLabel" destination="X4w-Kw-H0x" id="T4P-Qc-iGl"/>
+                                            <outlet property="unreadLabel" destination="jg5-Up-Ug5" id="glS-Vr-mSt"/>
                                             <segue destination="0PA-SX-Dc2" kind="show" identifier="Proxy Segue" id="rR7-H8-0LS"/>
                                         </connections>
                                     </tableViewCell>
@@ -516,10 +516,10 @@
             </objects>
             <point key="canvasLocation" x="-1243" y="1448"/>
         </scene>
-        <!--Create New Proxy View Controller-->
+        <!--New Proxy View Controller-->
         <scene sceneID="6GZ-F7-Bb9">
             <objects>
-                <viewController storyboardIdentifier="Create New Proxy" id="80k-ew-HY1" userLabel="Create New Proxy View Controller" customClass="CreateNewProxyViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="80k-ew-HY1" userLabel="New Proxy View Controller" customClass="NewProxyViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="nEC-wO-sIs"/>
                         <viewControllerLayoutGuide type="bottom" id="fEK-Fd-ytj"/>
@@ -838,8 +838,8 @@
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="iconImage" destination="0yX-sn-CJU" id="MPy-Pn-ARk"/>
-                                            <outlet property="nameLabel" destination="l4X-H3-M5h" id="Uz7-uE-Nsi"/>
-                                            <outlet property="nicknameLabel" destination="IIS-xo-Mqh" id="Cwz-6Z-fzy"/>
+                                            <outlet property="subtitleLabel" destination="IIS-xo-Mqh" id="7bj-bv-J8d"/>
+                                            <outlet property="titleLabel" destination="l4X-H3-M5h" id="6y5-zo-OfO"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>

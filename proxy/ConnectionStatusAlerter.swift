@@ -20,7 +20,6 @@ struct ConnectionStatusAlerter {
             } else {
                 msg = "Not connected " + timestamp
             }
-            
             print(msg)
         })
     }

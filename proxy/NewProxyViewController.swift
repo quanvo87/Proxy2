@@ -1,12 +1,12 @@
 //
-//  CreateNewProxyViewController.swift
+//  NewProxyViewController.swift
 //  proxy
 //
 //  Created by Quan Vo on 8/16/16.
 //  Copyright © 2016 Quan Vo. All rights reserved.
 //
 
-class CreateNewProxyViewController: UIViewController, UITextFieldDelegate {
+class NewProxyViewController: UIViewController, UITextFieldDelegate {
     
     private let api = API.sharedInstance
     private var proxy = Proxy()
@@ -19,12 +19,11 @@ class CreateNewProxyViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var createButton: UIButton!
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(NewMessageViewController.keyboardWillShow), name:UIKeyboardWillShowNotification, object: self.view.window)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(CreateNewProxyViewController.proxyCreated), name: Constants.NotificationKeys.ProxyCreated, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(NewProxyViewController.proxyCreated), name: Constants.NotificationKeys.ProxyCreated, object: nil)
         
         setUpUI()
         setUpTextField()
@@ -46,10 +45,10 @@ class CreateNewProxyViewController: UIViewController, UITextFieldDelegate {
     }
     
     func proxyCreated(notification: NSNotification) {
-        createdNewProxy = true
         let userInfo = notification.userInfo as! [String: AnyObject]
         proxy = Proxy(anyObject: userInfo["proxy"]!)
         nameLabel.text = proxy.name
+        createdNewProxy = true
         enableButtons()
     }
     
@@ -91,8 +90,6 @@ class CreateNewProxyViewController: UIViewController, UITextFieldDelegate {
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         if createButton.enabled == true {
             saveProxy()
-        } else {
-            navigationController?.popViewControllerAnimated(true)
         }
         return true
     }

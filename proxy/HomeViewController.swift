@@ -70,7 +70,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     func configureDatabase() {
         convosRef = ref.child("users").child(api.uid).child("convos")
-        convosRefHandle = convosRef.queryOrderedByChild("timestamp").observeEventType(.Value, withBlock: { snapshot in
+        convosRefHandle = convosRef.queryOrderedByChild("timestamp").observeEventType(.Value, withBlock: { (snapshot) in
             var convos = [Convo]()
             for child in snapshot.children {
                 var convo = Convo(anyObject: child.value)
@@ -82,7 +82,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         })
         
         unreadRef = ref.child("users").child(api.uid).child("unread")
-        unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { snapshot in
+        unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
             if let unread = snapshot.value as? Int {
                 self.unread = unread
                 self.setTitle()
@@ -135,8 +135,6 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         cell.messageLabel.text = convo.message
         cell.unreadLabel.text = convo.unread.unreadFormatted()
         
-        cell.layoutSubviews()
-        
         return cell
     }
     
@@ -151,7 +149,8 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         case Constants.Segues.ConvoSegue:
             if let destination = segue.destinationViewController as? ConvoViewController,
                 let index = tableView.indexPathForSelectedRow?.row {
-                    destination.convo = convos[index]
+                destination.convo = convos[index]
+                destination.hidesBottomBarWhenPushed = true
             }
         default:
             return

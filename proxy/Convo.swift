@@ -8,8 +8,6 @@
 
 struct Convo {
     
-    private let api = API.sharedInstance
-    
     var key = ""
     var nickname = ""
     var senderId = ""

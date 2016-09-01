@@ -8,6 +8,10 @@
 
 struct Constants {
     
+    struct ChatOptions {
+        static let MinsTillTimestamp = 15.0
+    }
+    
     struct Identifiers {
         static let TabBarController = "Tab Bar Controller"
         static let LogInViewController = "Log In View Controller"

@@ -6,7 +6,7 @@
  option to allow images in convo
  
  
- 
+ last person to send message goes first in members list
  
  profanity filter
  
@@ -16,11 +16,14 @@
  maybe fire streaks, hearts
  
  
+ toggle sound
+ 
  
  
  level up you proxy by getting some kind of currency. love, likes, pp (proxy points)
  you can only receive pp by
- every day each user's pp resets to 100
+ every day each user's pp resets to 3
+ leaderboard
  you can send however many you want to any proxy not yours
  level up for new icons, borders, colors, glowy effects, etc
  
