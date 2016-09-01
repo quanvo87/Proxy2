@@ -12,11 +12,6 @@ import JSQMessagesViewController
 class ConvoViewController: JSQMessagesViewController {
     
     var convo = Convo()
-    
-    private var incomingBubble: JSQMessagesBubbleImage!
-    private var outgoingBubble: JSQMessagesBubbleImage!
-    private var messages = [JSQMessage]()
-    
     private let api = API.sharedInstance
     
     private let ref = FIRDatabase.database().reference()
@@ -27,10 +22,15 @@ class ConvoViewController: JSQMessagesViewController {
     private var unreadRef = FIRDatabaseReference()
     private var unreadRefHandle = FIRDatabaseHandle()
     
-    private var userTypingRef = FIRDatabaseReference()
     private var membersTypingRef = FIRDatabaseReference()
     private var membersTypingRefHandle = FIRDatabaseHandle()
+    
+    private var userTypingRef = FIRDatabaseReference()
     private var _userTyping = false
+    
+    private var incomingBubble: JSQMessagesBubbleImage!
+    private var outgoingBubble: JSQMessagesBubbleImage!
+    private var messages = [JSQMessage]()
     
     var userTyping: Bool {
         get {

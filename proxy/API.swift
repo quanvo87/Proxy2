@@ -202,6 +202,87 @@ class API {
         completion(success: true)
     }
     
+    func sendFirstMessage(senderProxy: Proxy, receiverProxy: Proxy, messageText: String, completion: (success: Bool, convo: Convo) -> Void) {
+        var convo = Convo()
+        var receiverConvo = Convo()
+        var _senderProxy = senderProxy
+        
+        let timestamp = NSDate().timeIntervalSince1970
+        
+        let convoKey = self.ref.child("users").child(uid).child("convos").childByAutoId().key
+        
+        let messageKey = self.ref.child("messages").child(convoKey).childByAutoId().key
+        let message = Message(key: messageKey, sender: uid, message: messageText, timestamp: timestamp).toAnyObject()
+        
+        convo.key = convoKey
+        convo.senderId = uid
+        convo.senderProxy = _senderProxy.name
+        convo.receiverId = receiverProxy.owner
+        convo.receiverProxy = receiverProxy.name
+        convo.message = messageText
+        convo.timestamp = timestamp
+        let convoDict = convo.toAnyObject()
+        
+        receiverConvo = convo
+        receiverConvo.senderId = receiverProxy.owner
+        receiverConvo.senderProxy = receiverProxy.name
+        receiverConvo.receiverId = uid
+        receiverConvo.receiverProxy = _senderProxy.name
+        receiverConvo.unread = 1
+        let receiverConvoDict = receiverConvo.toAnyObject()
+        
+        _senderProxy.message = messageText
+        _senderProxy.timestamp = timestamp
+        let proxyDict = _senderProxy.toAnyObject()
+        
+        let senderMemberKey = self.ref.child("members").child(convoKey).childByAutoId().key
+        let receiverMemberKey = self.ref.child("members").child(convoKey).childByAutoId().key
+        let senderMember = Member(key: senderMemberKey, owner: uid, name: _senderProxy.name, nickname: _senderProxy.nickname).toAnyObject()
+        let receiverMember = Member(key: receiverMemberKey, owner: receiverProxy.owner, name: receiverProxy.name, nickname: receiverProxy.nickname).toAnyObject()
+        
+        let update = [
+            "/messages/\(convoKey)/\(messageKey)": message,
+            "/users/\(uid)/convos/\(convoKey)": convoDict,
+            "/convos/\(_senderProxy.name)/\(convoKey)": convoDict,
+            "/users/\(receiverProxy.owner)/convos/\(convoKey)": receiverConvoDict,
+            "/convos/\(receiverProxy.name)/\(convoKey)": receiverConvoDict,
+            "/users/\(uid)/proxies/\(_senderProxy.name)": proxyDict,
+            "/members/\(convoKey)/\(senderMemberKey)": senderMember,
+            "/members/\(convoKey)/\(receiverMemberKey)": receiverMember]
+        
+        self.ref.updateChildValues(update, withCompletionBlock: { (error, ref) in
+            if error != nil {
+                completion(success: false, convo: convo)
+                return
+            }
+            
+            // receiver user unread
+            self.ref.child("users").child(receiverProxy.owner).child("unread").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+                if let unread = currentData.value {
+                    let _unread = unread as? Int ?? 0
+                    currentData.value = _unread + 1
+                    return FIRTransactionResult.successWithValue(currentData)
+                }
+                return FIRTransactionResult.successWithValue(currentData)
+            })
+            
+            // receiver proxy unread
+            self.ref.child("users").child(receiverProxy.owner).child("proxies").child(receiverProxy.name).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+                if var proxy = currentData.value as? [String: AnyObject] {
+                    let unread = proxy["unread"] as? Int ?? 0
+                    proxy["unread"] = unread + 1
+                    proxy["message"] = messageText
+                    proxy["timestamp"] = timestamp
+                    currentData.value = proxy
+                    return FIRTransactionResult.successWithValue(currentData)
+                }
+                return FIRTransactionResult.successWithValue(currentData)
+            })
+            
+            completion(success: true, convo: convo)
+        })
+    }
+    
     func decreaseUnreadForUserBy(amt: Int, user: String, convo: String, proxy: String) {
         // User global unread
         self.ref.child("users").child(user).child("unread").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in

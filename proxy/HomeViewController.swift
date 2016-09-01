@@ -49,6 +49,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         if showConvo {
             let convoViewController = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.ConvoViewController) as! ConvoViewController
             convoViewController.convo = convo
+            convoViewController.hidesBottomBarWhenPushed = true
             showConvo = false
             convo = Convo()
             self.navigationController!.pushViewController(convoViewController, animated: true)
