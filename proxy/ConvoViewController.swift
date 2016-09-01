@@ -25,7 +25,7 @@ class ConvoViewController: JSQMessagesViewController {
     private var messagesRefHandle = FIRDatabaseHandle()
     
     private var unreadRef = FIRDatabaseReference()
-    private var unreadHandleRef = FIRDatabaseHandle()
+    private var unreadRefHandle = FIRDatabaseHandle()
     
     private var userTypingRef = FIRDatabaseReference()
     private var membersTypingRef = FIRDatabaseReference()
@@ -60,12 +60,20 @@ class ConvoViewController: JSQMessagesViewController {
     }
     
     deinit {
+        unreadRef.removeObserverWithHandle(unreadRefHandle)
         messagesRef.removeObserverWithHandle(messagesRefHandle)
         membersTypingRef.removeObserverWithHandle(membersTypingRefHandle)
     }
     
     func observeUnread() {
-        
+        unreadRef = ref.child("users").child(convo.senderId).child("convos").child(convo.key).child("unread")
+        unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
+            if let unread = snapshot.value as? Int {
+                if unread != 0 {
+                    self.api.decreaseUnreadForUserBy(unread, user: self.convo.senderId, convo: self.convo.key, proxy: self.convo.senderProxy)
+                }
+            }
+        })
     }
     
     func setUpBubbles() {

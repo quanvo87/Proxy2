@@ -48,12 +48,11 @@ class API {
             }
             do {
                 let json = try NSJSONSerialization.JSONObjectWithData(data!, options: .AllowFragments)
-                if let adjs = json["adjectives"] as? [String], nouns = json["nouns"] as? [String] {
+                if let adjs = json["adjectives"] as?[String], nouns = json["nouns"] as? [String] {
                     self.proxyNameGenerator.adjs = adjs
                     self.proxyNameGenerator.nouns = nouns
                     self.wordsLoaded = true
                     self.tryCreateProxy()
-                    
                 }
             } catch let error as NSError {
                 print(error.localizedDescription)
@@ -139,7 +138,7 @@ class API {
         
         self.ref.updateChildValues(update, withCompletionBlock: { (error, ref) in
             
-            // sender proxy
+            // Sender proxy
             self.ref.child("users").child(self.uid).child("proxies").child(convo.senderProxy).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
                 if var proxy = currentData.value as? [String: AnyObject] {
                     proxy["message"] = messageText
@@ -150,7 +149,7 @@ class API {
                 return FIRTransactionResult.successWithValue(currentData)
             })
             
-            // receiver user unread
+            // Receiver global unread
             self.ref.child("users").child(convo.receiverId).child("unread").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
                 if let unread = currentData.value {
                     let _unread = unread as? Int ?? 0
@@ -160,7 +159,7 @@ class API {
                 return FIRTransactionResult.successWithValue(currentData)
             })
             
-            // receiver convo unread
+            // Receiver convo unread
             self.ref.child("users").child(convo.receiverId).child("convos").child(convo.key).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
                 if var convo = currentData.value as? [String: AnyObject] {
                     let unread = convo["unread"] as? Int ?? 0
@@ -173,7 +172,7 @@ class API {
                 return FIRTransactionResult.successWithValue(currentData)
             })
             
-            // receiver proxy/convo unread
+            // Receiver convo by proxy unread
             self.ref.child("convos").child(convo.receiverProxy).child(convo.key).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
                 if var convo = currentData.value as? [String: AnyObject] {
                     let unread = convo["unread"] as? Int ?? 0
@@ -186,7 +185,7 @@ class API {
                 return FIRTransactionResult.successWithValue(currentData)
             })
             
-            // receiver proxy unread
+            // Receiver proxy unread
             self.ref.child("users").child(convo.receiverId).child("proxies").child(convo.receiverProxy).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
                 if var proxy = currentData.value as? [String: AnyObject] {
                     let unread = proxy["unread"] as? Int ?? 0
@@ -201,5 +200,55 @@ class API {
         })
         
         completion(success: true)
+    }
+    
+    func decreaseUnreadForUserBy(amt: Int, user: String, convo: String, proxy: String) {
+        // User global unread
+        self.ref.child("users").child(user).child("unread").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+            if let unread = currentData.value {
+                let _unread = unread as? Int ?? 0
+                if _unread != 0 {
+                    currentData.value = _unread - amt
+                }
+                return FIRTransactionResult.successWithValue(currentData)
+            }
+            return FIRTransactionResult.successWithValue(currentData)
+        })
+        
+        // Convo unread
+        self.ref.child("users").child(user).child("convos").child(convo).child("unread").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+            if let unread = currentData.value {
+                let _unread = unread as? Int ?? 0
+                if _unread != 0 {
+                    currentData.value = _unread - amt
+                }
+                return FIRTransactionResult.successWithValue(currentData)
+            }
+            return FIRTransactionResult.successWithValue(currentData)
+        })
+        
+        // Convo by proxy unread
+        self.ref.child("convos").child(proxy).child(convo).child("unread").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+            if let unread = currentData.value {
+                let _unread = unread as? Int ?? 0
+                if _unread != 0 {
+                    currentData.value = _unread - amt
+                }
+                return FIRTransactionResult.successWithValue(currentData)
+            }
+            return FIRTransactionResult.successWithValue(currentData)
+        })
+        
+        // Proxy unread
+        self.ref.child("users").child(user).child("proxies").child(proxy).child("unread").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+            if let unread = currentData.value {
+                let _unread = unread as? Int ?? 0
+                if _unread != 0 {
+                    currentData.value = _unread - amt
+                }
+                return FIRTransactionResult.successWithValue(currentData)
+            }
+            return FIRTransactionResult.successWithValue(currentData)
+        })
     }
 }
