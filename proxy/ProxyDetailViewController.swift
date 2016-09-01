@@ -29,14 +29,14 @@ class ProxyDetailViewController: UIViewController, UITextFieldDelegate {
         
         setUpTextField()
         setUpTableView()
-        setUpDatabase()
+        observeNickname()
     }
     
     deinit {
         nicknameRef.removeObserverWithHandle(nicknameRefHandle)
     }
     
-    func setUpDatabase() {
+    func observeNickname() {
         nicknameRef = ref.child("users").child(api.uid).child("proxies").child(proxy.name).child("nickname")
         nicknameRefHandle = nicknameRef.observeEventType(.Value, withBlock: { snapshot in
             if let nickname = snapshot.value {

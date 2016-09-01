@@ -30,7 +30,8 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         FIRAuth.auth()?.addAuthStateDidChangeListener { auth, user in
             if let user = user {
                 self.api.uid = user.uid
-                self.configureDatabase()
+                self.observeConvos()
+                self.observeUnread()
             } else {
                 let logInViewController = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.LogInViewController) as! LogInViewController
                 let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
@@ -69,7 +70,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         title = "Messages \(unread.unreadTitleSuffix())"
     }
     
-    func configureDatabase() {
+    func observeConvos() {
         convosRef = ref.child("users").child(api.uid).child("convos")
         convosRefHandle = convosRef.queryOrderedByChild("timestamp").observeEventType(.Value, withBlock: { (snapshot) in
             var convos = [Convo]()
@@ -81,7 +82,9 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
             self.convos = convos.reverse()
             self.tableView.reloadData()
         })
-        
+    }
+    
+    func observeUnread() {
         unreadRef = ref.child("users").child(api.uid).child("unread")
         unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
             if let unread = snapshot.value as? Int {
@@ -110,28 +113,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         let convo = self.convos[indexPath.row]
         
-        let title: NSMutableAttributedString
-        let subtitle: NSMutableAttributedString
-        
-        if convo.nickname == "" {
-            let attributes = [NSFontAttributeName : UIFont.boldSystemFontOfSize(14)]
-            let you = NSMutableAttributedString(string: convo.senderProxy, attributes:attributes)
-            let them = NSMutableAttributedString(string: ", " + convo.receiverProxy)
-            you.appendAttributedString(them)
-            title = you
-            subtitle = NSMutableAttributedString(string: "Members")
-        } else {
-            var attributes = [NSFontAttributeName : UIFont.boldSystemFontOfSize(10)]
-            let you = NSMutableAttributedString(string: convo.senderProxy, attributes:attributes)
-            let them = NSMutableAttributedString(string: ", " + convo.receiverProxy)
-            you.appendAttributedString(them)
-            attributes = [NSFontAttributeName : UIFont.boldSystemFontOfSize(14)]
-            title = NSMutableAttributedString(string: convo.nickname, attributes: attributes)
-            subtitle = you
-        }
-        
-        cell.titleLabel.attributedText = title
-        cell.subtitleLabel.attributedText = subtitle
+        cell.titleLabel.text = convoTitle(convo.nickname, you: convo.senderProxy, them: convo.receiverProxy)
         cell.timestampLabel.text = convo.timestamp.timeAgoFromTimeInterval()
         cell.messageLabel.text = convo.message
         cell.unreadLabel.text = convo.unread.unreadFormatted()

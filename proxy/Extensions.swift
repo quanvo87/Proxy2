@@ -16,20 +16,20 @@ extension UIViewController {
             self.presentViewController(alert, animated: true, completion: nil)
         }
     }
+    
+    func convoTitle(nickname: String, you: String, them: String) -> String {
+        if nickname == "" {
+            return you + ", " + them
+        } else {
+            return nickname
+        }
+    }
 }
 
 extension String {
     
-    func nickname() -> String {
-        return self == "" ? "" : "\"\(self)\""
-    }
-    
-    func nicknameWithDashFront() -> String {
+    func nicknameFormatted() -> String {
         return self == "" ? "" : " - \"\(self)\""
-    }
-    
-    func nicknameWithDashBack() -> String {
-        return self == "" ? "" : "\"\(self)\" - "
     }
     
     func lastMessageWithTimestamp(interval: Double) -> String {

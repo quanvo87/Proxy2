@@ -26,7 +26,8 @@ class MyProxiesViewController: UIViewController, UITableViewDataSource, UITableV
         super.viewDidLoad()
         
         setUpTableView()
-        configureDatabase()
+        observeProxies()
+        observeUnread()
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -46,7 +47,7 @@ class MyProxiesViewController: UIViewController, UITableViewDataSource, UITableV
         navigationItem.title = "My Proxies \(unread.unreadTitleSuffix())"
     }
     
-    func configureDatabase() {
+    func observeProxies() {
         proxiesRef = ref.child("users").child(api.uid).child("proxies")
         proxiesRefHandle = proxiesRef.queryOrderedByChild("timestamp").observeEventType(.Value, withBlock: { snapshot in
             var proxies = [Proxy]()
@@ -58,7 +59,9 @@ class MyProxiesViewController: UIViewController, UITableViewDataSource, UITableV
             self.proxies = proxies.reverse()
             self.tableView.reloadData()
         })
-        
+    }
+    
+    func observeUnread() {
         unreadRef = ref.child("users").child(api.uid).child("unread")
         unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { snapshot in
             if let unread = snapshot.value as? Int {
@@ -86,7 +89,7 @@ class MyProxiesViewController: UIViewController, UITableViewDataSource, UITableV
         let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.ProxyTableViewCell, forIndexPath: indexPath) as! ProxyTableViewCell
         let proxy = self.proxies[indexPath.row]
         cell.titleLabel.text = proxy.name
-        cell.subtitleLabel.text = proxy.nickname.nicknameWithDashBack()
+        cell.subtitleLabel.text = proxy.nickname.nicknameFormatted()
         cell.timestampLabel.text = proxy.timestamp.timeAgoFromTimeInterval()
         cell.messageLabel.text = proxy.message.lastMessageWithTimestamp(proxy.timestamp)
         cell.unreadLabel.text = proxy.unread.unreadFormatted()
