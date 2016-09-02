@@ -21,6 +21,7 @@
 		14383B291D75EA950086CA6C /* todo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14383B281D75EA950086CA6C /* todo.swift */; };
 		14383B2D1D78A7210086CA6C /* ProxyTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14383B2C1D78A7210086CA6C /* ProxyTableViewController.swift */; };
 		14383B541D791C7B0086CA6C /* NicknameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14383B531D791C7B0086CA6C /* NicknameCell.swift */; };
+		14383B561D7A17050086CA6C /* PlainCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14383B551D7A17050086CA6C /* PlainCell.swift */; };
 		143F76ED1D71EF6200EF305F /* TimeAgo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 143F76EC1D71EF6200EF305F /* TimeAgo.swift */; };
 		143F76FA1D72C0C100EF305F /* SelectProxyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 143F76F91D72C0C100EF305F /* SelectProxyViewController.swift */; };
 		14A6F17B1D68D5F20015431E /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F17A1D68D5F20015431E /* SettingsViewController.swift */; };
@@ -58,6 +59,7 @@
 		14383B281D75EA950086CA6C /* todo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = todo.swift; path = proxy/todo.swift; sourceTree = "<group>"; };
 		14383B2C1D78A7210086CA6C /* ProxyTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyTableViewController.swift; sourceTree = "<group>"; };
 		14383B531D791C7B0086CA6C /* NicknameCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NicknameCell.swift; sourceTree = "<group>"; };
+		14383B551D7A17050086CA6C /* PlainCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlainCell.swift; sourceTree = "<group>"; };
 		143F76EC1D71EF6200EF305F /* TimeAgo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeAgo.swift; sourceTree = "<group>"; };
 		143F76F91D72C0C100EF305F /* SelectProxyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectProxyViewController.swift; sourceTree = "<group>"; };
 		14A6F17A1D68D5F20015431E /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
@@ -116,6 +118,7 @@
 			children = (
 				1415611E1D62A8A3002022BC /* ProxyTableViewCell.swift */,
 				14383B531D791C7B0086CA6C /* NicknameCell.swift */,
+				14383B551D7A17050086CA6C /* PlainCell.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -403,6 +406,7 @@
 				14265B7C1D63029200B65793 /* NewProxyViewController.swift in Sources */,
 				14A6F17B1D68D5F20015431E /* SettingsViewController.swift in Sources */,
 				143F76FA1D72C0C100EF305F /* SelectProxyViewController.swift in Sources */,
+				14383B561D7A17050086CA6C /* PlainCell.swift in Sources */,
 				1415610D1D620DB7002022BC /* API.swift in Sources */,
 				14383B191D73D8F50086CA6C /* Message.swift in Sources */,
 				14383B271D755C300086CA6C /* NewMessageViewControllerDelegate.swift in Sources */,

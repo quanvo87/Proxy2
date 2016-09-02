@@ -26,7 +26,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        title = "Messages"
+        navigationItem.title = "Messages"
         
         FIRAuth.auth()?.addAuthStateDidChangeListener { auth, user in
             if let user = user {
@@ -69,7 +69,8 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         unreadRef = ref.child("users").child(api.uid).child("unread")
         unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
             if let unread = snapshot.value as? Int {
-                self.title = "Messages \(unread.unreadTitleSuffix())"
+                self.navigationItem.title = "Messages \(unread.unreadTitleSuffix())"
+                self.title = "Home \(unread.unreadTitleSuffix())"
             }
         })
     }

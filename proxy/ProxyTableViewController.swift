@@ -84,10 +84,9 @@ class ProxyTableViewController: UITableViewController, NewMessageViewControllerD
     }
     
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        
+
         switch section {
         case 0: return "NICKNAME - only you see this"
-        case 1: return ""
         case 2: return "CONVERSATIONS"
         default: break
         }
@@ -100,18 +99,23 @@ class ProxyTableViewController: UITableViewController, NewMessageViewControllerD
             let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.NicknameCell, forIndexPath: indexPath) as! NicknameCell
             switch indexPath.row {
             case 0:
-                let nickname = proxy.nickname
-                if nickname == "" {
-                    cell.textLabel?.text = "Tap to edit"
-                } else {
-                    cell.textLabel?.text = nickname
-                }
-                cell.textLabel?.textColor = UIColor().blue()
+                
+                cell.proxy = proxy
+                cell.selectionStyle = UITableViewCellSelectionStyle.None
+                
+//                let nickname = proxy.nickname
+//                if nickname == "" {
+//                    cell.textLabel?.text = "Tap to edit"
+//                } else {
+//                    cell.textLabel?.text = nickname
+//                }
+//                cell.textLabel?.textColor = UIColor().blue()
+                
                 return cell
             default: break
             }
         case 1:
-            let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.NicknameCell, forIndexPath: indexPath) as! NicknameCell
+            let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.PlainCell, forIndexPath: indexPath) as! PlainCell
             switch indexPath.row {
             case 0:
                 cell.textLabel?.text = "Messages Received"
