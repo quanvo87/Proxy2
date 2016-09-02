@@ -15,6 +15,7 @@
  add that meta data to proxies, convos, messages
  maybe fire streaks, hearts
  
+ convo titles
  
  toggle sound
  

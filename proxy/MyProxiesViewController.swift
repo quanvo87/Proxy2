@@ -24,6 +24,7 @@ class MyProxiesViewController: UIViewController, UITableViewDataSource, UITableV
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.navigationItem.title = "My Proxies"
         observeUnread()
         setUpTableView()
         observeProxies()
@@ -75,7 +76,7 @@ class MyProxiesViewController: UIViewController, UITableViewDataSource, UITableV
         let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.ProxyTableViewCell, forIndexPath: indexPath) as! ProxyTableViewCell
         let proxy = self.proxies[indexPath.row]
         cell.titleLabel.attributedText = proxy.name.makeBold()
-        cell.subtitleLabel.text = proxy.nickname.nicknameFormatted()
+        cell.subtitleLabel.attributedText = proxy.nickname.nicknameFormatted()
         cell.timestampLabel.text = proxy.timestamp.timeAgoFromTimeInterval()
         cell.messageLabel.text = proxy.message.lastMessageWithTimestamp(proxy.timestamp)
         cell.unreadLabel.text = proxy.unread.unreadFormatted()

@@ -10,11 +10,11 @@ import FirebaseDatabase
 
 class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate, SelectProxyViewControllerDelegate {
     
-    private let api = API.sharedInstance
-    private let ref = FIRDatabase.database().reference()
-    private var proxy = Proxy()
-    private var createdNewProxy = false
-    private var savingNewProxy = false
+    let api = API.sharedInstance
+    let ref = FIRDatabase.database().reference()
+    var proxy = Proxy()
+    var createdNewProxy = false
+    var savingNewProxy = false
     var delegate: NewMessageViewControllerDelegate!
     
     @IBOutlet weak var selectProxyButton: UIButton!
@@ -34,6 +34,7 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(NewMessageViewController.keyboardWillShow), name:UIKeyboardWillShowNotification, object: self.view.window)
         NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(NewMessageViewController.proxyCreated), name: Constants.NotificationKeys.ProxyCreated, object: nil)
         
+        setUp()
         setUpTextField()
         setUpTextView()
     }
@@ -42,6 +43,12 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
         NSNotificationCenter.defaultCenter().removeObserver(self)
         if createdNewProxy && !savingNewProxy {
             api.cancelCreateProxy(proxy)
+        }
+    }
+    
+    func setUp() {
+        if proxy.name != "" {
+            selectProxy(proxy)
         }
     }
     

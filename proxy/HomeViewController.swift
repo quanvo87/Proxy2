@@ -19,12 +19,14 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     private var unreadRefHandle = FIRDatabaseHandle()
     private var convos = [Convo]()
     private var convo = Convo()
-    private var showConvo = false
+    private var shouldShowConvo = false
     
     @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        title = "Messages"
         
         FIRAuth.auth()?.addAuthStateDidChangeListener { auth, user in
             if let user = user {
@@ -42,11 +44,11 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     override func viewDidAppear(animated: Bool) {
-        if showConvo {
+        if shouldShowConvo {
             let convoViewController = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.ConvoViewController) as! ConvoViewController
             convoViewController.convo = convo
             convoViewController.hidesBottomBarWhenPushed = true
-            showConvo = false
+            shouldShowConvo = false
             convo = Convo()
             self.navigationController!.pushViewController(convoViewController, animated: true)
         }
@@ -55,6 +57,12 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     deinit {
         convosRef.removeObserverWithHandle(convosRefHandle)
         unreadRef.removeObserverWithHandle(unreadRefHandle)
+    }
+    
+    func showConvoNotification(notification: NSNotification) {
+        let userInfo = notification.userInfo as! [String: AnyObject]
+        self.convo = Convo(anyObject: userInfo["convo"]!)
+        shouldShowConvo = true
     }
     
     func observeUnread() {
@@ -96,15 +104,19 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.ProxyTableViewCell, forIndexPath: indexPath) as! ProxyTableViewCell
-        
         let convo = self.convos[indexPath.row]
-        
         cell.titleLabel.attributedText = convoTitle(convo.nickname, you: convo.senderProxy, them: convo.receiverProxy)
         cell.timestampLabel.text = convo.timestamp.timeAgoFromTimeInterval()
         cell.messageLabel.text = convo.message
         cell.unreadLabel.text = convo.unread.unreadFormatted()
-        
         return cell
+    }
+    
+    // MARK: - Select proxy view controller delegate
+    
+    func showNewConvo(convo: Convo) {
+        self.convo = convo
+        shouldShowConvo = true
     }
     
     // MARK: - Navigation
@@ -124,10 +136,5 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         default:
             return
         }
-    }
-    
-    func showNewConvo(convo: Convo) {
-        self.convo = convo
-        showConvo = true
     }
 }

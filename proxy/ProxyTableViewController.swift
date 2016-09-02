@@ -8,30 +8,47 @@
 
 import FirebaseDatabase
 
-class ProxyTableViewController: UITableViewController {
+class ProxyTableViewController: UITableViewController, NewMessageViewControllerDelegate {
     
     var proxy = Proxy()
-    var convos = [Convo]()
-    
     let api = API.sharedInstance
     let ref = FIRDatabase.database().reference()
     var unreadRef = FIRDatabaseReference()
     var unreadRefHandle = FIRDatabaseHandle()
     var convosRef = FIRDatabaseReference()
     var convosRefHandle = FIRDatabaseHandle()
+    var convos = [Convo]()
+    var convo = Convo()
+    var shouldShowConvo = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.navigationItem.title = self.proxy.name
+        observeUnread()
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 80
-        
-        observeUnread()
         observeConvos()
     }
     
+    override func viewDidAppear(animated: Bool) {
+        if shouldShowConvo {
+            let convoViewController = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.ConvoViewController) as! ConvoViewController
+            convoViewController.convo = convo
+            convoViewController.hidesBottomBarWhenPushed = true
+            shouldShowConvo = false
+            convo = Convo()
+            self.navigationController!.pushViewController(convoViewController, animated: true)
+        }
+    }
+    
+    deinit {
+        unreadRef.removeObserverWithHandle(unreadRefHandle)
+        convosRef.removeObserverWithHandle(convosRefHandle)
+    }
+    
     func observeUnread() {
-        unreadRef = ref.child("users").child(api.uid).child("proxies").child(proxy.name).child("unread")
+        unreadRef = ref.child("convos").child(proxy.name).child("unread")
         unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { snapshot in
             if let unread = snapshot.value as? Int {
                 self.navigationItem.title = "\(self.proxy.name) \(unread.unreadTitleSuffix())"
@@ -89,7 +106,7 @@ class ProxyTableViewController: UITableViewController {
                 } else {
                     cell.textLabel?.text = nickname
                 }
-                cell.textLabel?.textColor = UIColor(red: 0, green: 122, blue: 255)
+                cell.textLabel?.textColor = UIColor().blue()
                 return cell
             default: break
             }
@@ -128,10 +145,22 @@ class ProxyTableViewController: UITableViewController {
         return UITableViewCell()
     }
     
+    // MARK: - Select proxy view controller delegate
+    
+    func showNewConvo(convo: Convo) {
+        self.convo = convo
+        shouldShowConvo = true
+    }
+    
     // MARK: - Navigation
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         switch segue.identifier! {
+        case Constants.Segues.NewMessageSegue:
+            if let destination = segue.destinationViewController as? NewMessageViewController {
+                destination.delegate = self
+                destination.proxy = proxy
+            }
         case Constants.Segues.ConvoSegue:
             if let destination = segue.destinationViewController as? ConvoViewController,
                 let index = tableView.indexPathForSelectedRow?.row {
