@@ -18,6 +18,7 @@
  
  toggle sound
  
+ when you go into a conversation, it always puts the current time at the very top of all messages
  
  
  level up you proxy by getting some kind of currency. love, likes, pp (proxy points)

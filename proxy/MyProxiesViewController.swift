@@ -100,7 +100,7 @@ class MyProxiesViewController: UIViewController, UITableViewDataSource, UITableV
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == Constants.Segues.ProxySegue,
-            let destination = segue.destinationViewController as? ProxyDetailViewController,
+            let destination = segue.destinationViewController as? ProxyTableViewController,
             index = tableView.indexPathForSelectedRow?.row {
             destination.proxy = proxies[index]
         }

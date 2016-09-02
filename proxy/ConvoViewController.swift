@@ -12,25 +12,25 @@ import JSQMessagesViewController
 class ConvoViewController: JSQMessagesViewController {
     
     var convo = Convo()
-    private let api = API.sharedInstance
+    let api = API.sharedInstance
     
-    private let ref = FIRDatabase.database().reference()
+    let ref = FIRDatabase.database().reference()
     
-    private var messagesRef = FIRDatabaseReference()
-    private var messagesRefHandle = FIRDatabaseHandle()
+    var unreadRef = FIRDatabaseReference()
+    var unreadRefHandle = FIRDatabaseHandle()
     
-    private var unreadRef = FIRDatabaseReference()
-    private var unreadRefHandle = FIRDatabaseHandle()
+    var messagesRef = FIRDatabaseReference()
+    var messagesRefHandle = FIRDatabaseHandle()
     
-    private var membersTypingRef = FIRDatabaseReference()
-    private var membersTypingRefHandle = FIRDatabaseHandle()
+    var membersTypingRef = FIRDatabaseReference()
+    var membersTypingRefHandle = FIRDatabaseHandle()
     
-    private var userTypingRef = FIRDatabaseReference()
-    private var _userTyping = false
+    var userTypingRef = FIRDatabaseReference()
+    var _userTyping = false
     
-    private var incomingBubble: JSQMessagesBubbleImage!
-    private var outgoingBubble: JSQMessagesBubbleImage!
-    private var messages = [JSQMessage]()
+    var incomingBubble: JSQMessagesBubbleImage!
+    var outgoingBubble: JSQMessagesBubbleImage!
+    var messages = [JSQMessage]()
     
     var userTyping: Bool {
         get {
@@ -47,8 +47,8 @@ class ConvoViewController: JSQMessagesViewController {
         
         navigationItem.title = convo.senderProxy + ", " + convo.receiverProxy
         
-        self.senderId = convo.senderId
-        self.senderDisplayName = convo.senderProxy
+        senderId = convo.senderId
+        senderDisplayName = convo.senderProxy
         
         collectionView!.collectionViewLayout.incomingAvatarViewSize = CGSizeZero
         collectionView!.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero
@@ -57,6 +57,11 @@ class ConvoViewController: JSQMessagesViewController {
         setUpBubbles()
         observeMessages()
         observeTyping()
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(true)
+        userTypingRef.removeValue()
     }
     
     deinit {
@@ -92,7 +97,7 @@ class ConvoViewController: JSQMessagesViewController {
         })
     }
     
-    private func observeTyping() {
+    func observeTyping() {
         userTypingRef = ref.child("typing").child(convo.key).child(convo.senderId)
         userTypingRef.onDisconnectRemoveValue()
         
@@ -107,7 +112,7 @@ class ConvoViewController: JSQMessagesViewController {
     }
     
     // MARK: - JSQMessagesCollectionView
-
+    
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return messages.count
     }

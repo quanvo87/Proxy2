@@ -17,6 +17,7 @@ struct Constants {
         static let LogInViewController = "Log In View Controller"
         static let ConvoViewController = "Convo View Controller"
         static let ProxyTableViewCell = "Proxy Table View Cell"
+        static let NicknameCell = "Nickname Cell"
     }
     
     struct Segues {
