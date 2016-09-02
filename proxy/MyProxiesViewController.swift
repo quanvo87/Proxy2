@@ -18,24 +18,15 @@ class MyProxiesViewController: UIViewController, UITableViewDataSource, UITableV
     private var proxiesRefHandle = FIRDatabaseHandle()
     private var unreadRefHandle = FIRDatabaseHandle()
     private var proxies = [Proxy]()
-    private var unread = 0
     
     @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        observeUnread()
         setUpTableView()
         observeProxies()
-        observeUnread()
-    }
-    
-    override func viewWillAppear(animated: Bool) {
-        setTitle()
-    }
-    
-    override func viewWillDisappear(animated: Bool) {
-        navigationItem.title = unread.unreadTitleSuffix()
     }
     
     deinit {
@@ -43,8 +34,13 @@ class MyProxiesViewController: UIViewController, UITableViewDataSource, UITableV
         unreadRef.removeObserverWithHandle(unreadRefHandle)
     }
     
-    func setTitle() {
-        navigationItem.title = "My Proxies \(unread.unreadTitleSuffix())"
+    func observeUnread() {
+        unreadRef = ref.child("users").child(api.uid).child("unread")
+        unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { snapshot in
+            if let unread = snapshot.value as? Int {
+                self.navigationItem.title = "My Proxies \(unread.unreadTitleSuffix())"
+            }
+        })
     }
     
     func observeProxies() {
@@ -58,16 +54,6 @@ class MyProxiesViewController: UIViewController, UITableViewDataSource, UITableV
             }
             self.proxies = proxies.reverse()
             self.tableView.reloadData()
-        })
-    }
-    
-    func observeUnread() {
-        unreadRef = ref.child("users").child(api.uid).child("unread")
-        unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { snapshot in
-            if let unread = snapshot.value as? Int {
-                self.unread = unread
-                self.setTitle()
-            }
         })
     }
     
@@ -88,7 +74,7 @@ class MyProxiesViewController: UIViewController, UITableViewDataSource, UITableV
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.ProxyTableViewCell, forIndexPath: indexPath) as! ProxyTableViewCell
         let proxy = self.proxies[indexPath.row]
-        cell.titleLabel.text = proxy.name
+        cell.titleLabel.attributedText = proxy.name.makeBold()
         cell.subtitleLabel.text = proxy.nickname.nicknameFormatted()
         cell.timestampLabel.text = proxy.timestamp.timeAgoFromTimeInterval()
         cell.messageLabel.text = proxy.message.lastMessageWithTimestamp(proxy.timestamp)

@@ -29,19 +29,13 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        navigationItem.title = "New Message"
+        
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(NewMessageViewController.keyboardWillShow), name:UIKeyboardWillShowNotification, object: self.view.window)
         NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(NewMessageViewController.proxyCreated), name: Constants.NotificationKeys.ProxyCreated, object: nil)
         
         setUpTextField()
         setUpTextView()
-    }
-    
-    override func viewWillAppear(animated: Bool) {
-        navigationItem.title = "New Message"
-    }
-    
-    override func viewWillDisappear(animated: Bool) {
-        navigationItem.title = ""
     }
     
     deinit {

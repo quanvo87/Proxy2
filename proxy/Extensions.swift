@@ -17,11 +17,16 @@ extension UIViewController {
         }
     }
     
-    func convoTitle(nickname: String, you: String, them: String) -> String {
+    func convoTitle(nickname: String, you: String, them: String) -> NSAttributedString {
         if nickname == "" {
-            return you + ", " + them
+            let boldAttr = [NSFontAttributeName: UIFont.boldSystemFontOfSize(14)]
+            let _you = NSMutableAttributedString(string: you, attributes: boldAttr)
+            let _them = NSAttributedString(string: ", \(them)")
+            _you.appendAttributedString(_them)
+            return _you
         } else {
-            return nickname
+            let blueAttr = [NSForegroundColorAttributeName: UIColor(red: 0, green: 122, blue: 255)]
+            return NSAttributedString(string: nickname, attributes: blueAttr)
         }
     }
 }
@@ -44,6 +49,11 @@ extension String {
         }
         return lastMessage
     }
+    
+    func makeBold() -> NSAttributedString {
+        let boldAttr = [NSFontAttributeName: UIFont.boldSystemFontOfSize(14)]
+        return NSAttributedString(string: self, attributes: boldAttr)
+    }
 }
 
 extension Double {
@@ -62,5 +72,19 @@ extension Int {
     
     func unreadTitleSuffix() -> String {
         return self == 0 ? "" : "(\(self))"
+    }
+}
+
+extension UIColor {
+    convenience init(red: Int, green: Int, blue: Int) {
+        assert(red >= 0 && red <= 255, "Invalid red component")
+        assert(green >= 0 && green <= 255, "Invalid green component")
+        assert(blue >= 0 && blue <= 255, "Invalid blue component")
+        
+        self.init(red: CGFloat(red) / 255.0, green: CGFloat(green) / 255.0, blue: CGFloat(blue) / 255.0, alpha: 1.0)
+    }
+    
+    convenience init(netHex:Int) {
+        self.init(red:(netHex >> 16) & 0xff, green:(netHex >> 8) & 0xff, blue:netHex & 0xff)
     }
 }

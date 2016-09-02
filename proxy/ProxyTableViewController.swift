@@ -13,18 +13,30 @@ class ProxyTableViewController: UITableViewController {
     var proxy = Proxy()
     var convos = [Convo]()
     
+    let api = API.sharedInstance
     let ref = FIRDatabase.database().reference()
+    var unreadRef = FIRDatabaseReference()
+    var unreadRefHandle = FIRDatabaseHandle()
     var convosRef = FIRDatabaseReference()
     var convosRefHandle = FIRDatabaseHandle()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationItem.title = proxy.name
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 80
         
+        observeUnread()
         observeConvos()
+    }
+    
+    func observeUnread() {
+        unreadRef = ref.child("users").child(api.uid).child("proxies").child(proxy.name).child("unread")
+        unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { snapshot in
+            if let unread = snapshot.value as? Int {
+                self.navigationItem.title = "\(self.proxy.name) \(unread.unreadTitleSuffix())"
+            }
+        })
     }
     
     func observeConvos() {
@@ -70,8 +82,15 @@ class ProxyTableViewController: UITableViewController {
         case 0:
             let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.NicknameCell, forIndexPath: indexPath) as! NicknameCell
             switch indexPath.row {
-            case 0: cell.textLabel?.text = proxy.nickname
-            return cell
+            case 0:
+                let nickname = proxy.nickname
+                if nickname == "" {
+                    cell.textLabel?.text = "Tap to edit"
+                } else {
+                    cell.textLabel?.text = nickname
+                }
+                cell.textLabel?.textColor = UIColor(red: 0, green: 122, blue: 255)
+                return cell
             default: break
             }
         case 1:
@@ -91,13 +110,15 @@ class ProxyTableViewController: UITableViewController {
                 return cell
             case 4:
                 cell.textLabel?.text = "Delete Proxy"
+                cell.textLabel?.textColor = UIColor.redColor()
+                cell.textLabel!.font = UIFont.systemFontOfSize(17, weight: UIFontWeightUltraLight)
                 return cell
             default: break
             }
         case 2:
             let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.ProxyTableViewCell, forIndexPath: indexPath) as! ProxyTableViewCell
             let convo = self.convos[indexPath.row]
-            cell.titleLabel.text = convoTitle(convo.nickname, you: convo.senderProxy, them: convo.receiverProxy)
+            cell.titleLabel.attributedText = convoTitle(convo.nickname, you: convo.senderProxy, them: convo.receiverProxy)
             cell.timestampLabel.text = convo.timestamp.timeAgoFromTimeInterval()
             cell.messageLabel.text = convo.message
             cell.unreadLabel.text = convo.unread.unreadFormatted()

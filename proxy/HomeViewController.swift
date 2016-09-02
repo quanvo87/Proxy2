@@ -18,7 +18,6 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     private var convosRefHandle = FIRDatabaseHandle()
     private var unreadRefHandle = FIRDatabaseHandle()
     private var convos = [Convo]()
-    private var unread = 0
     private var convo = Convo()
     private var showConvo = false
     
@@ -30,8 +29,8 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         FIRAuth.auth()?.addAuthStateDidChangeListener { auth, user in
             if let user = user {
                 self.api.uid = user.uid
-                self.observeConvos()
                 self.observeUnread()
+                self.observeConvos()
             } else {
                 let logInViewController = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.LogInViewController) as! LogInViewController
                 let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
@@ -40,10 +39,6 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         }
         
         setUpTableView()
-    }
-    
-    override func viewWillAppear(animated: Bool) {
-        setTitle()
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -57,17 +52,18 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         }
     }
     
-    override func viewWillDisappear(animated: Bool) {
-        navigationItem.title = unread.unreadTitleSuffix()
-    }
-    
     deinit {
         convosRef.removeObserverWithHandle(convosRefHandle)
         unreadRef.removeObserverWithHandle(unreadRefHandle)
     }
     
-    func setTitle() {
-        title = "Messages \(unread.unreadTitleSuffix())"
+    func observeUnread() {
+        unreadRef = ref.child("users").child(api.uid).child("unread")
+        unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
+            if let unread = snapshot.value as? Int {
+                self.title = "Messages \(unread.unreadTitleSuffix())"
+            }
+        })
     }
     
     func observeConvos() {
@@ -81,16 +77,6 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
             }
             self.convos = convos.reverse()
             self.tableView.reloadData()
-        })
-    }
-    
-    func observeUnread() {
-        unreadRef = ref.child("users").child(api.uid).child("unread")
-        unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
-            if let unread = snapshot.value as? Int {
-                self.unread = unread
-                self.setTitle()
-            }
         })
     }
     
@@ -113,7 +99,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         let convo = self.convos[indexPath.row]
         
-        cell.titleLabel.text = convoTitle(convo.nickname, you: convo.senderProxy, them: convo.receiverProxy)
+        cell.titleLabel.attributedText = convoTitle(convo.nickname, you: convo.senderProxy, them: convo.receiverProxy)
         cell.timestampLabel.text = convo.timestamp.timeAgoFromTimeInterval()
         cell.messageLabel.text = convo.message
         cell.unreadLabel.text = convo.unread.unreadFormatted()
