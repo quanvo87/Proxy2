@@ -9,19 +9,19 @@
 import FirebaseDatabase
 
 class SelectProxyViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-
-    private let api = API.sharedInstance
-    private let ref = FIRDatabase.database().reference()
-    private var proxiesRef = FIRDatabaseReference()
-    private var proxiesRefHandle = FIRDatabaseHandle()
-    private var proxies = [Proxy]()
+    
+    let api = API.sharedInstance
+    let ref = FIRDatabase.database().reference()
+    var proxiesRef = FIRDatabaseReference()
+    var proxiesRefHandle = FIRDatabaseHandle()
+    var proxies = [Proxy]()
     var delegate: SelectProxyViewControllerDelegate!
     
     @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         navigationItem.title = "Select A Proxy"
         configureDatabase()
         setUpTableView()
@@ -41,7 +41,7 @@ class SelectProxyViewController: UIViewController, UITableViewDelegate, UITableV
             }
             self.proxies = proxies.reverse()
             self.tableView.reloadData()
-            })
+        })
     }
     
     // MARK: - Table view

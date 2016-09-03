@@ -6,6 +6,4 @@
 //  Copyright © 2016 Quan Vo. All rights reserved.
 //
 
-class BasicCell: UITableViewCell {
-
-}
+class BasicCell: UITableViewCell {}

@@ -5,14 +5,11 @@
  
  option to allow images in convo
  
- 
- last person to send message goes first in members list
- 
  profanity filter
  
  change time to match iMessage
  
- add that meta data to proxies, convos, messages
+ add that meta data to users
  maybe fire streaks, hearts
  
  convo titles

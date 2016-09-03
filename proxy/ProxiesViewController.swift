@@ -11,13 +11,13 @@ import FirebaseDatabase
 
 class ProxiesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
-    private let api = API.sharedInstance
-    private let ref = FIRDatabase.database().reference()
-    private var proxiesRef = FIRDatabaseReference()
-    private var unreadRef = FIRDatabaseReference()
-    private var proxiesRefHandle = FIRDatabaseHandle()
-    private var unreadRefHandle = FIRDatabaseHandle()
-    private var proxies = [Proxy]()
+    let api = API.sharedInstance
+    let ref = FIRDatabase.database().reference()
+    var proxiesRef = FIRDatabaseReference()
+    var unreadRef = FIRDatabaseReference()
+    var proxiesRefHandle = FIRDatabaseHandle()
+    var unreadRefHandle = FIRDatabaseHandle()
+    var proxies = [Proxy]()
     
     @IBOutlet weak var tableView: UITableView!
     

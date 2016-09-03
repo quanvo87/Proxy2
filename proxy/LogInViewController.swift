@@ -12,8 +12,8 @@ import FacebookLogin
 
 class LogInViewController: UIViewController {
     
-    private let ref = FIRDatabase.database().reference()
-    private var bottomConstraintConstant: CGFloat = 0.0
+    let ref = FIRDatabase.database().reference()
+    var bottomConstraintConstant: CGFloat = 0.0
     
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!

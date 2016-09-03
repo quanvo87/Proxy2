@@ -8,10 +8,10 @@
 
 class NewProxyViewController: UIViewController, UITextFieldDelegate {
     
-    private let api = API.sharedInstance
-    private var proxy = Proxy()
-    private var createdNewProxy = false
-    private var savingProxy = false
+    let api = API.sharedInstance
+    var proxy = Proxy()
+    var createdNewProxy = false
+    var savingProxy = false
     
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var nicknameTextField: UITextField!

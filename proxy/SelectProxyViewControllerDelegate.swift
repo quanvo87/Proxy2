@@ -7,6 +7,5 @@
 //
 
 protocol SelectProxyViewControllerDelegate {
-    
     func selectProxy(proxy: Proxy)
 }

@@ -11,15 +11,15 @@ import FirebaseDatabase
 
 class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, NewMessageViewControllerDelegate {
     
-    private let api = API.sharedInstance
-    private let ref = FIRDatabase.database().reference()
-    private var convosRef = FIRDatabaseReference()
-    private var unreadRef = FIRDatabaseReference()
-    private var convosRefHandle = FIRDatabaseHandle()
-    private var unreadRefHandle = FIRDatabaseHandle()
-    private var convos = [Convo]()
-    private var convo = Convo()
-    private var shouldShowConvo = false
+    let api = API.sharedInstance
+    let ref = FIRDatabase.database().reference()
+    var convosRef = FIRDatabaseReference()
+    var unreadRef = FIRDatabaseReference()
+    var convosRefHandle = FIRDatabaseHandle()
+    var unreadRefHandle = FIRDatabaseHandle()
+    var convos = [Convo]()
+    var convo = Convo()
+    var shouldShowConvo = false
     
     @IBOutlet weak var tableView: UITableView!
     
