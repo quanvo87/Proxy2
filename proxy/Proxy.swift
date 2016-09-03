@@ -8,7 +8,7 @@
 
 struct Proxy {
     
-    private let api = API.sharedInstance
+    let api = API.sharedInstance
     
     var owner = ""
     var name = ""
@@ -30,6 +30,7 @@ struct Proxy {
         self.nickname = anyObject["nickname"] as? String ?? ""
         self.message = anyObject["message"] as? String ?? ""
         self.timestamp = anyObject["timestamp"] as? Double ?? 0.0
+        self.unread = anyObject["unread"] as? Int ?? 0
     }
     
     func toAnyObject() -> AnyObject {
@@ -38,6 +39,8 @@ struct Proxy {
             "name": name,
             "nickname": nickname,
             "message": message,
-            "timestamp": timestamp]
+            "timestamp": timestamp,
+            "unread": unread
+        ]
     }
 }

@@ -9,16 +9,16 @@
 struct Constants {
     
     struct ChatOptions {
-        static let MinsTillTimestamp = 15.0
+        static let TimestampInterval = 15.0
     }
     
     struct Identifiers {
         static let TabBarController = "Tab Bar Controller"
         static let LogInViewController = "Log In View Controller"
         static let ConvoViewController = "Convo View Controller"
-        static let ProxyTableViewCell = "Proxy Table View Cell"
+        static let ProxyCell = "Proxy Cell"
         static let NicknameCell = "Nickname Cell"
-        static let PlainCell = "Plain Cell"
+        static let BasicCell = "Basic Cell"
     }
     
     struct Segues {

@@ -15,24 +15,15 @@ class API {
     
     var connectionStatusAlerter = ConnectionStatusAlerter()
     
-    private var _uid = ""
-    private let ref = FIRDatabase.database().reference()
-    private var proxiesRef = FIRDatabaseReference()
-    private var proxyNameGenerator = ProxyNameGenerator()
-    private var wordsLoaded = false
-    private var creatingProxy = false
+    var uid = ""
+    let ref = FIRDatabase.database().reference()
+    var proxiesRef = FIRDatabaseReference()
+    var proxyNameGenerator = ProxyNameGenerator()
+    var wordsLoaded = false
+    var creatingProxy = false
     
     private init() {
         proxiesRef = self.ref.child("proxies")
-    }
-    
-    var uid: String {
-        get {
-            return _uid
-        }
-        set {
-            _uid = newValue
-        }
     }
     
     func loadWords() {
@@ -98,10 +89,15 @@ class API {
             "/proxies/\(proxy.name)/timestamp": timestamp])
     }
     
-    func updateProxyNickname(proxy: Proxy, nickname: String) {
+    func updateProxyNickname(proxy: Proxy, convos: [Convo], nickname: String) {
         ref.updateChildValues([
             "/proxies/\(proxy.name)/nickname": nickname,
             "/users/\(uid)/proxies/\(proxy.name)/nickname": nickname])
+        for convo in convos {
+            ref.updateChildValues([
+                "/members/\(convo.key)/\(proxy.name)/nickname": nickname,
+                "/users/\(uid)/convos/\(convo.key)/proxyNickname": nickname])
+        }
     }
     
     func rerollProxy(oldProxy: Proxy) {
@@ -118,28 +114,28 @@ class API {
         deleteProxy(proxy)
     }
     
-    func sendMessage(_convo: Convo, messageText: String, completion: (success: Bool) -> Void) {
+    func sendMessage(convo: Convo, messageText: String, completion: (success: Bool) -> Void) {
         
-        var convo = _convo
+        var _convo = convo
         
         let timestamp = NSDate().timeIntervalSince1970
         
-        let messageKey = self.ref.child("messages").child(convo.key).childByAutoId().key
+        let messageKey = self.ref.child("messages").child(_convo.key).childByAutoId().key
         let message = Message(key: messageKey, sender: uid, message: messageText, timestamp: timestamp).toAnyObject()
         
-        convo.message = messageText
-        convo.timestamp = timestamp
-        let convoDict = convo.toAnyObject()
+        _convo.message = messageText
+        _convo.timestamp = timestamp
+        let convoDict = _convo.toAnyObject()
         
         let update = [
-            "/messages/\(convo.key)/\(messageKey)": message,
-            "/users/\(uid)/convos/\(convo.key)": convoDict,
-            "/convos/\(convo.senderProxy)/\(convo.key)": convoDict]
+            "/messages/\(_convo.key)/\(messageKey)": message,
+            "/users/\(uid)/convos/\(_convo.key)": convoDict,
+            "/convos/\(_convo.senderProxy)/\(_convo.key)": convoDict]
         
         self.ref.updateChildValues(update, withCompletionBlock: { (error, ref) in
             
             // Sender proxy
-            self.ref.child("users").child(self.uid).child("proxies").child(convo.senderProxy).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+            self.ref.child("users").child(self.uid).child("proxies").child(_convo.senderProxy).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
                 if var proxy = currentData.value as? [String: AnyObject] {
                     proxy["message"] = messageText
                     proxy["timestamp"] = timestamp
@@ -150,7 +146,7 @@ class API {
             })
             
             // Receiver global unread
-            self.ref.child("users").child(convo.receiverId).child("unread").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+            self.ref.child("users").child(_convo.receiverId).child("unread").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
                 if let unread = currentData.value {
                     let _unread = unread as? Int ?? 0
                     currentData.value = _unread + 1
@@ -160,7 +156,7 @@ class API {
             })
             
             // Receiver convo unread
-            self.ref.child("users").child(convo.receiverId).child("convos").child(convo.key).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+            self.ref.child("users").child(_convo.receiverId).child("convos").child(_convo.key).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
                 if var convo = currentData.value as? [String: AnyObject] {
                     let unread = convo["unread"] as? Int ?? 0
                     convo["unread"] = unread + 1
@@ -173,7 +169,7 @@ class API {
             })
             
             // Receiver convo by proxy unread
-            self.ref.child("convos").child(convo.receiverProxy).child(convo.key).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+            self.ref.child("convos").child(_convo.receiverProxy).child(_convo.key).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
                 if var convo = currentData.value as? [String: AnyObject] {
                     let unread = convo["unread"] as? Int ?? 0
                     convo["unread"] = unread + 1
@@ -186,7 +182,7 @@ class API {
             })
             
             // Receiver proxy unread
-            self.ref.child("users").child(convo.receiverId).child("proxies").child(convo.receiverProxy).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+            self.ref.child("users").child(_convo.receiverId).child("proxies").child(_convo.receiverProxy).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
                 if var proxy = currentData.value as? [String: AnyObject] {
                     let unread = proxy["unread"] as? Int ?? 0
                     proxy["unread"] = unread + 1
@@ -235,10 +231,8 @@ class API {
         _senderProxy.timestamp = timestamp
         let proxyDict = _senderProxy.toAnyObject()
         
-        let senderMemberKey = self.ref.child("members").child(convoKey).childByAutoId().key
-        let receiverMemberKey = self.ref.child("members").child(convoKey).childByAutoId().key
-        let senderMember = Member(key: senderMemberKey, owner: uid, name: _senderProxy.name, nickname: _senderProxy.nickname).toAnyObject()
-        let receiverMember = Member(key: receiverMemberKey, owner: receiverProxy.owner, name: receiverProxy.name, nickname: receiverProxy.nickname).toAnyObject()
+        let senderMember = Member(owner: uid, name: _senderProxy.name, nickname: _senderProxy.nickname).toAnyObject()
+        let receiverMember = Member(owner: receiverProxy.owner, name: receiverProxy.name, nickname: receiverProxy.nickname).toAnyObject()
         
         let update = [
             "/messages/\(convoKey)/\(messageKey)": message,
@@ -247,8 +241,8 @@ class API {
             "/users/\(receiverProxy.owner)/convos/\(convoKey)": receiverConvoDict,
             "/convos/\(receiverProxy.name)/\(convoKey)": receiverConvoDict,
             "/users/\(uid)/proxies/\(_senderProxy.name)": proxyDict,
-            "/members/\(convoKey)/\(senderMemberKey)": senderMember,
-            "/members/\(convoKey)/\(receiverMemberKey)": receiverMember]
+            "/members/\(convoKey)/\(senderProxy.name)": senderMember,
+            "/members/\(convoKey)/\(receiverProxy.name)": receiverMember]
         
         self.ref.updateChildValues(update, withCompletionBlock: { (error, ref) in
             if error != nil {

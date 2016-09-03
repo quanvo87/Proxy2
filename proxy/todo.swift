@@ -22,6 +22,19 @@
  when you go into a conversation, it always puts the current time at the very top of all messages
  
  
+ case 0:
+ cell.textLabel?.text = "Messages Received"
+ return cell
+ case 1:
+ cell.textLabel?.text = "Messages Sent"
+ return cell
+ case 2:
+ cell.textLabel?.text = "Proxies Interacted With"
+ return cell
+ case 3:
+ cell.textLabel?.text = "Date Created"
+ return cell
+ 
  level up you proxy by getting some kind of currency. love, likes, pp (proxy points)
  you can only receive pp by
  every day each user's pp resets to 3
@@ -36,6 +49,7 @@
  settings: time display: time ago or actual time
             
  buy emojis
+ buy business names
  
  
  buy new icon options for your proxies

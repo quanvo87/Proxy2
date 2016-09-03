@@ -7,7 +7,6 @@
 //
 
 extension UIViewController {
-    
     func showAlert(title: String, message: String) {
         dispatch_async(dispatch_get_main_queue()) {
             let alert = UIAlertController(title: title, message: message, preferredStyle: .Alert)
@@ -17,22 +16,31 @@ extension UIViewController {
         }
     }
     
-    func convoTitle(nickname: String, you: String, them: String) -> NSAttributedString {
-        if nickname == "" {
-            let boldAttr = [NSFontAttributeName: UIFont.boldSystemFontOfSize(14)]
-            let _you = NSMutableAttributedString(string: ", \(you)", attributes: boldAttr)
-            let _them = NSMutableAttributedString(string: them)
-            _them.appendAttributedString(_you)
-            return _them
+    func convoTitle(convoNickname: String, proxyNickname: String, you: String, them: String) -> NSAttributedString {
+        let bold = [NSFontAttributeName: UIFont.boldSystemFontOfSize(14)]
+        let blue = [NSForegroundColorAttributeName: UIColor().blue()]
+        let gray = [NSForegroundColorAttributeName: UIColor.grayColor()]
+        let comma = NSAttributedString(string: ", ")
+        var first: NSMutableAttributedString
+        var second: NSAttributedString
+        if convoNickname == "" {
+            first = NSMutableAttributedString(string: them, attributes: bold)
         } else {
-            let blueAttr = [NSForegroundColorAttributeName: UIColor().blue()]
-            return NSAttributedString(string: nickname, attributes: blueAttr)
+            first = NSMutableAttributedString(string: convoNickname, attributes: bold)
+            first.addAttributes(blue, range: NSRange(location: 0, length: first.length))
         }
+        if proxyNickname == "" {
+            second = NSAttributedString(string: you, attributes: gray)
+        } else {
+            second = NSAttributedString(string: proxyNickname, attributes: blue)
+        }
+        first.appendAttributedString(comma)
+        first.appendAttributedString(second)
+        return first
     }
 }
 
 extension String {
-    
     func lastMessageWithTimestamp(interval: Double) -> String {
         var lastMessage = self
         let timestamp = interval.timeAgoFromTimeInterval()
@@ -51,10 +59,7 @@ extension String {
             return NSAttributedString(string: "")
         } else {
             let blueAttr = [NSForegroundColorAttributeName: UIColor().blue()]
-            let dash = NSMutableAttributedString(string: " - ")
-            let nickname = NSAttributedString(string: "\"\(self)\"", attributes: blueAttr)
-            dash.appendAttributedString(nickname)
-            return dash
+            return NSAttributedString(string: self, attributes: blueAttr)
         }
     }
     
@@ -65,7 +70,6 @@ extension String {
 }
 
 extension Double {
-    
     func timeAgoFromTimeInterval() -> String {
         let date = NSDate(timeIntervalSince1970: self)
         return timeAgoSince(date)
@@ -73,7 +77,6 @@ extension Double {
 }
 
 extension Int {
-    
     func unreadFormatted() -> String {
         return self == 0 ? "" : String(self)
     }

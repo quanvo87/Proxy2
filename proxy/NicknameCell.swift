@@ -17,7 +17,7 @@ class NicknameCell: UITableViewCell, UITextFieldDelegate {
     var label: UITextField
     let leftMarginForLabel: CGFloat = 15
     
-    var proxy = Proxy() {
+    var proxyAndConvo = (proxy: Proxy(), convos: [Convo]()) {
         didSet {
             observeNickname()
         }
@@ -28,7 +28,9 @@ class NicknameCell: UITableViewCell, UITextFieldDelegate {
         
         super.init(coder: aDecoder)!
         
-        label.placeholder = "Tap to edit"
+        let blueAttr = [NSForegroundColorAttributeName: UIColor().blue()]
+        let placeholderText = NSAttributedString(string: "Tap to edit", attributes: blueAttr)
+        label.attributedPlaceholder = placeholderText
         label.textColor = UIColor().blue()
         label.returnKeyType = .Done
         label.clearButtonMode = .WhileEditing
@@ -46,7 +48,7 @@ class NicknameCell: UITableViewCell, UITextFieldDelegate {
     }
     
     func observeNickname() {
-        nicknameRef = ref.child("users").child(api.uid).child("proxies").child(proxy.name).child("nickname")
+        nicknameRef = ref.child("users").child(api.uid).child("proxies").child(proxyAndConvo.proxy.name).child("nickname")
         nicknameRefHandle = nicknameRef.observeEventType(.Value, withBlock: { snapshot in
             if let nickname = snapshot.value as? String where nickname != "" {
                 self.label.text = nickname
@@ -62,8 +64,12 @@ class NicknameCell: UITableViewCell, UITextFieldDelegate {
     }
     
     func textFieldShouldEndEditing(textField: UITextField) -> Bool {
-        api.updateProxyNickname(proxy, nickname: label.text!)
+        let trim = label.text?.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
+        if label.text != "" && trim == "" {
+            label.text = ""
+        } else {
+            api.updateProxyNickname(proxyAndConvo.proxy, convos: proxyAndConvo.convos, nickname: label.text!)
+        }
         return true
     }
-    
 }

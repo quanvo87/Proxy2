@@ -75,9 +75,9 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
         
         // check for empty fields
         guard
-            let first = firstTextField.text,
-            let second = secondTextField.text,
-            let num = numTextField.text,
+            let first = firstTextField.text?.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " ")),
+            let second = secondTextField.text?.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " ")),
+            let num = numTextField.text?.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " ")),
             let messageText = messageTextView.text
             where first != "" && second != "" && num != "" && messageText != "Message..." else {
                 enableButtonsAndShowAlert("Missing Fields", message: "Please enter a value for each field.")

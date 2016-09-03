@@ -80,10 +80,10 @@
             </objects>
             <point key="canvasLocation" x="-2015" y="-97"/>
         </scene>
-        <!--My Proxies View Controller-->
+        <!--Proxies View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" userLabel="My Proxies View Controller" customClass="MyProxiesViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ProxiesViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -92,11 +92,11 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="5GB-nm-EaJ" userLabel="My Proxies Table View">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="5GB-nm-EaJ" userLabel="Proxies Table View">
                                 <rect key="frame" x="0.0" y="64" width="600" height="487"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="Proxy Table View Cell" rowHeight="90" id="jwJ-0D-ygK" userLabel="My Proxies Cell" customClass="ProxyTableViewCell" customModule="proxy" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="Proxy Cell" rowHeight="90" id="jwJ-0D-ygK" userLabel="Proxies Cell" customClass="ProxyCell" customModule="proxy" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="92" width="600" height="90"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="jwJ-0D-ygK" id="wJf-MI-uYm">
@@ -233,7 +233,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
                             </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Plain Cell" id="pkb-DL-yvf" customClass="PlainCell" customModule="proxy" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Basic Cell" id="pkb-DL-yvf" customClass="BasicCell" customModule="proxy" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="157.5" width="600" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="pkb-DL-yvf" id="m7R-LO-QeQ">
@@ -241,7 +241,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
                             </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="Proxy Table View Cell" rowHeight="90" id="XV1-KS-x0e" userLabel="Convo Cell" customClass="ProxyTableViewCell" customModule="proxy" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="Proxy Cell" rowHeight="90" id="XV1-KS-x0e" userLabel="Convo Cell" customClass="ProxyCell" customModule="proxy" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="201.5" width="600" height="90"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="XV1-KS-x0e" id="Qvc-HC-fPL">
@@ -256,25 +256,25 @@
                                             </constraints>
                                         </imageView>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="248" text="Nickname/members" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2W6-pM-7uh">
-                                            <rect key="frame" x="73" y="8" width="418" height="29"/>
+                                            <rect key="frame" x="73" y="8" width="418" height="34"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="249" text="Last Message Preview" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="77T-Xe-jb5">
-                                            <rect key="frame" x="73" y="41.5" width="472" height="16"/>
+                                            <rect key="frame" x="73" y="46.5" width="472" height="16"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                             <color key="textColor" red="0.50196081400000003" green="0.50196081400000003" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" horizontalCompressionResistancePriority="752" text="Timestamp" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="M22-FL-nS8">
-                                            <rect key="frame" x="496" y="21.5" width="63" height="15"/>
+                                            <rect key="frame" x="496" y="26.5" width="63" height="15"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                             <color key="textColor" red="0.50196081400000003" green="0.50196081400000003" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="0" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yAh-3z-Fid">
-                                            <rect key="frame" x="550" y="41.5" width="9" height="17"/>
+                                            <rect key="frame" x="550" y="46.5" width="9" height="17"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                             <color key="textColor" red="0.0" green="0.50196081400000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
@@ -287,7 +287,7 @@
                                         <constraint firstAttribute="leadingMargin" secondItem="YkD-pY-XCY" secondAttribute="leading" id="GhR-Jg-gHr"/>
                                         <constraint firstItem="2W6-pM-7uh" firstAttribute="top" secondItem="Qvc-HC-fPL" secondAttribute="topMargin" id="UiH-h3-5oJ"/>
                                         <constraint firstItem="M22-FL-nS8" firstAttribute="baseline" secondItem="2W6-pM-7uh" secondAttribute="baseline" id="eJN-Vt-GjC"/>
-                                        <constraint firstAttribute="bottomMargin" secondItem="M22-FL-nS8" secondAttribute="bottom" constant="45" id="fEV-OR-3ah"/>
+                                        <constraint firstAttribute="bottomMargin" secondItem="M22-FL-nS8" secondAttribute="bottom" constant="40" id="fEV-OR-3ah"/>
                                         <constraint firstItem="2W6-pM-7uh" firstAttribute="leading" secondItem="YkD-pY-XCY" secondAttribute="trailing" constant="5" id="ho0-JZ-o7J"/>
                                         <constraint firstItem="77T-Xe-jb5" firstAttribute="leading" secondItem="YkD-pY-XCY" secondAttribute="trailing" constant="5" id="lUl-Lf-t0P"/>
                                         <constraint firstAttribute="trailingMargin" secondItem="M22-FL-nS8" secondAttribute="trailing" id="qbJ-Ht-q2v"/>
@@ -357,7 +357,7 @@
                                 <rect key="frame" x="0.0" y="64" width="600" height="487"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="Proxy Table View Cell" rowHeight="90" id="1iO-5w-fnc" userLabel="Convos Table Cell" customClass="ProxyTableViewCell" customModule="proxy" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="Proxy Cell" rowHeight="90" id="1iO-5w-fnc" userLabel="Convos Table Cell" customClass="ProxyCell" customModule="proxy" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="92" width="600" height="90"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="1iO-5w-fnc" id="jTh-DA-DyA">
@@ -515,11 +515,11 @@
             </objects>
             <point key="canvasLocation" x="-513" y="2186"/>
         </scene>
-        <!--My Proxies-->
+        <!--Proxies-->
         <scene sceneID="QnD-3o-vWi">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="LfE-yp-YW0" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="My Proxies" id="iOS-6g-J6E"/>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="LfE-yp-YW0" userLabel="Proxies" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Proxies" id="iOS-6g-J6E"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="2C5-MT-khQ">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -730,7 +730,7 @@
                                 <rect key="frame" x="0.0" y="64" width="600" height="487"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Proxy Table View Cell" rowHeight="80" id="VJJ-nO-xK1" userLabel="My Proxies Table Cell" customClass="ProxyTableViewCell" customModule="proxy" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Proxy Cell" rowHeight="80" id="VJJ-nO-xK1" userLabel="My Proxies Table Cell" customClass="ProxyCell" customModule="proxy" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="92" width="600" height="80"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="VJJ-nO-xK1" id="LTt-oz-ohx">

@@ -104,9 +104,9 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.ProxyTableViewCell, forIndexPath: indexPath) as! ProxyTableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.ProxyCell, forIndexPath: indexPath) as! ProxyCell
         let convo = self.convos[indexPath.row]
-        cell.titleLabel.attributedText = convoTitle(convo.nickname, you: convo.senderProxy, them: convo.receiverProxy)
+        cell.titleLabel.attributedText = convoTitle(convo.convoNickname, proxyNickname: convo.proxyNickname, you: convo.senderProxy, them: convo.receiverProxy)
         cell.timestampLabel.text = convo.timestamp.timeAgoFromTimeInterval()
         cell.messageLabel.text = convo.message
         cell.unreadLabel.text = convo.unread.unreadFormatted()

@@ -1,12 +1,12 @@
 //
-//  ProxyTableViewCell.swift
+//  ProxyCell.swift
 //  proxy
 //
 //  Created by Quan Vo on 8/15/16.
 //  Copyright © 2016 Quan Vo. All rights reserved.
 //
 
-class ProxyTableViewCell: UITableViewCell {
+class ProxyCell: UITableViewCell {
     
     @IBOutlet weak var iconImage: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!

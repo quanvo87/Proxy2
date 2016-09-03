@@ -25,9 +25,9 @@ class ProxyTableViewController: UITableViewController, NewMessageViewControllerD
         super.viewDidLoad()
         
         self.navigationItem.title = self.proxy.name
-        observeUnread()
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 80
+        observeUnread()
         observeConvos()
     }
     
@@ -77,14 +77,13 @@ class ProxyTableViewController: UITableViewController, NewMessageViewControllerD
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0: return 1
-        case 1: return 5
+        case 1: return 1
         case 2: return convos.count
         default: return 0
         }
     }
     
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-
         switch section {
         case 0: return "NICKNAME - only you see this"
         case 2: return "CONVERSATIONS"
@@ -93,60 +92,60 @@ class ProxyTableViewController: UITableViewController, NewMessageViewControllerD
         return nil
     }
     
+    override func tableView(tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+        switch section {
+        case 1: return "People are not notified when you delete your Proxy."
+        case 2:
+            if convos.count == 0 {
+                return "No conversations yet. Start one with the 'New' button in the top right!"
+            } else {
+                return nil
+            }
+        default: return nil
+        }
+    }
+    
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         switch indexPath.section {
+        
         case 0:
             let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.NicknameCell, forIndexPath: indexPath) as! NicknameCell
             switch indexPath.row {
             case 0:
-                
-                cell.proxy = proxy
+                cell.proxyAndConvo = (proxy, convos)
                 cell.selectionStyle = UITableViewCellSelectionStyle.None
-                
-//                let nickname = proxy.nickname
-//                if nickname == "" {
-//                    cell.textLabel?.text = "Tap to edit"
-//                } else {
-//                    cell.textLabel?.text = nickname
-//                }
-//                cell.textLabel?.textColor = UIColor().blue()
-                
                 return cell
             default: break
             }
+            
         case 1:
-            let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.PlainCell, forIndexPath: indexPath) as! PlainCell
+            let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.BasicCell, forIndexPath: indexPath) as! BasicCell
             switch indexPath.row {
             case 0:
-                cell.textLabel?.text = "Messages Received"
-                return cell
-            case 1:
-                cell.textLabel?.text = "Messages Sent"
-                return cell
-            case 2:
-                cell.textLabel?.text = "Proxies Interacted With"
-                return cell
-            case 3:
-                cell.textLabel?.text = "Date Created"
-                return cell
-            case 4:
-                cell.textLabel?.text = "Delete Proxy"
+                cell.textLabel?.text = "Delete"
                 cell.textLabel?.textColor = UIColor.redColor()
                 cell.textLabel!.font = UIFont.systemFontOfSize(17, weight: UIFontWeightUltraLight)
                 return cell
             default: break
             }
+            
         case 2:
-            let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.ProxyTableViewCell, forIndexPath: indexPath) as! ProxyTableViewCell
+            let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.ProxyCell, forIndexPath: indexPath) as! ProxyCell
             let convo = self.convos[indexPath.row]
-            cell.titleLabel.attributedText = convoTitle(convo.nickname, you: convo.senderProxy, them: convo.receiverProxy)
+            cell.titleLabel.attributedText = convoTitle(convo.convoNickname, proxyNickname: convo.proxyNickname, you: convo.senderProxy, them: convo.receiverProxy)
             cell.timestampLabel.text = convo.timestamp.timeAgoFromTimeInterval()
             cell.messageLabel.text = convo.message
             cell.unreadLabel.text = convo.unread.unreadFormatted()
             return cell
+            
         default: break
         }
+        
         return UITableViewCell()
+    }
+    
+    override func scrollViewWillBeginDragging(scrollView: UIScrollView) {
+        view.endEditing(true)
     }
     
     // MARK: - Select proxy view controller delegate

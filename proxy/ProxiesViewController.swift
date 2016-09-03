@@ -1,5 +1,5 @@
 //
-//  MyProxiesViewController.swift
+//  ProxiesViewController.swift
 //  proxy
 //
 //  Created by Quan Vo on 8/14/16.
@@ -9,7 +9,7 @@
 import FirebaseAuth
 import FirebaseDatabase
 
-class MyProxiesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class ProxiesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     private let api = API.sharedInstance
     private let ref = FIRDatabase.database().reference()
@@ -24,7 +24,7 @@ class MyProxiesViewController: UIViewController, UITableViewDataSource, UITableV
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.navigationItem.title = "My Proxies"
+        self.navigationItem.title = "Proxies"
         observeUnread()
         setUpTableView()
         observeProxies()
@@ -39,7 +39,7 @@ class MyProxiesViewController: UIViewController, UITableViewDataSource, UITableV
         unreadRef = ref.child("users").child(api.uid).child("unread")
         unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { snapshot in
             if let unread = snapshot.value as? Int {
-                self.navigationItem.title = "My Proxies \(unread.unreadTitleSuffix())"
+                self.navigationItem.title = "Proxies \(unread.unreadTitleSuffix())"
             }
         })
     }
@@ -73,9 +73,9 @@ class MyProxiesViewController: UIViewController, UITableViewDataSource, UITableV
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.ProxyTableViewCell, forIndexPath: indexPath) as! ProxyTableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.ProxyCell, forIndexPath: indexPath) as! ProxyCell
         let proxy = self.proxies[indexPath.row]
-        cell.titleLabel.attributedText = proxy.name.makeBold()
+        cell.titleLabel.text = proxy.name
         cell.subtitleLabel.attributedText = proxy.nickname.nicknameFormatted()
         cell.timestampLabel.text = proxy.timestamp.timeAgoFromTimeInterval()
         cell.messageLabel.text = proxy.message.lastMessageWithTimestamp(proxy.timestamp)

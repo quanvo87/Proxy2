@@ -8,13 +8,11 @@
 
 struct Member {
     
-    var key = ""
     var owner = ""
     var name = ""
     var nickname = ""
     
-    init(key: String, owner: String, name: String, nickname: String) {
-        self.key = key
+    init(owner: String, name: String, nickname: String) {
         self.owner = owner
         self.name = name
         self.nickname = nickname
@@ -22,7 +20,6 @@ struct Member {
     
     func toAnyObject() -> AnyObject {
         return [
-            "key": key,
             "owner": owner,
             "name": name,
             "nickname": nickname
