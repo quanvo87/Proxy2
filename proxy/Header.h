@@ -11,5 +11,6 @@
 
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
+#import "NSDate+NVTimeAgo.h"
 
 #endif /* Header_h */

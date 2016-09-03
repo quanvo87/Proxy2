@@ -22,7 +22,7 @@
 		14383B2D1D78A7210086CA6C /* ProxyTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14383B2C1D78A7210086CA6C /* ProxyTableViewController.swift */; };
 		14383B541D791C7B0086CA6C /* NicknameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14383B531D791C7B0086CA6C /* NicknameCell.swift */; };
 		14383B561D7A17050086CA6C /* BasicCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14383B551D7A17050086CA6C /* BasicCell.swift */; };
-		143F76ED1D71EF6200EF305F /* TimeAgo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 143F76EC1D71EF6200EF305F /* TimeAgo.swift */; };
+		14383B5B1D7B0CB60086CA6C /* NSDate+NVTimeAgo.m in Sources */ = {isa = PBXBuildFile; fileRef = 14383B5A1D7B0CB60086CA6C /* NSDate+NVTimeAgo.m */; };
 		143F76FA1D72C0C100EF305F /* SelectProxyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 143F76F91D72C0C100EF305F /* SelectProxyViewController.swift */; };
 		14A6F17B1D68D5F20015431E /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F17A1D68D5F20015431E /* SettingsViewController.swift */; };
 		14A6F17F1D68D8020015431E /* SettingsItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F17E1D68D8020015431E /* SettingsItems.swift */; };
@@ -60,7 +60,8 @@
 		14383B2C1D78A7210086CA6C /* ProxyTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyTableViewController.swift; sourceTree = "<group>"; };
 		14383B531D791C7B0086CA6C /* NicknameCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NicknameCell.swift; sourceTree = "<group>"; };
 		14383B551D7A17050086CA6C /* BasicCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicCell.swift; sourceTree = "<group>"; };
-		143F76EC1D71EF6200EF305F /* TimeAgo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeAgo.swift; sourceTree = "<group>"; };
+		14383B591D7B0CB60086CA6C /* NSDate+NVTimeAgo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+NVTimeAgo.h"; sourceTree = "<group>"; };
+		14383B5A1D7B0CB60086CA6C /* NSDate+NVTimeAgo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+NVTimeAgo.m"; sourceTree = "<group>"; };
 		143F76F91D72C0C100EF305F /* SelectProxyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectProxyViewController.swift; sourceTree = "<group>"; };
 		14A6F17A1D68D5F20015431E /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		14A6F17E1D68D8020015431E /* SettingsItems.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsItems.swift; sourceTree = "<group>"; };
@@ -172,7 +173,8 @@
 				14E19A5B1D612CE80030B366 /* Extensions.swift */,
 				1415610C1D620DB7002022BC /* API.swift */,
 				14A6F1931D6CF1410015431E /* ProxyNameGenerator.swift */,
-				143F76EC1D71EF6200EF305F /* TimeAgo.swift */,
+				14383B591D7B0CB60086CA6C /* NSDate+NVTimeAgo.h */,
+				14383B5A1D7B0CB60086CA6C /* NSDate+NVTimeAgo.m */,
 				14383B221D75075E0086CA6C /* ConnectionStatusAlerter.swift */,
 				14E19A411D60EF100030B366 /* AppDelegate.swift */,
 			);
@@ -395,6 +397,7 @@
 				14A6F1831D68E4E00015431E /* SettingsTableViewCell.swift in Sources */,
 				1415611F1D62A8A3002022BC /* ProxyCell.swift in Sources */,
 				14383B541D791C7B0086CA6C /* NicknameCell.swift in Sources */,
+				14383B5B1D7B0CB60086CA6C /* NSDate+NVTimeAgo.m in Sources */,
 				14383B121D73802B0086CA6C /* Proxy.swift in Sources */,
 				14E19A5A1D61034A0030B366 /* ProxiesViewController.swift in Sources */,
 				14A6F1811D68D8160015431E /* SettingsItem.swift in Sources */,
@@ -416,7 +419,6 @@
 				14383B291D75EA950086CA6C /* todo.swift in Sources */,
 				14383B0F1D7341070086CA6C /* SelectProxyViewControllerDelegate.swift in Sources */,
 				14383B2D1D78A7210086CA6C /* ProxyTableViewController.swift in Sources */,
-				143F76ED1D71EF6200EF305F /* TimeAgo.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

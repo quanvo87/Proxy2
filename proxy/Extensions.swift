@@ -44,11 +44,14 @@ extension String {
     func lastMessageWithTimestamp(interval: Double) -> String {
         var lastMessage = self
         let timestamp = interval.timeAgoFromTimeInterval()
+        let secondsAgo = -NSDate(timeIntervalSince1970: interval).timeIntervalSinceNow
         if lastMessage == "" {
             if timestamp == "Just now" {
                 lastMessage = "Created just now."
-            } else {
+            } else if secondsAgo < 60 * 60 * 24 {
                 lastMessage = "Created \(timestamp) ago."
+            } else {
+                lastMessage = "Created \(timestamp)."
             }
         }
         return lastMessage
@@ -71,8 +74,7 @@ extension String {
 
 extension Double {
     func timeAgoFromTimeInterval() -> String {
-        let date = NSDate(timeIntervalSince1970: self)
-        return timeAgoSince(date)
+        return NSDate(timeIntervalSince1970: self).formattedAsTimeAgo()
     }
 }
 

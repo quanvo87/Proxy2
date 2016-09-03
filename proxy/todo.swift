@@ -3,7 +3,11 @@
  make fill in proxy receiver fields highlight on entry
  check make proxy bug - creates proxy in /proxies on enter view but doesnt delete when canceling
  
- option to allow images in convo
+ toggle photos/videos in chat
+ data detection in chat
+ unread receipts
+ 
+ pull certain amount of data at a time, and pull more as needed
  
  profanity filter
  
@@ -42,8 +46,7 @@
  can never buy pp. just real money only items.
  
  can buy names in shop maybe.
- 
- settings: time display: time ago or actual time
+
             
  buy emojis
  buy business names
