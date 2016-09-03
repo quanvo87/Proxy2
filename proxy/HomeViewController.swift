@@ -26,7 +26,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationItem.title = "Messages"
+        navigationItem.title = "Home"
         
         FIRAuth.auth()?.addAuthStateDidChangeListener { auth, user in
             if let user = user {
@@ -44,6 +44,8 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     override func viewDidAppear(animated: Bool) {
+        self.tabBarController?.tabBar.hidden = false
+        
         if shouldShowConvo {
             let convoViewController = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.ConvoViewController) as! ConvoViewController
             convoViewController.convo = convo
@@ -59,17 +61,10 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         unreadRef.removeObserverWithHandle(unreadRefHandle)
     }
     
-    func showConvoNotification(notification: NSNotification) {
-        let userInfo = notification.userInfo as! [String: AnyObject]
-        self.convo = Convo(anyObject: userInfo["convo"]!)
-        shouldShowConvo = true
-    }
-    
     func observeUnread() {
         unreadRef = ref.child("users").child(api.uid).child("unread")
         unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
             if let unread = snapshot.value as? Int {
-                self.navigationItem.title = "Messages \(unread.unreadTitleSuffix())"
                 self.title = "Home \(unread.unreadTitleSuffix())"
             }
         })
@@ -106,7 +101,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.ProxyCell, forIndexPath: indexPath) as! ProxyCell
         let convo = self.convos[indexPath.row]
-        cell.titleLabel.attributedText = convoTitle(convo.convoNickname, proxyNickname: convo.proxyNickname, you: convo.senderProxy, them: convo.receiverProxy)
+        cell.titleLabel.attributedText = convoTitle(convo.convoNickname, proxyNickname: convo.proxyNickname, you: convo.senderProxy, them: convo.receiverProxy, size: 13, navBar: false)
         cell.timestampLabel.text = convo.timestamp.timeAgoFromTimeInterval()
         cell.messageLabel.text = convo.message
         cell.unreadLabel.text = convo.unread.unreadFormatted()
@@ -137,7 +132,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
             if let destination = segue.destinationViewController as? ConvoViewController,
                 let index = tableView.indexPathForSelectedRow?.row {
                 destination.convo = convos[index]
-                destination.hidesBottomBarWhenPushed = true
+//                destination.hidesBottomBarWhenPushed = true
             }
         default:
             return

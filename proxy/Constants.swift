@@ -17,7 +17,7 @@ struct Constants {
         static let LogInViewController = "Log In View Controller"
         static let ConvoViewController = "Convo View Controller"
         static let ProxyCell = "Proxy Cell"
-        static let NicknameCell = "Nickname Cell"
+        static let ProxyNicknameCell = "Proxy Nickname Cell"
         static let BasicCell = "Basic Cell"
     }
     
@@ -26,6 +26,7 @@ struct Constants {
         static let SelectProxySegue = "Select Proxy Segue"
         static let ProxySegue = "Proxy Segue"
         static let ConvoSegue = "Convo Segue"
+        static let ConvoDetailSegue = "Convo Detail Segue"
     }
     
     struct NotificationKeys {

@@ -113,7 +113,7 @@ class ProxyTableViewController: UITableViewController, NewMessageViewControllerD
         switch indexPath.section {
             
         case 0:
-            let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.NicknameCell, forIndexPath: indexPath) as! NicknameCell
+            let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.ProxyNicknameCell, forIndexPath: indexPath) as! ProxyNicknameCell
             switch indexPath.row {
             case 0:
                 cell.proxyAndConvo = (proxy, convos)
@@ -136,7 +136,7 @@ class ProxyTableViewController: UITableViewController, NewMessageViewControllerD
         case 2:
             let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.ProxyCell, forIndexPath: indexPath) as! ProxyCell
             let convo = self.convos[indexPath.row]
-            cell.titleLabel.attributedText = convoTitle(convo.convoNickname, proxyNickname: convo.proxyNickname, you: convo.senderProxy, them: convo.receiverProxy)
+            cell.titleLabel.attributedText = convoTitle(convo.convoNickname, proxyNickname: convo.proxyNickname, you: convo.senderProxy, them: convo.receiverProxy, size: 13, navBar: false)
             cell.timestampLabel.text = convo.timestamp.timeAgoFromTimeInterval()
             cell.messageLabel.text = convo.message
             cell.unreadLabel.text = convo.unread.unreadFormatted()

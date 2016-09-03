@@ -14,29 +14,38 @@ extension UIViewController {
         self.presentViewController(alert, animated: true, completion: nil)
     }
     
-    func convoTitle(convoNickname: String, proxyNickname: String, you: String, them: String) -> NSAttributedString {
-        let bold = [NSFontAttributeName: UIFont.boldSystemFontOfSize(14)]
+    func convoTitle(convoNickname: String, proxyNickname: String, you: String, them: String, size: CGFloat, navBar: Bool) -> NSAttributedString {
+        let _size = [NSFontAttributeName: UIFont.systemFontOfSize(size)]
+        let bold = [NSFontAttributeName: UIFont.boldSystemFontOfSize(size)]
         let blue = [NSForegroundColorAttributeName: UIColor().blue()]
         let gray = [NSForegroundColorAttributeName: UIColor.grayColor()]
-        let comma = NSAttributedString(string: ", ")
+        
         var first: NSMutableAttributedString
-        var second: NSAttributedString
+        var second: NSMutableAttributedString
+        
+        let _coma = navBar == true ? ",\n" : ", "
+        let comma = NSAttributedString(string: _coma, attributes: _size)
+        
         if convoNickname == "" {
             first = NSMutableAttributedString(string: them, attributes: bold)
         } else {
             first = NSMutableAttributedString(string: convoNickname, attributes: bold)
             first.addAttributes(blue, range: NSRange(location: 0, length: first.length))
         }
+        
         if proxyNickname == "" {
-            second = NSAttributedString(string: you, attributes: gray)
+            second = NSMutableAttributedString(string: you, attributes: gray)
         } else {
-            second = NSAttributedString(string: proxyNickname, attributes: blue)
+            second = NSMutableAttributedString(string: proxyNickname, attributes: blue)
         }
+        second.addAttributes(_size, range: NSRange(location: 0, length: second.length))
+        
         first.appendAttributedString(comma)
         first.appendAttributedString(second)
         return first
     }
 }
+
 
 extension String {
     func lastMessageWithTimestamp(interval: Double) -> String {

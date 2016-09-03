@@ -58,8 +58,13 @@ class ConvoViewController: JSQMessagesViewController {
         observeTyping()
     }
     
+    override func viewDidAppear(animated: Bool) {
+        self.tabBarController?.tabBar.hidden = true
+    }
+    
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(true)
+        self.tabBarController?.tabBar.hidden = false
         userTypingRef.removeValue()
     }
     
@@ -70,11 +75,13 @@ class ConvoViewController: JSQMessagesViewController {
     }
     
     func setTitle() {
-        if convo.convoNickname == "" {
-            navigationItem.title = convo.senderProxy + ", " + convo.receiverProxy
-        } else {
-            navigationItem.title = convo.convoNickname
-        }
+        let title = convoTitle(convo.convoNickname, proxyNickname: convo.proxyNickname, you: convo.senderProxy, them: convo.receiverProxy, size: 13, navBar: true)
+        let navLabel = UILabel()
+        navLabel.numberOfLines = 2
+        navLabel.textAlignment = .Center
+        navLabel.attributedText = title
+        navLabel.sizeToFit()
+        navigationItem.titleView = navLabel
     }
     
     func observeUnread() {
@@ -191,5 +198,14 @@ class ConvoViewController: JSQMessagesViewController {
     override func textViewDidChange(textView: UITextView) {
         super.textViewDidChange(textView)
         userTyping = textView.text != ""
+    }
+    
+    // MARK: - Text view
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == Constants.Segues.ConvoDetailSegue {
+            if let destination = segue.destinationViewController as? ConvoTableViewController {
+                destination.convo = convo
+            }
+        }
     }
 }

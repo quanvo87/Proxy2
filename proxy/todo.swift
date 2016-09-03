@@ -1,7 +1,4 @@
 /*
-
- make fill in proxy receiver fields highlight on entry
- check make proxy bug - creates proxy in /proxies on enter view but doesnt delete when canceling
  
  toggle photos/videos in chat
  data detection in chat
@@ -11,17 +8,18 @@
  
  profanity filter
  
- change time to match iMessage
- 
  add that meta data to users
  maybe fire streaks, hearts
  
- convo titles
+ convo titles***
  
  toggle sound
  
- when you go into a conversation, it always puts the current time at the very top of all messages
+ when you go into a conversation, it always puts the current time at the very top of all messages***
  
+ 
+ add the images
+ fanciest log in screen possible
  
  case 0:
  cell.textLabel?.text = "Messages Received"

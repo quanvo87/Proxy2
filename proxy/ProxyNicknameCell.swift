@@ -1,5 +1,5 @@
 //
-//  NicknameCell.swift
+//  ProxyNicknameCell.swift
 //  proxy
 //
 //  Created by Quan Vo on 9/1/16.
@@ -8,7 +8,7 @@
 
 import FirebaseDatabase
 
-class NicknameCell: UITableViewCell, UITextFieldDelegate {
+class ProxyNicknameCell: UITableViewCell, UITextFieldDelegate {
     
     let api = API.sharedInstance
     let ref = FIRDatabase.database().reference()

@@ -329,6 +329,9 @@ class API {
     
     func deleteProxy(proxy: Proxy, convos: [Convo]) {
         for convo in convos {
+            // dont remove this value, set a bool in members called 'present' to false
+            // and then check if both members are !present, if so, delete members/convo
+            // do this in another method
             ref.child("members").child(convo.key).child(proxy.name).removeValue()
             ref.child("convos").child(proxy.name).child(convo.key).removeValue()
         }

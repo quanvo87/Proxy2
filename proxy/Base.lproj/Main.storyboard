@@ -225,7 +225,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Nickname Cell" id="s7P-Q5-CIJ" customClass="NicknameCell" customModule="proxy" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Proxy Nickname Cell" id="s7P-Q5-CIJ" userLabel="Proxy Nickname Cell" customClass="ProxyNicknameCell" customModule="proxy" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="113.5" width="600" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="s7P-Q5-CIJ" id="TXp-25-yoX">
@@ -593,13 +593,45 @@
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="lV4-5P-yRn">
-                        <barButtonItem key="rightBarButtonItem" title="Info" id="74W-7L-v2G"/>
+                        <barButtonItem key="rightBarButtonItem" title="Info" id="74W-7L-v2G">
+                            <connections>
+                                <segue destination="tDx-Gg-0Dz" kind="show" identifier="Convo Detail Segue" id="UfL-v5-pR1"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4yJ-lU-NOK" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-1974" y="2186"/>
+        </scene>
+        <!--Convo Table View Controller-->
+        <scene sceneID="61i-Fd-DtT">
+            <objects>
+                <tableViewController id="tDx-Gg-0Dz" customClass="ConvoTableViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="HrI-JD-vKq">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Basic Cell" id="UwR-yi-rvz" customClass="BasicCell" customModule="proxy" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="92" width="600" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="UwR-yi-rvz" id="hGH-Dr-Fvr">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="tDx-Gg-0Dz" id="JaQ-W2-pun"/>
+                            <outlet property="delegate" destination="tDx-Gg-0Dz" id="nJu-sn-Kew"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="hfI-Qu-YGv" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1974" y="2898"/>
         </scene>
         <!--New Message View Controller-->
         <scene sceneID="0Gz-RR-aYh">

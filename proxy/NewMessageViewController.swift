@@ -189,6 +189,10 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
         numTextField.keyboardType = .NumbersAndPunctuation
     }
     
+    func textFieldDidBeginEditing(textField: UITextField) {
+        textField.selectedTextRange = textField.textRangeFromPosition(textField.beginningOfDocument, toPosition: textField.endOfDocument)
+    }
+    
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         let nextTag = textField.tag + 1
         if let nextResponder = textField.superview!.viewWithTag(nextTag){
