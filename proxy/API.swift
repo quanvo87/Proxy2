@@ -326,4 +326,25 @@ class API {
             return FIRTransactionResult.successWithValue(currentData)
         })
     }
+    
+    func deleteProxy(proxy: Proxy, convos: [Convo]) {
+        for convo in convos {
+            ref.child("members").child(convo.key).child(proxy.name).removeValue()
+            ref.child("convos").child(proxy.name).child(convo.key).removeValue()
+        }
+        
+        ref.child("proxies").child(proxy.name).removeValue()
+        ref.child("users").child(uid).child("proxies").child(proxy.name).removeValue()
+        
+        self.ref.child("users").child(uid).child("unread").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+            if let unread = currentData.value {
+                let _unread = unread as? Int ?? 0
+                if _unread != 0 {
+                    currentData.value = _unread - proxy.unread
+                }
+                return FIRTransactionResult.successWithValue(currentData)
+            }
+            return FIRTransactionResult.successWithValue(currentData)
+        })
+    }
 }

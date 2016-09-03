@@ -113,6 +113,11 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         return cell
     }
     
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    }
+    
     // MARK: - Select proxy view controller delegate
     
     func showNewConvo(convo: Convo) {

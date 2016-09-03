@@ -70,6 +70,10 @@ class ProxyTableViewController: UITableViewController, NewMessageViewControllerD
         })
     }
     
+    override func scrollViewWillBeginDragging(scrollView: UIScrollView) {
+        view.endEditing(true)
+    }
+    
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 3
     }
@@ -107,13 +111,13 @@ class ProxyTableViewController: UITableViewController, NewMessageViewControllerD
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         switch indexPath.section {
-        
+            
         case 0:
             let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.NicknameCell, forIndexPath: indexPath) as! NicknameCell
             switch indexPath.row {
             case 0:
                 cell.proxyAndConvo = (proxy, convos)
-                cell.selectionStyle = UITableViewCellSelectionStyle.None
+                cell.selectionStyle = .None
                 return cell
             default: break
             }
@@ -144,8 +148,30 @@ class ProxyTableViewController: UITableViewController, NewMessageViewControllerD
         return UITableViewCell()
     }
     
-    override func scrollViewWillBeginDragging(scrollView: UIScrollView) {
-        view.endEditing(true)
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        
+        switch indexPath.section {
+        case 1:
+            switch indexPath.row {
+            case 0:
+                confirmDelete()
+            default: return
+            }
+        default: return
+        }
+    }
+    
+    func confirmDelete() {
+        let alert = UIAlertController(title: "Delete Proxy?", message: "You will not be able to see this proxy or its conversations again. Other users are NOT notified.", preferredStyle: .Alert)
+        let deleteAction = UIAlertAction(title: "Delete", style: .Destructive, handler: { (void) in
+            self.api.deleteProxy(self.proxy, convos: self.convos)
+            self.navigationController?.popViewControllerAnimated(true)
+        })
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+        alert.addAction(deleteAction)
+        alert.addAction(cancelAction)
+        self.presentViewController(alert, animated: true, completion: nil)
     }
     
     // MARK: - Select proxy view controller delegate
