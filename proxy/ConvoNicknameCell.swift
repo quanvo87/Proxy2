@@ -58,7 +58,7 @@ class ConvoNicknameCell: UITableViewCell, UITextFieldDelegate {
         nicknameRef = ref.child("users").child(api.uid).child("convos").child(convo.key).child("convoNickname")
         nicknameRefHandle = nicknameRef.observeEventType(.Value, withBlock: { snapshot in
             if let nickname = snapshot.value as? String {
-                self.label.text = "\"\(nickname)\""
+                self.label.text = nickname
             }
         })
     }

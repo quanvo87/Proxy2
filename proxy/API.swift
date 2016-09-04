@@ -364,4 +364,17 @@ class API {
             // The convo saved by proxy
             "convos/\(convo.senderProxy)/\(convo.key)/convoNickname": nickname])
     }
+    
+    // Retrieve a proxy from its name. The proxy is passed back for the user
+    // to use on successful retrieval.
+    func getProxy(proxyName: String, completion: (success: Bool, proxy: Proxy) -> Void) {
+        ref.child("users").child(uid).child("proxies").queryOrderedByKey().queryEqualToValue(proxyName).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            if snapshot.childrenCount == 1 {
+                let proxy = Proxy(anyObject: snapshot.children.nextObject()!.value)
+                completion(success: true, proxy: proxy)
+            } else {
+                completion(success: false, proxy: Proxy())
+            }
+        })
+    }
 }

@@ -143,6 +143,7 @@ class ConvoTableViewController: UITableViewController {
         case 2:
             let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.BasicCell, forIndexPath: indexPath) as! BasicCell
             cell.textLabel?.attributedText = youTitle(convo.senderProxy, nickname: convo.proxyNickname)
+            cell.accessoryType = .DisclosureIndicator
             return cell
             
         default: break
@@ -154,17 +155,25 @@ class ConvoTableViewController: UITableViewController {
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
-        //        switch indexPath.section {
-        //        case 1:
-        //            switch indexPath.row {
-        //            case 0:
-        //                confirmDelete()
-        //            default: return
-        //            }
-        //        default: return
-        //        }
+        switch indexPath.section {
+        case 2:
+            goToProxy()
+        default: return
+        }
+    }
+    
+    // Request the proxy from the API. On successful callback, use it to push
+    // the proxy VC
+    func goToProxy() {
+        // Lock the UI
+        api.getProxy(convo.senderProxy) { (success, proxy) in
+            // Unlock the UI
+            if success {
+                // transition to proxy
+                let proxyTableViewController = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.ProxyTableViewController) as! ProxyTableViewController
+                proxyTableViewController.proxy = proxy
+                self.navigationController!.pushViewController(proxyTableViewController, animated: true)
+            }
+        }
     }
 }
-
-// set observer to convo nickname and change title accordingly
-// set observer for members to monitor when user changes their nickname

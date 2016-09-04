@@ -51,7 +51,7 @@ class ProxyNicknameCell: UITableViewCell, UITextFieldDelegate {
         nicknameRef = ref.child("users").child(api.uid).child("proxies").child(proxyAndConvo.proxy.name).child("nickname")
         nicknameRefHandle = nicknameRef.observeEventType(.Value, withBlock: { snapshot in
             if let nickname = snapshot.value as? String {
-                self.label.text = "\"\(nickname)\""
+                self.label.text = nickname
             }
         })
     }

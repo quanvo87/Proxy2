@@ -219,7 +219,7 @@
         <scene sceneID="rCS-hE-jUK">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kbI-pb-Q1g" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <tableViewController id="xly-gy-WjZ" userLabel="Proxy Table View Controller" customClass="ProxyTableViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="Proxy Table View Controller" id="xly-gy-WjZ" userLabel="Proxy Table View Controller" customClass="ProxyTableViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="NWT-vK-6RP">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
