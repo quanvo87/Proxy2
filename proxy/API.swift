@@ -95,8 +95,8 @@ class API {
             "/users/\(uid)/proxies/\(proxy.name)/nickname": nickname])
         for convo in convos {
             ref.updateChildValues([
-                "/members/\(convo.key)/\(proxy.name)/nickname": nickname,
-                "/users/\(uid)/convos/\(convo.key)/proxyNickname": nickname])
+                "/users/\(uid)/convos/\(convo.key)/proxyNickname": nickname,
+                "/convos/\(proxy.name)/\(convo.key)/proxyNickname": nickname])
         }
     }
     
@@ -231,18 +231,13 @@ class API {
         _senderProxy.timestamp = timestamp
         let proxyDict = _senderProxy.toAnyObject()
         
-        let senderMember = Member(owner: uid, name: _senderProxy.name, nickname: _senderProxy.nickname).toAnyObject()
-        let receiverMember = Member(owner: receiverProxy.owner, name: receiverProxy.name, nickname: receiverProxy.nickname).toAnyObject()
-        
         let update = [
             "/messages/\(convoKey)/\(messageKey)": message,
             "/users/\(uid)/convos/\(convoKey)": convoDict,
             "/convos/\(_senderProxy.name)/\(convoKey)": convoDict,
             "/users/\(receiverProxy.owner)/convos/\(convoKey)": receiverConvoDict,
             "/convos/\(receiverProxy.name)/\(convoKey)": receiverConvoDict,
-            "/users/\(uid)/proxies/\(_senderProxy.name)": proxyDict,
-            "/members/\(convoKey)/\(senderProxy.name)": senderMember,
-            "/members/\(convoKey)/\(receiverProxy.name)": receiverMember]
+            "/users/\(uid)/proxies/\(_senderProxy.name)": proxyDict]
         
         self.ref.updateChildValues(update, withCompletionBlock: { (error, ref) in
             if error != nil {
@@ -328,26 +323,45 @@ class API {
     }
     
     func deleteProxy(proxy: Proxy, convos: [Convo]) {
+        // Leave all the convos that this proxy is participating in
         for convo in convos {
-            // dont remove this value, set a bool in members called 'present' to false
-            // and then check if both members are !present, if so, delete members/convo
-            // do this in another method
-            ref.child("members").child(convo.key).child(proxy.name).removeValue()
-            ref.child("convos").child(proxy.name).child(convo.key).removeValue()
+            leaveConvo(proxy, convo: convo)
         }
         
+        // Delete the proxy from the global list of used proxies
         ref.child("proxies").child(proxy.name).removeValue()
-        ref.child("users").child(uid).child("proxies").child(proxy.name).removeValue()
         
+        // Delete the proxy from the user's node
+        ref.child("users").child(uid).child("proxies").child(proxy.name).removeValue()
+    }
+    
+    func leaveConvo(proxy: Proxy, convo: Convo) {
+        // Delete the convo in the user's node
+        ref.child("users").child(uid).child("convos").child(convo.key).removeValue()
+        
+        // Delete the convo in the convo/proxy node
+        ref.child("convos").child(proxy.name).child(convo.key).removeValue()
+        
+        // Decrement the user's global unread by the convo's unread
         self.ref.child("users").child(uid).child("unread").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
             if let unread = currentData.value {
                 let _unread = unread as? Int ?? 0
                 if _unread != 0 {
-                    currentData.value = _unread - proxy.unread
+                    currentData.value = _unread - convo.unread
                 }
                 return FIRTransactionResult.successWithValue(currentData)
             }
             return FIRTransactionResult.successWithValue(currentData)
         })
+    }
+    
+    // Update the convo's nickname in both the required places
+    func updateConvoNickname(convo: Convo, nickname: String) {
+        ref.updateChildValues([
+            // User's copy of convo
+            "users/\(uid)/convos/\(convo.key)/convoNickname": nickname,
+            
+            // The convo saved by proxy
+            "convos/\(convo.senderProxy)/\(convo.key)/convoNickname": nickname])
     }
 }

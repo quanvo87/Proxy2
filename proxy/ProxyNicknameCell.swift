@@ -29,7 +29,7 @@ class ProxyNicknameCell: UITableViewCell, UITextFieldDelegate {
         super.init(coder: aDecoder)!
         
         let blueAttr = [NSForegroundColorAttributeName: UIColor().blue()]
-        let placeholderText = NSAttributedString(string: "Tap to edit", attributes: blueAttr)
+        let placeholderText = NSAttributedString(string: "Tap to nickname this proxy", attributes: blueAttr)
         label.attributedPlaceholder = placeholderText
         label.textColor = UIColor().blue()
         label.returnKeyType = .Done
@@ -50,8 +50,8 @@ class ProxyNicknameCell: UITableViewCell, UITextFieldDelegate {
     func observeNickname() {
         nicknameRef = ref.child("users").child(api.uid).child("proxies").child(proxyAndConvo.proxy.name).child("nickname")
         nicknameRefHandle = nicknameRef.observeEventType(.Value, withBlock: { snapshot in
-            if let nickname = snapshot.value as? String where nickname != "" {
-                self.label.text = nickname
+            if let nickname = snapshot.value as? String {
+                self.label.text = "\"\(nickname)\""
             }
         })
     }

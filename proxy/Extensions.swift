@@ -7,6 +7,8 @@
 //
 
 extension UIViewController {
+    
+    // Generic alert controller for app
     func showAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .Alert)
         let dismissAction = UIAlertAction(title: "Ok", style: .Default, handler: nil)
@@ -14,6 +16,7 @@ extension UIViewController {
         self.presentViewController(alert, animated: true, completion: nil)
     }
     
+    // Produces titles for convos at difference places in the app
     func convoTitle(convoNickname: String, proxyNickname: String, you: String, them: String, size: CGFloat, navBar: Bool) -> NSAttributedString {
         let _size = [NSFontAttributeName: UIFont.systemFontOfSize(size)]
         let bold = [NSFontAttributeName: UIFont.boldSystemFontOfSize(size)]
@@ -23,7 +26,7 @@ extension UIViewController {
         var first: NSMutableAttributedString
         var second: NSMutableAttributedString
         
-        let _coma = navBar == true ? ",\n" : ", "
+        let _coma = navBar == true ? " &\n" : ", "
         let comma = NSAttributedString(string: _coma, attributes: _size)
         
         if convoNickname == "" {
@@ -43,6 +46,21 @@ extension UIViewController {
         first.appendAttributedString(comma)
         first.appendAttributedString(second)
         return first
+    }
+    
+    // Produces a title for the 'you' member
+    func youTitle(name: String, nickname: String) -> NSAttributedString {
+        let _name = NSMutableAttributedString(string: name)
+        if nickname == "" {
+            return _name
+        } else {
+            let blue = [NSForegroundColorAttributeName: UIColor().blue()]
+            let dash = NSAttributedString(string: " - ")
+            let _nickname = NSAttributedString(string: " \"\(nickname)\"", attributes: blue)
+            _name.appendAttributedString(dash)
+            _name.appendAttributedString(_nickname)
+            return _name
+        }
     }
 }
 

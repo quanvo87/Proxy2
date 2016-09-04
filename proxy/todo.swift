@@ -1,8 +1,11 @@
 /*
  
+ go to proxy view from convo info view
+ 
  toggle photos/videos in chat
  data detection in chat
  unread receipts
+ pull out time stamps?
  
  pull certain amount of data at a time, and pull more as needed
  
@@ -11,12 +14,11 @@
  add that meta data to users
  maybe fire streaks, hearts
  
- convo titles***
+ fancy convo titles
  
  toggle sound
  
- when you go into a conversation, it always puts the current time at the very top of all messages***
- 
+ recent list in new message
  
  add the images
  fanciest log in screen possible

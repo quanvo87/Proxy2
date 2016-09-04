@@ -86,7 +86,7 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
         
         // check if receiver exists
         let receiverName = first.lowercaseString + second.lowercaseString.capitalizedString + num
-        self.ref.child("proxies").queryOrderedByKey().queryEqualToValue(receiverName).observeSingleEventOfType(.Value, withBlock: { snapshot in
+        self.ref.child("proxies").queryOrderedByKey().queryEqualToValue(receiverName).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
             guard snapshot.hasChildren() else {
                 self.enableButtonsAndShowAlert("Receiving Proxy Not Found", message: "Perhaps there was a spelling error?")
                 return
@@ -100,7 +100,7 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
             }
             
             // check if existing convo between the proxies exists
-            self.ref.child("users").child(self.api.uid).child("convos").observeSingleEventOfType(.Value, withBlock: { snapshot in
+            self.ref.child("users").child(self.api.uid).child("convos").observeSingleEventOfType(.Value, withBlock: { (snapshot) in
                 
                 for child in snapshot.children {
                     let convo = Convo(anyObject: child.value)

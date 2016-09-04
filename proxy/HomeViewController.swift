@@ -44,7 +44,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     override func viewDidAppear(animated: Bool) {
-        self.tabBarController?.tabBar.hidden = false
+        super.viewDidAppear(true)
         
         if shouldShowConvo {
             let convoViewController = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.ConvoViewController) as! ConvoViewController
@@ -132,7 +132,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
             if let destination = segue.destinationViewController as? ConvoViewController,
                 let index = tableView.indexPathForSelectedRow?.row {
                 destination.convo = convos[index]
-//                destination.hidesBottomBarWhenPushed = true
+                destination.hidesBottomBarWhenPushed = true
             }
         default:
             return

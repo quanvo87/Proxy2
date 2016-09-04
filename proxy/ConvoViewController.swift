@@ -16,6 +16,12 @@ class ConvoViewController: JSQMessagesViewController {
     
     let ref = FIRDatabase.database().reference()
     
+    var nicknameRef = FIRDatabaseReference()
+    var nicknameRefHandle = FIRDatabaseHandle()
+    
+    var proxyRef = FIRDatabaseReference()
+    var proxyRefHandle = FIRDatabaseHandle()
+    
     var unreadRef = FIRDatabaseReference()
     var unreadRefHandle = FIRDatabaseHandle()
     
@@ -45,6 +51,8 @@ class ConvoViewController: JSQMessagesViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        navigationController!.view.backgroundColor = UIColor.whiteColor()
+        
         senderId = convo.senderId
         senderDisplayName = convo.senderProxy
         
@@ -52,6 +60,8 @@ class ConvoViewController: JSQMessagesViewController {
         collectionView!.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero
         
         setTitle()
+        observeNickname()
+        observeProxy()
         observeUnread()
         setUpBubbles()
         observeMessages()
@@ -59,6 +69,7 @@ class ConvoViewController: JSQMessagesViewController {
     }
     
     override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(true)
         self.tabBarController?.tabBar.hidden = true
     }
     
@@ -69,6 +80,9 @@ class ConvoViewController: JSQMessagesViewController {
     }
     
     deinit {
+        // Stop observing this node on deinit
+        nicknameRef.removeObserverWithHandle(nicknameRefHandle)
+        proxyRef.removeObserverWithHandle(proxyRefHandle)
         unreadRef.removeObserverWithHandle(unreadRefHandle)
         messagesRef.removeObserverWithHandle(messagesRefHandle)
         membersTypingRef.removeObserverWithHandle(membersTypingRefHandle)
@@ -82,6 +96,29 @@ class ConvoViewController: JSQMessagesViewController {
         navLabel.attributedText = title
         navLabel.sizeToFit()
         navigationItem.titleView = navLabel
+    }
+    
+    // Watch the database for nickname changes to this convo. When they happen,
+    // update the title of the view to reflect them.
+    func observeNickname() {
+        nicknameRef = ref.child("users").child(api.uid).child("convos").child(convo.key).child("convoNickname")
+        nicknameRefHandle = nicknameRef.observeEventType(.Value, withBlock: { snapshot in
+            if let nickname = snapshot.value as? String {
+                self.convo.convoNickname = nickname
+                self.setTitle()
+            }
+        })
+    }
+    
+    // Observe the user's proxy to keep note of changes and update the title
+    func observeProxy() {
+        proxyRef = ref.child("users").child(api.uid).child("proxies").child(convo.senderProxy).child("nickname")
+        proxyRefHandle = proxyRef.observeEventType(.Value, withBlock: { snapshot in
+            if let nickname = snapshot.value as? String {
+                self.convo.proxyNickname = nickname
+                self.setTitle()
+            }
+        })
     }
     
     func observeUnread() {
@@ -155,9 +192,6 @@ class ConvoViewController: JSQMessagesViewController {
     
     override func collectionView(collectionView: JSQMessagesCollectionView, attributedTextForCellTopLabelAtIndexPath indexPath: NSIndexPath) -> NSAttributedString? {
         let message = self.messages[indexPath.item]
-        if indexPath.item == 0 {
-            return JSQMessagesTimestampFormatter.sharedFormatter().attributedTimestampForDate(message.date)
-        }
         if indexPath.item - 1 > 0 {
             let prev = self.messages[indexPath.item - 1]
             
@@ -169,9 +203,6 @@ class ConvoViewController: JSQMessagesViewController {
     }
     
     override func collectionView(collectionView: JSQMessagesCollectionView, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout, heightForCellTopLabelAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        if indexPath.item == 0 {
-            return kJSQMessagesCollectionViewCellLabelHeightDefault
-        }
         if indexPath.item - 1 > 0 {
             let prev = self.messages[indexPath.item - 1]
             let message = self.messages[indexPath.item]
