@@ -1,7 +1,78 @@
 /*
  
  when leave convo, have to notify convo view to pop as well
- not sure what is happening when leave a convo
+ 
+ *****
+ 
+ when send message, always make sure to update the receiver's:
+    - convo
+    - proxy/convo
+    - proxy
+    - global unread
+ 
+ (unless they have blocked you. more on this later)
+ 
+ must account for the fact that he may have left the conversation. meaning his
+ convo and proxy/convo will not exist. must re-create them.
+ 
+ *****
+ 
+ when leave a convo, you delete your copy of it, and your proxy/convo copy of it
+ so it no longer shows up in your:
+    - conversations feed
+    - your proxy's feed in which it belonged.
+ 
+ your unread count for that proxy and globally is also decremented by any
+ remaning unread messages you had in that convo.
+ 
+ that user will be able to message you again (until you block them). when they
+ message you again, your convo and proxy/convo is re-created.
+ 
+ all previous messages from the conversation will still be there.
+ 
+ when both people leave a convo, both of their
+ 
+ 
+ 
+ 
+ 
+ 
+ *****
+ 
+ When a convo is created, it is given the key of its two proxy participants'
+ names, alphabetized and concatenated. Since proxy names are unique, and a proxy
+ cannot conversate with itself, this key will also be unique.
+ 
+ Since messages are located in
+    
+    /messages/convo.name/
+ 
+ messages persist through a conversation 'dying' (when both people leave the
+ convo).
+ 
+ *****
+ 
+ When a message is 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
  
  
  add freeze ui on proxy pull
