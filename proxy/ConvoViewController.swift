@@ -121,6 +121,18 @@ class ConvoViewController: JSQMessagesViewController {
         })
     }
     
+    /*
+     Reading A Convo
+     
+     Being inside a convo activates an observer that keeps track of the convo's
+     unread. So when entering a convo, you "read" all the messages in it, and
+     the unread counts for the convo (in both places), proxy, and your global 
+     unread are decremented by what was living in the unread count before you 
+     entered it. From here on out, as long as this view is alive, any continued
+     messages you receive in the convo will automatically be marked as read, and 
+     all corresponding unread values decremented accordingly. Make a call to the
+     API to do the decrementing.
+     */
     func observeUnread() {
         unreadRef = ref.child("users").child(convo.senderId).child("convos").child(convo.key).child("unread")
         unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in

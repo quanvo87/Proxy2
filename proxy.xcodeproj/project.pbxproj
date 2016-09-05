@@ -16,7 +16,7 @@
 		14383B191D73D8F50086CA6C /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14383B181D73D8F50086CA6C /* Message.swift */; };
 		14383B251D7555670086CA6C /* ConvoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14383B241D7555670086CA6C /* ConvoViewController.swift */; };
 		14383B271D755C300086CA6C /* NewMessageViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14383B261D755C300086CA6C /* NewMessageViewControllerDelegate.swift */; };
-		14383B291D75EA950086CA6C /* TODO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14383B281D75EA950086CA6C /* TODO.swift */; };
+		14383B291D75EA950086CA6C /* notes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14383B281D75EA950086CA6C /* notes.swift */; };
 		14383B2D1D78A7210086CA6C /* ProxyInfoTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14383B2C1D78A7210086CA6C /* ProxyInfoTableViewController.swift */; };
 		14383B541D791C7B0086CA6C /* ProxyNicknameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14383B531D791C7B0086CA6C /* ProxyNicknameCell.swift */; };
 		14383B5B1D7B0CB60086CA6C /* NSDate+NVTimeAgo.m in Sources */ = {isa = PBXBuildFile; fileRef = 14383B5A1D7B0CB60086CA6C /* NSDate+NVTimeAgo.m */; };
@@ -53,7 +53,7 @@
 		14383B181D73D8F50086CA6C /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		14383B241D7555670086CA6C /* ConvoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvoViewController.swift; sourceTree = "<group>"; };
 		14383B261D755C300086CA6C /* NewMessageViewControllerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewMessageViewControllerDelegate.swift; sourceTree = "<group>"; };
-		14383B281D75EA950086CA6C /* TODO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TODO.swift; path = proxy/TODO.swift; sourceTree = "<group>"; };
+		14383B281D75EA950086CA6C /* notes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = notes.swift; path = proxy/notes.swift; sourceTree = "<group>"; };
 		14383B2C1D78A7210086CA6C /* ProxyInfoTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyInfoTableViewController.swift; sourceTree = "<group>"; };
 		14383B531D791C7B0086CA6C /* ProxyNicknameCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyNicknameCell.swift; sourceTree = "<group>"; };
 		14383B591D7B0CB60086CA6C /* NSDate+NVTimeAgo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+NVTimeAgo.h"; sourceTree = "<group>"; };
@@ -197,7 +197,7 @@
 			isa = PBXGroup;
 			children = (
 				14E19A401D60EF100030B366 /* proxy */,
-				14383B281D75EA950086CA6C /* TODO.swift */,
+				14383B281D75EA950086CA6C /* notes.swift */,
 				9A83F3C766D4B654D2044BF6 /* Pods */,
 				F07A503573ADA0B0B8E01D98 /* Frameworks */,
 			);
@@ -412,7 +412,7 @@
 				14E19A421D60EF100030B366 /* AppDelegate.swift in Sources */,
 				14A6F1941D6CF1410015431E /* ProxyNameGenerator.swift in Sources */,
 				14A6F1A21D6FB5090015431E /* NewMessageViewController.swift in Sources */,
-				14383B291D75EA950086CA6C /* TODO.swift in Sources */,
+				14383B291D75EA950086CA6C /* notes.swift in Sources */,
 				14383B0F1D7341070086CA6C /* SelectProxyViewControllerDelegate.swift in Sources */,
 				14383B2D1D78A7210086CA6C /* ProxyInfoTableViewController.swift in Sources */,
 			);
