@@ -1,5 +1,5 @@
 //
-//  ProxyTableViewController.swift
+//  ProxyInfoTableViewController.swift
 //  proxy
 //
 //  Created by Quan Vo on 9/1/16.
@@ -8,7 +8,7 @@
 
 import FirebaseDatabase
 
-class ProxyTableViewController: UITableViewController, NewMessageViewControllerDelegate {
+class ProxyInfoTableViewController: UITableViewController, NewMessageViewControllerDelegate {
     
     var proxy = Proxy()
     let api = API.sharedInstance
@@ -26,7 +26,9 @@ class ProxyTableViewController: UITableViewController, NewMessageViewControllerD
         
         self.navigationItem.title = self.proxy.name
         
-        // These two help the tableView dynamically size cells based on contents
+        tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: Constants.Identifiers.BasicCell)
+        
+        // For dynamic cell heights
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 80
         
@@ -37,8 +39,12 @@ class ProxyTableViewController: UITableViewController, NewMessageViewControllerD
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(true)
         
+        // The convo VC needs to hide the tab bar in order for its text input
+        // bar to work, so we unhide it again here.
+        self.tabBarController?.tabBar.hidden = false
+        
         // Goes to the convo if returning to this view from just sending a
-        // new message.
+        // message.
         if shouldShowConvo {
             let convoViewController = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.ConvoViewController) as! ConvoViewController
             convoViewController.convo = convo
@@ -85,7 +91,7 @@ class ProxyTableViewController: UITableViewController, NewMessageViewControllerD
         view.endEditing(true)
     }
     
-    // MARK: - Table view
+    // MARK: - Table view delegate
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 3
@@ -110,7 +116,7 @@ class ProxyTableViewController: UITableViewController, NewMessageViewControllerD
     
     override func tableView(tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         switch section {
-        case 1: return "People are not notified when you delete your Proxy."
+        case 1: return "Users are not notified when you delete your Proxy."
         case 2:
             if convos.count == 0 {
                 return "No conversations yet. Start one with the 'New' button in the top right!"
@@ -120,6 +126,21 @@ class ProxyTableViewController: UITableViewController, NewMessageViewControllerD
         default: return nil
         }
     }
+    
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        switch indexPath.section {
+        case 1:
+            switch indexPath.row {
+            case 0:
+                confirmDelete()
+            default: return
+            }
+        default: return
+        }
+    }
+    
+    // MARK: - Table view data source
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
@@ -135,18 +156,20 @@ class ProxyTableViewController: UITableViewController, NewMessageViewControllerD
                 // Needed in order for text field inside a cell to work
                 cell.selectionStyle = .None
                 return cell
+                
             default: break
             }
             
         // The delete cell
         case 1:
-            let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.BasicCell, forIndexPath: indexPath) as! BasicCell
+            let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.BasicCell, forIndexPath: indexPath)
             switch indexPath.row {
             case 0:
                 cell.textLabel?.text = "Delete"
                 cell.textLabel?.textColor = UIColor.redColor()
                 cell.textLabel!.font = UIFont.systemFontOfSize(17, weight: UIFontWeightUltraLight)
                 return cell
+                
             default: break
             }
             
@@ -166,25 +189,11 @@ class ProxyTableViewController: UITableViewController, NewMessageViewControllerD
         return UITableViewCell()
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
-        
-        switch indexPath.section {
-        case 1:
-            switch indexPath.row {
-            case 0:
-                confirmDelete()
-            default: return
-            }
-        default: return
-        }
-    }
-    
     // If user confirms, make a call to the API to do the work to delete the 
     // proxy and then go back to the proxy browsing screen. This proxy will be
     // gone and inaccessible afterwards.
     func confirmDelete() {
-        let alert = UIAlertController(title: "Delete Proxy?", message: "You will not be able to see this proxy or its conversations again. Other users are NOT notified.", preferredStyle: .Alert)
+        let alert = UIAlertController(title: "Delete Proxy?", message: "You will not be able to see this proxy or its conversations again. Other users are not notified.", preferredStyle: .Alert)
         let deleteAction = UIAlertAction(title: "Delete", style: .Destructive, handler: { (void) in
             self.api.deleteProxy(self.proxy, convos: self.convos)
             self.navigationController?.popViewControllerAnimated(true)
@@ -211,15 +220,15 @@ class ProxyTableViewController: UITableViewController, NewMessageViewControllerD
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         switch segue.identifier! {
         case Constants.Segues.NewMessageSegue:
-            if let destination = segue.destinationViewController as? NewMessageViewController {
-                destination.delegate = self
-                destination.proxy = proxy
+            if let dest = segue.destinationViewController as? NewMessageViewController {
+                dest.delegate = self
+                dest.proxy = proxy
             }
         case Constants.Segues.ConvoSegue:
-            if let destination = segue.destinationViewController as? ConvoViewController,
+            if let dest = segue.destinationViewController as? ConvoViewController,
                 let index = tableView.indexPathForSelectedRow?.row {
-                destination.convo = convos[index]
-                destination.hidesBottomBarWhenPushed = true
+                dest.convo = convos[index]
+                dest.hidesBottomBarWhenPushed = true
             }
         default:
             return

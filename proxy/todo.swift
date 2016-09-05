@@ -1,6 +1,10 @@
 /*
  
- go to proxy view from convo info view
+ when leave convo, have to notify convo view to pop as well
+ not sure what is happening when leave a convo
+ 
+ 
+ add freeze ui on proxy pull
  
  toggle photos/videos in chat
  data detection in chat
@@ -22,6 +26,8 @@
  
  add the images
  fanciest log in screen possible
+ swipe/page libraries
+ fancy custom nav bar library
  
  case 0:
  cell.textLabel?.text = "Messages Received"

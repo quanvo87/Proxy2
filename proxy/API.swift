@@ -13,8 +13,6 @@ class API {
     
     static let sharedInstance = API()
     
-    var connectionStatusAlerter = ConnectionStatusAlerter()
-    
     var uid = ""
     let ref = FIRDatabase.database().reference()
     var proxiesRef = FIRDatabaseReference()
@@ -325,7 +323,7 @@ class API {
     func deleteProxy(proxy: Proxy, convos: [Convo]) {
         // Leave all the convos that this proxy is participating in
         for convo in convos {
-            leaveConvo(proxy, convo: convo)
+            leaveConvo(proxy.name, convo: convo)
         }
         
         // Delete the proxy from the global list of used proxies
@@ -335,12 +333,12 @@ class API {
         ref.child("users").child(uid).child("proxies").child(proxy.name).removeValue()
     }
     
-    func leaveConvo(proxy: Proxy, convo: Convo) {
+    func leaveConvo(proxyName: String, convo: Convo) {
         // Delete the convo in the user's node
         ref.child("users").child(uid).child("convos").child(convo.key).removeValue()
         
         // Delete the convo in the convo/proxy node
-        ref.child("convos").child(proxy.name).child(convo.key).removeValue()
+        ref.child("convos").child(proxyName).child(convo.key).removeValue()
         
         // Decrement the user's global unread by the convo's unread
         self.ref.child("users").child(uid).child("unread").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in

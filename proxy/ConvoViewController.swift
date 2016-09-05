@@ -234,8 +234,8 @@ class ConvoViewController: JSQMessagesViewController {
     // MARK: - Text view
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == Constants.Segues.ConvoDetailSegue {
-            if let destination = segue.destinationViewController as? ConvoTableViewController {
-                destination.convo = convo
+            if let dest = segue.destinationViewController as? ConvoInfoTableViewController {
+                dest.convo = convo
             }
         }
     }

@@ -58,8 +58,6 @@ class ProxiesViewController: UIViewController, UITableViewDataSource, UITableVie
         })
     }
     
-    // MARK: - Table view
-    
     func setUpTableView() {
         automaticallyAdjustsScrollViewInsets = false
         tableView.delegate = self
@@ -68,9 +66,17 @@ class ProxiesViewController: UIViewController, UITableViewDataSource, UITableVie
         tableView.estimatedRowHeight = 80
     }
     
+    // MARK: - Table view delegate
+    
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return proxies.count
     }
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    }
+    
+    // MARK: - Table view data source
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.ProxyCell, forIndexPath: indexPath) as! ProxyCell
@@ -83,17 +89,13 @@ class ProxiesViewController: UIViewController, UITableViewDataSource, UITableVie
         return cell
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
-    }
-    
     // MARK: - Navigation
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == Constants.Segues.ProxySegue,
-            let destination = segue.destinationViewController as? ProxyTableViewController,
+            let dest = segue.destinationViewController as? ProxyInfoTableViewController,
             index = tableView.indexPathForSelectedRow?.row {
-            destination.proxy = proxies[index]
+            dest.proxy = proxies[index]
         }
     }
 }

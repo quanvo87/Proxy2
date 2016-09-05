@@ -34,9 +34,9 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 self.observeUnread()
                 self.observeConvos()
             } else {
-                let logInViewController = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.LogInViewController) as! LogInViewController
+                let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.LogInViewController) as! LogInViewController
                 let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-                appDelegate.window?.rootViewController = logInViewController
+                appDelegate.window?.rootViewController = dest
             }
         }
         
@@ -47,12 +47,12 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         super.viewDidAppear(true)
         
         if shouldShowConvo {
-            let convoViewController = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.ConvoViewController) as! ConvoViewController
-            convoViewController.convo = convo
-            convoViewController.hidesBottomBarWhenPushed = true
+            let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.ConvoViewController) as! ConvoViewController
+            dest.convo = convo
+            dest.hidesBottomBarWhenPushed = true
             shouldShowConvo = false
             convo = Convo()
-            self.navigationController!.pushViewController(convoViewController, animated: true)
+            self.navigationController!.pushViewController(dest, animated: true)
         }
     }
     
@@ -125,14 +125,14 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         switch segue.identifier! {
         case Constants.Segues.NewMessageSegue:
-            if let destination = segue.destinationViewController as? NewMessageViewController {
-                destination.delegate = self
+            if let dest = segue.destinationViewController as? NewMessageViewController {
+                dest.delegate = self
             }
         case Constants.Segues.ConvoSegue:
-            if let destination = segue.destinationViewController as? ConvoViewController,
+            if let dest = segue.destinationViewController as? ConvoViewController,
                 let index = tableView.indexPathForSelectedRow?.row {
-                destination.convo = convos[index]
-                destination.hidesBottomBarWhenPushed = true
+                dest.convo = convos[index]
+                dest.hidesBottomBarWhenPushed = true
             }
         default:
             return
