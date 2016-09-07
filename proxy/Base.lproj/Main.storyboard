@@ -848,7 +848,7 @@
         <image name="Gold Pot" width="33" height="33"/>
         <image name="me-tab" width="33" height="33"/>
         <image name="messages-tab" width="25" height="25"/>
-        <image name="proxies-tab" width="35" height="35"/>
+        <image name="proxies-tab" width="25" height="25"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="fJc-BM-iTL"/>

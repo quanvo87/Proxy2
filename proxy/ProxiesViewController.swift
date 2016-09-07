@@ -59,16 +59,16 @@ class ProxiesViewController: UIViewController, UITableViewDataSource, UITableVie
     func addNavBarButtons() {
         // New Message Button
         let newMessageButton = UIButton(type: .Custom)
-        newMessageButton.setImage(UIImage(named: "new-message.pnj"), forState: UIControlState.Normal)
+        newMessageButton.setImage(UIImage(named: "new-message.png"), forState: UIControlState.Normal)
         newMessageButton.addTarget(self, action: #selector(ProxiesViewController.tapNewMessageButton), forControlEvents: UIControlEvents.TouchUpInside)
         newMessageButton.frame = CGRectMake(0, 0, 25, 25)
         let newMessageBarButton = UIBarButtonItem(customView: newMessageButton)
         
         // New Proxy Button
         let newProxyButton = UIButton(type: .Custom)
-        newProxyButton.setImage(UIImage(named: "new-proxy.pnj"), forState: UIControlState.Normal)
+        newProxyButton.setImage(UIImage(named: "new-proxy.png"), forState: UIControlState.Normal)
         newProxyButton.addTarget(self, action: #selector(ProxiesViewController.tapNewProxyButton), forControlEvents: UIControlEvents.TouchUpInside)
-        newProxyButton.frame = CGRectMake(0, 0, 28, 28)
+        newProxyButton.frame = CGRectMake(0, 0, 25, 25)
         let newProxyBarButton = UIBarButtonItem(customView: newProxyButton)
         
         self.navigationItem.rightBarButtonItems = [newMessageBarButton, newProxyBarButton]
@@ -85,14 +85,13 @@ class ProxiesViewController: UIViewController, UITableViewDataSource, UITableVie
     
     func observeProxies() {
         proxiesRef = ref.child("users").child(api.uid).child("proxies")
-        proxiesRefHandle = proxiesRef.queryOrderedByChild("timestamp").observeEventType(.Value, withBlock: { snapshot in
+        proxiesRefHandle = proxiesRef.queryOrderedByChild("name").observeEventType(.Value, withBlock: { snapshot in
             var proxies = [Proxy]()
             for child in snapshot.children {
-                var proxy = Proxy(anyObject: child.value)
-                proxy.unread = child.value["unread"] as? Int ?? 0
+                let proxy = Proxy(anyObject: child.value)
                 proxies.append(proxy)
             }
-            self.proxies = proxies.reverse()
+            self.proxies = proxies
             self.tableView.reloadData()
         })
     }
@@ -122,40 +121,17 @@ class ProxiesViewController: UIViewController, UITableViewDataSource, UITableVie
         let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.ProxyCell, forIndexPath: indexPath) as! ProxyCell
         let proxy = self.proxies[indexPath.row]
 
-        
-        
-        cell.iconImage.image = nil
         if let iconURL = self.api.iconURLCache[proxy.icon] {
             cell.iconImage.kf_setImageWithURL(NSURL(string: iconURL), placeholderImage: nil)
         } else {
             let storageRef = FIRStorage.storage().referenceForURL(Constants.URLs.Storage)
-            
-            // Create a reference to the file you want to download
             let starsRef = storageRef.child("\(proxy.icon).png")
-            // Fetch the download URL
             starsRef.downloadURLWithCompletion { (URL, error) -> Void in
-                if (error != nil) {
-                    // Handle any errors
-                    
-                } else {
+                if error == nil {
                     self.api.iconURLCache[proxy.icon] = URL?.absoluteString
                     cell.iconImage.kf_setImageWithURL(NSURL(string: URL!.absoluteString)!, placeholderImage: nil)
-                    // Get the download URL for 'images/stars.jpg'
-                    
                 }
             }
-            
-//            let islandRef = storageRef.child("\(proxy.icon).png")
-//            islandRef.dataWithMaxSize(1 * 1024 * 1024) { (data, error) -> Void in
-//                if error == nil, let icon = UIImage(data: data!) {
-//                    self.api.iconCache[proxy.icon] = icon
-//                    dispatch_async(dispatch_get_main_queue(), {
-//                        if let cellToUpdate = tableView.cellForRowAtIndexPath(indexPath) as? ProxyCell {
-//                            cellToUpdate.iconImage.image = icon
-//                        }
-//                    })
-//                }
-//            }
         }
         
         cell.titleLabel.text = proxy.name

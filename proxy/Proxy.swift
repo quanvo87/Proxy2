@@ -10,40 +10,35 @@ struct Proxy {
     
     let api = API.sharedInstance
     
+    var key = ""
     var owner = ""
-    var icon = ""
     var name = ""
+    var icon = ""
     var nickname = ""
-    var message = ""
-    var timestamp = NSDate().timeIntervalSince1970
-    var unread = 0
     
     init() {}
     
-    init(name: String) {
+    init(key: String, name: String) {
+        self.key = key
         self.owner = api.uid
         self.name = name
     }
     
     init(anyObject: AnyObject) {
+        self.key = anyObject["key"] as? String ?? ""
         self.owner = anyObject["owner"] as? String ?? ""
-        self.icon = anyObject["icon"] as? String ?? ""
         self.name = anyObject["name"] as? String ?? ""
+        self.icon = anyObject["icon"] as? String ?? ""
         self.nickname = anyObject["nickname"] as? String ?? ""
-        self.message = anyObject["message"] as? String ?? ""
-        self.timestamp = anyObject["timestamp"] as? Double ?? 0.0
-        self.unread = anyObject["unread"] as? Int ?? 0
     }
     
     func toAnyObject() -> AnyObject {
         return [
+            "key": key,
             "owner": owner,
-            "icon": icon,
             "name": name,
+            "icon": icon,
             "nickname": nickname,
-            "message": message,
-            "timestamp": timestamp,
-            "unread": unread
         ]
     }
 }

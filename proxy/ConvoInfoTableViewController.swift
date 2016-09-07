@@ -250,7 +250,7 @@ class ConvoInfoTableViewController: UITableViewController {
     // the proxy VC
     func goToProxy() {
         // Lock the UI
-        api.getProxy(convo.senderProxy) { (success, proxy) in
+        api.getProxyWithName(convo.senderProxy) { (success, proxy) in
             // Unlock the UI
             if success {
                 // transition to proxy

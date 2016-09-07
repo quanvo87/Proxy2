@@ -109,7 +109,11 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
                     let convo = Convo(anyObject: child.value)
                     if self.proxy.name == convo.senderProxy && receiverProxy.name == convo.receiverProxy {
                         self.api.sendMessage(convo, messageText: messageText, completion: { (success) -> Void in
-                            self.goToConvo(convo)
+                            if success {
+                                self.goToConvo(convo)
+                            } else {
+                                self.enableButtons()
+                            }
                         })
                         return
                     }

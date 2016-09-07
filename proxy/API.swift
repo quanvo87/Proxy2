@@ -9,13 +9,8 @@
 import FirebaseAuth
 import FirebaseDatabase
 
-// API that read/writes to Firebase for proxy.
 class API {
-    /*
-     - uid: Set when a user logs in. Used heavily throughout the app to build
-     URLs to read/write.
-     - ref: Reference to the root node of the database.
-     */
+    
     static let sharedInstance = API()
     
     let ref = FIRDatabase.database().reference()
@@ -38,14 +33,18 @@ class API {
         proxiesRef = self.ref.child("proxies")
     }
     
+    deinit {
+        iconsRef.removeObserverWithHandle(iconsRefHandle)
+    }
+    
     
     // MARK: - The Proxy
     
     
     // TODO: - Controllers that pull proxies must add checks to determine if they will display them
     
-    /*
-     Creating The Proxy
+    /**
+     # Creating The Proxy
      
      Proxies are unique handles that users use to communicate with each other. A
      user can create as many proxies as they want, and communicate to any other
@@ -60,22 +59,24 @@ class API {
      I'll figure this out later.
      
      *The possible proxies limit will grow drastically when I add verbs in
-     there -ing form to the list of adjectives (ie runningDog89). I don't know
+     their -ing form to the list of adjectives (ie runningDog89). I don't know
      the term for this I'm a CS major.
      
-     To create a proxy, we first must make sure the word bank is loaded. I am
-     currently hosting a JSON of the words at some JSON hosting site. If it's
-     not loaded, we load it then call create proxy again. If it's already
+     To create a proxy, we first must make sure the word bank is loaded. If it's
+     not, load it from the database, cache it, then proceed. If it's already
      loaded, we proceed as usual.
      
      The next step after that is to go ahead and create and write a proxy. Our
      ProxyNameGenerator struct handles the randomization for us. Once it's
      created, we request from the database all proxies with this name. Nodes are
-     indexed by name to help with search performance. If there is ony one, it
+     indexed by name to help with search performance. If there is only one, it
      will be the one you just created, and you can have that proxy. The
      appropriate controllers are notified. If there is more than one, you tried
      creating a proxy that already existed and we delete the one you just made
      and try again.
+     
+     In addition, proxies are given a random icon (actually a path to the icon
+     in our online storage) based on the icons the user has unlocked.
      */
     func createProxy() {
         creatingProxy = true
@@ -86,42 +87,31 @@ class API {
         }
     }
     
-    // Load the words from a JSON for the word generator to create a proxy.
-    // Upon successful load, we call tryCreateProxy to get things going if this
-    // was the first load.
+    /**
+     Load our word bank from our database, cache it, and then call
+     tryCreateProxy().
+     */
     func loadWords() {
-        let url = NSURL(string: "https://api.myjson.com/bins/4xqqn")!
-        let urlRequest = NSMutableURLRequest(URL: url)
-        let session = NSURLSession.sharedSession()
-        let task = session.dataTaskWithRequest(urlRequest) { data, response, error -> Void in
-            guard
-                let httpResponse = response as? NSHTTPURLResponse
-                where httpResponse.statusCode == 200 else {
-                    print(error?.localizedDescription)
-                    return
+        ref.child("wordbank").observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            if let words = snapshot.value, let adjectives = words["adjectives"], let nouns = words["nouns"] {
+                self.proxyNameGenerator.adjs = adjectives as! [String]
+                self.proxyNameGenerator.nouns = nouns as! [String]
+                self.wordsLoaded = true
+                self.tryCreateProxy()
             }
-            do {
-                let json = try NSJSONSerialization.JSONObjectWithData(data!, options: .AllowFragments)
-                if let adjs = json["adjectives"] as?[String], nouns = json["nouns"] as? [String] {
-                    self.proxyNameGenerator.adjs = adjs
-                    self.proxyNameGenerator.nouns = nouns
-                    self.wordsLoaded = true
-                    self.tryCreateProxy()
-                }
-            } catch let error as NSError {
-                print(error.localizedDescription)
-            }
-        }
-        task.resume()
+        })
     }
     
-    // Attempts to create a unique proxy. On failure, deletes the proxy it just
-    // created and tries again. Will exit if the user cancels the
-    // CreateNewProxy view.
+    /**
+     Attempts to create a unique proxy. On failure, deletes the proxy it just
+     created and tries again. Will exit if the user cancels the CreateNewProxy
+     view. Also assigns a random icon to the proxy.
+     */
     func tryCreateProxy() {
+        let key = ref.child("proxies").childByAutoId().key
         let name = proxyNameGenerator.generateProxyName()
-        var proxy = Proxy(name: name)
-        proxiesRef.child(name).setValue(proxy.toAnyObject())
+        var proxy = Proxy(key: key, name: name)
+        proxiesRef.child(key).setValue(proxy.toAnyObject())
         proxiesRef.queryOrderedByChild("name").queryEqualToValue(name).observeSingleEventOfType(.Value, withBlock: { snapshot in
             if snapshot.childrenCount == 1 {
                 self.creatingProxy = false
@@ -136,67 +126,62 @@ class API {
         })
     }
     
-    // Observe the icons the user has unlocked
+    /// Observe the icons the user has unlocked
     func observeIcons() {
         iconsRef = ref.child("users").child(uid).child("icons")
-        iconsRefHandle = iconsRef.queryOrderedByKey().observeEventType(.Value, withBlock: { (snapshot) in
+        iconsRefHandle = iconsRef.observeEventType(.Value, withBlock: { (snapshot) in
             if let icons = snapshot.value?.allKeys as? [String] {
                 self.icons = icons
             }
         })
     }
     
-    // Get a random icon from the user's available icons
+    /// Get a random icon path from the user's available icons
     func getRandomIcon() -> String {
         let count = UInt32(icons.count)
         return icons[Int(arc4random_uniform(count))]
     }
     
-    // We must be sure to delete the old proxy when we reroll for a new one
+    /// We must be sure to delete the old proxy when we reroll for a new one
     func rerollProxy(oldProxy: Proxy) {
         deleteProxy(oldProxy)
         createProxy()
     }
     
+    /// Deletes the proxy in the global proxy list
     func deleteProxy(proxy: Proxy) {
         proxiesRef.child(proxy.name).removeValue()
     }
     
-    // The creatingProxy Bool is there just in case the user taps back on the
-    // CreateNewProxy view while the API is currently trying to create a proxy
-    // for them. When creatingProxy is false, the proxy creation loop eventually
-    // stops.
+    /**
+     The creatingProxy Bool is there just in case the user taps cancel on the
+     CreateNewProxy view while the API is currently trying to create a proxy
+     for them. When creatingProxy is false, the proxy creation loop eventually
+     stops.
+     */
     func cancelCreateProxy(proxy: Proxy) {
         creatingProxy = false
         deleteProxy(proxy)
     }
     
-    // Save the proxy to the user node with a fresh timestamp. This gives the
-    // proxy a more up-to-date timestamp, because the user could have rolled the
-    // proxy and then sat on the screen for a while before tapping 'Create'.
+    /// Save the proxy to the user node with an updated nickname
     func saveProxyWithNickname(proxy: Proxy, nickname: String) {
-        let timestamp = NSDate().timeIntervalSince1970
         var _proxy = proxy
         _proxy.nickname = nickname
-        _proxy.timestamp = timestamp
-        ref.updateChildValues([
-            "/users/\(uid)/proxies/\(proxy.name)": _proxy.toAnyObject(),
-            "/proxies/\(proxy.name)/nickname": nickname,
-            "/proxies/\(proxy.name)/timestamp": timestamp])
+        ref.child("users").child(uid).child("proxies").child(proxy.key).setValue(_proxy.toAnyObject())
     }
-    
-    // This is called to update a proxy's nickname sometime after it's creation.
-    // We don't want to update the timestamp because the nickname update doesn't
-    // need to be an event that triggers the proxy being displayed more
-    // recently.
+
+    /// Update the proxy's nickname in the required places
     func updateProxyNickname(proxy: Proxy, convos: [Convo], nickname: String) {
-        ref.updateChildValues([
-            "/proxies/\(proxy.name)/nickname": nickname,
-            "/users/\(uid)/proxies/\(proxy.name)/nickname": nickname])
+        
+        /// In the user's node
+        ref.child("users").child(uid).child("proxies").child(proxy.key).child("nickname").setValue(nickname)
+        
+        /// For each convo the proxy is in
         for convo in convos {
             ref.updateChildValues([
                 "/users/\(uid)/convos/\(convo.key)/proxyNickname": nickname,
-                "/convos/\(proxy.name)/\(convo.key)/proxyNickname": nickname])
+                "/convos/\(proxy.key)/\(convo.key)/proxyNickname": nickname])
         }
     }
     
@@ -230,20 +215,20 @@ class API {
     func deleteProxy(proxy: Proxy, convos: [Convo]) {
         // Leave all the convos that this proxy is participating in
         for convo in convos {
-            leaveConvo(proxy.name, convo: convo)
+            leaveConvo(proxy.key, convo: convo)
         }
         
         // Delete the proxy from the global list of used proxies
-        ref.child("proxies").child(proxy.name).removeValue()
+        ref.child("proxies").child(proxy.key).removeValue()
         
         // Delete the proxy from the user's node
-        ref.child("users").child(uid).child("proxies").child(proxy.name).removeValue()
+        ref.child("users").child(uid).child("proxies").child(proxy.key).removeValue()
     }
     
     // Retrieve a user's proxy from its name. The proxy is passed back to the
     // user upon success.
-    func getProxy(proxyName: String, completion: (success: Bool, proxy: Proxy) -> Void) {
-        ref.child("users").child(uid).child("proxies").queryOrderedByKey().queryEqualToValue(proxyName).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+    func getProxyWithName(name: String, completion: (success: Bool, proxy: Proxy) -> Void) {
+        ref.child("users").child(uid).child("proxies").queryOrderedByChild("name").queryEqualToValue(name).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
             if snapshot.childrenCount == 1 {
                 let proxy = Proxy(anyObject: snapshot.children.nextObject()!.value)
                 completion(success: true, proxy: proxy)
@@ -258,7 +243,7 @@ class API {
     
     
     /*
-     Sending The First Message Between Two Proxies
+     # Sending The First Message Between Two Proxies
      
      When sending a message, if we do not know if a conversation exists betweeen
      the two proxies (because the sender sent it from the 'New Message' view, we
@@ -278,15 +263,12 @@ class API {
      
      These all get set at this point.
      
-     The convo's key in the database is the two proxys' names alphebatized and
-     concatenated.
-     
      We now pull the receiver's users/uid/blocked and see if we the sender's uid
      is on that list. If so, set the receiver's convos' 'blocked' to true.
      
      We can now save all this data atomically in a block.
      
-     Then send it off our senderProxy and messageText to our normal messaging
+     Then send it off our to senderProxy and messageText to our normal messaging
      function to finish the job.
      
      In addition, we increment both user's 'Proxies Interacted With'.
@@ -306,32 +288,30 @@ class API {
         
         convo.key = convoKey
         convo.senderId = uid
-        convo.senderProxy = _senderProxy.name
+        convo.senderProxy = _senderProxy.key
         convo.receiverId = receiverProxy.owner
-        convo.receiverProxy = receiverProxy.name
+        convo.receiverProxy = receiverProxy.key
         convo.message = messageText
         convo.timestamp = timestamp
         let convoDict = convo.toAnyObject()
         
         receiverConvo = convo
         receiverConvo.senderId = receiverProxy.owner
-        receiverConvo.senderProxy = receiverProxy.name
+        receiverConvo.senderProxy = receiverProxy.key
         receiverConvo.receiverId = uid
-        receiverConvo.receiverProxy = _senderProxy.name
+        receiverConvo.receiverProxy = _senderProxy.key
         receiverConvo.unread = 1
         let receiverConvoDict = receiverConvo.toAnyObject()
         
-        _senderProxy.message = messageText
-        _senderProxy.timestamp = timestamp
         let proxyDict = _senderProxy.toAnyObject()
         
         let update = [
             "/messages/\(convoKey)/\(messageKey)": message,
             "/users/\(uid)/convos/\(convoKey)": convoDict,
-            "/convos/\(_senderProxy.name)/\(convoKey)": convoDict,
+            "/convos/\(_senderProxy.key)/\(convoKey)": convoDict,
             "/users/\(receiverProxy.owner)/convos/\(convoKey)": receiverConvoDict,
-            "/convos/\(receiverProxy.name)/\(convoKey)": receiverConvoDict,
-            "/users/\(uid)/proxies/\(_senderProxy.name)": proxyDict]
+            "/convos/\(receiverProxy.key)/\(convoKey)": receiverConvoDict,
+            "/users/\(uid)/proxies/\(_senderProxy.key)": proxyDict]
         
         self.ref.updateChildValues(update, withCompletionBlock: { (error, ref) in
             if error != nil {
@@ -350,7 +330,7 @@ class API {
             })
             
             // receiver proxy unread
-            self.ref.child("users").child(receiverProxy.owner).child("proxies").child(receiverProxy.name).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+            self.ref.child("users").child(receiverProxy.owner).child("proxies").child(receiverProxy.key).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
                 if var proxy = currentData.value as? [String: AnyObject] {
                     let unread = proxy["unread"] as? Int ?? 0
                     proxy["unread"] = unread + 1
@@ -647,8 +627,7 @@ class API {
      You can unblock users, and when this happens, loop through all your convos,
      if the receiverId matches the userId you unblocked, set that convo's
      'blocked' to false, for both copies of your convo. Then increment your
-     proxy for that convo's unread and your global unread by that convo's
-     unread.
+     your global unread by that convo's unread.
      
      Then delete that user's entry in your /blocked/uid/blockedUserId.
      */
