@@ -58,6 +58,7 @@ PODS:
   - JSQMessagesViewController (7.3.4):
     - JSQSystemSoundPlayer (~> 2.0.1)
   - JSQSystemSoundPlayer (2.0.1)
+  - Kingfisher (2.4.3)
 
 DEPENDENCIES:
   - FacebookCore
@@ -67,6 +68,7 @@ DEPENDENCIES:
   - Firebase/Storage
   - FirebaseAuth
   - JSQMessagesViewController
+  - Kingfisher
 
 SPEC CHECKSUMS:
   Bolts: 8a7995239dbe724f9cba2248b766d48b7ebdd322
@@ -87,7 +89,8 @@ SPEC CHECKSUMS:
   GoogleUtilities: 56c5ac05b7aa5dc417a1bb85221a9516e04d7032
   JSQMessagesViewController: 39fed975e3c9f8eba7292071e29eeb541d105e66
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
+  Kingfisher: 322a9c1c5b03212c1e741d6bece72d387b01a77a
 
-PODFILE CHECKSUM: 3cdf0ecfa674e58edac3ff536aafca8bbc091d08
+PODFILE CHECKSUM: f8e4030a07efd67e1eab34763cc181519492073e
 
 COCOAPODS: 1.0.1

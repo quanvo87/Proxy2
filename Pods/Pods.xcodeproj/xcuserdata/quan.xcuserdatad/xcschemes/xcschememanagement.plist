@@ -39,6 +39,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>Kingfisher.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Pods-proxy.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -48,11 +53,6 @@
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
 		<key>1ED4DFAAD25E1999D0244868457A351E</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>20067CD23F4DB77852F1933F6E55FF62</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -82,7 +82,17 @@
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>D412E517D262FF74FEB2D1F45E074A8D</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>DB8CB83631B4029238A634161894D539</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>E96E13C4D3B5B5FC0651440734C2BF4D</key>
 		<dict>
 			<key>primary</key>
 			<true/>

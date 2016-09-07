@@ -121,23 +121,41 @@ class ProxiesViewController: UIViewController, UITableViewDataSource, UITableVie
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.ProxyCell, forIndexPath: indexPath) as! ProxyCell
         let proxy = self.proxies[indexPath.row]
+
+        
         
         cell.iconImage.image = nil
-        if let icon = self.api.iconCache[proxy.icon] {
-            cell.imageView?.image = icon
+        if let iconURL = self.api.iconURLCache[proxy.icon] {
+            cell.iconImage.kf_setImageWithURL(NSURL(string: iconURL), placeholderImage: nil)
         } else {
-            let storageRef = FIRStorage.storage().referenceForURL("gs://proxy-98b45.appspot.com")
-            let islandRef = storageRef.child("\(proxy.icon).png")
-            islandRef.dataWithMaxSize(1 * 1024 * 1024) { (data, error) -> Void in
-                if error == nil, let icon = UIImage(data: data!) {
-                    self.api.iconCache[proxy.icon] = icon
-                    dispatch_async(dispatch_get_main_queue(), {
-                        if let cellToUpdate = tableView.cellForRowAtIndexPath(indexPath) as? ProxyCell {
-                            cellToUpdate.iconImage.image = icon
-                        }
-                    })
+            let storageRef = FIRStorage.storage().referenceForURL(Constants.URLs.Storage)
+            
+            // Create a reference to the file you want to download
+            let starsRef = storageRef.child("\(proxy.icon).png")
+            // Fetch the download URL
+            starsRef.downloadURLWithCompletion { (URL, error) -> Void in
+                if (error != nil) {
+                    // Handle any errors
+                    
+                } else {
+                    self.api.iconURLCache[proxy.icon] = URL?.absoluteString
+                    cell.iconImage.kf_setImageWithURL(NSURL(string: URL!.absoluteString)!, placeholderImage: nil)
+                    // Get the download URL for 'images/stars.jpg'
+                    
                 }
             }
+            
+//            let islandRef = storageRef.child("\(proxy.icon).png")
+//            islandRef.dataWithMaxSize(1 * 1024 * 1024) { (data, error) -> Void in
+//                if error == nil, let icon = UIImage(data: data!) {
+//                    self.api.iconCache[proxy.icon] = icon
+//                    dispatch_async(dispatch_get_main_queue(), {
+//                        if let cellToUpdate = tableView.cellForRowAtIndexPath(indexPath) as? ProxyCell {
+//                            cellToUpdate.iconImage.image = icon
+//                        }
+//                    })
+//                }
+//            }
         }
         
         cell.titleLabel.text = proxy.name

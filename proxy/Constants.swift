@@ -8,6 +8,10 @@
 
 struct Constants {
     
+    struct URLs {
+        static let Storage = "gs://proxy-98b45.appspot.com"
+    }
+    
     struct ChatOptions {
         static let TimestampInterval = 15.0
     }

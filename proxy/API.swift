@@ -26,7 +26,7 @@ class API {
     var wordsLoaded = false
     var creatingProxy = false
     var icons = [String]()
-    var iconCache = [String: UIImage]()
+    var iconURLCache = [String: String]()
     
     var uid: String = "" {
         didSet {
@@ -140,7 +140,9 @@ class API {
     func observeIcons() {
         iconsRef = ref.child("users").child(uid).child("icons")
         iconsRefHandle = iconsRef.queryOrderedByKey().observeEventType(.Value, withBlock: { (snapshot) in
-            self.icons = snapshot.value?.allKeys as! [String]
+            if let icons = snapshot.value?.allKeys as? [String] {
+                self.icons = icons
+            }
         })
     }
     
