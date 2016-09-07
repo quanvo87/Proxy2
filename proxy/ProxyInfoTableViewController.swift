@@ -219,11 +219,6 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     // message or going into an exisiting one from this VC.
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         switch segue.identifier! {
-        case Constants.Segues.NewMessageSegue:
-            if let dest = segue.destinationViewController as? NewMessageViewController {
-                dest.delegate = self
-                dest.proxy = proxy
-            }
         case Constants.Segues.ConvoSegue:
             if let dest = segue.destinationViewController as? ConvoViewController,
                 let index = tableView.indexPathForSelectedRow?.row {

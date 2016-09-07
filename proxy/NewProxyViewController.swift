@@ -10,8 +10,6 @@ class NewProxyViewController: UIViewController, UITextFieldDelegate {
     
     let api = API.sharedInstance
     var proxy = Proxy()
-    var createdNewProxy = false
-    var savingProxy = false
     
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var nicknameTextField: UITextField!
@@ -32,9 +30,6 @@ class NewProxyViewController: UIViewController, UITextFieldDelegate {
     
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
-        if createdNewProxy && !savingProxy {
-            api.cancelCreateProxy(proxy)
-        }
     }
     
     func setUpUI() {
@@ -48,7 +43,6 @@ class NewProxyViewController: UIViewController, UITextFieldDelegate {
         let userInfo = notification.userInfo as! [String: AnyObject]
         proxy = Proxy(anyObject: userInfo["proxy"]!)
         nameLabel.text = proxy.name
-        createdNewProxy = true
         enableButtons()
     }
     
@@ -63,9 +57,8 @@ class NewProxyViewController: UIViewController, UITextFieldDelegate {
     
     func saveProxy() {
         disableButtons()
-        savingProxy = true
         api.saveProxyWithNickname(proxy, nickname: nicknameTextField.text!)
-        navigationController?.popViewControllerAnimated(true)
+        dismissViewControllerAnimated(true, completion: nil)
     }
     
     func disableButtons() {
@@ -102,5 +95,13 @@ class NewProxyViewController: UIViewController, UITextFieldDelegate {
         UIView.animateWithDuration(0.1, animations: { () -> Void in
             self.bottomConstraint.constant = keyboardFrame.size.height
         })
+    }
+    
+    // MARK: - Navigation
+    
+    @IBAction func tapCancelButton(sender: AnyObject) {
+        view.endEditing(true)
+        api.cancelCreateProxy(proxy)
+        dismissViewControllerAnimated(true, completion: nil)
     }
 }

@@ -26,9 +26,10 @@ class ConvoInfoTableViewController: UITableViewController {
         
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: Constants.Identifiers.BasicCell)
         
-        setTitle()
-        observeNickname()
-        observeProxy()
+        navigationItem.title = "Conversation"
+//        setTitle()
+//        observeNickname()
+//        observeProxy()
     }
     
     override func viewDidAppear(animated: Bool) {

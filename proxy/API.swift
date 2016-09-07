@@ -18,12 +18,21 @@ class API {
      */
     static let sharedInstance = API()
     
-    var uid = ""
     let ref = FIRDatabase.database().reference()
     var proxiesRef = FIRDatabaseReference()
+    var iconsRef = FIRDatabaseReference()
+    var iconsRefHandle = FIRDatabaseHandle()
     var proxyNameGenerator = ProxyNameGenerator()
     var wordsLoaded = false
     var creatingProxy = false
+    var icons = [String]()
+    var iconCache = [String: UIImage]()
+    
+    var uid: String = "" {
+        didSet {
+            observeIcons()
+        }
+    }
     
     private init() {
         proxiesRef = self.ref.child("proxies")
@@ -111,11 +120,12 @@ class API {
     // CreateNewProxy view.
     func tryCreateProxy() {
         let name = proxyNameGenerator.generateProxyName()
-        let proxy = Proxy(name: name)
+        var proxy = Proxy(name: name)
         proxiesRef.child(name).setValue(proxy.toAnyObject())
         proxiesRef.queryOrderedByChild("name").queryEqualToValue(name).observeSingleEventOfType(.Value, withBlock: { snapshot in
             if snapshot.childrenCount == 1 {
                 self.creatingProxy = false
+                proxy.icon = self.getRandomIcon()
                 NSNotificationCenter.defaultCenter().postNotificationName(Constants.NotificationKeys.ProxyCreated, object: self, userInfo: ["proxy": proxy.toAnyObject()])
             } else {
                 self.deleteProxy(proxy)
@@ -126,14 +136,26 @@ class API {
         })
     }
     
+    // Observe the icons the user has unlocked
+    func observeIcons() {
+        iconsRef = ref.child("users").child(uid).child("icons")
+        iconsRefHandle = iconsRef.queryOrderedByKey().observeEventType(.Value, withBlock: { (snapshot) in
+            self.icons = snapshot.value?.allKeys as! [String]
+        })
+    }
+    
+    // Get a random icon from the user's available icons
+    func getRandomIcon() -> String {
+        let count = UInt32(icons.count)
+        return icons[Int(arc4random_uniform(count))]
+    }
+    
     // We must be sure to delete the old proxy when we reroll for a new one
     func rerollProxy(oldProxy: Proxy) {
         deleteProxy(oldProxy)
         createProxy()
     }
     
-    // We only need to delete the proxy on the global proxies node. It has not
-    // been saved to the user node at this point.
     func deleteProxy(proxy: Proxy) {
         proxiesRef.child(proxy.name).removeValue()
     }

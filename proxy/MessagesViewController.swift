@@ -1,5 +1,5 @@
 //
-//  HomeViewController.swift
+//  MessagesViewController.swift
 //  proxy
 //
 //  Created by Quan Vo on 8/25/16.
@@ -9,7 +9,7 @@
 import FirebaseAuth
 import FirebaseDatabase
 
-class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, NewMessageViewControllerDelegate {
+class MessagesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, NewMessageViewControllerDelegate {
     
     let api = API.sharedInstance
     let ref = FIRDatabase.database().reference()
@@ -21,12 +21,13 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     var convo = Convo()
     var shouldShowConvo = false
     
+    @IBOutlet weak var newMessageButton: UIBarButtonItem!
     @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationItem.title = "Home"
+        setUpUI()
         
         FIRAuth.auth()?.addAuthStateDidChangeListener { auth, user in
             if let user = user {
@@ -61,11 +62,38 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         unreadRef.removeObserverWithHandle(unreadRefHandle)
     }
     
+    // MARK: - UI
+    
+    func setUpUI() {
+        title = "Messages"
+        addNavBarButtons()
+    }
+    
+    func addNavBarButtons() {
+        // New Message Button
+        let newMessageButton = UIButton(type: .Custom)
+        newMessageButton.setImage(UIImage(named: "new-message.pnj"), forState: UIControlState.Normal)
+        newMessageButton.addTarget(self, action: #selector(MessagesViewController.tapNewMessageButton), forControlEvents: UIControlEvents.TouchUpInside)
+        newMessageButton.frame = CGRectMake(0, 0, 25, 25)
+        let newMessageBarButton = UIBarButtonItem(customView: newMessageButton)
+        
+        // New Proxy Button
+        let newProxyButton = UIButton(type: .Custom)
+        newProxyButton.setImage(UIImage(named: "new-proxy.pnj"), forState: UIControlState.Normal)
+        newProxyButton.addTarget(self, action: #selector(MessagesViewController.tapNewProxyButton), forControlEvents: UIControlEvents.TouchUpInside)
+        newProxyButton.frame = CGRectMake(0, 0, 28, 28)
+        let newProxyBarButton = UIBarButtonItem(customView: newProxyButton)
+        
+        self.navigationItem.rightBarButtonItems = [newMessageBarButton, newProxyBarButton]
+    }
+    
+    // MARK: - Database
+    
     func observeUnread() {
         unreadRef = ref.child("users").child(api.uid).child("unread")
         unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
             if let unread = snapshot.value as? Int {
-                self.title = "Home \(unread.unreadTitleSuffix())"
+                self.title = "Messages \(unread.unreadTitleSuffix())"
             }
         })
     }
@@ -87,11 +115,12 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     // MARK: - Table view
     
     func setUpTableView() {
-        automaticallyAdjustsScrollViewInsets = false
-        tableView.dataSource = self
         tableView.delegate = self
-        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.dataSource = self
+        automaticallyAdjustsScrollViewInsets = false
+        tableView.rowHeight = 80
         tableView.estimatedRowHeight = 80
+        tableView.separatorStyle = .None
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -101,13 +130,12 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.ProxyCell, forIndexPath: indexPath) as! ProxyCell
         let convo = self.convos[indexPath.row]
-        cell.titleLabel.attributedText = convoTitle(convo.convoNickname, proxyNickname: convo.proxyNickname, you: convo.senderProxy, them: convo.receiverProxy, size: 13, navBar: false)
+        cell.titleLabel.text = convo.receiverProxy
         cell.timestampLabel.text = convo.timestamp.timeAgoFromTimeInterval()
         cell.messageLabel.text = convo.message
-        cell.unreadLabel.text = convo.unread.unreadFormatted()
+        cell.accessoryType = .None
         return cell
     }
-    
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
@@ -122,12 +150,23 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     // MARK: - Navigation
     
+    func tapNewMessageButton() {
+        let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.NewMessageViewController) as! NewMessageViewController
+        dest.delegate = self
+        let nav = UINavigationController.init(rootViewController: dest)
+        nav.modalTransitionStyle = .CoverVertical
+        presentViewController(nav, animated: true, completion: nil)
+    }
+    
+    func tapNewProxyButton() {
+        let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.NewProxyViewController) as! NewProxyViewController
+        let nav = UINavigationController.init(rootViewController: dest)
+        nav.modalTransitionStyle = .CoverVertical
+        presentViewController(nav, animated: true, completion: nil)
+    }
+    
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         switch segue.identifier! {
-        case Constants.Segues.NewMessageSegue:
-            if let dest = segue.destinationViewController as? NewMessageViewController {
-                dest.delegate = self
-            }
         case Constants.Segues.ConvoSegue:
             if let dest = segue.destinationViewController as? ConvoViewController,
                 let index = tableView.indexPathForSelectedRow?.row {

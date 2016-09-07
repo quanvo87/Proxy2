@@ -29,24 +29,27 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationItem.title = "New Message"
+        setUpUI()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(NewMessageViewController.keyboardWillShow), name:UIKeyboardWillShowNotification, object: self.view.window)
         NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(NewMessageViewController.proxyCreated), name: Constants.NotificationKeys.ProxyCreated, object: nil)
         
-        setUp()
+        setDefaultProxy()
         setUpTextField()
         setUpTextView()
     }
     
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
-        if createdNewProxy && !savingNewProxy {
-            api.cancelCreateProxy(proxy)
-        }
     }
     
-    func setUp() {
+    // MARK: - UI
+    
+    func setUpUI() {
+        navigationItem.title = "New Message"
+    }
+    
+    func setDefaultProxy() {
         if proxy.name != "" {
             selectProxy(proxy)
         }
@@ -223,6 +226,14 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
     
     // MARK: - Navigation
     
+    @IBAction func tapCancelButton(sender: AnyObject) {
+        view.endEditing(true)
+        if createdNewProxy && !savingNewProxy {
+            api.cancelCreateProxy(proxy)
+        }
+        dismissViewControllerAnimated(true, completion: nil)
+    }
+    
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == Constants.Segues.SelectProxySegue,
             let dest = segue.destinationViewController as? SelectProxyViewController {
@@ -232,6 +243,6 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
     
     func goToConvo(convo: Convo) {
         delegate.showNewConvo(convo)
-        navigationController?.popViewControllerAnimated(true)
+        dismissViewControllerAnimated(true, completion: nil)
     }
 }

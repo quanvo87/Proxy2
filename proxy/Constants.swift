@@ -15,6 +15,8 @@ struct Constants {
     struct Identifiers {
         static let TabBarController = "Tab Bar Controller"
         static let LogInViewController = "Log In View Controller"
+        static let NewMessageViewController = "New Message View Controller"
+        static let NewProxyViewController = "New Proxy View Controller"
         static let ProxyInfoTableViewController = "Proxy Info Table View Controller"
         static let ConvoViewController = "Convo View Controller"
         static let ProxyCell = "Proxy Cell"

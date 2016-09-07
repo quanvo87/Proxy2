@@ -59,9 +59,10 @@ class ConvoViewController: JSQMessagesViewController {
         collectionView!.collectionViewLayout.incomingAvatarViewSize = CGSizeZero
         collectionView!.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero
         
-        setTitle()
-        observeNickname()
-        observeProxy()
+        navigationItem.title = convo.receiverProxy
+//        setTitle()
+//        observeNickname()
+//        observeProxy()
         observeUnread()
         setUpBubbles()
         observeMessages()

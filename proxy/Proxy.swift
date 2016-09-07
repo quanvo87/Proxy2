@@ -11,6 +11,7 @@ struct Proxy {
     let api = API.sharedInstance
     
     var owner = ""
+    var icon = ""
     var name = ""
     var nickname = ""
     var message = ""
@@ -26,6 +27,7 @@ struct Proxy {
     
     init(anyObject: AnyObject) {
         self.owner = anyObject["owner"] as? String ?? ""
+        self.icon = anyObject["icon"] as? String ?? ""
         self.name = anyObject["name"] as? String ?? ""
         self.nickname = anyObject["nickname"] as? String ?? ""
         self.message = anyObject["message"] as? String ?? ""
@@ -36,6 +38,7 @@ struct Proxy {
     func toAnyObject() -> AnyObject {
         return [
             "owner": owner,
+            "icon": icon,
             "name": name,
             "nickname": nickname,
             "message": message,

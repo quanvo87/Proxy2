@@ -75,7 +75,31 @@ class LogInViewController: UIViewController {
                     self.showAlert("Error Setting Display Name For User", message: error.localizedDescription)
                     return
                 }
-                self.ref.child("users").child((user?.uid)!).setValue(["username": user!.displayName!, "unread": 0])
+                let uid = user!.uid
+                self.ref.child("users").child(uid).setValue(["username": user!.displayName!])
+                
+                // Give user access to the default icons
+                let icons = [
+                    "/users/\(uid)/icons/Astronaut Helmet-40": true,
+                    "/users/\(uid)/icons/Badminton-40": true,
+                    "/users/\(uid)/icons/Cat Profile-40": true,
+                    "/users/\(uid)/icons/Einstein-40": true,
+                    "/users/\(uid)/icons/Elephant-40": true,
+                    "/users/\(uid)/icons/Gold Pot-40": true,
+                    "/users/\(uid)/icons/Grill-40": true,
+                    "/users/\(uid)/icons/Hornet Hive-40": true,
+                    "/users/\(uid)/icons/Joke Suicide Squad-40": true,
+                    "/users/\(uid)/icons/Overwatch-40": true,
+                    "/users/\(uid)/icons/Pig With Lipstick-40": true,
+                    "/users/\(uid)/icons/Rainbow-40": true,
+                    "/users/\(uid)/icons/Rhinoceros-40": true,
+                    "/users/\(uid)/icons/Rice Bowl-40": true,
+                    "/users/\(uid)/icons/Super Mario-40": true,
+                    "/users/\(uid)/icons/Targaryen House-40": true,
+                    "/users/\(uid)/icons/Thanksgiving-40": true,
+                    "/users/\(uid)/icons/US Airborne-40": true]
+                self.ref.updateChildValues(icons)
+                
                 self.showHomeScreen()
             }
         }
