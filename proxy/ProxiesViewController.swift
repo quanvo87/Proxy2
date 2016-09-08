@@ -61,18 +61,22 @@ class ProxiesViewController: UIViewController, UITableViewDataSource, UITableVie
         let newMessageButton = UIButton(type: .Custom)
         newMessageButton.setImage(UIImage(named: "new-message.png"), forState: UIControlState.Normal)
         newMessageButton.addTarget(self, action: #selector(ProxiesViewController.tapNewMessageButton), forControlEvents: UIControlEvents.TouchUpInside)
-        newMessageButton.frame = CGRectMake(0, 0, 25, 25)
+        newMessageButton.frame = CGRectMake(0, 0, 24, 24)
         let newMessageBarButton = UIBarButtonItem(customView: newMessageButton)
         
         // New Proxy Button
         let newProxyButton = UIButton(type: .Custom)
         newProxyButton.setImage(UIImage(named: "new-proxy.png"), forState: UIControlState.Normal)
         newProxyButton.addTarget(self, action: #selector(ProxiesViewController.tapNewProxyButton), forControlEvents: UIControlEvents.TouchUpInside)
-        newProxyButton.frame = CGRectMake(0, 0, 25, 25)
+        newProxyButton.frame = CGRectMake(0, 0, 26, 26)
         let newProxyBarButton = UIBarButtonItem(customView: newProxyButton)
         
         self.navigationItem.rightBarButtonItems = [newMessageBarButton, newProxyBarButton]
     }
+    
+    
+    // MARK: - Database
+    
     
     func observeUnread() {
         unreadRef = ref.child("users").child(api.uid).child("unread")
@@ -85,13 +89,13 @@ class ProxiesViewController: UIViewController, UITableViewDataSource, UITableVie
     
     func observeProxies() {
         proxiesRef = ref.child("users").child(api.uid).child("proxies")
-        proxiesRefHandle = proxiesRef.queryOrderedByChild("name").observeEventType(.Value, withBlock: { snapshot in
+        proxiesRefHandle = proxiesRef.queryOrderedByChild("timestamp").observeEventType(.Value, withBlock: { snapshot in
             var proxies = [Proxy]()
             for child in snapshot.children {
                 let proxy = Proxy(anyObject: child.value)
                 proxies.append(proxy)
             }
-            self.proxies = proxies
+            self.proxies = proxies.reverse()
             self.tableView.reloadData()
         })
     }

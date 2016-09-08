@@ -74,14 +74,14 @@ class MessagesViewController: UIViewController, UITableViewDataSource, UITableVi
         let newMessageButton = UIButton(type: .Custom)
         newMessageButton.setImage(UIImage(named: "new-message.png"), forState: UIControlState.Normal)
         newMessageButton.addTarget(self, action: #selector(MessagesViewController.tapNewMessageButton), forControlEvents: UIControlEvents.TouchUpInside)
-        newMessageButton.frame = CGRectMake(0, 0, 25, 25)
+        newMessageButton.frame = CGRectMake(0, 0, 24, 24)
         let newMessageBarButton = UIBarButtonItem(customView: newMessageButton)
         
         // New Proxy Button
         let newProxyButton = UIButton(type: .Custom)
         newProxyButton.setImage(UIImage(named: "new-proxy.png"), forState: UIControlState.Normal)
         newProxyButton.addTarget(self, action: #selector(MessagesViewController.tapNewProxyButton), forControlEvents: UIControlEvents.TouchUpInside)
-        newProxyButton.frame = CGRectMake(0, 0, 25, 25)
+        newProxyButton.frame = CGRectMake(0, 0, 26, 26)
         let newProxyBarButton = UIBarButtonItem(customView: newProxyButton)
         
         self.navigationItem.rightBarButtonItems = [newMessageBarButton, newProxyBarButton]

@@ -15,6 +15,8 @@ struct Proxy {
     var name = ""
     var icon = ""
     var nickname = ""
+    var timestamp = NSDate().timeIntervalSince1970
+    var unread = false
     
     init() {}
     
@@ -30,6 +32,8 @@ struct Proxy {
         self.name = anyObject["name"] as? String ?? ""
         self.icon = anyObject["icon"] as? String ?? ""
         self.nickname = anyObject["nickname"] as? String ?? ""
+        self.timestamp = anyObject["timestamp"] as? Double ?? 0.0
+        self.unread = anyObject["unread"] as? Bool ?? false
     }
     
     func toAnyObject() -> AnyObject {
@@ -39,6 +43,8 @@ struct Proxy {
             "name": name,
             "icon": icon,
             "nickname": nickname,
+            "timestamp": timestamp,
+            "unread": unread
         ]
     }
 }

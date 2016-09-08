@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1415610D1D620DB7002022BC /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1415610C1D620DB7002022BC /* API.swift */; };
 		1415611F1D62A8A3002022BC /* ProxyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1415611E1D62A8A3002022BC /* ProxyCell.swift */; };
+		142029A01D812859008B29DB /* ErrorAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1420299F1D812859008B29DB /* ErrorAlert.swift */; };
 		14265B7C1D63029200B65793 /* NewProxyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14265B7B1D63029200B65793 /* NewProxyViewController.swift */; };
 		14383B0F1D7341070086CA6C /* SelectProxyViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14383B0E1D7341070086CA6C /* SelectProxyViewControllerDelegate.swift */; };
 		14383B121D73802B0086CA6C /* Proxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14383B111D73802B0086CA6C /* Proxy.swift */; };
@@ -46,6 +47,7 @@
 /* Begin PBXFileReference section */
 		1415610C1D620DB7002022BC /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		1415611E1D62A8A3002022BC /* ProxyCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyCell.swift; sourceTree = "<group>"; };
+		1420299F1D812859008B29DB /* ErrorAlert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ErrorAlert.swift; sourceTree = "<group>"; };
 		14265B7B1D63029200B65793 /* NewProxyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewProxyViewController.swift; sourceTree = "<group>"; };
 		14383B0E1D7341070086CA6C /* SelectProxyViewControllerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectProxyViewControllerDelegate.swift; sourceTree = "<group>"; };
 		14383B111D73802B0086CA6C /* Proxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Proxy.swift; sourceTree = "<group>"; };
@@ -170,6 +172,7 @@
 				14A6F18D1D6BDA880015431E /* Constants.swift */,
 				14E19A5B1D612CE80030B366 /* Extensions.swift */,
 				1415610C1D620DB7002022BC /* API.swift */,
+				1420299F1D812859008B29DB /* ErrorAlert.swift */,
 				14A6F1931D6CF1410015431E /* ProxyNameGenerator.swift */,
 				14383B591D7B0CB60086CA6C /* NSDate+NVTimeAgo.h */,
 				14383B5A1D7B0CB60086CA6C /* NSDate+NVTimeAgo.m */,
@@ -387,6 +390,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				142029A01D812859008B29DB /* ErrorAlert.swift in Sources */,
 				14383B251D7555670086CA6C /* ConvoViewController.swift in Sources */,
 				14383B171D73D42E0086CA6C /* Convo.swift in Sources */,
 				14E19A5C1D612CE80030B366 /* Extensions.swift in Sources */,

@@ -70,65 +70,34 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
     @IBAction func tapSendButton(sender: AnyObject) {
         disableButtons()
         
-        // user must select a proxy to send from
+        /// User must select a proxy to send from
         guard proxy.name != "" else {
             enableButtonsAndShowAlert("Select A Proxy", message: "Please select a proxy to send your message from. Or create a new one!")
             return
         }
         
-        // check for empty fields
+        /// Check for empty fields
         guard
             let first = firstTextField.text?.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " ")),
             let second = secondTextField.text?.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " ")),
             let num = numTextField.text?.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " ")),
-            let messageText = messageTextView.text
-            where first != "" && second != "" && num != "" && messageText != "Message..." else {
+            let message = messageTextView.text
+            where first != "" && second != "" && num != "" && message != "Message..." else {
                 enableButtonsAndShowAlert("Missing Fields", message: "Please enter a value for each field.")
                 return
         }
         
-        // check if receiver exists
-        let receiverName = first.lowercaseString + second.lowercaseString.capitalizedString + num
-        self.ref.child("proxies").queryOrderedByKey().queryEqualToValue(receiverName).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            guard snapshot.hasChildren() else {
-                self.enableButtonsAndShowAlert("Receiving Proxy Not Found", message: "Perhaps there was a spelling error?")
-                return
+        /// Build receiver proxy name
+        let receiverProxyName = first.lowercaseString + second.lowercaseString.capitalizedString + num
+        
+        /// Send off to API to send message
+        self.api.sendMessage(proxy, receiverProxyName: receiverProxyName, message: message) { (error, convo) in
+            if let error = error {
+                self.enableButtonsAndShowAlert(error.title, message: error.message)
+            } else {
+                self.goToConvo(convo!)
             }
-            
-            // check if sender is trying to send to him/herself
-            let receiverProxy = Proxy(anyObject: snapshot.children.nextObject()!.value)
-            guard self.api.uid != receiverProxy.owner else {
-                self.enableButtonsAndShowAlert("Cannot Send To Self", message: "Can't start a conversation with you own proxy. Try messaging someone else!")
-                return
-            }
-            
-            // check if existing convo between the proxies exists
-            self.ref.child("users").child(self.api.uid).child("convos").observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-                
-                for child in snapshot.children {
-                    let convo = Convo(anyObject: child.value)
-                    if self.proxy.name == convo.senderProxy && receiverProxy.name == convo.receiverProxy {
-                        self.api.sendMessage(convo, messageText: messageText, completion: { (success) -> Void in
-                            if success {
-                                self.goToConvo(convo)
-                            } else {
-                                self.enableButtons()
-                            }
-                        })
-                        return
-                    }
-                }
-                
-                // else make new convo
-                self.api.sendFirstMessage(self.proxy, receiverProxy: receiverProxy, messageText: messageText, completion: { (success, convo) in
-                    if success {
-                        self.goToConvo(convo)
-                    } else {
-                        self.enableButtons()
-                    }
-                })
-            })
-        })
+        }   
     }
     
     func enableButtonsAndShowAlert(title: String, message: String) {
