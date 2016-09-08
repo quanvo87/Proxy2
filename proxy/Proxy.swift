@@ -10,9 +10,9 @@ struct Proxy {
     
     let api = API.sharedInstance
     
+    var globalKey = ""
     var key = ""
     var owner = ""
-    var name = ""
     var icon = ""
     var nickname = ""
     var timestamp = NSDate().timeIntervalSince1970
@@ -20,16 +20,16 @@ struct Proxy {
     
     init() {}
     
-    init(key: String, name: String) {
+    init(globalKey: String, key: String) {
+        self.globalKey = globalKey
         self.key = key
         self.owner = api.uid
-        self.name = name
     }
     
     init(anyObject: AnyObject) {
+        self.globalKey = anyObject["globalKey"] as? String ?? ""
         self.key = anyObject["key"] as? String ?? ""
         self.owner = anyObject["owner"] as? String ?? ""
-        self.name = anyObject["name"] as? String ?? ""
         self.icon = anyObject["icon"] as? String ?? ""
         self.nickname = anyObject["nickname"] as? String ?? ""
         self.timestamp = anyObject["timestamp"] as? Double ?? 0.0
@@ -38,9 +38,9 @@ struct Proxy {
     
     func toAnyObject() -> AnyObject {
         return [
+            "globalKey": globalKey,
             "key": key,
             "owner": owner,
-            "name": name,
             "icon": icon,
             "nickname": nickname,
             "timestamp": timestamp,

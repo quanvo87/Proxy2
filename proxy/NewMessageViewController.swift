@@ -50,7 +50,7 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
     }
     
     func setDefaultProxy() {
-        if proxy.name != "" {
+        if proxy.key != "" {
             selectProxy(proxy)
         }
     }
@@ -71,7 +71,7 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
         disableButtons()
         
         /// User must select a proxy to send from
-        guard proxy.name != "" else {
+        guard proxy.key != "" else {
             enableButtonsAndShowAlert("Select A Proxy", message: "Please select a proxy to send your message from. Or create a new one!")
             return
         }
@@ -95,9 +95,10 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
             if let error = error {
                 self.enableButtonsAndShowAlert(error.title, message: error.message)
             } else {
+                self.api.saveProxyWithNickname(self.proxy, nickname: "")
                 self.goToConvo(convo!)
             }
-        }   
+        }
     }
     
     func enableButtonsAndShowAlert(title: String, message: String) {
@@ -113,7 +114,7 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
             savingNewProxy = false
         }
         self.proxy = proxy
-        selectProxyButton.setTitle(proxy.name, forState: .Normal)
+        selectProxyButton.setTitle(proxy.key, forState: .Normal)
     }
     
     // MARK: - New proxy
@@ -132,7 +133,7 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
         savingNewProxy = true
         let userInfo = notification.userInfo as! [String: AnyObject]
         proxy = Proxy(anyObject: userInfo["proxy"]!)
-        selectProxyButton.setTitle(proxy.name, forState: .Normal)
+        selectProxyButton.setTitle(proxy.key, forState: .Normal)
         enableButtons()
     }
     

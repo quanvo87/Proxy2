@@ -14,7 +14,6 @@ class API {
     static let sharedInstance = API()
     
     let ref = FIRDatabase.database().reference()
-    var proxiesRef = FIRDatabaseReference()
     var iconsRef = FIRDatabaseReference()
     var iconsRefHandle = FIRDatabaseHandle()
     var proxyNameGenerator = ProxyNameGenerator()
@@ -29,9 +28,7 @@ class API {
         }
     }
     
-    private init() {
-        proxiesRef = self.ref.child("proxies")
-    }
+    private init() {}
     
     deinit {
         iconsRef.removeObserverWithHandle(iconsRefHandle)
@@ -103,16 +100,26 @@ class API {
     }
     
     /**
-     Attempts to create a unique proxy. On failure, deletes the proxy it just
-     created and tries again. Will exit if the user cancels the CreateNewProxy
-     view. Also assigns a random icon to the proxy.
+     Attempts to create a unique proxy. We must first get a unique key from 
+     Firebase to create the test proxy. We call this 'globalKey'. Then we 
+     generate a proxy name with our proxyNameGenerator and assign it to 'key'.
+     We then query our database for any proxies with the same 'key'. If we've 
+     only found one, then it will be the one we just created, so we've 
+     successfully created a unique proxy. At this point on, we can use 'key' as
+     the proxy's unique identifier in the database as well as it's name. We only
+     need the 'globalKey' again when we go to delete the proxy from the global
+     node of all proxies in the database. We also assign a random icon from the
+     user's array of available icons on success.
+     
+     On failure, deletes the proxy it just created and tries again. Will exit if
+     the user cancels the CreateNewProxy view.
      */
     func tryCreateProxy() {
-        let key = ref.child("proxies").childByAutoId().key
-        let name = proxyNameGenerator.generateProxyName()
-        var proxy = Proxy(key: key, name: name)
-        proxiesRef.child(key).setValue(proxy.toAnyObject())
-        proxiesRef.queryOrderedByChild("name").queryEqualToValue(name).observeSingleEventOfType(.Value, withBlock: { snapshot in
+        let globalKey = ref.child("proxies").childByAutoId().key
+        let key = proxyNameGenerator.generateProxyName()
+        var proxy = Proxy(globalKey: globalKey, key: key)
+        ref.child("proxies").child(globalKey).setValue(proxy.toAnyObject())
+        ref.child("proxies").queryOrderedByChild("key").queryEqualToValue(key).observeSingleEventOfType(.Value, withBlock: { snapshot in
             if snapshot.childrenCount == 1 {
                 self.creatingProxy = false
                 proxy.icon = self.getRandomIcon()
@@ -150,14 +157,13 @@ class API {
     
     /// Deletes the proxy in the global proxy list
     func deleteProxy(proxy: Proxy) {
-        proxiesRef.child(proxy.key).removeValue()
+        ref.child("proxies").child(proxy.globalKey).removeValue()
     }
     
     /**
-     The creatingProxy Bool is there just in case the user taps cancel on the
-     CreateNewProxy view while the API is currently trying to create a proxy
-     for them. When creatingProxy is false, the proxy creation loop eventually
-     stops.
+     The creatingProxy Bool is there in case the user taps cancel on the
+     CreateNewProxy view while the API is currently trying to create a proxy.
+     When creatingProxy is false, the proxy creation loop eventually stops.
      */
     func cancelCreateProxy(proxy: Proxy) {
         creatingProxy = false
@@ -165,8 +171,9 @@ class API {
     }
     
     /*
-     Save the proxy to the user node with an updated nickname and fresh
-     timestamp.
+     At this point on, we use the proxy's name as it's key in the database.
+     We know it will be unique and this makes it easier to recall the proxy in
+     later operations.
      */
     func saveProxyWithNickname(proxy: Proxy, nickname: String) {
         var _proxy = proxy
@@ -180,12 +187,12 @@ class API {
     func updateProxyNickname(proxy: Proxy, convos: [Convo], nickname: String) {
         
         /// In the user's node
-        ref.child("users").child(uid).child("proxies").child(proxy.key).child("nickname").setValue(nickname)
+        ref.child("users").child(proxy.owner).child("proxies").child(proxy.key).child("nickname").setValue(nickname)
         
         /// For each convo the proxy is in
         for convo in convos {
             ref.updateChildValues([
-                "/users/\(uid)/convos/\(convo.key)/proxyNickname": nickname,
+                "/users/\(proxy.owner)/convos/\(convo.key)/proxyNickname": nickname,
                 "/convos/\(proxy.key)/\(convo.key)/proxyNickname": nickname])
         }
     }
@@ -251,9 +258,10 @@ class API {
      function.
      */
     func sendMessage(senderProxy: Proxy, receiverProxyName: String, message: String, completion: (error: ErrorAlert?, convo: Convo?) -> Void ) {
+        
         /// Check if receiver exists
-        self.ref.child("proxies").queryOrderedByChild("name").queryEqualToValue(receiverProxyName).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            guard snapshot.hasChildren() else {
+        self.ref.child("proxies").queryOrderedByChild("key").queryEqualToValue(receiverProxyName).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            guard snapshot.childrenCount == 1 else {
                 completion(error: ErrorAlert(title: "Recipient Not Found", message: "Perhaps there was a spelling error?"), convo: nil)
                 return
             }
@@ -265,28 +273,23 @@ class API {
                 return
             }
             
+            /// Build convo key from sorting and concatenizing the proxy names
+            let convoKey = [senderProxy.key, receiverProxy.key].sort().joinWithSeparator("")
+            
             /// Check if existing convo between the proxies exists
-            self.ref.child("users").child(senderProxy.owner).child("convos").observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            self.ref.child("users").child(senderProxy.owner).child("convos").queryEqualToValue(convoKey).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
                 
-                for child in snapshot.children {
-                    let convo = Convo(anyObject: child.value)
-                    
-                    print("senderProxy.name " + senderProxy.name)
-                    print("convo.senderProxy " + convo.senderProxy)
-                    print("receiverProxy.name " + receiverProxy.name)
-                    print("convo.receiverProxy " + convo.receiverProxy + "\n")
-                    
-                    /// Existing convo found, use it to send the message
-                    if senderProxy.name == convo.senderProxy && receiverProxy.name == convo.receiverProxy {
-                        self.sendMessage(convo, messageText: message, completion: { (convo) -> Void in
-                            completion(error: nil, convo: convo)
-                            return
-                        })
-                    }
+                /// Existing convo found. Use it to send the message.
+                if snapshot.childrenCount == 1 {
+                    let convo = Convo(anyObject: snapshot.value!)
+                    self.sendMessage(convo, messageText: message, completion: { (convo) -> Void in
+                        completion(error: nil, convo: convo)
+                        return
+                    })
                 }
                 
                 // No convo found, must set up convo before sending message
-                self.setupFirstMessage(senderProxy, receiverProxy: receiverProxy, messageText: message, completion: { (convo) in
+                self.setupFirstMessage(senderProxy, receiverProxy: receiverProxy, convoKey: convoKey, message: message, completion: { (convo) in
                     completion(error: nil, convo: convo)
                 })
             })
@@ -307,57 +310,42 @@ class API {
      Then send off the sender's version of the convo and the messageText to the
      message sending function to finish the job.
      */
-    func setupFirstMessage(senderProxy: Proxy, receiverProxy: Proxy, messageText: String, completion: (convo: Convo) -> Void) {
+    func setupFirstMessage(senderProxy: Proxy, receiverProxy: Proxy, convoKey: String, message: String, completion: (convo: Convo) -> Void) {
         
         /// Check if sender is in receiver's blocked list
         ref.child("blocked").child(receiverProxy.owner).child(senderProxy.owner).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
             
             let senderBlocked = snapshot.childrenCount == 1
             
-            let convoKey = self.ref.child("users").child(self.uid).child("convos").childByAutoId().key
             var senderConvo = Convo()
             senderConvo.key = convoKey
             var receiverConvo = senderConvo
             
             senderConvo.senderId = senderProxy.owner
-            senderConvo.senderProxy = senderProxy.name
+            senderConvo.senderProxy = senderProxy.key
             senderConvo.receiverId = receiverProxy.owner
-            senderConvo.receiverProxy = receiverProxy.name
+            senderConvo.receiverProxy = receiverProxy.key
             senderConvo.icon = receiverProxy.icon
             senderConvo.receiverIsBlocking = senderBlocked
-            let senderConvoDict = senderConvo.toAnyObject()
             
             receiverConvo.senderId = receiverProxy.owner
-            receiverConvo.senderProxy = receiverProxy.name
+            receiverConvo.senderProxy = receiverProxy.key
             receiverConvo.receiverId = senderProxy.owner
-            receiverConvo.receiverProxy = senderProxy.name
+            receiverConvo.receiverProxy = senderProxy.key
             receiverConvo.icon = senderProxy.icon
             receiverConvo.senderIsBlocking = senderBlocked
-            let receiverConvoDict = receiverConvo.toAnyObject()
             
-            self.ref.updateChildValues([
-                "/users/\(self.uid)/convos/\(convoKey)": senderConvoDict,
-                "/convos/\(senderProxy.key)/\(convoKey)": senderConvoDict,
-                "/users/\(receiverProxy.owner)/convos/\(convoKey)": receiverConvoDict,
-                "/convos/\(receiverProxy.key)/\(convoKey)": receiverConvoDict])
-            
+            self.updateConvo(senderConvo)
+            self.updateProxyConvo(senderConvo)
             self.incremementProxiesInteractedWith(senderProxy.owner)
+            
+            self.updateConvo(receiverConvo)
+            self.updateProxyConvo(receiverConvo)
             self.incremementProxiesInteractedWith(receiverProxy.owner)
             
-            self.sendMessage(senderConvo, messageText: messageText, completion: { (convo) in
+            self.sendMessage(senderConvo, messageText: message, completion: { (convo) in
                 completion(convo: convo)
             })
-        })
-    }
-    
-    func incremementProxiesInteractedWith(uid: String) {
-        self.ref.child("users").child(uid).child("proxiesInteractedWith").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
-            if let count = currentData.value {
-                let _count = count as? Int ?? 0
-                currentData.value = _count + 1
-                return FIRTransactionResult.successWithValue(currentData)
-            }
-            return FIRTransactionResult.successWithValue(currentData)
         })
     }
     
@@ -398,14 +386,13 @@ class API {
         
         let messageKey = self.ref.child("messages").child(convo.key).childByAutoId().key
         let message = Message(key: messageKey, sender: uid, message: messageText, timestamp: timestamp)
+        writeMessage(convo.key, message: message)
         
+        /// Sender updates
         var _convo = convo
         _convo.message = "you: " + messageText
         _convo.timestamp = timestamp
         _convo.leftConvo = false
-        
-        /// Sender updates
-        writeMessage(convo.key, message: message)
         updateConvo(_convo)
         updateProxyConvo(_convo)
         updateProxyTimestamp(convo.senderId, proxy: convo.senderProxy, timestamp: timestamp)
@@ -425,6 +412,10 @@ class API {
         
         completion(convo: _convo)
     }
+    
+    
+    // MARK: Helper functions for writing to database
+    
     
     func writeMessage(convo: String, message: Message) {
         ref.child("messages").child(convo).child(message.key).setValue(message.toAnyObject())
@@ -470,6 +461,17 @@ class API {
     
     func updateProxyTimestamp(id: String, proxy: String, timestamp: Double) {
         ref.child("users").child(id).child("proxies").child(proxy).child("timestamp").setValue(timestamp)
+    }
+    
+    func incremementProxiesInteractedWith(id: String) {
+        self.ref.child("proxiesInteractedWith").child(id).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+            if let count = currentData.value {
+                let _count = count as? Int ?? 0
+                currentData.value = _count + 1
+                return FIRTransactionResult.successWithValue(currentData)
+            }
+            return FIRTransactionResult.successWithValue(currentData)
+        })
     }
     
     func incrementMessagesSent(id: String) {

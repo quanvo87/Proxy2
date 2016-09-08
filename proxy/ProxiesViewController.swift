@@ -138,7 +138,7 @@ class ProxiesViewController: UIViewController, UITableViewDataSource, UITableVie
             }
         }
         
-        cell.titleLabel.text = proxy.name
+        cell.titleLabel.text = proxy.key
         cell.subtitleLabel.attributedText = proxy.nickname.nicknameFormatted()
         cell.accessoryType = .None
         return cell

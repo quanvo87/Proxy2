@@ -24,7 +24,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.navigationItem.title = self.proxy.name
+        self.navigationItem.title = self.proxy.key
         
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: Constants.Identifiers.BasicCell)
         
@@ -62,10 +62,10 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     
     // Observe the unread count for this proxy and keep the title updated
     func observeUnread() {
-        unreadRef = ref.child("convos").child(proxy.name).child("unread")
+        unreadRef = ref.child("convos").child(proxy.key).child("unread")
         unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { snapshot in
             if let unread = snapshot.value as? Int {
-                self.navigationItem.title = "\(self.proxy.name) \(unread.unreadTitleSuffix())"
+                self.navigationItem.title = "\(self.proxy.key) \(unread.unreadTitleSuffix())"
             }
         })
     }
@@ -73,7 +73,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     // Observe the convos for this proxy
     // Users can tap these cells to go directly to the convo
     func observeConvos() {
-        convosRef = ref.child("convos").child(proxy.name)
+        convosRef = ref.child("convos").child(proxy.key)
         convosRefHandle = convosRef.queryOrderedByChild("timestamp").observeEventType(.Value, withBlock: { (snapshot) in
             var convos = [Convo]()
             for child in snapshot.children {

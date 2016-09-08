@@ -42,7 +42,7 @@ class NewProxyViewController: UIViewController, UITextFieldDelegate {
     func proxyCreated(notification: NSNotification) {
         let userInfo = notification.userInfo as! [String: AnyObject]
         proxy = Proxy(anyObject: userInfo["proxy"]!)
-        nameLabel.text = proxy.name
+        nameLabel.text = proxy.key
         enableButtons()
     }
     
