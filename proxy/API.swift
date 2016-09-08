@@ -75,12 +75,16 @@ class API {
      In addition, proxies are given a random icon (actually a path to the icon
      in our online storage) based on the icons the user has unlocked.
      */
-    func createProxy() {
+    func createProxy(completion: (proxy: Proxy?) -> Void) {
         creatingProxy = true
         if wordsLoaded {
-            tryCreateProxy()
+            tryCreateProxy({ (proxy) in
+                completion(proxy: proxy)
+            })
         } else {
-            loadWords()
+            loadWords({ (proxy) in
+                completion(proxy: proxy)
+            })
         }
     }
     
@@ -88,13 +92,15 @@ class API {
      Load our word bank from our database, cache it, and then call
      tryCreateProxy().
      */
-    func loadWords() {
+    func loadWords(completion: (proxy: Proxy?) -> Void) {
         ref.child("wordbank").observeSingleEventOfType(.Value, withBlock: { (snapshot) in
             if let words = snapshot.value, let adjectives = words["adjectives"], let nouns = words["nouns"] {
                 self.proxyNameGenerator.adjs = adjectives as! [String]
                 self.proxyNameGenerator.nouns = nouns as! [String]
                 self.wordsLoaded = true
-                self.tryCreateProxy()
+                self.tryCreateProxy({ (proxy) in
+                    completion(proxy: proxy)
+                })
             }
         })
     }
@@ -114,20 +120,24 @@ class API {
      On failure, deletes the proxy it just created and tries again. Will exit if
      the user cancels the CreateNewProxy view.
      */
-    func tryCreateProxy() {
+    func tryCreateProxy(completion: (proxy: Proxy?) -> Void) {
         let globalKey = ref.child("proxies").childByAutoId().key
         let key = proxyNameGenerator.generateProxyName()
         var proxy = Proxy(globalKey: globalKey, key: key)
         ref.child("proxies").child(globalKey).setValue(proxy.toAnyObject())
         ref.child("proxies").queryOrderedByChild("key").queryEqualToValue(key).observeSingleEventOfType(.Value, withBlock: { snapshot in
             if snapshot.childrenCount == 1 {
-                self.creatingProxy = false
                 proxy.icon = self.getRandomIcon()
-                NSNotificationCenter.defaultCenter().postNotificationName(Constants.NotificationKeys.ProxyCreated, object: self, userInfo: ["proxy": proxy.toAnyObject()])
+                self.creatingProxy = false
+                completion(proxy: proxy)
             } else {
                 self.deleteProxy(proxy)
                 if self.creatingProxy {
-                    self.tryCreateProxy()
+                    self.tryCreateProxy({ (proxy) in
+                        completion(proxy: proxy)
+                    })
+                } else {
+                    completion(proxy: nil)
                 }
             }
         })
@@ -150,9 +160,11 @@ class API {
     }
     
     /// We must be sure to delete the old proxy when we reroll for a new one
-    func rerollProxy(oldProxy: Proxy) {
+    func rerollProxy(oldProxy: Proxy, completion: (proxy: Proxy?) -> Void) {
         deleteProxy(oldProxy)
-        createProxy()
+        tryCreateProxy { (proxy) in
+            completion(proxy: proxy)
+        }
     }
     
     /// Deletes the proxy in the global proxy list
@@ -181,6 +193,7 @@ class API {
         _proxy.nickname = nickname
         _proxy.timestamp = timestamp
         ref.child("users").child(uid).child("proxies").child(proxy.key).setValue(_proxy.toAnyObject())
+        ref.child("proxies").child(proxy.globalKey).setValue(_proxy.toAnyObject())
     }
     
     /// Update the proxy's nickname in the required places

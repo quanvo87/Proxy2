@@ -74,9 +74,7 @@ class ProxiesViewController: UIViewController, UITableViewDataSource, UITableVie
         self.navigationItem.rightBarButtonItems = [newMessageBarButton, newProxyBarButton]
     }
     
-    
     // MARK: - Database
-    
     
     func observeUnread() {
         unreadRef = ref.child("users").child(api.uid).child("unread")
@@ -104,8 +102,8 @@ class ProxiesViewController: UIViewController, UITableViewDataSource, UITableVie
         tableView.delegate = self
         tableView.dataSource = self
         automaticallyAdjustsScrollViewInsets = false
-        tableView.rowHeight = 60
-        tableView.estimatedRowHeight = 60
+        tableView.rowHeight = 80
+        tableView.estimatedRowHeight = 80
         tableView.separatorStyle = .None
     }
     

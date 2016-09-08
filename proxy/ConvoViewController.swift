@@ -59,7 +59,6 @@ class ConvoViewController: JSQMessagesViewController {
         collectionView!.collectionViewLayout.incomingAvatarViewSize = CGSizeZero
         collectionView!.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero
         
-        navigationItem.title = convo.receiverProxy
 //        setTitle()
 //        observeNickname()
 //        observeProxy()
@@ -67,6 +66,11 @@ class ConvoViewController: JSQMessagesViewController {
         setUpBubbles()
         observeMessages()
         observeTyping()
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewDidDisappear(true)
+        navigationItem.title = convo.receiverProxy
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -81,7 +85,6 @@ class ConvoViewController: JSQMessagesViewController {
     }
     
     deinit {
-        // Stop observing this node on deinit
         nicknameRef.removeObserverWithHandle(nicknameRefHandle)
         proxyRef.removeObserverWithHandle(proxyRefHandle)
         unreadRef.removeObserverWithHandle(unreadRefHandle)
@@ -248,6 +251,7 @@ class ConvoViewController: JSQMessagesViewController {
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == Constants.Segues.ConvoDetailSegue {
             if let dest = segue.destinationViewController as? ConvoInfoTableViewController {
+                navigationItem.title = nil
                 dest.convo = convo
             }
         }

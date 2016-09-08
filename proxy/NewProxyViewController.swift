@@ -9,7 +9,7 @@
 class NewProxyViewController: UIViewController, UITextFieldDelegate {
     
     let api = API.sharedInstance
-    var proxy = Proxy()
+    var proxy: Proxy?
     
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var nicknameTextField: UITextField!
@@ -21,34 +21,37 @@ class NewProxyViewController: UIViewController, UITextFieldDelegate {
         super.viewDidLoad()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(NewMessageViewController.keyboardWillShow), name:UIKeyboardWillShowNotification, object: self.view.window)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(NewProxyViewController.proxyCreated), name: Constants.NotificationKeys.ProxyCreated, object: nil)
         
         setUpUI()
         setUpTextField()
-        api.createProxy()
-    }
-    
-    deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        createProxy()
     }
     
     func setUpUI() {
         navigationItem.title = "New Proxy"
         nameLabel.text = "Fetching Names..."
-        rerollButton.enabled = false
-        createButton.enabled = false
     }
     
-    func proxyCreated(notification: NSNotification) {
-        let userInfo = notification.userInfo as! [String: AnyObject]
-        proxy = Proxy(anyObject: userInfo["proxy"]!)
-        nameLabel.text = proxy.key
-        enableButtons()
+    func createProxy() {
+        disableButtons()
+        api.createProxy { (proxy) in
+           self.setProxy(proxy)
+        }
     }
     
     @IBAction func tapRerollButton(sender: AnyObject) {
         disableButtons()
-        api.rerollProxy(proxy)
+        api.rerollProxy(proxy!) { (proxy) in
+            self.setProxy(proxy)
+        }
+    }
+    
+    func setProxy(proxy: Proxy?) {
+        self.enableButtons()
+        if let proxy = proxy {
+            self.proxy = proxy
+            self.nameLabel.text = proxy.key
+        }
     }
     
     @IBAction func tapCreateButton(sender: AnyObject) {
@@ -57,7 +60,7 @@ class NewProxyViewController: UIViewController, UITextFieldDelegate {
     
     func saveProxy() {
         disableButtons()
-        api.saveProxyWithNickname(proxy, nickname: nicknameTextField.text!)
+        api.saveProxyWithNickname(proxy!, nickname: nicknameTextField.text!)
         dismissViewControllerAnimated(true, completion: nil)
     }
     
@@ -101,7 +104,7 @@ class NewProxyViewController: UIViewController, UITextFieldDelegate {
     
     @IBAction func tapCancelButton(sender: AnyObject) {
         view.endEditing(true)
-        if proxy.key != "" {
+        if let proxy = proxy {
             api.cancelCreateProxy(proxy)
         }
         dismissViewControllerAnimated(true, completion: nil)

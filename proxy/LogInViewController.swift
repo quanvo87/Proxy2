@@ -75,77 +75,9 @@ class LogInViewController: UIViewController {
                     self.showAlert("Error Setting Display Name For User", message: error.localizedDescription)
                     return
                 }
-                let uid = user!.uid
-                self.ref.child("users").child(uid).setValue(["username": user!.displayName!])
-                
-                // Give user access to the default icons
-                let icons = [
-                    "/users/\(uid)/icons/Aquarium-40": true,
-                    "/users/\(uid)/icons/Astronaut Helmet-40": true,
-                    "/users/\(uid)/icons/Babys Room-40": true,
-                    "/users/\(uid)/icons/Badminton-40": true,
-                    "/users/\(uid)/icons/Banana Split-40": true,
-                    "/users/\(uid)/icons/Banana-40": true,
-                    "/users/\(uid)/icons/Beer-40": true,
-                    "/users/\(uid)/icons/Bird-40": true,
-                    "/users/\(uid)/icons/Carrot-40": true,
-                    "/users/\(uid)/icons/Cat Profile-40": true,
-                    "/users/\(uid)/icons/Cat-40": true,
-                    "/users/\(uid)/icons/Cheese-40": true,
-                    "/users/\(uid)/icons/Cherry-40": true,
-                    "/users/\(uid)/icons/Chili Pepper-40": true,
-                    "/users/\(uid)/icons/Cinnamon Roll-40": true,
-                    "/users/\(uid)/icons/Cookies-40": true,
-                    "/users/\(uid)/icons/Corgi-40": true,
-                    "/users/\(uid)/icons/Crab-40": true,
-                    "/users/\(uid)/icons/Dog-40": true,
-                    "/users/\(uid)/icons/Dolphin-40": true,
-                    "/users/\(uid)/icons/Doughnut-40": true,
-                    "/users/\(uid)/icons/Duck-40": true,
-                    "/users/\(uid)/icons/Eggplant-40": true,
-                    "/users/\(uid)/icons/Einstein-40": true,
-                    "/users/\(uid)/icons/Elephant-40": true,
-                    "/users/\(uid)/icons/Flying Stork With Bundle-40": true,
-                    "/users/\(uid)/icons/Gold Pot-40": true,
-                    "/users/\(uid)/icons/Gorilla-40": true,
-                    "/users/\(uid)/icons/Grapes-40": true,
-                    "/users/\(uid)/icons/Grill-40": true,
-                    "/users/\(uid)/icons/Hamburger-40": true,
-                    "/users/\(uid)/icons/Hazelnut-40": true,
-                    "/users/\(uid)/icons/Heart Balloon-40": true,
-                    "/users/\(uid)/icons/Hornet Hive-40": true,
-                    "/users/\(uid)/icons/Horse-40": true,
-                    "/users/\(uid)/icons/Ice Cream Cone-40": true,
-                    "/users/\(uid)/icons/Kangaroo-40": true,
-                    "/users/\(uid)/icons/Kiwi-40": true,
-                    "/users/\(uid)/icons/Pancake-40": true,
-                    "/users/\(uid)/icons/Panda-40": true,
-                    "/users/\(uid)/icons/Pig With Lipstick-40": true,
-                    "/users/\(uid)/icons/Pineapple-40": true,
-                    "/users/\(uid)/icons/Pizza-40": true,
-                    "/users/\(uid)/icons/Pokeball-40": true,
-                    "/users/\(uid)/icons/Pokemon-40": true,
-                    "/users/\(uid)/icons/Prawn-40": true,
-                    "/users/\(uid)/icons/Puffin Bird-40": true,
-                    "/users/\(uid)/icons/Rainbow-40": true,
-                    "/users/\(uid)/icons/Rhinoceros-40": true,
-                    "/users/\(uid)/icons/Rice Bowl-40": true,
-                    "/users/\(uid)/icons/Running Rabbit-40": true,
-                    "/users/\(uid)/icons/Seahorse-40": true,
-                    "/users/\(uid)/icons/Shark-40": true,
-                    "/users/\(uid)/icons/Starfish-40": true,
-                    "/users/\(uid)/icons/Strawberry-40": true,
-                    "/users/\(uid)/icons/Super Mario-40": true,
-                    "/users/\(uid)/icons/Taco-40": true,
-                    "/users/\(uid)/icons/Targaryen House-40": true,
-                    "/users/\(uid)/icons/Thanksgiving-40": true,
-                    "/users/\(uid)/icons/Tomato-40": true,
-                    "/users/\(uid)/icons/Turtle-40": true,
-                    "/users/\(uid)/icons/Unicorn-40": true,
-                    "/users/\(uid)/icons/US Airborne-40": true,
-                    "/users/\(uid)/icons/Watermelon-40": true]
-                self.ref.updateChildValues(icons)
-                
+                let id = user!.uid
+                self.ref.child("users").child(id).setValue(["username": user!.displayName!])
+                self.setIcons(id)
                 self.showHomeScreen()
             }
         }
@@ -166,10 +98,11 @@ class LogInViewController: UIViewController {
                         self.showAlert("Error Logging In With Facebook", message: error.localizedDescription)
                         return
                     }
-                    let uid = user?.uid
-                    self.ref.child("users").queryOrderedByKey().queryEqualToValue(uid).observeSingleEventOfType(.Value, withBlock: { snapshot in
+                    let id = user?.uid
+                    self.ref.child("users").queryEqualToValue(id).observeSingleEventOfType(.Value, withBlock: { snapshot in
                         if !snapshot.hasChildren() {
-                            self.ref.child("users").child(uid!).setValue(["username": user!.displayName!, "unread": 0])
+                            self.ref.child("users").child(id!).setValue(["username": user!.displayName!])
+                            self.setIcons(id!)
                         }
                     })
                     self.showHomeScreen()
@@ -178,11 +111,88 @@ class LogInViewController: UIViewController {
         }
     }
     
-    func showHomeScreen() {
-        let tabBarController = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.TabBarController) as! UITabBarController
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.window?.rootViewController = tabBarController
+    // Give user access to the default icons
+    func setIcons(id: String) {
+        let icons = [
+            "/users/\(id)/icons/Aquarium-40": true,
+            "/users/\(id)/icons/Astronaut Helmet-40": true,
+            "/users/\(id)/icons/Babys Room-40": true,
+            "/users/\(id)/icons/Badminton-40": true,
+            "/users/\(id)/icons/Banana Split-40": true,
+            "/users/\(id)/icons/Banana-40": true,
+            "/users/\(id)/icons/Beer-40": true,
+            "/users/\(id)/icons/Bird-40": true,
+            "/users/\(id)/icons/Carrot-40": true,
+            "/users/\(id)/icons/Cat Profile-40": true,
+            "/users/\(id)/icons/Cat-40": true,
+            "/users/\(id)/icons/Cheese-40": true,
+            "/users/\(id)/icons/Cherry-40": true,
+            "/users/\(id)/icons/Chili Pepper-40": true,
+            "/users/\(id)/icons/Cinnamon Roll-40": true,
+            "/users/\(id)/icons/Coconut Cocktail-40": true,
+            "/users/\(id)/icons/Coffee Pot-40": true,
+            "/users/\(id)/icons/Cookies-40": true,
+            "/users/\(id)/icons/Corgi-40": true,
+            "/users/\(id)/icons/Crab-40": true,
+            "/users/\(id)/icons/Crystal-40": true,
+            "/users/\(id)/icons/Dog-40": true,
+            "/users/\(id)/icons/Dolphin-40": true,
+            "/users/\(id)/icons/Doughnut-40": true,
+            "/users/\(id)/icons/Duck-40": true,
+            "/users/\(id)/icons/Eggplant-40": true,
+            "/users/\(id)/icons/Einstein-40": true,
+            "/users/\(id)/icons/Elephant-40": true,
+            "/users/\(id)/icons/Flying Stork With Bundle-40": true,
+            "/users/\(id)/icons/Gold Pot-40": true,
+            "/users/\(id)/icons/Gorilla-40": true,
+            "/users/\(id)/icons/Grapes-40": true,
+            "/users/\(id)/icons/Grill-40": true,
+            "/users/\(id)/icons/Hamburger-40": true,
+            "/users/\(id)/icons/Hazelnut-40": true,
+            "/users/\(id)/icons/Heart Balloon-40": true,
+            "/users/\(id)/icons/Hornet Hive-40": true,
+            "/users/\(id)/icons/Horse-40": true,
+            "/users/\(id)/icons/Ice Cream Cone-40": true,
+            "/users/\(id)/icons/Kangaroo-40": true,
+            "/users/\(id)/icons/Kiwi-40": true,
+            "/users/\(id)/icons/Pancake-40": true,
+            "/users/\(id)/icons/Panda-40": true,
+            "/users/\(id)/icons/Pig With Lipstick-40": true,
+            "/users/\(id)/icons/Pineapple-40": true,
+            "/users/\(id)/icons/Pizza-40": true,
+            "/users/\(id)/icons/Pokeball-40": true,
+            "/users/\(id)/icons/Pokemon-40": true,
+            "/users/\(id)/icons/Prawn-40": true,
+            "/users/\(id)/icons/Puffin Bird-40": true,
+            "/users/\(id)/icons/Rainbow-40": true,
+            "/users/\(id)/icons/Rhinoceros-40": true,
+            "/users/\(id)/icons/Rice Bowl-40": true,
+            "/users/\(id)/icons/Running Rabbit-40": true,
+            "/users/\(id)/icons/Seahorse-40": true,
+            "/users/\(id)/icons/Shark-40": true,
+            "/users/\(id)/icons/Starfish-40": true,
+            "/users/\(id)/icons/Strawberry-40": true,
+            "/users/\(id)/icons/Super Mario-40": true,
+            "/users/\(id)/icons/Taco-40": true,
+            "/users/\(id)/icons/Targaryen House-40": true,
+            "/users/\(id)/icons/Thanksgiving-40": true,
+            "/users/\(id)/icons/Tomato-40": true,
+            "/users/\(id)/icons/Turtle-40": true,
+            "/users/\(id)/icons/Unicorn-40": true,
+            "/users/\(id)/icons/US Airborne-40": true,
+            "/users/\(id)/icons/Watermelon-40": true]
+        self.ref.updateChildValues(icons)
     }
+    
+    // MARK: - Text field
+    
+    func setUpTextField() {
+        emailTextField.clearButtonMode = .WhileEditing
+        passwordTextField.clearButtonMode = .WhileEditing
+        passwordTextField.secureTextEntry = true
+    }
+    
+    // MARK: - Keyboard
     
     func keyboardWillShow(notification: NSNotification) {
         let info = notification.userInfo!
@@ -200,11 +210,11 @@ class LogInViewController: UIViewController {
         self.view.endEditing(true)
     }
     
-    // MARK: - Text field
+    // MARK: - Navigation
     
-    func setUpTextField() {
-        emailTextField.clearButtonMode = .WhileEditing
-        passwordTextField.clearButtonMode = .WhileEditing
-        passwordTextField.secureTextEntry = true
+    func showHomeScreen() {
+        let tabBarController = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.TabBarController) as! UITabBarController
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate.window?.rootViewController = tabBarController
     }
 }

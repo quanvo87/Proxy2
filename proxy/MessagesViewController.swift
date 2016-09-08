@@ -8,6 +8,7 @@
 
 import FirebaseAuth
 import FirebaseDatabase
+import FirebaseStorage
 
 class MessagesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, NewMessageViewControllerDelegate {
     
@@ -65,7 +66,7 @@ class MessagesViewController: UIViewController, UITableViewDataSource, UITableVi
     // MARK: - UI
     
     func setUpUI() {
-        title = "Messages"
+        title = "Home"
         addNavBarButtons()
     }
     
@@ -93,7 +94,7 @@ class MessagesViewController: UIViewController, UITableViewDataSource, UITableVi
         unreadRef = ref.child("users").child(api.uid).child("unread")
         unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
             if let unread = snapshot.value as? Int {
-                self.title = "Messages \(unread.unreadTitleSuffix())"
+                self.title = "Home \(unread.unreadTitleSuffix())"
             }
         })
     }
@@ -130,6 +131,20 @@ class MessagesViewController: UIViewController, UITableViewDataSource, UITableVi
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.ProxyCell, forIndexPath: indexPath) as! ProxyCell
         let convo = self.convos[indexPath.row]
+
+        if let iconURL = self.api.iconURLCache[convo.icon] {
+            cell.iconImage.kf_setImageWithURL(NSURL(string: iconURL), placeholderImage: nil)
+        } else {
+            let storageRef = FIRStorage.storage().referenceForURL(Constants.URLs.Storage)
+            let starsRef = storageRef.child("\(convo.icon).png")
+            starsRef.downloadURLWithCompletion { (URL, error) -> Void in
+                if error == nil {
+                    self.api.iconURLCache[convo.icon] = URL?.absoluteString
+                    cell.iconImage.kf_setImageWithURL(NSURL(string: URL!.absoluteString)!, placeholderImage: nil)
+                }
+            }
+        }
+        
         cell.titleLabel.text = convo.receiverProxy
         cell.timestampLabel.text = convo.timestamp.timeAgoFromTimeInterval()
         cell.messageLabel.text = convo.message

@@ -37,10 +37,6 @@ struct Constants {
         static let ConvoDetailSegue = "Convo Detail Segue"
     }
     
-    struct NotificationKeys {
-        static let ProxyCreated = "Proxy Created"
-    }
-    
     struct SettingsItemNames {
         static let TurnOnNotifications = "Turn On Notifications"
         static let ReportAnIssue = "Report An Issue"
