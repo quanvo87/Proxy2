@@ -8,6 +8,7 @@
 
 import FirebaseAuth
 import FirebaseDatabase
+import FirebaseStorage
 
 class API {
     
@@ -139,6 +140,23 @@ class API {
         _proxy.nickname = nickname
         _proxy.timestamp = timestamp
         ref.child("proxies").child(uid).child(proxy.key).setValue(_proxy.toAnyObject())
+    }
+    
+    /// Returns the icon's URL in our storage. Builds and caches it if
+    /// necessary.
+    func getURL(icon: String, completion: (URL: String) -> Void) {
+        if let URL = iconURLCache[icon] {
+            completion(URL: URL)
+        } else {
+            let storageRef = FIRStorage.storage().referenceForURL(Constants.URLs.Storage)
+            let starsRef = storageRef.child("\(icon).png")
+            starsRef.downloadURLWithCompletion { (URL, error) -> Void in
+                if error == nil, let URL = URL?.absoluteString {
+                    self.iconURLCache[icon] = URL
+                    completion(URL: URL)
+                }
+            }
+        }
     }
     
     /// Updates the proxy's nickname in the required places.

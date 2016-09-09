@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		140E0D031D82AEA000D68F71 /* IconPickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 140E0D021D82AEA000D68F71 /* IconPickerCell.swift */; };
 		140E0D071D82AF2F00D68F71 /* IconPickerCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 140E0D061D82AF2F00D68F71 /* IconPickerCollectionViewController.swift */; };
+		140E0D091D83544C00D68F71 /* ConvoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 140E0D081D83544C00D68F71 /* ConvoCell.swift */; };
 		1415610D1D620DB7002022BC /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1415610C1D620DB7002022BC /* API.swift */; };
 		1415611F1D62A8A3002022BC /* ProxyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1415611E1D62A8A3002022BC /* ProxyCell.swift */; };
 		142029A01D812859008B29DB /* ErrorAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1420299F1D812859008B29DB /* ErrorAlert.swift */; };
@@ -50,6 +51,7 @@
 /* Begin PBXFileReference section */
 		140E0D021D82AEA000D68F71 /* IconPickerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IconPickerCell.swift; sourceTree = "<group>"; };
 		140E0D061D82AF2F00D68F71 /* IconPickerCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IconPickerCollectionViewController.swift; sourceTree = "<group>"; };
+		140E0D081D83544C00D68F71 /* ConvoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvoCell.swift; sourceTree = "<group>"; };
 		1415610C1D620DB7002022BC /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		1415611E1D62A8A3002022BC /* ProxyCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyCell.swift; sourceTree = "<group>"; };
 		1420299F1D812859008B29DB /* ErrorAlert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ErrorAlert.swift; sourceTree = "<group>"; };
@@ -125,6 +127,7 @@
 				1415611E1D62A8A3002022BC /* ProxyCell.swift */,
 				147B5C371D82736700D18C73 /* ProxyInfoHeaderCell.swift */,
 				140E0D021D82AEA000D68F71 /* IconPickerCell.swift */,
+				140E0D081D83544C00D68F71 /* ConvoCell.swift */,
 				14383B5E1D7B835C0086CA6C /* ConvoNicknameCell.swift */,
 			);
 			name = View;
@@ -418,6 +421,7 @@
 				14A6F19C1D6F963B0015431E /* HomeViewController.swift in Sources */,
 				14A6F17F1D68D8020015431E /* SettingsItems.swift in Sources */,
 				14265B7C1D63029200B65793 /* NewProxyViewController.swift in Sources */,
+				140E0D091D83544C00D68F71 /* ConvoCell.swift in Sources */,
 				14A6F17B1D68D5F20015431E /* SettingsViewController.swift in Sources */,
 				143F76FA1D72C0C100EF305F /* SelectProxyViewController.swift in Sources */,
 				140E0D071D82AF2F00D68F71 /* IconPickerCollectionViewController.swift in Sources */,

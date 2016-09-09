@@ -59,7 +59,6 @@ class ConvoViewController: JSQMessagesViewController {
         collectionView!.collectionViewLayout.incomingAvatarViewSize = CGSizeZero
         collectionView!.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero
         
-//        setTitle()
 //        observeNickname()
 //        observeProxy()
         observeUnread()
@@ -88,16 +87,6 @@ class ConvoViewController: JSQMessagesViewController {
         membersTypingRef.removeObserverWithHandle(membersTypingRefHandle)
     }
     
-    func setTitle() {
-        let title = convoTitle(convo.convoNickname, proxyNickname: convo.proxyNickname, you: convo.senderProxy, them: convo.receiverProxy, size: 13, navBar: true)
-        let navLabel = UILabel()
-        navLabel.numberOfLines = 2
-        navLabel.textAlignment = .Center
-        navLabel.attributedText = title
-        navLabel.sizeToFit()
-        navigationItem.titleView = navLabel
-    }
-    
     // Watch the database for nickname changes to this convo. When they happen,
     // update the title of the view to reflect them.
     func observeNickname() {
@@ -105,7 +94,6 @@ class ConvoViewController: JSQMessagesViewController {
         nicknameRefHandle = nicknameRef.observeEventType(.Value, withBlock: { snapshot in
             if let nickname = snapshot.value as? String {
                 self.convo.convoNickname = nickname
-                self.setTitle()
             }
         })
     }
@@ -116,7 +104,6 @@ class ConvoViewController: JSQMessagesViewController {
         proxyRefHandle = proxyRef.observeEventType(.Value, withBlock: { snapshot in
             if let nickname = snapshot.value as? String {
                 self.convo.proxyNickname = nickname
-                self.setTitle()
             }
         })
     }

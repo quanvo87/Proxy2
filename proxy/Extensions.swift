@@ -6,18 +6,11 @@
 //  Copyright © 2016 Quan Vo. All rights reserved.
 //
 
-extension UIViewController {
-    
-    // Generic alert controller for app
-    func showAlert(title: String, message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .Alert)
-        let dismissAction = UIAlertAction(title: "Ok", style: .Default, handler: nil)
-        alert.addAction(dismissAction)
-        self.presentViewController(alert, animated: true, completion: nil)
-    }
-    
-    // Produces titles for convos at difference places in the app
-    func convoTitle(convoNickname: String, proxyNickname: String, you: String, them: String, size: CGFloat, navBar: Bool) -> NSAttributedString {
+extension UIView {
+    // Returns a custom NSAttributedString that can be used for a convo's title.
+    // Prioritizes nicknames if possible, else just shows proxy names.
+    // Applies formatting based on parameter.
+    func toConvoTitle(convoNickname: String, proxyNickname: String, you: String, them: String, size: CGFloat, navBar: Bool) -> NSAttributedString {
         let _size = [NSFontAttributeName: UIFont.systemFontOfSize(size)]
         let bold = [NSFontAttributeName: UIFont.boldSystemFontOfSize(size)]
         let blue = [NSForegroundColorAttributeName: UIColor().blue()]
@@ -47,8 +40,18 @@ extension UIViewController {
         first.appendAttributedString(second)
         return first
     }
+}
+
+extension UIViewController {
+    // Shows an alert with the passed in title and string with only an `Ok`
+    // button.
+    func showAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .Alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: nil))
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
     
-    // Produces a title for the 'you' member
+    // Returns a custom NSAttributedString with the name and nickname.
     func youTitle(name: String, nickname: String) -> NSAttributedString {
         let _name = NSMutableAttributedString(string: name)
         if nickname == "" {
@@ -64,11 +67,10 @@ extension UIViewController {
     }
 }
 
-
 extension String {
     func lastMessageWithTimestamp(interval: Double) -> String {
         var lastMessage = self
-        let timestamp = interval.timeAgoFromTimeInterval()
+        let timestamp = interval.toTimeAgo()
         let secondsAgo = -NSDate(timeIntervalSince1970: interval).timeIntervalSinceNow
         if lastMessage == "" {
             if timestamp == "Just now" {
@@ -98,17 +100,17 @@ extension String {
 }
 
 extension Double {
-    func timeAgoFromTimeInterval() -> String {
+    func toTimeAgo() -> String {
         return NSDate(timeIntervalSince1970: self).formattedAsTimeAgo()
     }
 }
 
 extension Int {
-    func unreadToUnreadLabel() -> String {
+    func toUnreadLabel() -> String {
         return self == 0 ? "" : String(self)
     }
     
-    func unreadTitleSuffix() -> String {
+    func toTitleSuffix() -> String {
         return self == 0 ? "" : "(\(self))"
     }
 }

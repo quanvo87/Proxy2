@@ -94,7 +94,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         unreadRef = ref.child("unread").child(api.uid)
         unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
             if let unread = snapshot.value as? Int {
-                self.title = "Home \(unread.unreadTitleSuffix())"
+                self.title = "Home \(unread.toTitleSuffix())"
             }
         })
     }

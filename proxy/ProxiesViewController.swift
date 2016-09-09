@@ -27,7 +27,7 @@ class ProxiesViewController: UIViewController, UITableViewDataSource, UITableVie
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setUpUI()
+        setUp()
         observeUnread()
         setUpTableView()
         observeProxies()
@@ -41,7 +41,6 @@ class ProxiesViewController: UIViewController, UITableViewDataSource, UITableVie
             dest.convo = convo
             dest.hidesBottomBarWhenPushed = true
             shouldShowConvo = false
-            convo = Convo()
             self.navigationController!.pushViewController(dest, animated: true)
         }
     }
@@ -51,7 +50,7 @@ class ProxiesViewController: UIViewController, UITableViewDataSource, UITableVie
         unreadRef.removeObserverWithHandle(unreadRefHandle)
     }
     
-    func setUpUI() {
+    func setUp() {
         self.navigationItem.title = "Proxies"
         addNavBarButtons()
     }
@@ -75,12 +74,11 @@ class ProxiesViewController: UIViewController, UITableViewDataSource, UITableVie
     }
     
     // MARK: - Database
-    
     func observeUnread() {
         unreadRef = ref.child("unread").child(api.uid)
         unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { snapshot in
             if let unread = snapshot.value as? Int {
-                self.navigationItem.title = "Proxies \(unread.unreadTitleSuffix())"
+                self.navigationItem.title = "Proxies \(unread.toTitleSuffix())"
             }
         })
     }
@@ -108,7 +106,6 @@ class ProxiesViewController: UIViewController, UITableViewDataSource, UITableVie
     }
     
     // MARK: - Table view delegate
-    
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return proxies.count
     }
@@ -118,7 +115,6 @@ class ProxiesViewController: UIViewController, UITableViewDataSource, UITableVie
     }
     
     // MARK: - Table view data source
-    
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.ProxyCell, forIndexPath: indexPath) as! ProxyCell
         cell.proxy = proxies[indexPath.row]
@@ -126,14 +122,12 @@ class ProxiesViewController: UIViewController, UITableViewDataSource, UITableVie
     }
     
     // MARK: - Select proxy view controller delegate
-    
     func showNewConvo(convo: Convo) {
         self.convo = convo
         shouldShowConvo = true
     }
     
     // MARK: - Navigation
-    
     func tapNewMessageButton() {
         let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.NewMessageViewController) as! NewMessageViewController
         dest.delegate = self
@@ -150,10 +144,9 @@ class ProxiesViewController: UIViewController, UITableViewDataSource, UITableVie
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == Constants.Segues.ProxySegue,
-            let dest = segue.destinationViewController as? ProxyInfoTableViewController,
-            index = tableView.indexPathForSelectedRow?.row {
-            dest.proxy = proxies[index]
+        if segue.identifier == Constants.Segues.ProxySegue {
+            let dest = segue.destinationViewController as! ProxyInfoTableViewController
+            dest.proxy = proxies[tableView.indexPathForSelectedRow!.row]
         }
     }
 }

@@ -25,7 +25,6 @@ class ConvoInfoTableViewController: UITableViewController {
         
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: Constants.Identifiers.BasicCell)
         
-//        setTitle()
 //        observeNickname()
 //        observeProxy()
     }
@@ -50,20 +49,6 @@ class ConvoInfoTableViewController: UITableViewController {
         self.tableView.contentInset = UIEdgeInsetsMake(0, 0, CGRectGetHeight(self.tabBarController!.tabBar.frame), 0)
     }
     
-    
-    // A custom two-line title showing the participants of the convo.
-    // Prioritizes nicknames, and gets updated when the user changes the convo's
-    // nickname on this same screen.
-    func setTitle() {
-        let title = convoTitle(convo.convoNickname, proxyNickname: convo.proxyNickname, you: convo.senderProxy, them: convo.receiverProxy, size: 13, navBar: true)
-        let navLabel = UILabel()
-        navLabel.numberOfLines = 2
-        navLabel.textAlignment = .Center
-        navLabel.attributedText = title
-        navLabel.sizeToFit()
-        navigationItem.titleView = navLabel
-    }
-    
     // Watch the database for nickname changes to this convo. When they happen,
     // update the title of the view to reflect them.
     func observeNickname() {
@@ -71,7 +56,6 @@ class ConvoInfoTableViewController: UITableViewController {
         nicknameRefHandle = nicknameRef.observeEventType(.Value, withBlock: { snapshot in
             if let nickname = snapshot.value as? String {
                 self.convo.convoNickname = nickname
-                self.setTitle()
             }
         })
     }
@@ -83,7 +67,6 @@ class ConvoInfoTableViewController: UITableViewController {
         proxyRefHandle = proxyRef.observeEventType(.Value, withBlock: { snapshot in
             if let nickname = snapshot.value as? String {
                 self.convo.proxyNickname = nickname
-                self.setTitle()
                 let indexPath = NSIndexPath(forRow: 0, inSection: 2)
                 if self.tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.BasicCell, forIndexPath: indexPath) != nil {
                     self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)

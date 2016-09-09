@@ -28,13 +28,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tableView.delaysContentTouches = false
-        for case let scrollView as UIScrollView in tableView.subviews {
-            scrollView.delaysContentTouches = false
-        }
-        //        edgesForExtendedLayout = .All
-        //        tableView.contentInset = UIEdgeInsetsMake(0, 0, CGRectGetHeight(self.tabBarController!.tabBar.frame), 0)
-        
+        setUp()
         observeUnread()
         observeConvos()
         observeNickname()
@@ -59,6 +53,16 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         unreadRef.removeObserverWithHandle(unreadRefHandle)
         nicknameRef.removeObserverWithHandle(nicknameRefHandle)
         convosRef.removeObserverWithHandle(convosRefHandle)
+    }
+    
+    func setUp() {
+        tableView.separatorStyle = .None
+        tableView.delaysContentTouches = false
+        for case let scrollView as UIScrollView in tableView.subviews {
+            scrollView.delaysContentTouches = false
+        }
+        //        edgesForExtendedLayout = .All
+        //        tableView.contentInset = UIEdgeInsetsMake(0, 0, CGRectGetHeight(self.tabBarController!.tabBar.frame), 0)
     }
     
     // MARK: - Database
@@ -128,10 +132,9 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         switch indexPath.section {
-        case 0:
-            return 140
-        default:
-            return UITableViewAutomaticDimension
+        case 0: return 140
+        case 1: return 80
+        default: return 0
         }
     }
     
@@ -151,15 +154,18 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         switch indexPath.section {
             
-        // Nickname
+        // Header
         case 0:
             let cell = tableView.dequeueReusableCellWithIdentifier("Proxy Info Header Cell", forIndexPath: indexPath) as! ProxyInfoHeaderCell
-            cell.selectionStyle = .None
             cell.proxy = proxy
-            cell.nicknameButton.addTarget(self, action: #selector(ProxyInfoTableViewController.editNickname), forControlEvents: .TouchUpInside)
+            cell.nicknameButton.addTarget(self, action: #selector(ProxyInfoTableViewController.showNicknameEditorAlert), forControlEvents: .TouchUpInside)
             return cell
             
         // This proxy's convos
+        case 1:
+            let cell = tableView.dequeueReusableCellWithIdentifier("Convo Cell", forIndexPath: indexPath) as! ConvoCell
+            cell.convo = convos[indexPath.row]
+            return cell
         default: break
         }
         return UITableViewCell()
@@ -177,7 +183,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         self.presentViewController(alert, animated: true, completion: nil)
     }
     
-    func editNickname() {
+    func showNicknameEditorAlert() {
         let alert = UIAlertController(title: "Edit Nickname", message: "Only you see your nickname.", preferredStyle: .Alert)
         alert.addTextFieldWithConfigurationHandler({ (textField) -> Void in
             textField.placeholder = "Enter A Nickname"
@@ -206,17 +212,18 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     // MARK: - Navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         switch segue.identifier! {
+            
         case Constants.Segues.ConvoSegue:
-            if let dest = segue.destinationViewController as? ConvoViewController,
-                let index = tableView.indexPathForSelectedRow?.row {
-                dest.convo = convos[index]
-                dest.hidesBottomBarWhenPushed = true
-            }
+            let dest = segue.destinationViewController as! ConvoViewController
+            let index = tableView.indexPathForSelectedRow!.row
+            dest.convo = convos[index]
+            dest.hidesBottomBarWhenPushed = true
+            
         case "Icon Picker Segue":
-            if let dest = segue.destinationViewController as? IconPickerCollectionViewController {
-                dest.proxy = proxy
-                dest.convos = convos
-            }
+            let dest = segue.destinationViewController as! IconPickerCollectionViewController
+            dest.proxy = proxy
+            dest.convos = convos
+            
         default:
             return
         }
