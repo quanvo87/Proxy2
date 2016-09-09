@@ -121,24 +121,7 @@ class ProxiesViewController: UIViewController, UITableViewDataSource, UITableVie
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.ProxyCell, forIndexPath: indexPath) as! ProxyCell
-        let proxy = self.proxies[indexPath.row]
-
-        if let iconURL = self.api.iconURLCache[proxy.icon] {
-            cell.iconImage.kf_setImageWithURL(NSURL(string: iconURL), placeholderImage: nil)
-        } else {
-            let storageRef = FIRStorage.storage().referenceForURL(Constants.URLs.Storage)
-            let starsRef = storageRef.child("\(proxy.icon).png")
-            starsRef.downloadURLWithCompletion { (URL, error) -> Void in
-                if error == nil {
-                    self.api.iconURLCache[proxy.icon] = URL?.absoluteString
-                    cell.iconImage.kf_setImageWithURL(NSURL(string: URL!.absoluteString)!, placeholderImage: nil)
-                }
-            }
-        }
-        
-        cell.titleLabel.text = proxy.key
-        cell.subtitleLabel.attributedText = proxy.nickname.nicknameFormatted()
-        cell.accessoryType = .None
+        cell.proxy = proxies[indexPath.row]
         return cell
     }
     

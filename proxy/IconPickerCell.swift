@@ -23,7 +23,7 @@ class IconPickerCell: UICollectionViewCell {
     }
     
     func setUp() {
-        layer.cornerRadius = 8
+        layer.cornerRadius = 20
     }
     
     func setName() {

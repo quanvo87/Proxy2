@@ -106,6 +106,7 @@
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" text="Nickname" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="4wQ-lZ-cnG">
                                                     <rect key="frame" x="76" y="40" width="506" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <color key="textColor" red="0.0" green="0.50196081400000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6Js-jv-JEJ">
@@ -143,8 +144,8 @@
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="iconImage" destination="6Js-jv-JEJ" id="yyK-zv-e1A"/>
-                                            <outlet property="subtitleLabel" destination="4wQ-lZ-cnG" id="5Gr-kQ-enS"/>
-                                            <outlet property="titleLabel" destination="dBf-lN-Kdf" id="8wr-NC-PDx"/>
+                                            <outlet property="nameLabel" destination="dBf-lN-Kdf" id="Lyh-Ki-Dzq"/>
+                                            <outlet property="nicknameLabel" destination="4wQ-lZ-cnG" id="64f-dq-XaB"/>
                                             <outlet property="unreadLabel" destination="FTD-Pp-HSM" id="2Qq-Qw-fEj"/>
                                             <segue destination="xly-gy-WjZ" kind="show" identifier="Proxy Segue" id="owZ-QU-wi0"/>
                                         </connections>
@@ -434,10 +435,6 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <outlet property="iconImage" destination="WN5-5x-u1e" id="Dwz-9e-07M"/>
-                                            <outlet property="messageLabel" destination="pDX-Zt-lOv" id="W2d-Vg-aM3"/>
-                                            <outlet property="timestampLabel" destination="75y-4V-hfC" id="lqu-9z-JAH"/>
-                                            <outlet property="titleLabel" destination="wby-pg-gSQ" id="dNd-sz-kIu"/>
                                             <segue destination="uqW-Vb-8b3" kind="show" identifier="Convo Segue" id="fJc-BM-iTL"/>
                                         </connections>
                                     </tableViewCell>
@@ -960,6 +957,6 @@
         <image name="proxies-tab" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="i6L-dk-dPw"/>
+        <segue reference="fJc-BM-iTL"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -61,8 +61,8 @@ class SelectProxyViewController: UIViewController, UITableViewDelegate, UITableV
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.ProxyCell, forIndexPath: indexPath) as! ProxyCell
         let proxy = self.proxies[indexPath.row]
-        cell.titleLabel.text = proxy.key
-        cell.subtitleLabel.text = proxy.nickname
+        cell.nameLabel.text = proxy.key
+        cell.nicknameLabel.text = proxy.nickname
         return cell
     }
     

@@ -160,14 +160,6 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
             return cell
             
         // This proxy's convos
-        case 1:
-            let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.ProxyCell, forIndexPath: indexPath) as! ProxyCell
-            let convo = self.convos[indexPath.row]
-            cell.titleLabel.attributedText = convoTitle(convo.convoNickname, proxyNickname: convo.proxyNickname, you: convo.senderProxy, them: convo.receiverProxy, size: 13, navBar: false)
-            cell.timestampLabel.text = convo.timestamp.timeAgoFromTimeInterval()
-            cell.messageLabel.text = convo.message
-            cell.unreadLabel.text = convo.unread.unreadFormatted()
-            return cell
         default: break
         }
         return UITableViewCell()

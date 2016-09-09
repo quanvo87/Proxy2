@@ -11,7 +11,7 @@ struct DefaultIcons {
     let defaultIcons: AnyObject
     
     init(id: String) {
-        let timestamp = NSDate()
+        let timestamp = NSDate().timeIntervalSince1970
         defaultIcons = [
             "/icons/\(id)/Aquarium-96": timestamp,
             "/icons/\(id)/Armored Helmet-96": timestamp,

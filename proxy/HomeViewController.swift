@@ -129,27 +129,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.ProxyCell, forIndexPath: indexPath) as! ProxyCell
-        let convo = self.convos[indexPath.row]
-
-        if let iconURL = self.api.iconURLCache[convo.icon] {
-            cell.iconImage.kf_setImageWithURL(NSURL(string: iconURL), placeholderImage: nil)
-        } else {
-            let storageRef = FIRStorage.storage().referenceForURL(Constants.URLs.Storage)
-            let starsRef = storageRef.child("\(convo.icon).png")
-            starsRef.downloadURLWithCompletion { (URL, error) -> Void in
-                if error == nil {
-                    self.api.iconURLCache[convo.icon] = URL?.absoluteString
-                    cell.iconImage.kf_setImageWithURL(NSURL(string: URL!.absoluteString)!, placeholderImage: nil)
-                }
-            }
-        }
-        
-        cell.titleLabel.text = convo.receiverProxy
-        cell.timestampLabel.text = convo.timestamp.timeAgoFromTimeInterval()
-        cell.messageLabel.text = convo.message
-        cell.accessoryType = .None
-        return cell
+        return UITableViewCell()
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {

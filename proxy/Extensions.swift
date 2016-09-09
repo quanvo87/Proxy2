@@ -104,7 +104,7 @@ extension Double {
 }
 
 extension Int {
-    func unreadFormatted() -> String {
+    func unreadToUnreadLabel() -> String {
         return self == 0 ? "" : String(self)
     }
     
