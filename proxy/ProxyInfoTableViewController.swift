@@ -27,7 +27,13 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setUp()
+        tableView.delaysContentTouches = false
+        for case let scrollView as UIScrollView in tableView.subviews {
+            scrollView.delaysContentTouches = false
+        }
+        //        edgesForExtendedLayout = .All
+        //        tableView.contentInset = UIEdgeInsetsMake(0, 0, CGRectGetHeight(self.tabBarController!.tabBar.frame), 0)
+        
         observeUnread()
         observeConvos()
         observeNickname()
@@ -37,7 +43,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         super.viewDidAppear(true)
         
         self.tabBarController?.tabBar.hidden = false
-        
+  
         if shouldShowConvo {
             let convoViewController = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.ConvoViewController) as! ConvoViewController
             convoViewController.convo = convo
@@ -52,15 +58,6 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         unreadRef.removeObserverWithHandle(unreadRefHandle)
         convosRef.removeObserverWithHandle(convosRefHandle)
         nicknameRef.removeObserverWithHandle(nicknameRefHandle)
-    }
-
-    func setUp() {
-        tableView.delaysContentTouches = false
-        for case let scrollView as UIScrollView in tableView.subviews {
-            scrollView.delaysContentTouches = false
-        }
-        //        edgesForExtendedLayout = .All
-        //        tableView.contentInset = UIEdgeInsetsMake(0, 0, CGRectGetHeight(self.tabBarController!.tabBar.frame), 0)
     }
     
     // MARK: - Database
@@ -196,7 +193,6 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
             textField.autocorrectionType = .Yes
             textField.autocapitalizationType = .Sentences
             textField.clearButtonMode = .WhileEditing
-            textField.selectedTextRange = textField.textRangeFromPosition(textField.beginningOfDocument, toPosition: textField.endOfDocument)
         })
         alert.addAction(UIAlertAction(title: "Save", style: .Default, handler: { (action) -> Void in
             let nickname = alert.textFields![0].text
@@ -228,6 +224,9 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
                 dest.convo = convos[index]
                 dest.hidesBottomBarWhenPushed = true
             }
+        case "Icon Picker Segue":
+                let dest = self.storyboard!.instantiateViewControllerWithIdentifier("Icon Picker Collection View Controller") as! IconPickerCollectionViewController
+                dest.proxy = proxy
         default:
             return
         }

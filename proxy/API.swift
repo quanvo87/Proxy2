@@ -144,10 +144,10 @@ class API {
     /// Updates the proxy's nickname in the required places.
     func updateProxyNickname(proxy: Proxy, convos: [Convo], nickname: String) {
         
-        /// In user's node.
+        // In user's node.
         ref.child("proxies").child(proxy.owner).child(proxy.key).child("nickname").setValue(nickname)
         
-        /// For each convo the proxy is in.
+        // For each convo the proxy is in.
         for convo in convos {
             ref.updateChildValues([
                 "/convos/\(proxy.owner)/\(convo.key)/proxyNickname": nickname,
