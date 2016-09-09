@@ -16,6 +16,7 @@ class IconPickerCollectionViewController: UICollectionViewController {
     var iconRefHandle = FIRDatabaseHandle()
     var icons = [String]()
     var proxy = Proxy()
+    var convos = [Convo]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -68,5 +69,10 @@ class IconPickerCollectionViewController: UICollectionViewController {
     override func collectionView(collectionView: UICollectionView, didUnhighlightItemAtIndexPath indexPath: NSIndexPath) {
         let cell = collectionView.cellForItemAtIndexPath(indexPath)
         cell?.backgroundColor = UIColor.whiteColor()
+    }
+    
+    override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        api.updateIcon(proxy, icon: icons[indexPath.row])
+        navigationController?.popViewControllerAnimated(true)
     }
 }

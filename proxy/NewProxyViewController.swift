@@ -60,7 +60,7 @@ class NewProxyViewController: UIViewController, UITextFieldDelegate {
     
     func saveProxy() {
         disableButtons()
-        api.saveProxyWithNickname(proxy!, nickname: nicknameTextField.text!)
+        api.saveWithNickname(proxy!, nickname: nicknameTextField.text!)
         dismissViewControllerAnimated(true, completion: nil)
     }
     

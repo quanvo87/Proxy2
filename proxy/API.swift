@@ -133,7 +133,7 @@ class API {
     }
     
     /// Saves the proxy with a new nickname and timestamp. Saved under user Id.
-    func saveProxyWithNickname(proxy: Proxy, nickname: String) {
+    func saveWithNickname(proxy: Proxy, nickname: String) {
         var _proxy = proxy
         let timestamp = NSDate().timeIntervalSince1970
         _proxy.nickname = nickname
@@ -142,7 +142,7 @@ class API {
     }
     
     /// Updates the proxy's nickname in the required places.
-    func updateProxyNickname(proxy: Proxy, convos: [Convo], nickname: String) {
+    func updateNickname(proxy: Proxy, convos: [Convo], nickname: String) {
         
         // In user's node.
         ref.child("proxies").child(proxy.owner).child(proxy.key).child("nickname").setValue(nickname)
@@ -153,6 +153,20 @@ class API {
                 "/convos/\(proxy.owner)/\(convo.key)/proxyNickname": nickname,
                 "/convos/\(proxy.key)/\(convo.key)/proxyNickname": nickname])
         }
+    }
+    
+    /// Updates the proxy's icon in the required places.
+    func updateIcon(proxy: Proxy, icon: String) {
+        ref.child("proxies").child(proxy.globalKey).child("icon").setValue(icon)
+        ref.child("proxies").child(proxy.owner).child(proxy.key).child("icon").setValue(icon)
+        
+        ref.child("convos").child(proxy.key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            for child in snapshot.children {
+                let convo = Convo(anyObject: child.value)
+                self.ref.child("convos").child(convo.receiverId).child(convo.key).child("icon").setValue(icon)
+                self.ref.child("convos").child(convo.receiverProxy).child(convo.key).child("icon").setValue(icon)
+            }
+        })
     }
     
     /**

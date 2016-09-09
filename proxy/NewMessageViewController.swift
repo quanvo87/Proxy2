@@ -94,7 +94,7 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
             if let error = error {
                 self.enableButtonsAndShowAlert(error.title, message: error.message)
             } else {
-                self.api.saveProxyWithNickname(self.proxy!, nickname: "")
+                self.api.saveWithNickname(self.proxy!, nickname: "")
                 self.goToConvo(convo!)
             }
         }

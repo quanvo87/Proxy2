@@ -8,6 +8,7 @@
 
 import FirebaseDatabase
 
+
 class ProxyInfoTableViewController: UITableViewController, NewMessageViewControllerDelegate {
     
     var proxy = Proxy()
@@ -15,10 +16,10 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     let ref = FIRDatabase.database().reference()
     var unreadRef = FIRDatabaseReference()
     var unreadRefHandle = FIRDatabaseHandle()
-    var convosRef = FIRDatabaseReference()
-    var convosRefHandle = FIRDatabaseHandle()
     var nicknameRef = FIRDatabaseReference()
     var nicknameRefHandle = FIRDatabaseHandle()
+    var convosRef = FIRDatabaseReference()
+    var convosRefHandle = FIRDatabaseHandle()
     var convos = [Convo]()
     var convo = Convo()
     var nickname = ""
@@ -43,7 +44,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         super.viewDidAppear(true)
         
         self.tabBarController?.tabBar.hidden = false
-  
+        
         if shouldShowConvo {
             let convoViewController = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.ConvoViewController) as! ConvoViewController
             convoViewController.convo = convo
@@ -56,8 +57,8 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     
     deinit {
         unreadRef.removeObserverWithHandle(unreadRefHandle)
-        convosRef.removeObserverWithHandle(convosRefHandle)
         nicknameRef.removeObserverWithHandle(nicknameRefHandle)
+        convosRef.removeObserverWithHandle(convosRefHandle)
     }
     
     // MARK: - Database
@@ -67,6 +68,15 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
             //            if let unread = snapshot.value as? Int {
             //                self.navigationItem.title = "\(self.proxy.key) \(unread.unreadTitleSuffix())"
             //            }
+        })
+    }
+    
+    func observeNickname() {
+        nicknameRef = ref.child("proxies").child(proxy.owner).child(proxy.key).child("nickname")
+        nicknameRefHandle = nicknameRef.observeEventType(.Value, withBlock: { (snapshot) in
+            if let nickname = snapshot.value as? String {
+                self.nickname = nickname
+            }
         })
     }
     
@@ -81,15 +91,6 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
             }
             self.convos = convos.reverse()
             self.tableView.reloadData()
-        })
-    }
-    
-    func observeNickname() {
-        nicknameRef = ref.child("proxies").child(proxy.owner).child(proxy.key).child("nickname")
-        nicknameRefHandle = nicknameRef.observeEventType(.Value, withBlock: { (snapshot) in
-            if let nickname = snapshot.value as? String {
-                self.nickname = nickname
-            }
         })
     }
     
@@ -156,7 +157,6 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
             cell.selectionStyle = .None
             cell.proxy = proxy
             cell.nicknameButton.addTarget(self, action: #selector(ProxyInfoTableViewController.editNickname), forControlEvents: .TouchUpInside)
-            cell.editIconButton.addTarget(self, action: #selector(ProxyInfoTableViewController.editIcon), forControlEvents: .TouchUpInside)
             return cell
             
         // This proxy's convos
@@ -198,15 +198,11 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
             let nickname = alert.textFields![0].text
             let trim = nickname!.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
             if !(nickname != "" && trim == "") {
-                self.api.updateProxyNickname(self.proxy, convos: self.convos, nickname: nickname!)
+                self.api.updateNickname(self.proxy, convos: self.convos, nickname: nickname!)
             }
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
         self.presentViewController(alert, animated: true, completion: nil)
-    }
-    
-    func editIcon() {
-        
     }
     
     // MARK: - Select proxy view controller delegate
@@ -225,8 +221,10 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
                 dest.hidesBottomBarWhenPushed = true
             }
         case "Icon Picker Segue":
-                let dest = self.storyboard!.instantiateViewControllerWithIdentifier("Icon Picker Collection View Controller") as! IconPickerCollectionViewController
+            if let dest = segue.destinationViewController as? IconPickerCollectionViewController {
                 dest.proxy = proxy
+                dest.convos = convos
+            }
         default:
             return
         }
