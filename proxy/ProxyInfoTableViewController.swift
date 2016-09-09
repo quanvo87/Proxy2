@@ -17,19 +17,20 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     var unreadRefHandle = FIRDatabaseHandle()
     var convosRef = FIRDatabaseReference()
     var convosRefHandle = FIRDatabaseHandle()
+    var nicknameRef = FIRDatabaseReference()
+    var nicknameRefHandle = FIRDatabaseHandle()
     var convos = [Convo]()
     var convo = Convo()
+    var nickname = ""
     var shouldShowConvo = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.navigationItem.title = self.proxy.key
-        
-        tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: Constants.Identifiers.BasicCell)
-        
+        setUp()
         observeUnread()
         observeConvos()
+        observeNickname()
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -50,18 +51,28 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     deinit {
         unreadRef.removeObserverWithHandle(unreadRefHandle)
         convosRef.removeObserverWithHandle(convosRefHandle)
+        nicknameRef.removeObserverWithHandle(nicknameRefHandle)
+    }
+
+    func setUp() {
+        tableView.delaysContentTouches = false
+        for case let scrollView as UIScrollView in tableView.subviews {
+            scrollView.delaysContentTouches = false
+        }
+        //        edgesForExtendedLayout = .All
+        //        tableView.contentInset = UIEdgeInsetsMake(0, 0, CGRectGetHeight(self.tabBarController!.tabBar.frame), 0)
     }
     
     // MARK: - Database
     func observeUnread() {
         unreadRef = ref.child("unread").child(proxy.key)
         unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { snapshot in
-            if let unread = snapshot.value as? Int {
-                self.navigationItem.title = "\(self.proxy.key) \(unread.unreadTitleSuffix())"
-            }
+            //            if let unread = snapshot.value as? Int {
+            //                self.navigationItem.title = "\(self.proxy.key) \(unread.unreadTitleSuffix())"
+            //            }
         })
     }
-
+    
     func observeConvos() {
         convosRef = ref.child("convos").child(proxy.key)
         convosRefHandle = convosRef.queryOrderedByChild("timestamp").observeEventType(.Value, withBlock: { (snapshot) in
@@ -76,38 +87,61 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         })
     }
     
+    func observeNickname() {
+        nicknameRef = ref.child("proxies").child(proxy.owner).child(proxy.key).child("nickname")
+        nicknameRefHandle = nicknameRef.observeEventType(.Value, withBlock: { (snapshot) in
+            if let nickname = snapshot.value as? String {
+                self.nickname = nickname
+            }
+        })
+    }
+    
     override func scrollViewWillBeginDragging(scrollView: UIScrollView) {
         view.endEditing(true)
     }
     
     // MARK: - Table view delegate
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 3
+        return 2
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0: return 1
-        case 1: return 1
-        case 2: return convos.count
+        case 1: return convos.count
+        default: return 0
+        }
+    }
+    
+    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        switch section {
+        case 0: return CGFloat.min
+        case 1: return 15
         default: return 0
         }
     }
     
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
-        case 0: return "NICKNAME - only you see this"
-        case 2: return "CONVERSATIONS"
+        case 1: return "CONVERSATIONS"
         default: return nil
+        }
+    }
+    
+    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        switch indexPath.section {
+        case 0:
+            return 140
+        default:
+            return UITableViewAutomaticDimension
         }
     }
     
     override func tableView(tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         switch section {
-        case 1: return "Users are not notified when you delete your Proxy."
-        case 2:
+        case 1:
             if convos.count == 0 {
-                return "No conversations yet. Start one with the 'New' button in the top right!"
+                return "No conversations yet. Start one with the 'New Message' button on the top right!"
             } else {
                 return nil
             }
@@ -115,49 +149,21 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         }
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
-        switch indexPath.section {
-        case 1:
-            switch indexPath.row {
-            case 0:
-                confirmDelete()
-            default: return
-            }
-        default: return
-        }
-    }
-    
     // MARK: - Table view data source
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        
         switch indexPath.section {
             
         // Nickname
         case 0:
-            let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.ProxyNicknameCell, forIndexPath: indexPath) as! ProxyNicknameCell
-            switch indexPath.row {
-            case 0:
-                cell.proxyAndConvo = (proxy, convos)
-                cell.selectionStyle = .None
-                return cell
-            default: break
-            }
-            
-        // Delete
-        case 1:
-            let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.BasicCell, forIndexPath: indexPath)
-            switch indexPath.row {
-            case 0:
-                cell.textLabel?.text = "Delete"
-                cell.textLabel?.textColor = UIColor.redColor()
-                cell.textLabel!.font = UIFont.systemFontOfSize(17, weight: UIFontWeightUltraLight)
-                return cell
-            default: break
-            }
+            let cell = tableView.dequeueReusableCellWithIdentifier("Proxy Info Header Cell", forIndexPath: indexPath) as! ProxyInfoHeaderCell
+            cell.selectionStyle = .None
+            cell.proxy = proxy
+            cell.nicknameButton.addTarget(self, action: #selector(ProxyInfoTableViewController.editNickname), forControlEvents: .TouchUpInside)
+            cell.editIconButton.addTarget(self, action: #selector(ProxyInfoTableViewController.editIcon), forControlEvents: .TouchUpInside)
+            return cell
             
         // This proxy's convos
-        case 2:
+        case 1:
             let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.ProxyCell, forIndexPath: indexPath) as! ProxyCell
             let convo = self.convos[indexPath.row]
             cell.titleLabel.attributedText = convoTitle(convo.convoNickname, proxyNickname: convo.proxyNickname, you: convo.senderProxy, them: convo.receiverProxy, size: 13, navBar: false)
@@ -180,6 +186,31 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         alert.addAction(deleteAction)
         alert.addAction(cancelAction)
         self.presentViewController(alert, animated: true, completion: nil)
+    }
+    
+    func editNickname() {
+        let alert = UIAlertController(title: "Edit Nickname", message: "Only you see your nickname.", preferredStyle: .Alert)
+        alert.addTextFieldWithConfigurationHandler({ (textField) -> Void in
+            textField.placeholder = "Enter A Nickname"
+            textField.text = self.nickname
+            textField.autocorrectionType = .Yes
+            textField.autocapitalizationType = .Sentences
+            textField.clearButtonMode = .WhileEditing
+            textField.selectedTextRange = textField.textRangeFromPosition(textField.beginningOfDocument, toPosition: textField.endOfDocument)
+        })
+        alert.addAction(UIAlertAction(title: "Save", style: .Default, handler: { (action) -> Void in
+            let nickname = alert.textFields![0].text
+            let trim = nickname!.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
+            if !(nickname != "" && trim == "") {
+                self.api.updateProxyNickname(self.proxy, convos: self.convos, nickname: nickname!)
+            }
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
+    
+    func editIcon() {
+        
     }
     
     // MARK: - Select proxy view controller delegate

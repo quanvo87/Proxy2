@@ -35,74 +35,8 @@ class API {
     
     /// Gives a user access to the default icons.
     func setIcons(id: String) {
-        ref.updateChildValues([
-            "/icons/\(id)/Aquarium-40": true,
-            "/icons/\(id)/Astronaut Helmet-40": true,
-            "/icons/\(id)/Babys Room-40": true,
-            "/icons/\(id)/Badminton-40": true,
-            "/icons/\(id)/Banana Split-40": true,
-            "/icons/\(id)/Banana-40": true,
-            "/icons/\(id)/Beer-40": true,
-            "/icons/\(id)/Bird-40": true,
-            "/icons/\(id)/Carrot-40": true,
-            "/icons/\(id)/Cat Profile-40": true,
-            "/icons/\(id)/Cat-40": true,
-            "/icons/\(id)/Cheese-40": true,
-            "/icons/\(id)/Cherry-40": true,
-            "/icons/\(id)/Chili Pepper-40": true,
-            "/icons/\(id)/Cinnamon Roll-40": true,
-            "/icons/\(id)/Coconut Cocktail-40": true,
-            "/icons/\(id)/Coffee Pot-40": true,
-            "/icons/\(id)/Cookies-40": true,
-            "/icons/\(id)/Corgi-40": true,
-            "/icons/\(id)/Crab-40": true,
-            "/icons/\(id)/Crystal-40": true,
-            "/icons/\(id)/Dog-40": true,
-            "/icons/\(id)/Dolphin-40": true,
-            "/icons/\(id)/Doughnut-40": true,
-            "/icons/\(id)/Duck-40": true,
-            "/icons/\(id)/Eggplant-40": true,
-            "/icons/\(id)/Einstein-40": true,
-            "/icons/\(id)/Elephant-40": true,
-            "/icons/\(id)/Flying Stork With Bundle-40": true,
-            "/icons/\(id)/Gold Pot-40": true,
-            "/icons/\(id)/Gorilla-40": true,
-            "/icons/\(id)/Grapes-40": true,
-            "/icons/\(id)/Grill-40": true,
-            "/icons/\(id)/Hamburger-40": true,
-            "/icons/\(id)/Hazelnut-40": true,
-            "/icons/\(id)/Heart Balloon-40": true,
-            "/icons/\(id)/Hornet Hive-40": true,
-            "/icons/\(id)/Horse-40": true,
-            "/icons/\(id)/Ice Cream Cone-40": true,
-            "/icons/\(id)/Kangaroo-40": true,
-            "/icons/\(id)/Kiwi-40": true,
-            "/icons/\(id)/Pancake-40": true,
-            "/icons/\(id)/Panda-40": true,
-            "/icons/\(id)/Pig With Lipstick-40": true,
-            "/icons/\(id)/Pineapple-40": true,
-            "/icons/\(id)/Pizza-40": true,
-            "/icons/\(id)/Pokeball-40": true,
-            "/icons/\(id)/Pokemon-40": true,
-            "/icons/\(id)/Prawn-40": true,
-            "/icons/\(id)/Puffin Bird-40": true,
-            "/icons/\(id)/Rainbow-40": true,
-            "/icons/\(id)/Rhinoceros-40": true,
-            "/icons/\(id)/Rice Bowl-40": true,
-            "/icons/\(id)/Running Rabbit-40": true,
-            "/icons/\(id)/Seahorse-40": true,
-            "/icons/\(id)/Shark-40": true,
-            "/icons/\(id)/Starfish-40": true,
-            "/icons/\(id)/Strawberry-40": true,
-            "/icons/\(id)/Super Mario-40": true,
-            "/icons/\(id)/Taco-40": true,
-            "/icons/\(id)/Targaryen House-40": true,
-            "/icons/\(id)/Thanksgiving-40": true,
-            "/icons/\(id)/Tomato-40": true,
-            "/icons/\(id)/Turtle-40": true,
-            "/icons/\(id)/Unicorn-40": true,
-            "/icons/\(id)/US Airborne-40": true,
-            "/icons/\(id)/Watermelon-40": true])
+        let defaultIcons = DefaultIcons(id: id).defaultIcons
+        ref.updateChildValues(defaultIcons as! [NSObject : AnyObject])
     }
     
     // MARK: - The Proxy
@@ -143,7 +77,7 @@ class API {
         let globalKey = ref.child("proxies").childByAutoId().key
         let key = proxyNameGenerator.generateProxyName()
         let icon = getRandomIcon()
-        let proxy = Proxy(globalKey: globalKey, key: key, icon: icon)
+        let proxy = Proxy(globalKey: globalKey, key: key, owner: uid, icon: icon)
         ref.child("proxies").child(globalKey).setValue(proxy.toAnyObject())
         ref.child("proxies").queryOrderedByChild("key").queryEqualToValue(key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
             if snapshot.childrenCount == 1 {
@@ -374,11 +308,11 @@ class API {
      
      if !receiverDeletedProxy && !receiverBlocking
      - unread
+     - proxy
      
      if !receiverDeletedProxy
      - convo
      - proxy convo
-     - proxy
      - `Messages Received`
      
      Neutral side:
@@ -400,18 +334,18 @@ class API {
         _convo.leftConvo = false
         updateConvo(_convo)
         updateProxyConvo(_convo)
-        updateProxyTimestamp(convo.senderId, proxy: convo.senderProxy, timestamp: timestamp)
+        updateProxy(convo.senderId, proxy: convo.senderProxy, timestamp: timestamp)
         incrementMessagesSent(convo.senderId)
         
         // Receiver updates
         if !convo.receiverDeletedProxy && !convo.receiverIsBlocking {
             incrementUnread(convo.receiverId)
+            updateProxyIncludingUnread(convo.receiverId, proxy: convo.receiverProxy, timestamp: timestamp)
         }
         
         if !convo.receiverDeletedProxy {
             updateConvo(convo.receiverId, convo: convo.key, message: messageText, timestamp: timestamp)
             updateProxyConvo(convo.receiverProxy, convo: convo.key, message: messageText, timestamp: timestamp)
-            updateProxyTimestamp(convo.receiverId, proxy: convo.receiverProxy, timestamp: timestamp)
             incrementMessagesReceived(convo.receiverId)
         }
         
@@ -462,8 +396,21 @@ class API {
         })
     }
     
-    func updateProxyTimestamp(id: String, proxy: String, timestamp: Double) {
+    func updateProxy(id: String, proxy: String, timestamp: Double) {
         ref.child("proxies").child(id).child(proxy).child("timestamp").setValue(timestamp)
+    }
+    
+    func updateProxyIncludingUnread(id: String, proxy: String, timestamp: Double) {
+        self.ref.child("proxies").child(id).child(proxy).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+            if var proxy = currentData.value as? [String: AnyObject] {
+                let unread = proxy["unread"] as? Int ?? 0
+                proxy["unread"] = unread + 1
+                proxy["timestamp"] = timestamp
+                currentData.value = proxy
+                return FIRTransactionResult.successWithValue(currentData)
+            }
+            return FIRTransactionResult.successWithValue(currentData)
+        })
     }
     
     func incremementProxiesInteractedWith(id: String) {

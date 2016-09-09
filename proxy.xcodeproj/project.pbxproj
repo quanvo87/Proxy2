@@ -24,6 +24,8 @@
 		14383B5D1D7B81530086CA6C /* ConvoInfoTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14383B5C1D7B81530086CA6C /* ConvoInfoTableViewController.swift */; };
 		14383B5F1D7B835C0086CA6C /* ConvoNicknameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14383B5E1D7B835C0086CA6C /* ConvoNicknameCell.swift */; };
 		143F76FA1D72C0C100EF305F /* SelectProxyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 143F76F91D72C0C100EF305F /* SelectProxyViewController.swift */; };
+		147B5C381D82736700D18C73 /* ProxyInfoHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147B5C371D82736700D18C73 /* ProxyInfoHeaderCell.swift */; };
+		147B5C3A1D82891300D18C73 /* DefaultIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147B5C391D82891300D18C73 /* DefaultIcons.swift */; };
 		14A6F17B1D68D5F20015431E /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F17A1D68D5F20015431E /* SettingsViewController.swift */; };
 		14A6F17F1D68D8020015431E /* SettingsItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F17E1D68D8020015431E /* SettingsItems.swift */; };
 		14A6F1811D68D8160015431E /* SettingsItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F1801D68D8160015431E /* SettingsItem.swift */; };
@@ -63,6 +65,8 @@
 		14383B5C1D7B81530086CA6C /* ConvoInfoTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvoInfoTableViewController.swift; sourceTree = "<group>"; };
 		14383B5E1D7B835C0086CA6C /* ConvoNicknameCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvoNicknameCell.swift; sourceTree = "<group>"; };
 		143F76F91D72C0C100EF305F /* SelectProxyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectProxyViewController.swift; sourceTree = "<group>"; };
+		147B5C371D82736700D18C73 /* ProxyInfoHeaderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyInfoHeaderCell.swift; sourceTree = "<group>"; };
+		147B5C391D82891300D18C73 /* DefaultIcons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultIcons.swift; sourceTree = "<group>"; };
 		14A6F17A1D68D5F20015431E /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		14A6F17E1D68D8020015431E /* SettingsItems.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsItems.swift; sourceTree = "<group>"; };
 		14A6F1801D68D8160015431E /* SettingsItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsItem.swift; sourceTree = "<group>"; };
@@ -117,6 +121,7 @@
 			isa = PBXGroup;
 			children = (
 				1415611E1D62A8A3002022BC /* ProxyCell.swift */,
+				147B5C371D82736700D18C73 /* ProxyInfoHeaderCell.swift */,
 				14383B531D791C7B0086CA6C /* ProxyNicknameCell.swift */,
 				14383B5E1D7B835C0086CA6C /* ConvoNicknameCell.swift */,
 			);
@@ -174,6 +179,7 @@
 				1415610C1D620DB7002022BC /* API.swift */,
 				1420299F1D812859008B29DB /* ErrorAlert.swift */,
 				14A6F1931D6CF1410015431E /* ProxyNameGenerator.swift */,
+				147B5C391D82891300D18C73 /* DefaultIcons.swift */,
 				14383B591D7B0CB60086CA6C /* NSDate+NVTimeAgo.h */,
 				14383B5A1D7B0CB60086CA6C /* NSDate+NVTimeAgo.m */,
 				14E19A411D60EF100030B366 /* AppDelegate.swift */,
@@ -393,6 +399,7 @@
 				142029A01D812859008B29DB /* ErrorAlert.swift in Sources */,
 				14383B251D7555670086CA6C /* ConvoViewController.swift in Sources */,
 				14383B171D73D42E0086CA6C /* Convo.swift in Sources */,
+				147B5C3A1D82891300D18C73 /* DefaultIcons.swift in Sources */,
 				14E19A5C1D612CE80030B366 /* Extensions.swift in Sources */,
 				14A6F1831D68E4E00015431E /* SettingsTableViewCell.swift in Sources */,
 				1415611F1D62A8A3002022BC /* ProxyCell.swift in Sources */,
@@ -405,6 +412,7 @@
 				14A6F1811D68D8160015431E /* SettingsItem.swift in Sources */,
 				14E19A5E1D6148700030B366 /* LogInViewController.swift in Sources */,
 				14A6F18E1D6BDA880015431E /* Constants.swift in Sources */,
+				147B5C381D82736700D18C73 /* ProxyInfoHeaderCell.swift in Sources */,
 				14A6F19C1D6F963B0015431E /* HomeViewController.swift in Sources */,
 				14A6F17F1D68D8020015431E /* SettingsItems.swift in Sources */,
 				14265B7C1D63029200B65793 /* NewProxyViewController.swift in Sources */,
