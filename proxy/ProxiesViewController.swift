@@ -15,8 +15,8 @@ class ProxiesViewController: UIViewController, UITableViewDataSource, UITableVie
     let api = API.sharedInstance
     let ref = FIRDatabase.database().reference()
     var proxiesRef = FIRDatabaseReference()
-    var unreadRef = FIRDatabaseReference()
     var proxiesRefHandle = FIRDatabaseHandle()
+    var unreadRef = FIRDatabaseReference()
     var unreadRefHandle = FIRDatabaseHandle()
     var proxies = [Proxy]()
     var convo = Convo()
@@ -77,7 +77,7 @@ class ProxiesViewController: UIViewController, UITableViewDataSource, UITableVie
     // MARK: - Database
     
     func observeUnread() {
-        unreadRef = ref.child("users").child(api.uid).child("unread")
+        unreadRef = ref.child("unread").child(api.uid)
         unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { snapshot in
             if let unread = snapshot.value as? Int {
                 self.navigationItem.title = "Proxies \(unread.unreadTitleSuffix())"
@@ -86,7 +86,7 @@ class ProxiesViewController: UIViewController, UITableViewDataSource, UITableVie
     }
     
     func observeProxies() {
-        proxiesRef = ref.child("users").child(api.uid).child("proxies")
+        proxiesRef = ref.child("proxies").child(api.uid)
         proxiesRefHandle = proxiesRef.queryOrderedByChild("timestamp").observeEventType(.Value, withBlock: { snapshot in
             var proxies = [Proxy]()
             for child in snapshot.children {

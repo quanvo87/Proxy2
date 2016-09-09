@@ -28,10 +28,6 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: Constants.Identifiers.BasicCell)
         
-        // For dynamic cell heights
-        tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.estimatedRowHeight = 80
-        
         observeUnread()
         observeConvos()
     }
@@ -39,12 +35,8 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(true)
         
-        // The convo VC needs to hide the tab bar in order for its text input
-        // bar to work, so we unhide it again here.
         self.tabBarController?.tabBar.hidden = false
         
-        // Goes to the convo if returning to this view from just sending a
-        // message.
         if shouldShowConvo {
             let convoViewController = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.ConvoViewController) as! ConvoViewController
             convoViewController.convo = convo
@@ -60,18 +52,16 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         convosRef.removeObserverWithHandle(convosRefHandle)
     }
     
-    // Observe the unread count for this proxy and keep the title updated
+    // MARK: - Database
     func observeUnread() {
-        unreadRef = ref.child("convos").child(proxy.key).child("unread")
+        unreadRef = ref.child("unread").child(proxy.key)
         unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { snapshot in
             if let unread = snapshot.value as? Int {
                 self.navigationItem.title = "\(self.proxy.key) \(unread.unreadTitleSuffix())"
             }
         })
     }
-    
-    // Observe the convos for this proxy
-    // Users can tap these cells to go directly to the convo
+
     func observeConvos() {
         convosRef = ref.child("convos").child(proxy.key)
         convosRefHandle = convosRef.queryOrderedByChild("timestamp").observeEventType(.Value, withBlock: { (snapshot) in
@@ -86,13 +76,11 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         })
     }
     
-    // To dismiss keyboard when user drags down on the view
     override func scrollViewWillBeginDragging(scrollView: UIScrollView) {
         view.endEditing(true)
     }
     
     // MARK: - Table view delegate
-    
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 3
     }
@@ -141,26 +129,22 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     }
     
     // MARK: - Table view data source
-    
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         switch indexPath.section {
             
-        // The nickname editor cell
+        // Nickname
         case 0:
             let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.ProxyNicknameCell, forIndexPath: indexPath) as! ProxyNicknameCell
             switch indexPath.row {
             case 0:
                 cell.proxyAndConvo = (proxy, convos)
-                
-                // Needed in order for text field inside a cell to work
                 cell.selectionStyle = .None
                 return cell
-                
             default: break
             }
             
-        // The delete cell
+        // Delete
         case 1:
             let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.BasicCell, forIndexPath: indexPath)
             switch indexPath.row {
@@ -169,11 +153,10 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
                 cell.textLabel?.textColor = UIColor.redColor()
                 cell.textLabel!.font = UIFont.systemFontOfSize(17, weight: UIFontWeightUltraLight)
                 return cell
-                
             default: break
             }
             
-        // The table view of convos that the user can tap to enter into
+        // This proxy's convos
         case 2:
             let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.ProxyCell, forIndexPath: indexPath) as! ProxyCell
             let convo = self.convos[indexPath.row]
@@ -182,16 +165,11 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
             cell.messageLabel.text = convo.message
             cell.unreadLabel.text = convo.unread.unreadFormatted()
             return cell
-            
         default: break
         }
-        
         return UITableViewCell()
     }
     
-    // If user confirms, make a call to the API to do the work to delete the 
-    // proxy and then go back to the proxy browsing screen. This proxy will be
-    // gone and inaccessible afterwards.
     func confirmDelete() {
         let alert = UIAlertController(title: "Delete Proxy?", message: "You will not be able to see this proxy or its conversations again. Other users are not notified.", preferredStyle: .Alert)
         let deleteAction = UIAlertAction(title: "Delete", style: .Destructive, handler: { (void) in
@@ -205,18 +183,12 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     }
     
     // MARK: - Select proxy view controller delegate
-    
-    // Communication from the new message VC if the user sends a message from
-    // this tab. Helps this VC know that it should transition to the convo.
     func showNewConvo(convo: Convo) {
         self.convo = convo
         shouldShowConvo = true
     }
     
     // MARK: - Navigation
-    
-    // Sets the appropriate data depending on if the user is sending a new
-    // message or going into an exisiting one from this VC.
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         switch segue.identifier! {
         case Constants.Segues.ConvoSegue:

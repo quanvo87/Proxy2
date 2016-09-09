@@ -1,5 +1,5 @@
 //
-//  MessagesViewController.swift
+//  HomeViewController.swift
 //  proxy
 //
 //  Created by Quan Vo on 8/25/16.
@@ -10,13 +10,13 @@ import FirebaseAuth
 import FirebaseDatabase
 import FirebaseStorage
 
-class MessagesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, NewMessageViewControllerDelegate {
+class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, NewMessageViewControllerDelegate {
     
     let api = API.sharedInstance
     let ref = FIRDatabase.database().reference()
     var convosRef = FIRDatabaseReference()
-    var unreadRef = FIRDatabaseReference()
     var convosRefHandle = FIRDatabaseHandle()
+    var unreadRef = FIRDatabaseReference()
     var unreadRefHandle = FIRDatabaseHandle()
     var convos = [Convo]()
     var convo = Convo()
@@ -74,14 +74,14 @@ class MessagesViewController: UIViewController, UITableViewDataSource, UITableVi
         // New Message Button
         let newMessageButton = UIButton(type: .Custom)
         newMessageButton.setImage(UIImage(named: "new-message.png"), forState: UIControlState.Normal)
-        newMessageButton.addTarget(self, action: #selector(MessagesViewController.tapNewMessageButton), forControlEvents: UIControlEvents.TouchUpInside)
+        newMessageButton.addTarget(self, action: #selector(HomeViewController.tapNewMessageButton), forControlEvents: UIControlEvents.TouchUpInside)
         newMessageButton.frame = CGRectMake(0, 0, 24, 24)
         let newMessageBarButton = UIBarButtonItem(customView: newMessageButton)
         
         // New Proxy Button
         let newProxyButton = UIButton(type: .Custom)
         newProxyButton.setImage(UIImage(named: "new-proxy.png"), forState: UIControlState.Normal)
-        newProxyButton.addTarget(self, action: #selector(MessagesViewController.tapNewProxyButton), forControlEvents: UIControlEvents.TouchUpInside)
+        newProxyButton.addTarget(self, action: #selector(HomeViewController.tapNewProxyButton), forControlEvents: UIControlEvents.TouchUpInside)
         newProxyButton.frame = CGRectMake(0, 0, 26, 26)
         let newProxyBarButton = UIBarButtonItem(customView: newProxyButton)
         
@@ -91,7 +91,7 @@ class MessagesViewController: UIViewController, UITableViewDataSource, UITableVi
     // MARK: - Database
     
     func observeUnread() {
-        unreadRef = ref.child("users").child(api.uid).child("unread")
+        unreadRef = ref.child("unread").child(api.uid)
         unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
             if let unread = snapshot.value as? Int {
                 self.title = "Home \(unread.unreadTitleSuffix())"
@@ -100,7 +100,7 @@ class MessagesViewController: UIViewController, UITableViewDataSource, UITableVi
     }
     
     func observeConvos() {
-        convosRef = ref.child("users").child(api.uid).child("convos")
+        convosRef = ref.child("convos").child(api.uid)
         convosRefHandle = convosRef.queryOrderedByChild("timestamp").observeEventType(.Value, withBlock: { (snapshot) in
             var convos = [Convo]()
             for child in snapshot.children {

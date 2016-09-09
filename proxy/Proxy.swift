@@ -20,10 +20,11 @@ struct Proxy {
     
     init() {}
     
-    init(globalKey: String, key: String) {
+    init(globalKey: String, key: String, icon: String) {
         self.globalKey = globalKey
         self.key = key
         self.owner = api.uid
+        self.icon = icon
     }
     
     init(anyObject: AnyObject) {

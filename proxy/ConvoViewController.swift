@@ -71,10 +71,6 @@ class ConvoViewController: JSQMessagesViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewDidDisappear(true)
         navigationItem.title = convo.receiverProxy
-    }
-    
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(true)
         self.tabBarController?.tabBar.hidden = true
     }
     
@@ -105,7 +101,7 @@ class ConvoViewController: JSQMessagesViewController {
     // Watch the database for nickname changes to this convo. When they happen,
     // update the title of the view to reflect them.
     func observeNickname() {
-        nicknameRef = ref.child("users").child(api.uid).child("convos").child(convo.key).child("convoNickname")
+        nicknameRef = ref.child("convos").child(api.uid).child(convo.key).child("convoNickname")
         nicknameRefHandle = nicknameRef.observeEventType(.Value, withBlock: { snapshot in
             if let nickname = snapshot.value as? String {
                 self.convo.convoNickname = nickname
@@ -116,7 +112,7 @@ class ConvoViewController: JSQMessagesViewController {
     
     // Observe the user's proxy to keep note of changes and update the title
     func observeProxy() {
-        proxyRef = ref.child("users").child(api.uid).child("proxies").child(convo.senderProxy).child("nickname")
+        proxyRef = ref.child("proxies").child(api.uid).child(convo.senderProxy).child("nickname")
         proxyRefHandle = proxyRef.observeEventType(.Value, withBlock: { snapshot in
             if let nickname = snapshot.value as? String {
                 self.convo.proxyNickname = nickname
@@ -138,7 +134,7 @@ class ConvoViewController: JSQMessagesViewController {
      API to do the decrementing.
      */
     func observeUnread() {
-        unreadRef = ref.child("users").child(convo.senderId).child("convos").child(convo.key).child("unread")
+        unreadRef = ref.child("convos").child(convo.senderId).child(convo.key).child("unread")
         unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
             if let unread = snapshot.value as? Int {
                 if unread != 0 {
@@ -247,7 +243,7 @@ class ConvoViewController: JSQMessagesViewController {
         userTyping = textView.text != ""
     }
     
-    // MARK: - Text view
+    // MARK: - Navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == Constants.Segues.ConvoDetailSegue {
             if let dest = segue.destinationViewController as? ConvoInfoTableViewController {

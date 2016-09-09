@@ -32,7 +32,7 @@ class SelectProxyViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     func configureDatabase() {
-        proxiesRef = ref.child("users").child(api.uid).child("proxies")
+        proxiesRef = ref.child("proxies").child(api.uid)
         proxiesRefHandle = proxiesRef.queryOrderedByChild("timestamp").observeEventType(.Value, withBlock: { snapshot in
             var proxies = [Proxy]()
             for child in snapshot.children {

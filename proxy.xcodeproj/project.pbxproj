@@ -31,7 +31,7 @@
 		14A6F18E1D6BDA880015431E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F18D1D6BDA880015431E /* Constants.swift */; };
 		14A6F1901D6C21ED0015431E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 14A6F18F1D6C21ED0015431E /* GoogleService-Info.plist */; };
 		14A6F1941D6CF1410015431E /* ProxyNameGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F1931D6CF1410015431E /* ProxyNameGenerator.swift */; };
-		14A6F19C1D6F963B0015431E /* MessagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F19B1D6F963B0015431E /* MessagesViewController.swift */; };
+		14A6F19C1D6F963B0015431E /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F19B1D6F963B0015431E /* HomeViewController.swift */; };
 		14A6F1A21D6FB5090015431E /* NewMessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F1A11D6FB5090015431E /* NewMessageViewController.swift */; };
 		14E19A421D60EF100030B366 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E19A411D60EF100030B366 /* AppDelegate.swift */; };
 		14E19A471D60EF100030B366 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 14E19A451D60EF100030B366 /* Main.storyboard */; };
@@ -70,7 +70,7 @@
 		14A6F18D1D6BDA880015431E /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		14A6F18F1D6C21ED0015431E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		14A6F1931D6CF1410015431E /* ProxyNameGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyNameGenerator.swift; sourceTree = "<group>"; };
-		14A6F19B1D6F963B0015431E /* MessagesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesViewController.swift; sourceTree = "<group>"; };
+		14A6F19B1D6F963B0015431E /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		14A6F1A11D6FB5090015431E /* NewMessageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewMessageViewController.swift; sourceTree = "<group>"; };
 		14E19A3E1D60EF100030B366 /* proxy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = proxy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		14E19A411D60EF100030B366 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -134,7 +134,7 @@
 		143F76F41D72BE1D00EF305F /* Messages */ = {
 			isa = PBXGroup;
 			children = (
-				14A6F19B1D6F963B0015431E /* MessagesViewController.swift */,
+				14A6F19B1D6F963B0015431E /* HomeViewController.swift */,
 				14A6F1A11D6FB5090015431E /* NewMessageViewController.swift */,
 				14383B261D755C300086CA6C /* NewMessageViewControllerDelegate.swift */,
 				143F76F91D72C0C100EF305F /* SelectProxyViewController.swift */,
@@ -405,7 +405,7 @@
 				14A6F1811D68D8160015431E /* SettingsItem.swift in Sources */,
 				14E19A5E1D6148700030B366 /* LogInViewController.swift in Sources */,
 				14A6F18E1D6BDA880015431E /* Constants.swift in Sources */,
-				14A6F19C1D6F963B0015431E /* MessagesViewController.swift in Sources */,
+				14A6F19C1D6F963B0015431E /* HomeViewController.swift in Sources */,
 				14A6F17F1D68D8020015431E /* SettingsItems.swift in Sources */,
 				14265B7C1D63029200B65793 /* NewProxyViewController.swift in Sources */,
 				14A6F17B1D68D5F20015431E /* SettingsViewController.swift in Sources */,

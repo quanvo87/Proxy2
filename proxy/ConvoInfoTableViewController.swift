@@ -21,12 +21,10 @@ class ConvoInfoTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.edgesForExtendedLayout = .All
-        self.tableView.contentInset = UIEdgeInsetsMake(0, 0, CGRectGetHeight(self.tabBarController!.tabBar.frame), 0)
+        setUpUI()
         
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: Constants.Identifiers.BasicCell)
         
-        navigationItem.title = "Conversation"
 //        setTitle()
 //        observeNickname()
 //        observeProxy()
@@ -46,6 +44,13 @@ class ConvoInfoTableViewController: UITableViewController {
         proxyRef.removeObserverWithHandle(proxyRefHandle)
     }
     
+    func setUpUI() {
+        navigationItem.title = "Conversation"
+        self.edgesForExtendedLayout = .All
+        self.tableView.contentInset = UIEdgeInsetsMake(0, 0, CGRectGetHeight(self.tabBarController!.tabBar.frame), 0)
+    }
+    
+    
     // A custom two-line title showing the participants of the convo.
     // Prioritizes nicknames, and gets updated when the user changes the convo's
     // nickname on this same screen.
@@ -62,7 +67,7 @@ class ConvoInfoTableViewController: UITableViewController {
     // Watch the database for nickname changes to this convo. When they happen,
     // update the title of the view to reflect them.
     func observeNickname() {
-        nicknameRef = ref.child("users").child(api.uid).child("convos").child(convo.key).child("convoNickname")
+        nicknameRef = ref.child("convos").child(api.uid).child(convo.key).child("convoNickname")
         nicknameRefHandle = nicknameRef.observeEventType(.Value, withBlock: { snapshot in
             if let nickname = snapshot.value as? String {
                 self.convo.convoNickname = nickname
@@ -74,7 +79,7 @@ class ConvoInfoTableViewController: UITableViewController {
     // Observe the user's proxy to keep note of changes and update the title
     // and 'you' cell
     func observeProxy() {
-        proxyRef = ref.child("users").child(api.uid).child("proxies").child(convo.senderProxy).child("nickname")
+        proxyRef = ref.child("proxies").child(api.uid).child(convo.senderProxy).child("nickname")
         proxyRefHandle = proxyRef.observeEventType(.Value, withBlock: { snapshot in
             if let nickname = snapshot.value as? String {
                 self.convo.proxyNickname = nickname
@@ -250,9 +255,9 @@ class ConvoInfoTableViewController: UITableViewController {
     // the proxy VC
     func goToProxy() {
         // Lock the UI
-        api.getProxyWithName(convo.senderProxy) { (success, proxy) in
+        api.getProxy(convo.senderProxy) { (proxy) in
             // Unlock the UI
-            if success {
+            if let proxy = proxy {
                 // transition to proxy
                 let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.ProxyInfoTableViewController) as! ProxyInfoTableViewController
                 dest.proxy = proxy

@@ -41,7 +41,7 @@ class NewProxyViewController: UIViewController, UITextFieldDelegate {
     
     @IBAction func tapRerollButton(sender: AnyObject) {
         disableButtons()
-        api.rerollProxy(proxy!) { (proxy) in
+        api.reroll(proxy!) { (proxy) in
             self.setProxy(proxy)
         }
     }
@@ -105,7 +105,7 @@ class NewProxyViewController: UIViewController, UITextFieldDelegate {
     @IBAction func tapCancelButton(sender: AnyObject) {
         view.endEditing(true)
         if let proxy = proxy {
-            api.cancelCreateProxy(proxy)
+            api.cancelCreating(proxy)
         }
         dismissViewControllerAnimated(true, completion: nil)
     }
