@@ -108,9 +108,10 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         convosRefHandle = convosRef.queryOrderedByChild("timestamp").observeEventType(.Value, withBlock: { (snapshot) in
             var convos = [Convo]()
             for child in snapshot.children {
-                var convo = Convo(anyObject: child.value)
-                convo.unread = child.value["unread"] as? Int ?? 0
-                convos.append(convo)
+                let convo = Convo(anyObject: child.value)
+                if !convo.didLeaveConvo {
+                    convos.append(convo)
+                }
             }
             self.convos = convos.reverse()
             self.tableView.reloadData()

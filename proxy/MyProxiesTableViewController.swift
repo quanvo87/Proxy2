@@ -31,6 +31,7 @@ class MyProxiesTableViewController: UITableViewController, NewMessageViewControl
         setUp()
         observeUnread()
         observeProxies()
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(MyProxiesTableViewController.scrollToTop), name: Notifications.CreateNewProxyFromHomeTab, object: nil)
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -44,10 +45,8 @@ class MyProxiesTableViewController: UITableViewController, NewMessageViewControl
     }
     
     func setUp() {
-        self.navigationItem.title = "My Proxies"
+        navigationItem.title = "My Proxies"
         setDefaultButtons()
-        tableView.delegate = self
-        tableView.dataSource = self
         edgesForExtendedLayout = .All
         tableView.rowHeight = 80
         tableView.estimatedRowHeight = 80
@@ -111,6 +110,7 @@ class MyProxiesTableViewController: UITableViewController, NewMessageViewControl
             setEditModeButtons()
         } else {
             setDefaultButtons()
+            proxiesToDelete = []
         }
     }
     
@@ -126,8 +126,12 @@ class MyProxiesTableViewController: UITableViewController, NewMessageViewControl
     func createNewProxy() {
         api.create { (proxy) in
             self.api.save(proxy: proxy!, withNickname: "")
-            self.tableView.setContentOffset(CGPointMake(0, -self.tableView.contentInset.top), animated: true)
+            self.scrollToTop()
         }
+    }
+    
+    func scrollToTop() {
+        self.tableView.setContentOffset(CGPointMake(0, -self.tableView.contentInset.top), animated: true)
     }
     
     // MARK: - Database

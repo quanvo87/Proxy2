@@ -235,11 +235,11 @@ class API {
             receiverConvo.icon = senderProxy.icon
             receiverConvo.senderIsBlocking = senderBlocked
             
-            self.update(senderConvo)
+            self.update(convo: senderConvo)
             self.update(proxyConvo: senderConvo)
             self.incremementProxiesInteractedWith(forUser: senderProxy.owner)
             
-            self.update(receiverConvo)
+            self.update(convo: receiverConvo)
             self.update(proxyConvo: receiverConvo)
             self.incremementProxiesInteractedWith(forUser: receiverProxy.owner)
             
@@ -288,7 +288,7 @@ class API {
         _convo.message = "you: " + message
         _convo.timestamp = timestamp
         _convo.didLeaveConvo = false
-        update(_convo)
+        update(convo: _convo)
         update(proxyConvo: _convo)
         update(timestamp: timestamp, forProxy: convo.senderProxy, forUser: convo.senderId)
         incrementMessagesSent(forUser: convo.senderId)
@@ -329,44 +329,19 @@ class API {
             "convos/\(convo.senderProxy)/\(convo.key)/receiverNickname": nickname])
     }
     
-    /**
-     When you leave a convo, set 'left' to true.
-     
-     When loading up your convos, if left == true, don't add it to the convos
-     array for table refresh.
-     
-     Also, decrement your corresponding proxy's and global unread by the
-     convo's unread value.
-     
-     If someone sends you a message to a convo you have left, your convo's
-     'left' value will be set back to fale, and you will see it again.
-     
-     They will continue to see your messages again until they block you.
-     
-     If you send a proxy a message in which a previous conversation existed
-     between the two of you but you had left it, your convos' 'left' will be set
-     back to false and you will see it again.
-     */
+    /// Sets `didLeaveConvo` to true for the user's convo and proxy convo.
+    /// Sets the convos' `unread` to 0.
+    /// Decrements the user's `unread` and proxy's `unread` by the convo's
+    /// unread.
     // TODO: New Implementation
-    // TODO: Controllers that pull convos must add checks to determine if they will display them
-    func leaveConvo(proxyName: String, convo: Convo) {
-        // Delete the convo in the user's node
-        ref.child("users").child(uid).child("convos").child(convo.key).removeValue()
-        
-        // Delete the convo in the convo/proxy node
-        ref.child("convos").child(proxyName).child(convo.key).removeValue()
-        
-        // Decrement the user's global unread by the convo's unread
-        self.ref.child("users").child(uid).child("unread").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
-            if let unread = currentData.value {
-                let _unread = unread as? Int ?? 0
-                if _unread != 0 {
-                    currentData.value = _unread - convo.unread
-                }
-                return FIRTransactionResult.successWithValue(currentData)
-            }
-            return FIRTransactionResult.successWithValue(currentData)
-        })
+    func leave(convo convo: Convo) {
+        var _convo = convo
+        _convo.didLeaveConvo = true
+        _convo.unread = 0
+        update(convo: _convo)
+        update(proxyConvo: _convo)
+        decrementUnread(forProxy: convo.senderProxy, forUser: convo.senderId, byAmount: convo.unread)
+        decrementUnread(forUser: convo.senderId, byAmount: convo.unread)
     }
     
     // When you mute a convo, you stop getting push notifications for it.
@@ -535,7 +510,7 @@ class API {
     
     // MARK: Convo
     /// Overwrite the given convo at its user's convos location in the database.
-    func update(convo: Convo) {
+    func update(convo convo: Convo) {
         ref.child("convos").child(convo.senderId).child(convo.key).setValue(convo.toAnyObject())
     }
     

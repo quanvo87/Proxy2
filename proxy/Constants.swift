@@ -42,3 +42,7 @@ struct Segues {
     static let ConvoSegue = "Convo Segue"
     static let ConvoDetailSegue = "Convo Detail Segue"
 }
+
+struct Notifications {
+    static let CreateNewProxyFromHomeTab = "Create New Proxy From Home Tab"
+}
