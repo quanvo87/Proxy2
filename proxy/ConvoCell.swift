@@ -28,7 +28,7 @@ class ConvoCell: UITableViewCell {
             }
             
             // Set labels
-            nameLabel.attributedText = toConvoTitle(convo.receiverNickname, senderNickname: convo.senderNickname, you: convo.senderProxy, them: convo.receiverProxy, size: 14, navBar: false)
+            nameLabel.attributedText = getConvoTitle(convo.receiverNickname, senderNickname: convo.senderNickname, you: convo.senderProxy, them: convo.receiverProxy, size: 14, navBar: false)
             messageLabel.text = convo.message
             timestampLabel.text = convo.timestamp.toTimeAgo()
             unreadLabel.text = convo.unread.toUnreadLabel()

@@ -30,7 +30,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         setUpUI()
         
-        FIRAuth.auth()?.addAuthStateDidChangeListener { auth, user in
+        FIRAuth.auth()?.addAuthStateDidChangeListener { (auth, user) in
             if let user = user {
                 self.api.uid = user.uid
                 self.observeUnread()

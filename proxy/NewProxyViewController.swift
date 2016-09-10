@@ -110,7 +110,7 @@ class NewProxyViewController: UIViewController, UITextFieldDelegate {
     @IBAction func tapCancelButton(sender: AnyObject) {
         view.endEditing(true)
         if let proxy = proxy {
-            api.cancelCreating(proxy)
+            api.cancelCreating(proxy: proxy)
         }
         navigationController?.popViewControllerAnimated(true)
     }

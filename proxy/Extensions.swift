@@ -10,7 +10,7 @@ extension UIView {
     // Returns a custom NSAttributedString that can be used for a convo's title.
     // Prioritizes nicknames if possible, else just shows proxy names.
     // Applies formatting based on parameter.
-    func toConvoTitle(receiverNickname: String, senderNickname: String, you: String, them: String, size: CGFloat, navBar: Bool) -> NSAttributedString {
+    func getConvoTitle(receiverNickname: String, senderNickname: String, you: String, them: String, size: CGFloat, navBar: Bool) -> NSAttributedString {
         let _size = [NSFontAttributeName: UIFont.systemFontOfSize(size)]
         let bold = [NSFontAttributeName: UIFont.boldSystemFontOfSize(size)]
         let blue = [NSForegroundColorAttributeName: UIColor().blue()]
@@ -102,6 +102,18 @@ extension String {
 extension Double {
     func toTimeAgo() -> String {
         return NSDate(timeIntervalSince1970: self).formattedAsTimeAgo()
+    }
+    
+    func createdAgo() -> String {
+        let timestamp = self.toTimeAgo()
+        let secondsAgo = -NSDate(timeIntervalSince1970: self).timeIntervalSinceNow
+        if timestamp == "Just now" {
+            return "Created just now."
+        } else if secondsAgo < 60 * 60 * 24 {
+            return "Created \(timestamp) ago."
+        } else {
+            return "Created \(timestamp)."
+        }
     }
 }
 

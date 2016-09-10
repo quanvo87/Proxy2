@@ -17,7 +17,7 @@ class IconPickerCell: UICollectionViewCell {
     var icon = String() {
         didSet {
             // Set up
-            layer.cornerRadius = 10
+            layer.cornerRadius = 5
             
             // Set icon
             self.api.getURL(forIcon: icon) { (URL) in

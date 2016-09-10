@@ -49,11 +49,13 @@ class IconPickerCollectionViewController: UICollectionViewController {
     
     func observeIcons() {
         iconRef = ref.child("icons").child(api.uid)
-        iconRefHandle = iconRef.observeEventType(.Value, withBlock: { (snapshot) in
-            if let icons = snapshot.value?.allKeys as? [String] {
-                self.icons = icons.sort()
-                self.collectionView?.reloadData()
+        iconRefHandle = iconRef.queryOrderedByChild("name").observeEventType(.Value, withBlock: { (snapshot) in
+            var icons = [String]()
+            for child in snapshot.children {
+                icons.append(child.value["name"] as! String)
             }
+            self.icons = icons
+            self.collectionView?.reloadData()
         })
     }
     

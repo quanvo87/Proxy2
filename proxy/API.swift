@@ -15,9 +15,11 @@ class API {
     static let sharedInstance = API()
     
     let ref = FIRDatabase.database().reference()
-    var iconsRefHandle = FIRDatabaseHandle()
+    
     var proxyNameGenerator = ProxyNameGenerator()
     var isCreatingProxy = false
+    
+    var iconsRefHandle = FIRDatabaseHandle()
     var icons = [String]()
     var iconURLCache = [String: String]()
     
@@ -84,7 +86,7 @@ class API {
                 self.isCreatingProxy = false
                 completion(proxy: proxy)
             } else {
-                self.delete(proxy)
+                self.delete(globalProxy: proxy)
                 if self.isCreatingProxy {
                     self.tryCreating(proxy: { (proxy) in
                         completion(proxy: proxy)
@@ -100,9 +102,11 @@ class API {
     /// actually partial file paths to the image locations in our storage.
     func observeIcons() {
         iconsRefHandle = ref.child("icons").child(uid).observeEventType(.Value, withBlock: { (snapshot) in
-            if let icons = snapshot.value?.allKeys as? [String] {
-                self.icons = icons
+            var icons = [String]()
+            for child in snapshot.children {
+                icons.append(child.value["name"] as! String)
             }
+            self.icons = icons
         })
     }
     
@@ -114,32 +118,17 @@ class API {
     
     /// Deletes the old proxy and returns a new one.
     func reroll(fromOldProxy proxy: Proxy, completion: (proxy: Proxy?) -> Void) {
-        delete(proxy)
+        delete(globalProxy: proxy)
         tryCreating { (proxy) in
             completion(proxy: proxy)
         }
     }
     
-    /// Deletes the proxy stored under its global key.
-    func delete(proxy: Proxy) {
-        ref.child("proxies").child(proxy.globalKey).removeValue()
-    }
-    
     /// Deletes the proxy stored under its global key. Notifies API to stop
     /// trying to create a new proxy.
-    func cancelCreating(proxy: Proxy) {
+    func cancelCreating(proxy proxy: Proxy) {
         isCreatingProxy = false
-        delete(proxy)
-    }
-    
-    /// Saves the proxy with a new `nickname` and timestamp. Saved under user
-    /// Id.
-    func save(proxy proxy: Proxy, withNickname nickname: String) {
-        var _proxy = proxy
-        let timestamp = NSDate().timeIntervalSince1970
-        _proxy.nickname = nickname
-        _proxy.timestamp = timestamp
-        ref.child("proxies").child(uid).child(proxy.key).setValue(_proxy.toAnyObject())
+        delete(globalProxy: proxy)
     }
     
     /// Returns the icon's URL in our storage. Builds and caches it if
@@ -157,68 +146,6 @@ class API {
                 }
             }
         }
-    }
-    
-    /// Updates the proxy's nickname in the required places.
-    func update(nickname nickname: String, forProxy proxy: Proxy, withConvos convos: [Convo]) {
-        
-        /// In user's node.
-        ref.child("proxies").child(proxy.owner).child(proxy.key).child("nickname").setValue(nickname)
-        
-        /// For each convo the proxy is in.
-        for convo in convos {
-            ref.updateChildValues([
-                "/convos/\(proxy.owner)/\(convo.key)/senderNickname": nickname,
-                "/convos/\(proxy.key)/\(convo.key)/senderNickname": nickname])
-        }
-    }
-    
-    /// Updates the proxy's icon in the required places.
-    func update(icon icon: String, forProxy proxy: Proxy) {
-        
-        /// Global proxy list
-        ref.child("proxies").child(proxy.globalKey).child("icon").setValue(icon)
-        
-        /// User proxy list
-        ref.child("proxies").child(proxy.owner).child(proxy.key).child("icon").setValue(icon)
-        
-        /// Receiver's side of all convos this proxy is in
-        ref.child("convos").child(proxy.key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            for child in snapshot.children {
-                let convo = Convo(anyObject: child.value)
-                self.ref.child("convos").child(convo.receiverId).child(convo.key).child("icon").setValue(icon)
-                self.ref.child("convos").child(convo.receiverProxy).child(convo.key).child("icon").setValue(icon)
-            }
-        })
-    }
-    
-    /// Deletes the given proxy for the user and global list.
-    /// Deletes all sender side convos under that proxy.
-    /// Notifies all receivers of those convos that this proxy has been deleted.
-    /// (The actual user is not notified.)
-    /// Decrement's user's unread by the remaining unread in the proxy.
-    func delete(proxy proxy: Proxy, withConvos convos: [Convo]) {
-        
-        /// Loop through all convos this proxy is in
-        for convo in convos {
-            
-            /// Notify receivers in convos that this proxy is deleted
-            ref.child("convos").child(convo.receiverId).child(convo.key).child("receiverDeletedProxy").setValue(true)
-            ref.child("convos").child(convo.receiverProxy).child(convo.key).child("receiverDeletedProxy").setValue(true)
-            
-            /// Delete the convos on the sender's side
-            ref.child("convos").child(convo.senderId).child(convo.key).removeValue()
-            ref.child("convos").child(convo.senderProxy).child(convo.key).removeValue()
-        }
-        
-        /// Delete from global list
-        ref.child("proxies").child(proxy.globalKey).removeValue()
-        
-        /// Delete the proxy from the user's node
-        ref.child("proxies").child(uid).child(proxy.key).removeValue()
-        
-        /// Decrement user's unread by proxy's unread
-        decrementUnread(forUser: proxy.owner, byAmount: proxy.unread)
     }
     
     /// Returns a proxy struct from the database using the given `key`.
@@ -381,125 +308,15 @@ class API {
         completion(convo: _convo)
     }
     
-    // MARK: Helper functions for writing to database
-    
-    /// Save a message using a convo key.
-    func save(message message: Message, toConvo convo: String) {
-        ref.child("messages").child(convo).child(message.key).setValue(message.toAnyObject())
-    }
-    
-    /// Overwrite the given convo at its user's convos location in the database.
-    func update(convo: Convo) {
-        ref.child("convos").child(convo.senderId).child(convo.key).setValue(convo.toAnyObject())
-    }
-    
-    /// Update the convo's `unread`, `message`, `timestamp`, & `didLeaveConvo`.
-    func update(convo convo: String, forUser user: String, withMessage message: String, withTimestamp timestamp: Double) {
-        self.ref.child("convos").child(user).child(convo).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
-            if var convo = currentData.value as? [String: AnyObject] {
-                let unread = convo["unread"] as? Int ?? 0
-                convo["unread"] = unread + 1
-                convo["message"] = message
-                convo["timestamp"] = timestamp
-                convo["didLeaveConvo"] = false
-                currentData.value = convo
-                return FIRTransactionResult.successWithValue(currentData)
-            }
-            return FIRTransactionResult.successWithValue(currentData)
-        })
-    }
-    
-    /// Overwrite the given proxy convo at it's users proxies location in the
-    /// database.
-    func update(proxyConvo proxyConvo: Convo) {
-        ref.child("convos").child(proxyConvo.senderProxy).child(proxyConvo.key).setValue(proxyConvo.toAnyObject())
-    }
-    
-    /// Update the proxy convo's `unread`, `message`, `timestamp`, &
-    /// `didLeaveConvo`.
-    func update(proxyConvo convo: String, forProxy proxy: String, withMessage message: String, withTimestamp timestamp: Double) {
-        self.ref.child("convos").child(proxy).child(convo).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
-            if var convo = currentData.value as? [String: AnyObject] {
-                let unread = convo["unread"] as? Int ?? 0
-                convo["unread"] = unread + 1
-                convo["message"] = message
-                convo["timestamp"] = timestamp
-                convo["didLeaveConvo"] = false
-                currentData.value = convo
-                return FIRTransactionResult.successWithValue(currentData)
-            }
-            return FIRTransactionResult.successWithValue(currentData)
-        })
-    }
-    
-    /// Update the proxy's `timestamp`.
-    func update(timestamp timestamp: Double, forProxy proxy: String, forUser user: String) {
-        ref.child("proxies").child(user).child(proxy).child("timestamp").setValue(timestamp)
-    }
-    
-    /// Update the proxy's `unread` & `timestamp`.
-    func update(proxy proxy: String, forUser user: String, withTimestamp timestamp: Double) {
-        self.ref.child("proxies").child(user).child(proxy).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
-            if var proxy = currentData.value as? [String: AnyObject] {
-                let unread = proxy["unread"] as? Int ?? 0
-                proxy["unread"] = unread + 1
-                proxy["timestamp"] = timestamp
-                currentData.value = proxy
-                return FIRTransactionResult.successWithValue(currentData)
-            }
-            return FIRTransactionResult.successWithValue(currentData)
-        })
-    }
-    
-    /// Increment the user's `proxiesInteractedWith`.
-    func incremementProxiesInteractedWith(forUser user: String) {
-        self.ref.child("proxiesInteractedWith").child(user).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
-            if let count = currentData.value {
-                let _count = count as? Int ?? 0
-                currentData.value = _count + 1
-                return FIRTransactionResult.successWithValue(currentData)
-            }
-            return FIRTransactionResult.successWithValue(currentData)
-        })
-    }
-    
-    /// Increment the user's `messagesSent`.
-    func incrementMessagesSent(forUser user: String) {
-        self.ref.child("messagesSent").child(user).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
-            if let count = currentData.value {
-                let _count = count as? Int ?? 0
-                currentData.value = _count + 1
-                return FIRTransactionResult.successWithValue(currentData)
-            }
-            return FIRTransactionResult.successWithValue(currentData)
-        })
-    }
-    
-    /// Increment the user's `messagesReceived`.
-    func incrementMessagesReceived(forUser user: String) {
-        self.ref.child("messagesReceived").child(user).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
-            if let count = currentData.value {
-                let _count = count as? Int ?? 0
-                currentData.value = _count + 1
-                return FIRTransactionResult.successWithValue(currentData)
-            }
-            return FIRTransactionResult.successWithValue(currentData)
-        })
-    }
-    
-    /// Increment the user's `unread`.
-    func incrementUnread(forUser user: String) {
-        self.ref.child("unread").child(user).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
-            if let unread = currentData.value {
-                let _unread = unread as? Int ?? 0
-                currentData.value = _unread + 1
-                return FIRTransactionResult.successWithValue(currentData)
-            }
-            return FIRTransactionResult.successWithValue(currentData)
-        })
-    }
-    
     // MARK: - The Conversation (Convo)
+    
+    /// Decrements user, convo, proxy convo, and proxy `unread` by `amount`.
+    func decrementAllUnreadFor(convo convo: Convo, byAmount amount: Int) {
+        decrementUnread(forUser: convo.senderId, byAmount: amount)
+        decrementUnread(forConvo: convo.key, forUser: convo.senderId, byAmount: amount)
+        decrementUnread(forConvo: convo.key, underProxy: convo.senderProxy, byAmount: amount)
+        decrementUnread(forProxy: convo.senderProxy, forUser: convo.senderId, byAmount: amount)
+    }
     
     // Update the convo's nickname in both places
     // TODO: New Implementation
@@ -510,62 +327,6 @@ class API {
             
             // The convo saved by proxy
             "convos/\(convo.senderProxy)/\(convo.key)/receiverNickname": nickname])
-    }
-    
-    /// Decrements user, convo, proxy convo, and proxy `unread` by `amount`.
-    func decrementAllUnreadFor(convo convo: Convo, byAmount amount: Int) {
-        decrementUnread(forUser: convo.senderId, byAmount: amount)
-        decrementUnread(forConvo: convo.key, forUser: convo.senderId, byAmount: amount)
-        decrementUnread(forConvo: convo.key, underProxy: convo.senderProxy, byAmount: amount)
-        decrementUnread(forProxy: convo.senderProxy, forUser: convo.senderId, byAmount: amount)
-    }
-    
-    /// Derement the user's `unread` by `amount`.
-    func decrementUnread(forUser user: String, byAmount amount: Int) {
-        ref.child("unread").child(user).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
-            if let unread = currentData.value {
-                let _unread = unread as? Int ?? 0
-                currentData.value = _unread - amount
-                return FIRTransactionResult.successWithValue(currentData)
-            }
-            return FIRTransactionResult.successWithValue(currentData)
-        })
-    }
-    
-    /// Decrement the convo's `unread` by `amount`.
-    func decrementUnread(forConvo convo: String, forUser user: String, byAmount amount: Int) {
-        ref.child("convos").child(user).child(convo).child("unread").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
-            if let unread = currentData.value {
-                let _unread = unread as? Int ?? 0
-                currentData.value = _unread - amount
-                return FIRTransactionResult.successWithValue(currentData)
-            }
-            return FIRTransactionResult.successWithValue(currentData)
-        })
-    }
-    
-    /// Decrement the proxy convo's `unread` by `amount`.
-    func decrementUnread(forConvo convo: String, underProxy proxy: String, byAmount amount: Int) {
-        ref.child("convos").child(proxy).child(convo).child("unread").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
-            if let unread = currentData.value {
-                let _unread = unread as? Int ?? 0
-                currentData.value = _unread - amount
-                return FIRTransactionResult.successWithValue(currentData)
-            }
-            return FIRTransactionResult.successWithValue(currentData)
-        })
-    }
-    
-    /// Decrement the proxy's `unread` by `amount`.
-    func decrementUnread(forProxy proxy: String, forUser user: String, byAmount amount: Int) {
-        ref.child("proxies").child(user).child(proxy).child("unread").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
-            if let unread = currentData.value {
-                let _unread = unread as? Int ?? 0
-                currentData.value = _unread - amount
-                return FIRTransactionResult.successWithValue(currentData)
-            }
-            return FIRTransactionResult.successWithValue(currentData)
-        })
     }
     
     /**
@@ -648,4 +409,264 @@ class API {
      */
     // TODO: Implement
     func blockUser() {}
+    
+    // MARK: - Helper functions for writing to database
+    
+    // MARK: Proxy
+    /// Saves the proxy with a new `nickname` and timestamp. Saved under user
+    /// Id.
+    func save(proxy proxy: Proxy, withNickname nickname: String) {
+        var _proxy = proxy
+        let timestamp = NSDate().timeIntervalSince1970
+        _proxy.nickname = nickname
+        _proxy.timestamp = timestamp
+        ref.child("proxies").child(uid).child(proxy.key).setValue(_proxy.toAnyObject())
+    }
+    
+    /// Updates the proxy's nickname in the required places.
+    func update(nickname nickname: String, forProxy proxy: Proxy, withConvos convos: [Convo]) {
+        
+        /// In user's node.
+        ref.child("proxies").child(proxy.owner).child(proxy.key).child("nickname").setValue(nickname)
+        
+        /// For each convo the proxy is in.
+        for convo in convos {
+            self.ref.child("convos").child(proxy.owner).child(convo.key).child("senderNickname").setValue(nickname)
+            self.ref.child("convos").child(proxy.key).child(convo.key).child("senderNickname").setValue(nickname)
+        }
+    }
+    
+    /// Updates the proxy's icon in the required places.
+    func update(icon icon: String, forProxy proxy: Proxy) {
+        
+        /// Global proxy list
+        ref.child("proxies").child(proxy.globalKey).child("icon").setValue(icon)
+        
+        /// User proxy list
+        ref.child("proxies").child(proxy.owner).child(proxy.key).child("icon").setValue(icon)
+        
+        /// Receiver's side of all convos this proxy is in
+        ref.child("convos").child(proxy.key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            for child in snapshot.children {
+                let convo = Convo(anyObject: child.value)
+                self.ref.child("convos").child(convo.receiverId).child(convo.key).child("icon").setValue(icon)
+                self.ref.child("convos").child(convo.receiverProxy).child(convo.key).child("icon").setValue(icon)
+            }
+        })
+    }
+    
+    /// Update the proxy's `timestamp`.
+    func update(timestamp timestamp: Double, forProxy proxy: String, forUser user: String) {
+        ref.child("proxies").child(user).child(proxy).child("timestamp").setValue(timestamp)
+    }
+    
+    /// Update the proxy's `unread` & `timestamp`.
+    func update(proxy proxy: String, forUser user: String, withTimestamp timestamp: Double) {
+        self.ref.child("proxies").child(user).child(proxy).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+            if var proxy = currentData.value as? [String: AnyObject] {
+                let unread = proxy["unread"] as? Int ?? 0
+                proxy["unread"] = unread + 1
+                proxy["timestamp"] = timestamp
+                currentData.value = proxy
+                return FIRTransactionResult.successWithValue(currentData)
+            }
+            return FIRTransactionResult.successWithValue(currentData)
+        })
+    }
+    
+    /// Decrement the proxy's `unread` by `amount`.
+    func decrementUnread(forProxy proxy: String, forUser user: String, byAmount amount: Int) {
+        ref.child("proxies").child(user).child(proxy).child("unread").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+            if let unread = currentData.value {
+                let _unread = unread as? Int ?? 0
+                currentData.value = _unread - amount
+                return FIRTransactionResult.successWithValue(currentData)
+            }
+            return FIRTransactionResult.successWithValue(currentData)
+        })
+    }
+    
+    /// Deletes the proxy stored under its global key.
+    func delete(globalProxy proxy: Proxy) {
+        ref.child("proxies").child(proxy.globalKey).removeValue()
+    }
+    
+    /// Retrieves a proxy's `convos` then calls
+    /// delete(proxy proxy: Proxy, withConvos convos: [Convo]).
+    func delete(proxy proxy: Proxy) {
+        ref.child("convos").child(proxy.key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            var convos = [Convo]()
+            for child in snapshot.children {
+                let convo = Convo(anyObject: child.value)
+                convos.append(convo)
+            }
+            self.delete(proxy: proxy, withConvos: convos)
+        })
+    }
+    
+    /// Deletes the given proxy for the user and global list.
+    /// Deletes all sender side convos under that proxy.
+    /// Notifies all receivers of those convos that this proxy has been deleted.
+    /// (The actual user is not notified.)
+    /// Decrement's user's unread by the remaining unread in the proxy.
+    func delete(proxy proxy: Proxy, withConvos convos: [Convo]) {
+        
+        /// Loop through all convos this proxy is in
+        for convo in convos {
+            
+            /// Notify receivers in convos that this proxy is deleted
+            ref.child("convos").child(convo.receiverId).child(convo.key).child("receiverDeletedProxy").setValue(true)
+            ref.child("convos").child(convo.receiverProxy).child(convo.key).child("receiverDeletedProxy").setValue(true)
+            
+            /// Delete the convos on the sender's side
+            ref.child("convos").child(convo.senderId).child(convo.key).removeValue()
+            ref.child("convos").child(convo.senderProxy).child(convo.key).removeValue()
+        }
+        
+        /// Delete the proxy from global list of proxies
+        ref.child("proxies").child(proxy.globalKey).removeValue()
+        
+        /// Delete the proxy from the user's node
+        ref.child("proxies").child(uid).child(proxy.key).removeValue()
+        
+        /// Decrement user's unread by proxy's unread
+        decrementUnread(forUser: proxy.owner, byAmount: proxy.unread)
+    }
+    
+    // MARK: Convo
+    /// Overwrite the given convo at its user's convos location in the database.
+    func update(convo: Convo) {
+        ref.child("convos").child(convo.senderId).child(convo.key).setValue(convo.toAnyObject())
+    }
+    
+    /// Update the convo's `unread`, `message`, `timestamp`, & `didLeaveConvo`.
+    func update(convo convo: String, forUser user: String, withMessage message: String, withTimestamp timestamp: Double) {
+        self.ref.child("convos").child(user).child(convo).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+            if var convo = currentData.value as? [String: AnyObject] {
+                let unread = convo["unread"] as? Int ?? 0
+                convo["unread"] = unread + 1
+                convo["message"] = message
+                convo["timestamp"] = timestamp
+                convo["didLeaveConvo"] = false
+                currentData.value = convo
+                return FIRTransactionResult.successWithValue(currentData)
+            }
+            return FIRTransactionResult.successWithValue(currentData)
+        })
+    }
+    
+    /// Decrement the convo's `unread` by `amount`.
+    func decrementUnread(forConvo convo: String, forUser user: String, byAmount amount: Int) {
+        ref.child("convos").child(user).child(convo).child("unread").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+            if let unread = currentData.value {
+                let _unread = unread as? Int ?? 0
+                currentData.value = _unread - amount
+                return FIRTransactionResult.successWithValue(currentData)
+            }
+            return FIRTransactionResult.successWithValue(currentData)
+        })
+    }
+    
+    // MARK: Proxy convo
+    /// Overwrite the given proxy convo at it's users proxies location in the
+    /// database.
+    func update(proxyConvo proxyConvo: Convo) {
+        ref.child("convos").child(proxyConvo.senderProxy).child(proxyConvo.key).setValue(proxyConvo.toAnyObject())
+    }
+    
+    /// Update the proxy convo's `unread`, `message`, `timestamp`, &
+    /// `didLeaveConvo`.
+    func update(proxyConvo convo: String, forProxy proxy: String, withMessage message: String, withTimestamp timestamp: Double) {
+        self.ref.child("convos").child(proxy).child(convo).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+            if var convo = currentData.value as? [String: AnyObject] {
+                let unread = convo["unread"] as? Int ?? 0
+                convo["unread"] = unread + 1
+                convo["message"] = message
+                convo["timestamp"] = timestamp
+                convo["didLeaveConvo"] = false
+                currentData.value = convo
+                return FIRTransactionResult.successWithValue(currentData)
+            }
+            return FIRTransactionResult.successWithValue(currentData)
+        })
+    }
+    
+    /// Decrement the proxy convo's `unread` by `amount`.
+    func decrementUnread(forConvo convo: String, underProxy proxy: String, byAmount amount: Int) {
+        ref.child("convos").child(proxy).child(convo).child("unread").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+            if let unread = currentData.value {
+                let _unread = unread as? Int ?? 0
+                currentData.value = _unread - amount
+                return FIRTransactionResult.successWithValue(currentData)
+            }
+            return FIRTransactionResult.successWithValue(currentData)
+        })
+    }
+    
+    // MARK: User
+    /// Increment the user's `proxiesInteractedWith`.
+    func incremementProxiesInteractedWith(forUser user: String) {
+        self.ref.child("proxiesInteractedWith").child(user).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+            if let count = currentData.value {
+                let _count = count as? Int ?? 0
+                currentData.value = _count + 1
+                return FIRTransactionResult.successWithValue(currentData)
+            }
+            return FIRTransactionResult.successWithValue(currentData)
+        })
+    }
+    
+    /// Increment the user's `messagesSent`.
+    func incrementMessagesSent(forUser user: String) {
+        self.ref.child("messagesSent").child(user).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+            if let count = currentData.value {
+                let _count = count as? Int ?? 0
+                currentData.value = _count + 1
+                return FIRTransactionResult.successWithValue(currentData)
+            }
+            return FIRTransactionResult.successWithValue(currentData)
+        })
+    }
+    
+    /// Increment the user's `messagesReceived`.
+    func incrementMessagesReceived(forUser user: String) {
+        self.ref.child("messagesReceived").child(user).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+            if let count = currentData.value {
+                let _count = count as? Int ?? 0
+                currentData.value = _count + 1
+                return FIRTransactionResult.successWithValue(currentData)
+            }
+            return FIRTransactionResult.successWithValue(currentData)
+        })
+    }
+    
+    /// Increment the user's `unread`.
+    func incrementUnread(forUser user: String) {
+        self.ref.child("unread").child(user).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+            if let unread = currentData.value {
+                let _unread = unread as? Int ?? 0
+                currentData.value = _unread + 1
+                return FIRTransactionResult.successWithValue(currentData)
+            }
+            return FIRTransactionResult.successWithValue(currentData)
+        })
+    }
+    
+    /// Derement the user's `unread` by `amount`.
+    func decrementUnread(forUser user: String, byAmount amount: Int) {
+        ref.child("unread").child(user).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+            if let unread = currentData.value {
+                let _unread = unread as? Int ?? 0
+                currentData.value = _unread - amount
+                return FIRTransactionResult.successWithValue(currentData)
+            }
+            return FIRTransactionResult.successWithValue(currentData)
+        })
+    }
+    
+    // MARK: Message
+    /// Save a message using a convo key.
+    func save(message message: Message, toConvo convo: String) {
+        ref.child("messages").child(convo).child(message.key).setValue(message.toAnyObject())
+    }
 }

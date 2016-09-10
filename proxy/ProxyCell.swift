@@ -10,6 +10,7 @@ import FirebaseStorage
 
 class ProxyCell: UITableViewCell {
     
+    @IBOutlet weak var newImageView: UIImageView!
     @IBOutlet weak var iconImageView: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var nicknameLabel: UILabel!
@@ -20,6 +21,13 @@ class ProxyCell: UITableViewCell {
         didSet {
             // Set up
             accessoryType = .None
+            
+            // Set up newImageView
+            newImageView.hidden = true
+            let secondsAgo = -NSDate(timeIntervalSince1970: proxy.created).timeIntervalSinceNow
+            if secondsAgo < 60 * Settings.NewProxyIndicatorDuration {
+                newImageView.hidden = false
+            }
             
             // Set image
             api.getURL(forIcon: proxy.icon) { (URL) in

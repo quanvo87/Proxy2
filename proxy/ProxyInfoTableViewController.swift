@@ -66,7 +66,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         let newMessageBarButton = UIBarButtonItem(customView: newMessageButton)
         
         let deleteProxyButton = UIButton(type: .Custom)
-        deleteProxyButton.setImage(UIImage(named: "delete-proxy.png"), forState: UIControlState.Normal)
+        deleteProxyButton.setImage(UIImage(named: "delete.png"), forState: UIControlState.Normal)
         deleteProxyButton.addTarget(self, action: #selector(ProxyInfoTableViewController.showDeleteProxyAlert), forControlEvents: UIControlEvents.TouchUpInside)
         deleteProxyButton.frame = CGRectMake(0, 0, 25, 25)
         let deleteProxyBarButton = UIBarButtonItem(customView: deleteProxyButton)

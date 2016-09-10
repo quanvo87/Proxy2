@@ -10,8 +10,9 @@ struct URLs {
     static let Storage = "gs://proxy-98b45.appspot.com"
 }
 
-struct ChatOptions {
+struct Settings {
     static let TimestampInterval = 15.0
+    static let NewProxyIndicatorDuration = 5.0
 }
 
 struct Identifiers {
@@ -36,7 +37,7 @@ struct Identifiers {
 struct Segues {
     static let NewMessageSegue = "New Message Segue"
     static let SelectProxySegue = "Select Proxy Segue"
-    static let ProxySegue = "Proxy Segue"
+    static let ProxyInfoSegue = "Proxy Info Segue"
     static let IconPickerSegue = "Icon Picker Segue"
     static let ConvoSegue = "Convo Segue"
     static let ConvoDetailSegue = "Convo Detail Segue"

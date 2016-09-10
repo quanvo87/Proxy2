@@ -114,7 +114,7 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
     
     func selectProxy(proxy: Proxy) {
         if createdNewProxy {
-            api.cancelCreating(proxy)
+            api.cancelCreating(proxy: proxy)
             savingNewProxy = false
         }
         self.proxy = proxy
@@ -212,7 +212,7 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
     @IBAction func tapCancelButton(sender: AnyObject) {
         view.endEditing(true)
         if createdNewProxy && !savingNewProxy {
-            api.cancelCreating(proxy!)
+            api.cancelCreating(proxy: proxy!)
         }
         navigationController?.popViewControllerAnimated(true)
     }

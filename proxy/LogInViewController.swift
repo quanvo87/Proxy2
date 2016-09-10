@@ -69,18 +69,17 @@ class LogInViewController: UIViewController {
                 self.showAlert("Error Creating Account", message: error.localizedDescription)
                 return
             }
-            let user = user!.uid
-            self.api.setDefaultIcons(forUser: user)
-            self.showHomeScreen()
-//            let changeRequest = user!.profileChangeRequest()
-//            changeRequest.displayName = user!.email!
-//            changeRequest.commitChangesWithCompletion() { error in
-//                if let error = error {
-//                    self.showAlert("Error Setting Display Name For User", message: error.localizedDescription)
-//                    return
-//                }
-//                
-//            }
+            let changeRequest = user!.profileChangeRequest()
+            changeRequest.displayName = user!.email!
+            changeRequest.commitChangesWithCompletion() { error in
+                if let error = error {
+                    self.showAlert("Error Setting Display Name For User", message: error.localizedDescription)
+                    return
+                }
+                let user = user!.uid
+                self.api.setDefaultIcons(forUser: user)
+                self.showHomeScreen()
+            }
         }
     }
     

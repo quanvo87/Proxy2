@@ -184,7 +184,7 @@ class ConvoViewController: JSQMessagesViewController {
         if indexPath.item - 1 > 0 {
             let prev = self.messages[indexPath.item - 1]
             
-            if message.date.timeIntervalSinceDate(prev.date) / 60 > ChatOptions.TimestampInterval {
+            if message.date.timeIntervalSinceDate(prev.date) / 60 > Settings.TimestampInterval {
                 return JSQMessagesTimestampFormatter.sharedFormatter().attributedTimestampForDate(message.date)
             }
         }
@@ -196,7 +196,7 @@ class ConvoViewController: JSQMessagesViewController {
             let prev = self.messages[indexPath.item - 1]
             let message = self.messages[indexPath.item]
             
-            if message.date.timeIntervalSinceDate(prev.date) / 60 > ChatOptions.TimestampInterval {
+            if message.date.timeIntervalSinceDate(prev.date) / 60 > Settings.TimestampInterval {
                 return kJSQMessagesCollectionViewCellLabelHeightDefault
             }
         }
