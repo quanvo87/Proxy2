@@ -38,6 +38,11 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
         setUpTextView()
     }
     
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(true)
+        navigationItem.hidesBackButton = true
+    }
+    
     // MARK: - UI
     
     func setUpUI() {
@@ -209,7 +214,7 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
         if createdNewProxy && !savingNewProxy {
             api.cancelCreating(proxy!)
         }
-        dismissViewControllerAnimated(true, completion: nil)
+        navigationController?.popViewControllerAnimated(true)
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
@@ -221,6 +226,6 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
     
     func goToConvo(convo: Convo) {
         delegate.showNewConvo(convo)
-        dismissViewControllerAnimated(true, completion: nil)
+        navigationController?.popViewControllerAnimated(true)
     }
 }

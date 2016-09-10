@@ -80,10 +80,10 @@
             </objects>
             <point key="canvasLocation" x="-2015" y="-97"/>
         </scene>
-        <!--Proxies View Controller-->
+        <!--My Proxies View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ProxiesViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="MyProxiesViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -302,9 +302,7 @@
                             <outlet property="delegate" destination="xly-gy-WjZ" id="3pq-wM-nds"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="YnK-7k-0fw">
-                        <barButtonItem key="rightBarButtonItem" title="New" id="8N5-ug-Gfy"/>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" id="YnK-7k-0fw"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kbI-pb-Q1g" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -366,7 +364,13 @@
                             <outlet property="delegate" destination="myi-c3-T5y" id="hXP-Je-GhS"/>
                         </connections>
                     </collectionView>
-                    <navigationItem key="navigationItem" id="m1r-Lz-evR"/>
+                    <navigationItem key="navigationItem" id="m1r-Lz-evR">
+                        <barButtonItem key="rightBarButtonItem" title="Cancel" id="8jX-Qd-ATn">
+                            <connections>
+                                <action selector="tapCancelButton:" destination="myi-c3-T5y" id="Gfz-v9-RcF"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NQg-Cy-lVj" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -534,7 +538,7 @@
         <scene sceneID="QnD-3o-vWi">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="LfE-yp-YW0" userLabel="Proxies" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Proxies" image="proxies-tab" id="iOS-6g-J6E"/>
+                    <tabBarItem key="tabBarItem" title="My Proxies" image="proxies-tab" id="iOS-6g-J6E"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="2C5-MT-khQ">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>

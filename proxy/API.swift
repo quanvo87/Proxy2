@@ -175,9 +175,14 @@ class API {
     
     /// Updates the proxy's icon in the required places.
     func updateIcon(proxy: Proxy, icon: String) {
+        
+        // Global proxy list
         ref.child("proxies").child(proxy.globalKey).child("icon").setValue(icon)
+        
+        // User proxy list
         ref.child("proxies").child(proxy.owner).child(proxy.key).child("icon").setValue(icon)
         
+        // Receiver's side of all convos this proxy is in
         ref.child("convos").child(proxy.key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
             for child in snapshot.children {
                 let convo = Convo(anyObject: child.value)
@@ -187,44 +192,36 @@ class API {
         })
     }
     
-    /**
-     When you delete a proxy, you don't see that proxy or its convos, and stop
-     receiving notifications for them (until you restore it). Any user
-     attempting to contact that proxy will not know they are messaging a
-     deleted proxy.
-     
-     When deleting a proxy, loop through all its conversations and set
-     'proxyDeleted' to true for both your copies of that convo. Then set the
-     proxy's 'deleted' to true. Then create an entry for it's key in
-     
-     /deleted/uid/proxy.key
-     
-     Also decrement your global unread by the proxy's unread.
-     
-     When loading proxies and convos, if 'deleted' and 'proxyDeleted' are true,
-     don't load that proxy/convo, respectively.
-     
-     Deleted proxies show up in your 'Deleted Proxies' in 'Settings'. This view
-     shows the proxies you have in /deleted/uid/. You can restore a proxy, and
-     when that happens, set all it's conversation's 'proxyDeleted' to false for
-     both copies of the convo, and set the proxy's 'deleted' to false. Then
-     delete the proxy's entry in /deleted/uid/. Lastly, increment your global
-     unread by the proxy's unread.
-     */
-    // TODO: New implementation
-    func deleteProxy(proxy: Proxy, convos: [Convo]) {
-        // Leave all the convos that this proxy is participating in
+    /// Deletes the given proxy for the user and global list.
+    /// Deletes all sender side convos under that proxy.
+    /// Notifies all receivers of those convos that this proxy has been deleted.
+    /// (The actual user is not notified.)
+    /// Decrement's user's unread by the remaining unread in the proxy.
+    func delete(proxy: Proxy, convos: [Convo]) {
+        
+        // Loop through all convos this proxy is in
         for convo in convos {
-            leaveConvo(proxy.key, convo: convo)
+            
+            // Notify receivers in convos that this proxy is deleted
+            ref.child("convos").child(convo.receiverId).child(convo.key).child("receiverDeletedProxy").setValue(true)
+            ref.child("convos").child(convo.receiverProxy).child(convo.key).child("receiverDeletedProxy").setValue(true)
+            
+            // Delete the convos on the sender's side
+            ref.child("convos").child(convo.senderId).child(convo.key).removeValue()
+            ref.child("convos").child(convo.senderProxy).child(convo.key).removeValue()
         }
         
-        // Delete the proxy from the global list of used proxies
-        ref.child("proxies").child(proxy.key).removeValue()
+        // Delete from global list
+        ref.child("proxies").child(proxy.globalKey).removeValue()
         
         // Delete the proxy from the user's node
-        ref.child("users").child(uid).child("proxies").child(proxy.key).removeValue()
+        ref.child("proxies").child(uid).child(proxy.key).removeValue()
+        
+        // Decrement user's unread by proxy's unread
+        decrementUnreadForUser(proxy.owner, amount: proxy.unread)
     }
     
+    /// Returns a proxy struct from the database using the given key.
     func getProxy(key: String, completion: (proxy: Proxy?) -> Void) {
         ref.child("proxies").child(uid).queryOrderedByChild("key").queryEqualToValue(key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
             if snapshot.childrenCount == 1 {
@@ -501,52 +498,54 @@ class API {
             "convos/\(convo.senderProxy)/\(convo.key)/convoNickname": nickname])
     }
     
-    // Called when the user enters a convo and as he/she stays in the convo and
-    // receives more messages into that convo.
-    func decreaseUnreadForUserBy(amt: Int, user: String, convo: String, proxy: String) {
-        // User global unread
-        self.ref.child("users").child(user).child("unread").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+    /// Decrements user, convo, proxy convo, and proxy unread by `amount`.
+    func decrementAllUnreadFor(convo: Convo, amount: Int) {
+        // User
+        self.ref.child("unread").child(convo.senderId).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
             if let unread = currentData.value {
                 let _unread = unread as? Int ?? 0
-                if _unread != 0 {
-                    currentData.value = _unread - amt
-                }
+                currentData.value = _unread - amount
                 return FIRTransactionResult.successWithValue(currentData)
             }
             return FIRTransactionResult.successWithValue(currentData)
         })
         
-        // Convo unread
-        self.ref.child("users").child(user).child("convos").child(convo).child("unread").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+        // Convo
+        self.ref.child("convos").child(convo.senderId).child(convo.key).child("unread").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
             if let unread = currentData.value {
                 let _unread = unread as? Int ?? 0
-                if _unread != 0 {
-                    currentData.value = _unread - amt
-                }
+                currentData.value = _unread - amount
                 return FIRTransactionResult.successWithValue(currentData)
             }
             return FIRTransactionResult.successWithValue(currentData)
         })
         
-        // Convo by proxy unread
-        self.ref.child("convos").child(proxy).child(convo).child("unread").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+        // Proxy convo
+        self.ref.child("convos").child(convo.senderProxy).child(convo.key).child("unread").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
             if let unread = currentData.value {
                 let _unread = unread as? Int ?? 0
-                if _unread != 0 {
-                    currentData.value = _unread - amt
-                }
+                currentData.value = _unread - amount
                 return FIRTransactionResult.successWithValue(currentData)
             }
             return FIRTransactionResult.successWithValue(currentData)
         })
         
-        // Proxy unread
-        self.ref.child("users").child(user).child("proxies").child(proxy).child("unread").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+        // Proxy
+        self.ref.child("proxies").child(convo.senderId).child(convo.senderProxy).child("unread").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
             if let unread = currentData.value {
                 let _unread = unread as? Int ?? 0
-                if _unread != 0 {
-                    currentData.value = _unread - amt
-                }
+                currentData.value = _unread - amount
+                return FIRTransactionResult.successWithValue(currentData)
+            }
+            return FIRTransactionResult.successWithValue(currentData)
+        })
+    }
+    
+    func decrementUnreadForUser(id: String, amount: Int) {
+        self.ref.child("unread").child(id).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+            if let unread = currentData.value {
+                let _unread = unread as? Int ?? 0
+                currentData.value = _unread - amount
                 return FIRTransactionResult.successWithValue(currentData)
             }
             return FIRTransactionResult.successWithValue(currentData)

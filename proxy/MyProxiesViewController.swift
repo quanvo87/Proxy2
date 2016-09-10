@@ -1,5 +1,5 @@
 //
-//  ProxiesViewController.swift
+//  MyProxiesViewController.swift
 //  proxy
 //
 //  Created by Quan Vo on 8/14/16.
@@ -10,7 +10,7 @@ import FirebaseAuth
 import FirebaseDatabase
 import FirebaseStorage
 
-class ProxiesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, NewMessageViewControllerDelegate {
+class MyProxiesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, NewMessageViewControllerDelegate {
     
     let api = API.sharedInstance
     let ref = FIRDatabase.database().reference()
@@ -51,7 +51,7 @@ class ProxiesViewController: UIViewController, UITableViewDataSource, UITableVie
     }
     
     func setUp() {
-        self.navigationItem.title = "Proxies"
+        self.navigationItem.title = "My Proxies"
         addNavBarButtons()
     }
     
@@ -59,15 +59,15 @@ class ProxiesViewController: UIViewController, UITableViewDataSource, UITableVie
         // New Message Button
         let newMessageButton = UIButton(type: .Custom)
         newMessageButton.setImage(UIImage(named: "new-message.png"), forState: UIControlState.Normal)
-        newMessageButton.addTarget(self, action: #selector(ProxiesViewController.tapNewMessageButton), forControlEvents: UIControlEvents.TouchUpInside)
-        newMessageButton.frame = CGRectMake(0, 0, 24, 24)
+        newMessageButton.addTarget(self, action: #selector(MyProxiesViewController.tapNewMessageButton), forControlEvents: UIControlEvents.TouchUpInside)
+        newMessageButton.frame = CGRectMake(0, 0, 25, 25)
         let newMessageBarButton = UIBarButtonItem(customView: newMessageButton)
         
         // New Proxy Button
         let newProxyButton = UIButton(type: .Custom)
         newProxyButton.setImage(UIImage(named: "new-proxy.png"), forState: UIControlState.Normal)
-        newProxyButton.addTarget(self, action: #selector(ProxiesViewController.tapNewProxyButton), forControlEvents: UIControlEvents.TouchUpInside)
-        newProxyButton.frame = CGRectMake(0, 0, 26, 26)
+        newProxyButton.addTarget(self, action: #selector(MyProxiesViewController.tapNewProxyButton), forControlEvents: UIControlEvents.TouchUpInside)
+        newProxyButton.frame = CGRectMake(0, 0, 25, 25)
         let newProxyBarButton = UIBarButtonItem(customView: newProxyButton)
         
         self.navigationItem.rightBarButtonItems = [newMessageBarButton, newProxyBarButton]
@@ -78,7 +78,7 @@ class ProxiesViewController: UIViewController, UITableViewDataSource, UITableVie
         unreadRef = ref.child("unread").child(api.uid)
         unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { snapshot in
             if let unread = snapshot.value as? Int {
-                self.navigationItem.title = "Proxies \(unread.toTitleSuffix())"
+                self.navigationItem.title = "My Proxies \(unread.toTitleSuffix())"
             }
         })
     }
@@ -131,16 +131,12 @@ class ProxiesViewController: UIViewController, UITableViewDataSource, UITableVie
     func tapNewMessageButton() {
         let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.NewMessageViewController) as! NewMessageViewController
         dest.delegate = self
-        let nav = UINavigationController.init(rootViewController: dest)
-        nav.modalTransitionStyle = .CoverVertical
-        presentViewController(nav, animated: true, completion: nil)
+        navigationController?.pushViewController(dest, animated: true)
     }
     
     func tapNewProxyButton() {
         let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.NewProxyViewController) as! NewProxyViewController
-        let nav = UINavigationController.init(rootViewController: dest)
-        nav.modalTransitionStyle = .CoverVertical
-        presentViewController(nav, animated: true, completion: nil)
+        navigationController?.pushViewController(dest, animated: true)
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {

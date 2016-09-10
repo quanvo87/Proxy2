@@ -61,10 +61,11 @@ class ConvoViewController: JSQMessagesViewController {
         
 //        observeNickname()
 //        observeProxy()
-        observeUnread()
+        
         setUpBubbles()
         observeMessages()
         observeTyping()
+        observeUnread()
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -87,8 +88,7 @@ class ConvoViewController: JSQMessagesViewController {
         membersTypingRef.removeObserverWithHandle(membersTypingRefHandle)
     }
     
-    // Watch the database for nickname changes to this convo. When they happen,
-    // update the title of the view to reflect them.
+    // MARK: - Database
     func observeNickname() {
         nicknameRef = ref.child("convos").child(api.uid).child(convo.key).child("convoNickname")
         nicknameRefHandle = nicknameRef.observeEventType(.Value, withBlock: { snapshot in
@@ -108,24 +108,15 @@ class ConvoViewController: JSQMessagesViewController {
         })
     }
     
-    /*
-     Reading A Convo
-     
-     Being inside a convo activates an observer that keeps track of the convo's
-     unread. So when entering a convo, you "read" all the messages in it, and
-     the unread counts for the convo (in both places), proxy, and your global 
-     unread are decremented by what was living in the unread count before you 
-     entered it. From here on out, as long as this view is alive, any continued
-     messages you receive in the convo will automatically be marked as read, and 
-     all corresponding unread values decremented accordingly. Make a call to the
-     API to do the decrementing.
-     */
+    // Decrements user, convo, proxy convo, and proxy unread by the convo's
+    // starting unread count upon load. Further unread increments to this convo
+    // are immediately set to 0 and the corresponding unreads decremented.
     func observeUnread() {
         unreadRef = ref.child("convos").child(convo.senderId).child(convo.key).child("unread")
         unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
             if let unread = snapshot.value as? Int {
                 if unread != 0 {
-                    self.api.decreaseUnreadForUserBy(unread, user: self.convo.senderId, convo: self.convo.key, proxy: self.convo.senderProxy)
+                    self.api.decrementAllUnreadFor(self.convo, amount: unread)
                 }
             }
         })
@@ -162,7 +153,6 @@ class ConvoViewController: JSQMessagesViewController {
     }
     
     // MARK: - JSQMessagesCollectionView
-    
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return messages.count
     }

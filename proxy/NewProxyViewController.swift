@@ -27,6 +27,11 @@ class NewProxyViewController: UIViewController, UITextFieldDelegate {
         createProxy()
     }
     
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(true)
+        navigationItem.hidesBackButton = true
+    }
+    
     func setUpUI() {
         navigationItem.title = "New Proxy"
         nameLabel.text = "Fetching Names..."
@@ -61,7 +66,7 @@ class NewProxyViewController: UIViewController, UITextFieldDelegate {
     func saveProxy() {
         disableButtons()
         api.saveWithNickname(proxy!, nickname: nicknameTextField.text!)
-        dismissViewControllerAnimated(true, completion: nil)
+        navigationController?.popViewControllerAnimated(true)
     }
     
     func disableButtons() {
@@ -107,6 +112,6 @@ class NewProxyViewController: UIViewController, UITextFieldDelegate {
         if let proxy = proxy {
             api.cancelCreating(proxy)
         }
-        dismissViewControllerAnimated(true, completion: nil)
+        navigationController?.popViewControllerAnimated(true)
     }
 }

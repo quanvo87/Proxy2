@@ -99,7 +99,7 @@ class LogInViewController: UIViewController {
                         return
                     }
                     let id = user?.uid
-                    self.ref.child("icons").queryEqualToValue(id).observeSingleEventOfType(.Value, withBlock: { snapshot in
+                    self.ref.child("icons").queryOrderedByKey().queryEqualToValue(id).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
                         if !snapshot.hasChildren() {
                             self.api.setIcons(id!)
                         }

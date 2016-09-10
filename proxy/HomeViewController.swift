@@ -75,14 +75,14 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         let newMessageButton = UIButton(type: .Custom)
         newMessageButton.setImage(UIImage(named: "new-message.png"), forState: UIControlState.Normal)
         newMessageButton.addTarget(self, action: #selector(HomeViewController.tapNewMessageButton), forControlEvents: UIControlEvents.TouchUpInside)
-        newMessageButton.frame = CGRectMake(0, 0, 24, 24)
+        newMessageButton.frame = CGRectMake(0, 0, 25, 25)
         let newMessageBarButton = UIBarButtonItem(customView: newMessageButton)
         
         // New Proxy Button
         let newProxyButton = UIButton(type: .Custom)
         newProxyButton.setImage(UIImage(named: "new-proxy.png"), forState: UIControlState.Normal)
         newProxyButton.addTarget(self, action: #selector(HomeViewController.tapNewProxyButton), forControlEvents: UIControlEvents.TouchUpInside)
-        newProxyButton.frame = CGRectMake(0, 0, 26, 26)
+        newProxyButton.frame = CGRectMake(0, 0, 25, 25)
         let newProxyBarButton = UIBarButtonItem(customView: newProxyButton)
         
         self.navigationItem.rightBarButtonItems = [newMessageBarButton, newProxyBarButton]
@@ -148,16 +148,12 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     func tapNewMessageButton() {
         let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.NewMessageViewController) as! NewMessageViewController
         dest.delegate = self
-        let nav = UINavigationController.init(rootViewController: dest)
-        nav.modalTransitionStyle = .CoverVertical
-        presentViewController(nav, animated: true, completion: nil)
+        navigationController?.pushViewController(dest, animated: true)
     }
     
     func tapNewProxyButton() {
         let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.NewProxyViewController) as! NewProxyViewController
-        let nav = UINavigationController.init(rootViewController: dest)
-        nav.modalTransitionStyle = .CoverVertical
-        presentViewController(nav, animated: true, completion: nil)
+        navigationController?.pushViewController(dest, animated: true)
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {

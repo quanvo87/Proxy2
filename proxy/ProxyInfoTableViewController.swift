@@ -44,7 +44,6 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
             convoViewController.convo = convo
             convoViewController.hidesBottomBarWhenPushed = true
             shouldShowConvo = false
-            convo = Convo()
             self.navigationController!.pushViewController(convoViewController, animated: true)
         }
     }
@@ -61,17 +60,35 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         for case let scrollView as UIScrollView in tableView.subviews {
             scrollView.delaysContentTouches = false
         }
-        //        edgesForExtendedLayout = .All
-        //        tableView.contentInset = UIEdgeInsetsMake(0, 0, CGRectGetHeight(self.tabBarController!.tabBar.frame), 0)
+        addNavBarButtons()
+    }
+    
+    func addNavBarButtons() {
+        
+        // New Message Button
+        let newMessageButton = UIButton(type: .Custom)
+        newMessageButton.setImage(UIImage(named: "new-message.png"), forState: UIControlState.Normal)
+        newMessageButton.addTarget(self, action: #selector(ProxyInfoTableViewController.tapNewMessageButton), forControlEvents: UIControlEvents.TouchUpInside)
+        newMessageButton.frame = CGRectMake(0, 0, 25, 25)
+        let newMessageBarButton = UIBarButtonItem(customView: newMessageButton)
+        
+        // Delete Proxy Button
+        let deleteProxyButton = UIButton(type: .Custom)
+        deleteProxyButton.setImage(UIImage(named: "delete-proxy.png"), forState: UIControlState.Normal)
+        deleteProxyButton.addTarget(self, action: #selector(ProxyInfoTableViewController.tapDeleteButton), forControlEvents: UIControlEvents.TouchUpInside)
+        deleteProxyButton.frame = CGRectMake(0, 0, 25, 25)
+        let deleteProxyBarButton = UIBarButtonItem(customView: deleteProxyButton)
+        
+        self.navigationItem.rightBarButtonItems = [newMessageBarButton, deleteProxyBarButton]
     }
     
     // MARK: - Database
     func observeUnread() {
-        unreadRef = ref.child("unread").child(proxy.key)
+        unreadRef = ref.child("proxies").child(proxy.owner).child(proxy.key).child("unread")
         unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { snapshot in
-            //            if let unread = snapshot.value as? Int {
-            //                self.navigationItem.title = "\(self.proxy.key) \(unread.unreadTitleSuffix())"
-            //            }
+            if let unread = snapshot.value as? Int {
+                self.navigationItem.title = "\(unread.toTitleSuffix())"
+            }
         })
     }
     
@@ -171,15 +188,13 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         return UITableViewCell()
     }
     
-    func confirmDelete() {
-        let alert = UIAlertController(title: "Delete Proxy?", message: "You will not be able to see this proxy or its conversations again. Other users are not notified.", preferredStyle: .Alert)
-        let deleteAction = UIAlertAction(title: "Delete", style: .Destructive, handler: { (void) in
-            self.api.deleteProxy(self.proxy, convos: self.convos)
+    func tapDeleteButton() {
+        let alert = UIAlertController(title: "Delete Proxy?", message: "You will not be able to see this proxy or its conversations again. Other users will not be notified.", preferredStyle: .Alert)
+        alert.addAction(UIAlertAction(title: "Delete", style: .Destructive, handler: { (void) in
+            self.api.delete(self.proxy, convos: self.convos)
             self.navigationController?.popViewControllerAnimated(true)
-        })
-        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
-        alert.addAction(deleteAction)
-        alert.addAction(cancelAction)
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
         self.presentViewController(alert, animated: true, completion: nil)
     }
     
@@ -227,5 +242,12 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         default:
             return
         }
+    }
+    
+    func tapNewMessageButton() {
+        let dest = storyboard?.instantiateViewControllerWithIdentifier("New Message View Controller") as! NewMessageViewController
+        dest.proxy = proxy
+        dest.delegate = self
+        navigationController?.pushViewController(dest, animated: true)
     }
 }

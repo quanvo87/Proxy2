@@ -41,7 +41,7 @@
 		14E19A471D60EF100030B366 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 14E19A451D60EF100030B366 /* Main.storyboard */; };
 		14E19A4C1D60EF100030B366 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 14E19A4B1D60EF100030B366 /* Assets.xcassets */; };
 		14E19A4F1D60EF100030B366 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 14E19A4D1D60EF100030B366 /* LaunchScreen.storyboard */; };
-		14E19A5A1D61034A0030B366 /* ProxiesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E19A591D61034A0030B366 /* ProxiesViewController.swift */; };
+		14E19A5A1D61034A0030B366 /* MyProxiesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E19A591D61034A0030B366 /* MyProxiesViewController.swift */; };
 		14E19A5C1D612CE80030B366 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E19A5B1D612CE80030B366 /* Extensions.swift */; };
 		14E19A5E1D6148700030B366 /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E19A5D1D6148700030B366 /* LogInViewController.swift */; };
 		D7B59C0DFB22CA5893158C5B /* Pods_proxy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 42B14E4F2F6BB0AA66125CA8 /* Pods_proxy.framework */; };
@@ -87,7 +87,7 @@
 		14E19A4E1D60EF100030B366 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		14E19A501D60EF100030B366 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		14E19A561D60F07A0030B366 /* Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Header.h; sourceTree = "<group>"; };
-		14E19A591D61034A0030B366 /* ProxiesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxiesViewController.swift; sourceTree = "<group>"; };
+		14E19A591D61034A0030B366 /* MyProxiesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyProxiesViewController.swift; sourceTree = "<group>"; };
 		14E19A5B1D612CE80030B366 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		14E19A5D1D6148700030B366 /* LogInViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
 		197B015D4173F5D5144C2ADC /* Pods-proxy.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-proxy.release.xcconfig"; path = "Pods/Target Support Files/Pods-proxy/Pods-proxy.release.xcconfig"; sourceTree = "<group>"; };
@@ -158,7 +158,7 @@
 		143F76F51D72BE2C00EF305F /* Proxies */ = {
 			isa = PBXGroup;
 			children = (
-				14E19A591D61034A0030B366 /* ProxiesViewController.swift */,
+				14E19A591D61034A0030B366 /* MyProxiesViewController.swift */,
 				14265B7B1D63029200B65793 /* NewProxyViewController.swift */,
 				14383B2C1D78A7210086CA6C /* ProxyInfoTableViewController.swift */,
 				140E0D061D82AF2F00D68F71 /* IconPickerCollectionViewController.swift */,
@@ -180,9 +180,9 @@
 		143F76F71D72BE7400EF305F /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				1415610C1D620DB7002022BC /* API.swift */,
 				14A6F18D1D6BDA880015431E /* Constants.swift */,
 				14E19A5B1D612CE80030B366 /* Extensions.swift */,
-				1415610C1D620DB7002022BC /* API.swift */,
 				1420299F1D812859008B29DB /* ErrorAlert.swift */,
 				14A6F1931D6CF1410015431E /* ProxyNameGenerator.swift */,
 				147B5C391D82891300D18C73 /* DefaultIcons.swift */,
@@ -413,7 +413,7 @@
 				14383B5B1D7B0CB60086CA6C /* NSDate+NVTimeAgo.m in Sources */,
 				14383B121D73802B0086CA6C /* Proxy.swift in Sources */,
 				14383B5F1D7B835C0086CA6C /* ConvoNicknameCell.swift in Sources */,
-				14E19A5A1D61034A0030B366 /* ProxiesViewController.swift in Sources */,
+				14E19A5A1D61034A0030B366 /* MyProxiesViewController.swift in Sources */,
 				14A6F1811D68D8160015431E /* SettingsItem.swift in Sources */,
 				14E19A5E1D6148700030B366 /* LogInViewController.swift in Sources */,
 				14A6F18E1D6BDA880015431E /* Constants.swift in Sources */,

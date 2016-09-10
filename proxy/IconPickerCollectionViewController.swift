@@ -37,6 +37,11 @@ class IconPickerCollectionViewController: UICollectionViewController {
         observeIcons()
     }
     
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(true)
+        navigationItem.hidesBackButton = true
+    }
+    
     deinit {
         iconRef.removeObserverWithHandle(iconRefHandle)
     }
@@ -75,4 +80,9 @@ class IconPickerCollectionViewController: UICollectionViewController {
         api.updateIcon(proxy, icon: icons[indexPath.row])
         navigationController?.popViewControllerAnimated(true)
     }
+    
+    @IBAction func tapCancelButton(sender: AnyObject) {
+        navigationController?.popViewControllerAnimated(true)
+    }
+    
 }
