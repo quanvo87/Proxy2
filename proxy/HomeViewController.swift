@@ -36,7 +36,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 self.observeUnread()
                 self.observeConvos()
             } else {
-                let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.LogInViewController) as! LogInViewController
+                let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.LogInViewController) as! LogInViewController
                 let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
                 appDelegate.window?.rootViewController = dest
             }
@@ -49,7 +49,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         super.viewDidAppear(true)
         
         if shouldShowConvo {
-            let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.ConvoViewController) as! ConvoViewController
+            let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.ConvoViewController) as! ConvoViewController
             dest.convo = convo
             dest.hidesBottomBarWhenPushed = true
             shouldShowConvo = false
@@ -146,19 +146,19 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     // MARK: - Navigation
     
     func tapNewMessageButton() {
-        let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.NewMessageViewController) as! NewMessageViewController
+        let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.NewMessageViewController) as! NewMessageViewController
         dest.delegate = self
         navigationController?.pushViewController(dest, animated: true)
     }
     
     func tapNewProxyButton() {
-        let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.NewProxyViewController) as! NewProxyViewController
+        let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.NewProxyViewController) as! NewProxyViewController
         navigationController?.pushViewController(dest, animated: true)
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         switch segue.identifier! {
-        case Constants.Segues.ConvoSegue:
+        case Segues.ConvoSegue:
             if let dest = segue.destinationViewController as? ConvoViewController,
                 let index = tableView.indexPathForSelectedRow?.row {
                 dest.convo = convos[index]

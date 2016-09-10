@@ -33,21 +33,21 @@
                                 <rect key="frame" x="30" y="356" width="540" height="30"/>
                                 <state key="normal" title="Create New Account"/>
                                 <connections>
-                                    <action selector="tapCreateNewAccountButton:" destination="sjW-YU-fmh" eventType="touchUpInside" id="dO9-rQ-CQk"/>
+                                    <action selector="createNewAccount:" destination="sjW-YU-fmh" eventType="touchUpInside" id="Fn3-dQ-qyN"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4Pt-qC-dIL">
                                 <rect key="frame" x="30" y="391" width="540" height="30"/>
                                 <state key="normal" title="Log In / Sign Up Through Facebook"/>
                                 <connections>
-                                    <action selector="tapFacebookButton:" destination="sjW-YU-fmh" eventType="touchUpInside" id="rpB-op-GQS"/>
+                                    <action selector="logInWithFacebook:" destination="sjW-YU-fmh" eventType="touchUpInside" id="DLw-p3-sKU"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ant-pc-zQG">
                                 <rect key="frame" x="30" y="321" width="540" height="30"/>
                                 <state key="normal" title="Log In"/>
                                 <connections>
-                                    <action selector="tapLogInButton:" destination="sjW-YU-fmh" eventType="touchUpInside" id="Zi9-AI-And"/>
+                                    <action selector="logIn:" destination="sjW-YU-fmh" eventType="touchUpInside" id="zom-mx-77G"/>
                                 </connections>
                             </button>
                         </subviews>

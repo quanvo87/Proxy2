@@ -11,14 +11,13 @@ import FacebookLogin
 
 class SettingsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    private var settingsItems = [SettingsItem]()
+    var settingsItems = [SettingsItem]()
     
     @IBOutlet weak var usernameLabel: UILabel!
     @IBOutlet weak var sideBarTableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         settingsItems = SettingsItems().settingsItems
         setUpUI()
         setUpTableView()
@@ -57,17 +56,17 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let settingsItemTitle = settingsItems[indexPath.row].title
         switch settingsItemTitle {
-        case Constants.SettingsItemNames.TurnOnNotifications:
+        case "TurnOnNotifications":
             tapTurnOnNotifications()
-        case Constants.SettingsItemNames.ReportAnIssue:
+        case "ReportAnIssue":
             reportAnIssue()
-        case Constants.SettingsItemNames.LogOut:
+        case "LogOut":
             tapLogOut()
-        case Constants.SettingsItemNames.DeleteAccount:
+        case "DeleteAccount":
             tapDeleteAccount()
-        case Constants.SettingsItemNames.ReviewInAppStore:
+        case "ReviewInAppStore":
             tapReview()
-        case Constants.SettingsItemNames.About:
+        case "About":
             tapAbout()
         default:
             self.showAlert("Error", message: "Error selecting Side Bar Menu Item.")

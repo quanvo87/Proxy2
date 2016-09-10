@@ -12,28 +12,16 @@ class IconPickerCollectionViewController: UICollectionViewController {
 
     let api = API.sharedInstance
     let ref = FIRDatabase.database().reference()
-    var iconRef = FIRDatabaseReference()
-    var iconRefHandle = FIRDatabaseHandle()
-    var icons = [String]()
     var proxy = Proxy()
     var convos = [Convo]()
     
+    var iconRef = FIRDatabaseReference()
+    var iconRefHandle = FIRDatabaseHandle()
+    var icons = [String]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        navigationItem.title = "Select An Icon"
-        
-        let flowLayout = UICollectionViewFlowLayout()
-        flowLayout.itemSize = CGSizeMake(60, 90)
-        collectionView?.setCollectionViewLayout(flowLayout, animated: true)
-        
-        collectionView!.delaysContentTouches = false
-        for case let scrollView as UIScrollView in collectionView!.subviews {
-            scrollView.delaysContentTouches = false
-        }
-        
-        collectionView?.backgroundColor = UIColor.whiteColor()
-        
+        setUp()
         observeIcons()
     }
     
@@ -44,6 +32,19 @@ class IconPickerCollectionViewController: UICollectionViewController {
     
     deinit {
         iconRef.removeObserverWithHandle(iconRefHandle)
+    }
+    
+    func setUp() {
+        navigationItem.title = "Select An Icon"
+        
+        let flowLayout = UICollectionViewFlowLayout()
+        flowLayout.itemSize = CGSizeMake(60, 90)
+        collectionView?.setCollectionViewLayout(flowLayout, animated: true)
+        collectionView!.delaysContentTouches = false
+        for case let scrollView as UIScrollView in collectionView!.subviews {
+            scrollView.delaysContentTouches = false
+        }
+        collectionView?.backgroundColor = UIColor.whiteColor()
     }
     
     func observeIcons() {
@@ -61,7 +62,7 @@ class IconPickerCollectionViewController: UICollectionViewController {
     }
     
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("Icon Picker Cell", forIndexPath: indexPath) as! IconPickerCell
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(Identifiers.IconPickerCell, forIndexPath: indexPath) as! IconPickerCell
         cell.icon = icons[indexPath.row]
         return cell
     }
@@ -84,5 +85,4 @@ class IconPickerCollectionViewController: UICollectionViewController {
     @IBAction func tapCancelButton(sender: AnyObject) {
         navigationController?.popViewControllerAnimated(true)
     }
-    
 }

@@ -36,7 +36,6 @@ class ProxyInfoHeaderCell: UITableViewCell {
         nicknameRef.removeObserverWithHandle(nicknameRefHandle)
     }
     
-    // MARK: - Database
     func observeIcon() {
         iconRef = ref.child("proxies").child(proxy.owner).child(proxy.key).child("icon")
         iconRefHandle = iconRef.observeEventType(.Value, withBlock: { (snapshot) in

@@ -14,56 +14,54 @@ class MyProxiesViewController: UIViewController, UITableViewDataSource, UITableV
     
     let api = API.sharedInstance
     let ref = FIRDatabase.database().reference()
-    var proxiesRef = FIRDatabaseReference()
-    var proxiesRefHandle = FIRDatabaseHandle()
+    
     var unreadRef = FIRDatabaseReference()
     var unreadRefHandle = FIRDatabaseHandle()
+    
+    var proxiesRef = FIRDatabaseReference()
+    var proxiesRefHandle = FIRDatabaseHandle()
     var proxies = [Proxy]()
+    
     var convo = Convo()
-    var shouldShowConvo = false
+    var shouldShowNewConvo = false
     
     @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setUp()
         observeUnread()
-        setUpTableView()
         observeProxies()
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(true)
-        
-        if shouldShowConvo {
-            let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.ConvoViewController) as! ConvoViewController
-            dest.convo = convo
-            dest.hidesBottomBarWhenPushed = true
-            shouldShowConvo = false
-            self.navigationController!.pushViewController(dest, animated: true)
-        }
+        showNewConvo()
     }
     
     deinit {
-        proxiesRef.removeObserverWithHandle(proxiesRefHandle)
         unreadRef.removeObserverWithHandle(unreadRefHandle)
+        proxiesRef.removeObserverWithHandle(proxiesRefHandle)
     }
     
     func setUp() {
         self.navigationItem.title = "My Proxies"
         addNavBarButtons()
+        tableView.delegate = self
+        tableView.dataSource = self
+        automaticallyAdjustsScrollViewInsets = false
+        tableView.rowHeight = 80
+        tableView.estimatedRowHeight = 80
+        tableView.separatorStyle = .None
     }
     
     func addNavBarButtons() {
-        // New Message Button
         let newMessageButton = UIButton(type: .Custom)
         newMessageButton.setImage(UIImage(named: "new-message.png"), forState: UIControlState.Normal)
-        newMessageButton.addTarget(self, action: #selector(MyProxiesViewController.tapNewMessageButton), forControlEvents: UIControlEvents.TouchUpInside)
+        newMessageButton.addTarget(self, action: #selector(MyProxiesViewController.showNewMessageViewController), forControlEvents: UIControlEvents.TouchUpInside)
         newMessageButton.frame = CGRectMake(0, 0, 25, 25)
         let newMessageBarButton = UIBarButtonItem(customView: newMessageButton)
         
-        // New Proxy Button
         let newProxyButton = UIButton(type: .Custom)
         newProxyButton.setImage(UIImage(named: "new-proxy.png"), forState: UIControlState.Normal)
         newProxyButton.addTarget(self, action: #selector(MyProxiesViewController.tapNewProxyButton), forControlEvents: UIControlEvents.TouchUpInside)
@@ -71,6 +69,16 @@ class MyProxiesViewController: UIViewController, UITableViewDataSource, UITableV
         let newProxyBarButton = UIBarButtonItem(customView: newProxyButton)
         
         self.navigationItem.rightBarButtonItems = [newMessageBarButton, newProxyBarButton]
+    }
+    
+    func showNewConvo() {
+        if shouldShowNewConvo {
+            let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.ConvoViewController) as! ConvoViewController
+            dest.convo = convo
+            dest.hidesBottomBarWhenPushed = true
+            shouldShowNewConvo = false
+            self.navigationController!.pushViewController(dest, animated: true)
+        }
     }
     
     // MARK: - Database
@@ -96,15 +104,6 @@ class MyProxiesViewController: UIViewController, UITableViewDataSource, UITableV
         })
     }
     
-    func setUpTableView() {
-        tableView.delegate = self
-        tableView.dataSource = self
-        automaticallyAdjustsScrollViewInsets = false
-        tableView.rowHeight = 80
-        tableView.estimatedRowHeight = 80
-        tableView.separatorStyle = .None
-    }
-    
     // MARK: - Table view delegate
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return proxies.count
@@ -116,7 +115,7 @@ class MyProxiesViewController: UIViewController, UITableViewDataSource, UITableV
     
     // MARK: - Table view data source
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.ProxyCell, forIndexPath: indexPath) as! ProxyCell
+        let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.ProxyCell, forIndexPath: indexPath) as! ProxyCell
         cell.proxy = proxies[indexPath.row]
         return cell
     }
@@ -124,23 +123,23 @@ class MyProxiesViewController: UIViewController, UITableViewDataSource, UITableV
     // MARK: - Select proxy view controller delegate
     func showNewConvo(convo: Convo) {
         self.convo = convo
-        shouldShowConvo = true
+        shouldShowNewConvo = true
     }
     
     // MARK: - Navigation
-    func tapNewMessageButton() {
-        let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.NewMessageViewController) as! NewMessageViewController
+    func showNewMessageViewController() {
+        let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.NewMessageViewController) as! NewMessageViewController
         dest.delegate = self
         navigationController?.pushViewController(dest, animated: true)
     }
     
     func tapNewProxyButton() {
-        let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.NewProxyViewController) as! NewProxyViewController
+        let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.NewProxyViewController) as! NewProxyViewController
         navigationController?.pushViewController(dest, animated: true)
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == Constants.Segues.ProxySegue {
+        if segue.identifier == Segues.ProxySegue {
             let dest = segue.destinationViewController as! ProxyInfoTableViewController
             dest.proxy = proxies[tableView.indexPathForSelectedRow!.row]
         }

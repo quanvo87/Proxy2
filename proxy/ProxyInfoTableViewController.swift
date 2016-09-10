@@ -11,23 +11,26 @@ import FirebaseDatabase
 
 class ProxyInfoTableViewController: UITableViewController, NewMessageViewControllerDelegate {
     
-    var proxy = Proxy()
     let api = API.sharedInstance
     let ref = FIRDatabase.database().reference()
+    var proxy = Proxy()
+    
     var unreadRef = FIRDatabaseReference()
     var unreadRefHandle = FIRDatabaseHandle()
+    
     var nicknameRef = FIRDatabaseReference()
     var nicknameRefHandle = FIRDatabaseHandle()
+    var nickname = ""
+    
     var convosRef = FIRDatabaseReference()
     var convosRefHandle = FIRDatabaseHandle()
     var convos = [Convo]()
+    
     var convo = Convo()
-    var nickname = ""
-    var shouldShowConvo = false
+    var shouldShowNewConvo = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setUp()
         observeUnread()
         observeConvos()
@@ -36,16 +39,8 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(true)
-        
-        self.tabBarController?.tabBar.hidden = false
-        
-        if shouldShowConvo {
-            let convoViewController = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.ConvoViewController) as! ConvoViewController
-            convoViewController.convo = convo
-            convoViewController.hidesBottomBarWhenPushed = true
-            shouldShowConvo = false
-            self.navigationController!.pushViewController(convoViewController, animated: true)
-        }
+        tabBarController?.tabBar.hidden = false
+        showNewConvo()
     }
     
     deinit {
@@ -55,31 +50,38 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     }
     
     func setUp() {
+        addNavBarButtons()
         tableView.separatorStyle = .None
         tableView.delaysContentTouches = false
         for case let scrollView as UIScrollView in tableView.subviews {
             scrollView.delaysContentTouches = false
         }
-        addNavBarButtons()
     }
     
     func addNavBarButtons() {
-        
-        // New Message Button
         let newMessageButton = UIButton(type: .Custom)
         newMessageButton.setImage(UIImage(named: "new-message.png"), forState: UIControlState.Normal)
-        newMessageButton.addTarget(self, action: #selector(ProxyInfoTableViewController.tapNewMessageButton), forControlEvents: UIControlEvents.TouchUpInside)
+        newMessageButton.addTarget(self, action: #selector(ProxyInfoTableViewController.showNewMessageViewController), forControlEvents: UIControlEvents.TouchUpInside)
         newMessageButton.frame = CGRectMake(0, 0, 25, 25)
         let newMessageBarButton = UIBarButtonItem(customView: newMessageButton)
         
-        // Delete Proxy Button
         let deleteProxyButton = UIButton(type: .Custom)
         deleteProxyButton.setImage(UIImage(named: "delete-proxy.png"), forState: UIControlState.Normal)
-        deleteProxyButton.addTarget(self, action: #selector(ProxyInfoTableViewController.tapDeleteButton), forControlEvents: UIControlEvents.TouchUpInside)
+        deleteProxyButton.addTarget(self, action: #selector(ProxyInfoTableViewController.showDeleteProxyAlert), forControlEvents: UIControlEvents.TouchUpInside)
         deleteProxyButton.frame = CGRectMake(0, 0, 25, 25)
         let deleteProxyBarButton = UIBarButtonItem(customView: deleteProxyButton)
         
         self.navigationItem.rightBarButtonItems = [newMessageBarButton, deleteProxyBarButton]
+    }
+    
+    func showNewConvo() {
+        if shouldShowNewConvo {
+            let convoViewController = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.ConvoViewController) as! ConvoViewController
+            convoViewController.convo = convo
+            convoViewController.hidesBottomBarWhenPushed = true
+            shouldShowNewConvo = false
+            self.navigationController!.pushViewController(convoViewController, animated: true)
+        }
     }
     
     // MARK: - Database
@@ -170,17 +172,17 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     // MARK: - Table view data source
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         switch indexPath.section {
-            
+        
         // Header
         case 0:
-            let cell = tableView.dequeueReusableCellWithIdentifier("Proxy Info Header Cell", forIndexPath: indexPath) as! ProxyInfoHeaderCell
+            let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.ProxyInfoHeaderCell, forIndexPath: indexPath) as! ProxyInfoHeaderCell
             cell.proxy = proxy
             cell.nicknameButton.addTarget(self, action: #selector(ProxyInfoTableViewController.showNicknameEditorAlert), forControlEvents: .TouchUpInside)
             return cell
             
         // This proxy's convos
         case 1:
-            let cell = tableView.dequeueReusableCellWithIdentifier("Convo Cell", forIndexPath: indexPath) as! ConvoCell
+            let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.ConvoCell, forIndexPath: indexPath) as! ConvoCell
             cell.convo = convos[indexPath.row]
             return cell
         default: break
@@ -188,7 +190,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         return UITableViewCell()
     }
     
-    func tapDeleteButton() {
+    func showDeleteProxyAlert() {
         let alert = UIAlertController(title: "Delete Proxy?", message: "You will not be able to see this proxy or its conversations again. Other users will not be notified.", preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: "Delete", style: .Destructive, handler: { (void) in
             self.api.delete(proxy: self.proxy, withConvos: self.convos)
@@ -221,20 +223,20 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     // MARK: - Select proxy view controller delegate
     func showNewConvo(convo: Convo) {
         self.convo = convo
-        shouldShowConvo = true
+        shouldShowNewConvo = true
     }
     
     // MARK: - Navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         switch segue.identifier! {
             
-        case Constants.Segues.ConvoSegue:
+        case Segues.ConvoSegue:
             let dest = segue.destinationViewController as! ConvoViewController
             let index = tableView.indexPathForSelectedRow!.row
             dest.convo = convos[index]
             dest.hidesBottomBarWhenPushed = true
             
-        case "Icon Picker Segue":
+        case Segues.IconPickerSegue:
             let dest = segue.destinationViewController as! IconPickerCollectionViewController
             dest.proxy = proxy
             dest.convos = convos
@@ -244,8 +246,8 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         }
     }
     
-    func tapNewMessageButton() {
-        let dest = storyboard?.instantiateViewControllerWithIdentifier("New Message View Controller") as! NewMessageViewController
+    func showNewMessageViewController() {
+        let dest = storyboard?.instantiateViewControllerWithIdentifier(Identifiers.NewMessageViewController) as! NewMessageViewController
         dest.proxy = proxy
         dest.delegate = self
         navigationController?.pushViewController(dest, animated: true)

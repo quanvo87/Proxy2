@@ -9,12 +9,12 @@
 struct SettingsItems {
 
     private let _settingsItems = 
-        [SettingsItem(title: Constants.SettingsItemNames.TurnOnNotifications),
-         SettingsItem(title: Constants.SettingsItemNames.ReportAnIssue),
-         SettingsItem(title: Constants.SettingsItemNames.LogOut),
-         SettingsItem(title: Constants.SettingsItemNames.DeleteAccount),
-         SettingsItem(title: Constants.SettingsItemNames.ReviewInAppStore),
-         SettingsItem(title: Constants.SettingsItemNames.About)]
+        [SettingsItem(title: "TurnOnNotifications"),
+         SettingsItem(title: "ReportAnIssue"),
+         SettingsItem(title: "LogOut"),
+         SettingsItem(title: "DeleteAccount"),
+         SettingsItem(title: "ReviewInAppStore"),
+         SettingsItem(title: "About")]
     
     var settingsItems: [SettingsItem] {
         return _settingsItems

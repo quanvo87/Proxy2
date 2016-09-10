@@ -148,7 +148,7 @@ class API {
         if let URL = iconURLCache[icon] {
             completion(URL: URL)
         } else {
-            let storageRef = FIRStorage.storage().referenceForURL(Constants.URLs.Storage)
+            let storageRef = FIRStorage.storage().referenceForURL(URLs.Storage)
             let starsRef = storageRef.child("\(icon).png")
             starsRef.downloadURLWithCompletion { (URL, error) -> Void in
                 if error == nil, let URL = URL?.absoluteString {

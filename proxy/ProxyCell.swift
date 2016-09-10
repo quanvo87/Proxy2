@@ -10,13 +10,12 @@ import FirebaseStorage
 
 class ProxyCell: UITableViewCell {
     
-    let api = API.sharedInstance
-    
     @IBOutlet weak var iconImageView: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var nicknameLabel: UILabel!
     @IBOutlet weak var unreadLabel: UILabel!
     
+    let api = API.sharedInstance
     var proxy = Proxy() {
         didSet {
             // Set up

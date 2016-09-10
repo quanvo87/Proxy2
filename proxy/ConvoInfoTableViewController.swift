@@ -23,7 +23,7 @@ class ConvoInfoTableViewController: UITableViewController {
         
         setUpUI()
         
-        tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: Constants.Identifiers.BasicCell)
+        tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: Identifiers.BasicCell)
         
 //        observeNickname()
 //        observeProxy()
@@ -68,7 +68,7 @@ class ConvoInfoTableViewController: UITableViewController {
             if let nickname = snapshot.value as? String {
                 self.convo.senderNickname = nickname
                 let indexPath = NSIndexPath(forRow: 0, inSection: 2)
-                if self.tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.BasicCell, forIndexPath: indexPath) != nil {
+                if self.tableView.dequeueReusableCellWithIdentifier(Identifiers.BasicCell, forIndexPath: indexPath) != nil {
                     self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
                 }
             }
@@ -137,7 +137,7 @@ class ConvoInfoTableViewController: UITableViewController {
             
         // The nickname editor cell
         case 0:
-            let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.ConvoNicknameCell, forIndexPath: indexPath) as! ConvoNicknameCell
+            let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.ConvoNicknameCell, forIndexPath: indexPath) as! ConvoNicknameCell
             
             cell.convo = convo
             
@@ -149,20 +149,20 @@ class ConvoInfoTableViewController: UITableViewController {
             // The 'Members' section
         // 'them'
         case 1:
-            let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.BasicCell, forIndexPath: indexPath)
+            let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.BasicCell, forIndexPath: indexPath)
             cell.textLabel?.text = convo.receiverProxy
             return cell
             
         // 'you'
         case 2:
-            let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.BasicCell, forIndexPath: indexPath)
+            let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.BasicCell, forIndexPath: indexPath)
             cell.textLabel?.attributedText = youTitle(convo.senderProxy, nickname: convo.senderNickname)
             cell.accessoryType = .DisclosureIndicator
             return cell
             
         // The 'Settings' section
         case 3:
-            let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.BasicCell, forIndexPath: indexPath)
+            let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.BasicCell, forIndexPath: indexPath)
             cell.selectionStyle = .None
             
             switch indexPath.row {
@@ -208,7 +208,7 @@ class ConvoInfoTableViewController: UITableViewController {
             
         // Block user/Leave conversation
         case 4:
-            let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.BasicCell, forIndexPath: indexPath)
+            let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.BasicCell, forIndexPath: indexPath)
             switch indexPath.row {
                 
             // Block user
@@ -242,7 +242,7 @@ class ConvoInfoTableViewController: UITableViewController {
             // Unlock the UI
             if let proxy = proxy {
                 // transition to proxy
-                let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Constants.Identifiers.ProxyInfoTableViewController) as! ProxyInfoTableViewController
+                let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.ProxyInfoTableViewController) as! ProxyInfoTableViewController
                 dest.proxy = proxy
                 self.navigationController!.pushViewController(dest, animated: true)
             }

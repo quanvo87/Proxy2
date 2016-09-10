@@ -218,7 +218,7 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == Constants.Segues.SelectProxySegue,
+        if segue.identifier == Segues.SelectProxySegue,
             let dest = segue.destinationViewController as? SelectProxyViewController {
             dest.delegate = self
         }
