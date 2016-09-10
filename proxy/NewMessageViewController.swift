@@ -95,11 +95,11 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
         let receiverProxyName = first.lowercaseString + second.lowercaseString.capitalizedString + num
         
         // Send off to API to send message
-        self.api.sendMessage(proxy!, receiverProxyName: receiverProxyName, message: message) { (error, convo) in
+        api.send(message: message, fromSenderProxy: proxy!, toReceiverProxyName: receiverProxyName) { (error, convo) in
             if let error = error {
                 self.enableButtonsAndShowAlert(error.title, message: error.message)
             } else {
-                self.api.saveWithNickname(self.proxy!, nickname: "")
+                self.api.save(proxy: self.proxy!, withNickname: "")
                 self.goToConvo(convo!)
             }
         }
@@ -126,11 +126,11 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
     @IBAction func tapNewButton(sender: AnyObject) {
         disableButtons()
         if createdNewProxy {
-            api.reroll(proxy!, completion: { (proxy) in
+            api.reroll(fromOldProxy: proxy!, completion: { (proxy) in
                 self.setProxy(proxy)
             })
         } else {
-            api.createProxy({ (proxy) in
+            api.create(proxy: { (proxy) in
                 self.setProxy(proxy)
             })
         }

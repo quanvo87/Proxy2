@@ -90,10 +90,10 @@ class ConvoViewController: JSQMessagesViewController {
     
     // MARK: - Database
     func observeNickname() {
-        nicknameRef = ref.child("convos").child(api.uid).child(convo.key).child("convoNickname")
+        nicknameRef = ref.child("convos").child(api.uid).child(convo.key).child("receiverNickname")
         nicknameRefHandle = nicknameRef.observeEventType(.Value, withBlock: { snapshot in
             if let nickname = snapshot.value as? String {
-                self.convo.convoNickname = nickname
+                self.convo.receiverNickname = nickname
             }
         })
     }
@@ -103,7 +103,7 @@ class ConvoViewController: JSQMessagesViewController {
         proxyRef = ref.child("proxies").child(api.uid).child(convo.senderProxy).child("nickname")
         proxyRefHandle = proxyRef.observeEventType(.Value, withBlock: { snapshot in
             if let nickname = snapshot.value as? String {
-                self.convo.proxyNickname = nickname
+                self.convo.senderNickname = nickname
             }
         })
     }
@@ -116,7 +116,7 @@ class ConvoViewController: JSQMessagesViewController {
         unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
             if let unread = snapshot.value as? Int {
                 if unread != 0 {
-                    self.api.decrementAllUnreadFor(self.convo, amount: unread)
+                    self.api.decrementAllUnreadFor(convo: self.convo, byAmount: unread)
                 }
             }
         })
@@ -204,7 +204,7 @@ class ConvoViewController: JSQMessagesViewController {
     }
     
     override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: NSDate!) {
-        self.api.sendMessage(convo, messageText: text) { (success) in
+        api.send(message: text, usingSenderConvo: convo) { (convo) in
             JSQSystemSoundPlayer.jsq_playMessageSentSound()
             self.finishSendingMessage()
         }

@@ -77,7 +77,7 @@ class IconPickerCollectionViewController: UICollectionViewController {
     }
     
     override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        api.updateIcon(proxy, icon: icons[indexPath.row])
+        api.update(icon: icons[indexPath.row], forProxy: proxy)
         navigationController?.popViewControllerAnimated(true)
     }
     

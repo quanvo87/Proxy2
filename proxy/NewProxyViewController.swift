@@ -39,14 +39,14 @@ class NewProxyViewController: UIViewController, UITextFieldDelegate {
     
     func createProxy() {
         disableButtons()
-        api.createProxy { (proxy) in
-           self.setProxy(proxy)
+        api.create { (proxy) in
+            self.setProxy(proxy)
         }
     }
     
     @IBAction func tapRerollButton(sender: AnyObject) {
         disableButtons()
-        api.reroll(proxy!) { (proxy) in
+        api.reroll(fromOldProxy: proxy!) { (proxy) in
             self.setProxy(proxy)
         }
     }
@@ -65,7 +65,7 @@ class NewProxyViewController: UIViewController, UITextFieldDelegate {
     
     func saveProxy() {
         disableButtons()
-        api.saveWithNickname(proxy!, nickname: nicknameTextField.text!)
+        api.save(proxy: proxy!, withNickname: nicknameTextField.text!)
         navigationController?.popViewControllerAnimated(true)
     }
     

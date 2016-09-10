@@ -52,10 +52,10 @@ class ConvoInfoTableViewController: UITableViewController {
     // Watch the database for nickname changes to this convo. When they happen,
     // update the title of the view to reflect them.
     func observeNickname() {
-        nicknameRef = ref.child("convos").child(api.uid).child(convo.key).child("convoNickname")
+        nicknameRef = ref.child("convos").child(api.uid).child(convo.key).child("receiverNickname")
         nicknameRefHandle = nicknameRef.observeEventType(.Value, withBlock: { snapshot in
             if let nickname = snapshot.value as? String {
-                self.convo.convoNickname = nickname
+                self.convo.receiverNickname = nickname
             }
         })
     }
@@ -66,7 +66,7 @@ class ConvoInfoTableViewController: UITableViewController {
         proxyRef = ref.child("proxies").child(api.uid).child(convo.senderProxy).child("nickname")
         proxyRefHandle = proxyRef.observeEventType(.Value, withBlock: { snapshot in
             if let nickname = snapshot.value as? String {
-                self.convo.proxyNickname = nickname
+                self.convo.senderNickname = nickname
                 let indexPath = NSIndexPath(forRow: 0, inSection: 2)
                 if self.tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.BasicCell, forIndexPath: indexPath) != nil {
                     self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
@@ -156,7 +156,7 @@ class ConvoInfoTableViewController: UITableViewController {
         // 'you'
         case 2:
             let cell = tableView.dequeueReusableCellWithIdentifier(Constants.Identifiers.BasicCell, forIndexPath: indexPath)
-            cell.textLabel?.attributedText = youTitle(convo.senderProxy, nickname: convo.proxyNickname)
+            cell.textLabel?.attributedText = youTitle(convo.senderProxy, nickname: convo.senderNickname)
             cell.accessoryType = .DisclosureIndicator
             return cell
             
@@ -238,7 +238,7 @@ class ConvoInfoTableViewController: UITableViewController {
     // the proxy VC
     func goToProxy() {
         // Lock the UI
-        api.getProxy(convo.senderProxy) { (proxy) in
+        api.getProxy(withKey: convo.senderProxy) { (proxy) in
             // Unlock the UI
             if let proxy = proxy {
                 // transition to proxy

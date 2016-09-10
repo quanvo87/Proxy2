@@ -191,7 +191,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     func tapDeleteButton() {
         let alert = UIAlertController(title: "Delete Proxy?", message: "You will not be able to see this proxy or its conversations again. Other users will not be notified.", preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: "Delete", style: .Destructive, handler: { (void) in
-            self.api.delete(self.proxy, convos: self.convos)
+            self.api.delete(proxy: self.proxy, withConvos: self.convos)
             self.navigationController?.popViewControllerAnimated(true)
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
@@ -211,7 +211,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
             let nickname = alert.textFields![0].text
             let trim = nickname!.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
             if !(nickname != "" && trim == "") {
-                self.api.updateNickname(self.proxy, convos: self.convos, nickname: nickname!)
+                self.api.update(nickname: nickname!, forProxy: self.proxy, withConvos: self.convos)
             }
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))

@@ -77,7 +77,7 @@ class LogInViewController: UIViewController {
                     return
                 }
                 let id = user!.uid
-                self.api.setIcons(id)
+                self.api.setDefaultIcons(forUser: id)
                 self.showHomeScreen()
             }
         }
@@ -101,9 +101,10 @@ class LogInViewController: UIViewController {
                     let id = user?.uid
                     self.ref.child("icons").queryOrderedByKey().queryEqualToValue(id).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
                         if !snapshot.hasChildren() {
-                            self.api.setIcons(id!)
+                            self.api.setDefaultIcons(forUser: id!)
                         }
                     })
+                    
                     self.showHomeScreen()
                 }
             }

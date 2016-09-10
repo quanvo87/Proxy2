@@ -22,12 +22,12 @@ class ConvoCell: UITableViewCell {
         didSet{
             accessoryType = .None
             
-            api.getURL(convo.icon) { (URL) in
+            api.getURL(forIcon: convo.icon) { (URL) in
                 self.iconImageView.kf_setImageWithURL(NSURL(string: URL), placeholderImage: nil)
             }
             
-            // extension to show title based on receiverProxy, convoNickname, senderProxy, and proxyNickname
-            nameLabel.attributedText = toConvoTitle(convo.convoNickname, proxyNickname: convo.proxyNickname, you: convo.senderProxy, them: convo.receiverProxy, size: 14, navBar: false)
+            // extension to show title based on receiverProxy, receiverNickname, senderProxy, and senderNickname
+            nameLabel.attributedText = toConvoTitle(convo.receiverNickname, senderNickname: convo.senderNickname, you: convo.senderProxy, them: convo.receiverProxy, size: 14, navBar: false)
             
             messageLabel.text = convo.message
             timestampLabel.text = convo.timestamp.toTimeAgo()

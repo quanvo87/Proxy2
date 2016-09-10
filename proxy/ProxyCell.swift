@@ -23,7 +23,7 @@ class ProxyCell: UITableViewCell {
             accessoryType = .None
             
             // Set image
-            api.getURL(proxy.icon) { (URL) in
+            api.getURL(forIcon: proxy.icon) { (URL) in
                 self.iconImageView.kf_setImageWithURL(NSURL(string: URL), placeholderImage: nil)
             }
             

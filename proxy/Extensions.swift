@@ -10,7 +10,7 @@ extension UIView {
     // Returns a custom NSAttributedString that can be used for a convo's title.
     // Prioritizes nicknames if possible, else just shows proxy names.
     // Applies formatting based on parameter.
-    func toConvoTitle(convoNickname: String, proxyNickname: String, you: String, them: String, size: CGFloat, navBar: Bool) -> NSAttributedString {
+    func toConvoTitle(receiverNickname: String, senderNickname: String, you: String, them: String, size: CGFloat, navBar: Bool) -> NSAttributedString {
         let _size = [NSFontAttributeName: UIFont.systemFontOfSize(size)]
         let bold = [NSFontAttributeName: UIFont.boldSystemFontOfSize(size)]
         let blue = [NSForegroundColorAttributeName: UIColor().blue()]
@@ -22,17 +22,17 @@ extension UIView {
         let _coma = navBar == true ? " &\n" : ", "
         let comma = NSAttributedString(string: _coma, attributes: _size)
         
-        if convoNickname == "" {
+        if receiverNickname == "" {
             first = NSMutableAttributedString(string: them, attributes: bold)
         } else {
-            first = NSMutableAttributedString(string: convoNickname, attributes: bold)
+            first = NSMutableAttributedString(string: receiverNickname, attributes: bold)
             first.addAttributes(blue, range: NSRange(location: 0, length: first.length))
         }
         
-        if proxyNickname == "" {
+        if senderNickname == "" {
             second = NSMutableAttributedString(string: you, attributes: gray)
         } else {
-            second = NSMutableAttributedString(string: proxyNickname, attributes: blue)
+            second = NSMutableAttributedString(string: senderNickname, attributes: blue)
         }
         second.addAttributes(_size, range: NSRange(location: 0, length: second.length))
         

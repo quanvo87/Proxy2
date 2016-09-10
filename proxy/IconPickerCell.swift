@@ -20,7 +20,7 @@ class IconPickerCell: UICollectionViewCell {
             layer.cornerRadius = 10
             
             // Set icon
-            self.api.getURL(icon) { (URL) in
+            self.api.getURL(forIcon: icon) { (URL) in
                 self.iconImageView.kf_setImageWithURL(NSURL(string: URL), placeholderImage: nil)
             }
             

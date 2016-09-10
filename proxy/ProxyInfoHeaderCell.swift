@@ -41,7 +41,7 @@ class ProxyInfoHeaderCell: UITableViewCell {
         iconRef = ref.child("proxies").child(proxy.owner).child(proxy.key).child("icon")
         iconRefHandle = iconRef.observeEventType(.Value, withBlock: { (snapshot) in
             if let icon = snapshot.value as? String {
-                self.api.getURL(icon) { (URL) in
+                self.api.getURL(forIcon: icon) { (URL) in
                     self.iconImageView.kf_setImageWithURL(NSURL(string: URL), placeholderImage: nil)
                 }
             }

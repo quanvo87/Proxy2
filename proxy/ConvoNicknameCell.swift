@@ -78,7 +78,7 @@ class ConvoNicknameCell: UITableViewCell, UITextFieldDelegate {
         if label.text != "" && trim == "" {
             label.text = ""
         } else {
-            api.updateConvoNickname(convo, nickname: label.text!)
+            api.updateReceiverNickname(convo, nickname: label.text!)
         }
         return true
     }
