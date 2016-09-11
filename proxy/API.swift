@@ -42,9 +42,6 @@ class API {
     }
     
     // MARK: - The Proxy
-    
-    // TODO: - Controllers that pull proxies must add checks to determine if they will display them
-    
     /// Loads word bank if needed, else call `tryCreateProxy`.
     func create(proxy completion: (proxy: Proxy?) -> Void) {
         isCreatingProxy = true
@@ -59,11 +56,12 @@ class API {
         }
     }
     
-    /// Loads and caches word bank. Calls `tryCreateProxy` when done.
+    /// Loads and caches the `proxyNameGenerator`. Calls `tryCreateProxy` when 
+    /// done.
     func load(proxyNameGenerator completion: (proxy: Proxy?) -> Void) {
         ref.child("wordbank").observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            if let words = snapshot.value, let adjectives = words["adjectives"], let nouns = words["nouns"] {
-                self.proxyNameGenerator.adjs = adjectives as! [String]
+            if let words = snapshot.value, let adjs = words["adjectives"], let nouns = words["nouns"] {
+                self.proxyNameGenerator.adjs = adjs as! [String]
                 self.proxyNameGenerator.nouns = nouns as! [String]
                 self.proxyNameGenerator.isLoaded = true
                 self.tryCreating(proxy: { (proxy) in
@@ -73,8 +71,7 @@ class API {
         })
     }
     
-    /// Returns a proxy with a randomly generated, unique name. Returns nil if
-    /// the user has canceled creating a proxy.
+    /// Returns a proxy with a randomly generated, unique name.
     func tryCreating(proxy completion: (proxy: Proxy?) -> Void) {
         let globalKey = ref.child("proxies").childByAutoId().key
         let key = proxyNameGenerator.generateProxyName()
@@ -91,15 +88,13 @@ class API {
                     self.tryCreating(proxy: { (proxy) in
                         completion(proxy: proxy)
                     })
-                } else {
-                    completion(proxy: nil)
                 }
             }
         })
     }
     
     /// Keeps an up-to-date list of the icons the user has unlocked. These are
-    /// actually partial file paths to the image locations in our storage.
+    /// actually partial file paths to the image locations in storage.
     func observeIcons() {
         iconsRefHandle = ref.child("icons").child(uid).observeEventType(.Value, withBlock: { (snapshot) in
             var icons = [String]()
@@ -119,20 +114,19 @@ class API {
     /// Deletes the old proxy and returns a new one.
     func reroll(fromOldProxy proxy: Proxy, completion: (proxy: Proxy?) -> Void) {
         delete(globalProxy: proxy)
-        tryCreating { (proxy) in
+        tryCreating(proxy: { (proxy) in
             completion(proxy: proxy)
-        }
+        })
     }
     
-    /// Deletes the proxy stored under its global key. Notifies API to stop
+    /// Notifies API to stop trying to create a proxy.
     /// trying to create a new proxy.
     func cancelCreating(proxy proxy: Proxy) {
         isCreatingProxy = false
         delete(globalProxy: proxy)
     }
     
-    /// Returns the icon's URL in our storage. Builds and caches it if
-    /// necessary.
+    /// Returns the icon's URL in storage. Builds and caches it if necessary.
     func getURL(forIcon icon: String, completion: (URL: String) -> Void) {
         if let URL = iconURLCache[icon] {
             completion(URL: URL)
@@ -148,7 +142,7 @@ class API {
         }
     }
     
-    /// Returns a proxy struct from the database using the given `key`.
+    /// Returns the proxy from the database with the matching `key`.
     func getProxy(withKey key: String, completion: (proxy: Proxy?) -> Void) {
         ref.child("proxies").child(uid).queryOrderedByChild("key").queryEqualToValue(key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
             if snapshot.childrenCount == 1 {
@@ -283,7 +277,7 @@ class API {
         let _message = Message(key: messageKey, sender: uid, message: message, timestamp: timestamp)
         save(message: _message, toConvo: convo.key)
         
-        // Sender updates
+        /// Sender updates
         var _convo = convo
         _convo.message = "you: " + message
         _convo.timestamp = timestamp
@@ -293,7 +287,7 @@ class API {
         update(timestamp: timestamp, forProxy: convo.senderProxy, forUser: convo.senderId)
         incrementMessagesSent(forUser: convo.senderId)
         
-        // Receiver updates
+        /// Receiver updates
         if !convo.receiverDeletedProxy && !convo.receiverIsBlocking {
             incrementUnread(forUser: convo.receiverId)
             update(proxy: convo.receiverProxy, forUser: convo.receiverId, withTimestamp: timestamp)

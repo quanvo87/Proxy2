@@ -139,7 +139,7 @@
 			name = LogIn;
 			sourceTree = "<group>";
 		};
-		143F76F41D72BE1D00EF305F /* Messages */ = {
+		143F76F41D72BE1D00EF305F /* Home */ = {
 			isa = PBXGroup;
 			children = (
 				145A4D311D84A6EC00BA64DC /* HomeTableViewController.swift */,
@@ -150,7 +150,7 @@
 				14383B241D7555670086CA6C /* ConvoViewController.swift */,
 				14383B5C1D7B81530086CA6C /* ConvoInfoTableViewController.swift */,
 			);
-			name = Messages;
+			name = Home;
 			sourceTree = "<group>";
 		};
 		143F76F51D72BE2C00EF305F /* Proxies */ = {
@@ -226,7 +226,7 @@
 			isa = PBXGroup;
 			children = (
 				143F76F31D72BE0700EF305F /* LogIn */,
-				143F76F41D72BE1D00EF305F /* Messages */,
+				143F76F41D72BE1D00EF305F /* Home */,
 				143F76F51D72BE2C00EF305F /* Proxies */,
 				143F76F61D72BE4100EF305F /* Settings */,
 				14383B101D7380130086CA6C /* Model */,

@@ -26,6 +26,12 @@ class MyProxiesTableViewController: UITableViewController, NewMessageViewControl
     var convo = Convo()
     var shouldShowNewConvo = false
     
+    var newMessageButton = UIBarButtonItem()
+    var newProxyButton = UIBarButtonItem()
+    var deleteProxiesButton = UIBarButtonItem()
+    var confirmDeleteProxiesButton = UIBarButtonItem()
+    var cancelDeleteProxiesButton = UIBarButtonItem()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setUp()
@@ -40,42 +46,24 @@ class MyProxiesTableViewController: UITableViewController, NewMessageViewControl
     }
     
     deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
         unreadRef.removeObserverWithHandle(unreadRefHandle)
         proxiesRef.removeObserverWithHandle(proxiesRefHandle)
     }
     
     func setUp() {
         navigationItem.title = "My Proxies"
+        newMessageButton = createNewMessageButton()
+        newProxyButton = createNewProxyButton()
+        deleteProxiesButton = createDeleteProxiesButton()
+        confirmDeleteProxiesButton = createConfirmDeleteProxiesButton()
+        cancelDeleteProxiesButton = createCancelDeleteProxiesButton()
         setDefaultButtons()
         edgesForExtendedLayout = .All
         tableView.rowHeight = 80
         tableView.estimatedRowHeight = 80
         tableView.separatorStyle = .None
         tableView.allowsMultipleSelectionDuringEditing = true
-    }
-    
-    func createDeleteProxiesButton() -> UIBarButtonItem {
-        let deleteProxiesButton = UIButton(type: .Custom)
-        deleteProxiesButton.setImage(UIImage(named: "delete.png"), forState: UIControlState.Normal)
-        deleteProxiesButton.addTarget(self, action: #selector(MyProxiesTableViewController.toggleEditMode), forControlEvents: UIControlEvents.TouchUpInside)
-        deleteProxiesButton.frame = CGRectMake(0, 0, 25, 25)
-        return UIBarButtonItem(customView: deleteProxiesButton)
-    }
-    
-    func createCancelDeleteProxiesButton() -> UIBarButtonItem {
-        let cancelDeleteProxiesButton = UIButton(type: .Custom)
-        cancelDeleteProxiesButton.setImage(UIImage(named: "cancel"), forState: UIControlState.Normal)
-        cancelDeleteProxiesButton.addTarget(self, action: #selector(MyProxiesTableViewController.toggleEditMode), forControlEvents: UIControlEvents.TouchUpInside)
-        cancelDeleteProxiesButton.frame = CGRectMake(0, 0, 25, 25)
-        return UIBarButtonItem(customView: cancelDeleteProxiesButton)
-    }
-    
-    func createConfirmDeleteProxiesButton() -> UIBarButtonItem {
-        let confirmDeleteProxiesButton = UIButton(type: .Custom)
-        confirmDeleteProxiesButton.setImage(UIImage(named: "confirm"), forState: UIControlState.Normal)
-        confirmDeleteProxiesButton.addTarget(self, action: #selector(MyProxiesTableViewController.deleteSelectedProxies), forControlEvents: UIControlEvents.TouchUpInside)
-        confirmDeleteProxiesButton.frame = CGRectMake(0, 0, 25, 25)
-        return UIBarButtonItem(customView: confirmDeleteProxiesButton)
     }
     
     func createNewMessageButton() -> UIBarButtonItem {
@@ -94,14 +82,38 @@ class MyProxiesTableViewController: UITableViewController, NewMessageViewControl
         return UIBarButtonItem(customView: newProxyButton)
     }
     
+    func createDeleteProxiesButton() -> UIBarButtonItem {
+        let deleteProxiesButton = UIButton(type: .Custom)
+        deleteProxiesButton.setImage(UIImage(named: "delete.png"), forState: UIControlState.Normal)
+        deleteProxiesButton.addTarget(self, action: #selector(MyProxiesTableViewController.toggleEditMode), forControlEvents: UIControlEvents.TouchUpInside)
+        deleteProxiesButton.frame = CGRectMake(0, 0, 25, 25)
+        return UIBarButtonItem(customView: deleteProxiesButton)
+    }
+    
+    func createConfirmDeleteProxiesButton() -> UIBarButtonItem {
+        let confirmDeleteProxiesButton = UIButton(type: .Custom)
+        confirmDeleteProxiesButton.setImage(UIImage(named: "confirm"), forState: UIControlState.Normal)
+        confirmDeleteProxiesButton.addTarget(self, action: #selector(MyProxiesTableViewController.deleteSelectedProxies), forControlEvents: UIControlEvents.TouchUpInside)
+        confirmDeleteProxiesButton.frame = CGRectMake(0, 0, 25, 25)
+        return UIBarButtonItem(customView: confirmDeleteProxiesButton)
+    }
+    
+    func createCancelDeleteProxiesButton() -> UIBarButtonItem {
+        let cancelDeleteProxiesButton = UIButton(type: .Custom)
+        cancelDeleteProxiesButton.setImage(UIImage(named: "cancel"), forState: UIControlState.Normal)
+        cancelDeleteProxiesButton.addTarget(self, action: #selector(MyProxiesTableViewController.toggleEditMode), forControlEvents: UIControlEvents.TouchUpInside)
+        cancelDeleteProxiesButton.frame = CGRectMake(0, 0, 25, 25)
+        return UIBarButtonItem(customView: cancelDeleteProxiesButton)
+    }
+    
     func setDefaultButtons() {
-        navigationItem.leftBarButtonItem = createDeleteProxiesButton()
-        navigationItem.rightBarButtonItems = [createNewMessageButton(), createNewProxyButton()]
+        navigationItem.leftBarButtonItem = deleteProxiesButton
+        navigationItem.rightBarButtonItems = [newMessageButton, newProxyButton]
     }
     
     func setEditModeButtons() {
-        navigationItem.leftBarButtonItem = createCancelDeleteProxiesButton()
-        navigationItem.rightBarButtonItems = [createConfirmDeleteProxiesButton()]
+        navigationItem.leftBarButtonItem = cancelDeleteProxiesButton
+        navigationItem.rightBarButtonItems = [confirmDeleteProxiesButton]
     }
     
     func toggleEditMode() {
