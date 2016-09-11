@@ -197,6 +197,10 @@ class ConvoViewController: JSQMessagesViewController {
         } else {
             cell.textView?.textColor = UIColor.blackColor()
         }
+        cell.textView.linkTextAttributes = [
+            NSForegroundColorAttributeName: UIColor().blue(),
+            NSUnderlineStyleAttributeName: NSUnderlineStyle.StyleSingle.rawValue
+        ]
         return cell
     }
     
@@ -210,6 +214,37 @@ class ConvoViewController: JSQMessagesViewController {
             }
         } else {
             return icons[message.senderId]
+        }
+        return nil
+    }
+    
+    // Creates space for proxy name above chat bubbles
+    override func collectionView(collectionView: JSQMessagesCollectionView, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout, heightForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        if indexPath.item == 0 {
+            return kJSQMessagesCollectionViewCellLabelHeightDefault
+        }
+        if indexPath.item - 1 > 0 {
+            let prev = self.messages[indexPath.item - 1]
+            let current = self.messages[indexPath.item]
+            if current.senderId != prev.senderId {
+                return kJSQMessagesCollectionViewCellLabelHeightDefault
+            }
+        }
+        return 0
+    }
+    
+    // Returns proxy name for chat bubbles
+    override func collectionView(collectionView: JSQMessagesCollectionView, attributedTextForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath) -> NSAttributedString? {
+        let message = messages[indexPath.item]
+        if indexPath.item == 0 {
+            return NSAttributedString(string: message.senderDisplayName)
+        }
+        if indexPath.item - 1 > 0 {
+            let prev = self.messages[indexPath.item - 1]
+            let current = self.messages[indexPath.item]
+            if current.senderId != prev.senderId {
+                return NSAttributedString(string: message.senderDisplayName)
+            }
         }
         return nil
     }
