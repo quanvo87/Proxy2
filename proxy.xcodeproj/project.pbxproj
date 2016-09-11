@@ -109,6 +109,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1434057E1D85315400B75BF3 /* Convos */ = {
+			isa = PBXGroup;
+			children = (
+				14A6F1A11D6FB5090015431E /* NewMessageViewController.swift */,
+				14383B261D755C300086CA6C /* NewMessageViewControllerDelegate.swift */,
+				143F76F91D72C0C100EF305F /* SelectProxyViewController.swift */,
+				14383B0E1D7341070086CA6C /* SelectProxyViewControllerDelegate.swift */,
+				14383B241D7555670086CA6C /* ConvoViewController.swift */,
+				14383B5C1D7B81530086CA6C /* ConvoInfoTableViewController.swift */,
+			);
+			name = Convos;
+			sourceTree = "<group>";
+		};
 		14383B101D7380130086CA6C /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -131,24 +144,18 @@
 			name = View;
 			sourceTree = "<group>";
 		};
-		143F76F31D72BE0700EF305F /* LogIn */ = {
+		143F76F31D72BE0700EF305F /* Log In */ = {
 			isa = PBXGroup;
 			children = (
 				14E19A5D1D6148700030B366 /* LogInViewController.swift */,
 			);
-			name = LogIn;
+			name = "Log In";
 			sourceTree = "<group>";
 		};
 		143F76F41D72BE1D00EF305F /* Home */ = {
 			isa = PBXGroup;
 			children = (
 				145A4D311D84A6EC00BA64DC /* HomeTableViewController.swift */,
-				14A6F1A11D6FB5090015431E /* NewMessageViewController.swift */,
-				14383B261D755C300086CA6C /* NewMessageViewControllerDelegate.swift */,
-				143F76F91D72C0C100EF305F /* SelectProxyViewController.swift */,
-				14383B0E1D7341070086CA6C /* SelectProxyViewControllerDelegate.swift */,
-				14383B241D7555670086CA6C /* ConvoViewController.swift */,
-				14383B5C1D7B81530086CA6C /* ConvoInfoTableViewController.swift */,
 			);
 			name = Home;
 			sourceTree = "<group>";
@@ -225,8 +232,9 @@
 		14E19A401D60EF100030B366 /* proxy */ = {
 			isa = PBXGroup;
 			children = (
-				143F76F31D72BE0700EF305F /* LogIn */,
+				143F76F31D72BE0700EF305F /* Log In */,
 				143F76F41D72BE1D00EF305F /* Home */,
+				1434057E1D85315400B75BF3 /* Convos */,
 				143F76F51D72BE2C00EF305F /* Proxies */,
 				143F76F61D72BE4100EF305F /* Settings */,
 				14383B101D7380130086CA6C /* Model */,

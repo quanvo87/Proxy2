@@ -11,58 +11,47 @@ import JSQMessagesViewController
 
 class ConvoViewController: JSQMessagesViewController {
     
-    var convo = Convo()
     let api = API.sharedInstance
-    
     let ref = FIRDatabase.database().reference()
+    var convo = Convo()
     
     var nicknameRef = FIRDatabaseReference()
     var nicknameRefHandle = FIRDatabaseHandle()
     
-    var proxyRef = FIRDatabaseReference()
-    var proxyRefHandle = FIRDatabaseHandle()
+    var senderIconRef = FIRDatabaseReference()
+    var senderIconRefHandle = FIRDatabaseHandle()
+    var receiverIconRef = FIRDatabaseReference()
+    var receiverIconRefHandle = FIRDatabaseHandle()
+    var icons = [String: JSQMessagesAvatarImage]()
     
     var unreadRef = FIRDatabaseReference()
     var unreadRefHandle = FIRDatabaseHandle()
     
     var messagesRef = FIRDatabaseReference()
     var messagesRefHandle = FIRDatabaseHandle()
+    var messages = [JSQMessage]()
     
     var membersTypingRef = FIRDatabaseReference()
     var membersTypingRefHandle = FIRDatabaseHandle()
     
     var userTypingRef = FIRDatabaseReference()
-    var _userTyping = false
+    var userTyping = false {
+        didSet {
+            userTypingRef.setValue(userTyping)
+        }
+    }
     
     var incomingBubble: JSQMessagesBubbleImage!
     var outgoingBubble: JSQMessagesBubbleImage!
-    var messages = [JSQMessage]()
-    
-    var userTyping: Bool {
-        get {
-            return _userTyping
-        }
-        set {
-            _userTyping = newValue
-            userTypingRef.setValue(newValue)
-        }
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationController!.view.backgroundColor = UIColor.whiteColor()
-        
-        senderId = convo.senderId
-        senderDisplayName = convo.senderProxy
-        
-        collectionView!.collectionViewLayout.incomingAvatarViewSize = CGSizeZero
-        collectionView!.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero
-        
+        setUp()
 //        observeNickname()
-//        observeProxy()
-        
         setUpBubbles()
+        observeSenderIcon()
+        observeReceiverIcon()
         observeMessages()
         observeTyping()
         observeUnread()
@@ -81,14 +70,35 @@ class ConvoViewController: JSQMessagesViewController {
     }
     
     deinit {
-        nicknameRef.removeObserverWithHandle(nicknameRefHandle)
-        proxyRef.removeObserverWithHandle(proxyRefHandle)
+//        nicknameRef.removeObserverWithHandle(nicknameRefHandle)
+//        proxyRef.removeObserverWithHandle(proxyRefHandle)
+        senderIconRef.removeObserverWithHandle(senderIconRefHandle)
+        receiverIconRef.removeObserverWithHandle(receiverIconRefHandle)
         unreadRef.removeObserverWithHandle(unreadRefHandle)
         messagesRef.removeObserverWithHandle(messagesRefHandle)
         membersTypingRef.removeObserverWithHandle(membersTypingRefHandle)
     }
     
+    func setUp() {
+        navigationController!.view.backgroundColor = UIColor.whiteColor()
+        senderId = convo.senderId
+        
+        // TODO: Add logic to show either senderNickname or senderProxy
+        senderDisplayName = convo.senderProxy
+        
+        collectionView?.collectionViewLayout.incomingAvatarViewSize = CGSize(width: kJSQMessagesCollectionViewAvatarSizeDefault, height:kJSQMessagesCollectionViewAvatarSizeDefault)
+        collectionView?.collectionViewLayout.outgoingAvatarViewSize = CGSize(width: kJSQMessagesCollectionViewAvatarSizeDefault, height:kJSQMessagesCollectionViewAvatarSizeDefault)
+        automaticallyScrollsToMostRecentMessage = true
+    }
+    
+    func setUpBubbles() {
+        let factory = JSQMessagesBubbleImageFactory()
+        incomingBubble = factory.incomingMessagesBubbleImageWithColor(UIColor.jsq_messageBubbleLightGrayColor())
+        outgoingBubble = factory.outgoingMessagesBubbleImageWithColor(UIColor.jsq_messageBubbleBlueColor())
+    }
+    
     // MARK: - Database
+    // TODO: Change this to `observeReceiverNickname`
     func observeNickname() {
         nicknameRef = ref.child("convos").child(api.uid).child(convo.key).child("receiverNickname")
         nicknameRefHandle = nicknameRef.observeEventType(.Value, withBlock: { snapshot in
@@ -98,19 +108,50 @@ class ConvoViewController: JSQMessagesViewController {
         })
     }
     
-    // Observe the user's proxy to keep note of changes and update the title
-    func observeProxy() {
-        proxyRef = ref.child("proxies").child(api.uid).child(convo.senderProxy).child("nickname")
-        proxyRefHandle = proxyRef.observeEventType(.Value, withBlock: { snapshot in
-            if let nickname = snapshot.value as? String {
-                self.convo.senderNickname = nickname
+    // TODO: Add observer for `senderNickname`
+    
+    // Observe sender's icon
+    func observeSenderIcon() {
+        senderIconRef = ref.child("proxies").child(convo.senderId).child(convo.senderProxy).child("icon")
+        senderIconRefHandle = senderIconRef.observeEventType(.Value, withBlock: { (snapshot) in
+            if let icon = snapshot.value as? String {
+                self.api.getImage(forIcon: icon, completion: { (image) in
+                    self.icons[self.convo.senderId] = JSQMessagesAvatarImage(placeholder: image)
+                    self.collectionView.reloadData()
+                })
             }
         })
     }
     
-    // Decrements user, convo, proxy convo, and proxy unread by the convo's
-    // starting unread count upon load. Further unread increments to this convo
-    // are immediately set to 0 and the corresponding unreads decremented.
+    // Observe receiver's icon
+    func observeReceiverIcon() {
+        receiverIconRef = ref.child("proxies").child(convo.receiverId).child(convo.receiverProxy).child("icon")
+        receiverIconRefHandle = receiverIconRef.observeEventType(.Value, withBlock: { (snapshot) in
+            if let icon = snapshot.value as? String {
+                self.api.getImage(forIcon: icon, completion: { (image) in
+                    self.icons[self.convo.receiverId] = JSQMessagesAvatarImage(placeholder: image)
+                    self.collectionView.reloadData()
+                })
+            }
+        })
+    }
+    
+    
+    // Observe the messages for this convo
+    func observeMessages() {
+        messagesRef = ref.child("messages").child(convo.key)
+        messagesRefHandle = messagesRef.queryOrderedByChild("timestamp").observeEventType(.ChildAdded, withBlock: { (snapshot) in
+            let message = Message(anyObject: snapshot.value!)
+            let jsqMessage = JSQMessage(senderId: message.sender, senderDisplayName: self.convo.senderProxy, date: NSDate(timeIntervalSince1970: message.timestamp), text: message.message)
+            self.messages.append(jsqMessage)
+            self.finishReceivingMessage()
+        })
+    }
+    
+    // Upon entering the convo, decrement user's, convo's, proxy convo's, and proxy's
+    // unread by this convo's unread count.
+    // Upon further increments to this convo's unread count,
+    // decrement those unread counts again by that increment.
     func observeUnread() {
         unreadRef = ref.child("convos").child(convo.senderId).child(convo.key).child("unread")
         unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
@@ -122,26 +163,12 @@ class ConvoViewController: JSQMessagesViewController {
         })
     }
     
-    func setUpBubbles() {
-        let factory = JSQMessagesBubbleImageFactory()
-        incomingBubble = factory.incomingMessagesBubbleImageWithColor(UIColor.jsq_messageBubbleLightGrayColor())
-        outgoingBubble = factory.outgoingMessagesBubbleImageWithColor(UIColor.jsq_messageBubbleBlueColor())
-    }
-    
-    func observeMessages() {
-        messagesRef = ref.child("messages").child(convo.key)
-        messagesRefHandle = messagesRef.queryOrderedByChild("timestamp").observeEventType(.ChildAdded, withBlock: { (snapshot) in
-            let message = Message(anyObject: snapshot.value!)
-            let jsqmessage = JSQMessage(senderId: message.sender, displayName: self.convo.senderProxy, text: message.message)
-            self.messages.append(jsqmessage)
-            self.finishReceivingMessage()
-        })
-    }
-    
     func observeTyping() {
+        // Stop monitoring user's typing when they disconnect
         userTypingRef = ref.child("typing").child(convo.key).child(convo.senderId)
         userTypingRef.onDisconnectRemoveValue()
         
+        // Show typing indicator when other user is typing
         membersTypingRef = ref.child("typing").child(convo.key)
         membersTypingRefHandle = membersTypingRef.queryOrderedByValue().queryEqualToValue(true).observeEventType(.Value, withBlock: { (snapshot) in
             if snapshot.childrenCount == 1 && self.userTyping {
@@ -157,14 +184,12 @@ class ConvoViewController: JSQMessagesViewController {
         return messages.count
     }
     
-    override func collectionView(collectionView: JSQMessagesCollectionView!, messageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageData! {
-        return messages[indexPath.item]
-    }
-    
+    // Distinguish between sender and receiver chat bubble
     override func collectionView(collectionView: JSQMessagesCollectionView!, messageBubbleImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageBubbleImageDataSource! {
         return messages[indexPath.item].senderId == self.senderId ? outgoingBubble : incomingBubble
     }
     
+    // Chat bubble color
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = super.collectionView(collectionView, cellForItemAtIndexPath: indexPath) as! JSQMessagesCollectionViewCell
         if messages[indexPath.item].senderId == senderId {
@@ -175,22 +200,21 @@ class ConvoViewController: JSQMessagesViewController {
         return cell
     }
     
+    // Returns avatars for the proxies
     override func collectionView(collectionView: JSQMessagesCollectionView!, avatarImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageAvatarImageDataSource! {
-        return nil
-    }
-    
-    override func collectionView(collectionView: JSQMessagesCollectionView, attributedTextForCellTopLabelAtIndexPath indexPath: NSIndexPath) -> NSAttributedString? {
         let message = self.messages[indexPath.item]
-        if indexPath.item - 1 > 0 {
-            let prev = self.messages[indexPath.item - 1]
-            
-            if message.date.timeIntervalSinceDate(prev.date) / 60 > Settings.TimestampInterval {
-                return JSQMessagesTimestampFormatter.sharedFormatter().attributedTimestampForDate(message.date)
+        if indexPath.item + 1 < messages.count {
+            let next = self.messages[indexPath.item + 1]
+            if message.senderId != next.senderId {
+                return icons[message.senderId]
             }
+        } else {
+            return icons[message.senderId]
         }
         return nil
     }
     
+    // Create space for timestamp
     override func collectionView(collectionView: JSQMessagesCollectionView, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout, heightForCellTopLabelAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         if indexPath.item - 1 > 0 {
             let prev = self.messages[indexPath.item - 1]
@@ -203,6 +227,25 @@ class ConvoViewController: JSQMessagesViewController {
         return 0
     }
     
+    // Show text for timestamp
+    override func collectionView(collectionView: JSQMessagesCollectionView, attributedTextForCellTopLabelAtIndexPath indexPath: NSIndexPath) -> NSAttributedString? {
+        let message = self.messages[indexPath.item]
+        if indexPath.item - 1 > 0 {
+            let prev = self.messages[indexPath.item - 1]
+            
+            if message.date.timeIntervalSinceDate(prev.date) / 60 > Settings.TimestampInterval {
+                return JSQMessagesTimestampFormatter.sharedFormatter().attributedTimestampForDate(message.date)
+            }
+        }
+        return nil
+    }
+    
+    // The message
+    override func collectionView(collectionView: JSQMessagesCollectionView!, messageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageData! {
+        return messages[indexPath.item]
+    }
+    
+    // Writes the message to the database
     override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: NSDate!) {
         api.send(message: text, usingSenderConvo: convo) { (convo) in
             JSQSystemSoundPlayer.jsq_playMessageSentSound()
@@ -215,6 +258,7 @@ class ConvoViewController: JSQMessagesViewController {
     }
     
     // MARK: - Text view
+    // Keep track of when user is typing
     override func textViewDidChange(textView: UITextView) {
         super.textViewDidChange(textView)
         userTyping = textView.text != ""

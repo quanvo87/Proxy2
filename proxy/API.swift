@@ -22,6 +22,7 @@ class API {
     var iconsRefHandle = FIRDatabaseHandle()
     var icons = [String]()
     var iconURLCache = [String: String]()
+    var iconImageCache = [String: UIImage]()
     
     var uid: String = "" {
         didSet {
@@ -35,7 +36,7 @@ class API {
         ref.child("icons").child(uid).removeObserverWithHandle(iconsRefHandle)
     }
     
-    /// Give the user access to the default icons.
+    /// Gives the user access to the default icons.
     func setDefaultIcons(forUser user: String) {
         let defaultIcons = DefaultIcons(id: user).defaultIcons
         ref.updateChildValues(defaultIcons as! [NSObject : AnyObject])
@@ -126,7 +127,7 @@ class API {
         delete(globalProxy: proxy)
     }
     
-    /// Returns the icon's URL in storage. Builds and caches it if necessary.
+    /// Returns the icon's URL in storage.
     func getURL(forIcon icon: String, completion: (URL: String) -> Void) {
         if let URL = iconURLCache[icon] {
             completion(URL: URL)
@@ -139,6 +140,24 @@ class API {
                     completion(URL: URL)
                 }
             }
+        }
+    }
+    
+    /// Returns an UIImage of the icon from the URL.
+    func getImage(forIcon icon: String, completion: (image: UIImage) -> Void) {
+        if let image = iconImageCache[icon] {
+            completion(image: image)
+        } else {
+            getURL(forIcon: icon, completion: { (URL) in
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+                    let data = NSData(contentsOfURL: NSURL(string: URL)!)
+                    dispatch_async(dispatch_get_main_queue(), {
+                        let image = UIImage(data: data!)
+                        self.iconImageCache[icon] = image
+                        completion(image: image!)
+                    })
+                }
+            })
         }
     }
     

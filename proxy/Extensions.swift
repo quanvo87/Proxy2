@@ -140,3 +140,14 @@ extension UIColor {
         return UIColor(red: 0, green: 122, blue: 255)
     }
 }
+
+extension UIImageView {
+    func toUIImage() -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(self.bounds.size, false, 0)
+        print(self.bounds.size)
+        self.layer.renderInContext(UIGraphicsGetCurrentContext()!)
+        let img = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return img
+    }
+}
