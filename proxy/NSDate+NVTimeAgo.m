@@ -59,8 +59,8 @@
     
     
     // < 1 hour = "x minutes ago"
-    if(secondsSince < HOUR)
-        return [self formatMinutesAgo:secondsSince];
+//    if(secondsSince < HOUR)
+//        return [self formatMinutesAgo:secondsSince];
   
     
     // Today = "x hours ago"
@@ -200,14 +200,17 @@
 // Today = "x hours ago"
 - (NSString *)formatAsToday:(NSTimeInterval)secondsSince
 {
-    //Convert to hours
-    int hoursSince = (int)secondsSince / HOUR;
-    
-    //Handle Plural
-    if(hoursSince == 1)
-        return @"1h";
-    else
-        return [NSString stringWithFormat:@"%dh", hoursSince];
+//    //Convert to hours
+//    int hoursSince = (int)secondsSince / HOUR;
+//    
+//    //Handle Plural
+//    if(hoursSince == 1)
+//        return @"1h";
+//    else
+//        return [NSString stringWithFormat:@"%dh", hoursSince];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setTimeStyle:NSDateFormatterShortStyle];
+    return [dateFormatter stringFromDate:self];
 }
 
 

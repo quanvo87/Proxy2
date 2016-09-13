@@ -85,8 +85,8 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
             let first = firstTextField.text?.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " ")),
             let second = secondTextField.text?.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " ")),
             let num = numTextField.text?.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " ")),
-            let message = messageTextView.text
-            where first != "" && second != "" && num != "" && message != "Message..." else {
+            let text = messageTextView.text
+            where first != "" && second != "" && num != "" && text != "Message..." else {
                 enableButtonsAndShowAlert("Missing Fields", message: "Please enter a value for each field.")
                 return
         }
@@ -95,7 +95,7 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
         let receiverProxyName = first.lowercaseString + second.lowercaseString.capitalizedString + num
         
         // Send off to API to send message
-        api.send(message: message, fromSenderProxy: proxy!, toReceiverProxyName: receiverProxyName) { (error, convo) in
+        api.send(messageWithText: text, fromSenderProxy: proxy!, toReceiverProxyName: receiverProxyName) { (error, convo) in
             if let error = error {
                 self.enableButtonsAndShowAlert(error.title, message: error.message)
             } else {

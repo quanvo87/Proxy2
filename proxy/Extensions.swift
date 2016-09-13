@@ -93,9 +93,9 @@ extension String {
         }
     }
     
-    func makeBold() -> NSAttributedString {
-        let boldAttr = [NSFontAttributeName: UIFont.boldSystemFontOfSize(14)]
-        return NSAttributedString(string: self, attributes: boldAttr)
+    func makeBold() -> NSMutableAttributedString {
+        let boldAttr = [NSFontAttributeName: UIFont.boldSystemFontOfSize(12)]
+        return NSMutableAttributedString(string: self, attributes: boldAttr)
     }
 }
 
@@ -138,16 +138,5 @@ extension UIColor {
     
     func blue() -> UIColor {
         return UIColor(red: 0, green: 122, blue: 255)
-    }
-}
-
-extension UIImageView {
-    func toUIImage() -> UIImage {
-        UIGraphicsBeginImageContextWithOptions(self.bounds.size, false, 0)
-        print(self.bounds.size)
-        self.layer.renderInContext(UIGraphicsGetCurrentContext()!)
-        let img = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        return img
     }
 }

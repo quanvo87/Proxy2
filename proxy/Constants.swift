@@ -11,7 +11,7 @@ struct URLs {
 }
 
 struct Settings {
-    static let TimestampInterval = 15.0
+    static let TimeBetweenTimestamps = 30.0
     static let NewProxyIndicatorDuration = 5.0
 }
 
