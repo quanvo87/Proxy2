@@ -297,24 +297,16 @@ class ConvoViewController: JSQMessagesViewController {
     override func collectionView(collectionView: JSQMessagesCollectionView!, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout!, heightForCellBottomLabelAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
         var item = indexPath.item
         let cur = messages[item]
-        if cur.senderId == senderId {
-            if item + 1 < messages.count {
-                let next = messages[item + 1]
+        if cur.senderId == senderId && cur.read {
+            item += 1
+            while item < messages.count {
+                let next = messages[item]
                 if next.senderId == senderId {
                     return 0
                 }
                 item += 1
-                while item < messages.count {
-                    let next = messages[item]
-                    if next.senderId == senderId {
-                        return 0
-                    }
-                    item += 1
-                }
-                return kJSQMessagesCollectionViewCellLabelHeightDefault
-            } else {
-                return kJSQMessagesCollectionViewCellLabelHeightDefault
             }
+            return kJSQMessagesCollectionViewCellLabelHeightDefault
         }
         return 0
     }
@@ -323,30 +315,19 @@ class ConvoViewController: JSQMessagesViewController {
     override func collectionView(collectionView: JSQMessagesCollectionView!, attributedTextForCellBottomLabelAtIndexPath indexPath: NSIndexPath!) -> NSAttributedString! {
         var item = indexPath.item
         let cur = messages[item]
-        if cur.senderId == senderId {
-            if item + 1 < messages.count {
-                let next = messages[item + 1]
+        if cur.senderId == senderId && cur.read {
+            item += 1
+            while item < messages.count {
+                let next = messages[item]
                 if next.senderId == senderId {
                     return nil
                 }
                 item += 1
-                while item < messages.count {
-                    let next = messages[item]
-                    if next.senderId == senderId {
-                        return nil
-                    }
-                    item += 1
-                }
-                let read = "Read ".makeBold()
-                let timestamp = NSAttributedString(string: cur.timeRead.toTimeAgo())
-                read.appendAttributedString(timestamp)
-                return read
-            } else {
-                let read = "Read ".makeBold()
-                let timestamp = NSAttributedString(string: cur.timeRead.toTimeAgo())
-                read.appendAttributedString(timestamp)
-                return read
             }
+            let read = "Read ".makeBold()
+            let timestamp = NSAttributedString(string: cur.timeRead.toTimeAgo())
+            read.appendAttributedString(timestamp)
+            return read
         }
         return nil
     }
