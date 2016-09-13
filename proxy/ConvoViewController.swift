@@ -14,6 +14,7 @@ class ConvoViewController: JSQMessagesViewController {
     let api = API.sharedInstance
     let ref = FIRDatabase.database().reference()
     var convo = Convo()
+    var unreadReceiptIndex = 0
     
     var unreadRef = FIRDatabaseReference()
     var unreadRefHandle = FIRDatabaseHandle()
@@ -167,10 +168,8 @@ class ConvoViewController: JSQMessagesViewController {
     func observeUnread() {
         unreadRef = ref.child("convos").child(convo.senderId).child(convo.key).child("unread")
         unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
-            if let unread = snapshot.value as? Int {
-                if unread != 0 {
-                    self.api.decrementAllUnreadFor(convo: self.convo, byAmount: unread)
-                }
+            if let unread = snapshot.value as? Int where unread != 0 {
+                self.api.decrementAllUnreadFor(convo: self.convo, byAmount: unread)
             }
         })
     }
@@ -193,6 +192,14 @@ class ConvoViewController: JSQMessagesViewController {
     
     // MARK: - JSQMessagesCollectionView
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        unreadReceiptIndex = messages.count - 1
+        while unreadReceiptIndex > -1 {
+            let message = messages[unreadReceiptIndex]
+            if message.senderId == senderId {
+                break
+            }
+            unreadReceiptIndex -= 1
+        }
         return messages.count
     }
     
@@ -201,17 +208,22 @@ class ConvoViewController: JSQMessagesViewController {
         return messages[indexPath.item].senderId == self.senderId ? outgoingBubble : incomingBubble
     }
     
-    // Set chat bubble and text color
+    // Set up cell
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = super.collectionView(collectionView, cellForItemAtIndexPath: indexPath) as! JSQMessagesCollectionViewCell
+        
+        // Outgoing message
         if messages[indexPath.item].senderId == senderId {
             cell.textView!.textColor = UIColor.whiteColor()
+            cell.messageBubbleTopLabel.textInsets = UIEdgeInsetsMake(0, 0, 0, 40)
+        
+        // Incoming message
         } else {
             cell.textView?.textColor = UIColor.blackColor()
+            cell.messageBubbleTopLabel.textInsets = UIEdgeInsetsMake(0, 40, 0, 0)
             cell.textView.linkTextAttributes = [
                 NSForegroundColorAttributeName: UIColor().blue(),
-                NSUnderlineStyleAttributeName: NSUnderlineStyle.StyleSingle.rawValue
-            ]
+                NSUnderlineStyleAttributeName: NSUnderlineStyle.StyleSingle.rawValue]
         }
         return cell
     }
@@ -221,28 +233,30 @@ class ConvoViewController: JSQMessagesViewController {
         if indexPath.item - 1 > 0 {
             let prev = self.messages[indexPath.item - 1]
             let cur = self.messages[indexPath.item]
-            
             if cur.date.timeIntervalSinceDate(prev.date) / 60 > Settings.TimeBetweenTimestamps {
                 return kJSQMessagesCollectionViewCellLabelHeightDefault
             }
+        } else {
+            return kJSQMessagesCollectionViewCellLabelHeightDefault
         }
         return 0
     }
     
-    // Return timestamp
+    // Get timestamp
     override func collectionView(collectionView: JSQMessagesCollectionView, attributedTextForCellTopLabelAtIndexPath indexPath: NSIndexPath) -> NSAttributedString? {
-        let cur = self.messages[indexPath.item]
+        let message = self.messages[indexPath.item]
         if indexPath.item - 1 > 0 {
             let prev = self.messages[indexPath.item - 1]
-            
-            if cur.date.timeIntervalSinceDate(prev.date) / 60 > Settings.TimeBetweenTimestamps {
-                return JSQMessagesTimestampFormatter.sharedFormatter().attributedTimestampForDate(cur.date)
+            if message.date.timeIntervalSinceDate(prev.date) / 60 > Settings.TimeBetweenTimestamps {
+                return JSQMessagesTimestampFormatter.sharedFormatter().attributedTimestampForDate(message.date)
             }
+        } else {
+            return JSQMessagesTimestampFormatter.sharedFormatter().attributedTimestampForDate(message.date)
         }
         return nil
     }
     
-    // Return avatars for the proxies
+    // Get avatars
     override func collectionView(collectionView: JSQMessagesCollectionView!, avatarImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageAvatarImageDataSource! {
         if indexPath.item + 1 < messages.count {
             let cur = self.messages[indexPath.item]
@@ -251,13 +265,13 @@ class ConvoViewController: JSQMessagesViewController {
                 return icons[cur.senderId]
             }
         } else {
-            let cur = self.messages[indexPath.item]
-            return icons[cur.senderId]
+            let message = self.messages[indexPath.item]
+            return icons[message.senderId]
         }
         return nil
     }
     
-    // Make space for the proxy name above chat bubbles
+    // Make space for proxy names
     override func collectionView(collectionView: JSQMessagesCollectionView, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout, heightForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         if indexPath.item == 0 {
             return kJSQMessagesCollectionViewCellLabelHeightDefault
@@ -272,11 +286,11 @@ class ConvoViewController: JSQMessagesViewController {
         return 0
     }
     
-    // Return proxy names for message senders
+    // Get proxy names
     override func collectionView(collectionView: JSQMessagesCollectionView, attributedTextForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath) -> NSAttributedString? {
         if indexPath.item == 0 {
-            let cur = messages[indexPath.item]
-            return NSAttributedString(string: nicknames[cur.senderId]!)
+            let message = messages[indexPath.item]
+            return NSAttributedString(string: nicknames[message.senderId]!)
         }
         if indexPath.item - 1 > 0 {
             let prev = self.messages[indexPath.item - 1]
@@ -288,24 +302,9 @@ class ConvoViewController: JSQMessagesViewController {
         return nil
     }
     
-    // Get message data for row
-    override func collectionView(collectionView: JSQMessagesCollectionView!, messageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageData! {
-        return messages[indexPath.item]
-    }
-    
     // Make space for read receipt
     override func collectionView(collectionView: JSQMessagesCollectionView!, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout!, heightForCellBottomLabelAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
-        var item = indexPath.item
-        let cur = messages[item]
-        if cur.senderId == senderId && cur.read {
-            item += 1
-            while item < messages.count {
-                let next = messages[item]
-                if next.senderId == senderId {
-                    return 0
-                }
-                item += 1
-            }
+        if indexPath.item == unreadReceiptIndex {
             return kJSQMessagesCollectionViewCellLabelHeightDefault
         }
         return 0
@@ -313,23 +312,19 @@ class ConvoViewController: JSQMessagesViewController {
     
     // Get read receipt
     override func collectionView(collectionView: JSQMessagesCollectionView!, attributedTextForCellBottomLabelAtIndexPath indexPath: NSIndexPath!) -> NSAttributedString! {
-        var item = indexPath.item
-        let cur = messages[item]
-        if cur.senderId == senderId && cur.read {
-            item += 1
-            while item < messages.count {
-                let next = messages[item]
-                if next.senderId == senderId {
-                    return nil
-                }
-                item += 1
-            }
+        if indexPath.item == unreadReceiptIndex {
+            let message = messages[indexPath.item]
             let read = "Read ".makeBold()
-            let timestamp = NSAttributedString(string: cur.timeRead.toTimeAgo())
+            let timestamp = NSAttributedString(string: message.timeRead.toTimeAgo())
             read.appendAttributedString(timestamp)
             return read
         }
         return nil
+    }
+    
+    // Get message data for row
+    override func collectionView(collectionView: JSQMessagesCollectionView!, messageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageData! {
+        return messages[indexPath.item]
     }
     
     // Write the message to the database when user taps send
