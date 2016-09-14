@@ -37,8 +37,8 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         observeNickname()
     }
     
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(true)
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(true)
         tabBarController?.tabBar.hidden = false
         showNewConvo()
     }

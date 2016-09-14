@@ -24,7 +24,7 @@ class ProxyCell: UITableViewCell {
             
             // Set up newImageView
             newImageView.hidden = true
-            let secondsAgo = -NSDate(timeIntervalSince1970: proxy.created).timeIntervalSinceNow
+            let secondsAgo = -NSDate(timeIntervalSince1970: proxy.timeCreated).timeIntervalSinceNow
             if secondsAgo < 60 * Settings.NewProxyIndicatorDuration {
                 newImageView.hidden = false
             }

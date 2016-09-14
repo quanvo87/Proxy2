@@ -7,8 +7,8 @@
 //
 
 extension UIView {
-    // Returns a custom NSAttributedString that can be used for a convo's title.
-    // Prioritizes nicknames if possible, else just shows proxy names.
+    // Returns a  NSAttributedString that can be used for a convo's title.
+    // Prioritizes nicknames if possible, over proxy names.
     // Applies formatting based on parameter.
     func getConvoTitle(receiverNickname: String, senderNickname: String, you: String, them: String, size: CGFloat, navBar: Bool) -> NSAttributedString {
         let _size = [NSFontAttributeName: UIFont.systemFontOfSize(size)]
@@ -43,14 +43,14 @@ extension UIView {
 }
 
 extension UIViewController {
-    // Shows an alert with the passed in title and string with only an `Ok`
-    // button.
+    // Shows an alert with the passed in title and string with only an `Ok` button.
     func showAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: nil))
         self.presentViewController(alert, animated: true, completion: nil)
     }
     
+    // Delete when ready
     // Returns a custom NSAttributedString with the name and nickname.
     func youTitle(name: String, nickname: String) -> NSAttributedString {
         let _name = NSMutableAttributedString(string: name)
@@ -67,34 +67,19 @@ extension UIViewController {
     }
 }
 
+extension Int {
+    func toUnreadLabel() -> String {
+        return self == 0 ? "" : String(self)
+    }
+    
+    func toTitleSuffix() -> String {
+        return self == 0 ? "" : "(\(self))"
+    }
+}
+
 extension String {
-    func lastMessageWithTimestamp(interval: Double) -> String {
-        var lastMessage = self
-        let timestamp = interval.toTimeAgo()
-        let secondsAgo = -NSDate(timeIntervalSince1970: interval).timeIntervalSinceNow
-        if lastMessage == "" {
-            if timestamp == "Just now" {
-                lastMessage = "Created just now."
-            } else if secondsAgo < 60 * 60 * 24 {
-                lastMessage = "Created \(timestamp) ago."
-            } else {
-                lastMessage = "Created \(timestamp)."
-            }
-        }
-        return lastMessage
-    }
-    
-    func nicknameFormatted() -> NSAttributedString {
-        if self == "" {
-            return NSAttributedString(string: "")
-        } else {
-            let blueAttr = [NSForegroundColorAttributeName: UIColor().blue()]
-            return NSAttributedString(string: self, attributes: blueAttr)
-        }
-    }
-    
-    func makeBold() -> NSMutableAttributedString {
-        let boldAttr = [NSFontAttributeName: UIFont.boldSystemFontOfSize(12)]
+    func makeBold(withSize size: CGFloat) -> NSMutableAttributedString {
+        let boldAttr = [NSFontAttributeName: UIFont.boldSystemFontOfSize(size)]
         return NSMutableAttributedString(string: self, attributes: boldAttr)
     }
 }
@@ -104,6 +89,7 @@ extension Double {
         return NSDate(timeIntervalSince1970: self).formattedAsTimeAgo()
     }
     
+    // delete when ready
     func createdAgo() -> String {
         let timestamp = self.toTimeAgo()
         let secondsAgo = -NSDate(timeIntervalSince1970: self).timeIntervalSinceNow
@@ -117,22 +103,12 @@ extension Double {
     }
 }
 
-extension Int {
-    func toUnreadLabel() -> String {
-        return self == 0 ? "" : String(self)
-    }
-    
-    func toTitleSuffix() -> String {
-        return self == 0 ? "" : "(\(self))"
-    }
-}
-
 extension UIColor {
     convenience init(red: Int, green: Int, blue: Int) {
         self.init(red: CGFloat(red) / 255.0, green: CGFloat(green) / 255.0, blue: CGFloat(blue) / 255.0, alpha: 1.0)
     }
     
-    convenience init(hex:Int) {
+    convenience init(hex: Int) {
         self.init(red:(hex >> 16) & 0xff, green:(hex >> 8) & 0xff, blue:hex & 0xff)
     }
     

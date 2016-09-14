@@ -82,12 +82,13 @@ class ConvoViewController: JSQMessagesViewController {
         membersTypingRef.removeObserverWithHandle(membersTypingRefHandle)
     }
     
+    // MARK: - Set up
     func setUp() {
         navigationController!.view.backgroundColor = UIColor.whiteColor()
         nicknames[convo.senderId] = convo.senderProxy
         nicknames[convo.receiverId] = convo.receiverProxy
         senderId = convo.senderId
-        senderDisplayName = convo.senderProxy
+        senderDisplayName = ""
         collectionView?.collectionViewLayout.incomingAvatarViewSize = CGSize(width: kJSQMessagesCollectionViewAvatarSizeDefault, height:kJSQMessagesCollectionViewAvatarSizeDefault)
         collectionView?.collectionViewLayout.outgoingAvatarViewSize = CGSize(width: kJSQMessagesCollectionViewAvatarSizeDefault, height:kJSQMessagesCollectionViewAvatarSizeDefault)
     }
@@ -126,7 +127,7 @@ class ConvoViewController: JSQMessagesViewController {
         senderIconRef = ref.child("proxies").child(convo.senderId).child(convo.senderProxy).child("icon")
         senderIconRefHandle = senderIconRef.observeEventType(.Value, withBlock: { (snapshot) in
             if let icon = snapshot.value as? String {
-                self.api.getImage(forIcon: icon, completion: { (image) in
+                self.api.getUIImage(forIcon: icon, completion: { (image) in
                     self.icons[self.convo.senderId] = JSQMessagesAvatarImage(placeholder: image)
                     self.collectionView.reloadData()
                 })
@@ -139,7 +140,7 @@ class ConvoViewController: JSQMessagesViewController {
         receiverIconRef = ref.child("proxies").child(convo.receiverId).child(convo.receiverProxy).child("icon")
         receiverIconRefHandle = receiverIconRef.observeEventType(.Value, withBlock: { (snapshot) in
             if let icon = snapshot.value as? String {
-                self.api.getImage(forIcon: icon, completion: { (image) in
+                self.api.getUIImage(forIcon: icon, completion: { (image) in
                     self.icons[self.convo.receiverId] = JSQMessagesAvatarImage(placeholder: image)
                     self.collectionView.reloadData()
                 })
@@ -304,7 +305,8 @@ class ConvoViewController: JSQMessagesViewController {
     
     // Make space for read receipt
     override func collectionView(collectionView: JSQMessagesCollectionView!, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout!, heightForCellBottomLabelAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
-        if indexPath.item == unreadReceiptIndex {
+        let message = messages[indexPath.item]
+        if indexPath.item == unreadReceiptIndex && message.read {
             return kJSQMessagesCollectionViewCellLabelHeightDefault
         }
         return 0
@@ -312,9 +314,9 @@ class ConvoViewController: JSQMessagesViewController {
     
     // Get read receipt
     override func collectionView(collectionView: JSQMessagesCollectionView!, attributedTextForCellBottomLabelAtIndexPath indexPath: NSIndexPath!) -> NSAttributedString! {
-        if indexPath.item == unreadReceiptIndex {
-            let message = messages[indexPath.item]
-            let read = "Read ".makeBold()
+        let message = messages[indexPath.item]
+        if indexPath.item == unreadReceiptIndex && message.read {
+            let read = "Read ".makeBold(withSize: 12)
             let timestamp = NSAttributedString(string: message.timeRead.toTimeAgo())
             read.appendAttributedString(timestamp)
             return read

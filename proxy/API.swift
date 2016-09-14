@@ -43,6 +43,7 @@ class API {
     }
     
     // MARK: - The Proxy
+    
     /// Loads word bank if needed, else call `tryCreateProxy`.
     func create(proxy completion: (proxy: Proxy?) -> Void) {
         isCreatingProxy = true
@@ -57,8 +58,7 @@ class API {
         }
     }
     
-    /// Loads and caches the `proxyNameGenerator`. Calls `tryCreateProxy` when 
-    /// done.
+    /// Loads and caches the `proxyNameGenerator`. Calls `tryCreateProxy` when done.
     func load(proxyNameGenerator completion: (proxy: Proxy?) -> Void) {
         ref.child("wordbank").observeSingleEventOfType(.Value, withBlock: { (snapshot) in
             if let words = snapshot.value, let adjs = words["adjectives"], let nouns = words["nouns"] {
@@ -94,8 +94,8 @@ class API {
         })
     }
     
-    /// Keeps an up-to-date list of the icons the user has unlocked. These are
-    /// actually partial file paths to the image locations in storage.
+    /// Keeps an up-to-date list of the icons the user has unlocked.
+    /// These are actually partial file paths to the image locations in storage.
     func observeIcons() {
         iconsRefHandle = ref.child("icons").child(uid).observeEventType(.Value, withBlock: { (snapshot) in
             var icons = [String]()
@@ -120,10 +120,11 @@ class API {
         })
     }
     
+    /// Deletes the newly created proxy being checked for uniqueness.
     /// Notifies API to stop trying to create a proxy.
     func cancelCreating(proxy proxy: Proxy) {
-        isCreatingProxy = false
         delete(globalProxy: proxy)
+        isCreatingProxy = false
     }
     
     /// Returns the icon's URL in storage.
@@ -143,7 +144,7 @@ class API {
     }
     
     /// Returns a UIImage of the icon from the URL.
-    func getImage(forIcon icon: String, completion: (image: UIImage) -> Void) {
+    func getUIImage(forIcon icon: String, completion: (image: UIImage) -> Void) {
         if let image = iconImageCache[icon] {
             completion(image: image)
         } else {
@@ -174,9 +175,8 @@ class API {
     
     // MARK: - The Message
     
-    /// Error checks before sending it off to the appropriate message sending
-    /// fuction. Returns the sender's convo on success. Returns an ErrorAlert on
-    /// failure.
+    /// Error checks before sending it off to the appropriate message sending fuction.
+    /// Returns the sender's convo on success. Returns an ErrorAlert on failure.
     func send(messageWithText text: String, fromSenderProxy senderProxy: Proxy, toReceiverProxyName receiverProxyName: String, completion: (error: ErrorAlert?, convo: Convo?) -> Void ) {
         
         /// Check if receiver exists
@@ -343,8 +343,7 @@ class API {
     
     /// Sets `didLeaveConvo` to true for the user's convo and proxy convo.
     /// Sets the convos' `unread` to 0.
-    /// Decrements the user's `unread` and proxy's `unread` by the convo's
-    /// unread.
+    /// Decrements the user's `unread` and proxy's `unread` by the convo's unread.
     func leave(convo convo: Convo) {
         var _convo = convo
         _convo.didLeaveConvo = true
@@ -399,8 +398,7 @@ class API {
     // MARK: - Helper functions for writing to database
     
     // MARK: Proxy
-    /// Saves the proxy with a new `nickname` and timestamp. Saved under user
-    /// Id.
+    /// Saves the proxy with a new `nickname` and timestamp.
     func save(proxy proxy: Proxy, withNickname nickname: String) {
         var _proxy = proxy
         let timestamp = NSDate().timeIntervalSince1970
@@ -409,20 +407,20 @@ class API {
         ref.child("proxies").child(uid).child(proxy.key).setValue(_proxy.toAnyObject())
     }
     
-    /// Updates the proxy's nickname in the required places.
+    /// Updates the proxy's nickname.
     func update(nickname nickname: String, forProxy proxy: Proxy, withConvos convos: [Convo]) {
         
-        /// In user's node.
+        /// In user's node
         ref.child("proxies").child(proxy.owner).child(proxy.key).child("nickname").setValue(nickname)
         
-        /// For each convo the proxy is in.
+        /// For each convo the proxy is in
         for convo in convos {
             self.ref.child("convos").child(proxy.owner).child(convo.key).child("senderNickname").setValue(nickname)
             self.ref.child("convos").child(proxy.key).child(convo.key).child("senderNickname").setValue(nickname)
         }
     }
     
-    /// Updates the proxy's icon in the required places.
+    /// Updates the proxy's icon.
     func update(icon icon: String, forProxy proxy: Proxy) {
         
         /// Global proxy list
@@ -477,8 +475,7 @@ class API {
         ref.child("proxies").child(proxy.globalKey).removeValue()
     }
     
-    /// Retrieves a proxy's `convos` then calls
-    /// delete(proxy proxy: Proxy, withConvos convos: [Convo]).
+    /// Gets a proxy's convos to delete them and the proxy.
     func delete(proxy proxy: Proxy) {
         ref.child("convos").child(proxy.key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
             var convos = [Convo]()
@@ -520,7 +517,7 @@ class API {
     }
     
     // MARK: Convo
-    /// Overwrites the given convo at its user's convos location in the database.
+    /// Updates the convo.
     func update(convo convo: Convo) {
         ref.child("convos").child(convo.senderId).child(convo.key).setValue(convo.toAnyObject())
     }
@@ -554,14 +551,12 @@ class API {
     }
     
     // MARK: Proxy convo
-    /// Overwrites the given proxy convo at it's users proxies location in the
-    /// database.
+    /// Updates the proxy convo.
     func update(proxyConvo proxyConvo: Convo) {
         ref.child("convos").child(proxyConvo.senderProxy).child(proxyConvo.key).setValue(proxyConvo.toAnyObject())
     }
     
-    /// Updates the proxy convo's `unread`, `message`, `timestamp`, &
-    /// `didLeaveConvo`.
+    /// Updates the proxy convo's `unread`, `message`, `timestamp`, & `didLeaveConvo`.
     func update(proxyConvo convo: String, forProxy proxy: String, withMessage message: String, withTimestamp timestamp: Double) {
         self.ref.child("convos").child(proxy).child(convo).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
             if var convo = currentData.value as? [String: AnyObject] {
@@ -660,6 +655,5 @@ class API {
     func setRead(forMessage message: Message) {
         ref.child("messages").child(message.convo).child(message.key).child("read").setValue(true)
         ref.child("messages").child(message.convo).child(message.key).child("timeRead").setValue(NSDate().timeIntervalSince1970)
-        
     }
 }

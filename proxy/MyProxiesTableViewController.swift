@@ -51,6 +51,7 @@ class MyProxiesTableViewController: UITableViewController, NewMessageViewControl
         proxiesRef.removeObserverWithHandle(proxiesRefHandle)
     }
     
+    // MARK: - Set up
     func setUp() {
         navigationItem.title = "My Proxies"
         newMessageButton = createNewMessageButton()
@@ -172,6 +173,17 @@ class MyProxiesTableViewController: UITableViewController, NewMessageViewControl
     // MARK: - Table view delegate
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return proxies.count
+    }
+    
+    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return CGFloat.min
+    }
+    
+    override func tableView(tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+        if proxies.count == 0 {
+            return "No proxies yet. Create new proxies by tapping the mustache icon on the top right!"
+        }
+        return nil
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {

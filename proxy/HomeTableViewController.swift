@@ -48,6 +48,7 @@ class HomeTableViewController: UITableViewController, NewMessageViewControllerDe
         convosRef.removeObserverWithHandle(convosRefHandle)
     }
     
+    // MARK: - Log in
     func checkLogInStatus() {
         FIRAuth.auth()?.addAuthStateDidChangeListener { (auth, user) in
             if let user = user {
@@ -66,6 +67,7 @@ class HomeTableViewController: UITableViewController, NewMessageViewControllerDe
         appDelegate.window?.rootViewController = dest
     }
     
+    // MARK: - Set up
     func setUp() {
         title = "Home"
         newMessageButton = createNewMessageButton()
@@ -186,6 +188,17 @@ class HomeTableViewController: UITableViewController, NewMessageViewControllerDe
     // MARK: - Table view delegate
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return convos.count
+    }
+    
+    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return CGFloat.min
+    }
+    
+    override func tableView(tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+        if convos.count == 0 {
+            return "No conversations yet. Start a new one with the 'New Message' button on the top right!"
+        }
+        return nil
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {

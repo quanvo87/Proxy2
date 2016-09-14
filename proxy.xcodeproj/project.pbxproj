@@ -23,7 +23,6 @@
 		14383B2D1D78A7210086CA6C /* ProxyInfoTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14383B2C1D78A7210086CA6C /* ProxyInfoTableViewController.swift */; };
 		14383B5B1D7B0CB60086CA6C /* NSDate+NVTimeAgo.m in Sources */ = {isa = PBXBuildFile; fileRef = 14383B5A1D7B0CB60086CA6C /* NSDate+NVTimeAgo.m */; };
 		14383B5D1D7B81530086CA6C /* ConvoInfoTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14383B5C1D7B81530086CA6C /* ConvoInfoTableViewController.swift */; };
-		14383B5F1D7B835C0086CA6C /* ConvoNicknameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14383B5E1D7B835C0086CA6C /* ConvoNicknameCell.swift */; };
 		143F76FA1D72C0C100EF305F /* SelectProxyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 143F76F91D72C0C100EF305F /* SelectProxyViewController.swift */; };
 		145A4D321D84A6EC00BA64DC /* HomeTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 145A4D311D84A6EC00BA64DC /* HomeTableViewController.swift */; };
 		1470F3A21D83FA9800E932A1 /* MyProxiesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1470F3A11D83FA9800E932A1 /* MyProxiesTableViewController.swift */; };
@@ -65,7 +64,6 @@
 		14383B591D7B0CB60086CA6C /* NSDate+NVTimeAgo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+NVTimeAgo.h"; sourceTree = "<group>"; };
 		14383B5A1D7B0CB60086CA6C /* NSDate+NVTimeAgo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+NVTimeAgo.m"; sourceTree = "<group>"; };
 		14383B5C1D7B81530086CA6C /* ConvoInfoTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvoInfoTableViewController.swift; sourceTree = "<group>"; };
-		14383B5E1D7B835C0086CA6C /* ConvoNicknameCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvoNicknameCell.swift; sourceTree = "<group>"; };
 		143F76F91D72C0C100EF305F /* SelectProxyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectProxyViewController.swift; sourceTree = "<group>"; };
 		145A4D311D84A6EC00BA64DC /* HomeTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeTableViewController.swift; sourceTree = "<group>"; };
 		1470F3A11D83FA9800E932A1 /* MyProxiesTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyProxiesTableViewController.swift; sourceTree = "<group>"; };
@@ -139,7 +137,6 @@
 				147B5C371D82736700D18C73 /* ProxyInfoHeaderCell.swift */,
 				140E0D021D82AEA000D68F71 /* IconPickerCell.swift */,
 				140E0D081D83544C00D68F71 /* ConvoCell.swift */,
-				14383B5E1D7B835C0086CA6C /* ConvoNicknameCell.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -417,7 +414,6 @@
 				14383B5D1D7B81530086CA6C /* ConvoInfoTableViewController.swift in Sources */,
 				14383B5B1D7B0CB60086CA6C /* NSDate+NVTimeAgo.m in Sources */,
 				14383B121D73802B0086CA6C /* Proxy.swift in Sources */,
-				14383B5F1D7B835C0086CA6C /* ConvoNicknameCell.swift in Sources */,
 				14A6F1811D68D8160015431E /* SettingsItem.swift in Sources */,
 				145A4D321D84A6EC00BA64DC /* HomeTableViewController.swift in Sources */,
 				14E19A5E1D6148700030B366 /* LogInViewController.swift in Sources */,
