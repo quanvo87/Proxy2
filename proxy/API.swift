@@ -161,18 +161,6 @@ class API {
         }
     }
     
-    /// Returns the proxy from the database with the matching `key`.
-    func getProxy(withKey key: String, completion: (proxy: Proxy?) -> Void) {
-        ref.child("proxies").child(uid).queryOrderedByChild("key").queryEqualToValue(key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            if snapshot.childrenCount == 1 {
-                let proxy = Proxy(anyObject: snapshot.children.nextObject()!.value)
-                completion(proxy: proxy)
-            } else {
-                completion(proxy: nil)
-            }
-        })
-    }
-    
     // MARK: - The Message
     
     /// Error checks before sending it off to the appropriate message sending fuction.
@@ -330,15 +318,11 @@ class API {
         decrementUnread(forProxy: convo.senderProxy, forUser: convo.senderId, byAmount: amount)
     }
     
-    // Update the convo's nickname in both places
-    // TODO: New Implementation
-    func updateReceiverNickname(convo: Convo, nickname: String) {
-        ref.updateChildValues([
-            // User's copy of convo
-            "users/\(uid)/convos/\(convo.key)/receiverNickname": nickname,
-            
-            // The convo saved by proxy
-            "convos/\(convo.senderProxy)/\(convo.key)/receiverNickname": nickname])
+    /// Update the receiver's nickname for the convo.
+    /// (Only the sender sees this nickname).
+    func update(nickname nickname: String, forReceiverInConvo convo: Convo) {
+        ref.child("convos").child(convo.senderId).child(convo.key).child("receiverNickname").setValue(nickname)
+        ref.child("convos").child(convo.senderProxy).child(convo.key).child("receiverNickname").setValue(nickname)
     }
     
     /// Sets `didLeaveConvo` to true for the user's convo and proxy convo.
@@ -405,6 +389,18 @@ class API {
         _proxy.nickname = nickname
         _proxy.timestamp = timestamp
         ref.child("proxies").child(uid).child(proxy.key).setValue(_proxy.toAnyObject())
+    }
+    
+    /// Gets the proxy's convos then calls update(nickname:forProxy:withConvos).
+    func update(nickname nickname: String, forProxy proxy: Proxy) {
+        ref.child("convos").child(proxy.key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            var convos = [Convo]()
+            for child in snapshot.children {
+                let convo = Convo(anyObject: child.value)
+                convos.append(convo)
+            }
+            self.update(nickname: nickname, forProxy: proxy, withConvos: convos)
+        })
     }
     
     /// Updates the proxy's nickname.

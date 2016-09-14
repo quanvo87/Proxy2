@@ -52,7 +52,7 @@ class ConvoInfoTableViewController: UITableViewController {
     
     func observeReceiverProxy() {
         receiverProxyRef = ref.child("proxies").child(convo.receiverId).child(convo.receiverProxy)
-        receiverProxyRefHandle = receiverProxyRef.observeEventType(.Value, withBlock: { snapshot in
+        receiverProxyRefHandle = receiverProxyRef.observeEventType(.Value, withBlock: { (snapshot) in
             let proxy = Proxy(anyObject: snapshot.value!)
             self.receiverProxy = proxy
             let indexPath = NSIndexPath(forRow: 0, inSection: 0)
@@ -62,7 +62,7 @@ class ConvoInfoTableViewController: UITableViewController {
     
     func observeSenderProxy() {
         senderProxyRef = ref.child("proxies").child(convo.senderId).child(convo.senderProxy)
-        senderProxyRefHandle = senderProxyRef.observeEventType(.Value, withBlock: { snapshot in
+        senderProxyRefHandle = senderProxyRef.observeEventType(.Value, withBlock: { (snapshot) in
             let proxy = Proxy(anyObject: snapshot.value!)
             self.senderProxy = proxy
             let indexPath = NSIndexPath(forRow: 0, inSection: 1)
@@ -114,13 +114,12 @@ class ConvoInfoTableViewController: UITableViewController {
     
     override func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         switch section {
-        
+            
         case 0:
             let view = UIView()
             let label = UILabel(frame: CGRectMake(15, 0, tableView.frame.width, 30))
             label.font = label.font.fontWithSize(13)
             label.textColor = UIColor.grayColor()
-//            label.baselineAdjustment = .AlignCenters
             label.text = "Them"
             view.addSubview(label)
             return view
@@ -129,10 +128,9 @@ class ConvoInfoTableViewController: UITableViewController {
             let view = UIView()
             let label = UILabel(frame: CGRectMake(0, 0, tableView.frame.width - 15, 30))
             label.autoresizingMask = .FlexibleRightMargin
+            label.textAlignment = .Right
             label.font = label.font.fontWithSize(13)
             label.textColor = UIColor.grayColor()
-//            label.baselineAdjustment = .AlignCenters
-            label.textAlignment = .Right
             label.text = "You"
             view.addSubview(label)
             return view
@@ -140,13 +138,6 @@ class ConvoInfoTableViewController: UITableViewController {
         default: return nil
         }
     }
-    
-//    override func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-//        switch section {
-//        case 0: return 25
-//        default: return UITableViewAutomaticDimension
-//        }
-//    }
     
     override func tableView(tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         switch section {
@@ -181,8 +172,10 @@ class ConvoInfoTableViewController: UITableViewController {
             let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.ThemProxyInfoHeaderCell, forIndexPath: indexPath) as! ProxyInfoHeaderCell
             if let receiverProxy = receiverProxy {
                 cell.proxy = receiverProxy
+                cell.nicknameButton.addTarget(self, action: #selector(ConvoInfoTableViewController.showEditReceiverProxyNicknameAlert), forControlEvents: .TouchUpInside)
             }
             cell.accessoryType = .DisclosureIndicator
+            cell.selectionStyle = .Default
             return cell
             
         // Sender proxy info
@@ -192,6 +185,7 @@ class ConvoInfoTableViewController: UITableViewController {
                 cell.proxy = senderProxy
             }
             cell.accessoryType = .DisclosureIndicator
+            cell.selectionStyle = .Default
             return cell
             
         case 2:
@@ -261,18 +255,34 @@ class ConvoInfoTableViewController: UITableViewController {
         return UITableViewCell()
     }
     
-    // MARK: - Navigation
-    // TODO: Change to goToSenderProxy or something, won't have to get proxy b/c we'll do that earlier
-    func goToProxy() {
-        // Lock the UI
-        api.getProxy(withKey: convo.senderProxy) { (proxy) in
-            // Unlock the UI
-            if let proxy = proxy {
-                // transition to proxy
-                let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.ProxyInfoTableViewController) as! ProxyInfoTableViewController
-                dest.proxy = proxy
-                self.navigationController!.pushViewController(dest, animated: true)
+    // Show alert for user to edit the receiver proxy's nickname for this convo.
+    func showEditReceiverProxyNicknameAlert() {
+        let alert = UIAlertController(title: "Edit Receiver's Nickname", message: "Only you see this nickname.", preferredStyle: .Alert)
+        alert.addTextFieldWithConfigurationHandler({ (textField) -> Void in
+            textField.placeholder = "Enter A Nickname"
+            textField.text = self.convo.receiverNickname
+            textField.autocorrectionType = .Yes
+            textField.autocapitalizationType = .Sentences
+            textField.clearButtonMode = .WhileEditing
+        })
+        alert.addAction(UIAlertAction(title: "Save", style: .Default, handler: { (action) -> Void in
+            let nickname = alert.textFields![0].text
+            let trim = nickname!.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
+            if !(nickname != "" && trim == "") {
+                self.api.update(nickname: nickname!, forReceiverInConvo: self.convo)
             }
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
+    
+    // MARK: - Navigation
+    // Go to user's proxy info VC.
+    func goToProxy() {
+        if let senderProxy = senderProxy {
+            let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.ProxyInfoTableViewController) as! ProxyInfoTableViewController
+            dest.proxy = senderProxy
+            self.navigationController!.pushViewController(dest, animated: true)
         }
     }
     

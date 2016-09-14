@@ -178,7 +178,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         case 0:
             let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.ProxyInfoHeaderCell, forIndexPath: indexPath) as! ProxyInfoHeaderCell
             cell.proxy = proxy
-            cell.nicknameButton.addTarget(self, action: #selector(ProxyInfoTableViewController.showNicknameEditorAlert), forControlEvents: .TouchUpInside)
+            cell.nicknameButton.addTarget(self, action: #selector(ProxyInfoTableViewController.showEditNicknameAlert), forControlEvents: .TouchUpInside)
             return cell
             
         // This proxy's convos
@@ -201,7 +201,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         self.presentViewController(alert, animated: true, completion: nil)
     }
     
-    func showNicknameEditorAlert() {
+    func showEditNicknameAlert() {
         let alert = UIAlertController(title: "Edit Nickname", message: "Only you see your nickname.", preferredStyle: .Alert)
         alert.addTextFieldWithConfigurationHandler({ (textField) -> Void in
             textField.placeholder = "Enter A Nickname"

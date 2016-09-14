@@ -61,8 +61,8 @@ class ConvoViewController: JSQMessagesViewController {
     }
     
     override func viewWillAppear(animated: Bool) {
-        super.viewDidDisappear(true)
-        navigationItem.title = convo.receiverProxy
+        super.viewWillAppear(true)
+        setTitle()
         self.tabBarController?.tabBar.hidden = true
     }
     
@@ -93,6 +93,10 @@ class ConvoViewController: JSQMessagesViewController {
         collectionView?.collectionViewLayout.outgoingAvatarViewSize = CGSize(width: kJSQMessagesCollectionViewAvatarSizeDefault, height:kJSQMessagesCollectionViewAvatarSizeDefault)
     }
     
+    func setTitle() {
+        navigationItem.title = nicknames[convo.receiverId] == "" ? convo.receiverProxy : nicknames[convo.receiverId]
+    }
+    
     func setUpBubbles() {
         let factory = JSQMessagesBubbleImageFactory()
         incomingBubble = factory.incomingMessagesBubbleImageWithColor(UIColor.jsq_messageBubbleLightGrayColor())
@@ -114,10 +118,11 @@ class ConvoViewController: JSQMessagesViewController {
     // Observe receiver's nickname
     func observerRecieverNickname() {
         receiverNicknameRef = ref.child("convos").child(convo.senderId).child(convo.key).child("receiverNickname")
-        receiverNicknameRefHandle = receiverNicknameRef.observeEventType(.Value, withBlock: { snapshot in
+        receiverNicknameRefHandle = receiverNicknameRef.observeEventType(.Value, withBlock: { (snapshot) in
             if let nickname = snapshot.value as? String {
                 self.nicknames[self.convo.receiverId] = nickname == "" ? self.convo.receiverProxy : nickname
                 self.collectionView.reloadData()
+                self.setTitle()
             }
         })
     }
