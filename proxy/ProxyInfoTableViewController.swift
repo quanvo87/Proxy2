@@ -171,6 +171,12 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         }
     }
     
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        if indexPath.section == 1 {
+            showConvoViewController()
+        }
+    }
+    
     // MARK: - Table view data source
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         switch indexPath.section {
@@ -180,6 +186,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
             let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.SenderProxyInfoCell, forIndexPath: indexPath) as! SenderProxyInfoCell
             cell.proxy = proxy
             cell.nicknameButton.addTarget(self, action: #selector(ProxyInfoTableViewController.showEditNicknameAlert), forControlEvents: .TouchUpInside)
+            cell.changeIconButton.addTarget(self, action: #selector(ProxyInfoTableViewController.showIconPickerViewController), forControlEvents: .TouchUpInside)
             return cell
             
         // This proxy's convos
@@ -229,22 +236,18 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     }
     
     // MARK: - Navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        switch segue.identifier! {
-            
-        case Segues.ConvoSegue:
-            let dest = segue.destinationViewController as! ConvoViewController
-            let index = tableView.indexPathForSelectedRow!.row
-            dest.convo = convos[index]
-            
-        case Segues.IconPickerSegue:
-            let dest = segue.destinationViewController as! IconPickerCollectionViewController
-            dest.proxy = proxy
-            dest.convos = convos
-            
-        default:
-            return
-        }
+    // Show VC to choose a new icon for the user's proxy.
+    func showIconPickerViewController() {
+        let dest = self.storyboard?.instantiateViewControllerWithIdentifier(Identifiers.IconPickerCollectionViewController) as! IconPickerCollectionViewController
+        dest.proxy = proxy
+        dest.convos = convos
+        self.navigationController?.pushViewController(dest, animated: true)
+    }
+    
+    func showConvoViewController() {
+        let dest = self.storyboard?.instantiateViewControllerWithIdentifier(Identifiers.ConvoViewController) as! ConvoViewController
+        dest.convo = convos[tableView.indexPathForSelectedRow!.row]
+        navigationController?.pushViewController(dest, animated: true)
     }
     
     func showNewMessageViewController() {

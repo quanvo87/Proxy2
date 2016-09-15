@@ -61,15 +61,10 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         observeUnread()
     }
     
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(true)
-        leaveConvo()
-    }
-    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(true)
-        setTitle()
         self.tabBarController?.tabBar.hidden = true
+        leaveConvo()
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -90,7 +85,9 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     
     // MARK: - Set up
     func setUp() {
+        setTitle()
         navigationController!.view.backgroundColor = UIColor.whiteColor()
+        navigationItem.rightBarButtonItem = createInfoButton()
         nicknames[convo.senderId] = convo.senderProxy
         nicknames[convo.receiverId] = convo.receiverProxy
         senderId = convo.senderId
@@ -101,6 +98,14 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     
     func setTitle() {
         navigationItem.title = nicknames[convo.receiverId] == "" ? convo.receiverProxy : nicknames[convo.receiverId]
+    }
+    
+    func createInfoButton() -> UIBarButtonItem {
+        let infoButton = UIButton(type: .Custom)
+        infoButton.setImage(UIImage(named: "info.png"), forState: UIControlState.Normal)
+        infoButton.addTarget(self, action: #selector(ConvoViewController.showConvoInfoTableViewController), forControlEvents: UIControlEvents.TouchUpInside)
+        infoButton.frame = CGRectMake(0, 0, 25, 25)
+        return UIBarButtonItem(customView: infoButton)
     }
     
     func setUpBubbles() {
@@ -360,14 +365,11 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     }
     
     // MARK: - Navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == Segues.ConvoDetailSegue {
-            if let dest = segue.destinationViewController as? ConvoInfoTableViewController {
-                navigationItem.title = nil
-                dest.convo = convo
-                dest.delegate = self
-            }
-        }
+    func showConvoInfoTableViewController() {
+        let dest = storyboard?.instantiateViewControllerWithIdentifier(Identifiers.ConvoInfoTableViewController) as! ConvoInfoTableViewController
+        dest.convo = convo
+        dest.delegate = self
+        navigationController?.pushViewController(dest, animated: true)
     }
     
     func didLeaveConvo() {

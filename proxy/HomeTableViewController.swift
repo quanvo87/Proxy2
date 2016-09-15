@@ -244,6 +244,7 @@ class HomeTableViewController: UITableViewController, NewMessageViewControllerDe
     func showConvo(convo: Convo) {
         let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.ConvoViewController) as! ConvoViewController
         dest.convo = convo
-        self.navigationController!.pushViewController(dest, animated: true)
+        print(convo)
+        navigationController!.pushViewController(dest, animated: true)
     }
 }

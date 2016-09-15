@@ -106,9 +106,6 @@
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WXl-RP-DXQ" userLabel="Change Icon Button">
                                             <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                             <state key="normal" title="Change Icon"/>
-                                            <connections>
-                                                <segue destination="myi-c3-T5y" kind="show" identifier="Icon Picker Segue" id="DQ1-Nh-C63"/>
-                                            </connections>
                                         </button>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kWf-c7-bue">
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -190,7 +187,6 @@
                                     <outlet property="nameLabel" destination="2W6-pM-7uh" id="uMf-1O-Xhv"/>
                                     <outlet property="timestampLabel" destination="M22-FL-nS8" id="F8W-Ep-tNg"/>
                                     <outlet property="unreadLabel" destination="yAh-3z-Fid" id="emb-Hj-MSV"/>
-                                    <segue destination="uqW-Vb-8b3" kind="show" identifier="Convo Segue" id="i6L-dk-dPw"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -268,7 +264,7 @@
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NQg-Cy-lVj" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="247" y="2898"/>
+            <point key="canvasLocation" x="1058" y="2898"/>
         </scene>
         <!--My Proxies Table View Controller-->
         <scene sceneID="Zls-ly-Qid">
@@ -572,13 +568,7 @@
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
                     <toolbarItems/>
-                    <navigationItem key="navigationItem" id="lV4-5P-yRn">
-                        <barButtonItem key="rightBarButtonItem" title="Info" id="74W-7L-v2G">
-                            <connections>
-                                <segue destination="tDx-Gg-0Dz" kind="show" identifier="Convo Detail Segue" id="UfL-v5-pR1"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" id="lV4-5P-yRn"/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4yJ-lU-NOK" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -588,14 +578,14 @@
         <!--Convo Info Table View Controller-->
         <scene sceneID="61i-Fd-DtT">
             <objects>
-                <tableViewController id="tDx-Gg-0Dz" customClass="ConvoInfoTableViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="Convo Info Table View Controller" id="tDx-Gg-0Dz" customClass="ConvoInfoTableViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="HrI-JD-vKq">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Receiver Proxy Info Cell" rowHeight="80" id="4n2-vv-h5t" userLabel="Receiver Proxy Info Cell" customClass="ReceiverProxyInfoCell" customModule="proxy" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="120" width="375" height="80"/>
+                                <rect key="frame" x="0.0" y="56" width="375" height="80"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="4n2-vv-h5t" id="nJR-K5-GJr">
                                     <frame key="frameInset" width="375" height="79"/>
@@ -635,7 +625,7 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Sender Proxy Info Cell" rowHeight="80" id="VAZ-Yo-Tft" userLabel="Sender Proxy Info Cell" customClass="SenderProxyInfoCell" customModule="proxy" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="200" width="375" height="80"/>
+                                <rect key="frame" x="0.0" y="136" width="375" height="80"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="VAZ-Yo-Tft" id="ovG-pZ-l66">
                                     <frame key="frameInset" width="375" height="79"/>
@@ -682,7 +672,7 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Basic Cell" id="Q36-7j-JLz">
-                                <rect key="frame" x="0.0" y="280" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="216" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Q36-7j-JLz" id="Mq7-tl-WpL">
                                     <frame key="frameInset" width="375" height="43"/>
@@ -997,6 +987,24 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="OzU-h1-ulg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="247" y="2186"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="KVW-Rt-OnI">
+            <objects>
+                <navigationController storyboardIdentifier="Icon Picker Navigation Controller" automaticallyAdjustsScrollViewInsets="NO" id="xgT-pv-zVk" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="7tw-w6-7Ur">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="myi-c3-T5y" kind="relationship" relationship="rootViewController" id="0zx-V3-Ne6"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="62D-83-blG" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="245.59999999999999" y="2897.9010494752624"/>
         </scene>
     </scenes>
     <resources>

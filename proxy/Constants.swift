@@ -21,6 +21,7 @@ struct Identifiers {
     
     static let NewMessageViewController = "New Message View Controller"
     static let ConvoViewController = "Convo View Controller"
+    static let ConvoInfoTableViewController = "Convo Info Table View Controller"
     static let ConvoCell = "Convo Cell"
     
     static let ProxyInfoTableViewController = "Proxy Info Table View Controller"
@@ -38,9 +39,6 @@ struct Segues {
     static let NewMessageSegue = "New Message Segue"
     static let SelectProxySegue = "Select Proxy Segue"
     static let ProxyInfoSegue = "Proxy Info Segue"
-    static let IconPickerSegue = "Icon Picker Segue"
-    static let ConvoSegue = "Convo Segue"
-    static let ConvoDetailSegue = "Convo Detail Segue"
 }
 
 struct Notifications {
