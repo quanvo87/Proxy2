@@ -39,7 +39,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(true)
-        tabBarController?.tabBar.hidden = false
+//        tabBarController?.tabBar.hidden = false
         showNewConvo()
     }
     
@@ -49,6 +49,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         convosRef.removeObserverWithHandle(convosRefHandle)
     }
     
+    // MARK: - Set up
     func setUp() {
         addNavBarButtons()
         tableView.separatorStyle = .None
@@ -176,7 +177,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         
         // Header
         case 0:
-            let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.ProxyInfoHeaderCell, forIndexPath: indexPath) as! ProxyInfoHeaderCell
+            let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.SenderProxyInfoCell, forIndexPath: indexPath) as! SenderProxyInfoCell
             cell.proxy = proxy
             cell.nicknameButton.addTarget(self, action: #selector(ProxyInfoTableViewController.showEditNicknameAlert), forControlEvents: .TouchUpInside)
             return cell
@@ -235,7 +236,6 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
             let dest = segue.destinationViewController as! ConvoViewController
             let index = tableView.indexPathForSelectedRow!.row
             dest.convo = convos[index]
-            dest.hidesBottomBarWhenPushed = true
             
         case Segues.IconPickerSegue:
             let dest = segue.destinationViewController as! IconPickerCollectionViewController

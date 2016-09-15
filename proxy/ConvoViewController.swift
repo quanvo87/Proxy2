@@ -9,12 +9,13 @@
 import FirebaseDatabase
 import JSQMessagesViewController
 
-class ConvoViewController: JSQMessagesViewController {
+class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControllerDelegate {
     
     let api = API.sharedInstance
     let ref = FIRDatabase.database().reference()
     var convo = Convo()
     var unreadReceiptIndex = 0
+    var _didLeaveConvo = false
     
     var unreadRef = FIRDatabaseReference()
     var unreadRefHandle = FIRDatabaseHandle()
@@ -58,6 +59,11 @@ class ConvoViewController: JSQMessagesViewController {
         observeMessages()
         observeTyping()
         observeUnread()
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(true)
+        leaveConvo()
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -359,7 +365,18 @@ class ConvoViewController: JSQMessagesViewController {
             if let dest = segue.destinationViewController as? ConvoInfoTableViewController {
                 navigationItem.title = nil
                 dest.convo = convo
+                dest.delegate = self
             }
+        }
+    }
+    
+    func didLeaveConvo() {
+        _didLeaveConvo = true
+    }
+    
+    func leaveConvo() {
+        if _didLeaveConvo {
+            navigationController?.popViewControllerAnimated(true)
         }
     }
 }

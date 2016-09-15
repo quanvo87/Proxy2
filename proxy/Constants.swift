@@ -25,14 +25,13 @@ struct Identifiers {
     
     static let ProxyInfoTableViewController = "Proxy Info Table View Controller"
     static let ProxyCell = "Proxy Cell"
-    static let ProxyInfoHeaderCell = "Proxy Info Header Cell"
+    static let SenderProxyInfoCell = "Sender Proxy Info Cell"
+    static let ReceiverProxyInfoCell = "Receiver Proxy Info Cell"
+    
+    static let IconPickerCollectionViewController = "Icon Picker Collection View Controller"
     static let IconPickerCell = "Icon Picker Cell"
-    static let ThemProxyInfoHeaderCell = "Them Proxy Info Header Cell"
     
     static let BasicCell = "Basic Cell"
-    
-    // delete these when ready
-    static let NewProxyViewController = "New Proxy View Controller"
 }
 
 struct Segues {

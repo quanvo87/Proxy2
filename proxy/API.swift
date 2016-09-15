@@ -127,6 +127,14 @@ class API {
         isCreatingProxy = false
     }
     
+    /// Returns the user's proxy struct using its key.
+    func getProxy(withKey key: String, ofUser user: String, completion: (proxy: Proxy?) -> Void) {
+        ref.child("proxies").child(user).child(key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            let proxy = Proxy(anyObject: snapshot.value!)
+            completion(proxy: proxy)
+        })
+    }
+    
     /// Returns the icon's URL in storage.
     func getURL(forIcon icon: String, completion: (URL: String) -> Void) {
         if let URL = iconURLCache[icon] {
@@ -310,6 +318,18 @@ class API {
     
     // MARK: - The Conversation (Convo)
     
+    /// Returns the convos that the given proxy is in.
+    func getConvos(forProxy proxy: Proxy, completion: (convos: [Convo]) -> Void) {
+        ref.child("convos").child(proxy.key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            var convos = [Convo]()
+            for child in snapshot.children {
+                let convo = Convo(anyObject: child.value)
+                convos.append(convo)
+            }
+            completion(convos: convos)
+        })
+    }
+    
     /// Decrements user, convo, proxy convo, and proxy `unread` by `amount`.
     func decrementAllUnreadFor(convo convo: Convo, byAmount amount: Int) {
         decrementUnread(forUser: convo.senderId, byAmount: amount)
@@ -393,14 +413,9 @@ class API {
     
     /// Gets the proxy's convos then calls update(nickname:forProxy:withConvos).
     func update(nickname nickname: String, forProxy proxy: Proxy) {
-        ref.child("convos").child(proxy.key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            var convos = [Convo]()
-            for child in snapshot.children {
-                let convo = Convo(anyObject: child.value)
-                convos.append(convo)
-            }
+        getConvos(forProxy: proxy) { (convos) in
             self.update(nickname: nickname, forProxy: proxy, withConvos: convos)
-        })
+        }
     }
     
     /// Updates the proxy's nickname.

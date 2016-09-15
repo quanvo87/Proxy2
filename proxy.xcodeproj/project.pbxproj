@@ -25,8 +25,10 @@
 		14383B5D1D7B81530086CA6C /* ConvoInfoTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14383B5C1D7B81530086CA6C /* ConvoInfoTableViewController.swift */; };
 		143F76FA1D72C0C100EF305F /* SelectProxyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 143F76F91D72C0C100EF305F /* SelectProxyViewController.swift */; };
 		145A4D321D84A6EC00BA64DC /* HomeTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 145A4D311D84A6EC00BA64DC /* HomeTableViewController.swift */; };
+		145E9D0C1D8A1DF00043F34F /* ReceiverProxyInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 145E9D0B1D8A1DF00043F34F /* ReceiverProxyInfoCell.swift */; };
+		145E9D0E1D8A3DDC0043F34F /* ConvoInfoTableViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 145E9D0D1D8A3DDC0043F34F /* ConvoInfoTableViewControllerDelegate.swift */; };
 		1470F3A21D83FA9800E932A1 /* MyProxiesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1470F3A11D83FA9800E932A1 /* MyProxiesTableViewController.swift */; };
-		147B5C381D82736700D18C73 /* ProxyInfoHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147B5C371D82736700D18C73 /* ProxyInfoHeaderCell.swift */; };
+		147B5C381D82736700D18C73 /* SenderProxyInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147B5C371D82736700D18C73 /* SenderProxyInfoCell.swift */; };
 		147B5C3A1D82891300D18C73 /* DefaultIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147B5C391D82891300D18C73 /* DefaultIcons.swift */; };
 		14A6F17B1D68D5F20015431E /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F17A1D68D5F20015431E /* SettingsViewController.swift */; };
 		14A6F17F1D68D8020015431E /* SettingsItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F17E1D68D8020015431E /* SettingsItems.swift */; };
@@ -66,8 +68,11 @@
 		14383B5C1D7B81530086CA6C /* ConvoInfoTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvoInfoTableViewController.swift; sourceTree = "<group>"; };
 		143F76F91D72C0C100EF305F /* SelectProxyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectProxyViewController.swift; sourceTree = "<group>"; };
 		145A4D311D84A6EC00BA64DC /* HomeTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeTableViewController.swift; sourceTree = "<group>"; };
+		145E9D0A1D8A04140043F34F /* proxy.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = proxy.entitlements; sourceTree = "<group>"; };
+		145E9D0B1D8A1DF00043F34F /* ReceiverProxyInfoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceiverProxyInfoCell.swift; sourceTree = "<group>"; };
+		145E9D0D1D8A3DDC0043F34F /* ConvoInfoTableViewControllerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvoInfoTableViewControllerDelegate.swift; sourceTree = "<group>"; };
 		1470F3A11D83FA9800E932A1 /* MyProxiesTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyProxiesTableViewController.swift; sourceTree = "<group>"; };
-		147B5C371D82736700D18C73 /* ProxyInfoHeaderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyInfoHeaderCell.swift; sourceTree = "<group>"; };
+		147B5C371D82736700D18C73 /* SenderProxyInfoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SenderProxyInfoCell.swift; sourceTree = "<group>"; };
 		147B5C391D82891300D18C73 /* DefaultIcons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultIcons.swift; sourceTree = "<group>"; };
 		14A6F17A1D68D5F20015431E /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		14A6F17E1D68D8020015431E /* SettingsItems.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsItems.swift; sourceTree = "<group>"; };
@@ -116,6 +121,7 @@
 				14383B0E1D7341070086CA6C /* SelectProxyViewControllerDelegate.swift */,
 				14383B241D7555670086CA6C /* ConvoViewController.swift */,
 				14383B5C1D7B81530086CA6C /* ConvoInfoTableViewController.swift */,
+				145E9D0D1D8A3DDC0043F34F /* ConvoInfoTableViewControllerDelegate.swift */,
 			);
 			name = Convos;
 			sourceTree = "<group>";
@@ -134,7 +140,8 @@
 			isa = PBXGroup;
 			children = (
 				1415611E1D62A8A3002022BC /* ProxyCell.swift */,
-				147B5C371D82736700D18C73 /* ProxyInfoHeaderCell.swift */,
+				147B5C371D82736700D18C73 /* SenderProxyInfoCell.swift */,
+				145E9D0B1D8A1DF00043F34F /* ReceiverProxyInfoCell.swift */,
 				140E0D021D82AEA000D68F71 /* IconPickerCell.swift */,
 				140E0D081D83544C00D68F71 /* ConvoCell.swift */,
 			);
@@ -197,6 +204,7 @@
 		143F76F81D72BFB800EF305F /* Other */ = {
 			isa = PBXGroup;
 			children = (
+				145E9D0A1D8A04140043F34F /* proxy.entitlements */,
 				14E19A4D1D60EF100030B366 /* LaunchScreen.storyboard */,
 				14E19A501D60EF100030B366 /* Info.plist */,
 				14A6F18F1D6C21ED0015431E /* GoogleService-Info.plist */,
@@ -311,11 +319,18 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0730;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = "Quan Vo";
 				TargetAttributes = {
 					14E19A3D1D60EF100030B366 = {
 						CreatedOnToolsVersion = 7.3.1;
+						DevelopmentTeam = 8UMN526X69;
+						LastSwiftMigration = 0800;
+						SystemCapabilities = {
+							com.apple.Keychain = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -413,14 +428,16 @@
 				1415611F1D62A8A3002022BC /* ProxyCell.swift in Sources */,
 				14383B5D1D7B81530086CA6C /* ConvoInfoTableViewController.swift in Sources */,
 				14383B5B1D7B0CB60086CA6C /* NSDate+NVTimeAgo.m in Sources */,
+				145E9D0C1D8A1DF00043F34F /* ReceiverProxyInfoCell.swift in Sources */,
 				14383B121D73802B0086CA6C /* Proxy.swift in Sources */,
 				14A6F1811D68D8160015431E /* SettingsItem.swift in Sources */,
 				145A4D321D84A6EC00BA64DC /* HomeTableViewController.swift in Sources */,
 				14E19A5E1D6148700030B366 /* LogInViewController.swift in Sources */,
 				1470F3A21D83FA9800E932A1 /* MyProxiesTableViewController.swift in Sources */,
 				14A6F18E1D6BDA880015431E /* Constants.swift in Sources */,
-				147B5C381D82736700D18C73 /* ProxyInfoHeaderCell.swift in Sources */,
+				147B5C381D82736700D18C73 /* SenderProxyInfoCell.swift in Sources */,
 				14A6F17F1D68D8020015431E /* SettingsItems.swift in Sources */,
+				145E9D0E1D8A3DDC0043F34F /* ConvoInfoTableViewControllerDelegate.swift in Sources */,
 				140E0D091D83544C00D68F71 /* ConvoCell.swift in Sources */,
 				14A6F17B1D68D5F20015431E /* SettingsViewController.swift in Sources */,
 				143F76FA1D72C0C100EF305F /* SelectProxyViewController.swift in Sources */,
@@ -474,8 +491,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -497,7 +516,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -520,8 +539,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -537,9 +558,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -549,12 +571,16 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D44F5C36773BB980E0E0A068 /* Pods-proxy.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = proxy/proxy.entitlements;
+				DEVELOPMENT_TEAM = 8UMN526X69;
 				INFOPLIST_FILE = proxy/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.quanvo.proxy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = proxy/Header.h;
+				SWIFT_VERSION = 2.3;
 			};
 			name = Debug;
 		};
@@ -562,12 +588,16 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 197B015D4173F5D5144C2ADC /* Pods-proxy.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = proxy/proxy.entitlements;
+				DEVELOPMENT_TEAM = 8UMN526X69;
 				INFOPLIST_FILE = proxy/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.quanvo.proxy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = proxy/Header.h;
+				SWIFT_VERSION = 2.3;
 			};
 			name = Release;
 		};
