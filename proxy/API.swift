@@ -95,8 +95,9 @@ class API {
     func decrementUnread(forUser user: String, byAmount amount: Int) {
         ref.child("unread").child(user).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
             if let unread = currentData.value {
-                let _unread = unread as? Int ?? 0
-                currentData.value = _unread - amount
+                var _unread = unread as? Int ?? 0
+                _unread -= amount
+                currentData.value = _unread > -1 ? _unread : 0
                 return FIRTransactionResult.successWithValue(currentData)
             }
             return FIRTransactionResult.successWithValue(currentData)
@@ -335,8 +336,9 @@ class API {
     func decrementUnread(forProxy proxy: String, forUser user: String, byAmount amount: Int) {
         ref.child("proxies").child(user).child(proxy).child("unread").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
             if let unread = currentData.value {
-                let _unread = unread as? Int ?? 0
-                currentData.value = _unread - amount
+                var _unread = unread as? Int ?? 0
+                _unread -= amount
+                currentData.value = _unread > -1 ? _unread : 0
                 return FIRTransactionResult.successWithValue(currentData)
             }
             return FIRTransactionResult.successWithValue(currentData)
@@ -624,8 +626,9 @@ class API {
     func decrementUnread(forConvo convo: String, forUser user: String, byAmount amount: Int) {
         ref.child("convos").child(user).child(convo).child("unread").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
             if let unread = currentData.value {
-                let _unread = unread as? Int ?? 0
-                currentData.value = _unread - amount
+                var _unread = unread as? Int ?? 0
+                _unread -= amount
+                currentData.value = _unread > -1 ? _unread : 0
                 return FIRTransactionResult.successWithValue(currentData)
             }
             return FIRTransactionResult.successWithValue(currentData)
@@ -657,8 +660,9 @@ class API {
     func decrementUnread(forConvo convo: String, underProxy proxy: String, byAmount amount: Int) {
         ref.child("convos").child(proxy).child(convo).child("unread").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
             if let unread = currentData.value {
-                let _unread = unread as? Int ?? 0
-                currentData.value = _unread - amount
+                var _unread = unread as? Int ?? 0
+                _unread -= amount
+                currentData.value = _unread > -1 ? _unread : 0
                 return FIRTransactionResult.successWithValue(currentData)
             }
             return FIRTransactionResult.successWithValue(currentData)

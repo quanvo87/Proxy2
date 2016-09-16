@@ -161,7 +161,6 @@ class ConvoInfoTableViewController: UITableViewController {
             let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.ReceiverProxyInfoCell, forIndexPath: indexPath) as! ReceiverProxyInfoCell
             cell.convo = convo
             cell.nicknameButton.addTarget(self, action: #selector(ConvoInfoTableViewController.showEditReceiverProxyNicknameAlert), forControlEvents: .TouchUpInside)
-            cell.accessoryType = .DisclosureIndicator
             return cell
             
         // Sender proxy info
@@ -172,7 +171,6 @@ class ConvoInfoTableViewController: UITableViewController {
                 cell.nicknameButton.addTarget(self, action: #selector(ConvoInfoTableViewController.showEditNicknameAlert), forControlEvents: .TouchUpInside)
                 cell.changeIconButton.addTarget(self, action: #selector(ConvoInfoTableViewController.showIconPickerCollectionViewController), forControlEvents: .TouchUpInside)
             }
-            cell.accessoryType = .DisclosureIndicator
             cell.selectionStyle = .Default
             return cell
             

@@ -110,6 +110,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         setTitle()
         navigationController!.view.backgroundColor = UIColor.whiteColor()
         navigationItem.rightBarButtonItem = createInfoButton()
+        collectionView.contentInset.bottom = 0
         collectionView?.collectionViewLayout.incomingAvatarViewSize = CGSize(width: kJSQMessagesCollectionViewAvatarSizeDefault, height:kJSQMessagesCollectionViewAvatarSizeDefault)
         collectionView?.collectionViewLayout.outgoingAvatarViewSize = CGSize(width: kJSQMessagesCollectionViewAvatarSizeDefault, height:kJSQMessagesCollectionViewAvatarSizeDefault)
         senderId = convo.senderId
@@ -155,6 +156,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
                     self.api.getMessage(withKey: self.messages[self.readReceiptIndex].key, inConvo: self.convo.key, completion: { (message) in
                         self.messages[self.readReceiptIndex] = message
                         self.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: self.readReceiptIndex, inSection: 0)])
+                        self.scrollToBottomAnimated(true)
                     })
                 }
             }
