@@ -54,8 +54,8 @@
         
     
     // < 1 minute = "Just now"
-    if(secondsSince < MINUTE)
-        return @"Just now";
+//    if(secondsSince < MINUTE)
+//        return @"Just now";
     
     
     // < 1 hour = "x minutes ago"

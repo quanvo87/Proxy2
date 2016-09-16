@@ -180,13 +180,13 @@ class API {
             if snapshot.childrenCount == 1 {
                 self.isCreatingProxy = false
                 completion(proxy: proxy)
-            } else {
-                self.delete(globalProxy: proxy)
-                if self.isCreatingProxy {
-                    self.tryCreating(proxy: { (proxy) in
-                        completion(proxy: proxy)
-                    })
-                }
+                return
+            }
+            self.delete(globalProxy: proxy)
+            if self.isCreatingProxy {
+                self.tryCreating(proxy: { (proxy) in
+                    completion(proxy: proxy)
+                })
             }
         })
     }
@@ -224,7 +224,7 @@ class API {
         isCreatingProxy = false
     }
     
-    /// Returns the user's proxy struct using its key.
+    /// Returns the user's proxy struct.
     func getProxy(withKey key: String, ofUser user: String, completion: (proxy: Proxy?) -> Void) {
         ref.child("proxies").child(user).child(key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
             let proxy = Proxy(anyObject: snapshot.value!)
@@ -238,8 +238,8 @@ class API {
             completion(URL: URL)
         } else {
             let storageRef = FIRStorage.storage().referenceForURL(URLs.Storage)
-            let starsRef = storageRef.child("\(icon).png")
-            starsRef.downloadURLWithCompletion { (URL, error) -> Void in
+            let iconRef = storageRef.child("\(icon).png")
+            iconRef.downloadURLWithCompletion { (URL, error) -> Void in
                 if error == nil, let URL = URL?.absoluteString {
                     self.iconURLCache[icon] = URL
                     completion(URL: URL)
@@ -297,7 +297,6 @@ class API {
     
     /// Updates the proxy's `icon`.
     func update(icon icon: String, forProxy proxy: Proxy) {
-        
         /// Global proxy list
         ref.child("proxies").child(proxy.globalKey).child("icon").setValue(icon)
         
@@ -305,13 +304,12 @@ class API {
         ref.child("proxies").child(proxy.owner).child(proxy.key).child("icon").setValue(icon)
         
         /// Receiver's side of all convos this proxy is in
-        ref.child("convos").child(proxy.key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            for child in snapshot.children {
-                let convo = Convo(anyObject: child.value)
+        getConvos(forProxy: proxy) { (convos) in
+            for convo in convos {
                 self.ref.child("convos").child(convo.receiverId).child(convo.key).child("icon").setValue(icon)
                 self.ref.child("convos").child(convo.receiverProxy).child(convo.key).child("icon").setValue(icon)
             }
-        })
+        }
     }
     
     /// Updates the proxy's `timestamp`.
@@ -350,7 +348,7 @@ class API {
         ref.child("proxies").child(proxy.globalKey).removeValue()
     }
     
-    /// Deletes the proxy it's side of the convos it's in.
+    /// Deletes the proxy and it's side of the convos it's in.
     func delete(proxy proxy: Proxy) {
         getConvos(forProxy: proxy) { (convos) in
             self.delete(proxy: proxy, withConvos: convos)
@@ -363,7 +361,6 @@ class API {
     /// (The actual user is not notified.)
     /// Decrement's user's unread by the remaining unread in the proxy.
     func delete(proxy proxy: Proxy, withConvos convos: [Convo]) {
-        
         /// Loop through all convos this proxy is in
         for convo in convos {
             
@@ -415,7 +412,6 @@ class API {
                 /// Existing convo found, use it to send the message
                 if snapshot.childrenCount == 1 {
                     let convo = Convo(anyObject: snapshot.value!)
-                    
                     self.send(messageWithText: text, usingSenderConvo: convo, completion: { (convo) in
                         completion(error: nil, convo: convo)
                     })
@@ -497,9 +493,8 @@ class API {
     ///
     /// Returns the sender's convo.
     func send(messageWithText text: String, usingSenderConvo convo: Convo, completion: (convo: Convo) -> Void) {
-        userPresent(user: convo.receiverId, convo: convo.key) { (userPresent) in
-            print(userPresent)
-            let increment = userPresent == true ? 0 : 1
+        userIsPresent(user: convo.receiverId, convo: convo.key) { (userIsPresent) in
+            let increment = userIsPresent ? 0 : 1
             let timestamp = NSDate().timeIntervalSince1970
             
             /// Sender updates
@@ -526,9 +521,8 @@ class API {
             
             /// Write message
             let messageKey = self.ref.child("messages").child(convo.key).childByAutoId().key
-            let timeRead = userPresent == true ? timestamp : 0.0
-            let message = Message(key: messageKey, convo: convo.key, read: userPresent, timeRead: timeRead, senderId: convo.senderId, date: timestamp, text: text)
-            print(message)
+            let timeRead = userIsPresent ? timestamp : 0.0
+            let message = Message(key: messageKey, convo: convo.key, read: userIsPresent, timeRead: timeRead, senderId: convo.senderId, date: timestamp, text: text)
             self.save(message: message)
             
             completion(convo: _convo)
@@ -540,17 +534,24 @@ class API {
         ref.child("messages").child(message.convo).child(message.key).setValue(message.toAnyObject())
     }
     
-    /// Sets the message's `unread` to true and gives it a current `timeRead`.
+    /// Sets the message's `read` to true and gives it a current `timeRead`.
     func setRead(forMessage message: Message) {
         ref.child("messages").child(message.convo).child(message.key).child("read").setValue(true)
         ref.child("messages").child(message.convo).child(message.key).child("timeRead").setValue(NSDate().timeIntervalSince1970)
     }
     
+    /// Return the message with the corresponding key.
+    func getMessage(withKey messageKey: String, inConvo convoKey: String, completion: (message: Message) -> Void) {
+        ref.child("messages").child(convoKey).child(messageKey).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            completion(message: Message(anyObject: snapshot.value!))
+        })
+    }
+    
     // MARK: - Conversation (Convo)
     /// Returns a Bool indicating whether or not a user is in a convo.
-    func userPresent(user user: String, convo: String, completion: (userPresent: Bool) -> Void) {
+    func userIsPresent(user user: String, convo: String, completion: (userIsPresent: Bool) -> Void) {
         ref.child("present").child(convo).child(user).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            completion(userPresent: snapshot.value as? Bool ?? false)
+            completion(userIsPresent: snapshot.value as? Bool ?? false)
         })
     }
     
