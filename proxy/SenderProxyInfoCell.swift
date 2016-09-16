@@ -50,13 +50,11 @@ class SenderProxyInfoCell: UITableViewCell {
     func observeNickname() {
         nicknameRef = ref.child("proxies").child(proxy.owner).child(proxy.key).child("nickname")
         nicknameRefHandle = nicknameRef.observeEventType(.Value, withBlock: { (snapshot) in
-            if let nickname = snapshot.value as? String {
-                if nickname != "" {
-                    self.nicknameButton.setTitle(nickname, forState: .Normal)
-                    return
-                }
+            if let nickname = snapshot.value as? String where nickname != "" {
+                self.nicknameButton.setTitle(nickname, forState: .Normal)
+            } else {
+                self.nicknameButton.setTitle("Enter A Nickname", forState: .Normal)
             }
-            self.nicknameButton.setTitle("Enter A Nickname", forState: .Normal)
         })
     }
 }

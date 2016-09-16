@@ -37,6 +37,8 @@ class MyProxiesTableViewController: UITableViewController, NewMessageViewControl
         setUp()
         observeUnread()
         observeProxies()
+        
+        // In case user creates a proxy from the Home VC, scroll this VC to top
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(MyProxiesTableViewController.scrollToTop), name: Notifications.CreatedNewProxyFromHomeTab, object: nil)
     }
     
@@ -60,7 +62,6 @@ class MyProxiesTableViewController: UITableViewController, NewMessageViewControl
         confirmDeleteProxiesButton = createConfirmDeleteProxiesButton()
         cancelDeleteProxiesButton = createCancelDeleteProxiesButton()
         setDefaultButtons()
-        edgesForExtendedLayout = .All
         tableView.rowHeight = 80
         tableView.estimatedRowHeight = 80
         tableView.separatorStyle = .None
@@ -148,6 +149,7 @@ class MyProxiesTableViewController: UITableViewController, NewMessageViewControl
     }
     
     // MARK: - Database
+    // Observe unread for the user to keep the title updated.
     func observeUnread() {
         unreadRef = ref.child("unread").child(api.uid)
         unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { snapshot in
@@ -157,6 +159,7 @@ class MyProxiesTableViewController: UITableViewController, NewMessageViewControl
         })
     }
     
+    // Observe proxies for this user to display in this VC.
     func observeProxies() {
         proxiesRef = ref.child("proxies").child(api.uid)
         proxiesRefHandle = proxiesRef.queryOrderedByChild("timestamp").observeEventType(.Value, withBlock: { snapshot in

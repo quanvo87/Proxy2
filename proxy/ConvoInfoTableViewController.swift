@@ -14,7 +14,7 @@ class ConvoInfoTableViewController: UITableViewController {
     let ref = FIRDatabase.database().reference()
     var convo = Convo()
     var senderProxy: Proxy?
-    var delegate: ConvoInfoTableViewControllerDelegate?
+    var delegate: ConvoInfoTableViewControllerDelegate!
     
     var receiverNicknameRef = FIRDatabaseReference()
     var receiverNicknameRefHandle = FIRDatabaseHandle()
@@ -32,19 +32,23 @@ class ConvoInfoTableViewController: UITableViewController {
     
     func setUp() {
         navigationItem.title = "Conversation"
-        edgesForExtendedLayout = .All
-        tableView.contentInset = UIEdgeInsetsMake(0, 0, CGRectGetHeight(self.tabBarController!.tabBar.frame), 0)
+        
+        // So buttons inside cells detect touches immediately (there's a delay on by default)
         tableView.delaysContentTouches = false
         for case let scrollView as UIScrollView in tableView.subviews {
             scrollView.delaysContentTouches = false
         }
+        
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: Identifiers.BasicCell)
+        
+        // Get's the user's proxy for the user proxy cell
         api.getProxy(withKey: convo.senderProxy, ofUser: convo.senderId, completion: { (proxy) in
             self.senderProxy = proxy
             self.tableView.reloadSections(NSIndexSet(index: 1), withRowAnimation: .Automatic)
         })
     }
     
+    // Keep receiver nickname updated
     func observeReceiverNickname() {
         receiverNicknameRef = ref.child("convos").child(convo.senderId).child(convo.key).child("receiverNickname")
         receiverNicknameRefHandle = receiverNicknameRef.observeEventType(.Value, withBlock: { (snapshot) in
@@ -54,6 +58,7 @@ class ConvoInfoTableViewController: UITableViewController {
         })
     }
     
+    // Dismiss keyboard when scroll table view down
     override func scrollViewWillBeginDragging(scrollView: UIScrollView) {
         view.endEditing(true)
     }
@@ -238,12 +243,12 @@ class ConvoInfoTableViewController: UITableViewController {
         return UITableViewCell()
     }
     
-    // Show alert for user to edit the receiver proxy's nickname for this convo.
+    // Show alert for user to edit the receiver's nickname that they see for this convo.
     func showEditReceiverProxyNicknameAlert() {
         let alert = UIAlertController(title: "Edit Receiver's Nickname", message: "Only you see this nickname.", preferredStyle: .Alert)
         alert.addTextFieldWithConfigurationHandler({ (textField) -> Void in
-            textField.autocorrectionType = .Yes
             textField.autocapitalizationType = .Sentences
+            textField.autocorrectionType = .Yes
             textField.clearButtonMode = .WhileEditing
             textField.placeholder = "Enter A Nickname"
             if let receiverNickname = self.receiverNickname {
@@ -267,8 +272,8 @@ class ConvoInfoTableViewController: UITableViewController {
     func showEditNicknameAlert() {
         let alert = UIAlertController(title: "Edit Nickname", message: "Only you see your nickname.", preferredStyle: .Alert)
         alert.addTextFieldWithConfigurationHandler({ (textField) -> Void in
-            textField.autocorrectionType = .Yes
             textField.autocapitalizationType = .Sentences
+            textField.autocorrectionType = .Yes
             textField.clearButtonMode = .WhileEditing
             textField.placeholder = "Enter A Nickname"
             textField.text = self.senderProxy?.nickname
@@ -305,7 +310,7 @@ class ConvoInfoTableViewController: UITableViewController {
     }
     
     // Show alert for user to confirm they want to leave this convo.
-    // Leave the convo and pop VC if they say yes.
+    // Leave the convo and pop this VC if they say yes.
     func showLeaveConvoAlert() {
         let alert = UIAlertController(title: "Leave Conversation?", message: "The other user will not be notified.", preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: "Leave", style: .Destructive, handler: { (void) in

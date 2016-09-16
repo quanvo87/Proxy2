@@ -39,7 +39,6 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(true)
-//        tabBarController?.tabBar.hidden = false
         showNewConvo()
     }
     
@@ -53,6 +52,8 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     func setUp() {
         addNavBarButtons()
         tableView.separatorStyle = .None
+        
+        // So buttons inside cells detect touches immediately (there's a delay on by default)
         tableView.delaysContentTouches = false
         for case let scrollView as UIScrollView in tableView.subviews {
             scrollView.delaysContentTouches = false
@@ -73,16 +74,6 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         let deleteProxyBarButton = UIBarButtonItem(customView: deleteProxyButton)
         
         self.navigationItem.rightBarButtonItems = [newMessageBarButton, deleteProxyBarButton]
-    }
-    
-    func showNewConvo() {
-        if shouldShowNewConvo {
-            let convoViewController = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.ConvoViewController) as! ConvoViewController
-            convoViewController.convo = convo
-            convoViewController.hidesBottomBarWhenPushed = true
-            shouldShowNewConvo = false
-            self.navigationController!.pushViewController(convoViewController, animated: true)
-        }
     }
     
     // MARK: - Database
@@ -119,6 +110,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         })
     }
     
+    // Dismiss keyboard when scroll table view down
     override func scrollViewWillBeginDragging(scrollView: UIScrollView) {
         view.endEditing(true)
     }
@@ -212,11 +204,11 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     func showEditNicknameAlert() {
         let alert = UIAlertController(title: "Edit Nickname", message: "Only you see your nickname.", preferredStyle: .Alert)
         alert.addTextFieldWithConfigurationHandler({ (textField) -> Void in
+            textField.autocapitalizationType = .Sentences
+            textField.autocorrectionType = .Yes
+            textField.clearButtonMode = .WhileEditing
             textField.placeholder = "Enter A Nickname"
             textField.text = self.nickname
-            textField.autocorrectionType = .Yes
-            textField.autocapitalizationType = .Sentences
-            textField.clearButtonMode = .WhileEditing
         })
         alert.addAction(UIAlertAction(title: "Save", style: .Default, handler: { (action) -> Void in
             let nickname = alert.textFields![0].text
@@ -233,6 +225,15 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     func showNewConvo(convo: Convo) {
         self.convo = convo
         shouldShowNewConvo = true
+    }
+    
+    func showNewConvo() {
+        if shouldShowNewConvo {
+            let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.ConvoViewController) as! ConvoViewController
+            dest.convo = convo
+            shouldShowNewConvo = false
+            self.navigationController!.pushViewController(dest, animated: true)
+        }
     }
     
     // MARK: - Navigation

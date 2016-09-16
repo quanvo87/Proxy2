@@ -38,8 +38,8 @@ class HomeTableViewController: UITableViewController, NewMessageViewControllerDe
         checkLogInStatus()
     }
     
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(true)
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(true)
         showNewConvo()
     }
     
@@ -228,7 +228,6 @@ class HomeTableViewController: UITableViewController, NewMessageViewControllerDe
         if shouldShowConvo {
             let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.ConvoViewController) as! ConvoViewController
             dest.convo = convo
-            dest.hidesBottomBarWhenPushed = true
             shouldShowConvo = false
             self.navigationController!.pushViewController(dest, animated: true)
         }

@@ -37,19 +37,27 @@ class IconPickerCollectionViewController: UICollectionViewController {
     func setUp() {
         navigationItem.title = "Select An Icon"
         setUpCancelButton()
+        collectionView?.backgroundColor = UIColor.whiteColor()
+        
+        // Set up cells
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.itemSize = CGSizeMake(60, 90)
         collectionView?.setCollectionViewLayout(flowLayout, animated: true)
+        
+        // So buttons inside cells detect touches immediately (there's a delay on by default)
         collectionView!.delaysContentTouches = false
         for case let scrollView as UIScrollView in collectionView!.subviews {
             scrollView.delaysContentTouches = false
         }
-        collectionView?.backgroundColor = UIColor.whiteColor()
     }
     
     func setUpCancelButton() {
         let cancelButton = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(IconPickerCollectionViewController.closeIconPicker))
         navigationItem.rightBarButtonItem = cancelButton
+    }
+    
+    func closeIconPicker() {
+        navigationController?.popViewControllerAnimated(true)
     }
     
     func observeIcons() {
@@ -86,10 +94,6 @@ class IconPickerCollectionViewController: UICollectionViewController {
     
     override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         api.update(icon: icons[indexPath.row], forProxy: proxy)
-        navigationController?.popViewControllerAnimated(true)
-    }
-    
-    func closeIconPicker() {
         navigationController?.popViewControllerAnimated(true)
     }
 }
