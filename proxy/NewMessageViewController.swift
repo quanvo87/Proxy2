@@ -47,6 +47,12 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
     
     func setUpUI() {
         navigationItem.title = "New Message"
+        setUpCancelButton()
+    }
+    
+    func setUpCancelButton() {
+        let cancelButton = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(NewMessageViewController.closeNewMessage))
+        navigationItem.rightBarButtonItem = cancelButton
     }
     
     /*
@@ -208,20 +214,18 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
     }
     
     // MARK: - Navigation
+    @IBAction func showSelectProxyViewController(sender: AnyObject) {
+        let dest = self.storyboard?.instantiateViewControllerWithIdentifier(Identifiers.SelectProxyViewController) as! SelectProxyViewController
+        dest.delegate = self
+        navigationController?.pushViewController(dest, animated: true)
+    }
     
-    @IBAction func tapCancelButton(sender: AnyObject) {
-        view.endEditing(true)
+    func closeNewMessage() {
+//        view.endEditing(true)
         if createdNewProxy && !savingNewProxy {
             api.cancelCreating(proxy: proxy!)
         }
         navigationController?.popViewControllerAnimated(true)
-    }
-    
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == Segues.SelectProxySegue,
-            let dest = segue.destinationViewController as? SelectProxyViewController {
-            dest.delegate = self
-        }
     }
     
     func goToConvo(convo: Convo) {

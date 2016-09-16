@@ -79,12 +79,12 @@ class API {
         })
     }
     
-    /// Increments the user's `unread`.
-    func incrementUnread(forUser user: String) {
+    /// Increments the user's `unread` by `amount`.
+    func incrementUnread(forUser user: String, byAmount amount: Int) {
         self.ref.child("unread").child(user).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
             if let unread = currentData.value {
                 let _unread = unread as? Int ?? 0
-                currentData.value = _unread + 1
+                currentData.value = _unread + amount
                 return FIRTransactionResult.successWithValue(currentData)
             }
             return FIRTransactionResult.successWithValue(currentData)
@@ -320,11 +320,11 @@ class API {
     }
     
     /// Updates the proxy's `unread` & `timestamp`.
-    func update(proxy proxy: String, forUser user: String, withTimestamp timestamp: Double) {
+    func update(proxy proxy: String, forUser user: String, withUnreadIncrement increment: Int, withTimestamp timestamp: Double) {
         self.ref.child("proxies").child(user).child(proxy).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
             if var proxy = currentData.value as? [String: AnyObject] {
                 let unread = proxy["unread"] as? Int ?? 0
-                proxy["unread"] = unread + 1
+                proxy["unread"] = unread + increment
                 proxy["timestamp"] = timestamp
                 currentData.value = proxy
                 return FIRTransactionResult.successWithValue(currentData)
@@ -430,7 +430,7 @@ class API {
     }
     
     /// Creates a different convo struct for each user.
-    /// Checks if sender is blocked by receiver. 
+    /// Checks if sender is blocked by receiver.
     /// Saves the convo structs.
     /// Increments both users' `proxiesInteractedWith`.
     /// Sends off to `sendMessage`.
@@ -480,7 +480,7 @@ class API {
     ///     - sender `proxy`
     ///     - sender `messagesSent`
     ///
-    ///     if !convo.receiverDeletedProxy && !convo.receiverIsBlocking
+    ///     if !convo.receiverDeletedProxy && !convo.receiverIsBlocking && !
     ///     - receiver `unread`
     ///     - receiver `proxy`
     ///
@@ -489,41 +489,50 @@ class API {
     ///     - receiver proxy `convo`
     ///     - receiver `messagesReceived`
     ///
+    ///     if receiver present
+    ///     - set message to read
+    ///     - set unread increment to 0
+    ///
     ///     - message
     ///
     /// Returns the sender's convo.
     func send(messageWithText text: String, usingSenderConvo convo: Convo, completion: (convo: Convo) -> Void) {
-        
-        let timestamp = NSDate().timeIntervalSince1970
-        
-        /// Write message
-        let messageKey = self.ref.child("messages").child(convo.key).childByAutoId().key
-        let _message = Message(key: messageKey, convo: convo.key, senderId: convo.senderId, date: timestamp, text: text)
-        save(message: _message)
-        
-        /// Sender updates
-        var _convo = convo
-        _convo.message = "you: " + text
-        _convo.timestamp = timestamp
-        _convo.didLeaveConvo = false
-        update(convo: _convo)
-        update(proxyConvo: _convo)
-        update(timestamp: timestamp, forProxy: convo.senderProxy, forUser: convo.senderId)
-        incrementMessagesSent(forUser: convo.senderId)
-        
-        /// Receiver updates
-        if !convo.receiverDeletedProxy && !convo.receiverIsBlocking {
-            incrementUnread(forUser: convo.receiverId)
-            update(proxy: convo.receiverProxy, forUser: convo.receiverId, withTimestamp: timestamp)
+        userPresent(user: convo.receiverId, convo: convo.key) { (userPresent) in
+            print(userPresent)
+            let increment = userPresent == true ? 0 : 1
+            let timestamp = NSDate().timeIntervalSince1970
+            
+            /// Sender updates
+            var _convo = convo
+            _convo.message = "You: " + text
+            _convo.timestamp = timestamp
+            _convo.didLeaveConvo = false
+            self.update(convo: _convo)
+            self.update(proxyConvo: _convo)
+            self.update(timestamp: timestamp, forProxy: convo.senderProxy, forUser: convo.senderId)
+            self.incrementMessagesSent(forUser: convo.senderId)
+            
+            /// Receiver updates
+            if !convo.receiverDeletedProxy && !convo.receiverIsBlocking {
+                self.incrementUnread(forUser: convo.receiverId, byAmount: increment)
+                self.update(proxy: convo.receiverProxy, forUser: convo.receiverId, withUnreadIncrement: increment, withTimestamp: timestamp)
+            }
+            
+            if !convo.receiverDeletedProxy {
+                self.update(convo: convo.key, forUser: convo.receiverId, withUnreadIncrement: increment, withMessage: text, withTimestamp: timestamp)
+                self.update(proxyConvo: convo.key, forProxy: convo.receiverProxy, withUnreadIncrement: increment, withMessage: text, withTimestamp: timestamp)
+                self.incrementMessagesReceived(forUser: convo.receiverId)
+            }
+            
+            /// Write message
+            let messageKey = self.ref.child("messages").child(convo.key).childByAutoId().key
+            let timeRead = userPresent == true ? timestamp : 0.0
+            let message = Message(key: messageKey, convo: convo.key, read: userPresent, timeRead: timeRead, senderId: convo.senderId, date: timestamp, text: text)
+            print(message)
+            self.save(message: message)
+            
+            completion(convo: _convo)
         }
-        
-        if !convo.receiverDeletedProxy {
-            update(convo: convo.key, forUser: convo.receiverId, withMessage: text, withTimestamp: timestamp)
-            update(proxyConvo: convo.key, forProxy: convo.receiverProxy, withMessage: text, withTimestamp: timestamp)
-            incrementMessagesReceived(forUser: convo.receiverId)
-        }
-        
-        completion(convo: _convo)
     }
     
     /// Saves the message.
@@ -538,6 +547,13 @@ class API {
     }
     
     // MARK: - Conversation (Convo)
+    /// Returns a Bool indicating whether or not a user is in a convo.
+    func userPresent(user user: String, convo: String, completion: (userPresent: Bool) -> Void) {
+        ref.child("present").child(convo).child(user).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            completion(userPresent: snapshot.value as? Bool ?? false)
+        })
+    }
+    
     /// Returns the convos that the given proxy is in.
     func getConvos(forProxy proxy: Proxy, completion: (convos: [Convo]) -> Void) {
         ref.child("convos").child(proxy.key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
@@ -567,7 +583,7 @@ class API {
     
     /// Sets `didLeaveConvo` to true for the user's convo and proxy convo.
     /// Sets the convos' `unread` to 0.
-    /// Decrements the user's `unread` and proxy's `unread` by the convo's unread.
+    /// Decrements the user's `unread` and proxy's `unread` by the convo's original unread.
     func leave(convo convo: Convo) {
         var _convo = convo
         _convo.didLeaveConvo = true
@@ -588,11 +604,11 @@ class API {
     }
     
     /// Updates the convo's `unread`, `message`, `timestamp`, & `didLeaveConvo`.
-    func update(convo convo: String, forUser user: String, withMessage message: String, withTimestamp timestamp: Double) {
+    func update(convo convo: String, forUser user: String, withUnreadIncrement increment: Int, withMessage message: String, withTimestamp timestamp: Double) {
         self.ref.child("convos").child(user).child(convo).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
             if var convo = currentData.value as? [String: AnyObject] {
                 let unread = convo["unread"] as? Int ?? 0
-                convo["unread"] = unread + 1
+                convo["unread"] = unread + increment
                 convo["message"] = message
                 convo["timestamp"] = timestamp
                 convo["didLeaveConvo"] = false
@@ -621,11 +637,11 @@ class API {
     }
     
     /// Updates the proxy convo's `unread`, `message`, `timestamp`, & `didLeaveConvo`.
-    func update(proxyConvo convo: String, forProxy proxy: String, withMessage message: String, withTimestamp timestamp: Double) {
+    func update(proxyConvo convo: String, forProxy proxy: String, withUnreadIncrement increment: Int, withMessage message: String, withTimestamp timestamp: Double) {
         self.ref.child("convos").child(proxy).child(convo).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
             if var convo = currentData.value as? [String: AnyObject] {
                 let unread = convo["unread"] as? Int ?? 0
-                convo["unread"] = unread + 1
+                convo["unread"] = unread + increment
                 convo["message"] = message
                 convo["timestamp"] = timestamp
                 convo["didLeaveConvo"] = false

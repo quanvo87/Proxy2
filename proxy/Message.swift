@@ -15,9 +15,11 @@ class Message: JSQMessage {
     var read = false
     var timeRead = 0.0
     
-    init(key: String, convo: String, senderId: String, date: Double, text: String) {
+    init(key: String, convo: String, read: Bool, timeRead: Double, senderId: String, date: Double, text: String) {
         self.key = key
         self.convo = convo
+        self.read = read
+        self.timeRead = timeRead
         super.init(senderId: senderId, senderDisplayName: "", date: NSDate(timeIntervalSince1970: date), text: text)
     }
     

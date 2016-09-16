@@ -37,7 +37,7 @@ class MyProxiesTableViewController: UITableViewController, NewMessageViewControl
         setUp()
         observeUnread()
         observeProxies()
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(MyProxiesTableViewController.scrollToTop), name: Notifications.CreateNewProxyFromHomeTab, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(MyProxiesTableViewController.scrollToTop), name: Notifications.CreatedNewProxyFromHomeTab, object: nil)
     }
     
     override func viewDidAppear(animated: Bool) {

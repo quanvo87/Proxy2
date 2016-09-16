@@ -17,9 +17,6 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     var unreadReceiptIndex = 0
     var _didLeaveConvo = false
     
-    var unreadRef = FIRDatabaseReference()
-    var unreadRefHandle = FIRDatabaseHandle()
-    
     var senderNicknameRef = FIRDatabaseReference()
     var senderNicknameRefHandle = FIRDatabaseHandle()
     var receiverNicknameRef = FIRDatabaseReference()
@@ -41,9 +38,28 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     var userTypingRef = FIRDatabaseReference()
     var userTyping = false {
         didSet {
-            userTypingRef.setValue(userTyping)
+            if userTyping {
+                userTypingRef.setValue(userTyping)
+            } else {
+                userTypingRef.removeValue()
+            }
         }
     }
+    
+    var senderPresentSetUp = false
+    var senderPresentRef = FIRDatabaseReference()
+    var senderPresent = false {
+        didSet {
+            if senderPresent {
+                senderPresentRef.setValue(senderPresent)
+            } else {
+                senderPresentRef.removeValue()
+            }
+        }
+    }
+    
+    var receiverPresentRef = FIRDatabaseReference()
+    var receiverPresentRefHandle = FIRDatabaseHandle()
     
     var incomingBubble: JSQMessagesBubbleImage!
     var outgoingBubble: JSQMessagesBubbleImage!
@@ -51,6 +67,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     override func viewDidLoad() {
         super.viewDidLoad()
         setUp()
+        setUpSenderPresent()
         observeSenderNickname()
         observerRecieverNickname()
         setUpBubbles()
@@ -58,29 +75,34 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         observeReceiverIcon()
         observeMessages()
         observeTyping()
-        observeUnread()
+        observeReceiverPresent()
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(true)
+        if senderPresentSetUp {
+            senderPresent = true
+        }
         self.tabBarController?.tabBar.hidden = true
+        decrementUnread()
         leaveConvo()
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(true)
+        senderPresent = false
         self.tabBarController?.tabBar.hidden = false
-        userTypingRef.removeValue()
+        userTyping = false
     }
     
     deinit {
-        unreadRef.removeObserverWithHandle(unreadRefHandle)
         senderNicknameRef.removeObserverWithHandle(senderNicknameRefHandle)
         receiverNicknameRef.removeObserverWithHandle(receiverNicknameRefHandle)
         senderIconRef.removeObserverWithHandle(senderIconRefHandle)
         receiverIconRef.removeObserverWithHandle(receiverIconRefHandle)
         messagesRef.removeObserverWithHandle(messagesRefHandle)
         membersTypingRef.removeObserverWithHandle(membersTypingRefHandle)
+        receiverPresentRef.removeObserverWithHandle(receiverPresentRefHandle)
     }
     
     // MARK: - Set up
@@ -115,6 +137,14 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     }
     
     // MARK: - Database
+    // Set user as present in the convo
+    func setUpSenderPresent() {
+        senderPresentRef = ref.child("present").child(convo.key).child(convo.senderId)
+        senderPresentRef.onDisconnectRemoveValue()
+        senderPresentSetUp = true
+        senderPresent = true
+    }
+    
     // Observe sender's nickname
     func observeSenderNickname() {
         senderNicknameRef = ref.child("proxies").child(convo.senderId).child(convo.senderProxy).child("nickname")
@@ -179,13 +209,10 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     }
     
     // Upon entering the convo, decrement user's, convo's, proxy convo's, and proxy's
-    // unread by this convo's unread count.
-    // Upon further increments to this convo's unread count,
-    // decrement those unread counts again by that increment.
-    func observeUnread() {
-        unreadRef = ref.child("convos").child(convo.senderId).child(convo.key).child("unread")
-        unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
-            if let unread = snapshot.value as? Int where unread != 0 {
+    // unread by this convo's unread count
+    func decrementUnread() {
+        ref.child("convos").child(convo.senderId).child(convo.key).child("unread").observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            if let unread = snapshot.value as? Int where unread > 0 {
                 self.api.decrementAllUnreadFor(convo: self.convo, byAmount: unread)
             }
         })
@@ -204,6 +231,18 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
             }
             self.showTypingIndicator = snapshot.childrenCount > 0
             self.scrollToBottomAnimated(true)
+        })
+    }
+    
+    func observeReceiverPresent() {
+        receiverPresentRef = ref.child("present").child(convo.key).child(convo.receiverId)
+        receiverPresentRefHandle = receiverPresentRef.observeEventType(.Value, withBlock: { (snapshot) in
+            let present = snapshot.value as? Bool ?? false
+            if present {
+                self.collectionView.reloadData()
+//                let indexPath = NSIndexPath(forItem: self.messages.count - 1, inSection: 0)
+//                self.collectionView.reloadItemsAtIndexPaths([indexPath])
+            }
         })
     }
     
@@ -348,8 +387,9 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     // Write the message to the database when user taps send
     override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: NSDate!) {
         api.send(messageWithText: text, usingSenderConvo: convo) { (convo) in
-            JSQSystemSoundPlayer.jsq_playMessageSentSound()
             self.finishSendingMessage()
+            JSQSystemSoundPlayer.jsq_playMessageSentSound()
+            self.userTyping = false
         }
     }
     

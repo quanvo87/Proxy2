@@ -155,7 +155,7 @@ class HomeTableViewController: UITableViewController, NewMessageViewControllerDe
     func createNewProxy() {
         api.create { (proxy) in
             self.api.save(proxy: proxy!, withNickname: "")
-            NSNotificationCenter.defaultCenter().postNotificationName(Notifications.CreateNewProxyFromHomeTab, object: nil)
+            NSNotificationCenter.defaultCenter().postNotificationName(Notifications.CreatedNewProxyFromHomeTab, object: nil)
             self.tabBarController?.selectedIndex = 1
         }
     }
@@ -244,7 +244,6 @@ class HomeTableViewController: UITableViewController, NewMessageViewControllerDe
     func showConvo(convo: Convo) {
         let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.ConvoViewController) as! ConvoViewController
         dest.convo = convo
-        print(convo)
         navigationController!.pushViewController(dest, animated: true)
     }
 }

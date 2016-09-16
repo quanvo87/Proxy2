@@ -135,7 +135,7 @@ class ConvoInfoTableViewController: UITableViewController {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         switch indexPath.section {
         case 1:
-            showProxyInfoViewController()
+            showProxyInfoTableViewController()
         case 3:
             switch indexPath.row {
             case 0:
@@ -165,7 +165,7 @@ class ConvoInfoTableViewController: UITableViewController {
             if let senderProxy = senderProxy {
                 cell.proxy = senderProxy
                 cell.nicknameButton.addTarget(self, action: #selector(ConvoInfoTableViewController.showEditNicknameAlert), forControlEvents: .TouchUpInside)
-                cell.changeIconButton.addTarget(self, action: #selector(ConvoInfoTableViewController.showIconPickerViewController), forControlEvents: .TouchUpInside)
+                cell.changeIconButton.addTarget(self, action: #selector(ConvoInfoTableViewController.showIconPickerCollectionViewController), forControlEvents: .TouchUpInside)
             }
             cell.accessoryType = .DisclosureIndicator
             cell.selectionStyle = .Default
@@ -285,8 +285,8 @@ class ConvoInfoTableViewController: UITableViewController {
     }
     
     // MARK: - Navigation
-    // Show VC to choose a new icon for the user's proxy.
-    func showIconPickerViewController() {
+    // Show the Icon Picker so user can choose a new icon for this proxy.
+    func showIconPickerCollectionViewController() {
         api.getConvos(forProxy: senderProxy!) { (convos) in
             let dest = self.storyboard?.instantiateViewControllerWithIdentifier(Identifiers.IconPickerCollectionViewController) as! IconPickerCollectionViewController
             dest.proxy = self.senderProxy!
@@ -295,8 +295,8 @@ class ConvoInfoTableViewController: UITableViewController {
         }
     }
     
-    // Show the proxy info view controller.
-    func showProxyInfoViewController() {
+    // Show the Proxy Info for this proxy.
+    func showProxyInfoTableViewController() {
         if let senderProxy = senderProxy {
             let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.ProxyInfoTableViewController) as! ProxyInfoTableViewController
             dest.proxy = senderProxy

@@ -19,7 +19,6 @@ struct Identifiers {
     static let TabBarController = "Tab Bar Controller"
     static let LogInViewController = "Log In View Controller"
     
-    static let NewMessageViewController = "New Message View Controller"
     static let ConvoViewController = "Convo View Controller"
     static let ConvoInfoTableViewController = "Convo Info Table View Controller"
     static let ConvoCell = "Convo Cell"
@@ -32,15 +31,12 @@ struct Identifiers {
     static let IconPickerCollectionViewController = "Icon Picker Collection View Controller"
     static let IconPickerCell = "Icon Picker Cell"
     
+    static let NewMessageViewController = "New Message View Controller"
+    static let SelectProxyViewController = "Select Proxy View Controller"
+    
     static let BasicCell = "Basic Cell"
 }
 
-struct Segues {
-    static let NewMessageSegue = "New Message Segue"
-    static let SelectProxySegue = "Select Proxy Segue"
-    static let ProxyInfoSegue = "Proxy Info Segue"
-}
-
 struct Notifications {
-    static let CreateNewProxyFromHomeTab = "Create New Proxy From Home Tab"
+    static let CreatedNewProxyFromHomeTab = "Created New Proxy From Home Tab"
 }

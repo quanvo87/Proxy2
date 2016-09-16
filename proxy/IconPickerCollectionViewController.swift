@@ -36,7 +36,7 @@ class IconPickerCollectionViewController: UICollectionViewController {
     
     func setUp() {
         navigationItem.title = "Select An Icon"
-        
+        setUpCancelButton()
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.itemSize = CGSizeMake(60, 90)
         collectionView?.setCollectionViewLayout(flowLayout, animated: true)
@@ -45,6 +45,11 @@ class IconPickerCollectionViewController: UICollectionViewController {
             scrollView.delaysContentTouches = false
         }
         collectionView?.backgroundColor = UIColor.whiteColor()
+    }
+    
+    func setUpCancelButton() {
+        let cancelButton = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(IconPickerCollectionViewController.closeIconPicker))
+        navigationItem.rightBarButtonItem = cancelButton
     }
     
     func observeIcons() {
@@ -84,7 +89,7 @@ class IconPickerCollectionViewController: UICollectionViewController {
         navigationController?.popViewControllerAnimated(true)
     }
     
-    @IBAction func tapCancelButton(sender: AnyObject) {
+    func closeIconPicker() {
         navigationController?.popViewControllerAnimated(true)
     }
 }

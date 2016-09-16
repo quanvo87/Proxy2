@@ -7,36 +7,27 @@
 //
 
 extension UIView {
-    // Returns a  NSAttributedString that can be used for a convo's title.
+    // Returns an NSAttributedString that can be used for a convo's title.
     // Prioritizes nicknames if possible, over proxy names.
-    // Applies formatting based on parameter.
-    func getConvoTitle(receiverNickname: String, senderNickname: String, you: String, them: String, size: CGFloat, navBar: Bool) -> NSAttributedString {
-        let _size = [NSFontAttributeName: UIFont.systemFontOfSize(size)]
-        let bold = [NSFontAttributeName: UIFont.boldSystemFontOfSize(size)]
-        let blue = [NSForegroundColorAttributeName: UIColor().blue()]
-        let gray = [NSForegroundColorAttributeName: UIColor.grayColor()]
-        
+    // Receiver names are black, sender names are grey.
+    func getConvoTitle(receiverNickname: String, receiverName: String, senderNickname: String, senderName: String) -> NSAttributedString {
+        let grayAttribute = [NSForegroundColorAttributeName: UIColor.grayColor()]
         var first: NSMutableAttributedString
         var second: NSMutableAttributedString
-        
-        let _coma = navBar == true ? " &\n" : ", "
-        let comma = NSAttributedString(string: _coma, attributes: _size)
+        let comma = ", "
         
         if receiverNickname == "" {
-            first = NSMutableAttributedString(string: them, attributes: bold)
+            first = NSMutableAttributedString(string: receiverName + comma)
         } else {
-            first = NSMutableAttributedString(string: receiverNickname, attributes: bold)
-            first.addAttributes(blue, range: NSRange(location: 0, length: first.length))
+            first = NSMutableAttributedString(string: receiverNickname + comma)
         }
         
         if senderNickname == "" {
-            second = NSMutableAttributedString(string: you, attributes: gray)
+            second = NSMutableAttributedString(string: senderName, attributes: grayAttribute)
         } else {
-            second = NSMutableAttributedString(string: senderNickname, attributes: blue)
+            second = NSMutableAttributedString(string: senderNickname, attributes: grayAttribute)
         }
-        second.addAttributes(_size, range: NSRange(location: 0, length: second.length))
         
-        first.appendAttributedString(comma)
         first.appendAttributedString(second)
         return first
     }
