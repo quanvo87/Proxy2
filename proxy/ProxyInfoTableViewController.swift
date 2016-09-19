@@ -51,7 +51,6 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     // MARK: - Set up
     func setUp() {
         addNavBarButtons()
-        tableView.separatorStyle = .None
         
         // So buttons inside cells detect touches immediately (there's a delay on by default)
         tableView.delaysContentTouches = false

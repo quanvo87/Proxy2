@@ -36,8 +36,8 @@ class IconPickerCollectionViewController: UICollectionViewController {
     
     func setUp() {
         navigationItem.title = "Select An Icon"
-        setUpCancelButton()
         collectionView?.backgroundColor = UIColor.whiteColor()
+        setUpCancelButton()
         
         // Set up cells
         let flowLayout = UICollectionViewFlowLayout()

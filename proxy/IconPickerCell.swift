@@ -21,6 +21,7 @@ class IconPickerCell: UICollectionViewCell {
             
             // Set icon
             self.api.getURL(forIcon: icon) { (URL) in
+                self.iconImageView.kf_indicatorType = .Activity
                 self.iconImageView.kf_setImageWithURL(NSURL(string: URL), placeholderImage: nil)
             }
             

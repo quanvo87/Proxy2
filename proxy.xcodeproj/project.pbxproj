@@ -24,10 +24,10 @@
 		14383B5B1D7B0CB60086CA6C /* NSDate+NVTimeAgo.m in Sources */ = {isa = PBXBuildFile; fileRef = 14383B5A1D7B0CB60086CA6C /* NSDate+NVTimeAgo.m */; };
 		14383B5D1D7B81530086CA6C /* ConvoInfoTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14383B5C1D7B81530086CA6C /* ConvoInfoTableViewController.swift */; };
 		143F76FA1D72C0C100EF305F /* SelectProxyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 143F76F91D72C0C100EF305F /* SelectProxyViewController.swift */; };
-		145A4D321D84A6EC00BA64DC /* HomeTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 145A4D311D84A6EC00BA64DC /* HomeTableViewController.swift */; };
+		145A4D321D84A6EC00BA64DC /* MessagesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 145A4D311D84A6EC00BA64DC /* MessagesTableViewController.swift */; };
 		145E9D0C1D8A1DF00043F34F /* ReceiverProxyInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 145E9D0B1D8A1DF00043F34F /* ReceiverProxyInfoCell.swift */; };
 		145E9D0E1D8A3DDC0043F34F /* ConvoInfoTableViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 145E9D0D1D8A3DDC0043F34F /* ConvoInfoTableViewControllerDelegate.swift */; };
-		1470F3A21D83FA9800E932A1 /* MyProxiesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1470F3A11D83FA9800E932A1 /* MyProxiesTableViewController.swift */; };
+		1470F3A21D83FA9800E932A1 /* ProxiesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1470F3A11D83FA9800E932A1 /* ProxiesTableViewController.swift */; };
 		147B5C381D82736700D18C73 /* SenderProxyInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147B5C371D82736700D18C73 /* SenderProxyInfoCell.swift */; };
 		147B5C3A1D82891300D18C73 /* DefaultIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147B5C391D82891300D18C73 /* DefaultIcons.swift */; };
 		14A6F17B1D68D5F20015431E /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A6F17A1D68D5F20015431E /* SettingsViewController.swift */; };
@@ -44,6 +44,7 @@
 		14E19A4F1D60EF100030B366 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 14E19A4D1D60EF100030B366 /* LaunchScreen.storyboard */; };
 		14E19A5C1D612CE80030B366 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E19A5B1D612CE80030B366 /* Extensions.swift */; };
 		14E19A5E1D6148700030B366 /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E19A5D1D6148700030B366 /* LogInViewController.swift */; };
+		35489B498EB30A098B3900DF /* Pods_proxy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 42B14E4F2F6BB0AA66125CA8 /* Pods_proxy.framework */; };
 		F8601D08682CD23B0A712CAD /* Pods_proxy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38C5C6B48B79F08C65113251 /* Pods_proxy.framework */; };
 /* End PBXBuildFile section */
 
@@ -66,11 +67,11 @@
 		14383B5A1D7B0CB60086CA6C /* NSDate+NVTimeAgo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+NVTimeAgo.m"; sourceTree = "<group>"; };
 		14383B5C1D7B81530086CA6C /* ConvoInfoTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvoInfoTableViewController.swift; sourceTree = "<group>"; };
 		143F76F91D72C0C100EF305F /* SelectProxyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectProxyViewController.swift; sourceTree = "<group>"; };
-		145A4D311D84A6EC00BA64DC /* HomeTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeTableViewController.swift; sourceTree = "<group>"; };
+		145A4D311D84A6EC00BA64DC /* MessagesTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesTableViewController.swift; sourceTree = "<group>"; };
 		145E9D0A1D8A04140043F34F /* proxy.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = proxy.entitlements; sourceTree = "<group>"; };
 		145E9D0B1D8A1DF00043F34F /* ReceiverProxyInfoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceiverProxyInfoCell.swift; sourceTree = "<group>"; };
 		145E9D0D1D8A3DDC0043F34F /* ConvoInfoTableViewControllerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvoInfoTableViewControllerDelegate.swift; sourceTree = "<group>"; };
-		1470F3A11D83FA9800E932A1 /* MyProxiesTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyProxiesTableViewController.swift; sourceTree = "<group>"; };
+		1470F3A11D83FA9800E932A1 /* ProxiesTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxiesTableViewController.swift; sourceTree = "<group>"; };
 		147B5C371D82736700D18C73 /* SenderProxyInfoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SenderProxyInfoCell.swift; sourceTree = "<group>"; };
 		147B5C391D82891300D18C73 /* DefaultIcons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultIcons.swift; sourceTree = "<group>"; };
 		14A6F17A1D68D5F20015431E /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
@@ -104,6 +105,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F8601D08682CD23B0A712CAD /* Pods_proxy.framework in Frameworks */,
+				35489B498EB30A098B3900DF /* Pods_proxy.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -154,18 +156,18 @@
 			name = "Log In";
 			sourceTree = "<group>";
 		};
-		143F76F41D72BE1D00EF305F /* Home */ = {
+		143F76F41D72BE1D00EF305F /* Messages */ = {
 			isa = PBXGroup;
 			children = (
-				145A4D311D84A6EC00BA64DC /* HomeTableViewController.swift */,
+				145A4D311D84A6EC00BA64DC /* MessagesTableViewController.swift */,
 			);
-			name = Home;
+			name = Messages;
 			sourceTree = "<group>";
 		};
 		143F76F51D72BE2C00EF305F /* Proxies */ = {
 			isa = PBXGroup;
 			children = (
-				1470F3A11D83FA9800E932A1 /* MyProxiesTableViewController.swift */,
+				1470F3A11D83FA9800E932A1 /* ProxiesTableViewController.swift */,
 				14383B2C1D78A7210086CA6C /* ProxyInfoTableViewController.swift */,
 				140E0D061D82AF2F00D68F71 /* IconPickerCollectionViewController.swift */,
 			);
@@ -220,6 +222,7 @@
 				14E19A401D60EF100030B366 /* proxy */,
 				9A83F3C766D4B654D2044BF6 /* Pods */,
 				F07A503573ADA0B0B8E01D98 /* Frameworks */,
+				DBF3053930EA74566F23AFC5 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
@@ -236,7 +239,7 @@
 			isa = PBXGroup;
 			children = (
 				143F76F31D72BE0700EF305F /* Log In */,
-				143F76F41D72BE1D00EF305F /* Home */,
+				143F76F41D72BE1D00EF305F /* Messages */,
 				1434057E1D85315400B75BF3 /* Convos */,
 				143F76F51D72BE2C00EF305F /* Proxies */,
 				143F76F61D72BE4100EF305F /* Settings */,
@@ -277,6 +280,13 @@
 			);
 			name = Frameworks;
 			path = ..;
+			sourceTree = "<group>";
+		};
+		DBF3053930EA74566F23AFC5 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		F07A503573ADA0B0B8E01D98 /* Frameworks */ = {
@@ -341,7 +351,7 @@
 				Base,
 			);
 			mainGroup = 14E19A351D60EF100030B366;
-			productRefGroup = 14E19A3F1D60EF100030B366 /* Products */;
+			productRefGroup = DBF3053930EA74566F23AFC5 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -429,9 +439,9 @@
 				145E9D0C1D8A1DF00043F34F /* ReceiverProxyInfoCell.swift in Sources */,
 				14383B121D73802B0086CA6C /* Proxy.swift in Sources */,
 				14A6F1811D68D8160015431E /* SettingsItem.swift in Sources */,
-				145A4D321D84A6EC00BA64DC /* HomeTableViewController.swift in Sources */,
+				145A4D321D84A6EC00BA64DC /* MessagesTableViewController.swift in Sources */,
 				14E19A5E1D6148700030B366 /* LogInViewController.swift in Sources */,
-				1470F3A21D83FA9800E932A1 /* MyProxiesTableViewController.swift in Sources */,
+				1470F3A21D83FA9800E932A1 /* ProxiesTableViewController.swift in Sources */,
 				14A6F18E1D6BDA880015431E /* Constants.swift in Sources */,
 				147B5C381D82736700D18C73 /* SenderProxyInfoCell.swift in Sources */,
 				14A6F17F1D68D8020015431E /* SettingsItems.swift in Sources */,

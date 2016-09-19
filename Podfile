@@ -12,7 +12,7 @@ target 'proxy' do
     pod 'Firebase/Storage'
     pod 'FacebookCore'
     pod 'FacebookLogin'
-    pod 'Kingfisher'
+    pod 'Kingfisher', '~> 2.6.0'
     pod 'JSQMessagesViewController'
     
 end

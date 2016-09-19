@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="16A320" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="pFd-dJ-gNl">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="pFd-dJ-gNl">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
@@ -260,10 +260,10 @@
             </objects>
             <point key="canvasLocation" x="-514" y="3579"/>
         </scene>
-        <!--My Proxies Table View Controller-->
+        <!--Proxies Table View Controller-->
         <scene sceneID="Zls-ly-Qid">
             <objects>
-                <tableViewController id="dsq-Ke-Md8" customClass="MyProxiesTableViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="dsq-Ke-Md8" customClass="ProxiesTableViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="DWs-Nu-bvc">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -339,10 +339,10 @@
             </objects>
             <point key="canvasLocation" x="-513" y="1448"/>
         </scene>
-        <!--Home Table View Controller-->
+        <!--Messages Table View Controller-->
         <scene sceneID="Cn1-KT-aG0">
             <objects>
-                <tableViewController id="kHc-M8-68Y" customClass="HomeTableViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="kHc-M8-68Y" customClass="MessagesTableViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="BAB-7d-FVa">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -421,7 +421,7 @@
         <scene sceneID="QnD-3o-vWi">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="LfE-yp-YW0" userLabel="Proxies" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="My Proxies" image="proxies-tab" id="iOS-6g-J6E"/>
+                    <tabBarItem key="tabBarItem" title="Proxies" id="iOS-6g-J6E"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="2C5-MT-khQ">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -736,10 +736,10 @@
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Proxy Cell" rowHeight="80" id="VJJ-nO-xK1" customClass="ProxyCell" customModule="proxy" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="383" height="80"/>
+                                        <rect key="frame" x="0.0" y="28" width="1000" height="80"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="VJJ-nO-xK1" id="LTt-oz-ohx">
-                                            <frame key="frameInset" width="383" height="79"/>
+                                            <frame key="frameInset" width="1000" height="80"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="0yX-sn-CJU">
@@ -801,7 +801,7 @@
         <scene sceneID="kXx-yY-kRy">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="EGG-kf-Fg2" userLabel="Home" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Home" image="messages-tab" id="FaN-XB-C5v"/>
+                    <tabBarItem key="tabBarItem" title="Messages" id="FaN-XB-C5v"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="RUp-Qx-BNr">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -820,7 +820,7 @@
         <scene sceneID="4wH-E5-1mQ">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="PGe-ha-qrd" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Me" image="me-tab" id="8DJ-gV-5Kk"/>
+                    <tabBarItem key="tabBarItem" title="Me" id="8DJ-gV-5Kk"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="3Im-Fz-MvD">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -874,9 +874,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="me-tab" width="33" height="33"/>
-        <image name="messages-tab" width="25" height="25"/>
         <image name="new" width="20" height="20"/>
-        <image name="proxies-tab" width="30" height="30"/>
     </resources>
 </document>

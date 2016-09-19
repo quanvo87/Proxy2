@@ -20,10 +20,11 @@ class ConvoCell: UITableViewCell {
     var convo = Convo() {
         didSet{
             // Set up
-            accessoryType = .None
+//            accessoryType = .None
             
             // Set icon
             api.getURL(forIcon: convo.icon) { (URL) in
+                self.iconImageView.kf_indicatorType = .Activity
                 self.iconImageView.kf_setImageWithURL(NSURL(string: URL), placeholderImage: nil)
             }
             

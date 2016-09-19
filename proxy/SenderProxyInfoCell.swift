@@ -41,6 +41,7 @@ class SenderProxyInfoCell: UITableViewCell {
         iconRefHandle = iconRef.observeEventType(.Value, withBlock: { (snapshot) in
             if let icon = snapshot.value as? String {
                 self.api.getURL(forIcon: icon) { (URL) in
+                    self.iconImageView.kf_indicatorType = .Activity
                     self.iconImageView.kf_setImageWithURL(NSURL(string: URL), placeholderImage: nil)
                 }
             }

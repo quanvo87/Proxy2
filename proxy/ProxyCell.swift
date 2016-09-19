@@ -20,7 +20,7 @@ class ProxyCell: UITableViewCell {
     var proxy = Proxy() {
         didSet {
             // Set up
-            accessoryType = .None
+            accessoryType = .DisclosureIndicator
             
             // Set up newImageView
             newImageView.hidden = true
@@ -31,6 +31,7 @@ class ProxyCell: UITableViewCell {
             
             // Set image
             api.getURL(forIcon: proxy.icon) { (URL) in
+                self.iconImageView.kf_indicatorType = .Activity
                 self.iconImageView.kf_setImageWithURL(NSURL(string: URL), placeholderImage: nil)
             }
             

@@ -1,5 +1,5 @@
 //
-//  MyProxiesTableViewController.swift
+//  ProxiesTableViewController.swift
 //  proxy
 //
 //  Created by Quan Vo on 9/10/16.
@@ -10,7 +10,7 @@ import FirebaseAuth
 import FirebaseDatabase
 import FirebaseStorage
 
-class MyProxiesTableViewController: UITableViewController, NewMessageViewControllerDelegate {
+class ProxiesTableViewController: UITableViewController, NewMessageViewControllerDelegate {
     
     let api = API.sharedInstance
     let ref = FIRDatabase.database().reference()
@@ -39,7 +39,7 @@ class MyProxiesTableViewController: UITableViewController, NewMessageViewControl
         observeProxies()
         
         // In case user creates a proxy from the Home VC, scroll this VC to top
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(MyProxiesTableViewController.scrollToTop), name: Notifications.CreatedNewProxyFromHomeTab, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ProxiesTableViewController.scrollToTop), name: Notifications.CreatedNewProxyFromHomeTab, object: nil)
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -55,7 +55,7 @@ class MyProxiesTableViewController: UITableViewController, NewMessageViewControl
     
     // MARK: - Set up
     func setUp() {
-        navigationItem.title = "My Proxies"
+        navigationItem.title = "Proxies"
         newMessageButton = createNewMessageButton()
         newProxyButton = createNewProxyButton()
         deleteProxiesButton = createDeleteProxiesButton()
@@ -64,14 +64,13 @@ class MyProxiesTableViewController: UITableViewController, NewMessageViewControl
         setDefaultButtons()
         tableView.rowHeight = 80
         tableView.estimatedRowHeight = 80
-        tableView.separatorStyle = .None
         tableView.allowsMultipleSelectionDuringEditing = true
     }
     
     func createNewMessageButton() -> UIBarButtonItem {
         let newMessageButton = UIButton(type: .Custom)
         newMessageButton.setImage(UIImage(named: "new-message.png"), forState: UIControlState.Normal)
-        newMessageButton.addTarget(self, action: #selector(MyProxiesTableViewController.showNewMessageViewController), forControlEvents: UIControlEvents.TouchUpInside)
+        newMessageButton.addTarget(self, action: #selector(ProxiesTableViewController.showNewMessageViewController), forControlEvents: UIControlEvents.TouchUpInside)
         newMessageButton.frame = CGRectMake(0, 0, 25, 25)
         return UIBarButtonItem(customView: newMessageButton)
     }
@@ -79,7 +78,7 @@ class MyProxiesTableViewController: UITableViewController, NewMessageViewControl
     func createNewProxyButton() -> UIBarButtonItem {
         let newProxyButton = UIButton(type: .Custom)
         newProxyButton.setImage(UIImage(named: "new-proxy.png"), forState: UIControlState.Normal)
-        newProxyButton.addTarget(self, action: #selector(MyProxiesTableViewController.createNewProxy), forControlEvents: UIControlEvents.TouchUpInside)
+        newProxyButton.addTarget(self, action: #selector(ProxiesTableViewController.createNewProxy), forControlEvents: UIControlEvents.TouchUpInside)
         newProxyButton.frame = CGRectMake(0, 0, 25, 25)
         return UIBarButtonItem(customView: newProxyButton)
     }
@@ -87,7 +86,7 @@ class MyProxiesTableViewController: UITableViewController, NewMessageViewControl
     func createDeleteProxiesButton() -> UIBarButtonItem {
         let deleteProxiesButton = UIButton(type: .Custom)
         deleteProxiesButton.setImage(UIImage(named: "delete.png"), forState: UIControlState.Normal)
-        deleteProxiesButton.addTarget(self, action: #selector(MyProxiesTableViewController.toggleEditMode), forControlEvents: UIControlEvents.TouchUpInside)
+        deleteProxiesButton.addTarget(self, action: #selector(ProxiesTableViewController.toggleEditMode), forControlEvents: UIControlEvents.TouchUpInside)
         deleteProxiesButton.frame = CGRectMake(0, 0, 25, 25)
         return UIBarButtonItem(customView: deleteProxiesButton)
     }
@@ -95,7 +94,7 @@ class MyProxiesTableViewController: UITableViewController, NewMessageViewControl
     func createConfirmDeleteProxiesButton() -> UIBarButtonItem {
         let confirmDeleteProxiesButton = UIButton(type: .Custom)
         confirmDeleteProxiesButton.setImage(UIImage(named: "confirm"), forState: UIControlState.Normal)
-        confirmDeleteProxiesButton.addTarget(self, action: #selector(MyProxiesTableViewController.deleteSelectedProxies), forControlEvents: UIControlEvents.TouchUpInside)
+        confirmDeleteProxiesButton.addTarget(self, action: #selector(ProxiesTableViewController.deleteSelectedProxies), forControlEvents: UIControlEvents.TouchUpInside)
         confirmDeleteProxiesButton.frame = CGRectMake(0, 0, 25, 25)
         return UIBarButtonItem(customView: confirmDeleteProxiesButton)
     }
@@ -103,7 +102,7 @@ class MyProxiesTableViewController: UITableViewController, NewMessageViewControl
     func createCancelDeleteProxiesButton() -> UIBarButtonItem {
         let cancelDeleteProxiesButton = UIButton(type: .Custom)
         cancelDeleteProxiesButton.setImage(UIImage(named: "cancel"), forState: UIControlState.Normal)
-        cancelDeleteProxiesButton.addTarget(self, action: #selector(MyProxiesTableViewController.toggleEditMode), forControlEvents: UIControlEvents.TouchUpInside)
+        cancelDeleteProxiesButton.addTarget(self, action: #selector(ProxiesTableViewController.toggleEditMode), forControlEvents: UIControlEvents.TouchUpInside)
         cancelDeleteProxiesButton.frame = CGRectMake(0, 0, 25, 25)
         return UIBarButtonItem(customView: cancelDeleteProxiesButton)
     }
@@ -154,7 +153,7 @@ class MyProxiesTableViewController: UITableViewController, NewMessageViewControl
         unreadRef = ref.child("unread").child(api.uid)
         unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { snapshot in
             if let unread = snapshot.value as? Int {
-                self.navigationItem.title = "My Proxies \(unread.toTitleSuffix())"
+                self.navigationItem.title = "Proxies \(unread.toTitleSuffix())"
             }
         })
     }
@@ -180,13 +179,6 @@ class MyProxiesTableViewController: UITableViewController, NewMessageViewControl
     
     override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return CGFloat.min
-    }
-    
-    override func tableView(tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        if proxies.count == 0 {
-            return "No proxies yet. Create new proxies by tapping the mustache icon on the top right!"
-        }
-        return nil
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
