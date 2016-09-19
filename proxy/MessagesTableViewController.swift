@@ -34,9 +34,9 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setUpTabBar()
         setUp()
         checkLogInStatus()
-        tabBarController?.tabBar.items?.first?.image = UIImage(named: "messages-tab")
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -49,26 +49,16 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
         convosRef.removeObserverWithHandle(convosRefHandle)
     }
     
-    // MARK: - Log in
-    func checkLogInStatus() {
-        FIRAuth.auth()?.addAuthStateDidChangeListener { (auth, user) in
-            if let user = user {
-                self.api.uid = user.uid
-                self.observeUnread()
-                self.observeConvos()
-            } else {
-                self.showLogInViewController()
-            }
-        }
-    }
-    
-    func showLogInViewController() {
-        let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.LogInViewController) as! LogInViewController
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.window?.rootViewController = dest
-    }
-    
     // MARK: - Set up
+    func setUpTabBar() {
+        let items = tabBarController?.tabBar.items
+        let size = CGSize(width: 30, height: 30)
+        let isAspectRatio = true
+        items![0].image = UIImage(named: "messages-tab")?.resize(toNewSize: size, isAspectRatio: isAspectRatio)
+        items![1].image = UIImage(named: "proxies-tab")?.resize(toNewSize: size, isAspectRatio: isAspectRatio)
+        items![2].image = UIImage(named: "me-tab")?.resize(toNewSize: size, isAspectRatio: isAspectRatio)
+    }
+    
     func setUp() {
         navigationItem.title = "Messages"
         newMessageButton = createNewMessageButton()
@@ -80,6 +70,7 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
         edgesForExtendedLayout = .All
         tableView.rowHeight = 80
         tableView.estimatedRowHeight = 80
+        tableView.separatorStyle = .None
         tableView.allowsMultipleSelectionDuringEditing = true
     }
     
@@ -160,13 +151,32 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
         }
     }
     
+    // MARK: - Log in
+    func checkLogInStatus() {
+        FIRAuth.auth()?.addAuthStateDidChangeListener { (auth, user) in
+            if let user = user {
+                self.api.uid = user.uid
+                self.observeUnread()
+                self.observeConvos()
+            } else {
+                self.showLogInViewController()
+            }
+        }
+    }
+    
+    func showLogInViewController() {
+        let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.LogInViewController) as! LogInViewController
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate.window?.rootViewController = dest
+    }
+    
     // MARK: - Database
     func observeUnread() {
         unreadRef = ref.child("unread").child(api.uid)
         unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
             if let unread = snapshot.value as? Int {
                 self.navigationItem.title = "Messages \(unread.toTitleSuffix())"
-                self.tabBarController?.tabBar.items?.first?.badgeValue = String(unread)
+                self.tabBarController?.tabBar.items?.first?.badgeValue = unread == 0 ? nil : String(unread)
             }
         })
     }

@@ -64,6 +64,7 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
         setDefaultButtons()
         tableView.rowHeight = 80
         tableView.estimatedRowHeight = 80
+        tableView.separatorStyle = .None
         tableView.allowsMultipleSelectionDuringEditing = true
     }
     

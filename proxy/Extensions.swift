@@ -94,6 +94,39 @@ extension Double {
     }
 }
 
+extension UIImage {
+    func resize(toNewSize newSize: CGSize, isAspectRatio aspect: Bool) -> UIImage {
+        
+        let originalRatio = self.size.width / self.size.height
+        let newRatio = newSize.width / newSize.height
+        
+        var size: CGSize = CGSizeZero
+        
+        if aspect {
+            if originalRatio < newRatio {
+                size.height = newSize.height
+                size.width = newSize.height * originalRatio
+            } else {
+                size.width = newSize.width
+                size.height = newSize.width / originalRatio
+            }
+        } else {
+            size = newSize
+        }
+        
+        let scale: CGFloat = 1.0
+        size.width /= scale
+        size.height /= scale
+        
+        UIGraphicsBeginImageContextWithOptions(size, false, scale)
+        self.drawInRect(CGRectMake(0, 0, size.width, size.height))
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return newImage!
+    }
+}
+
 extension UIColor {
     convenience init(red: Int, green: Int, blue: Int) {
         self.init(red: CGFloat(red) / 255.0, green: CGFloat(green) / 255.0, blue: CGFloat(blue) / 255.0, alpha: 1.0)

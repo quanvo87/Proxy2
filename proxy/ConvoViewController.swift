@@ -419,7 +419,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     }
     
     // MARK: - Text view
-    // Keep track of when user is typing
+    // Keep track of when user is typing.
     override func textViewDidChange(textView: UITextView) {
         super.textViewDidChange(textView)
         userTyping = textView.text != ""
