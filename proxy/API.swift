@@ -389,7 +389,7 @@ class API {
     /// Error checks before sending it off to the appropriate message sending fuction.
     /// Returns the sender's convo on success.
     /// Returns an ErrorAlert on failure.
-    func send(messageWithText text: String, fromSenderProxy senderProxy: Proxy, toReceiverProxyName receiverProxyName: String, completion: (error: ErrorAlert?, convo: Convo?) -> Void ) {
+    func send(messageWithText text: String, withMediaType mediaType: String, withMediaURL mediaURL: String, fromSenderProxy senderProxy: Proxy, toReceiverProxyName receiverProxyName: String, completion: (error: ErrorAlert?, convo: Convo?) -> Void ) {
         
         /// Check if receiver exists
         self.ref.child("proxies").queryOrderedByChild("key").queryEqualToValue(receiverProxyName).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
@@ -414,13 +414,13 @@ class API {
                 /// Existing convo found, use it to send the message
                 if snapshot.childrenCount == 1 {
                     let convo = Convo(anyObject: snapshot.value!)
-                    self.send(messageWithText: text, usingSenderConvo: convo, completion: { (convo) in
+                    self.send(messageWithText: text, withMediaType: mediaType, withMediaURL: mediaURL, usingSenderConvo: convo, completion: { (convo) in
                         completion(error: nil, convo: convo)
                     })
                 }
                 
                 /// No convo found, must set up convo before sending message
-                self.setUpFirstMessage(fromSenderProxy: senderProxy, toReceiverProxy: receiverProxy, usingConvoKey: convoKey, withText: text, completion: { (convo) in
+                self.setUpFirstMessage(fromSenderProxy: senderProxy, toReceiverProxy: receiverProxy, usingConvoKey: convoKey, withText: text, withMediaType: mediaType, withMediaURL: mediaURL, completion: { (convo) in
                     completion(error: nil, convo: convo)
                 })
             })
@@ -433,7 +433,7 @@ class API {
     /// Increments both users' `proxiesInteractedWith`.
     /// Sends off to `sendMessage`.
     /// Returns updated sender's `convo`.
-    func setUpFirstMessage(fromSenderProxy senderProxy: Proxy, toReceiverProxy receiverProxy: Proxy, usingConvoKey convoKey: String, withText text: String, completion: (convo: Convo) -> Void) {
+    func setUpFirstMessage(fromSenderProxy senderProxy: Proxy, toReceiverProxy receiverProxy: Proxy, usingConvoKey convoKey: String, withText text: String, withMediaType mediaType: String, withMediaURL mediaURL: String, completion: (convo: Convo) -> Void) {
         
         /// Check if sender is in receiver's blocked list
         ref.child("blocked").child(receiverProxy.owner).child(senderProxy.owner).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
@@ -466,7 +466,7 @@ class API {
             self.update(proxyConvo: receiverConvo)
             self.incremementProxiesInteractedWith(forUser: receiverProxy.owner)
             
-            self.send(messageWithText: text, usingSenderConvo: senderConvo, completion: { (convo) in
+            self.send(messageWithText: text, withMediaType: mediaType, withMediaURL: mediaURL, usingSenderConvo: senderConvo, completion: { (convo) in
                 completion(convo: convo)
             })
         })
@@ -494,7 +494,7 @@ class API {
     ///     - message
     ///
     /// Returns the sender's convo.
-    func send(messageWithText text: String, usingSenderConvo convo: Convo, completion: (convo: Convo) -> Void) {
+    func send(messageWithText text: String, withMediaType mediaType: String, withMediaURL mediaURL: String, usingSenderConvo convo: Convo, completion: (convo: Convo) -> Void) {
         userIsPresent(user: convo.receiverId, convo: convo.key) { (userIsPresent) in
             let increment = userIsPresent ? 0 : 1
             let timestamp = NSDate().timeIntervalSince1970
@@ -524,7 +524,7 @@ class API {
             /// Write message
             let messageKey = self.ref.child("messages").child(convo.key).childByAutoId().key
             let timeRead = userIsPresent ? timestamp : 0.0
-            let message = Message(key: messageKey, convo: convo.key, read: userIsPresent, timeRead: timeRead, senderId: convo.senderId, date: timestamp, text: text)
+            let message = Message(key: messageKey, convo: convo.key, mediaType: mediaType, mediaURL: mediaURL, read: userIsPresent, timeRead: timeRead, senderId: convo.senderId, date: timestamp, text: text)
             self.save(message: message)
             
             completion(convo: _convo)
@@ -536,10 +536,13 @@ class API {
         ref.child("messages").child(message.convo).child(message.key).setValue(message.toAnyObject())
     }
     
-    /// Saves the local UIImage to storage.
-    /// Returns the URL String to the UIImage in storage.
-    func save(localFile url: NSURL, completion: (URL: String) -> Void) {
-        storageRef.child(url.absoluteString!).putFile(url, metadata: nil) { metadata, error in
+    /// Saves the local file to storage.
+    /// Returns the URL String to the file in storage.
+    func save(image image: UIImage, withURL URL: NSURL, completion: (URL: String) -> Void) {
+        let data = UIImageJPEGRepresentation(image, 0.8)!
+        let metadata = FIRStorageMetadata()
+        metadata.contentType = "image/jpg"
+        storageRef.child("userImages").child(URL.absoluteString).putData(data, metadata: metadata) { (metadata, error) in
             completion(URL: metadata!.downloadURL()!.absoluteString!)
         }
     }

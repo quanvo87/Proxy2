@@ -12,12 +12,16 @@ class Message: JSQMessage {
     
     var key = ""
     var convo = ""
+    var mediaType = ""
+    var mediaURL = ""
     var read = false
     var timeRead = 0.0
     
-    init(key: String, convo: String, read: Bool, timeRead: Double, senderId: String, date: Double, text: String) {
+    init(key: String, convo: String, mediaType: String, mediaURL: String, read: Bool, timeRead: Double, senderId: String, date: Double, text: String) {
         self.key = key
         self.convo = convo
+        self.mediaType = mediaType
+        self.mediaURL = mediaURL
         self.read = read
         self.timeRead = timeRead
         super.init(senderId: senderId, senderDisplayName: "", date: NSDate(timeIntervalSince1970: date), text: text)
@@ -26,6 +30,8 @@ class Message: JSQMessage {
     init(anyObject: AnyObject) {
         self.key = anyObject["key"] as! String
         self.convo = anyObject["convo"] as! String
+        self.mediaType = anyObject["mediaType"] as? String ?? ""
+        self.mediaURL = anyObject["mediaURL"] as? String ?? ""
         self.read = anyObject["read"] as! Bool
         self.timeRead = anyObject["timeRead"] as! Double
         super.init(senderId: anyObject["senderId"] as! String, senderDisplayName: anyObject["senderDisplayName"] as! String, date: NSDate(timeIntervalSince1970:anyObject["date"] as! Double), text: anyObject["text"] as! String)
@@ -39,6 +45,8 @@ class Message: JSQMessage {
         return [
             "key": key,
             "convo": convo,
+            "mediaType": mediaType,
+            "mediaURL": mediaURL,
             "read": read,
             "timeRead": timeRead,
             "senderId": senderId,

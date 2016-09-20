@@ -228,6 +228,16 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
             } else {
                 self.readReceiptIndex = self.messages.count - 1
             }
+            
+            switch message.mediaType {
+            case "image":
+                self.api.getUIImage(forIcon: message.mediaURL, completion: { (image) in
+                    (message.media as! JSQPhotoMediaItem).image = image
+                })
+                
+            default: break
+            }
+            
             self.finishReceivingMessage()
         })
     }
@@ -408,10 +418,8 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     
     // Write the message to the database when user taps send.
     override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: NSDate!) {
-        api.send(messageWithText: text, usingSenderConvo: convo) { (convo) in
-            self.finishSendingMessage()
-            JSQSystemSoundPlayer.jsq_playMessageSentSound()
-            self.userTyping = false
+        api.send(messageWithText: text, withMediaType: "", withMediaURL: "", usingSenderConvo: convo) { (convo) in
+            self.finishedWritingMessage()
         }
     }
     
@@ -496,13 +504,22 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
 //        self.finishSendingMessageAnimated(true)
     }
     
+    func finishedWritingMessage() {
+        finishSendingMessage()
+        JSQSystemSoundPlayer.jsq_playMessageSentSound()
+        userTyping = false
+    }
+    
     // MARK: - Image picker controller delegate
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
-        let imageURL = info[UIImagePickerControllerReferenceURL] as! NSURL
-        api.save(localFile: imageURL) { (URL) in
-            
-        }
-        dismissViewControllerAnimated(true, completion: nil)
+        let image = info[UIImagePickerControllerOriginalImage] as? UIImage
+        let URL = info[UIImagePickerControllerMediaURL] as? NSURL
+        api.save(image: image!, withURL: URL!, completion: { (URL) in
+            self.api.send(messageWithText: "", withMediaType: "image", withMediaURL: URL, usingSenderConvo: self.convo, completion: { (convo) in
+                self.finishSendingMessage()
+                self.dismissViewControllerAnimated(true, completion: nil)
+            })
+        })
     }
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
