@@ -219,26 +219,38 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     func observeMessages() {
         messagesRef = ref.child("messages").child(convo.key)
         messagesRefHandle = messagesRef.queryOrderedByChild("timestamp").observeEventType(.ChildAdded, withBlock: { (snapshot) in
+            
             let message = Message(anyObject: snapshot.value!)
-            self.messages.append(message)
-            if message.senderId != self.senderId {
-                if !message.read {
-                    self.api.setRead(forMessage: message)
-                }
-            } else {
-                self.readReceiptIndex = self.messages.count - 1
-            }
             
             switch message.mediaType {
             case "image":
-                self.api.getUIImage(forIcon: message.mediaURL, completion: { (image) in
-                    (message.media as! JSQPhotoMediaItem).image = image
+                
+                self.api.getUIImage(fromURL: NSURL(string: message.mediaURL)!, completion: { (image) in
+                    let photoMediaItem = JSQPhotoMediaItem()
+                    photoMediaItem.image = image
+                    let _message = Message(key: message.key, convo: message.convo, mediaType: message.mediaType, mediaURL: message.mediaURL, read: message.read, timeRead: message.timeRead, senderId: message.senderId, date: 0.0, text: message.text, media: photoMediaItem)
+                    self.messages.append(_message)
+                    if message.senderId != self.senderId {
+                        if !message.read {
+                            self.api.setRead(forMessage: message)
+                        }
+                    } else {
+                        self.readReceiptIndex = self.messages.count - 1
+                    }
+                    self.finishReceivingMessage()
                 })
                 
-            default: break
+            default:
+                self.messages.append(message)
+                if message.senderId != self.senderId {
+                    if !message.read {
+                        self.api.setRead(forMessage: message)
+                    }
+                } else {
+                    self.readReceiptIndex = self.messages.count - 1
+                }
+                self.finishReceivingMessage()
             }
-            
-            self.finishReceivingMessage()
         })
     }
     
@@ -281,8 +293,14 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = super.collectionView(collectionView, cellForItemAtIndexPath: indexPath) as! JSQMessagesCollectionViewCell
         
+        let message = messages[indexPath.item]
+        
+        guard message.mediaType == "" else {
+            return cell
+        }
+        
         // Outgoing message
-        if messages[indexPath.item].senderId == senderId {
+        if message.senderId == senderId {
             cell.textView!.textColor = UIColor.whiteColor()
             cell.messageBubbleTopLabel.textInsets = UIEdgeInsetsMake(0, 0, 0, 40)
         
@@ -513,13 +531,13 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     // MARK: - Image picker controller delegate
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         let image = info[UIImagePickerControllerOriginalImage] as? UIImage
-        let URL = info[UIImagePickerControllerMediaURL] as? NSURL
+        let URL = info[UIImagePickerControllerReferenceURL] as? NSURL
         api.save(image: image!, withURL: URL!, completion: { (URL) in
-            self.api.send(messageWithText: "", withMediaType: "image", withMediaURL: URL, usingSenderConvo: self.convo, completion: { (convo) in
+            self.api.send(messageWithText: "", withMediaType: "image", withMediaURL: URL.absoluteString!, usingSenderConvo: self.convo, completion: { (convo) in
                 self.finishSendingMessage()
-                self.dismissViewControllerAnimated(true, completion: nil)
             })
         })
+        self.dismissViewControllerAnimated(true, completion: nil)
     }
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {

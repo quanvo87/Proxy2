@@ -25,6 +25,8 @@ class API {
     var iconURLCache = [String: String]()
     var iconImageCache = [String: UIImage]()
     
+    var userImageCache = [String: UIImage]()
+    
     var uid: String = "" {
         didSet {
             observeIcons()
@@ -538,12 +540,28 @@ class API {
     
     /// Saves the local file to storage.
     /// Returns the URL String to the file in storage.
-    func save(image image: UIImage, withURL URL: NSURL, completion: (URL: String) -> Void) {
+    func save(image image: UIImage, withURL URL: NSURL, completion: (URL: NSURL) -> Void) {
         let data = UIImageJPEGRepresentation(image, 0.8)!
         let metadata = FIRStorageMetadata()
         metadata.contentType = "image/jpg"
-        storageRef.child("userImages").child(URL.absoluteString).putData(data, metadata: metadata) { (metadata, error) in
-            completion(URL: metadata!.downloadURL()!.absoluteString!)
+        storageRef.child("userImages").child(URL.absoluteString!).putData(data, metadata: metadata) { (metadata, error) in
+            completion(URL: metadata!.downloadURL()!)
+        }
+    }
+    
+    /// Returns a UIImage from storage from the URL.
+    func getUIImage(fromURL URL: NSURL, completion: (image: UIImage) -> Void) {
+        if let image = userImageCache[URL.absoluteString!] {
+            completion(image: image)
+        } else {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+                let data = NSData(contentsOfURL: URL)
+                dispatch_async(dispatch_get_main_queue(), {
+                    let image = UIImage(data: data!)
+                    self.userImageCache[URL.absoluteString!] = image
+                    completion(image: image!)
+                })
+            }
         }
     }
     

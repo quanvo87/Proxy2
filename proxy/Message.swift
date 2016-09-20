@@ -27,6 +27,16 @@ class Message: JSQMessage {
         super.init(senderId: senderId, senderDisplayName: "", date: NSDate(timeIntervalSince1970: date), text: text)
     }
     
+    init(key: String, convo: String, mediaType: String, mediaURL: String, read: Bool, timeRead: Double, senderId: String, date: Double, text: String, media: JSQMessageMediaData) {
+        self.key = key
+        self.convo = convo
+        self.mediaType = mediaType
+        self.mediaURL = mediaURL
+        self.read = read
+        self.timeRead = timeRead
+        super.init(senderId: senderId, senderDisplayName: "", date: NSDate(timeIntervalSince1970: date), media: media)
+    }
+    
     init(anyObject: AnyObject) {
         self.key = anyObject["key"] as! String
         self.convo = anyObject["convo"] as! String
