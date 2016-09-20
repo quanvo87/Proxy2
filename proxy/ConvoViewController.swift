@@ -138,6 +138,15 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         outgoingBubble = factory.outgoingMessagesBubbleImageWithColor(UIColor.jsq_messageBubbleBlueColor())
     }
     
+    // Decrement user's, convo's, proxy convo's, and proxy's unread by this convo's unread count.
+    func decrementUnread() {
+        ref.child("convos").child(convo.senderId).child(convo.key).child("unread").observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            if let unread = snapshot.value as? Int where unread > 0 {
+                self.api.decrementAllUnreadFor(convo: self.convo, byAmount: unread)
+            }
+        })
+    }
+    
     // MARK: - Database
     // Set user as present in the convo.
     func setUpSenderIsPresent() {
@@ -219,46 +228,80 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     func observeMessages() {
         messagesRef = ref.child("messages").child(convo.key)
         messagesRefHandle = messagesRef.queryOrderedByChild("timestamp").observeEventType(.ChildAdded, withBlock: { (snapshot) in
-            
             let message = Message(anyObject: snapshot.value!)
+            if message.senderId != self.senderId {
+                if !message.read {
+                    self.api.setRead(forMessage: message)
+                }
+            } else {
+                self.readReceiptIndex = self.messages.count - 1
+            }
             
             switch message.mediaType {
-            case "image":
                 
-                self.api.getUIImage(fromURL: NSURL(string: message.mediaURL)!, completion: { (image) in
-                    let photoMediaItem = JSQPhotoMediaItem()
-                    photoMediaItem.image = image
-                    let _message = Message(key: message.key, convo: message.convo, mediaType: message.mediaType, mediaURL: message.mediaURL, read: message.read, timeRead: message.timeRead, senderId: message.senderId, date: 0.0, text: message.text, media: photoMediaItem)
-                    self.messages.append(_message)
-                    if message.senderId != self.senderId {
-                        if !message.read {
-                            self.api.setRead(forMessage: message)
-                        }
-                    } else {
-                        self.readReceiptIndex = self.messages.count - 1
-                    }
-                    self.finishReceivingMessage()
+            // A new media message that is waiting for its content to be uploaded to storage.
+            // Once that is complete, this media message will be updated with the URL to that content.
+            // Pull that content and reload the cell once it has a URL.
+            case "placeholder":
+                
+                // Create a placeholder image while the content is being prepared.
+                let media = JSQPhotoMediaItem()
+                media.image = nil
+                
+                // Display the message with the placeholder content.
+                let _message = Message(key: message.key, convo: message.convo, mediaType: message.mediaType, mediaURL: message.mediaURL, read: message.read, timeRead: message.timeRead, senderId: message.senderId, date: 0.0, text: message.text, media: media)
+                self.messages.append(_message)
+                self.finishReceivingMessage()
+                
+                // Wait for the message's content to be loaded to storage.
+                // Once this happens, the message's `mediaType` and `mediaURL` will be updated.
+                var messageRefHandle = FIRDatabaseHandle()
+                let messageRef = self.ref.child("messages").child(message.convo).child(message.key)
+                messageRefHandle = messageRef.observeEventType(.Value, withBlock: { (snapshot) in
+                    let message = Message(anyObject: snapshot.value!)
+                    
+                    // Use the updated `mediaURL` to load the image.
+                    self.api.getUIImage(fromURL: NSURL(string: message.mediaURL)!, completion: { (image) in
+                        
+                        // Set the image once it has been retrieved.
+                        (_message.media as! JSQPhotoMediaItem).image = image
+                        
+                        
+                        // Reload the cell.
+                        let indexPath = NSIndexPath(forItem: self.messages.count - 1, inSection: 0)
+                        self.collectionView.reloadItemsAtIndexPaths([indexPath])
+                        
+                        // Remove database observer for this message.
+                        messageRef.removeObserverWithHandle(messageRefHandle)
+                    })
                 })
                 
+            case "image":
+                
+                // Create a placeholder image while the content is being prepared.
+                let media = JSQPhotoMediaItem()
+                media.image = nil
+                
+                // Display the message with the placeholder content.
+                let _message = Message(key: message.key, convo: message.convo, mediaType: message.mediaType, mediaURL: message.mediaURL, read: message.read, timeRead: message.timeRead, senderId: message.senderId, date: 0.0, text: message.text, media: media)
+                self.messages.append(_message)
+                self.finishReceivingMessage()
+                
+                // Use `mediaURL` to load the image.
+                self.api.getUIImage(fromURL: NSURL(string: message.mediaURL)!, completion: { (image) in
+                    
+                    // Set the image once it has been retrieved.
+                    (_message.media as! JSQPhotoMediaItem).image = image
+                    
+                    // Reload the cell.
+                    let indexPath = NSIndexPath(forItem: self.messages.count - 1, inSection: 0)
+                    self.collectionView.reloadItemsAtIndexPaths([indexPath])
+                })
+                
+            // Regular text message.
             default:
                 self.messages.append(message)
-                if message.senderId != self.senderId {
-                    if !message.read {
-                        self.api.setRead(forMessage: message)
-                    }
-                } else {
-                    self.readReceiptIndex = self.messages.count - 1
-                }
                 self.finishReceivingMessage()
-            }
-        })
-    }
-    
-    // Decrement user's, convo's, proxy convo's, and proxy's unread by this convo's unread count.
-    func decrementUnread() {
-        ref.child("convos").child(convo.senderId).child(convo.key).child("unread").observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            if let unread = snapshot.value as? Int where unread > 0 {
-                self.api.decrementAllUnreadFor(convo: self.convo, byAmount: unread)
             }
         })
     }
@@ -292,7 +335,6 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     // Set up cell.
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = super.collectionView(collectionView, cellForItemAtIndexPath: indexPath) as! JSQMessagesCollectionViewCell
-        
         let message = messages[indexPath.item]
         
         guard message.mediaType == "" else {
@@ -436,7 +478,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     
     // Write the message to the database when user taps send.
     override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: NSDate!) {
-        api.send(messageWithText: text, withMediaType: "", withMediaURL: "", usingSenderConvo: convo) { (convo) in
+        api.send(messageWithText: text, withMediaType: "", usingSenderConvo: convo) { (convo) in
             self.finishedWritingMessage()
         }
     }
@@ -450,6 +492,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         alert.addAction(UIAlertAction(title: "Send Photo", style: .Default, handler: {
             action in
             
+            // Show the image picker if we have permission to access photos.
             func showImagePickerController() {
                 let imagePickerController = UIImagePickerController()
                 imagePickerController.delegate = self
@@ -457,6 +500,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
                 self.presentViewController(imagePickerController, animated: true, completion: nil)
             }
             
+            // Show an alert that can take the user to the app's page in the user's phone settings.
             func showLinkToSettings() {
                 let alert = UIAlertController(title: "Send Photos", message: "Go into settings to enable access to photos.", preferredStyle: .Alert)
                 alert.addAction(UIAlertAction(title: "Go To Settings", style: .Default) { (alertAction) in
@@ -467,6 +511,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
                 self.presentViewController(alert, animated: true, completion: nil)
             }
  
+            // Check if we have access to photos then take action accordingly.
             let photoAuthStatus = PHPhotoLibrary.authorizationStatus()
             switch photoAuthStatus {
             case .Authorized: showImagePickerController()
@@ -530,14 +575,23 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     
     // MARK: - Image picker controller delegate
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
-        let image = info[UIImagePickerControllerOriginalImage] as? UIImage
-        let URL = info[UIImagePickerControllerReferenceURL] as? NSURL
-        api.save(image: image!, withURL: URL!, completion: { (URL) in
-            self.api.send(messageWithText: "", withMediaType: "image", withMediaURL: URL.absoluteString!, usingSenderConvo: self.convo, completion: { (convo) in
-                self.finishSendingMessage()
+        
+        // First send a placeholder message that will display a loading indication.
+        api.send(messageWithText: "Sent a photo.", withMediaType: "placeholder", usingSenderConvo: self.convo) { (convo, message) in
+            self.finishSendingMessage()
+            
+            // Then upload the image to storage.
+            let image = info[UIImagePickerControllerOriginalImage] as? UIImage
+            let URL = info[UIImagePickerControllerReferenceURL] as? NSURL
+            self.api.save(image: image!, withURL: URL!, completion: { (URL) in
+                
+                // The upload returns a URL to the image we just uploaded.
+                // Update the placeholder message with this info.
+                self.api.setMedia(forMessage: message, mediaType: "image", mediaURL: URL.absoluteString!)
+                self.finishedWritingMessage()
             })
-        })
-        self.dismissViewControllerAnimated(true, completion: nil)
+            self.dismissViewControllerAnimated(true, completion: nil)
+        }
     }
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {

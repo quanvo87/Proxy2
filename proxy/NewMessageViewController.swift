@@ -104,7 +104,7 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
         let receiverProxyName = first.lowercaseString + second.lowercaseString.capitalizedString + num
         
         // Send off to API to send message
-        api.send(messageWithText: text, withMediaType: "", withMediaURL: "", fromSenderProxy: proxy!, toReceiverProxyName: receiverProxyName) { (error, convo) in
+        api.send(messageWithText: text, withMediaType: "", fromSenderProxy: proxy!, toReceiverProxyName: receiverProxyName) { (error, convo, message) in
             if let error = error {
                 self.enableButtonsAndShowAlert(error.title, message: error.message)
             } else {
