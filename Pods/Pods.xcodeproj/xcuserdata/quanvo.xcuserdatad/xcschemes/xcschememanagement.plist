@@ -29,6 +29,16 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>Fusuma.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>ImagePickerSheetController.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>JSQMessagesViewController.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -57,6 +67,16 @@
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>260FDE8F0D4388DE928773A4768128A4</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>2AAAB9973850C35994DC04473435E1A3</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>3D1C0FD0D748514D3BC13B27C5D8541C</key>
 		<dict>
 			<key>primary</key>
@@ -72,6 +92,11 @@
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>7380ABD049E12DCFEC9B9E1D2D52C627</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>8329B4DD82B7A073B34A61C9527865D0</key>
 		<dict>
 			<key>primary</key>
@@ -83,11 +108,6 @@
 			<true/>
 		</dict>
 		<key>A14D8BA6703C474E6BC2E4686663CD68</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>D412E517D262FF74FEB2D1F45E074A8D</key>
 		<dict>
 			<key>primary</key>
 			<true/>

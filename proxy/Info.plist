@@ -66,5 +66,9 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>So you can send photos to users.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>So you can take pictures and send them.</string>
 </dict>
 </plist>

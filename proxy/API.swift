@@ -15,6 +15,7 @@ class API {
     static let sharedInstance = API()
     
     let ref = FIRDatabase.database().reference()
+    let storageRef = FIRStorage.storage().referenceForURL(URLs.Storage)
     
     var proxyNameGenerator = ProxyNameGenerator()
     var isCreatingProxy = false
@@ -36,7 +37,7 @@ class API {
         ref.child("icons").child(uid).removeObserverWithHandle(iconsRefHandle)
     }
     
-    // MARK: User
+    // MARK: - User
     /// Gives the user access to the default icons.
     func setDefaultIcons(forUser user: String) {
         let defaultIcons = DefaultIcons(id: user).defaultIcons
@@ -238,7 +239,6 @@ class API {
         if let URL = iconURLCache[icon] {
             completion(URL: URL)
         } else {
-            let storageRef = FIRStorage.storage().referenceForURL(URLs.Storage)
             let iconRef = storageRef.child("\(icon).png")
             iconRef.downloadURLWithCompletion { (URL, error) -> Void in
                 if error == nil, let URL = URL?.absoluteString {
@@ -534,6 +534,14 @@ class API {
     /// Saves the message.
     func save(message message: Message) {
         ref.child("messages").child(message.convo).child(message.key).setValue(message.toAnyObject())
+    }
+    
+    /// Saves the local UIImage to storage.
+    /// Returns the URL String to the UIImage in storage.
+    func save(localFile url: NSURL, completion: (URL: String) -> Void) {
+        storageRef.child(url.absoluteString!).putFile(url, metadata: nil) { metadata, error in
+            completion(URL: metadata!.downloadURL()!.absoluteString!)
+        }
     }
     
     /// Sets the message's `read` to true and gives it a current `timeRead`.

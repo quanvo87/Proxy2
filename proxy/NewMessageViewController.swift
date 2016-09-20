@@ -51,8 +51,11 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
     }
     
     func setUpCancelButton() {
-        let cancelButton = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(NewMessageViewController.closeNewMessage))
-        navigationItem.rightBarButtonItem = cancelButton
+        let cancelButton = UIButton(type: .Custom)
+        cancelButton.setImage(UIImage(named: "cancel"), forState: UIControlState.Normal)
+        cancelButton.addTarget(self, action: #selector(NewMessageViewController.cancelNewMessage), forControlEvents: UIControlEvents.TouchUpInside)
+        cancelButton.frame = CGRectMake(0, 0, 25, 25)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: cancelButton)
     }
     
     /*
@@ -220,8 +223,7 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
         navigationController?.pushViewController(dest, animated: true)
     }
     
-    func closeNewMessage() {
-//        view.endEditing(true)
+    func cancelNewMessage() {
         if createdNewProxy && !savingNewProxy {
             api.cancelCreating(proxy: proxy!)
         }

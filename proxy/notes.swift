@@ -1,13 +1,5 @@
 /*
- 
- when leave convo, have to notify convo view to pop as well
- 
- add freeze ui on proxy pull
- 
  toggle photos/videos in chat
- data detection in chat
- unread receipts
- pull out time stamps?
  
  pull certain amount of data at a time, and pull more as needed
  

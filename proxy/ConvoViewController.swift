@@ -8,8 +8,9 @@
 
 import FirebaseDatabase
 import JSQMessagesViewController
+import Photos
 
-class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControllerDelegate {
+class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     let api = API.sharedInstance
     let ref = FIRDatabase.database().reference()
@@ -415,7 +416,97 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     }
     
     override func didPressAccessoryButton(sender: UIButton!) {
+        self.inputToolbar.contentView!.textView!.resignFirstResponder()
         
+        let alert = UIAlertController(title: "Media Message", message: nil, preferredStyle: .ActionSheet)
+        
+        // Send photo
+        alert.addAction(UIAlertAction(title: "Send Photo", style: .Default, handler: {
+            action in
+            
+            func showImagePickerController() {
+                let imagePickerController = UIImagePickerController()
+                imagePickerController.delegate = self
+                imagePickerController.sourceType = .PhotoLibrary
+                self.presentViewController(imagePickerController, animated: true, completion: nil)
+            }
+            
+            func showLinkToSettings() {
+                let alert = UIAlertController(title: "Send Photos", message: "Go into settings to enable access to photos.", preferredStyle: .Alert)
+                alert.addAction(UIAlertAction(title: "Go To Settings", style: .Default) { (alertAction) in
+                    if let appSettings = NSURL(string: UIApplicationOpenSettingsURLString) {
+                        UIApplication.sharedApplication().openURL(appSettings, options: [:], completionHandler: nil)
+                    }})
+                alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+                self.presentViewController(alert, animated: true, completion: nil)
+            }
+ 
+            let photoAuthStatus = PHPhotoLibrary.authorizationStatus()
+            switch photoAuthStatus {
+            case .Authorized: showImagePickerController()
+            case .Denied, .Restricted: showLinkToSettings()
+            case .NotDetermined:
+                PHPhotoLibrary.requestAuthorization() { (status) -> Void in
+                    switch status {
+                    case .Authorized: showImagePickerController()
+                    case .Denied, .Restricted: showLinkToSettings()
+                    case .NotDetermined: break
+                    }
+                }
+            }
+        }))
+        
+//        let locationAction = UIAlertAction(title: "Send location", style: .Default) { (action) in
+//            /**
+//             *  Add fake location
+//             */
+//            let locationItem = self.buildLocationItem()
+//
+//            self.addMedia(locationItem)
+//        }
+//
+//        let videoAction = UIAlertAction(title: "Send video", style: .Default) { (action) in
+//            /**
+//             *  Add fake video
+//             */
+//            let videoItem = self.buildVideoItem()
+//            
+//            self.addMedia(videoItem)
+//        }
+//        
+//        let audioAction = UIAlertAction(title: "Send audio", style: .Default) { (action) in
+//            /**
+//             *  Add fake audio
+//             */
+//            let audioItem = self.buildAudioItem()
+//            
+//            self.addMedia(audioItem)
+//        }
+//        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
+    
+    func addMedia(media:JSQMediaItem) {
+//        let message = JSQMessage(senderId: self.senderId, displayName: self.senderDisplayName, media: media)
+//        self.messages.append(message)
+//        
+//        //Optional: play sent sound
+//        
+//        self.finishSendingMessageAnimated(true)
+    }
+    
+    // MARK: - Image picker controller delegate
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
+        let imageURL = info[UIImagePickerControllerReferenceURL] as! NSURL
+        api.save(localFile: imageURL) { (URL) in
+            
+        }
+        dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+        dismissViewControllerAnimated(true, completion: nil)
     }
     
     // MARK: - Text view

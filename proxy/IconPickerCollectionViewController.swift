@@ -52,8 +52,11 @@ class IconPickerCollectionViewController: UICollectionViewController {
     }
     
     func setUpCancelButton() {
-        let cancelButton = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(IconPickerCollectionViewController.closeIconPicker))
-        navigationItem.rightBarButtonItem = cancelButton
+        let cancelButton = UIButton(type: .Custom)
+        cancelButton.setImage(UIImage(named: "cancel"), forState: UIControlState.Normal)
+        cancelButton.addTarget(self, action: #selector(IconPickerCollectionViewController.closeIconPicker), forControlEvents: UIControlEvents.TouchUpInside)
+        cancelButton.frame = CGRectMake(0, 0, 25, 25)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: cancelButton)
     }
     
     func closeIconPicker() {
