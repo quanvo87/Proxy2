@@ -34,7 +34,12 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>ImagePickerSheetController.xcscheme</key>
+		<key>ImagePicker-ImagePicker.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>ImagePicker.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -67,17 +72,17 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>260FDE8F0D4388DE928773A4768128A4</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>2AAAB9973850C35994DC04473435E1A3</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>3D1C0FD0D748514D3BC13B27C5D8541C</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>4A752DB30C95014BA928A56FDB3C6F84</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>55BD3033702F62283C42C1F6E037342D</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -93,6 +98,11 @@
 			<true/>
 		</dict>
 		<key>7380ABD049E12DCFEC9B9E1D2D52C627</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>7C4108C3722F95AE55CEDD665AC9630D</key>
 		<dict>
 			<key>primary</key>
 			<true/>

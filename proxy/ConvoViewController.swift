@@ -9,8 +9,10 @@
 import FirebaseDatabase
 import JSQMessagesViewController
 import Photos
+import ImagePicker
+import Fusuma
 
-class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, ImagePickerDelegate, FusumaDelegate {
     
     let api = API.sharedInstance
     let ref = FIRDatabase.database().reference()
@@ -494,16 +496,16 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         let alert = UIAlertController(title: "Media Message", message: nil, preferredStyle: .ActionSheet)
         
         // Send photo
-        alert.addAction(UIAlertAction(title: "Send Photo", style: .Default, handler: {
-            action in
+        alert.addAction(UIAlertAction(title: "Send Photo", style: .Default, handler: { action in
             
-            // Show the image picker if we have permission to access photos.
-            func showImagePickerController() {
-                let imagePickerController = UIImagePickerController()
-                imagePickerController.delegate = self
-                imagePickerController.sourceType = .PhotoLibrary
-                self.presentViewController(imagePickerController, animated: true, completion: nil)
+            func showFusuma() {
+                let fusuma = FusumaViewController()
+                fusuma.delegate = self
+                fusuma.hasVideo = true // If you want to let the users allow to use video.
+                self.presentViewController(fusuma, animated: true, completion: nil)
             }
+            
+            showFusuma()
             
             // Show an alert that can take the user to the app's page in the user's phone settings.
             func showLinkToSettings() {
@@ -515,21 +517,40 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
                 alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
                 self.presentViewController(alert, animated: true, completion: nil)
             }
- 
-            // Check if we have access to photos then take action accordingly.
-            let photoAuthStatus = PHPhotoLibrary.authorizationStatus()
-            switch photoAuthStatus {
-            case .Authorized: showImagePickerController()
-            case .Denied, .Restricted: showLinkToSettings()
-            case .NotDetermined:
-                PHPhotoLibrary.requestAuthorization() { (status) -> Void in
-                    switch status {
-                    case .Authorized: showImagePickerController()
-                    case .Denied, .Restricted: showLinkToSettings()
-                    case .NotDetermined: break
-                    }
-                }
+                
+            // Show image picker.
+            func showImagePickerController() {
+                let imagePickerController = UIImagePickerController()
+                imagePickerController.delegate = self
+                imagePickerController.sourceType = .PhotoLibrary
+                self.presentViewController(imagePickerController, animated: true, completion: nil)
             }
+            
+            // Check for permission to photos and act accordingly.
+//            let photoAuthStatus = PHPhotoLibrary.authorizationStatus()
+//            switch photoAuthStatus {
+//            case .Authorized: showImagePickerController()
+//            case .Denied, .Restricted: showLinkToSettings()
+//            case .NotDetermined:
+//                PHPhotoLibrary.requestAuthorization() { (status) -> Void in
+//                    switch status {
+//                    case .Authorized: showImagePickerController()
+//                    case .Denied, .Restricted: showLinkToSettings()
+//                    case .NotDetermined: break
+//                    }
+//                }
+//            }
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Take Photo", style: .Default, handler: { action in
+            
+            // Show ImagePicker
+            let imagePickerController = ImagePickerController()
+            imagePickerController.delegate = self
+            imagePickerController.imageLimit = 5
+            Configuration.recordLocation = false
+            Configuration.requestPermissionMessage = "Allow access to your photos in order to send them."
+            self.presentViewController(imagePickerController, animated: true, completion: nil)
         }))
         
 //        let locationAction = UIAlertAction(title: "Send location", style: .Default) { (action) in
@@ -576,6 +597,62 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         finishSendingMessage()
         JSQSystemSoundPlayer.jsq_playMessageSentSound()
         userTyping = false
+    }
+    
+    // MARK: - Fusuma delegate
+    // Return the image which is selected from camera roll or is taken via the camera.
+    func fusumaImageSelected(image: UIImage) {
+        
+        print("Image selected")
+    }
+    
+    // Return the image but called after is dismissed.
+    func fusumaDismissedWithImage(image: UIImage) {
+        
+        print("Called just after FusumaViewController is dismissed.")
+    }
+    
+    func fusumaVideoCompleted(withFileURL fileURL: NSURL) {
+        
+        print("Called just after a video has been selected.")
+    }
+    
+    // When camera roll is not authorized, this method is called.
+    func fusumaCameraRollUnauthorized() {
+        
+        print("Camera roll unauthorized")
+    }
+    
+    // MARK: - ImagePicker delegate
+    func wrapperDidPress(imagePicker: ImagePickerController, images: [UIImage]) {
+    }
+    
+    func doneButtonDidPress(imagePicker: ImagePickerController, images: [UIImage]) {
+        for image in images {
+            sendImage(image)
+        }
+        dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func cancelButtonDidPress(imagePicker: ImagePickerController) {
+        dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func sendImage(image: UIImage) {
+        // First send a placeholder message that displays a loading indicator.
+        api.send(messageWithText: "Photo message.", withMediaType: "placeholder", usingSenderConvo: self.convo) { (convo, message) in
+            self.finishSendingMessage()
+            
+            // Then upload the image to storage.
+            let timestamp = String(NSDate().timeIntervalSince1970)
+            self.api.save(image: image, withTimestamp: timestamp, completion: { (URL) in
+                
+                // The upload returns the URL to the image we just uploaded.
+                // Update the placeholder message with this info.
+                self.api.setMedia(forMessage: message, mediaType: "image", mediaURL: URL)
+                self.finishedWritingMessage()
+            })
+        }
     }
     
     // MARK: - Image picker controller delegate
