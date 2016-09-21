@@ -244,28 +244,28 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
             // Pull that content and reload the cell once it has a URL.
             case "placeholder":
                 
-                // Create a placeholder image while the content is being prepared.
+                // Send message with placeholder.
                 let media = JSQPhotoMediaItem()
-                media.image = nil
-                
-                // Display the message with the placeholder content.
                 let _message = Message(key: message.key, convo: message.convo, mediaType: message.mediaType, mediaURL: message.mediaURL, read: message.read, timeRead: message.timeRead, senderId: message.senderId, date: 0.0, text: message.text, media: media)
                 self.messages.append(_message)
                 self.finishReceivingMessage()
                 
                 // Wait for the message's content to be loaded to storage.
-                // Once this happens, the message's `mediaType` and `mediaURL` will be updated.
+                // Once this happens, the message's `mediaURL` will be updated.
                 var messageRefHandle = FIRDatabaseHandle()
-                let messageRef = self.ref.child("messages").child(message.convo).child(message.key)
+                let messageRef = self.ref.child("messages").child(message.convo).child(message.key).child("mediaURL")
                 messageRefHandle = messageRef.observeEventType(.Value, withBlock: { (snapshot) in
-                    let message = Message(anyObject: snapshot.value!)
                     
-                    // Use the updated `mediaURL` to load the image.
-                    self.api.getUIImage(fromURL: NSURL(string: message.mediaURL)!, completion: { (image) in
+                    // Get `mediaURL`.
+                    guard let mediaURL = snapshot.value as? String else {
+                        return
+                    }
+                    
+                    // Get the image from `mediaURL`.
+                    self.api.getImage(fromURL: mediaURL, completion: { (image) in
                         
-                        // Set the image once it has been retrieved.
+                        // Load the image to the cell.
                         (_message.media as! JSQPhotoMediaItem).image = image
-                        
                         
                         // Reload the cell.
                         let indexPath = NSIndexPath(forItem: self.messages.count - 1, inSection: 0)
@@ -278,19 +278,16 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
                 
             case "image":
                 
-                // Create a placeholder image while the content is being prepared.
+                // Send message with placeholder.
                 let media = JSQPhotoMediaItem()
-                media.image = nil
-                
-                // Display the message with the placeholder content.
                 let _message = Message(key: message.key, convo: message.convo, mediaType: message.mediaType, mediaURL: message.mediaURL, read: message.read, timeRead: message.timeRead, senderId: message.senderId, date: 0.0, text: message.text, media: media)
                 self.messages.append(_message)
                 self.finishReceivingMessage()
                 
-                // Use `mediaURL` to load the image.
-                self.api.getUIImage(fromURL: NSURL(string: message.mediaURL)!, completion: { (image) in
+                // Get the image from `mediaURL`.
+                self.api.getImage(fromURL: message.mediaURL, completion: { (image) in
                     
-                    // Set the image once it has been retrieved.
+                    // Load the image to the cell.
                     (_message.media as! JSQPhotoMediaItem).image = image
                     
                     // Reload the cell.
@@ -576,16 +573,16 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     // MARK: - Image picker controller delegate
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         
-        // First send a placeholder message that will display a loading indication.
+        // First send a placeholder message that displays a loading indicator.
         api.send(messageWithText: "Sent a photo.", withMediaType: "placeholder", usingSenderConvo: self.convo) { (convo, message) in
             self.finishSendingMessage()
             
             // Then upload the image to storage.
             let image = info[UIImagePickerControllerOriginalImage] as? UIImage
-            let URL = info[UIImagePickerControllerReferenceURL] as? NSURL
-            self.api.save(image: image!, withURL: URL!, completion: { (URL) in
+            let timestamp = String(NSDate().timeIntervalSince1970)
+            self.api.save(image: image!, withTimestamp: timestamp, completion: { (URL) in
                 
-                // The upload returns a URL to the image we just uploaded.
+                // The upload returns the URL to the image we just uploaded.
                 // Update the placeholder message with this info.
                 self.api.setMedia(forMessage: message, mediaType: "image", mediaURL: URL.absoluteString!)
                 self.finishedWritingMessage()

@@ -9,6 +9,7 @@
 import FirebaseAuth
 import FirebaseDatabase
 import FirebaseStorage
+import JSQMessagesViewController
 
 class API {
     
@@ -24,8 +25,6 @@ class API {
     var icons = [String]()
     var iconURLCache = [String: String]()
     var iconImageCache = [String: UIImage]()
-    
-    var userImageCache = [String: UIImage]()
     
     var uid: String = "" {
         didSet {
@@ -538,32 +537,35 @@ class API {
         ref.child("messages").child(message.convo).child(message.key).setValue(message.toAnyObject())
     }
     
-    /// Saves the local file to storage.
+    /// Saves a UIImage to storage.
     /// Returns the URL String to the file in storage.
-    func save(image image: UIImage, withURL URL: NSURL, completion: (URL: NSURL) -> Void) {
-        let data = UIImageJPEGRepresentation(image, 0.8)!
+    func save(image image: UIImage, withTimestamp timestamp: String, completion: (URL: NSURL) -> Void) {
+        let data = UIImageJPEGRepresentation(image, CGFloat.min)!
         let metadata = FIRStorageMetadata()
         metadata.contentType = "image/jpg"
-        storageRef.child("userImages").child(URL.absoluteString!).putData(data, metadata: metadata) { (metadata, error) in
+        storageRef.child("userImages").child(timestamp).putData(data, metadata: metadata) { (metadata, error) in
             let URL = metadata?.downloadURL()
-            self.userImageCache[URL!.absoluteString!] = image
             completion(URL: URL!)
+            KingfisherManager.sharedManager.cache.storeImage(image, forKey: URL!.absoluteString!, toDisk: true, completionHandler: nil)
         }
     }
     
-    /// Returns a UIImage from storage from the URL.
-    func getUIImage(fromURL URL: NSURL, completion: (image: UIImage) -> Void) {
-        if let image = userImageCache[URL.absoluteString!] {
-            completion(image: image)
-        } else {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                let data = NSData(contentsOfURL: URL)
-                dispatch_async(dispatch_get_main_queue(), {
-                    guard let data = data else { return }
-                    let image = UIImage(data: data)
-                    self.userImageCache[URL.absoluteString!] = image
-                    completion(image: image!)
-                })
+    /// Returns a UIImage from the URL.
+    func getImage(fromURL URL: String, completion: (image: UIImage?) -> Void) {
+        KingfisherManager.sharedManager.cache.retrieveImageForKey(URL, options: nil) { (image, cacheType) -> () in
+            if let image = image {
+                completion(image: image)
+            } else {
+                guard let URLFromString = NSURL(string: URL) else {
+                    completion(image: nil)
+                    return
+                }
+                KingfisherManager.sharedManager.downloader.downloadImageWithURL(URLFromString, progressBlock: nil) { (image, error, imageURL, originalData) -> () in
+                    if let image = image {
+                        KingfisherManager.sharedManager.cache.storeImage(image, forKey: URL, toDisk: true, completionHandler: nil)
+                        completion(image: image)
+                    }
+                }
             }
         }
     }
