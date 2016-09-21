@@ -9,7 +9,6 @@
 import FirebaseAuth
 import FirebaseDatabase
 import FirebaseStorage
-import JSQMessagesViewController
 
 class API {
     
@@ -24,7 +23,6 @@ class API {
     var iconsRefHandle = FIRDatabaseHandle()
     var icons = [String]()
     var iconURLCache = [String: String]()
-    var iconImageCache = [String: UIImage]()
     
     var uid: String = "" {
         didSet {
@@ -36,6 +34,26 @@ class API {
     
     deinit {
         ref.child("icons").child(uid).removeObserverWithHandle(iconsRefHandle)
+    }
+    
+    // MARK: - Utility
+    /// Returns a UIImage from the URL.
+    func getImage(fromURL URL: String, completion: (image: UIImage) -> Void) {
+        KingfisherManager.sharedManager.cache.retrieveImageForKey(URL, options: nil) { (image, cacheType) -> () in
+            if let image = image {
+                completion(image: image)
+            } else {
+                guard let URLFromString = NSURL(string: URL) else {
+                    return
+                }
+                KingfisherManager.sharedManager.downloader.downloadImageWithURL(URLFromString, progressBlock: nil) { (image, error, imageURL, originalData) -> () in
+                    if let image = image {
+                        KingfisherManager.sharedManager.cache.storeImage(image, forKey: URL, toDisk: true, completionHandler: nil)
+                        completion(image: image)
+                    }
+                }
+            }
+        }
     }
     
     // MARK: - User
@@ -230,8 +248,7 @@ class API {
     /// Returns the user's proxy struct.
     func getProxy(withKey key: String, ofUser user: String, completion: (proxy: Proxy?) -> Void) {
         ref.child("proxies").child(user).child(key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            let proxy = Proxy(anyObject: snapshot.value!)
-            completion(proxy: proxy)
+            completion(proxy: Proxy(anyObject: snapshot.value!))
         })
     }
     
@@ -240,7 +257,7 @@ class API {
         if let URL = iconURLCache[icon] {
             completion(URL: URL)
         } else {
-            let iconRef = storageRef.child("\(icon).png")
+            let iconRef = storageRef.child("icons").child("\(icon).png")
             iconRef.downloadURLWithCompletion { (URL, error) -> Void in
                 if error == nil, let URL = URL?.absoluteString {
                     self.iconURLCache[icon] = URL
@@ -252,20 +269,12 @@ class API {
     
     /// Returns a UIImage of the icon from the URL.
     func getUIImage(forIcon icon: String, completion: (image: UIImage) -> Void) {
-        if let image = iconImageCache[icon] {
-            completion(image: image)
-        } else {
-            getURL(forIcon: icon, completion: { (URL) in
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                    let data = NSData(contentsOfURL: NSURL(string: URL)!)
-                    dispatch_async(dispatch_get_main_queue(), {
-                        let image = UIImage(data: data!)
-                        self.iconImageCache[icon] = image
-                        completion(image: image!)
-                    })
-                }
+        getURL(forIcon: icon, completion: { (URL) in
+            self.getImage(fromURL: URL, completion: { (image) in
+                completion(image: image)
             })
-        }
+            
+        })
     }
     
     /// Saves the proxy with a new `nickname` and `timestamp`.
@@ -299,6 +308,7 @@ class API {
     
     /// Updates the proxy's `icon`.
     func update(icon icon: String, forProxy proxy: Proxy) {
+        
         /// Global proxy list
         ref.child("proxies").child(proxy.globalKey).child("icon").setValue(icon)
         
@@ -364,6 +374,7 @@ class API {
     /// (The actual user is not notified.)
     /// Decrement's user's unread by the remaining unread in the proxy.
     func delete(proxy proxy: Proxy, withConvos convos: [Convo]) {
+        
         /// Loop through all convos this proxy is in
         for convo in convos {
             
@@ -388,7 +399,7 @@ class API {
     
     // MARK: - Message
     /// Error checks before sending it off to the appropriate message sending fuction.
-    /// Returns the sender's convo on success.
+    /// Returns the sender's convo and the message on success.
     /// Returns an ErrorAlert on failure.
     func send(messageWithText text: String, withMediaType mediaType: String, fromSenderProxy senderProxy: Proxy, toReceiverProxyName receiverProxyName: String, completion: (error: ErrorAlert?, convo: Convo?, message: Message?) -> Void ) {
         
@@ -433,7 +444,7 @@ class API {
     /// Saves the convo structs.
     /// Increments both users' `proxiesInteractedWith`.
     /// Sends off to `sendMessage`.
-    /// Returns updated sender's `convo`.
+    /// Returns updated sender's `convo` and the message.
     func setUpFirstMessage(fromSenderProxy senderProxy: Proxy, toReceiverProxy receiverProxy: Proxy, usingConvoKey convoKey: String, withText text: String, withMediaType mediaType: String, completion: (convo: Convo, message: Message) -> Void) {
         
         /// Check if sender is in receiver's blocked list
@@ -494,7 +505,7 @@ class API {
     ///
     ///     - message
     ///
-    /// Returns the sender's convo and the message key.
+    /// Returns the sender's convo and the message.
     func send(messageWithText text: String, withMediaType mediaType: String, usingSenderConvo convo: Convo, completion: (convo: Convo, message: Message) -> Void) {
         userIsPresent(user: convo.receiverId, convo: convo.key) { (userIsPresent) in
             let increment = userIsPresent ? 0 : 1
@@ -525,7 +536,7 @@ class API {
             /// Write message
             let messageKey = self.ref.child("messages").child(convo.key).childByAutoId().key
             let timeRead = userIsPresent ? timestamp : 0.0
-            let message = Message(key: messageKey, convo: convo.key, mediaType: mediaType, mediaURL: "", read: userIsPresent, timeRead: timeRead, senderId: convo.senderId, date: timestamp, text: text)
+            let message = Message(key: messageKey, convo: convo.key, mediaType: mediaType, read: userIsPresent, timeRead: timeRead, senderId: convo.senderId, date: timestamp, text: text)
             self.save(message: message)
             
             completion(convo: _convo, message: message)
@@ -539,34 +550,14 @@ class API {
     
     /// Saves a UIImage to storage.
     /// Returns the URL String to the file in storage.
-    func save(image image: UIImage, withTimestamp timestamp: String, completion: (URL: NSURL) -> Void) {
+    func save(image image: UIImage, withTimestamp timestamp: String, completion: (URL: String) -> Void) {
         let data = UIImageJPEGRepresentation(image, CGFloat.min)!
         let metadata = FIRStorageMetadata()
         metadata.contentType = "image/jpg"
         storageRef.child("userImages").child(timestamp).putData(data, metadata: metadata) { (metadata, error) in
-            let URL = metadata?.downloadURL()
-            completion(URL: URL!)
-            KingfisherManager.sharedManager.cache.storeImage(image, forKey: URL!.absoluteString!, toDisk: true, completionHandler: nil)
-        }
-    }
-    
-    /// Returns a UIImage from the URL.
-    func getImage(fromURL URL: String, completion: (image: UIImage?) -> Void) {
-        KingfisherManager.sharedManager.cache.retrieveImageForKey(URL, options: nil) { (image, cacheType) -> () in
-            if let image = image {
-                completion(image: image)
-            } else {
-                guard let URLFromString = NSURL(string: URL) else {
-                    completion(image: nil)
-                    return
-                }
-                KingfisherManager.sharedManager.downloader.downloadImageWithURL(URLFromString, progressBlock: nil) { (image, error, imageURL, originalData) -> () in
-                    if let image = image {
-                        KingfisherManager.sharedManager.cache.storeImage(image, forKey: URL, toDisk: true, completionHandler: nil)
-                        completion(image: image)
-                    }
-                }
-            }
+            guard let URL = metadata?.downloadURL()?.absoluteString else { return }
+            completion(URL: URL)
+            KingfisherManager.sharedManager.cache.storeImage(image, forKey: URL, toDisk: true, completionHandler: nil)
         }
     }
     

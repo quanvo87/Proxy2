@@ -184,7 +184,8 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         })
     }
     
-    // Observe when sender changes receiver's nickname and update all cells that are displaying it.
+    // Observe when sender changes receiver's nickname for this convo and update all cells that are displaying it.
+    // Also update navigation bar title.
     func observeRecieverNickname() {
         receiverNicknameRef = ref.child("convos").child(convo.senderId).child(convo.key).child("receiverNickname")
         receiverNicknameRefHandle = receiverNicknameRef.observeEventType(.Value, withBlock: { (snapshot) in
@@ -229,14 +230,6 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         messagesRef = ref.child("messages").child(convo.key)
         messagesRefHandle = messagesRef.queryOrderedByChild("timestamp").observeEventType(.ChildAdded, withBlock: { (snapshot) in
             let message = Message(anyObject: snapshot.value!)
-            if message.senderId != self.senderId {
-                if !message.read {
-                    self.api.setRead(forMessage: message)
-                }
-            } else {
-                self.readReceiptIndex = self.messages.count - 1
-            }
-            
             switch message.mediaType {
                 
             // A new media message that is waiting for its content to be uploaded to storage.
@@ -246,7 +239,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
                 
                 // Send message with placeholder.
                 let media = JSQPhotoMediaItem()
-                let _message = Message(key: message.key, convo: message.convo, mediaType: message.mediaType, mediaURL: message.mediaURL, read: message.read, timeRead: message.timeRead, senderId: message.senderId, date: 0.0, text: message.text, media: media)
+                let _message = Message(key: message.key, convo: message.convo, mediaType: message.mediaType, mediaURL: message.mediaURL, read: message.read, timeRead: message.timeRead, senderId: message.senderId, date: message.date.timeIntervalSince1970, text: message.text, media: media)
                 self.messages.append(_message)
                 self.finishReceivingMessage()
                 
@@ -280,7 +273,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
                 
                 // Send message with placeholder.
                 let media = JSQPhotoMediaItem()
-                let _message = Message(key: message.key, convo: message.convo, mediaType: message.mediaType, mediaURL: message.mediaURL, read: message.read, timeRead: message.timeRead, senderId: message.senderId, date: 0.0, text: message.text, media: media)
+                let _message = Message(key: message.key, convo: message.convo, mediaType: message.mediaType, mediaURL: message.mediaURL, read: message.read, timeRead: message.timeRead, senderId: message.senderId, date: message.date.timeIntervalSince1970, text: message.text, media: media)
                 self.messages.append(_message)
                 self.finishReceivingMessage()
                 
@@ -300,10 +293,22 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
                 self.messages.append(message)
                 self.finishReceivingMessage()
             }
+            
+            // Mark messages from other user as read.
+            if message.senderId != self.senderId {
+                if !message.read {
+                    self.api.setRead(forMessage: message)
+                }
+            } else {
+                
+                // Keep track of the last message you sent.
+                self.readReceiptIndex = self.messages.count - 1
+            }
         })
     }
     
     func observeTyping() {
+        
         // Stop monitoring user's typing when they disconnect.
         userTypingRef = ref.child("typing").child(convo.key).child(convo.senderId)
         userTypingRef.onDisconnectRemoveValue()
@@ -355,14 +360,15 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         return cell
     }
     
-    // Display a centered timestamp before the very first message in the convo;
-    // and when too much time has passed between two messages.
     // Make space for timestamp.
     override func collectionView(collectionView: JSQMessagesCollectionView, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout, heightForCellTopLabelAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        
+        // First message of convo.
         if indexPath.item == 0 {
             return kJSQMessagesCollectionViewCellLabelHeightDefault
         }
         
+        // When too much time has passed between two messages.
         let prev = self.messages[indexPath.item - 1]
         let curr = self.messages[indexPath.item]
         if curr.date.timeIntervalSinceDate(prev.date) / 60 > Settings.TimeBetweenTimestamps {
@@ -376,10 +382,12 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     override func collectionView(collectionView: JSQMessagesCollectionView, attributedTextForCellTopLabelAtIndexPath indexPath: NSIndexPath) -> NSAttributedString? {
         let curr = self.messages[indexPath.item]
         
+        // First message of convo.
         if indexPath.item == 0 {
             return JSQMessagesTimestampFormatter.sharedFormatter().attributedTimestampForDate(curr.date)
         }
         
+        // When too much time has passed between two messages.
         let prev = self.messages[indexPath.item - 1]
         if curr.date.timeIntervalSinceDate(prev.date) / 60 > Settings.TimeBetweenTimestamps {
             return JSQMessagesTimestampFormatter.sharedFormatter().attributedTimestampForDate(curr.date)
@@ -388,20 +396,21 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         return nil
     }
     
-    // Display an avatar for the first message of the convo.
-    // Display an avatar for the last message of the convo.
-    // Display an avatar for each user on message chain breaks.
+    // Get avatars.
     override func collectionView(collectionView: JSQMessagesCollectionView!, avatarImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageAvatarImageDataSource! {
         let curr = self.messages[indexPath.item]
         
+        // Display an avatar for the first message of the convo.
         if indexPath.item == 0 {
             return icons[curr.senderId]
         }
         
+        // Display an avatar for the last message of the convo.
         if indexPath.item == messages.count - 1 {
             return icons[curr.senderId]
         }
         
+        // Display an avatar for each user on message chain breaks.
         let next = self.messages[indexPath.item + 1]
         if curr.senderId != next.senderId {
             return icons[curr.senderId]
@@ -482,7 +491,6 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     
     override func didPressAccessoryButton(sender: UIButton!) {
         self.inputToolbar.contentView!.textView!.resignFirstResponder()
-        
         let alert = UIAlertController(title: "Media Message", message: nil, preferredStyle: .ActionSheet)
         
         // Send photo
@@ -574,17 +582,17 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         
         // First send a placeholder message that displays a loading indicator.
-        api.send(messageWithText: "Sent a photo.", withMediaType: "placeholder", usingSenderConvo: self.convo) { (convo, message) in
+        api.send(messageWithText: "Photo message.", withMediaType: "placeholder", usingSenderConvo: self.convo) { (convo, message) in
             self.finishSendingMessage()
             
             // Then upload the image to storage.
-            let image = info[UIImagePickerControllerOriginalImage] as? UIImage
+            guard let image = info[UIImagePickerControllerOriginalImage] as? UIImage else { return }
             let timestamp = String(NSDate().timeIntervalSince1970)
-            self.api.save(image: image!, withTimestamp: timestamp, completion: { (URL) in
+            self.api.save(image: image, withTimestamp: timestamp, completion: { (URL) in
                 
                 // The upload returns the URL to the image we just uploaded.
                 // Update the placeholder message with this info.
-                self.api.setMedia(forMessage: message, mediaType: "image", mediaURL: URL.absoluteString!)
+                self.api.setMedia(forMessage: message, mediaType: "image", mediaURL: URL)
                 self.finishedWritingMessage()
             })
             self.dismissViewControllerAnimated(true, completion: nil)
