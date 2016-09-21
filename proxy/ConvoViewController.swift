@@ -9,10 +9,10 @@
 import FirebaseDatabase
 import JSQMessagesViewController
 import Photos
-import ImagePicker
+import YangMingShan
 import Fusuma
 
-class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, ImagePickerDelegate, FusumaDelegate {
+class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, FusumaDelegate, YMSPhotoPickerViewControllerDelegate {
     
     let api = API.sharedInstance
     let ref = FIRDatabase.database().reference()
@@ -493,64 +493,24 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     
     override func didPressAccessoryButton(sender: UIButton!) {
         self.inputToolbar.contentView!.textView!.resignFirstResponder()
-        let alert = UIAlertController(title: "Media Message", message: nil, preferredStyle: .ActionSheet)
+        let alert = UIAlertController(title: "Attach:", message: nil, preferredStyle: .ActionSheet)
         
         // Send photo
-        alert.addAction(UIAlertAction(title: "Send Photo", style: .Default, handler: { action in
-            
-            func showFusuma() {
-                let fusuma = FusumaViewController()
-                fusuma.delegate = self
-                fusuma.hasVideo = true // If you want to let the users allow to use video.
-                self.presentViewController(fusuma, animated: true, completion: nil)
-            }
-            
-            showFusuma()
-            
-            // Show an alert that can take the user to the app's page in the user's phone settings.
-            func showLinkToSettings() {
-                let alert = UIAlertController(title: "Send Photos", message: "Go into settings to enable access to photos.", preferredStyle: .Alert)
-                alert.addAction(UIAlertAction(title: "Go To Settings", style: .Default) { (alertAction) in
-                    if let appSettings = NSURL(string: UIApplicationOpenSettingsURLString) {
-                        UIApplication.sharedApplication().openURL(appSettings, options: [:], completionHandler: nil)
-                    }})
-                alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-                self.presentViewController(alert, animated: true, completion: nil)
-            }
-                
-            // Show image picker.
-            func showImagePickerController() {
-                let imagePickerController = UIImagePickerController()
-                imagePickerController.delegate = self
-                imagePickerController.sourceType = .PhotoLibrary
-                self.presentViewController(imagePickerController, animated: true, completion: nil)
-            }
-            
-            // Check for permission to photos and act accordingly.
-//            let photoAuthStatus = PHPhotoLibrary.authorizationStatus()
-//            switch photoAuthStatus {
-//            case .Authorized: showImagePickerController()
-//            case .Denied, .Restricted: showLinkToSettings()
-//            case .NotDetermined:
-//                PHPhotoLibrary.requestAuthorization() { (status) -> Void in
-//                    switch status {
-//                    case .Authorized: showImagePickerController()
-//                    case .Denied, .Restricted: showLinkToSettings()
-//                    case .NotDetermined: break
-//                    }
-//                }
-//            }
+        alert.addAction(UIAlertAction(title: "Photo 📸", style: .Default, handler: { action in
+            // Show YMSPhotoPicker, our VC that can handle camera and photos.
+            let ysmPhotoPicker = YMSPhotoPickerViewController()
+            ysmPhotoPicker.theme.cameraVeilColor = UIColor.clearColor()
+            ysmPhotoPicker.numberOfPhotoToSelect = 5
+            self.yms_presentCustomAlbumPhotoView(ysmPhotoPicker, delegate: self)
         }))
         
-        alert.addAction(UIAlertAction(title: "Take Photo", style: .Default, handler: { action in
-            
-            // Show ImagePicker
-            let imagePickerController = ImagePickerController()
-            imagePickerController.delegate = self
-            imagePickerController.imageLimit = 5
-            Configuration.recordLocation = false
-            Configuration.requestPermissionMessage = "Allow access to your photos in order to send them."
-            self.presentViewController(imagePickerController, animated: true, completion: nil)
+        // Send video
+        alert.addAction(UIAlertAction(title: "Video 🎥", style: .Default, handler: { action in
+            // Show Fusuma, our VC that can handle camera, photos, and video.
+            let fusuma = FusumaViewController()
+            fusuma.delegate = self
+            fusuma.hasVideo = true
+            self.presentViewController(fusuma, animated: true, completion: nil)
         }))
         
 //        let locationAction = UIAlertAction(title: "Send location", style: .Default) { (action) in
@@ -599,43 +559,68 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         userTyping = false
     }
     
+    // MARK: - YMSPhotoPicker delegate
+    func photoPickerViewControllerDidReceivePhotoAlbumAccessDenied(picker: YMSPhotoPickerViewController!) {
+        let alert = UIAlertController(title: "Allow photo album access?", message: "Need your permission to access photo albumbs.", preferredStyle: .Alert)
+        alert.addAction(UIAlertAction(title: "Settings", style: .Default) { (action) in
+            if let appSettings = NSURL(string: UIApplicationOpenSettingsURLString) {
+                UIApplication.sharedApplication().openURL(appSettings, options: [:], completionHandler: nil)
+            }})
+        alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
+    
+    func photoPickerViewControllerDidReceiveCameraAccessDenied(picker: YMSPhotoPickerViewController!) {
+        let alert = UIAlertController(title: "Allow camera album access?", message: "Need your permission to take a photo.", preferredStyle: .Alert)
+        alert.addAction(UIAlertAction(title: "Settings", style: .Default) { (action) in
+            if let appSettings = NSURL(string: UIApplicationOpenSettingsURLString) {
+                UIApplication.sharedApplication().openURL(appSettings, options: [:], completionHandler: nil)
+            }})
+        alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+        
+        // The access denied of camera always happens on picker, present alert on it to follow the view hierarchy.
+        picker.presentViewController(alert, animated: true, completion: nil)
+    }
+    
+    // User has selected the photos they want to send.
+    func photoPickerViewController(picker: YMSPhotoPickerViewController!, didFinishPickingImages photoAssets: [PHAsset]!) {
+        picker.dismissViewControllerAnimated(true) {
+            
+            let manager = PHImageManager.defaultManager()
+            let options = PHImageRequestOptions()
+            
+            // Get images from photoAssets and send them.
+            for asset in photoAssets {
+                manager.requestImageForAsset(asset, targetSize: PHImageManagerMaximumSize, contentMode: .Default, options: options, resultHandler: { (image, info) -> Void in
+                    if let image = image {
+                        self.sendImage(image)
+                    }
+                })
+            }
+        }
+    }
+    
     // MARK: - Fusuma delegate
     // Return the image which is selected from camera roll or is taken via the camera.
     func fusumaImageSelected(image: UIImage) {
-        
-        print("Image selected")
     }
     
     // Return the image but called after is dismissed.
     func fusumaDismissedWithImage(image: UIImage) {
-        
-        print("Called just after FusumaViewController is dismissed.")
+        sendImage(image)
     }
     
     func fusumaVideoCompleted(withFileURL fileURL: NSURL) {
-        
-        print("Called just after a video has been selected.")
     }
     
     // When camera roll is not authorized, this method is called.
     func fusumaCameraRollUnauthorized() {
-        
-        print("Camera roll unauthorized")
-    }
-    
-    // MARK: - ImagePicker delegate
-    func wrapperDidPress(imagePicker: ImagePickerController, images: [UIImage]) {
-    }
-    
-    func doneButtonDidPress(imagePicker: ImagePickerController, images: [UIImage]) {
-        for image in images {
-            sendImage(image)
-        }
-        dismissViewControllerAnimated(true, completion: nil)
-    }
-    
-    func cancelButtonDidPress(imagePicker: ImagePickerController) {
-        dismissViewControllerAnimated(true, completion: nil)
+        let alert = UIAlertController(title: "Allow camera album access?", message: "Need your permission to take a photo.", preferredStyle: .Alert)
+        alert.addAction(UIAlertAction(title: "Settings", style: .Default) { (action) in
+            if let appSettings = NSURL(string: UIApplicationOpenSettingsURLString) {
+                UIApplication.sharedApplication().openURL(appSettings, options: [:], completionHandler: nil)
+            }})
+        alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
     }
     
     func sendImage(image: UIImage) {
@@ -653,31 +638,6 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
                 self.finishedWritingMessage()
             })
         }
-    }
-    
-    // MARK: - Image picker controller delegate
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
-        
-        // First send a placeholder message that displays a loading indicator.
-        api.send(messageWithText: "Photo message.", withMediaType: "placeholder", usingSenderConvo: self.convo) { (convo, message) in
-            self.finishSendingMessage()
-            
-            // Then upload the image to storage.
-            guard let image = info[UIImagePickerControllerOriginalImage] as? UIImage else { return }
-            let timestamp = String(NSDate().timeIntervalSince1970)
-            self.api.save(image: image, withTimestamp: timestamp, completion: { (URL) in
-                
-                // The upload returns the URL to the image we just uploaded.
-                // Update the placeholder message with this info.
-                self.api.setMedia(forMessage: message, mediaType: "image", mediaURL: URL)
-                self.finishedWritingMessage()
-            })
-            self.dismissViewControllerAnimated(true, completion: nil)
-        }
-    }
-    
-    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-        dismissViewControllerAnimated(true, completion: nil)
     }
     
     // MARK: - Text view
