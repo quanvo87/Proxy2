@@ -94,8 +94,8 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
             let first = firstTextField.text?.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " ")),
             let second = secondTextField.text?.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " ")),
             let num = numTextField.text?.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " ")),
-            let text = messageTextView.text
-            where first != "" && second != "" && num != "" && text != "Message..." else {
+            let text = messageTextView.text?.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
+            where first != "" && second != "" && num != "" && text != "" && text != "Message..." else {
                 enableButtonsAndShowAlert("Missing Fields", message: "Please enter a value for each field.")
                 return
         }

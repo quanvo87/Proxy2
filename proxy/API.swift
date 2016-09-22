@@ -9,6 +9,7 @@
 import FirebaseAuth
 import FirebaseDatabase
 import FirebaseStorage
+import AVFoundation
 
 class API {
     
@@ -38,21 +39,66 @@ class API {
     
     // MARK: - Utility
     /// Returns a UIImage from the URL.
-    func getImage(fromURL URL: String, completion: (image: UIImage) -> Void) {
-        KingfisherManager.sharedManager.cache.retrieveImageForKey(URL, options: nil) { (image, cacheType) -> () in
+    func getImage(fromURL url: String, completion: (image: UIImage) -> Void) {
+        
+        // Check cache first.
+        KingfisherManager.sharedManager.cache.retrieveImageForKey(url, options: nil) { (image, cacheType) -> () in
             if let image = image {
                 completion(image: image)
-            } else {
-                guard let URLFromString = NSURL(string: URL) else {
-                    return
-                }
-                KingfisherManager.sharedManager.downloader.downloadImageWithURL(URLFromString, progressBlock: nil) { (image, error, imageURL, originalData) -> () in
-                    if let image = image {
-                        KingfisherManager.sharedManager.cache.storeImage(image, forKey: URL, toDisk: true, completionHandler: nil)
-                        completion(image: image)
-                    }
+                return
+            }
+        
+            // Not in cache, retrieve online.
+            guard let _url = NSURL(string: url) else { return }
+            KingfisherManager.sharedManager.downloader.downloadImageWithURL(_url, progressBlock: nil) { (image, error, imageURL, originalData) -> () in
+                if let image = image {
+                    KingfisherManager.sharedManager.cache.storeImage(image, forKey: url, toDisk: true, completionHandler: nil)
+                    completion(image: image)
                 }
             }
+        }
+    }
+    
+    /// Compresses the video. Returns the export session.
+    func compressVideo(fromURL inputURL: NSURL, toURL outputURL: NSURL, handler: (session: AVAssetExportSession) -> Void) {
+        let urlAsset = AVURLAsset(URL: inputURL, options: nil)
+        if let exportSession = AVAssetExportSession(asset: urlAsset, presetName: AVAssetExportPresetMediumQuality) {
+            exportSession.outputURL = outputURL
+            exportSession.outputFileType = AVFileTypeQuickTimeMovie
+            exportSession.shouldOptimizeForNetworkUse = true
+            exportSession.exportAsynchronouslyWithCompletionHandler { () -> Void in
+                handler(session: exportSession)
+            }
+        }
+    }
+    
+    /// Uploads compressed version of video to storage.
+    /// Returns URL to the video in storage.
+    func upload(videoWithURL url: NSURL, completion: (url: NSURL) -> Void) {
+        
+        /// Compress video.
+        let compressedURL = NSURL.fileURLWithPath(NSTemporaryDirectory() + NSUUID().UUIDString + ".m4v")
+        compressVideo(fromURL: url, toURL: compressedURL) { (session) in
+            if session.status == .Completed {
+                
+                /// Upload to storage.
+                self.storageRef.child("userFiles").child(String(NSDate().timeIntervalSince1970)).putFile(compressedURL, metadata: nil) { metadata, error in
+                    guard let url = metadata?.downloadURL() else { return }
+                    completion(url: url)
+                }
+            }
+        }  
+    }
+    
+    /// Uploads compressed version of image to storage.
+    /// Returns URL to the image in storage.
+    func upload(image image: UIImage, completion: (url: NSURL) -> Void) {
+        guard let data = UIImageJPEGRepresentation(image, 0) else { return }
+        storageRef.child("userFiles").child(String(NSDate().timeIntervalSince1970)).putData(data, metadata: nil) { (metadata, error) in
+            guard let url = metadata?.downloadURL() else { return }
+            completion(url: url)
+            guard let urlString = url.absoluteString else { return }
+            KingfisherManager.sharedManager.cache.storeImage(image, forKey: urlString, toDisk: true, completionHandler: nil)
         }
     }
     
@@ -546,19 +592,6 @@ class API {
     /// Saves the message.
     func save(message message: Message) {
         ref.child("messages").child(message.convo).child(message.key).setValue(message.toAnyObject())
-    }
-    
-    /// Saves a UIImage to storage.
-    /// Returns the URL String to the file in storage.
-    func save(image image: UIImage, withTimestamp timestamp: String, completion: (URL: String) -> Void) {
-        let data = UIImageJPEGRepresentation(image, CGFloat.min)!
-        let metadata = FIRStorageMetadata()
-        metadata.contentType = "image/jpg"
-        storageRef.child("userImages").child(timestamp).putData(data, metadata: metadata) { (metadata, error) in
-            guard let URL = metadata?.downloadURL()?.absoluteString else { return }
-            completion(URL: URL)
-            KingfisherManager.sharedManager.cache.storeImage(image, forKey: URL, toDisk: true, completionHandler: nil)
-        }
     }
     
     /// Sets the message's `read` to true and gives it a current `timeRead`.

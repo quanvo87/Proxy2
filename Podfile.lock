@@ -56,6 +56,7 @@ PODS:
     - JSQSystemSoundPlayer (~> 2.0.1)
   - JSQSystemSoundPlayer (2.0.1)
   - Kingfisher (2.6.0)
+  - MobilePlayer (1.1.5)
   - YangMingShan (1.2.2):
     - YangMingShan/YMSPhotoPicker (= 1.2.2)
   - YangMingShan/YMSPhotoPicker (1.2.2)
@@ -70,6 +71,7 @@ DEPENDENCIES:
   - Fusuma
   - JSQMessagesViewController
   - Kingfisher (~> 2.6.0)
+  - MobilePlayer
   - YangMingShan
 
 SPEC CHECKSUMS:
@@ -92,8 +94,9 @@ SPEC CHECKSUMS:
   JSQMessagesViewController: 39fed975e3c9f8eba7292071e29eeb541d105e66
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
   Kingfisher: d84c5fd176ea86cc7b8aac65fd55feda6f70f130
+  MobilePlayer: 2fdc07a564fa89da65ff660f8fdcf06ab75f775d
   YangMingShan: aecb8b3099624da18f1d416839a2769d3394a140
 
-PODFILE CHECKSUM: 6b615584665579c136c8413651e82e2bd969a14f
+PODFILE CHECKSUM: d5716f3458fe7419cd937496a41200a510d8ea29
 
 COCOAPODS: 1.0.1

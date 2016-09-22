@@ -16,5 +16,6 @@ target 'proxy' do
     pod 'JSQMessagesViewController'
     pod 'YangMingShan'
     pod 'Fusuma'
-    
+    pod 'MobilePlayer'
+
 end

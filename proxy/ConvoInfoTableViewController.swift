@@ -78,13 +78,6 @@ class ConvoInfoTableViewController: UITableViewController {
         }
     }
     
-    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        switch section {
-        case 0: return CGFloat.min
-        default: return UITableViewAutomaticDimension
-        }
-    }
-    
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         switch indexPath.section {
         case 0: return 80

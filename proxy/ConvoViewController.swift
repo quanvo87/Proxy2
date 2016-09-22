@@ -11,8 +11,9 @@ import JSQMessagesViewController
 import Photos
 import YangMingShan
 import Fusuma
+import MobilePlayer
 
-class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, FusumaDelegate, YMSPhotoPickerViewControllerDelegate {
+class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControllerDelegate, YMSPhotoPickerViewControllerDelegate, FusumaDelegate {
     
     let api = API.sharedInstance
     let ref = FIRDatabase.database().reference()
@@ -237,7 +238,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
             // A new media message that is waiting for its content to be uploaded to storage.
             // Once that is complete, this media message will be updated with the URL to that content.
             // Pull that content and reload the cell once it has a URL.
-            case "placeholder":
+            case "imagePlaceholder":
                 
                 // Send message with placeholder.
                 let media = JSQPhotoMediaItem()
@@ -252,9 +253,8 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
                 messageRefHandle = messageRef.observeEventType(.Value, withBlock: { (snapshot) in
                     
                     // Get `mediaURL`.
-                    guard let mediaURL = snapshot.value as? String else {
-                        return
-                    }
+                    guard let mediaURL = snapshot.value as? String
+                        where mediaURL != "" else { return }
                     
                     // Get the image from `mediaURL`.
                     self.api.getImage(fromURL: mediaURL, completion: { (image) in
@@ -290,6 +290,49 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
                     self.collectionView.reloadItemsAtIndexPaths([indexPath])
                 })
                 
+            case "videoPlaceholder":
+                
+                // Send message with placeholder.
+                let media = JSQVideoMediaItem()
+                let _message = Message(key: message.key, convo: message.convo, mediaType: "video", mediaURL: message.mediaURL, read: message.read, timeRead: message.timeRead, senderId: message.senderId, date: message.date.timeIntervalSince1970, text: message.text, media: media)
+                self.messages.append(_message)
+                self.finishReceivingMessage()
+                
+                // Wait for the message's content to be loaded to storage.
+                // Once this happens, the message's `mediaURL` will be updated.
+                var messageRefHandle = FIRDatabaseHandle()
+                let messageRef = self.ref.child("messages").child(message.convo).child(message.key).child("mediaURL")
+                messageRefHandle = messageRef.observeEventType(.Value, withBlock: { (snapshot) in
+                    
+                    // Get `mediaURL`.
+                    guard let mediaURLString = snapshot.value as? String
+                        where mediaURLString != "" else { return }
+                    
+                    // Load cell with url to local file.
+                    (_message.media as! JSQVideoMediaItem).fileURL = NSURL(string: mediaURLString)
+                    (_message.media as! JSQVideoMediaItem).isReadyToPlay = true
+                    
+                    // Reload the cell.
+                    let indexPath = NSIndexPath(forItem: self.messages.count - 1, inSection: 0)
+                    self.collectionView.reloadItemsAtIndexPaths([indexPath])
+                    
+                    // Remove database observer for this message.
+                    messageRef.removeObserverWithHandle(messageRefHandle)
+                })
+                
+            case "video":
+                
+                // Build JSQVideoMediaItem.
+                guard let mediaURL = NSURL(string: message.mediaURL) else { return }
+                let media = JSQVideoMediaItem(fileURL: mediaURL, isReadyToPlay: true)
+                
+                // Attach JSQVideoMediaItem.
+                let _message = Message(key: message.key, convo: message.convo, mediaType: message.mediaType, mediaURL: message.mediaURL, read: message.read, timeRead: message.timeRead, senderId: message.senderId, date: message.date.timeIntervalSince1970, text: message.text, media: media)
+                
+                // Append modified message to messages and finish receiving.
+                self.messages.append(_message)
+                self.finishReceivingMessage()
+                
             // Regular text message.
             default:
                 self.messages.append(message)
@@ -302,7 +345,6 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
                     self.api.setRead(forMessage: message)
                 }
             } else {
-                
                 // Keep track of the last message you sent.
                 self.readReceiptIndex = self.messages.count - 1
             }
@@ -341,16 +383,17 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         let cell = super.collectionView(collectionView, cellForItemAtIndexPath: indexPath) as! JSQMessagesCollectionViewCell
         let message = messages[indexPath.item]
         
+        // Messages with media don't have textfields.
         guard message.mediaType == "" else {
             return cell
         }
         
-        // Outgoing message
+        // Outgoing message.
         if message.senderId == senderId {
             cell.textView!.textColor = UIColor.whiteColor()
             cell.messageBubbleTopLabel.textInsets = UIEdgeInsetsMake(0, 0, 0, 40)
         
-        // Incoming message
+        // Incoming message.
         } else {
             cell.textView?.textColor = UIColor.blackColor()
             cell.messageBubbleTopLabel.textInsets = UIEdgeInsetsMake(0, 40, 0, 0)
@@ -426,13 +469,14 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         return nil
     }
     
-    // Show names/nicknames for last message by either user. (only one activated currently)
     // Make space for proxy names.
     override func collectionView(collectionView: JSQMessagesCollectionView, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout, heightForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        
+        // Show names/nicknames for last message by either user.
         if indexPath.item == messages.count - 1 {
             return kJSQMessagesCollectionViewCellLabelHeightDefault
         }
-        
+
         let curr = self.messages[indexPath.item]
         let next = self.messages[indexPath.item + 1]
         if curr.senderId != next.senderId {
@@ -444,8 +488,9 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     
     // Get proxy names.
     override func collectionView(collectionView: JSQMessagesCollectionView, attributedTextForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath) -> NSAttributedString? {
-        let curr = self.messages[indexPath.item]
         
+        // Show names/nicknames for last message by either user.
+        let curr = self.messages[indexPath.item]
         if indexPath.item == messages.count - 1 {
             return NSAttributedString(string: names[curr.senderId]!)
         }
@@ -484,6 +529,17 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         return messages[indexPath.item]
     }
     
+    override func collectionView(collectionView: JSQMessagesCollectionView!, didTapMessageBubbleAtIndexPath indexPath: NSIndexPath!) {
+        let message = messages[indexPath.item]
+        if message.mediaType == "video" {
+            guard let url = (message.media as! JSQVideoMediaItem).fileURL
+                where url.absoluteString != "" else { return }
+            let playerVC = MobilePlayerViewController(contentURL: url)
+            playerVC.activityItems = [url]
+            presentMoviePlayerViewControllerAnimated(playerVC)
+        }
+    }
+    
     // Write the message to the database when user taps send.
     override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: NSDate!) {
         api.send(messageWithText: text, withMediaType: "", usingSenderConvo: convo) { (convo) in
@@ -497,6 +553,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         
         // Send photo
         alert.addAction(UIAlertAction(title: "Photo 📸", style: .Default, handler: { action in
+            
             // Show YMSPhotoPicker, our VC that can handle camera and photos.
             let ysmPhotoPicker = YMSPhotoPickerViewController()
             ysmPhotoPicker.theme.cameraVeilColor = UIColor.clearColor()
@@ -506,6 +563,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         
         // Send video
         alert.addAction(UIAlertAction(title: "Video 🎥", style: .Default, handler: { action in
+            
             // Show Fusuma, our VC that can handle camera, photos, and video.
             let fusuma = FusumaViewController()
             fusuma.delegate = self
@@ -544,15 +602,6 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         self.presentViewController(alert, animated: true, completion: nil)
     }
     
-    func addMedia(media:JSQMediaItem) {
-//        let message = JSQMessage(senderId: self.senderId, displayName: self.senderDisplayName, media: media)
-//        self.messages.append(message)
-//        
-//        //Optional: play sent sound
-//        
-//        self.finishSendingMessageAnimated(true)
-    }
-    
     func finishedWritingMessage() {
         finishSendingMessage()
         JSQSystemSoundPlayer.jsq_playMessageSentSound()
@@ -561,7 +610,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     
     // MARK: - YMSPhotoPicker delegate
     func photoPickerViewControllerDidReceivePhotoAlbumAccessDenied(picker: YMSPhotoPickerViewController!) {
-        let alert = UIAlertController(title: "Allow photo album access?", message: "Need your permission to access photo albumbs.", preferredStyle: .Alert)
+        let alert = UIAlertController(title: "Allow photo album access?", message: "Need your permission to access photo albums.", preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: "Settings", style: .Default) { (action) in
             if let appSettings = NSURL(string: UIApplicationOpenSettingsURLString) {
                 UIApplication.sharedApplication().openURL(appSettings, options: [:], completionHandler: nil)
@@ -593,7 +642,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
             for asset in photoAssets {
                 manager.requestImageForAsset(asset, targetSize: PHImageManagerMaximumSize, contentMode: .Default, options: options, resultHandler: { (image, info) -> Void in
                     if let image = image {
-                        self.sendImage(image)
+                        self.send(image: image)
                     }
                 })
             }
@@ -607,13 +656,14 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     
     // Return the image but called after is dismissed.
     func fusumaDismissedWithImage(image: UIImage) {
-        sendImage(image)
+        send(image: image)
     }
     
     func fusumaVideoCompleted(withFileURL fileURL: NSURL) {
+        send(videoWithURL: fileURL)
     }
     
-    // When camera roll is not authorized, this method is called.
+    // Call when camera roll not authorized.
     func fusumaCameraRollUnauthorized() {
         let alert = UIAlertController(title: "Allow camera album access?", message: "Need your permission to take a photo.", preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: "Settings", style: .Default) { (action) in
@@ -621,20 +671,40 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
                 UIApplication.sharedApplication().openURL(appSettings, options: [:], completionHandler: nil)
             }})
         alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+        presentViewController(alert, animated: true, completion: nil)
     }
     
-    func sendImage(image: UIImage) {
+    func send(image image: UIImage) {
+        
         // First send a placeholder message that displays a loading indicator.
-        api.send(messageWithText: "Photo message.", withMediaType: "placeholder", usingSenderConvo: self.convo) { (convo, message) in
+        api.send(messageWithText: "Photo message.", withMediaType: "imagePlaceholder", usingSenderConvo: self.convo) { (convo, message) in
             self.finishSendingMessage()
             
             // Then upload the image to storage.
-            let timestamp = String(NSDate().timeIntervalSince1970)
-            self.api.save(image: image, withTimestamp: timestamp, completion: { (URL) in
+            self.api.upload(image: image, completion: { (url) in
                 
                 // The upload returns the URL to the image we just uploaded.
                 // Update the placeholder message with this info.
-                self.api.setMedia(forMessage: message, mediaType: "image", mediaURL: URL)
+                guard let url = url.absoluteString else { return }
+                self.api.setMedia(forMessage: message, mediaType: "image", mediaURL: url)
+                self.finishedWritingMessage()
+            })
+        }
+    }
+    
+    func send(videoWithURL url: NSURL) {
+        
+        // First send a placeholder message that displays a loading indicator.
+        api.send(messageWithText: "Video message.", withMediaType: "videoPlaceholder", usingSenderConvo: self.convo) { (convo, message) in
+            self.finishSendingMessage()
+            
+            // Then upload the image to storage.
+            self.api.upload(videoWithURL: url, completion: { (url) in
+              
+                // The upload returns the URL to the image we just uploaded.
+                // Update the placeholder message with this info.
+                guard let url = url.absoluteString else { return }
+                self.api.setMedia(forMessage: message, mediaType: "video", mediaURL: url)
                 self.finishedWritingMessage()
             })
         }
@@ -647,14 +717,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         userTyping = textView.text != ""
     }
     
-    // MARK: - Navigation
-    func showConvoInfoTableViewController() {
-        let dest = storyboard?.instantiateViewControllerWithIdentifier(Identifiers.ConvoInfoTableViewController) as! ConvoInfoTableViewController
-        dest.convo = convo
-        dest.delegate = self
-        navigationController?.pushViewController(dest, animated: true)
-    }
-    
+    // MARK: - ConvoInfoTableViewControllerDelegate
     func didLeaveConvo() {
         _didLeaveConvo = true
     }
@@ -663,5 +726,13 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         if _didLeaveConvo {
             navigationController?.popViewControllerAnimated(true)
         }
+    }
+    
+    // MARK: - Navigation
+    func showConvoInfoTableViewController() {
+        let dest = storyboard?.instantiateViewControllerWithIdentifier(Identifiers.ConvoInfoTableViewController) as! ConvoInfoTableViewController
+        dest.convo = convo
+        dest.delegate = self
+        navigationController?.pushViewController(dest, animated: true)
     }
 }

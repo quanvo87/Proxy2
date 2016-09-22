@@ -49,6 +49,16 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>MobilePlayer-MobilePlayer.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>MobilePlayer.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Pods-proxy.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -87,7 +97,17 @@
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>79E06489A2AB29243B3310B6BADFE034</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>8329B4DD82B7A073B34A61C9527865D0</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>9C4E70BB64168FAB91408AF7402CE1BF</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -102,17 +122,17 @@
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>A717D10692685FBE039EA65D6A0F5F2F</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>AEB53B8EE8FBB1FCFBA897FAB7C1D608</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>DB8CB83631B4029238A634161894D539</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>DF697FB66603E7D97C0D2330D6682DA6</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>E0D0CF02AB98C69AD66EBA350769F691</key>
 		<dict>
 			<key>primary</key>
 			<true/>
