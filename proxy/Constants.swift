@@ -6,6 +6,41 @@
 //  Copyright © 2016 Quan Vo. All rights reserved.
 //
 
+struct Path {
+    
+    // Objects
+    static let Icons = "icons"
+    static let UserFiles = "userFiles"
+    static let Proxies = "proxies"
+    static let Convos = "convos"
+    static let Messages = "messages"
+    static let WordBank = "wordBank"
+    
+    // User
+    static let ProxiesInteractedWith = "proxiesInteractedWith"
+    static let MessagesSent = "messagesSent"
+    static let MessagesReceived = "messagesReceived"
+    static let Blocked = "blocked"
+    static let Present = "present"
+    
+    // Message
+    static let Read = "read"
+    static let TimeRead = "timeRead"
+    static let MediaType = "mediaType"
+    static let MediaURL = "mediaURL"
+    
+    // Convo
+    static let LastMessage = "lastMessage"
+    static let DidLeaveConvo = "didLeaveConvo"
+    
+    // Shared
+    static let Name = "name"
+    static let Nickname = "nickname"
+    static let Icon = "icon"
+    static let Timestamp = "timestamp"
+    static let Unread = "unread"
+}
+
 struct URLs {
     static let Storage = "gs://proxy-98b45.appspot.com"
 }
@@ -34,7 +69,7 @@ struct Identifiers {
     static let NewMessageViewController = "New Message View Controller"
     static let SelectProxyViewController = "Select Proxy View Controller"
     
-    static let BasicCell = "Basic Cell"
+    static let Cell = "Cell"
 }
 
 struct Notifications {
