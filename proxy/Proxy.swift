@@ -8,45 +8,33 @@
 
 struct Proxy {
     
-    var globalKey = ""
     var key = ""
-    var owner = ""
-    var icon = ""
-    var nickname = ""
-    var timestamp = NSDate().timeIntervalSince1970
-    var unread = 0
-    var timeCreated = NSDate().timeIntervalSince1970
+    var name = ""
+    var ownerId = ""
+    var timeCreated = 0.0
     
     init() {}
     
-    init(globalKey: String, key: String, owner: String, icon: String) {
-        self.globalKey = globalKey
+    init(key: String, name: String, ownerId: String, timeCreated: Double) {
         self.key = key
-        self.owner = owner
-        self.icon = icon
+        self.name = name
+        self.ownerId = ownerId
+        self.timeCreated = timeCreated
     }
     
     init(anyObject: AnyObject) {
-        self.globalKey = anyObject["globalKey"] as? String ?? ""
         self.key = anyObject["key"] as? String ?? ""
-        self.owner = anyObject["owner"] as? String ?? ""
-        self.icon = anyObject["icon"] as? String ?? ""
-        self.nickname = anyObject["nickname"] as? String ?? ""
-        self.timestamp = anyObject["timestamp"] as? Double ?? 0.0
-        self.unread = anyObject["unread"] as? Int ?? 0
+        self.name = anyObject["name"] as? String ?? ""
+        self.ownerId = anyObject["ownerId"] as? String ?? ""
         self.timeCreated = anyObject["timeCreated"] as? Double ?? 0.0
     }
     
     func toAnyObject() -> AnyObject {
         return [
-            "globalKey": globalKey,
             "key": key,
-            "owner": owner,
-            "icon": icon,
-            "nickname": nickname,
-            "timestamp": timestamp,
-            "unread": unread,
-            "timeCreated": timeCreated,
+            "name": name,
+            "ownerId": ownerId,
+            "timeCreated": timeCreated
         ]
     }
 }

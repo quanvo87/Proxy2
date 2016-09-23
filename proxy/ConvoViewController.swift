@@ -311,6 +311,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
                     // Load cell with url to local file.
                     (_message.media as! JSQVideoMediaItem).fileURL = NSURL(string: mediaURLString)
                     (_message.media as! JSQVideoMediaItem).isReadyToPlay = true
+                    (_message.media as! JSQVideoMediaItem).appliesMediaViewMaskAsOutgoing = message.senderId == self.senderId
                     
                     // Reload the cell.
                     let indexPath = NSIndexPath(forItem: self.messages.count - 1, inSection: 0)
@@ -325,6 +326,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
                 // Build JSQVideoMediaItem.
                 guard let mediaURL = NSURL(string: message.mediaURL) else { return }
                 let media = JSQVideoMediaItem(fileURL: mediaURL, isReadyToPlay: true)
+                media.appliesMediaViewMaskAsOutgoing = message.senderId == self.senderId
                 
                 // Attach JSQVideoMediaItem.
                 let _message = Message(key: message.key, convo: message.convo, mediaType: message.mediaType, mediaURL: message.mediaURL, read: message.read, timeRead: message.timeRead, senderId: message.senderId, date: message.date.timeIntervalSince1970, text: message.text, media: media)

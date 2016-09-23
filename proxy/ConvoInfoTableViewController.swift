@@ -42,7 +42,7 @@ class ConvoInfoTableViewController: UITableViewController {
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: Identifiers.BasicCell)
         
         // Get's the user's proxy for the user proxy cell
-        api.getProxy(withKey: convo.senderProxy, ofUser: convo.senderId, completion: { (proxy) in
+        api.getProxy(withKey: convo.senderProxy, belongingToUser: convo.senderId, completion: { (proxy) in
             self.senderProxy = proxy
             self.tableView.reloadSections(NSIndexSet(index: 1), withRowAnimation: .Automatic)
         })
@@ -274,7 +274,7 @@ class ConvoInfoTableViewController: UITableViewController {
             let nickname = alert.textFields![0].text
             let trim = nickname!.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
             if !(nickname != "" && trim == "") {
-                self.api.update(nickname: nickname!, forProxy: self.senderProxy!)
+                self.api.set(nickname: nickname!, forProxy: self.senderProxy!.key)
             }
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))

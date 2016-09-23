@@ -22,14 +22,14 @@ class ProxyCell: UITableViewCell {
             // Set up
             accessoryType = .DisclosureIndicator
             
-            // Set up newImageView
+            // Set up 'new proxy' indicator image
             newImageView.hidden = true
             let secondsAgo = -NSDate(timeIntervalSince1970: proxy.timeCreated).timeIntervalSinceNow
             if secondsAgo < 60 * Settings.NewProxyIndicatorDuration {
                 newImageView.hidden = false
             }
             
-            // Set image
+            // Set icon
             api.getURL(forIcon: proxy.icon) { (URL) in
                 self.iconImageView.kf_indicatorType = .Activity
                 self.iconImageView.kf_setImageWithURL(NSURL(string: URL), placeholderImage: nil)
