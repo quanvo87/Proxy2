@@ -21,6 +21,7 @@ class API {
     var proxyNameGenerator = ProxyNameGenerator()
     var isCreatingProxy = false
     
+    var iconsRef = FIRDatabaseReference()
     var iconsRefHandle = FIRDatabaseHandle()
     var icons = [String]()
     var iconURLCache = [String: NSURL]()
@@ -34,48 +35,54 @@ class API {
     private init() {}
     
     deinit {
-        ref.child(Path.Icons).child(uid).removeObserverWithHandle(iconsRefHandle)
+        iconsRef.removeObserverWithHandle(iconsRefHandle)
     }
     
     // MARK: - Utility
-    /// Returns the Firebase reference with path `itemType`/`parent`/`child`/`grandchild`.
-    /// Leave unneeded nodes blank starting from grandchild, working back to parent.
-    func getRef(itemType: String, parent: String, child: String?, grandchild: String?) -> FIRDatabaseReference? {
-        if let child = child, let grandchild = grandchild
-            where parent != "" && child != "" && grandchild != "" {
-            return ref.child(itemType).child(parent).child(child).child(grandchild)
+    /// Returns the Firebase reference with path `a`/`b`/`c`/`d`.
+    /// Leave unneeded nodes blank starting from `d`, working back to `a`.
+    /// There must be at least node `a`, else returns nil.
+    func getRef(a a: String, b: String?, c: String?, d: String?) -> FIRDatabaseReference? {
+        guard a != "" else { return nil }
+        if let b = b, let c = c, let d = d
+            where b != "" && c != "" && d != "" {
+            return ref.child(a).child(b).child(c).child(d)
         }
-        if let child = child
-            where parent != "" && child != "" {
-            return ref.child(itemType).child(parent).child(child)
+        if let b = b, let c = c
+            where b != "" && c != "" {
+            return ref.child(a).child(b).child(c)
         }
-        if parent != "" {
-            return ref.child(itemType).child(parent)
+        if let b = b
+            where b != "" {
+            return ref.child(a).child(b)
         }
-        return nil
+        return ref.child(a)
     }
     
-    /// Saves `anyObject` under `itemType`/`parent`/`child`/`grandchild`.
+    /// Saves `anyObject` under `a`/`b`/`c`/`d`.
     /// Leave unneeded nodes blank starting from grandchild, working back to parent.
-    func set(anyObject: AnyObject, itemType: String, parent: String, child: String?, grandchild: String?) {
-        if let ref = getRef(itemType, parent: parent, child: child, grandchild: grandchild) {
+    /// There must be at least node `a`.
+    func set(anyObject: AnyObject, a: String, b: String?, c: String?, d: String?) {
+        if let ref = getRef(a: a, b: b, c: c, d: d) {
             ref.setValue(anyObject)
         }
     }
     
-    /// Deletes object under `itemType`/`parent`/`child`/`grandchild`.
+    /// Deletes object under `a`/`b`/`c`/`d`.
     /// Leave unneeded nodes blank starting from grandchild, working back to parent.
-    func delete(itemType: String, parent: String, child: String?, grandchild: String?) {
-        if let ref = getRef(itemType, parent: parent, child: child, grandchild: grandchild) {
+    /// There must be at least node `a`.
+    func delete(a a: String, b: String?, c: String?, d: String?) {
+        if let ref = getRef(a: a, b: b, c: c, d: d) {
             ref.removeValue()
         }
     }
     
-    /// Increments object at `itemType`/`parent`/`child`/`grandchild` by `amount`.
+    /// Increments object at `a`/`b`/`c`/`d` by `amount`.
     /// Leave unneeded nodes blank starting from grandchild, working back to parent.
-    func increment(amount: Int, itemType: String, parent: String, child: String?, grandchild: String?) {
-        if let ref = getRef(itemType, parent: parent, child: child, grandchild: grandchild) {
-            ref.runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
+    /// There must be at least node `a`.
+    func increment(amount amount: Int, a: String, b: String?, c: String?, d: String?) {
+        if let ref = getRef(a: a, b: b, c: c, d: d) {
+            ref.runTransactionBlock( { (currentData: FIRMutableData) -> FIRTransactionResult in
                 if let value = currentData.value {
                     var _value = value as? Int ?? 0
                     _value += amount
@@ -88,7 +95,7 @@ class API {
     }
     
     /// Returns the UIImage for a url.
-    func getImage(fromURL url: NSURL, completion: (image: UIImage) -> Void) {
+    func getUIImage(fromURL url: NSURL, completion: (image: UIImage) -> Void) {
         guard let urlString = url.absoluteString else { return }
         
         /// Check cache first.
@@ -105,6 +112,51 @@ class API {
                     completion(image: image)
                 }
             }
+        }
+    }
+    
+    /// Returns the UIImage for an icon.
+    func getUIImage(forIcon icon: String, completion: (image: UIImage) -> Void) {
+        
+        /// Get url for icon in storage.
+        getURL(forIcon: icon, completion: { (url) in
+            
+            /// Get image from url.
+            self.getUIImage(fromURL: url, completion: { (image) in
+                completion(image: image)
+            })
+        })
+    }
+    
+    /// Returns the NSURL of an icon's url in storage.
+    func getURL(forIcon icon: String, completion: (url: NSURL) -> Void) {
+        
+        /// Check cache first.
+        if let url = iconURLCache[icon] {
+            completion(url: url)
+            
+            /// Else get url from storage.
+        } else {
+            let iconRef = storageRef.child(Path.Icons).child("\(icon).png")
+            iconRef.downloadURLWithCompletion { (url, error) -> Void in
+                guard error == nil,
+                    let url = url
+                    else { return }
+                self.iconURLCache[icon] = url
+                completion(url: url)
+            }
+        }
+    }
+    
+    /// Uploads compressed version of image to storage.
+    /// Returns url to the image in storage.
+    func upload(image image: UIImage, completion: (url: NSURL) -> Void) {
+        guard let data = UIImageJPEGRepresentation(image, 0) else { return }
+        storageRef.child(Path.UserFiles).child(uid + String(NSDate().timeIntervalSince1970)).putData(data, metadata: nil) { (metadata, error) in
+            guard let url = metadata?.downloadURL() else { return }
+            completion(url: url)
+            guard let urlString = url.absoluteString else { return }
+            KingfisherManager.sharedManager.cache.storeImage(image, forKey: urlString, toDisk: true, completionHandler: nil)
         }
     }
     
@@ -139,23 +191,30 @@ class API {
         }
     }
     
-    /// Uploads compressed version of image to storage.
-    /// Returns url to the image in storage.
-    func upload(image: UIImage, completion: (url: NSURL) -> Void) {
-        guard let data = UIImageJPEGRepresentation(image, 0) else { return }
-        storageRef.child(Path.UserFiles).child(String(NSDate().timeIntervalSince1970)).putData(data, metadata: nil) { (metadata, error) in
-            guard let url = metadata?.downloadURL() else { return }
-            completion(url: url)
-            guard let urlString = url.absoluteString else { return }
-            KingfisherManager.sharedManager.cache.storeImage(image, forKey: urlString, toDisk: true, completionHandler: nil)
-        }
-    }
-    
     // MARK: - User
     /// Gives a user access to the default icons.
     func setDefaultIcons(forUser user: String) {
         let defaultIcons = DefaultIcons(id: user).defaultIcons
         ref.updateChildValues(defaultIcons as! [NSObject : AnyObject])
+    }
+    
+    /// Keeps an up-to-date list of the icons the user has unlocked.
+    /// These are Strings of the icon names used to build urls to the files in storage.
+    func observeIcons() {
+        iconsRef = ref.child(Path.Icons).child(uid)
+        iconsRefHandle = iconsRef.observeEventType(.Value, withBlock: { (snapshot) in
+            var icons = [String]()
+            for child in snapshot.children {
+                icons.append(child.value[Path.Name] as! String)
+            }
+            self.icons = icons
+        })
+    }
+    
+    /// Returns a random icon name from the user's available icons.
+    func getRandomIcon() -> String {
+        let count = UInt32(icons.count)
+        return icons[Int(arc4random_uniform(count))]
     }
     
     /**
@@ -232,7 +291,7 @@ class API {
         let key = ref.child(Path.Proxies).childByAutoId().key
         let name = proxyNameGenerator.generateProxyName()
         let proxy = Proxy(key: key, name: name, ownerId: "", timeCreated: 0.0)
-        set(proxy.toAnyObject(), itemType: Path.Proxies, parent: key, child: nil, grandchild: nil)
+        set(proxy.toAnyObject(), a: Path.Proxies, b: key, c: nil, d: nil)
         
         /// Get all proxies with this name.
         ref.child(Path.Proxies).queryOrderedByChild(Path.Name).queryEqualToValue(name).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
@@ -245,17 +304,17 @@ class API {
                 
                 /// Create the user's copy of the proxy and save it.
                 let proxy = Proxy(key: key, name: name, ownerId: self.uid, timeCreated: NSDate().timeIntervalSince1970)
-                self.set(proxy.toAnyObject(), itemType: Path.Proxies, parent: self.uid, child: key, grandchild: nil)
+                self.set(proxy.toAnyObject(), a: Path.Proxies, b: self.uid, c: key, d: nil)
                 
                 /// Give the proxy a random icon.
-                self.set(self.getRandomIcon(), itemType: Path.Icons, parent: name, child: nil, grandchild: nil)
+                self.set(self.getRandomIcon(), a: Path.Icons, b: name, c: nil, d: nil)
                 
                 completion(proxy: proxy)
                 return
             }
             
             /// Else delete the proxy you just created.
-            self.delete(Path.Proxies, parent: proxy.key, child: nil, grandchild: nil)
+            self.delete(a: Path.Proxies, b: proxy.key, c: nil, d: nil)
             
             /// Check if user has cancelled the process.
             if self.isCreatingProxy {
@@ -268,27 +327,9 @@ class API {
         })
     }
     
-    /// Keeps an up-to-date list of the icons the user has unlocked.
-    /// These are Strings of the icon names used to build urls to the files in storage.
-    func observeIcons() {
-        iconsRefHandle = ref.child(Path.Icons).child(uid).observeEventType(.Value, withBlock: { (snapshot) in
-            var icons = [String]()
-            for child in snapshot.children {
-                icons.append(child.value[Path.Name] as! String)
-            }
-            self.icons = icons
-        })
-    }
-    
-    /// Returns a random icon name from the user's available icons.
-    func getRandomIcon() -> String {
-        let count = UInt32(icons.count)
-        return icons[Int(arc4random_uniform(count))]
-    }
-    
     /// Deletes the given `proxy` and returns a new one.
-    func reroll(proxy: Proxy, completion: (proxy: Proxy) -> Void) {
-        delete(Path.Proxies, parent: proxy.key, child: nil, grandchild: nil)
+    func reroll(proxy proxy: Proxy, completion: (proxy: Proxy) -> Void) {
+        delete(a: Path.Proxies, b: proxy.key, c: nil, d: nil)
         tryCreating(proxy: { (proxy) in
             completion(proxy: proxy)
         })
@@ -296,11 +337,12 @@ class API {
     
     /// Deletes the newly created `proxy` being checked for uniqueness.
     /// Notifies API to stop trying to create a proxy.
-    func cancelCreating(proxy: Proxy) {
-        delete(Path.Proxies, parent: proxy.key, child: nil, grandchild: nil)
+    func cancelCreating(proxy proxy: Proxy) {
+        delete(a: Path.Proxies, b: proxy.key, c: nil, d: nil)
         isCreatingProxy = false
     }
     
+    // TODO: might not need this
     /// Returns the Proxy with `key` belonging to `user`.
     func getProxy(withKey key: String, belongingToUser user: String, completion: (proxy: Proxy) -> Void) {
         ref.child(Path.Proxies).child(user).child(key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
@@ -308,56 +350,18 @@ class API {
         })
     }
     
-    /// Returns the NSURL of an icon's url in storage.
-    func getURL(forIcon icon: String, completion: (url: NSURL) -> Void) {
-        
-        /// Check cache first.
-        if let url = iconURLCache[icon] {
-            completion(url: url)
-        
-        /// Else get url from storage.
-        } else {
-            let iconRef = storageRef.child(Path.Icons).child("\(icon).png")
-            iconRef.downloadURLWithCompletion { (url, error) -> Void in
-                guard error == nil,
-                    let url = url
-                    else { return }
-                self.iconURLCache[icon] = url
-                completion(url: url)
-            }
-        }
-    }
-    
-    /// Returns the UIImage for an icon.
-    func getUIImage(forIcon icon: String, completion: (image: UIImage) -> Void) {
-        
-        /// Get url for icon in storage.
-        getURL(forIcon: icon, completion: { (url) in
-            
-            /// Get image from url.
-            self.getImage(fromURL: url, completion: { (image) in
-                completion(image: image)
-            })
-        })
-    }
-    
     /// Sets a proxy's nickname to `nickname`.
     func set(nickname nickname: String, forProxy proxy: String) {
-        set(nickname, itemType: Path.Nickname, parent: proxy, child: nil, grandchild: nil)
+        set(nickname, a: Path.Nickname, b: proxy, c: nil, d: nil)
     }
     
     /// Sets a proxy's icon to `icon`.
     func set(icon icon: String, forProxy proxy: String) {
-        set(icon, itemType: Path.Icon, parent: proxy, child: nil, grandchild: nil)
-    }
-    
-    /// Sets a proxy's timestamp to `timestamp`.
-    func set(timestamp timestamp: Double, forProxy proxy: String, belongingTo user: String) {
-        set(timestamp, itemType: Path.Proxies, parent: user, child: proxy, grandchild: Path.Timestamp)
+        set(icon, a: Path.Icon, b: proxy, c: nil, d: nil)
     }
     
     /// Deletes a proxy and it's copies of its convos.
-    func delete(proxy: Proxy) {
+    func delete(proxy proxy: Proxy) {
         getConvos(forProxy: proxy) { (convos) in
             self.delete(proxy: proxy, withConvos: convos)
         }
@@ -387,40 +391,29 @@ class API {
         for convo in convos {
             
             /// Notify receivers in convos that this proxy is deleted
-            set(true, itemType: Path.Convos, parent: convo.receiverId, child: convo.key, grandchild: nil)
-            set(true, itemType: Path.Convos, parent: convo.receiverProxy, child: convo.key, grandchild: nil)
+            set(true, a: Path.Convos, b: convo.receiverId, c: convo.key, d: nil)
+            set(true, a: Path.Convos, b: convo.receiverProxy, c: convo.key, d: nil)
             
             /// Delete the sender's copies of the convo
-            delete(Path.Convos, parent: convo.senderId, child: convo.key, grandchild: nil)
-            delete(Path.Convos, parent: convo.senderProxy, child: convo.key, grandchild: nil)
+            delete(a: Path.Convos, b: convo.senderId, c: convo.key, d: nil)
+            delete(a: Path.Convos, b: convo.senderProxy, c: convo.key, d: nil)
             
             /// Delete convo's metadata
-            delete(Path.Nickname, parent: convo.senderId, child: convo.key, grandchild: nil)
-            delete(Path.Unread, parent: convo.senderId, child: convo.key, grandchild: nil)
+            delete(a: Path.Nickname, b: convo.senderId, c: convo.key, d: nil)
+            delete(a: Path.Unread, b: convo.senderId, c: convo.senderProxy, d: convo.key)
         }
         
         /// Delete the global copy of the proxy
-        delete(Path.Proxies, parent: proxy.key, child: nil, grandchild: nil)
+        delete(a: Path.Proxies, b: proxy.key, c: nil, d: nil)
         
         /// Delete the user's copy of the proxy
-        delete(Path.Proxies, parent: uid, child: proxy.key, grandchild: nil)
+        delete(a: Path.Proxies, b: uid, c: proxy.key, d: nil)
         
         /// Delete icon
-        delete(Path.Icons, parent: proxy.key, child: nil, grandchild: nil)
+        delete(a: Path.Icons, b: proxy.key, c: nil, d: nil)
         
         /// Delete nickname
-        delete(Path.Nickname, parent: proxy.key, child: nil, grandchild: nil)
-        
-        /// Get unread
-        ref.child(Path.Nickname).child(proxy.key).observeEventType(.Value, withBlock: { (snapshot) in
-            
-            /// Delete unread
-            self.delete(Path.Unread, parent: proxy.key, child: nil, grandchild: nil)
-            
-            /// Decrement user's unread by proxy's unread
-            guard let unread = snapshot.value as? Int where unread != 0 else { return }
-            self.increment(-unread, itemType: Path.Unread, parent: proxy.ownerId, child: nil, grandchild: nil)
-        })
+        delete(a: Path.Nickname, b: proxy.key, c: nil, d: nil)
     }
     
     // MARK: - Message
@@ -472,31 +465,32 @@ class API {
         /// Check if sender is in receiver's blocked list
         ref.child(Path.Blocked).child(receiverProxy.ownerId).child(senderProxy.ownerId).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
             var senderConvo = Convo()
-            senderConvo.key = convoKey
-            var receiverConvo = senderConvo
+            var receiverConvo = Convo()
             let senderBlocked = snapshot.childrenCount == 1
             
             /// Set up sender side
+            senderConvo.key = convoKey
             senderConvo.senderId = senderProxy.ownerId
             senderConvo.senderProxy = senderProxy.key
             senderConvo.receiverId = receiverProxy.ownerId
             senderConvo.receiverProxy = receiverProxy.key
             senderConvo.receiverIsBlocking = senderBlocked
             let senderConvoAnyObject = senderConvo.toAnyObject()
-            self.set(senderConvoAnyObject, itemType: Path.Convos, parent: senderConvo.senderId, child: senderConvo.key, grandchild: nil)
-            self.set(senderConvoAnyObject, itemType: Path.Convos, parent: senderConvo.senderProxy, child: senderConvo.key, grandchild: nil)
-            self.increment(1, itemType: Path.ProxiesInteractedWith, parent: senderProxy.ownerId, child: nil, grandchild: nil)
+            self.set(senderConvoAnyObject, a: Path.Convos, b: senderConvo.senderId, c: senderConvo.key, d: nil)
+            self.set(senderConvoAnyObject, a: Path.Convos, b: senderConvo.senderProxy, c: senderConvo.key, d: nil)
+            self.increment(amount: 1, a: Path.ProxiesInteractedWith, b: senderProxy.ownerId, c: nil, d: nil)
             
             /// Set up receiver side
+            receiverConvo.key = convoKey
             receiverConvo.senderId = receiverProxy.ownerId
             receiverConvo.senderProxy = receiverProxy.key
             receiverConvo.receiverId = senderProxy.ownerId
             receiverConvo.receiverProxy = senderProxy.key
             receiverConvo.senderIsBlocking = senderBlocked
             let receiverConvoAnyObject = receiverConvo.toAnyObject()
-            self.set(receiverConvoAnyObject, itemType: Path.Convos, parent: receiverConvo.senderId, child: receiverConvo.key, grandchild: nil)
-            self.set(receiverConvoAnyObject, itemType: Path.Convos, parent: receiverConvo.senderProxy, child: receiverConvo.key, grandchild: nil)
-            self.increment(1, itemType: Path.ProxiesInteractedWith, parent: receiverProxy.ownerId, child: nil, grandchild: nil)
+            self.set(receiverConvoAnyObject, a: Path.Convos, b: receiverConvo.senderId, c: receiverConvo.key, d: nil)
+            self.set(receiverConvoAnyObject, a: Path.Convos, b: receiverConvo.senderProxy, c: receiverConvo.key, d: nil)
+            self.increment(amount: 1, a: Path.ProxiesInteractedWith, b: receiverProxy.ownerId, c: nil, d: nil)
             
             /// Set message
             self.sendMessage(withText: text, withMediaType: mediaType, usingSenderConvo: senderConvo, completion: { (convoKey, message) in
@@ -513,39 +507,37 @@ class API {
             let timestamp = NSDate().timeIntervalSince1970
             
             /// Sender updates
-            self.setConvoValuesOnMessageSend(message: "You: \(text)", timestamp: timestamp, id: convo.senderId, proxy: convo.senderProxy, convo: convo.key)
-            self.set(timestamp, itemType: Path.Timestamp, parent: convo.senderProxy, child: Path.Timestamp, grandchild: nil)
-            self.increment(1, itemType: Path.MessagesSent, parent: convo.senderId, child: nil, grandchild: nil)
+            self.setConvoValuesOnMessageSend(timestamp: timestamp, id: convo.senderId, proxy: convo.senderProxy, convo: convo.key)
+            self.set(timestamp, a: Path.Timestamp, b: convo.senderProxy, c: Path.Timestamp, d: nil)
+            self.increment(amount: 1, a: Path.MessagesSent, b: convo.senderId, c: nil, d: nil)
             
             /// Receiver updates
             if !convo.receiverDeletedProxy && !convo.receiverIsBlocking {
-                self.increment(increment, itemType: Path.Unread, parent: convo.receiverId, child: nil, grandchild: nil)
-                self.increment(increment, itemType: Path.Unread, parent: convo.receiverProxy, child: nil, grandchild: nil)
-                self.set(timestamp, itemType: Path.Timestamp, parent: convo.receiverProxy, child: Path.Timestamp, grandchild: nil)
+                self.increment(amount: increment, a: Path.Unread, b: convo.receiverId, c: convo.receiverProxy, d: convo.key)
+                self.set(timestamp, a: Path.Timestamp, b: convo.receiverProxy, c: Path.Timestamp, d: nil)
             }
             
             if !convo.receiverDeletedProxy {
-                self.setConvoValuesOnMessageSend(message: text, timestamp: timestamp, id: convo.receiverId, proxy: convo.receiverProxy, convo: convo.key)
-                self.increment(increment, itemType: Path.MessagesReceived, parent: convo.receiverId, child: nil, grandchild: nil)
+                self.setConvoValuesOnMessageSend(timestamp: timestamp, id: convo.receiverId, proxy: convo.receiverProxy, convo: convo.key)
+                self.increment(amount: 1, a: Path.MessagesReceived, b: convo.receiverId, c: nil, d: nil)
             }
             
             /// Write message
             let messageKey = self.ref.child(Path.Messages).child(convo.key).childByAutoId().key
             let timeRead = receiverIsPresent ? timestamp : 0.0
             let message = Message(key: messageKey, convo: convo.key, mediaType: mediaType, read: receiverIsPresent, timeRead: timeRead, senderId: convo.senderId, date: timestamp, text: text)
-            self.set(message.toAnyObject(), itemType: Path.Messages, parent: convo.key, child: messageKey, grandchild: "")
+            self.set(message.toAnyObject(), a: Path.Messages, b: convo.key, c: messageKey, d: nil)
             
             completion(convoKey: convo.key, message: message)
         }
     }
     
-    /// Sets various user convo values when sending a message.
-    func setConvoValuesOnMessageSend(message message: String, timestamp: Double, id: String, proxy: String, convo: String) {
-        self.set(message, itemType: Path.LastMessage, parent: id, child: convo, grandchild: nil)
-        self.set(timestamp, itemType: Path.Convos, parent: id, child: convo, grandchild: Path.Timestamp)
-        self.set(timestamp, itemType: Path.Convos, parent: proxy, child: convo, grandchild: Path.Timestamp)
-        self.set(false, itemType: Path.Convos, parent: id, child: convo, grandchild: Path.DidLeaveConvo)
-        self.set(false, itemType: Path.Convos, parent: proxy, child: convo, grandchild: Path.DidLeaveConvo)
+    /// Sets `timestamp`, and `didLeaveConvo` for both copies of convo.
+    func setConvoValuesOnMessageSend(timestamp timestamp: Double, id: String, proxy: String, convo: String) {
+        self.set(timestamp, a: Path.Convos, b: id, c: convo, d: Path.Timestamp)
+        self.set(timestamp, a: Path.Convos, b: proxy, c: convo, d: Path.Timestamp)
+        self.set(false, a: Path.Convos, b: id, c: convo, d: Path.DidLeaveConvo)
+        self.set(false, a: Path.Convos, b: proxy, c: convo, d: Path.DidLeaveConvo)
     }
     
     /// Returns a Bool indicating whether or not a user is in a convo.
@@ -555,16 +547,19 @@ class API {
         })
     }
     
-    /// Sets the message's `read` to true and gives it a current `timeRead`.
-    func setRead(forMessage message: Message) {
-        set(true, itemType: Path.Messages, parent: message.convo, child: message.key, grandchild: Path.Read)
-        set(NSDate().timeIntervalSince1970, itemType: Path.Messages, parent: message.convo, child: message.key, grandchild: Path.TimeRead)
+    /// Sets the message's `read` to true.
+    /// Gives the message a current `timeRead`.
+    /// Decrements `user`'s convo's unread by 1.
+    func setRead(forMessage message: Message, forUser user: String) {
+        set(true, a: Path.Messages, b: message.convo, c: message.key, d: Path.Read)
+        set(NSDate().timeIntervalSince1970, a: Path.Messages, b: message.convo, c: message.key, d: Path.TimeRead)
+        increment(amount: -1, a: Path.Unread, b: user, c: message.convo, d: nil)
     }
     
     /// Sets a message's `mediaType` and `mediaURL`.
     func setMedia(forMessage message: Message, mediaType: String, mediaURL: String) {
-        set(mediaType, itemType: Path.Messages, parent: message.convo, child: message.key, grandchild: Path.MediaType)
-        set(mediaURL, itemType: Path.Messages, parent: message.convo, child: message.key, grandchild: Path.MediaURL)
+        set(mediaType, a: Path.Messages, b: message.convo, c: message.key, d: Path.MediaType)
+        set(mediaURL, a: Path.Messages, b: message.convo, c: message.key, d: Path.MediaURL)
     }
     
     // TODO: what is this used for?
@@ -579,27 +574,18 @@ class API {
     /// Update the receiver's nickname for the convo.
     /// (Only the sender sees this nickname).
     func update(nickname nickname: String, forReceiverInConvo convo: Convo) {
-        set(nickname, itemType: Path.Nickname, parent: convo.senderId, child: convo.key, grandchild: nil)
+        set(nickname, a: Path.Nickname, b: convo.senderId, c: convo.key, d: nil)
     }
     
     /// Leaves a convo.
     func leave(convo convo: Convo) {
         
         /// Set `didLeaveConvo` for both copies of convo to true.
-        set(true, itemType: Path.Convos, parent: convo.senderId, child: convo.key, grandchild: Path.DidLeaveConvo)
-        set(true, itemType: Path.Convos, parent: convo.senderProxy, child: convo.key, grandchild: Path.DidLeaveConvo)
-        
-        /// Get convo's `unread`.
-        getRef(Path.Unread, parent: convo.senderId, child: convo.key, grandchild: nil)?.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            
-            /// Set convo's `unread` to 0.
-            self.set(0, itemType: Path.Unread, parent: convo.senderId, child: convo.key, grandchild: nil)
-            
-            /// Decrement user's and proxy's `unread` by the convo's `unread`.
-            guard let unread = snapshot.value as? Int where unread != 0 else { return }
-            self.increment(-unread, itemType: Path.Unread, parent: convo.senderId, child: nil, grandchild: nil)
-            self.increment(-unread, itemType: Path.Unread, parent: convo.senderProxy, child: nil, grandchild: nil)
-        })
+        set(true, a: Path.Convos, b: convo.senderId, c: convo.key, d: Path.DidLeaveConvo)
+        set(true, a: Path.Convos, b: convo.senderProxy, c: convo.key, d: Path.DidLeaveConvo)
+
+        /// Set convo's `unread` to 0.
+        self.set(0, a: Path.Unread, b: convo.senderId, c: convo.senderProxy, d: convo.key)
     }
     
     // When you mute a convo, you stop getting push notifications for it.

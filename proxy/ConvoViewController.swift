@@ -344,7 +344,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
             // Mark messages from other user as read.
             if message.senderId != self.senderId {
                 if !message.read {
-                    self.api.setRead(forMessage: message)
+                    self.api.setRead(forMessage: message, forUser: self.senderId)
                 }
             } else {
                 // Keep track of the last message you sent.

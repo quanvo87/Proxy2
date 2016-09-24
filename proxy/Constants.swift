@@ -9,12 +9,12 @@
 struct Path {
     
     // Objects
-    static let Icons = "icons"
-    static let UserFiles = "userFiles"
     static let Proxies = "proxies"
     static let Convos = "convos"
     static let Messages = "messages"
     static let WordBank = "wordBank"
+    static let Icons = "icons"
+    static let UserFiles = "userFiles"
     
     // User
     static let ProxiesInteractedWith = "proxiesInteractedWith"
@@ -23,22 +23,23 @@ struct Path {
     static let Blocked = "blocked"
     static let Present = "present"
     
+    // Proxy
+    static let Name = "name"
+    
+    // Convo
+    static let DidLeaveConvo = "didLeaveConvo"
+    static let Unread = "unread"
+    
     // Message
     static let Read = "read"
     static let TimeRead = "timeRead"
     static let MediaType = "mediaType"
     static let MediaURL = "mediaURL"
     
-    // Convo
-    static let LastMessage = "lastMessage"
-    static let DidLeaveConvo = "didLeaveConvo"
-    
     // Shared
-    static let Name = "name"
     static let Nickname = "nickname"
     static let Icon = "icon"
     static let Timestamp = "timestamp"
-    static let Unread = "unread"
 }
 
 struct URLs {
