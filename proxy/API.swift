@@ -290,16 +290,23 @@ class API {
     func tryCreating(proxy completion: (proxy: Proxy) -> Void) {
         
         /// Create a proxy and save it.
-        let key = ref.child(Path.Proxies).childByAutoId().key
-        let name = proxyNameGenerator.generateProxyName()
-        let proxy = Proxy(key: key, name: name, ownerId: "", timeCreated: 0.0, timestamp: 0.0)
-        set(proxy.toAnyObject(), a: Path.Proxies, b: key, c: nil, d: nil)
+        let uniqueKey = ref.child(Path.Proxies).childByAutoId().key
+        let key = proxyNameGenerator.generateProxyName()
+        let proxy = Proxy(key: key, ownerId: self.uid, timeCreated: 0.0, timestamp: 0.0)
+        set(proxy.toAnyObject(), a: Path.Proxies, b: uniqueKey, c: nil, d: nil)
         
         /// Get all proxies with this name.
-        ref.child(Path.Proxies).queryOrderedByChild(Path.Name).queryEqualToValue(name).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+        ref.child(Path.Proxies).queryOrderedByChild(Path.Key).queryEqualToValue(key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
             
             /// If there's only one, it's the one you just created and you're done.
             if snapshot.childrenCount == 1 {
+                
+                /// Delete the proxy saved under `uniqueKey` and save it under name.
+                /// Makes it easier to retreive/delete later.
+                /// We just needed a unique key so that when creating our temp proxy,
+                /// we dont overwrite an existing one.
+                self.delete(a: Path.Proxies, b: uniqueKey, c: nil, d: nil)
+                self.set(proxy.toAnyObject(), a: Path.Proxies, b: key, c: nil, d: nil)
                 
                 /// Stop trying to create a proxy.
                 self.isCreatingProxy = false
@@ -307,11 +314,11 @@ class API {
                 /// Create the user's copy of the proxy and save it.
                 /// The proxy's name is used as its key here.
                 let timestamp = NSDate().timeIntervalSince1970
-                let proxy = Proxy(key: name, name: "", ownerId: self.uid, timeCreated: timestamp, timestamp: timestamp)
-                self.set(proxy.toAnyObject(), a: Path.Proxies, b: self.uid, c: name, d: nil)
+                let proxy = Proxy(key: key, ownerId: self.uid, timeCreated: timestamp, timestamp: timestamp)
+                self.set(proxy.toAnyObject(), a: Path.Proxies, b: self.uid, c: key, d: nil)
                 
                 /// Give the proxy a random icon.
-                self.set(self.getRandomIcon(), a: Path.Icon, b: name, c: nil, d: nil)
+                self.set(self.getRandomIcon(), a: Path.Icon, b: key, c: Path.Icon, d: nil)
                 
                 completion(proxy: proxy)
                 return
@@ -333,7 +340,6 @@ class API {
     
     /// Deletes the given `proxy` and returns a new one.
     func reroll(proxy proxy: Proxy, completion: (proxy: Proxy) -> Void) {
-        print(proxy)
         delete(a: Path.Proxies, b: proxy.key, c: nil, d: nil)
         delete(a: Path.Proxies, b: proxy.ownerId, c: proxy.key, d: nil)
         tryCreating(proxy: { (proxy) in
@@ -351,19 +357,19 @@ class API {
     
     /// Returns the Proxy with `name` belonging to `user`.
     func getProxy(withKey key: String, completion: (proxy: Proxy) -> Void) {
-        ref.child(Path.Proxies).queryOrderedByKey().queryEqualToValue(key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            completion(proxy: Proxy(anyObject: snapshot.value!))
+        ref.child(Path.Proxies).queryOrderedByChild(Path.Key).queryEqualToValue(key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            completion(proxy: Proxy(anyObject: snapshot.children.nextObject()!.value))
         })
     }
     
     /// Sets a proxy's nickname to `nickname`.
     func set(nickname nickname: String, forProxy proxy: String) {
-        set(nickname, a: Path.Nickname, b: proxy, c: nil, d: nil)
+        set(nickname, a: Path.Nickname, b: proxy, c: Path.Nickname, d: nil)
     }
     
     /// Sets a proxy's icon to `icon`.
     func set(icon icon: String, forProxy proxy: String) {
-        set(icon, a: Path.Icon, b: proxy, c: nil, d: nil)
+        set(icon, a: Path.Icon, b: proxy, c: Path.Icon, d: nil)
     }
     
     /// Deletes a proxy and it's copies of its convos.
@@ -397,8 +403,8 @@ class API {
         for convo in convos {
             
             /// Notify receivers in convos that this proxy is deleted
-            set(true, a: Path.Convos, b: convo.receiverId, c: convo.key, d: nil)
-            set(true, a: Path.Convos, b: convo.receiverProxy, c: convo.key, d: nil)
+            set(true, a: Path.Convos, b: convo.receiverId, c: convo.key, d: Path.ReceiverDidDeleteProxy)
+            set(true, a: Path.Convos, b: convo.receiverProxy, c: convo.key, d: Path.ReceiverDidDeleteProxy)
             
             /// Delete the sender's copies of the convo
             delete(a: Path.Convos, b: convo.senderId, c: convo.key, d: nil)
@@ -406,7 +412,7 @@ class API {
             
             /// Delete convo's metadata
             delete(a: Path.Nickname, b: convo.senderId, c: convo.key, d: nil)
-            delete(a: Path.Unread, b: convo.senderId, c: convo.senderProxy, d: convo.key)
+//            delete(a: Path.Unread, b: convo.senderId, c: convo.senderProxy, d: convo.key)
         }
         
         /// Delete the global copy of the proxy
@@ -416,7 +422,7 @@ class API {
         delete(a: Path.Proxies, b: uid, c: proxy.key, d: nil)
         
         /// Delete icon
-        delete(a: Path.Icons, b: proxy.key, c: nil, d: nil)
+        delete(a: Path.Icon, b: proxy.key, c: nil, d: nil)
         
         /// Delete nickname
         delete(a: Path.Nickname, b: proxy.key, c: nil, d: nil)
@@ -436,7 +442,7 @@ class API {
             }
             
             /// Check if sender is trying to send to him/herself
-            let receiverProxy = Proxy(anyObject: snapshot.value!)
+            let receiverProxy = Proxy(anyObject: snapshot.children.nextObject()!.value)
             guard senderProxy.ownerId != receiverProxy.ownerId else {
                 completion(error: ErrorAlert(title: "Cannot Send To Self", message: "Did you enter yourself as a recipient by mistake?"), convo: nil, message: nil)
                 return
@@ -509,21 +515,20 @@ class API {
     /// Returns sender's convo and message.
     func sendMessage(withText text: String, withMediaType mediaType: String, usingSenderConvo convo: Convo, completion: (convo: Convo, message: Message) -> Void) {
         userIsPresent(user: convo.receiverId, convo: convo.key) { (receiverIsPresent) in
-            let increment = receiverIsPresent ? 0 : 1
             let timestamp = NSDate().timeIntervalSince1970
             
             /// Sender updates
             self.setConvoValuesOnMessageSend(timestamp: timestamp, id: convo.senderId, proxy: convo.senderProxy, convo: convo.key)
-            self.set(timestamp, a: Path.Timestamp, b: convo.senderProxy, c: Path.Timestamp, d: nil)
+            self.set(timestamp, a: Path.Proxies, b: convo.senderId, c: convo.senderProxy, d: Path.Timestamp)
             self.increment(amount: 1, a: Path.MessagesSent, b: convo.senderId, c: nil, d: nil)
             
             /// Receiver updates
-            if !convo.receiverDeletedProxy && !convo.receiverIsBlocking {
-                self.increment(amount: increment, a: Path.Unread, b: convo.receiverId, c: convo.receiverProxy, d: convo.key)
-                self.set(timestamp, a: Path.Timestamp, b: convo.receiverProxy, c: Path.Timestamp, d: nil)
+            if !convo.receiverDidDeleteProxy && !convo.receiverIsBlocking {
+                self.increment(amount: receiverIsPresent ? 0 : 1, a: Path.Unread, b: convo.receiverId, c: convo.receiverProxy, d: convo.key)
+                self.set(timestamp, a: Path.Proxies, b: convo.receiverId, c: convo.receiverProxy, d: Path.Timestamp)
             }
             
-            if !convo.receiverDeletedProxy {
+            if !convo.receiverDidDeleteProxy {
                 self.setConvoValuesOnMessageSend(timestamp: timestamp, id: convo.receiverId, proxy: convo.receiverProxy, convo: convo.key)
                 self.increment(amount: 1, a: Path.MessagesReceived, b: convo.receiverId, c: nil, d: nil)
             }
@@ -568,8 +573,7 @@ class API {
         set(mediaURL, a: Path.Messages, b: message.convo, c: message.key, d: Path.MediaURL)
     }
     
-    // TODO: what is this used for?
-    /// Return the message with the corresponding key.
+    /// Returns a message.
     func getMessage(withKey messageKey: String, inConvo convoKey: String, completion: (message: Message) -> Void) {
         ref.child(Path.Messages).child(convoKey).child(messageKey).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
             completion(message: Message(anyObject: snapshot.value!))
@@ -579,8 +583,8 @@ class API {
     // MARK: - Conversation (Convo)
     /// Update the receiver's nickname for the convo.
     /// (Only the sender sees this nickname).
-    func update(nickname nickname: String, forReceiverInConvo convo: Convo) {
-        set(nickname, a: Path.Nickname, b: convo.senderId, c: convo.key, d: nil)
+    func set(nickname nickname: String, forReceiverInConvo convo: Convo) {
+        set(nickname, a: Path.Nickname, b: convo.senderId, c: convo.key, d: Path.Nickname)
     }
     
     /// Leaves a convo.

@@ -25,6 +25,7 @@ class SenderProxyInfoCell: UITableViewCell {
     var proxy = Proxy() {
         didSet {
             selectionStyle = .None
+            iconImageView.kf_indicatorType = .Activity
             nameLabel.text = proxy.key
             observeIcon()
             observeNickname()
@@ -37,19 +38,18 @@ class SenderProxyInfoCell: UITableViewCell {
     }
     
     func observeIcon() {
-        iconRef = ref.child(Path.Icon).child(proxy.key)
+        iconRef = ref.child(Path.Icon).child(proxy.key).child(Path.Icon)
         iconRefHandle = iconRef.observeEventType(.Value, withBlock: { (snapshot) in
             guard let icon = snapshot.value as? String where icon != "" else { return }
             self.api.getURL(forIcon: icon) { (url) in
                 guard let url = url.absoluteString where url != "" else { return }
-                self.iconImageView.kf_indicatorType = .Activity
                 self.iconImageView.kf_setImageWithURL(NSURL(string: url), placeholderImage: nil)
             }
         })
     }
     
     func observeNickname() {
-        nicknameRef = ref.child(Path.Nickname).child(proxy.key)
+        nicknameRef = ref.child(Path.Nickname).child(proxy.key).child(Path.Nickname)
         nicknameRefHandle = nicknameRef.observeEventType(.Value, withBlock: { (snapshot) in
             if let nickname = snapshot.value as? String where nickname != "" {
                 self.nicknameButton.setTitle(nickname, forState: .Normal)

@@ -110,6 +110,8 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     
     // MARK: - Set up
     func setUp() {
+        names[convo.senderId] = convo.senderProxy
+        names[convo.receiverId] = convo.receiverProxy
         setTitle()
         navigationController!.view.backgroundColor = UIColor.whiteColor()
         navigationItem.rightBarButtonItem = createInfoButton()
@@ -118,12 +120,10 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         collectionView?.collectionViewLayout.outgoingAvatarViewSize = CGSize(width: kJSQMessagesCollectionViewAvatarSizeDefault, height:kJSQMessagesCollectionViewAvatarSizeDefault)
         senderId = convo.senderId
         senderDisplayName = ""
-        names[convo.senderId] = convo.senderProxy
-        names[convo.receiverId] = convo.receiverProxy
     }
     
     func setTitle() {
-        navigationItem.title = names[convo.receiverId] == "" ? convo.receiverProxy : names[convo.receiverId]
+        navigationItem.title = names[convo.receiverId]
     }
     
     func createInfoButton() -> UIBarButtonItem {
@@ -180,7 +180,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     // Observe when sender changes receiver's nickname for this convo and update all cells that are displaying it.
     // Also update navigation bar title.
     func observeReceiverNickname() {
-        receiverNicknameRef = ref.child(Path.Nickname).child(convo.senderId).child(convo.key)
+        receiverNicknameRef = ref.child(Path.Nickname).child(convo.senderId).child(convo.key).child(Path.Nickname)
         receiverNicknameRefHandle = receiverNicknameRef.observeEventType(.Value, withBlock: { (snapshot) in
             if let nickname = snapshot.value as? String {
                 self.names[self.convo.receiverId] = nickname == "" ? self.convo.receiverProxy : nickname
@@ -192,7 +192,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     
     // Observe when sender changes his/her icon to update all cells that are displaying it.
     func observeSenderIcon() {
-        senderIconRef = ref.child(Path.Icon).child(convo.senderProxy)
+        senderIconRef = ref.child(Path.Icon).child(convo.senderProxy).child(Path.Icon)
         senderIconRefHandle = senderIconRef.observeEventType(.Value, withBlock: { (snapshot) in
             if let icon = snapshot.value as? String {
                 self.api.getUIImage(forIcon: icon, completion: { (image) in
@@ -205,7 +205,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     
     // Observe when receiver changes his/her icon to update all cells that are displaying it.
     func observeReceiverIcon() {
-        receiverIconRef = ref.child(Path.Icon).child(convo.receiverProxy)
+        receiverIconRef = ref.child(Path.Icon).child(convo.receiverProxy).child(Path.Icon)
         receiverIconRefHandle = receiverIconRef.observeEventType(.Value, withBlock: { (snapshot) in
             if let icon = snapshot.value as? String {
                 self.api.getUIImage(forIcon: icon, completion: { (image) in

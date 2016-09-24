@@ -55,7 +55,7 @@ class ConvoInfoTableViewController: UITableViewController {
     
     // Keep up to date sender nickname
     func observeSenderNickname() {
-        senderNicknameRef = ref.child(Path.Nickname).child(convo.senderProxy)
+        senderNicknameRef = ref.child(Path.Nickname).child(convo.senderProxy).child(Path.Nickname)
         senderNicknameRefHandle = senderNicknameRef.observeEventType(.Value, withBlock: { (snapshot) in
             if let nickname = snapshot.value as? String {
                 self.senderNickname = nickname
@@ -65,7 +65,7 @@ class ConvoInfoTableViewController: UITableViewController {
     
     // Keep up to date receiver nickname
     func observeReceiverNickname() {
-        receiverNicknameRef = ref.child(Path.Nickname).child(convo.senderId).child(convo.key)
+        receiverNicknameRef = ref.child(Path.Nickname).child(convo.senderId).child(convo.key).child(Path.Nickname)
         receiverNicknameRefHandle = receiverNicknameRef.observeEventType(.Value, withBlock: { (snapshot) in
             if let nickname = snapshot.value as? String {
                 self.receiverNickname = nickname
@@ -268,7 +268,7 @@ class ConvoInfoTableViewController: UITableViewController {
             let nickname = alert.textFields![0].text
             let trim = nickname!.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
             if !(nickname != "" && trim == "") {
-                self.api.update(nickname: nickname!, forReceiverInConvo: self.convo)
+                self.api.set(nickname: nickname!, forReceiverInConvo: self.convo)
             }
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
@@ -311,7 +311,7 @@ class ConvoInfoTableViewController: UITableViewController {
         }
     }
     
-    // Show the Proxy Info for this proxy.
+    // Show Proxy Info VC for sender proxy.
     func showProxyInfoTableViewController() {
         if let senderProxy = senderProxy {
             let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.ProxyInfoTableViewController) as! ProxyInfoTableViewController

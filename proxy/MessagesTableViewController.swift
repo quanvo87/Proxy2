@@ -173,8 +173,8 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
     
     // MARK: - Database
     func observeUnread() {
-        unreadRef = ref.child(Path.Unread).child(api.uid)
-        unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
+//        unreadRef = ref.child(Path.Unread).child(api.uid)
+//        unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
 //            var unread = 0
 //            for proxy in snapshot.children {
 //                for convo in proxy.children {
@@ -183,7 +183,7 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
 //            }
 //            self.navigationItem.title = "Messages \(unread.toTitleSuffix())"
 //            self.tabBarController?.tabBar.items?.first?.badgeValue = unread == 0 ? nil : String(unread)
-        })
+//        })
     }
     
     func observeConvos() {

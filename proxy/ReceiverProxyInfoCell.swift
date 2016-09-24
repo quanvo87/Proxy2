@@ -24,6 +24,7 @@ class ReceiverProxyInfoCell: UITableViewCell {
     var convo = Convo() {
         didSet {
             selectionStyle = .None
+            iconImageView.kf_indicatorType = .Activity
             nameLabel.text = convo.receiverProxy
             observeIcon()
             observeNickname()
@@ -36,19 +37,18 @@ class ReceiverProxyInfoCell: UITableViewCell {
     }
     
     func observeIcon() {
-        iconRef = ref.child(Path.Icon).child(convo.receiverProxy)
+        iconRef = ref.child(Path.Icon).child(convo.receiverProxy).child(Path.Icon)
         iconRefHandle = iconRef.observeEventType(.Value, withBlock: { (snapshot) in
             guard let icon = snapshot.value as? String where icon != "" else { return }
             self.api.getURL(forIcon: icon) { (url) in
                 guard let url = url.absoluteString where url != "" else { return }
-                self.iconImageView.kf_indicatorType = .Activity
                 self.iconImageView.kf_setImageWithURL(NSURL(string: url), placeholderImage: nil)
             }
         })
     }
     
     func observeNickname() {
-        nicknameRef = ref.child(Path.Nickname).child(convo.senderId).child(convo.key)
+        nicknameRef = ref.child(Path.Nickname).child(convo.senderId).child(convo.key).child(Path.Nickname)
         nicknameRefHandle = nicknameRef.observeEventType(.Value, withBlock: { (snapshot) in
             if let nickname = snapshot.value as? String where nickname != "" {
                 self.nicknameButton.setTitle(nickname, forState: .Normal)

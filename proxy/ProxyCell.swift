@@ -33,6 +33,10 @@ class ProxyCell: UITableViewCell {
         didSet {
             // Set up
             accessoryType = .DisclosureIndicator
+            iconImageView.kf_indicatorType = .Activity
+            nameLabel.text = proxy.key
+            nicknameLabel.text = ""
+            unreadLabel.text = ""
             
             // Set up 'new proxy' indicator image
             newImageView.hidden = true
@@ -40,11 +44,6 @@ class ProxyCell: UITableViewCell {
             if secondsAgo < 60 * Settings.NewProxyIndicatorDuration {
                 newImageView.hidden = false
             }
-            
-            // Set labels
-            nameLabel.text = proxy.key
-            nicknameLabel.text = ""
-            unreadLabel.text = ""
             
             // Observe dynamic values
             observeIcon()
@@ -61,29 +60,25 @@ class ProxyCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        iconImageView.image = nil
-        nameLabel.text = ""
-        nicknameLabel.text = ""
-        unreadLabel.text = ""
         iconRef.removeObserverWithHandle(iconRefHandle)
         nicknameRef.removeObserverWithHandle(nicknameRefHandle)
         unreadRef.removeObserverWithHandle(unreadRefHandle)
     }
     
     func observeIcon() {
-        iconRef = ref.child(Path.Icon).child(proxy.key)
+        iconRef = ref.child(Path.Icon).child(proxy.key).child(Path.Icon)
         iconRefHandle = iconRef.observeEventType(.Value, withBlock: { (snapshot) in
             guard let icon = snapshot.value as? String where icon != "" else { return }
             self.api.getURL(forIcon: icon) { (url) in
                 guard let url = url.absoluteString where url != "" else { return }
-                self.iconImageView.kf_indicatorType = .Activity
+                self.iconImageView.image = nil
                 self.iconImageView.kf_setImageWithURL(NSURL(string: url), placeholderImage: nil)
             }
         })
     }
     
     func observeNickname() {
-        nicknameRef = ref.child(Path.Nickname).child(proxy.key)
+        nicknameRef = ref.child(Path.Nickname).child(proxy.key).child(Path.Nickname)
         nicknameRefHandle = nicknameRef.observeEventType(.Value, withBlock: { (snapshot) in
             guard let nickname = snapshot.value as? String else { return }
             self.nicknameLabel.text = nickname

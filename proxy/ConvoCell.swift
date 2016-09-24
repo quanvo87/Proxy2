@@ -40,10 +40,10 @@ class ConvoCell: UITableViewCell {
     var convo = Convo() {
         didSet {
             setTitle()
+            iconImageView.kf_indicatorType = .Activity
             timestampLabel.text = convo.timestamp.toTimeAgo()
             lastMessageLabel.text = ""
             unreadLabel.text = ""
-            
             observeIcon()
             observeSenderNickname()
             observeReceiverNickname()
@@ -59,24 +59,32 @@ class ConvoCell: UITableViewCell {
         lastMessageRef.removeObserverWithHandle(lastMessageRefHandle)
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        iconRef.removeObserverWithHandle(iconRefHandle)
+        senderNicknameRef.removeObserverWithHandle(senderNicknameRefHandle)
+        unreadRef.removeObserverWithHandle(unreadRefHandle)
+        lastMessageRef.removeObserverWithHandle(lastMessageRefHandle)
+    }
+    
     func setTitle() {
         titleLabel.attributedText = getConvoTitle(receiverNickname, receiverName: convo.receiverProxy, senderNickname: senderNickname, senderName: convo.senderProxy)
     }
     
     func observeIcon() {
-        iconRef = ref.child(Path.Icon).child(convo.receiverProxy)
+        iconRef = ref.child(Path.Icon).child(convo.receiverProxy).child(Path.Icon)
         iconRefHandle = iconRef.observeEventType(.Value, withBlock: { (snapshot) in
             guard let icon = snapshot.value as? String where icon != "" else { return }
             self.api.getURL(forIcon: icon) { (url) in
                 guard let url = url.absoluteString where url != "" else { return }
-                self.iconImageView.kf_indicatorType = .Activity
+                self.iconImageView.image = nil
                 self.iconImageView.kf_setImageWithURL(NSURL(string: url), placeholderImage: nil)
             }
         })
     }
     
     func observeSenderNickname() {
-        senderNicknameRef = ref.child(Path.Nickname).child(convo.senderProxy)
+        senderNicknameRef = ref.child(Path.Nickname).child(convo.senderProxy).child(Path.Nickname)
         senderNicknameRefHandle = senderNicknameRef.observeEventType(.Value, withBlock: { (snapshot) in
             guard let nickname = snapshot.value as? String else { return }
             self.senderNickname = nickname
@@ -85,7 +93,7 @@ class ConvoCell: UITableViewCell {
     }
     
     func observeReceiverNickname() {
-        receiverNicknameRef = ref.child(Path.Nickname).child(convo.senderId).child(convo.key)
+        receiverNicknameRef = ref.child(Path.Nickname).child(convo.senderId).child(convo.key).child(Path.Nickname)
         receiverNicknameRefHandle = receiverNicknameRef.observeEventType(.Value, withBlock: { (snapshot) in
             guard let nickname = snapshot.value as? String else { return }
             self.receiverNickname = nickname

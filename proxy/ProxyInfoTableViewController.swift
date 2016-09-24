@@ -87,7 +87,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     }
     
     func observeNickname() {
-        nicknameRef = ref.child(Path.Nickname).child(proxy.key)
+        nicknameRef = ref.child(Path.Nickname).child(proxy.key).child(Path.Nickname)
         nicknameRefHandle = nicknameRef.observeEventType(.Value, withBlock: { (snapshot) in
             if let nickname = snapshot.value as? String {
                 self.nickname = nickname
@@ -106,7 +106,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
                 }
             }
             self.convos = convos.reverse()
-            self.tableView.reloadData()
+            self.tableView.reloadSections(NSIndexSet(index: 1), withRowAnimation: .Automatic)
         })
     }
     
@@ -186,6 +186,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
             let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.ConvoCell, forIndexPath: indexPath) as! ConvoCell
             cell.convo = convos[indexPath.row]
             return cell
+            
         default: break
         }
         return UITableViewCell()

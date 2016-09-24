@@ -23,14 +23,11 @@ struct Path {
     static let Blocked = "blocked"
     static let Present = "present"
     
-    // Proxy
-    static let Key = "key"
-    static let Name = "name"
-    
     // Convo
-    static let DidLeaveConvo = "didLeaveConvo"
     static let Unread = "unread"
     static let Typing = "typing"
+    static let DidLeaveConvo = "didLeaveConvo"
+    static let ReceiverDidDeleteProxy = "receiverDidDeleteProxy"
     
     // Message
     static let Read = "read"
@@ -39,6 +36,8 @@ struct Path {
     static let MediaURL = "mediaURL"
     
     // Shared
+    static let Key = "key"
+    static let Name = "name"
     static let Nickname = "nickname"
     static let Icon = "icon"
     static let Timestamp = "timestamp"
