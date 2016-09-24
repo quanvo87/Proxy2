@@ -78,16 +78,16 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     
     // MARK: - Database
     func observeUnread() {
-        unreadRef = ref.child("proxies").child(proxy.owner).child(proxy.key).child("unread")
-        unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { snapshot in
-            if let unread = snapshot.value as? Int {
-                self.navigationItem.title = "\(unread.toTitleSuffix())"
-            }
-        })
+//        unreadRef = ref.child("proxies").child(proxy.owner).child(proxy.key).child("unread")
+//        unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { snapshot in
+//            if let unread = snapshot.value as? Int {
+//                self.navigationItem.title = "\(unread.toTitleSuffix())"
+//            }
+//        })
     }
     
     func observeNickname() {
-        nicknameRef = ref.child("proxies").child(proxy.owner).child(proxy.key).child("nickname")
+        nicknameRef = ref.child(Path.Nickname).child(proxy.key)
         nicknameRefHandle = nicknameRef.observeEventType(.Value, withBlock: { (snapshot) in
             if let nickname = snapshot.value as? String {
                 self.nickname = nickname
@@ -96,8 +96,8 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     }
     
     func observeConvos() {
-        convosRef = ref.child("convos").child(proxy.key)
-        convosRefHandle = convosRef.queryOrderedByChild("timestamp").observeEventType(.Value, withBlock: { (snapshot) in
+        convosRef = ref.child(Path.Convos).child(proxy.key)
+        convosRefHandle = convosRef.queryOrderedByChild(Path.Timestamp).observeEventType(.Value, withBlock: { (snapshot) in
             var convos = [Convo]()
             for child in snapshot.children {
                 let convo = Convo(anyObject: child.value)
@@ -214,7 +214,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
             let nickname = alert.textFields![0].text
             let trim = nickname!.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
             if !(nickname != "" && trim == "") {
-                self.api.update(nickname: nickname!, forProxy: self.proxy, withConvos: self.convos)
+                self.api.set(nickname: nickname!, forProxy: self.proxy.key)
             }
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))

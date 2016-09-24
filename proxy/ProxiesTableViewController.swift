@@ -138,9 +138,10 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
     }
     
     func createNewProxy() {
+        navigationItem.rightBarButtonItems![1].enabled = false
         api.create { (proxy) in
-            self.api.save(proxy: proxy!, withNickname: "")
             self.scrollToTop()
+            self.navigationItem.rightBarButtonItems![1].enabled = true
         }
     }
     
@@ -151,18 +152,18 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
     // MARK: - Database
     // Observe unread for the user to keep the title updated.
     func observeUnread() {
-        unreadRef = ref.child("unread").child(api.uid)
-        unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { snapshot in
-            if let unread = snapshot.value as? Int {
-                self.navigationItem.title = "Proxies \(unread.toTitleSuffix())"
-            }
-        })
+//        unreadRef = ref.child("unread").child(api.uid)
+//        unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { snapshot in
+//            if let unread = snapshot.value as? Int {
+//                self.navigationItem.title = "Proxies \(unread.toTitleSuffix())"
+//            }
+//        })
     }
     
     // Observe proxies for this user to display in this VC.
     func observeProxies() {
-        proxiesRef = ref.child("proxies").child(api.uid)
-        proxiesRefHandle = proxiesRef.queryOrderedByChild("timestamp").observeEventType(.Value, withBlock: { snapshot in
+        proxiesRef = ref.child(Path.Proxies).child(api.uid)
+        proxiesRefHandle = proxiesRef.queryOrderedByChild(Path.Timestamp).observeEventType(.Value, withBlock: { snapshot in
             var proxies = [Proxy]()
             for child in snapshot.children {
                 let proxy = Proxy(anyObject: child.value)

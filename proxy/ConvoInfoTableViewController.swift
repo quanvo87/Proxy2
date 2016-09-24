@@ -16,6 +16,10 @@ class ConvoInfoTableViewController: UITableViewController {
     var senderProxy: Proxy?
     var delegate: ConvoInfoTableViewControllerDelegate!
     
+    var senderNicknameRef = FIRDatabaseReference()
+    var senderNicknameRefHandle = FIRDatabaseHandle()
+    var senderNickname: String?
+    
     var receiverNicknameRef = FIRDatabaseReference()
     var receiverNicknameRefHandle = FIRDatabaseHandle()
     var receiverNickname: String?
@@ -23,15 +27,18 @@ class ConvoInfoTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUp()
+        observeSenderNickname()
         observeReceiverNickname()
     }
     
     deinit {
+        senderNicknameRef.removeObserverWithHandle(senderNicknameRefHandle)
         receiverNicknameRef.removeObserverWithHandle(receiverNicknameRefHandle)
     }
     
     func setUp() {
         navigationItem.title = "Conversation"
+        tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: Identifiers.Cell)
         
         // So buttons inside cells detect touches immediately (there's a delay on by default)
         tableView.delaysContentTouches = false
@@ -39,18 +46,26 @@ class ConvoInfoTableViewController: UITableViewController {
             scrollView.delaysContentTouches = false
         }
         
-        tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: Identifiers.BasicCell)
-        
         // Get's the user's proxy for the user proxy cell
-        api.getProxy(withKey: convo.senderProxy, belongingToUser: convo.senderId, completion: { (proxy) in
+        api.getProxy(withKey: convo.senderProxy, completion: { (proxy) in
             self.senderProxy = proxy
             self.tableView.reloadSections(NSIndexSet(index: 1), withRowAnimation: .Automatic)
         })
     }
     
-    // Keep receiver nickname updated
+    // Keep up to date sender nickname
+    func observeSenderNickname() {
+        senderNicknameRef = ref.child(Path.Nickname).child(convo.senderProxy)
+        senderNicknameRefHandle = senderNicknameRef.observeEventType(.Value, withBlock: { (snapshot) in
+            if let nickname = snapshot.value as? String {
+                self.senderNickname = nickname
+            }
+        })
+    }
+    
+    // Keep up to date receiver nickname
     func observeReceiverNickname() {
-        receiverNicknameRef = ref.child("convos").child(convo.senderId).child(convo.key).child("receiverNickname")
+        receiverNicknameRef = ref.child(Path.Nickname).child(convo.senderId).child(convo.key)
         receiverNicknameRefHandle = receiverNicknameRef.observeEventType(.Value, withBlock: { (snapshot) in
             if let nickname = snapshot.value as? String {
                 self.receiverNickname = nickname
@@ -169,7 +184,7 @@ class ConvoInfoTableViewController: UITableViewController {
             return cell
             
         case 2:
-            let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.BasicCell, forIndexPath: indexPath)
+            let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.Cell, forIndexPath: indexPath)
             cell.selectionStyle = .None
             switch indexPath.row {
                 
@@ -210,7 +225,7 @@ class ConvoInfoTableViewController: UITableViewController {
             }
             
         case 3:
-            let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.BasicCell, forIndexPath: indexPath)
+            let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.Cell, forIndexPath: indexPath)
             switch indexPath.row {
                 
             // Leave convo
@@ -268,7 +283,11 @@ class ConvoInfoTableViewController: UITableViewController {
             textField.autocorrectionType = .Yes
             textField.clearButtonMode = .WhileEditing
             textField.placeholder = "Enter A Nickname"
-            textField.text = self.senderProxy?.nickname
+            if let senderNickname = self.senderNickname {
+                textField.text = senderNickname
+            } else {
+                textField.text = ""
+            }
         })
         alert.addAction(UIAlertAction(title: "Save", style: .Default, handler: { (action) -> Void in
             let nickname = alert.textFields![0].text

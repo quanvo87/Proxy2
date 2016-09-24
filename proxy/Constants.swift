@@ -12,7 +12,7 @@ struct Path {
     static let Proxies = "proxies"
     static let Convos = "convos"
     static let Messages = "messages"
-    static let WordBank = "wordBank"
+    static let WordBank = "wordbank"
     static let Icons = "icons"
     static let UserFiles = "userFiles"
     
@@ -24,11 +24,13 @@ struct Path {
     static let Present = "present"
     
     // Proxy
+    static let Key = "key"
     static let Name = "name"
     
     // Convo
     static let DidLeaveConvo = "didLeaveConvo"
     static let Unread = "unread"
+    static let Typing = "typing"
     
     // Message
     static let Read = "read"

@@ -21,19 +21,26 @@ class SelectProxyViewController: UIViewController, UITableViewDelegate, UITableV
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        navigationItem.title = "Select A Proxy"
-        configureDatabase()
-        setUpTableView()
+        setUp()
+        observeProxies()
     }
     
     deinit {
         proxiesRef.removeObserverWithHandle(proxiesRefHandle)
     }
     
-    func configureDatabase() {
-        proxiesRef = ref.child("proxies").child(api.uid)
-        proxiesRefHandle = proxiesRef.queryOrderedByChild("timestamp").observeEventType(.Value, withBlock: { snapshot in
+    func setUp() {
+        navigationItem.title = "Select A Proxy"
+        automaticallyAdjustsScrollViewInsets = false
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.rowHeight = 80
+        tableView.estimatedRowHeight = 80
+    }
+    
+    func observeProxies() {
+        proxiesRef = ref.child(Path.Proxies).child(api.uid)
+        proxiesRefHandle = proxiesRef.queryOrderedByChild(Path.Timestamp).observeEventType(.Value, withBlock: { snapshot in
             var proxies = [Proxy]()
             for child in snapshot.children {
                 let proxy = Proxy(anyObject: child.value)
@@ -44,16 +51,6 @@ class SelectProxyViewController: UIViewController, UITableViewDelegate, UITableV
         })
     }
     
-    // MARK: - Table view
-    
-    func setUpTableView() {
-        automaticallyAdjustsScrollViewInsets = false
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.estimatedRowHeight = 80
-    }
-    
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return proxies.count
     }
@@ -62,7 +59,6 @@ class SelectProxyViewController: UIViewController, UITableViewDelegate, UITableV
         let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.ProxyCell, forIndexPath: indexPath) as! ProxyCell
         let proxy = self.proxies[indexPath.row]
         cell.nameLabel.text = proxy.key
-        cell.nicknameLabel.text = proxy.nickname
         return cell
     }
     

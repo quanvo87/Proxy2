@@ -144,9 +144,10 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
     }
     
     func createNewProxy() {
+        navigationItem.rightBarButtonItems![1].enabled = false
         api.create { (proxy) in
-            self.api.save(proxy: proxy!, withNickname: "")
             NSNotificationCenter.defaultCenter().postNotificationName(Notifications.CreatedNewProxyFromHomeTab, object: nil)
+            self.navigationItem.rightBarButtonItems![1].enabled = true
             self.tabBarController?.selectedIndex = 1
         }
     }
@@ -172,18 +173,22 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
     
     // MARK: - Database
     func observeUnread() {
-        unreadRef = ref.child("unread").child(api.uid)
+        unreadRef = ref.child(Path.Unread).child(api.uid)
         unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
-            if let unread = snapshot.value as? Int {
-                self.navigationItem.title = "Messages \(unread.toTitleSuffix())"
-                self.tabBarController?.tabBar.items?.first?.badgeValue = unread == 0 ? nil : String(unread)
-            }
+//            var unread = 0
+//            for proxy in snapshot.children {
+//                for convo in proxy.children {
+//                    print(convo)
+//                }
+//            }
+//            self.navigationItem.title = "Messages \(unread.toTitleSuffix())"
+//            self.tabBarController?.tabBar.items?.first?.badgeValue = unread == 0 ? nil : String(unread)
         })
     }
     
     func observeConvos() {
-        convosRef = ref.child("convos").child(api.uid)
-        convosRefHandle = convosRef.queryOrderedByChild("timestamp").observeEventType(.Value, withBlock: { (snapshot) in
+        convosRef = ref.child(Path.Convos).child(api.uid)
+        convosRefHandle = convosRef.queryOrderedByChild(Path.Timestamp).observeEventType(.Value, withBlock: { (snapshot) in
             var convos = [Convo]()
             for child in snapshot.children {
                 let convo = Convo(anyObject: child.value)

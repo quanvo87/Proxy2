@@ -113,10 +113,6 @@
 		1434057E1D85315400B75BF3 /* Convos */ = {
 			isa = PBXGroup;
 			children = (
-				14A6F1A11D6FB5090015431E /* NewMessageViewController.swift */,
-				14383B261D755C300086CA6C /* NewMessageViewControllerDelegate.swift */,
-				143F76F91D72C0C100EF305F /* SelectProxyViewController.swift */,
-				14383B0E1D7341070086CA6C /* SelectProxyViewControllerDelegate.swift */,
 				14383B241D7555670086CA6C /* ConvoViewController.swift */,
 				14383B5C1D7B81530086CA6C /* ConvoInfoTableViewController.swift */,
 				145E9D0D1D8A3DDC0043F34F /* ConvoInfoTableViewControllerDelegate.swift */,
@@ -158,6 +154,10 @@
 			isa = PBXGroup;
 			children = (
 				145A4D311D84A6EC00BA64DC /* MessagesTableViewController.swift */,
+				14A6F1A11D6FB5090015431E /* NewMessageViewController.swift */,
+				14383B261D755C300086CA6C /* NewMessageViewControllerDelegate.swift */,
+				143F76F91D72C0C100EF305F /* SelectProxyViewController.swift */,
+				14383B0E1D7341070086CA6C /* SelectProxyViewControllerDelegate.swift */,
 			);
 			name = Messages;
 			sourceTree = "<group>";

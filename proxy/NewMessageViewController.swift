@@ -10,13 +10,6 @@ import FirebaseDatabase
 
 class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate, SelectProxyViewControllerDelegate {
     
-    let api = API.sharedInstance
-    let ref = FIRDatabase.database().reference()
-    var proxy: Proxy?
-    var createdNewProxy = false
-    var savingNewProxy = false
-    var delegate: NewMessageViewControllerDelegate!
-    
     @IBOutlet weak var selectProxyButton: UIButton!
     @IBOutlet weak var newButton: UIButton!
     @IBOutlet weak var firstTextField: UITextField!
@@ -26,13 +19,17 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
     @IBOutlet weak var sendButton: UIButton!
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     
+    let api = API.sharedInstance
+    let ref = FIRDatabase.database().reference()
+    var proxy: Proxy?
+    var createdNewProxy = false
+    var savingNewProxy = false
+    var delegate: NewMessageViewControllerDelegate!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        setUpUI()
-        
+        setUp()
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(NewMessageViewController.keyboardWillShow), name:UIKeyboardWillShowNotification, object: self.view.window)
-        
         setDefaultProxy()
         setUpTextField()
         setUpTextView()
@@ -43,9 +40,8 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
         navigationItem.hidesBackButton = true
     }
     
-    // MARK: - UI
-    
-    func setUpUI() {
+    // MARK: - Set up
+    func setUp() {
         navigationItem.title = "New Message"
         setUpCancelButton()
     }
@@ -103,12 +99,11 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
         // Build receiver proxy name
         let receiverProxyName = first.lowercaseString + second.lowercaseString.capitalizedString + num
         
-        // Send off to API to send message
-        api.send(messageWithText: text, withMediaType: "", fromSenderProxy: proxy!, toReceiverProxyName: receiverProxyName) { (error, convo, message) in
+        // Try to send message
+        api.sendMessage(fromSenderProxy: proxy!, toReceiverProxyName: receiverProxyName, withText: text, withMediaType: "") { (error, convo, message) in
             if let error = error {
                 self.enableButtonsAndShowAlert(error.title, message: error.message)
             } else {
-                self.api.save(proxy: self.proxy!, withNickname: "")
                 self.goToConvo(convo!)
             }
         }
@@ -119,8 +114,7 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
         showAlert(title, message: message)
     }
     
-    // MARK: - Select proxy
-    
+    // MARK: - Select proxy delegate
     func selectProxy(proxy: Proxy) {
         if createdNewProxy {
             api.cancelCreating(proxy: proxy)
@@ -131,11 +125,10 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
     }
     
     // MARK: - New proxy
-    
     @IBAction func tapNewButton(sender: AnyObject) {
         disableButtons()
         if createdNewProxy {
-            api.reroll(fromOldProxy: proxy!, completion: { (proxy) in
+            api.reroll(proxy: proxy!, completion: { (proxy) in
                 self.setProxy(proxy)
             })
         } else {
@@ -156,7 +149,6 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
     }
     
     // MARK: - Text field
-    
     func setUpTextField() {
         firstTextField.becomeFirstResponder()
         firstTextField.delegate = self
@@ -189,7 +181,6 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
     }
     
     // MARK: - Text view
-    
     func setUpTextView() {
         messageTextView.delegate = self
     }
@@ -207,7 +198,6 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
     }
     
     // MARK: - Keyboard
-    
     func keyboardWillShow(notification: NSNotification) {
         let info = notification.userInfo!
         let keyboardFrame = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()

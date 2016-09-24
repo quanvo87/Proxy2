@@ -361,12 +361,12 @@
                                                 <constraint firstAttribute="width" constant="48" id="vwR-oj-nQV"/>
                                             </constraints>
                                         </imageView>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="248" text="Name/nickname" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PTc-sk-eZU">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="248" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PTc-sk-eZU">
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="249" text="Last Message Preview" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vpO-tr-w8P">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="249" text="Last Message" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vpO-tr-w8P">
                                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                             <color key="textColor" red="0.50196081400000003" green="0.50196081400000003" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
@@ -399,9 +399,9 @@
                                 </tableViewCellContentView>
                                 <connections>
                                     <outlet property="iconImageView" destination="KU6-Bv-Q8Q" id="Lmq-Kp-1ct"/>
-                                    <outlet property="messageLabel" destination="vpO-tr-w8P" id="zPM-ho-2sj"/>
-                                    <outlet property="nameLabel" destination="PTc-sk-eZU" id="uQV-OE-5YN"/>
+                                    <outlet property="lastMessageLabel" destination="vpO-tr-w8P" id="Kw9-QG-oEi"/>
                                     <outlet property="timestampLabel" destination="h7W-UR-CVE" id="3MU-Mg-GF5"/>
+                                    <outlet property="titleLabel" destination="PTc-sk-eZU" id="L0j-fD-WQC"/>
                                     <outlet property="unreadLabel" destination="JMb-0h-IcV" id="pd0-34-j7Q"/>
                                 </connections>
                             </tableViewCell>
@@ -596,7 +596,7 @@
                                     <outlet property="nicknameButton" destination="6Ah-uJ-SXw" id="48m-QG-O4P"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Basic Cell" id="Q36-7j-JLz">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" id="Q36-7j-JLz">
                                 <rect key="frame" x="0.0" y="216" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Q36-7j-JLz" id="Mq7-tl-WpL">

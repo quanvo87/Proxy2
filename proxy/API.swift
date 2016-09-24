@@ -256,6 +256,7 @@ class API {
     
     // MARK: - Proxy
     /// Loads word bank if needed, else call `tryCreateProxy`.
+    /// Returns a newly created proxy with a unique name.
     func create(proxy completion: (proxy: Proxy) -> Void) {
         isCreatingProxy = true
         if proxyNameGenerator.isLoaded {
@@ -263,6 +264,7 @@ class API {
                 completion(proxy: proxy)
             })
         } else {
+            
             load(proxyNameGenerator: { (proxy) in
                 completion(proxy: proxy)
             })
@@ -290,7 +292,7 @@ class API {
         /// Create a proxy and save it.
         let key = ref.child(Path.Proxies).childByAutoId().key
         let name = proxyNameGenerator.generateProxyName()
-        let proxy = Proxy(key: key, name: name, ownerId: "", timeCreated: 0.0)
+        let proxy = Proxy(key: key, name: name, ownerId: "", timeCreated: 0.0, timestamp: 0.0)
         set(proxy.toAnyObject(), a: Path.Proxies, b: key, c: nil, d: nil)
         
         /// Get all proxies with this name.
@@ -303,11 +305,13 @@ class API {
                 self.isCreatingProxy = false
                 
                 /// Create the user's copy of the proxy and save it.
-                let proxy = Proxy(key: key, name: name, ownerId: self.uid, timeCreated: NSDate().timeIntervalSince1970)
-                self.set(proxy.toAnyObject(), a: Path.Proxies, b: self.uid, c: key, d: nil)
+                /// The proxy's name is used as its key here.
+                let timestamp = NSDate().timeIntervalSince1970
+                let proxy = Proxy(key: name, name: "", ownerId: self.uid, timeCreated: timestamp, timestamp: timestamp)
+                self.set(proxy.toAnyObject(), a: Path.Proxies, b: self.uid, c: name, d: nil)
                 
                 /// Give the proxy a random icon.
-                self.set(self.getRandomIcon(), a: Path.Icons, b: name, c: nil, d: nil)
+                self.set(self.getRandomIcon(), a: Path.Icon, b: name, c: nil, d: nil)
                 
                 completion(proxy: proxy)
                 return
@@ -329,7 +333,9 @@ class API {
     
     /// Deletes the given `proxy` and returns a new one.
     func reroll(proxy proxy: Proxy, completion: (proxy: Proxy) -> Void) {
+        print(proxy)
         delete(a: Path.Proxies, b: proxy.key, c: nil, d: nil)
+        delete(a: Path.Proxies, b: proxy.ownerId, c: proxy.key, d: nil)
         tryCreating(proxy: { (proxy) in
             completion(proxy: proxy)
         })
@@ -339,13 +345,13 @@ class API {
     /// Notifies API to stop trying to create a proxy.
     func cancelCreating(proxy proxy: Proxy) {
         delete(a: Path.Proxies, b: proxy.key, c: nil, d: nil)
+        delete(a: Path.Proxies, b: proxy.ownerId, c: proxy.key, d: nil)
         isCreatingProxy = false
     }
     
-    // TODO: might not need this
-    /// Returns the Proxy with `key` belonging to `user`.
-    func getProxy(withKey key: String, belongingToUser user: String, completion: (proxy: Proxy) -> Void) {
-        ref.child(Path.Proxies).child(user).child(key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+    /// Returns the Proxy with `name` belonging to `user`.
+    func getProxy(withKey key: String, completion: (proxy: Proxy) -> Void) {
+        ref.child(Path.Proxies).queryOrderedByKey().queryEqualToValue(key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
             completion(proxy: Proxy(anyObject: snapshot.value!))
         })
     }
@@ -418,25 +424,25 @@ class API {
     
     // MARK: - Message
     /// Error checks before sending it off to the appropriate message sending fuction.
-    /// Returns the convoKey and message on success.
+    /// Returns sender's convo and message on success.
     /// Returns an ErrorAlert on failure.
-    func sendMessage(fromSenderProxy senderProxy: Proxy, toReceiverProxyName receiverProxyName: String, withText text: String, withMediaType mediaType: String, completion: (error: ErrorAlert?, convoKey: String?, message: Message?) -> Void ) {
+    func sendMessage(fromSenderProxy senderProxy: Proxy, toReceiverProxyName receiverProxyName: String, withText text: String, withMediaType mediaType: String, completion: (error: ErrorAlert?, convo: Convo?, message: Message?) -> Void ) {
         
         /// Check if receiver exists
-        self.ref.child(Path.Proxies).queryOrderedByChild(Path.Name).queryEqualToValue(receiverProxyName).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+        self.ref.child(Path.Proxies).queryOrderedByChild(Path.Key).queryEqualToValue(receiverProxyName).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
             guard snapshot.childrenCount == 1 else {
-                completion(error: ErrorAlert(title: "Recipient Not Found", message: "Perhaps there was a spelling error?"), convoKey: nil, message: nil)
+                completion(error: ErrorAlert(title: "Recipient Not Found", message: "Perhaps there was a spelling error?"), convo: nil, message: nil)
                 return
             }
             
             /// Check if sender is trying to send to him/herself
             let receiverProxy = Proxy(anyObject: snapshot.value!)
             guard senderProxy.ownerId != receiverProxy.ownerId else {
-                completion(error: ErrorAlert(title: "Cannot Send To Self", message: "Did you enter yourself as a recipient by mistake?"), convoKey: nil, message: nil)
+                completion(error: ErrorAlert(title: "Cannot Send To Self", message: "Did you enter yourself as a recipient by mistake?"), convo: nil, message: nil)
                 return
             }
             
-            /// Build convo key from sorting and concatenizing the proxy names
+            /// Build convo key from sorting and concatenizing the proxy keys
             let convoKey = [senderProxy.key, receiverProxy.key].sort().joinWithSeparator("")
             
             /// Check if existing convo between the proxies exists
@@ -445,22 +451,22 @@ class API {
                 /// Existing convo found, use it to send the message
                 if snapshot.childrenCount == 1 {
                     let convo = Convo(anyObject: snapshot.value!)
-                    self.sendMessage(withText: text, withMediaType: mediaType, usingSenderConvo: convo, completion: { (convoKey, message) in
-                        completion(error: nil, convoKey: convoKey, message: message)
+                    self.sendMessage(withText: text, withMediaType: mediaType, usingSenderConvo: convo, completion: { (convo, message) in
+                        completion(error: nil, convo: convo, message: message)
                     })
                 }
                 
                 /// No convo found, must set up convo before sending message
-                self.setUpFirstMessage(fromSenderProxy: senderProxy, toReceiverProxy: receiverProxy, usingConvoKey: convoKey, withText: text, withMediaType: mediaType, completion: { (convoKey, message) in
-                    completion(error: nil, convoKey: convoKey, message: message)
+                self.setUpFirstMessage(fromSenderProxy: senderProxy, toReceiverProxy: receiverProxy, usingConvoKey: convoKey, withText: text, withMediaType: mediaType, completion: { (convo, message) in
+                    completion(error: nil, convo: convo, message: message)
                 })
             })
         })
     }
     
     /// Sets up the first message between two proxies.
-    /// Returns convoKey and message.
-    func setUpFirstMessage(fromSenderProxy senderProxy: Proxy, toReceiverProxy receiverProxy: Proxy, usingConvoKey convoKey: String, withText text: String, withMediaType mediaType: String, completion: (convoKey: String, message: Message) -> Void) {
+    /// Returns sender's convo and message.
+    func setUpFirstMessage(fromSenderProxy senderProxy: Proxy, toReceiverProxy receiverProxy: Proxy, usingConvoKey convoKey: String, withText text: String, withMediaType mediaType: String, completion: (convo: Convo, message: Message) -> Void) {
         
         /// Check if sender is in receiver's blocked list
         ref.child(Path.Blocked).child(receiverProxy.ownerId).child(senderProxy.ownerId).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
@@ -493,15 +499,15 @@ class API {
             self.increment(amount: 1, a: Path.ProxiesInteractedWith, b: receiverProxy.ownerId, c: nil, d: nil)
             
             /// Set message
-            self.sendMessage(withText: text, withMediaType: mediaType, usingSenderConvo: senderConvo, completion: { (convoKey, message) in
-                completion(convoKey: convoKey, message: message)
+            self.sendMessage(withText: text, withMediaType: mediaType, usingSenderConvo: senderConvo, completion: { (convo, message) in
+                completion(convo: convo, message: message)
             })
         })
     }
     
     /// Sends a message using the sender's copy of the convo.
-    /// Returns the convo key and message.
-    func sendMessage(withText text: String, withMediaType mediaType: String, usingSenderConvo convo: Convo, completion: (convoKey: String, message: Message) -> Void) {
+    /// Returns sender's convo and message.
+    func sendMessage(withText text: String, withMediaType mediaType: String, usingSenderConvo convo: Convo, completion: (convo: Convo, message: Message) -> Void) {
         userIsPresent(user: convo.receiverId, convo: convo.key) { (receiverIsPresent) in
             let increment = receiverIsPresent ? 0 : 1
             let timestamp = NSDate().timeIntervalSince1970
@@ -528,7 +534,7 @@ class API {
             let message = Message(key: messageKey, convo: convo.key, mediaType: mediaType, read: receiverIsPresent, timeRead: timeRead, senderId: convo.senderId, date: timestamp, text: text)
             self.set(message.toAnyObject(), a: Path.Messages, b: convo.key, c: messageKey, d: nil)
             
-            completion(convoKey: convo.key, message: message)
+            completion(convo: convo, message: message)
         }
     }
     

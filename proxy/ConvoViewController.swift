@@ -77,7 +77,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         observeSenderIcon()
         observeReceiverIcon()
         observeSenderNickname()
-        observeRecieverNickname()
+        observeReceiverNickname()
         observeMessages()
         observeTyping()
     }
@@ -88,7 +88,6 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         if senderIsPresentIsSetUp {
             senderIsPresent = true
         }
-        decrementUnread()
         leaveConvo()
     }
     
@@ -141,19 +140,10 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         outgoingBubble = factory.outgoingMessagesBubbleImageWithColor(UIColor.jsq_messageBubbleBlueColor())
     }
     
-    // Decrement user's, convo's, proxy convo's, and proxy's unread by this convo's unread count.
-    func decrementUnread() {
-        ref.child("convos").child(convo.senderId).child(convo.key).child("unread").observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            if let unread = snapshot.value as? Int where unread > 0 {
-                self.api.decrementAllUnreadFor(convo: self.convo, byAmount: unread)
-            }
-        })
-    }
-    
     // MARK: - Database
     // Set user as present in the convo.
     func setUpSenderIsPresent() {
-        senderIsPresentRef = ref.child("present").child(convo.key).child(convo.senderId)
+        senderIsPresentRef = ref.child(Path.Present).child(convo.key).child(convo.senderId)
         senderIsPresentRef.onDisconnectRemoveValue()
         senderIsPresentIsSetUp = true
         senderIsPresent = true
@@ -162,23 +152,23 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     // Observe when receiver enters the convo while we are in it.
     // If this happens, refresh the cell with our last message to them to display the read receipt.
     func observeReceiverIsPresent() {
-        receiverIsPresentRef = ref.child("present").child(convo.key).child(convo.receiverId)
+        receiverIsPresentRef = ref.child(Path.Present).child(convo.key).child(convo.receiverId)
         receiverIsPresentRefHandle = receiverIsPresentRef.observeEventType(.Value, withBlock: { (snapshot) in
-            if let present = snapshot.value as? Bool where present {
-                if self.readReceiptIndex > -1 && !self.messages[self.readReceiptIndex].read {
-                    self.api.getMessage(withKey: self.messages[self.readReceiptIndex].key, inConvo: self.convo.key, completion: { (message) in
-                        self.messages[self.readReceiptIndex] = message
-                        self.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: self.readReceiptIndex, inSection: 0)])
-                        self.scrollToBottomAnimated(true)
-                    })
-                }
-            }
+            guard let present = snapshot.value as? Bool
+                where present && self.readReceiptIndex > -1 && !self.messages[self.readReceiptIndex].read
+                else { return }
+            let message = self.messages[self.readReceiptIndex]
+            self.api.getMessage(withKey: message.key, inConvo: message.key, completion: { (message) in
+                self.messages[self.readReceiptIndex] = message
+                self.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: self.readReceiptIndex, inSection: 0)])
+                self.scrollToBottomAnimated(true)
+            })
         })
     }
     
     // Observe when sender changes their nickname and update all cells that are displaying it.
     func observeSenderNickname() {
-        senderNicknameRef = ref.child("proxies").child(convo.senderId).child(convo.senderProxy).child("nickname")
+        senderNicknameRef = ref.child(Path.Nickname).child(convo.senderProxy)
         senderNicknameRefHandle = senderNicknameRef.observeEventType(.Value, withBlock: { (snapshot) in
             if let nickname = snapshot.value as? String {
                 self.names[self.convo.senderId] = nickname == "" ? self.convo.senderProxy : nickname
@@ -189,8 +179,8 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     
     // Observe when sender changes receiver's nickname for this convo and update all cells that are displaying it.
     // Also update navigation bar title.
-    func observeRecieverNickname() {
-        receiverNicknameRef = ref.child("convos").child(convo.senderId).child(convo.key).child("receiverNickname")
+    func observeReceiverNickname() {
+        receiverNicknameRef = ref.child(Path.Nickname).child(convo.senderId).child(convo.key)
         receiverNicknameRefHandle = receiverNicknameRef.observeEventType(.Value, withBlock: { (snapshot) in
             if let nickname = snapshot.value as? String {
                 self.names[self.convo.receiverId] = nickname == "" ? self.convo.receiverProxy : nickname
@@ -202,7 +192,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     
     // Observe when sender changes his/her icon to update all cells that are displaying it.
     func observeSenderIcon() {
-        senderIconRef = ref.child("proxies").child(convo.senderId).child(convo.senderProxy).child("icon")
+        senderIconRef = ref.child(Path.Icon).child(convo.senderProxy)
         senderIconRefHandle = senderIconRef.observeEventType(.Value, withBlock: { (snapshot) in
             if let icon = snapshot.value as? String {
                 self.api.getUIImage(forIcon: icon, completion: { (image) in
@@ -215,7 +205,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     
     // Observe when receiver changes his/her icon to update all cells that are displaying it.
     func observeReceiverIcon() {
-        receiverIconRef = ref.child("proxies").child(convo.receiverId).child(convo.receiverProxy).child("icon")
+        receiverIconRef = ref.child(Path.Icon).child(convo.receiverProxy)
         receiverIconRefHandle = receiverIconRef.observeEventType(.Value, withBlock: { (snapshot) in
             if let icon = snapshot.value as? String {
                 self.api.getUIImage(forIcon: icon, completion: { (image) in
@@ -230,8 +220,8 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     // Mark unread messages to this user as read.
     // Keep track of the index of the last message you sent (for read receipt purposes).
     func observeMessages() {
-        messagesRef = ref.child("messages").child(convo.key)
-        messagesRefHandle = messagesRef.queryOrderedByChild("timestamp").observeEventType(.ChildAdded, withBlock: { (snapshot) in
+        messagesRef = ref.child(Path.Messages).child(convo.key)
+        messagesRefHandle = messagesRef.queryOrderedByChild(Path.Timestamp).observeEventType(.ChildAdded, withBlock: { (snapshot) in
             let message = Message(anyObject: snapshot.value!)
             switch message.mediaType {
                 
@@ -249,15 +239,15 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
                 // Wait for the message's content to be loaded to storage.
                 // Once this happens, the message's `mediaURL` will be updated.
                 var messageRefHandle = FIRDatabaseHandle()
-                let messageRef = self.ref.child("messages").child(message.convo).child(message.key).child("mediaURL")
+                let messageRef = self.ref.child(Path.Messages).child(message.convo).child(message.key).child(Path.MediaURL)
                 messageRefHandle = messageRef.observeEventType(.Value, withBlock: { (snapshot) in
                     
                     // Get `mediaURL`.
-                    guard let mediaURL = snapshot.value as? String
-                        where mediaURL != "" else { return }
+                    guard let url = NSURL(string: snapshot.value as! String)
+                        where url.absoluteString != "" else { return }
                     
                     // Get the image from `mediaURL`.
-                    self.api.getImage(fromURL: mediaURL, completion: { (image) in
+                    self.api.getUIImage(fromURL: url, completion: { (image) in
                         
                         // Load the image to the cell.
                         (_message.media as! JSQPhotoMediaItem).image = image
@@ -280,7 +270,8 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
                 self.finishReceivingMessage()
                 
                 // Get the image from `mediaURL`.
-                self.api.getImage(fromURL: message.mediaURL, completion: { (image) in
+                guard let url = NSURL(string: message.mediaURL) else { return }
+                self.api.getUIImage(fromURL: url, completion: { (image) in
                     
                     // Load the image to the cell.
                     (_message.media as! JSQPhotoMediaItem).image = image
@@ -301,7 +292,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
                 // Wait for the message's content to be loaded to storage.
                 // Once this happens, the message's `mediaURL` will be updated.
                 var messageRefHandle = FIRDatabaseHandle()
-                let messageRef = self.ref.child("messages").child(message.convo).child(message.key).child("mediaURL")
+                let messageRef = self.ref.child(Path.Messages).child(message.convo).child(message.key).child(Path.MediaURL)
                 messageRefHandle = messageRef.observeEventType(.Value, withBlock: { (snapshot) in
                     
                     // Get `mediaURL`.
@@ -356,11 +347,11 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     func observeTyping() {
         
         // Stop monitoring user's typing when they disconnect.
-        userTypingRef = ref.child("typing").child(convo.key).child(convo.senderId)
+        userTypingRef = ref.child(Path.Typing).child(convo.key).child(convo.senderId)
         userTypingRef.onDisconnectRemoveValue()
         
         // Show typing indicator when other user is typing.
-        membersAreTypingRef = ref.child("typing").child(convo.key)
+        membersAreTypingRef = ref.child(Path.Typing).child(convo.key)
         membersAreTypingRefHandle = membersAreTypingRef.observeEventType(.Value, withBlock: { (snapshot) in
             if snapshot.childrenCount == 1 && self.userTyping {
                 return
@@ -544,7 +535,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     
     // Write the message to the database when user taps send.
     override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: NSDate!) {
-        api.send(messageWithText: text, withMediaType: "", usingSenderConvo: convo) { (convo) in
+        api.sendMessage(withText: text, withMediaType: "", usingSenderConvo: convo) { (convo, message) in
             self.finishedWritingMessage()
         }
     }
@@ -679,7 +670,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     func send(image image: UIImage) {
         
         // First send a placeholder message that displays a loading indicator.
-        api.send(messageWithText: "Photo message.", withMediaType: "imagePlaceholder", usingSenderConvo: self.convo) { (convo, message) in
+        api.sendMessage(withText: "Photo message.", withMediaType: "imagePlaceholder", usingSenderConvo: self.convo) { (convo, message) in
             self.finishSendingMessage()
             
             // Then upload the image to storage.
@@ -697,11 +688,11 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     func send(videoWithURL url: NSURL) {
         
         // First send a placeholder message that displays a loading indicator.
-        api.send(messageWithText: "Video message.", withMediaType: "videoPlaceholder", usingSenderConvo: self.convo) { (convo, message) in
+        api.sendMessage(withText: "Video message.", withMediaType: "videoPlaceholder", usingSenderConvo: self.convo) { (convo, message) in
             self.finishSendingMessage()
             
             // Then upload the image to storage.
-            self.api.upload(videoWithURL: url, completion: { (url) in
+            self.api.uploadVideo(fromURL: url, completion: { (url) in
               
                 // The upload returns the URL to the image we just uploaded.
                 // Update the placeholder message with this info.

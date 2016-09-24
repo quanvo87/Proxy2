@@ -20,9 +20,10 @@ class IconPickerCell: UICollectionViewCell {
             layer.cornerRadius = 5
             
             // Set icon
-            self.api.getURL(forIcon: icon) { (URL) in
+            self.api.getURL(forIcon: icon) { (url) in
+                guard let url = url.absoluteString where url != "" else { return }
                 self.iconImageView.kf_indicatorType = .Activity
-                self.iconImageView.kf_setImageWithURL(NSURL(string: URL), placeholderImage: nil)
+                self.iconImageView.kf_setImageWithURL(NSURL(string: url), placeholderImage: nil)
             }
             
             // Set name

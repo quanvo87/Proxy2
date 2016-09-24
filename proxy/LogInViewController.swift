@@ -100,7 +100,7 @@ class LogInViewController: UIViewController {
                         return
                     }
                     let user = user?.uid
-                    self.ref.child("icons").queryOrderedByKey().queryEqualToValue(user).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+                    self.ref.child(Path.Icons).queryOrderedByKey().queryEqualToValue(user).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
                         if !snapshot.hasChildren() {
                             self.api.setDefaultIcons(forUser: user!)
                         }
