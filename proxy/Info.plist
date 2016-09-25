@@ -67,10 +67,10 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>So you can send your photos.</string>
+	<string>Must enable to send photos.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>So you can take pictures and send them.</string>
+	<string>Must enable to take and send pictures and video.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>To share your location if you wish.</string>
+	<string>Must enable to send your location.</string>
 </dict>
 </plist>

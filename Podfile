@@ -14,7 +14,6 @@ target 'proxy' do
     pod 'FacebookLogin'
     pod 'Kingfisher', '~> 2.6.0'
     pod 'JSQMessagesViewController'
-    pod 'YangMingShan'
     pod 'Fusuma'
     pod 'MobilePlayer'
 

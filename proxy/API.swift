@@ -524,8 +524,8 @@ class API {
             
             /// Receiver updates
             if !convo.receiverDidDeleteProxy && !convo.receiverIsBlocking {
-                self.increment(amount: receiverIsPresent ? 0 : 1, a: Path.Unread, b: convo.receiverId, c: convo.receiverProxy, d: convo.key)
                 self.set(timestamp, a: Path.Proxies, b: convo.receiverId, c: convo.receiverProxy, d: Path.Timestamp)
+                self.increment(amount: receiverIsPresent ? 0 : 1, a: Path.Unread, b: convo.receiverId, c: convo.receiverProxy, d: convo.key)
             }
             
             if !convo.receiverDidDeleteProxy {
@@ -564,7 +564,7 @@ class API {
     func setRead(forMessage message: Message, forUser user: String) {
         set(true, a: Path.Messages, b: message.convo, c: message.key, d: Path.Read)
         set(NSDate().timeIntervalSince1970, a: Path.Messages, b: message.convo, c: message.key, d: Path.TimeRead)
-        increment(amount: -1, a: Path.Unread, b: user, c: message.convo, d: nil)
+//        increment(amount: -1, a: Path.Unread, b: user, c: message.convo, d: nil)
     }
     
     /// Sets a message's `mediaType` and `mediaURL`.

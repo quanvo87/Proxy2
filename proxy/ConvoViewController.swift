@@ -9,11 +9,10 @@
 import FirebaseDatabase
 import JSQMessagesViewController
 import Photos
-import YangMingShan
 import Fusuma
 import MobilePlayer
 
-class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControllerDelegate, YMSPhotoPickerViewControllerDelegate, FusumaDelegate {
+class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControllerDelegate, FusumaDelegate {
     
     let api = API.sharedInstance
     let ref = FIRDatabase.database().reference()
@@ -157,8 +156,10 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
             guard let present = snapshot.value as? Bool
                 where present && self.readReceiptIndex > -1 && !self.messages[self.readReceiptIndex].read
                 else { return }
+            
+            // Get the most recent version of this message to get the `readTime`.
             let message = self.messages[self.readReceiptIndex]
-            self.api.getMessage(withKey: message.key, inConvo: message.key, completion: { (message) in
+            self.api.getMessage(withKey: message.key, inConvo: message.convo, completion: { (message) in
                 self.messages[self.readReceiptIndex] = message
                 self.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: self.readReceiptIndex, inSection: 0)])
                 self.scrollToBottomAnimated(true)
@@ -168,7 +169,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     
     // Observe when sender changes their nickname and update all cells that are displaying it.
     func observeSenderNickname() {
-        senderNicknameRef = ref.child(Path.Nickname).child(convo.senderProxy)
+        senderNicknameRef = ref.child(Path.Nickname).child(convo.senderProxy).child(Path.Nickname)
         senderNicknameRefHandle = senderNicknameRef.observeEventType(.Value, withBlock: { (snapshot) in
             if let nickname = snapshot.value as? String {
                 self.names[self.convo.senderId] = nickname == "" ? self.convo.senderProxy : nickname
@@ -270,7 +271,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
                 self.finishReceivingMessage()
                 
                 // Get the image from `mediaURL`.
-                guard let url = NSURL(string: message.mediaURL) else { return }
+                guard let url = NSURL(string: message.mediaURL) else { break }
                 self.api.getUIImage(fromURL: url, completion: { (image) in
                     
                     // Load the image to the cell.
@@ -315,7 +316,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
             case "video":
                 
                 // Build JSQVideoMediaItem.
-                guard let mediaURL = NSURL(string: message.mediaURL) else { return }
+                guard let mediaURL = NSURL(string: message.mediaURL) else { break }
                 let media = JSQVideoMediaItem(fileURL: mediaURL, isReadyToPlay: true)
                 media.appliesMediaViewMaskAsOutgoing = message.senderId == self.senderId
                 
@@ -542,20 +543,10 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     
     override func didPressAccessoryButton(sender: UIButton!) {
         self.inputToolbar.contentView!.textView!.resignFirstResponder()
-        let alert = UIAlertController(title: "Attach:", message: nil, preferredStyle: .ActionSheet)
+        let alert = UIAlertController(title: "Send:", message: nil, preferredStyle: .ActionSheet)
         
-        // Send photo
-        alert.addAction(UIAlertAction(title: "Photo 📸", style: .Default, handler: { action in
-            
-            // Show YMSPhotoPicker, our VC that can handle camera and photos.
-            let ysmPhotoPicker = YMSPhotoPickerViewController()
-            ysmPhotoPicker.theme.cameraVeilColor = UIColor.clearColor()
-            ysmPhotoPicker.numberOfPhotoToSelect = 5
-            self.yms_presentCustomAlbumPhotoView(ysmPhotoPicker, delegate: self)
-        }))
-        
-        // Send video
-        alert.addAction(UIAlertAction(title: "Video 🎥", style: .Default, handler: { action in
+        // Send photo/video
+        alert.addAction(UIAlertAction(title: "Photo 📸 / Video 🎥", style: .Default, handler: { action in
             
             // Show Fusuma, our VC that can handle camera, photos, and video.
             let fusuma = FusumaViewController()
@@ -601,47 +592,6 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         userTyping = false
     }
     
-    // MARK: - YMSPhotoPicker delegate
-    func photoPickerViewControllerDidReceivePhotoAlbumAccessDenied(picker: YMSPhotoPickerViewController!) {
-        let alert = UIAlertController(title: "Allow photo album access?", message: "Need your permission to access photo albums.", preferredStyle: .Alert)
-        alert.addAction(UIAlertAction(title: "Settings", style: .Default) { (action) in
-            if let appSettings = NSURL(string: UIApplicationOpenSettingsURLString) {
-                UIApplication.sharedApplication().openURL(appSettings, options: [:], completionHandler: nil)
-            }})
-        alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-        self.presentViewController(alert, animated: true, completion: nil)
-    }
-    
-    func photoPickerViewControllerDidReceiveCameraAccessDenied(picker: YMSPhotoPickerViewController!) {
-        let alert = UIAlertController(title: "Allow camera album access?", message: "Need your permission to take a photo.", preferredStyle: .Alert)
-        alert.addAction(UIAlertAction(title: "Settings", style: .Default) { (action) in
-            if let appSettings = NSURL(string: UIApplicationOpenSettingsURLString) {
-                UIApplication.sharedApplication().openURL(appSettings, options: [:], completionHandler: nil)
-            }})
-        alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-        
-        // The access denied of camera always happens on picker, present alert on it to follow the view hierarchy.
-        picker.presentViewController(alert, animated: true, completion: nil)
-    }
-    
-    // User has selected the photos they want to send.
-    func photoPickerViewController(picker: YMSPhotoPickerViewController!, didFinishPickingImages photoAssets: [PHAsset]!) {
-        picker.dismissViewControllerAnimated(true) {
-            
-            let manager = PHImageManager.defaultManager()
-            let options = PHImageRequestOptions()
-            
-            // Get images from photoAssets and send them.
-            for asset in photoAssets {
-                manager.requestImageForAsset(asset, targetSize: PHImageManagerMaximumSize, contentMode: .Default, options: options, resultHandler: { (image, info) -> Void in
-                    if let image = image {
-                        self.send(image: image)
-                    }
-                })
-            }
-        }
-    }
-    
     // MARK: - Fusuma delegate
     // Return the image which is selected from camera roll or is taken via the camera.
     func fusumaImageSelected(image: UIImage) {
@@ -658,8 +608,8 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     
     // Call when camera roll not authorized.
     func fusumaCameraRollUnauthorized() {
-        let alert = UIAlertController(title: "Allow camera album access?", message: "Need your permission to take a photo.", preferredStyle: .Alert)
-        alert.addAction(UIAlertAction(title: "Settings", style: .Default) { (action) in
+        let alert = UIAlertController(title: "Access Camera", message: "Access the camera to send and take photos.", preferredStyle: .Alert)
+        alert.addAction(UIAlertAction(title: "Go To Settings", style: .Default) { (action) in
             if let appSettings = NSURL(string: UIApplicationOpenSettingsURLString) {
                 UIApplication.sharedApplication().openURL(appSettings, options: [:], completionHandler: nil)
             }})

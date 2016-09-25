@@ -44,6 +44,7 @@
 		14E19A4F1D60EF100030B366 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 14E19A4D1D60EF100030B366 /* LaunchScreen.storyboard */; };
 		14E19A5C1D612CE80030B366 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E19A5B1D612CE80030B366 /* Extensions.swift */; };
 		14E19A5E1D6148700030B366 /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E19A5D1D6148700030B366 /* LogInViewController.swift */; };
+		9C90F3D520C86F2FDB29EFA1 /* Pods_proxy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 42B14E4F2F6BB0AA66125CA8 /* Pods_proxy.framework */; };
 		F8601D08682CD23B0A712CAD /* Pods_proxy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38C5C6B48B79F08C65113251 /* Pods_proxy.framework */; };
 /* End PBXBuildFile section */
 
@@ -104,6 +105,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F8601D08682CD23B0A712CAD /* Pods_proxy.framework in Frameworks */,
+				9C90F3D520C86F2FDB29EFA1 /* Pods_proxy.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

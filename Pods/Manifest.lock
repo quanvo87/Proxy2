@@ -57,9 +57,6 @@ PODS:
   - JSQSystemSoundPlayer (2.0.1)
   - Kingfisher (2.6.0)
   - MobilePlayer (1.1.5)
-  - YangMingShan (1.2.2):
-    - YangMingShan/YMSPhotoPicker (= 1.2.2)
-  - YangMingShan/YMSPhotoPicker (1.2.2)
 
 DEPENDENCIES:
   - FacebookCore
@@ -72,7 +69,6 @@ DEPENDENCIES:
   - JSQMessagesViewController
   - Kingfisher (~> 2.6.0)
   - MobilePlayer
-  - YangMingShan
 
 SPEC CHECKSUMS:
   Bolts: 8a7995239dbe724f9cba2248b766d48b7ebdd322
@@ -95,8 +91,7 @@ SPEC CHECKSUMS:
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
   Kingfisher: d84c5fd176ea86cc7b8aac65fd55feda6f70f130
   MobilePlayer: 2fdc07a564fa89da65ff660f8fdcf06ab75f775d
-  YangMingShan: aecb8b3099624da18f1d416839a2769d3394a140
 
-PODFILE CHECKSUM: d5716f3458fe7419cd937496a41200a510d8ea29
+PODFILE CHECKSUM: 4f94a2b2c99a61cc17ed9d9a642b28cb3b4feb81
 
 COCOAPODS: 1.0.1
