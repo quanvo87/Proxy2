@@ -56,13 +56,13 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     
     var membersAreTypingRef = FIRDatabaseReference()
     var membersAreTypingRefHandle = FIRDatabaseHandle()
-    var userTypingRef = FIRDatabaseReference()
-    var userTyping = false {
+    var userIsTypingRef = FIRDatabaseReference()
+    var userIsTyping = false {
         didSet {
-            if userTyping {
-                userTypingRef.setValue(userTyping)
+            if userIsTyping {
+                userIsTypingRef.setValue(userIsTyping)
             } else {
-                userTypingRef.removeValue()
+                userIsTypingRef.removeValue()
             }
         }
     }
@@ -94,7 +94,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         super.viewWillDisappear(true)
         self.tabBarController?.tabBar.hidden = false
         senderIsPresent = false
-        userTyping = false
+        userIsTyping = false
     }
     
     deinit {
@@ -142,7 +142,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     // MARK: - Database
     // Set user as present in the convo.
     func setUpSenderIsPresent() {
-        senderIsPresentRef = ref.child(Path.Present).child(convo.key).child(convo.senderId)
+        senderIsPresentRef = ref.child(Path.Present).child(convo.key).child(convo.senderId).child(Path.Present)
         senderIsPresentRef.onDisconnectRemoveValue()
         senderIsPresentIsSetUp = true
         senderIsPresent = true
@@ -151,7 +151,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     // Observe when receiver enters the convo while we are in it.
     // If this happens, refresh the cell with our last message to them to display the read receipt.
     func observeReceiverIsPresent() {
-        receiverIsPresentRef = ref.child(Path.Present).child(convo.key).child(convo.receiverId)
+        receiverIsPresentRef = ref.child(Path.Present).child(convo.key).child(convo.receiverId).child(Path.Present)
         receiverIsPresentRefHandle = receiverIsPresentRef.observeEventType(.Value, withBlock: { (snapshot) in
             guard let present = snapshot.value as? Bool
                 where present && self.readReceiptIndex > -1 && !self.messages[self.readReceiptIndex].read
@@ -226,9 +226,6 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
             let message = Message(anyObject: snapshot.value!)
             switch message.mediaType {
                 
-            // A new media message that is waiting for its content to be uploaded to storage.
-            // Once that is complete, this media message will be updated with the URL to that content.
-            // Pull that content and reload the cell once it has a URL.
             case "imagePlaceholder":
                 
                 // Send message with placeholder.
@@ -264,7 +261,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
                 
             case "image":
                 
-                // Send message with placeholder.
+                // Create message with placeholder.
                 let media = JSQPhotoMediaItem()
                 let _message = Message(key: message.key, convo: message.convo, mediaType: message.mediaType, mediaURL: message.mediaURL, read: message.read, timeRead: message.timeRead, senderId: message.senderId, date: message.date.timeIntervalSince1970, text: message.text, media: media)
                 self.messages.append(_message)
@@ -284,7 +281,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
                 
             case "videoPlaceholder":
                 
-                // Send message with placeholder.
+                // Create message with placeholder.
                 let media = JSQVideoMediaItem()
                 let _message = Message(key: message.key, convo: message.convo, mediaType: "video", mediaURL: message.mediaURL, read: message.read, timeRead: message.timeRead, senderId: message.senderId, date: message.date.timeIntervalSince1970, text: message.text, media: media)
                 self.messages.append(_message)
@@ -323,7 +320,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
                 // Attach JSQVideoMediaItem.
                 let _message = Message(key: message.key, convo: message.convo, mediaType: message.mediaType, mediaURL: message.mediaURL, read: message.read, timeRead: message.timeRead, senderId: message.senderId, date: message.date.timeIntervalSince1970, text: message.text, media: media)
                 
-                // Append modified message to messages and finish receiving.
+                // Send message.
                 self.messages.append(_message)
                 self.finishReceivingMessage()
                 
@@ -341,6 +338,10 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
             } else {
                 // Keep track of the last message you sent.
                 self.readReceiptIndex = self.messages.count - 1
+                
+                // Workaround for a bug when displaying outgoing messages
+                // with various `read` states. It'll do for now 🐷😕.
+                self.collectionView.reloadData()
             }
         })
     }
@@ -348,13 +349,13 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     func observeTyping() {
         
         // Stop monitoring user's typing when they disconnect.
-        userTypingRef = ref.child(Path.Typing).child(convo.key).child(convo.senderId)
-        userTypingRef.onDisconnectRemoveValue()
+        userIsTypingRef = ref.child(Path.Typing).child(convo.key).child(convo.senderId).child(Path.Typing)
+        userIsTypingRef.onDisconnectRemoveValue()
         
         // Show typing indicator when other user is typing.
         membersAreTypingRef = ref.child(Path.Typing).child(convo.key)
         membersAreTypingRefHandle = membersAreTypingRef.observeEventType(.Value, withBlock: { (snapshot) in
-            if snapshot.childrenCount == 1 && self.userTyping {
+            if snapshot.childrenCount == 1 && self.userIsTyping {
                 return
             }
             self.showTypingIndicator = snapshot.childrenCount > 0
@@ -482,9 +483,9 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     
     // Get proxy names.
     override func collectionView(collectionView: JSQMessagesCollectionView, attributedTextForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath) -> NSAttributedString? {
+        let curr = self.messages[indexPath.item]
         
         // Show names/nicknames for last message by either user.
-        let curr = self.messages[indexPath.item]
         if indexPath.item == messages.count - 1 {
             return NSAttributedString(string: names[curr.senderId]!)
         }
@@ -523,6 +524,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         return messages[indexPath.item]
     }
     
+    // Play video if user taps a video bubble.
     override func collectionView(collectionView: JSQMessagesCollectionView!, didTapMessageBubbleAtIndexPath indexPath: NSIndexPath!) {
         let message = messages[indexPath.item]
         if message.mediaType == "video" {
@@ -541,6 +543,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         }
     }
     
+    // Show multi media message options when user taps attachments button.
     override func didPressAccessoryButton(sender: UIButton!) {
         self.inputToolbar.contentView!.textView!.resignFirstResponder()
         let alert = UIAlertController(title: "Send:", message: nil, preferredStyle: .ActionSheet)
@@ -589,7 +592,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     func finishedWritingMessage() {
         finishSendingMessage()
         JSQSystemSoundPlayer.jsq_playMessageSentSound()
-        userTyping = false
+        userIsTyping = false
     }
     
     // MARK: - Fusuma delegate
@@ -657,7 +660,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     // Keep track of when user is typing.
     override func textViewDidChange(textView: UITextView) {
         super.textViewDidChange(textView)
-        userTyping = textView.text != ""
+        userIsTyping = textView.text != ""
     }
     
     // MARK: - ConvoInfoTableViewControllerDelegate

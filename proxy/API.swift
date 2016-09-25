@@ -340,8 +340,7 @@ class API {
     
     /// Deletes the given `proxy` and returns a new one.
     func reroll(proxy proxy: Proxy, completion: (proxy: Proxy) -> Void) {
-        delete(a: Path.Proxies, b: proxy.key, c: nil, d: nil)
-        delete(a: Path.Proxies, b: proxy.ownerId, c: proxy.key, d: nil)
+        delete(proxy: proxy)
         tryCreating(proxy: { (proxy) in
             completion(proxy: proxy)
         })
@@ -350,8 +349,7 @@ class API {
     /// Deletes the newly created `proxy` being checked for uniqueness.
     /// Notifies API to stop trying to create a proxy.
     func cancelCreating(proxy proxy: Proxy) {
-        delete(a: Path.Proxies, b: proxy.key, c: nil, d: nil)
-        delete(a: Path.Proxies, b: proxy.ownerId, c: proxy.key, d: nil)
+        delete(proxy: proxy)
         isCreatingProxy = false
     }
     
@@ -490,7 +488,7 @@ class API {
             let senderConvoAnyObject = senderConvo.toAnyObject()
             self.set(senderConvoAnyObject, a: Path.Convos, b: senderConvo.senderId, c: senderConvo.key, d: nil)
             self.set(senderConvoAnyObject, a: Path.Convos, b: senderConvo.senderProxy, c: senderConvo.key, d: nil)
-            self.increment(amount: 1, a: Path.ProxiesInteractedWith, b: senderProxy.ownerId, c: nil, d: nil)
+            self.increment(amount: 1, a: Path.ProxiesInteractedWith, b: senderProxy.ownerId, c: Path.ProxiesInteractedWith, d: nil)
             
             /// Set up receiver side
             receiverConvo.key = convoKey
@@ -502,7 +500,7 @@ class API {
             let receiverConvoAnyObject = receiverConvo.toAnyObject()
             self.set(receiverConvoAnyObject, a: Path.Convos, b: receiverConvo.senderId, c: receiverConvo.key, d: nil)
             self.set(receiverConvoAnyObject, a: Path.Convos, b: receiverConvo.senderProxy, c: receiverConvo.key, d: nil)
-            self.increment(amount: 1, a: Path.ProxiesInteractedWith, b: receiverProxy.ownerId, c: nil, d: nil)
+            self.increment(amount: 1, a: Path.ProxiesInteractedWith, b: receiverProxy.ownerId, c: Path.ProxiesInteractedWith, d: nil)
             
             /// Set message
             self.sendMessage(withText: text, withMediaType: mediaType, usingSenderConvo: senderConvo, completion: { (convo, message) in
@@ -520,17 +518,17 @@ class API {
             /// Sender updates
             self.setConvoValuesOnMessageSend(timestamp: timestamp, id: convo.senderId, proxy: convo.senderProxy, convo: convo.key)
             self.set(timestamp, a: Path.Proxies, b: convo.senderId, c: convo.senderProxy, d: Path.Timestamp)
-            self.increment(amount: 1, a: Path.MessagesSent, b: convo.senderId, c: nil, d: nil)
+            self.increment(amount: 1, a: Path.MessagesSent, b: convo.senderId, c: Path.MessagesSent, d: nil)
             
             /// Receiver updates
             if !convo.receiverDidDeleteProxy && !convo.receiverIsBlocking {
                 self.set(timestamp, a: Path.Proxies, b: convo.receiverId, c: convo.receiverProxy, d: Path.Timestamp)
-                self.increment(amount: receiverIsPresent ? 0 : 1, a: Path.Unread, b: convo.receiverId, c: convo.receiverProxy, d: convo.key)
+//                self.increment(amount: receiverIsPresent ? 0 : 1, a: Path.Unread, b: convo.receiverId, c: convo.receiverProxy, d: convo.key)
             }
             
             if !convo.receiverDidDeleteProxy {
                 self.setConvoValuesOnMessageSend(timestamp: timestamp, id: convo.receiverId, proxy: convo.receiverProxy, convo: convo.key)
-                self.increment(amount: 1, a: Path.MessagesReceived, b: convo.receiverId, c: nil, d: nil)
+                self.increment(amount: 1, a: Path.MessagesReceived, b: convo.receiverId, c: Path.MessagesReceived, d: nil)
             }
             
             /// Write message
@@ -553,7 +551,7 @@ class API {
     
     /// Returns a Bool indicating whether or not a user is in a convo.
     func userIsPresent(user user: String, convo: String, completion: (userIsPresent: Bool) -> Void) {
-        ref.child(Path.Present).child(convo).child(user).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+        ref.child(Path.Present).child(convo).child(user).child(Path.Present).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
             completion(userIsPresent: snapshot.value as? Bool ?? false)
         })
     }

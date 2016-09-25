@@ -22,10 +22,10 @@ struct Path {
     static let MessagesReceived = "messagesReceived"
     static let Blocked = "blocked"
     static let Present = "present"
+    static let Typing = "typing"
     
     // Convo
     static let Unread = "unread"
-    static let Typing = "typing"
     static let DidLeaveConvo = "didLeaveConvo"
     static let ReceiverDidDeleteProxy = "receiverDidDeleteProxy"
     
@@ -56,10 +56,6 @@ struct Identifiers {
     static let TabBarController = "Tab Bar Controller"
     static let LogInViewController = "Log In View Controller"
     
-    static let ConvoViewController = "Convo View Controller"
-    static let ConvoInfoTableViewController = "Convo Info Table View Controller"
-    static let ConvoCell = "Convo Cell"
-    
     static let ProxyInfoTableViewController = "Proxy Info Table View Controller"
     static let ProxyCell = "Proxy Cell"
     static let SenderProxyInfoCell = "Sender Proxy Info Cell"
@@ -70,6 +66,10 @@ struct Identifiers {
     
     static let NewMessageViewController = "New Message View Controller"
     static let SelectProxyViewController = "Select Proxy View Controller"
+    
+    static let ConvoViewController = "Convo View Controller"
+    static let ConvoInfoTableViewController = "Convo Info Table View Controller"
+    static let ConvoCell = "Convo Cell"
     
     static let Cell = "Cell"
 }
