@@ -184,6 +184,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         // Header
         case 0:
             let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.SenderProxyInfoCell, forIndexPath: indexPath) as! SenderProxyInfoCell
+            cell.selectionStyle = .None
             cell.removeObservers()
             cell.proxy = proxy
             cell.nicknameButton.addTarget(self, action: #selector(ProxyInfoTableViewController.showEditNicknameAlert), forControlEvents: .TouchUpInside)

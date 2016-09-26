@@ -73,7 +73,6 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         setUpBubbles()
         setUpSenderIsPresent()
         observeReceiverNickname()
-        observeMessages()
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -92,6 +91,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         observeReceiverIcon()
         observeSenderNickname()
         observeTyping()
+        observeMessages()
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -108,11 +108,11 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         receiverIconRef.removeObserverWithHandle(receiverIconRefHandle)
         senderNicknameRef.removeObserverWithHandle(senderNicknameRefHandle)
         membersAreTypingRef.removeObserverWithHandle(membersAreTypingRefHandle)
+        messagesRef.removeObserverWithHandle(messagesRefHandle)
     }
     
     deinit {
         receiverNicknameRef.removeObserverWithHandle(receiverNicknameRefHandle)
-        messagesRef.removeObserverWithHandle(messagesRefHandle)
     }
     
     // MARK: - Set up
@@ -235,6 +235,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     // Mark unread messages to this user as read.
     // Keep track of the index of the last message you sent (for read receipt purposes).
     func observeMessages() {
+        messages = []
         messagesRefHandle = messagesRef.queryOrderedByChild(Path.Timestamp).observeEventType(.ChildAdded, withBlock: { (snapshot) in
             let message = Message(anyObject: snapshot.value!)
             switch message.mediaType {

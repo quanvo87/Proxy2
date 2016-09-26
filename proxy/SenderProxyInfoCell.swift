@@ -24,7 +24,6 @@ class SenderProxyInfoCell: UITableViewCell {
     var nicknameRefHandle = FIRDatabaseHandle()
     var proxy = Proxy() {
         didSet {
-            selectionStyle = .None
             iconImageView.kf_indicatorType = .Activity
             nameLabel.text = proxy.key
             removeObservers()

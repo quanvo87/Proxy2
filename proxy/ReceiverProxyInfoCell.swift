@@ -23,7 +23,6 @@ class ReceiverProxyInfoCell: UITableViewCell {
     var nicknameRefHandle = FIRDatabaseHandle()
     var convo = Convo() {
         didSet {
-            selectionStyle = .None
             iconImageView.kf_indicatorType = .Activity
             nameLabel.text = convo.receiverProxy
             observeIcon()

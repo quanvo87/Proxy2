@@ -53,7 +53,7 @@ class ConvoInfoTableViewController: UITableViewController {
         }
         
         // Get's the user's proxy for the user proxy cell
-        api.getProxy(withKey: convo.senderProxy, completion: { (proxy) in
+        api.getProxy(withKey: convo.senderProxy, belongingToUser: convo.senderId, completion: { (proxy) in
             self.senderProxy = proxy
             self.tableView.reloadSections(NSIndexSet(index: 1), withRowAnimation: .Automatic)
         })
@@ -175,6 +175,7 @@ class ConvoInfoTableViewController: UITableViewController {
         // Receiver proxy info
         case 0:
             let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.ReceiverProxyInfoCell, forIndexPath: indexPath) as! ReceiverProxyInfoCell
+            cell.selectionStyle = .None
             cell.convo = convo
             cell.nicknameButton.addTarget(self, action: #selector(ConvoInfoTableViewController.showEditReceiverProxyNicknameAlert), forControlEvents: .TouchUpInside)
             return cell
@@ -188,7 +189,6 @@ class ConvoInfoTableViewController: UITableViewController {
                 cell.changeIconButton.addTarget(self, action: #selector(ConvoInfoTableViewController.showIconPickerCollectionViewController), forControlEvents: .TouchUpInside)
             }
             cell.accessoryType = .DisclosureIndicator
-            cell.selectionStyle = .Default
             return cell
             
         case 2:

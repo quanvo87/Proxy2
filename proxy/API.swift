@@ -354,9 +354,9 @@ class API {
     }
     
     /// Returns the Proxy with `name` belonging to `user`.
-    func getProxy(withKey key: String, completion: (proxy: Proxy) -> Void) {
-        ref.child(Path.Proxies).queryOrderedByChild(Path.Key).queryEqualToValue(key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            completion(proxy: Proxy(anyObject: snapshot.children.nextObject()!.value))
+    func getProxy(withKey key: String, belongingToUser user: String, completion: (proxy: Proxy) -> Void) {
+        ref.child(Path.Proxies).child(user).child(key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            completion(proxy: Proxy(anyObject: snapshot.value!))
         })
     }
     
