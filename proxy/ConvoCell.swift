@@ -55,6 +55,7 @@ class ConvoCell: UITableViewCell {
     deinit {
         iconRef.removeObserverWithHandle(iconRefHandle)
         senderNicknameRef.removeObserverWithHandle(senderNicknameRefHandle)
+        receiverNicknameRef.removeObserverWithHandle(receiverNicknameRefHandle)
         unreadRef.removeObserverWithHandle(unreadRefHandle)
         lastMessageRef.removeObserverWithHandle(lastMessageRefHandle)
     }
@@ -63,6 +64,7 @@ class ConvoCell: UITableViewCell {
         super.prepareForReuse()
         iconRef.removeObserverWithHandle(iconRefHandle)
         senderNicknameRef.removeObserverWithHandle(senderNicknameRefHandle)
+        receiverNicknameRef.removeObserverWithHandle(receiverNicknameRefHandle)
         unreadRef.removeObserverWithHandle(unreadRefHandle)
         lastMessageRef.removeObserverWithHandle(lastMessageRefHandle)
     }

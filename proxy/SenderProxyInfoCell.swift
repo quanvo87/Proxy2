@@ -27,6 +27,7 @@ class SenderProxyInfoCell: UITableViewCell {
             selectionStyle = .None
             iconImageView.kf_indicatorType = .Activity
             nameLabel.text = proxy.key
+            removeObservers()
             observeIcon()
             observeNickname()
         }

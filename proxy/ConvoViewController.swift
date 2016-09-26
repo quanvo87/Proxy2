@@ -73,6 +73,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         setUpBubbles()
         setUpSenderIsPresent()
         observeReceiverNickname()
+        observeMessages()
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -90,7 +91,6 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         observeSenderIcon()
         observeReceiverIcon()
         observeSenderNickname()
-        observeMessages()
         observeTyping()
     }
     
@@ -107,12 +107,12 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         senderIconRef.removeObserverWithHandle(senderIconRefHandle)
         receiverIconRef.removeObserverWithHandle(receiverIconRefHandle)
         senderNicknameRef.removeObserverWithHandle(senderNicknameRefHandle)
-        messagesRef.removeObserverWithHandle(messagesRefHandle)
         membersAreTypingRef.removeObserverWithHandle(membersAreTypingRefHandle)
     }
     
     deinit {
         receiverNicknameRef.removeObserverWithHandle(receiverNicknameRefHandle)
+        messagesRef.removeObserverWithHandle(messagesRefHandle)
     }
     
     // MARK: - Set up
@@ -127,6 +127,10 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         collectionView?.collectionViewLayout.outgoingAvatarViewSize = CGSize(width: kJSQMessagesCollectionViewAvatarSizeDefault, height:kJSQMessagesCollectionViewAvatarSizeDefault)
         senderId = convo.senderId
         senderDisplayName = ""
+        
+        receiverNicknameRef.removeObserverWithHandle(receiverNicknameRefHandle)
+        messagesRef.removeObserverWithHandle(messagesRefHandle)
+        
         receiverIsPresentRef = ref.child(Path.Present).child(convo.key).child(convo.receiverId).child(Path.Present)
         senderNicknameRef = ref.child(Path.Nickname).child(convo.senderProxy).child(Path.Nickname)
         receiverNicknameRef = ref.child(Path.Nickname).child(convo.senderId).child(convo.key).child(Path.Nickname)
@@ -625,7 +629,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     
     func send(image image: UIImage) {
         // First send a placeholder message that displays a loading indicator.
-        api.sendMessage(withText: "Photo message.", withMediaType: "imagePlaceholder", usingSenderConvo: self.convo) { (convo, message) in
+        api.sendMessage(withText: "[Photo 📸]", withMediaType: "imagePlaceholder", usingSenderConvo: self.convo) { (convo, message) in
             self.finishSendingMessage()
             
             // Then upload the image to storage.
@@ -642,7 +646,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     
     func send(videoWithURL url: NSURL) {
         // First send a placeholder message that displays a loading indicator.
-        api.sendMessage(withText: "Video message.", withMediaType: "videoPlaceholder", usingSenderConvo: self.convo) { (convo, message) in
+        api.sendMessage(withText: "[Video 🎥]", withMediaType: "videoPlaceholder", usingSenderConvo: self.convo) { (convo, message) in
             self.finishSendingMessage()
             
             // Then upload the image to storage.

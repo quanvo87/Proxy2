@@ -175,7 +175,6 @@ class ConvoInfoTableViewController: UITableViewController {
         // Receiver proxy info
         case 0:
             let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.ReceiverProxyInfoCell, forIndexPath: indexPath) as! ReceiverProxyInfoCell
-            cell.removeObservers()
             cell.convo = convo
             cell.nicknameButton.addTarget(self, action: #selector(ConvoInfoTableViewController.showEditReceiverProxyNicknameAlert), forControlEvents: .TouchUpInside)
             return cell
@@ -183,7 +182,6 @@ class ConvoInfoTableViewController: UITableViewController {
         // Sender proxy info
         case 1:
             let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.SenderProxyInfoCell, forIndexPath: indexPath) as! SenderProxyInfoCell
-            cell.removeObservers()
             if let senderProxy = senderProxy {
                 cell.proxy = senderProxy
                 cell.nicknameButton.addTarget(self, action: #selector(ConvoInfoTableViewController.showEditNicknameAlert), forControlEvents: .TouchUpInside)
@@ -200,7 +198,7 @@ class ConvoInfoTableViewController: UITableViewController {
                 
             // Allow pictures, videos, etc.
             case 0:
-                cell.textLabel?.text = "Allow pictures, videos, etc."
+                cell.textLabel?.text = "Allow pictures & videos"
                 
                 let settingSwitch = UISwitch()
                 settingSwitch.tag = indexPath.row
@@ -242,14 +240,14 @@ class ConvoInfoTableViewController: UITableViewController {
             case 0:
                 cell.textLabel?.text = "Leave conversation"
                 cell.textLabel?.textColor = UIColor.redColor()
-                cell.textLabel!.font = UIFont.systemFontOfSize(17, weight: UIFontWeightUltraLight)
+                cell.textLabel!.font = UIFont.systemFontOfSize(17, weight: UIFontWeightRegular)
                 return cell
                 
             // Block user
             case 1:
                 cell.textLabel?.text = "Block user"
                 cell.textLabel?.textColor = UIColor.redColor()
-                cell.textLabel!.font = UIFont.systemFontOfSize(17, weight: UIFontWeightUltraLight)
+                cell.textLabel!.font = UIFont.systemFontOfSize(17, weight: UIFontWeightRegular)
                 return cell
                 
             default: break
