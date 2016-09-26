@@ -254,6 +254,33 @@ class API {
     // TODO: Implement
     func blockUser() {}
     
+    /// Returns an Int for the amount of unread messages the user has.
+    /// Filters out messages we don't want to count.
+    /// - Parameter snapshot: the query result for `unread` for the user.
+    func getUnreadForUser(fromSnapshot snapshot: FIRDataSnapshot, completion: (unread: Int) -> Void) {
+        var convos = [FIRDataSnapshot]()
+        for proxy in snapshot.children {
+            let proxy = proxy as! FIRDataSnapshot
+            for convo in proxy.children {
+                let convo = convo as! FIRDataSnapshot
+                convos.append(convo)
+            }
+        }
+        var unread = 0
+        var convoCount = convos.count
+        for convo in convos {
+            self.getConvo(withKey: convo.key, belongingToUser: self.uid, completion: { (convo_) in
+                if !convo_.didLeaveConvo && !convo_.senderDidDeleteProxy && !convo_.senderIsBlocking {
+                    unread += convo.value as! Int
+                }
+                convoCount -= 1
+                if convoCount == 0 {
+                    completion(unread: unread)
+                }
+            })
+        }
+    }
+    
     // MARK: - Proxy
     /// Loads word bank if needed, else call `tryCreateProxy`.
     /// Returns a newly created proxy with a unique name.
@@ -392,7 +419,6 @@ class API {
     /// Deletes a proxy's global copy.
     /// Sets the proxy to deleted.
     /// Sets sender's copies of convo to deleted.
-    /// Deletes sender's copies of convo's `nickname` and `unread`.
     /// Sets convo to deleted in receiver's copies.
     func delete(proxy proxy: Proxy, withConvos convos: [Convo]) {
         
@@ -408,10 +434,6 @@ class API {
             /// Set sender's copies as deleted
             set(true, a: Path.Convos, b: convo.senderId, c: convo.key, d: Path.SenderDidDeleteProxy)
             set(true, a: Path.Convos, b: convo.senderProxy, c: convo.key, d: Path.SenderDidDeleteProxy)
-            
-            /// Delete sender's copies of convo's `nickname` and `unread`.
-            delete(a: Path.Nickname, b: convo.senderId, c: convo.key, d: nil)
-            delete(a: Path.Unread, b: convo.senderId, c: convo.senderProxy, d: convo.key)
             
             /// Set convo as deleted on receiver's side
             set(true, a: Path.Convos, b: convo.receiverId, c: convo.key, d: Path.ReceiverDidDeleteProxy)
@@ -509,20 +531,14 @@ class API {
             let timestamp = NSDate().timeIntervalSince1970
             
             /// Sender updates
-            self.setConvoValuesOnMessageSend(timestamp: timestamp, id: convo.senderId, proxy: convo.senderProxy, convo: convo.key)
             self.set(timestamp, a: Path.Proxies, b: convo.senderId, c: convo.senderProxy, d: Path.Timestamp)
-            self.increment(amount: 1, a: Path.MessagesSent, b: convo.senderId, c: Path.MessagesSent, d: nil)
+            self.setConvoValuesOnMessageSend(convo.senderId, proxy: convo.senderProxy, convo: convo.key, timestamp: timestamp, unread: 0, messagePath: Path.MessagesSent)
             
             /// Receiver updates
-            if !convo.receiverDidDeleteProxy && !convo.receiverIsBlocking {
+            if !convo.receiverIsBlocking {
                 self.set(timestamp, a: Path.Proxies, b: convo.receiverId, c: convo.receiverProxy, d: Path.Timestamp)
-                self.increment(amount: receiverIsPresent ? 0 : 1, a: Path.Unread, b: convo.receiverId, c: convo.receiverProxy, d: convo.key)
             }
-            
-            if !convo.receiverDidDeleteProxy {
-                self.setConvoValuesOnMessageSend(timestamp: timestamp, id: convo.receiverId, proxy: convo.receiverProxy, convo: convo.key)
-                self.increment(amount: 1, a: Path.MessagesReceived, b: convo.receiverId, c: Path.MessagesReceived, d: nil)
-            }
+            self.setConvoValuesOnMessageSend(convo.receiverId, proxy: convo.receiverProxy, convo: convo.key, timestamp: timestamp, unread: receiverIsPresent ? 0 : 1, messagePath: Path.MessagesReceived)
             
             /// Write message
             let messageKey = self.ref.child(Path.Messages).child(convo.key).childByAutoId().key
@@ -535,11 +551,15 @@ class API {
     }
     
     /// Sets `timestamp`, and `didLeaveConvo` for both copies of convo.
-    func setConvoValuesOnMessageSend(timestamp timestamp: Double, id: String, proxy: String, convo: String) {
-        self.set(timestamp, a: Path.Convos, b: id, c: convo, d: Path.Timestamp)
-        self.set(timestamp, a: Path.Convos, b: proxy, c: convo, d: Path.Timestamp)
-        self.set(false, a: Path.Convos, b: id, c: convo, d: Path.DidLeaveConvo)
+    /// Increments unread by `unread`.
+    /// Increments `messagePath` by 1.
+    func setConvoValuesOnMessageSend(user: String, proxy: String, convo: String, timestamp: Double, unread: Int, messagePath: String) {
+        self.set(false, a: Path.Convos, b: user, c: convo, d: Path.DidLeaveConvo)
         self.set(false, a: Path.Convos, b: proxy, c: convo, d: Path.DidLeaveConvo)
+        self.set(timestamp, a: Path.Convos, b: user, c: convo, d: Path.Timestamp)
+        self.set(timestamp, a: Path.Convos, b: proxy, c: convo, d: Path.Timestamp)
+        self.increment(amount: unread, a: Path.Unread, b: user, c: proxy, d: convo)
+        self.increment(amount: 1, a: messagePath, b: user, c: messagePath, d: nil)
     }
     
     /// Returns a Bool indicating whether or not a user is in a convo.
@@ -572,10 +592,30 @@ class API {
     }
     
     // MARK: - Conversation (Convo)
+    /// Returns a convo.
+    func getConvo(withKey key: String, belongingToUser user: String, completion: (convo: Convo) -> Void) {
+        ref.child(Path.Convos).child(user).child(key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            completion(convo: Convo(anyObject: snapshot.value!))
+        })
+    }
+    
     /// Update the receiver's nickname for the convo.
     /// (Only the sender sees this nickname).
     func set(nickname nickname: String, forReceiverInConvo convo: Convo) {
         set(nickname, a: Path.Nickname, b: convo.senderId, c: convo.key, d: Path.Nickname)
+    }
+    
+    /// Returns an array of Convo's.
+    /// Filters out convos we don't want to see.
+    func getConvos(fromSnapshot snapshot: FIRDataSnapshot) -> [Convo] {
+        var convos = [Convo]()
+        for child in snapshot.children {
+            let convo = Convo(anyObject: child.value)
+            if !convo.didLeaveConvo && !convo.senderDidDeleteProxy && !convo.senderIsBlocking {
+                convos.append(convo)
+            }
+        }
+        return convos.reverse()
     }
     
     /// Leaves a convo.
@@ -586,7 +626,8 @@ class API {
         set(true, a: Path.Convos, b: convo.senderProxy, c: convo.key, d: Path.DidLeaveConvo)
 
         /// Set convo's `unread` to 0.
-        self.set(0, a: Path.Unread, b: convo.senderId, c: convo.senderProxy, d: convo.key)
+        // TODO: if new implementation works we don't need this.
+//        self.set(0, a: Path.Unread, b: convo.senderId, c: convo.senderProxy, d: convo.key)
     }
     
     // When you mute a convo, you stop getting push notifications for it.

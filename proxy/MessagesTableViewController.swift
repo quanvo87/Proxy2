@@ -181,29 +181,17 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
     func observeUnread() {
         self.unreadRef = self.ref.child(Path.Unread).child(self.api.uid)
         unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
-            var unread = 0
-            for proxy in snapshot.children {
-                for convo in proxy.children {
-                    let convo = convo as! FIRDataSnapshot
-                    unread += convo.value as! Int
-                }
-            }
-            self.navigationItem.title = "Messages \(unread.toTitleSuffix())"
-            self.tabBarController?.tabBar.items?.first?.badgeValue = unread == 0 ? nil : String(unread)
+            self.api.getUnreadForUser(fromSnapshot: snapshot, completion: { (unread) in
+                self.navigationItem.title = "Messages \(unread.toTitleSuffix())"
+                self.tabBarController?.tabBar.items?.first?.badgeValue = unread == 0 ? nil : String(unread)
+            })
         })
     }
     
     func observeConvos() {
         self.convosRef = self.ref.child(Path.Convos).child(self.api.uid)
         convosRefHandle = convosRef.queryOrderedByChild(Path.Timestamp).observeEventType(.Value, withBlock: { (snapshot) in
-            var convos = [Convo]()
-            for child in snapshot.children {
-                let convo = Convo(anyObject: child.value)
-                if !convo.didLeaveConvo && !convo.senderDidDeleteProxy {
-                    convos.append(convo)
-                }
-            }
-            self.convos = convos.reverse()
+            self.convos = self.api.getConvos(fromSnapshot: snapshot)
             self.tableView.reloadData()
         })
     }
