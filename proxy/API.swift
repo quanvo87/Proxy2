@@ -163,7 +163,7 @@ class API {
     /// Uploads compressed version of video to storage.
     /// Returns url to the video in storage.
     func uploadVideo(fromURL url: NSURL, completion: (url: NSURL) -> Void) {
-        
+
         /// Compress video.
         let compressedURL = NSURL.fileURLWithPath(NSTemporaryDirectory() + NSUUID().UUIDString + ".m4v")
         compressVideo(fromURL: url, toURL: compressedURL) { (session) in
@@ -257,18 +257,35 @@ class API {
     /// Returns an Int for the amount of unread messages the user has.
     /// Filters out messages we don't want to count.
     /// - Parameter snapshot: the query result for `unread` for the user.
-    func getUnreadForUser(fromSnapshot snapshot: FIRDataSnapshot, completion: (unread: Int) -> Void) {
-        var convos = [FIRDataSnapshot]()
-        for proxy in snapshot.children {
-            let proxy = proxy as! FIRDataSnapshot
-            for convo in proxy.children {
-                let convo = convo as! FIRDataSnapshot
-                convos.append(convo)
-            }
-        }
+    func getUnread(forProxies proxies: FIRDataSnapshot, completion: (unread: Int) -> Void) {
+        var convoCount = getNumberOfConvos(inProxies: proxies)
         var unread = 0
-        var convoCount = convos.count
-        for convo in convos {
+        for proxy in proxies.children {
+            self.getUnread(forProxy: proxy as! FIRDataSnapshot, completion: { (unread_) in
+                unread += unread_
+                convoCount -= proxy.childrenCount
+                if convoCount == 0 {
+                    completion(unread: unread)
+                }
+            })
+        }
+    }
+    
+    /// Returns the number of convos in `proxies`.
+    func getNumberOfConvos(inProxies proxies: FIRDataSnapshot) -> UInt {
+        var convoCount: UInt = 0
+        for proxy in proxies.children {
+            convoCount += proxy.childrenCount
+        }
+        return convoCount
+    }
+    
+    /// Returns the number of unread messages in `proxy`.
+    func getUnread(forProxy proxy: FIRDataSnapshot, completion: (unread: Int) -> Void) {
+        var convoCount = proxy.childrenCount
+        var unread = 0
+        for convo in proxy.children {
+            let convo = convo as! FIRDataSnapshot
             self.getConvo(withKey: convo.key, belongingToUser: self.uid, completion: { (convo_) in
                 if !convo_.didLeaveConvo && !convo_.senderDidDeleteProxy && !convo_.senderIsBlocking {
                     unread += convo.value as! Int
@@ -291,7 +308,6 @@ class API {
                 completion(proxy: proxy)
             })
         } else {
-            
             load(proxyNameGenerator: { (proxy) in
                 completion(proxy: proxy)
             })
@@ -319,7 +335,7 @@ class API {
         /// Create a proxy and save it.
         let uniqueKey = ref.child(Path.Proxies).childByAutoId().key
         let key = proxyNameGenerator.generateProxyName()
-        let proxy = Proxy(key: key, ownerId: self.uid, timeCreated: 0.0, timestamp: 0.0)
+        let proxy = Proxy(key: key, ownerId: self.uid, timeCreated: 0.0, timestamp: 0.0, isDeleted: false)
         set(proxy.toAnyObject(), a: Path.Proxies, b: uniqueKey, c: nil, d: nil)
         
         /// Get all proxies with this name.
@@ -341,7 +357,7 @@ class API {
                 /// Create the user's copy of the proxy and save it.
                 /// The proxy's name is used as its key here.
                 let timestamp = NSDate().timeIntervalSince1970
-                let proxy = Proxy(key: key, ownerId: self.uid, timeCreated: timestamp, timestamp: timestamp)
+                let proxy = Proxy(key: key, ownerId: self.uid, timeCreated: timestamp, timestamp: timestamp, isDeleted: false)
                 self.set(proxy.toAnyObject(), a: Path.Proxies, b: self.uid, c: key, d: nil)
                 
                 /// Give the proxy a random icon.
@@ -418,26 +434,13 @@ class API {
     
     /// Deletes a proxy's global copy.
     /// Sets the proxy to deleted.
-    /// Sets sender's copies of convo to deleted.
-    /// Sets convo to deleted in receiver's copies.
+    /// Sets sender's copies of the proxy's convos to deleted.
     func delete(proxy proxy: Proxy, withConvos convos: [Convo]) {
-        
-        /// Delete the global copy of the proxy
         delete(a: Path.Proxies, b: proxy.key, c: nil, d: nil)
-        
-        /// Set proxy to deleted.
         set(true, a: Path.Proxies, b: uid, c: proxy.key, d: Path.IsDeleted)
-        
-        /// Loop through all convos this proxy is in
         for convo in convos {
-            
-            /// Set sender's copies as deleted
             set(true, a: Path.Convos, b: convo.senderId, c: convo.key, d: Path.SenderDidDeleteProxy)
             set(true, a: Path.Convos, b: convo.senderProxy, c: convo.key, d: Path.SenderDidDeleteProxy)
-            
-            /// Set convo as deleted on receiver's side
-            set(true, a: Path.Convos, b: convo.receiverId, c: convo.key, d: Path.ReceiverDidDeleteProxy)
-            set(true, a: Path.Convos, b: convo.receiverProxy, c: convo.key, d: Path.ReceiverDidDeleteProxy)
         }
     }
     
@@ -620,14 +623,8 @@ class API {
     
     /// Leaves a convo.
     func leave(convo convo: Convo) {
-        
-        /// Set `didLeaveConvo` for both copies of convo to true.
         set(true, a: Path.Convos, b: convo.senderId, c: convo.key, d: Path.DidLeaveConvo)
         set(true, a: Path.Convos, b: convo.senderProxy, c: convo.key, d: Path.DidLeaveConvo)
-
-        /// Set convo's `unread` to 0.
-        // TODO: if new implementation works we don't need this.
-//        self.set(0, a: Path.Unread, b: convo.senderId, c: convo.senderProxy, d: convo.key)
     }
     
     // When you mute a convo, you stop getting push notifications for it.

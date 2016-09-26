@@ -323,7 +323,7 @@
                                         <constraint firstItem="bM6-O2-0dZ" firstAttribute="top" secondItem="azt-Vr-HWc" secondAttribute="topMargin" constant="10" id="U5K-sT-nKe"/>
                                         <constraint firstAttribute="trailingMargin" secondItem="V8d-MS-I27" secondAttribute="trailing" id="fVX-VC-ysf"/>
                                         <constraint firstItem="bM6-O2-0dZ" firstAttribute="leading" secondItem="4kc-1o-EZq" secondAttribute="trailing" constant="5" id="n5Q-Ub-kwq"/>
-                                        <constraint firstItem="V8d-MS-I27" firstAttribute="top" secondItem="bM6-O2-0dZ" secondAttribute="bottom" constant="5" id="zRw-Kx-ONW"/>
+                                        <constraint firstItem="V8d-MS-I27" firstAttribute="top" secondItem="azt-Vr-HWc" secondAttribute="topMargin" constant="33" id="xLx-PN-Ljg"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>

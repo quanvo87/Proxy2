@@ -179,9 +179,9 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
     
     // MARK: - Database
     func observeUnread() {
-        self.unreadRef = self.ref.child(Path.Unread).child(self.api.uid)
+        unreadRef = self.ref.child(Path.Unread).child(self.api.uid)
         unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
-            self.api.getUnreadForUser(fromSnapshot: snapshot, completion: { (unread) in
+            self.api.getUnread(forProxies: snapshot, completion: { (unread) in
                 self.navigationItem.title = "Messages \(unread.toTitleSuffix())"
                 self.tabBarController?.tabBar.items?.first?.badgeValue = unread == 0 ? nil : String(unread)
             })
@@ -189,7 +189,7 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
     }
     
     func observeConvos() {
-        self.convosRef = self.ref.child(Path.Convos).child(self.api.uid)
+        convosRef = self.ref.child(Path.Convos).child(self.api.uid)
         convosRefHandle = convosRef.queryOrderedByChild(Path.Timestamp).observeEventType(.Value, withBlock: { (snapshot) in
             self.convos = self.api.getConvos(fromSnapshot: snapshot)
             self.tableView.reloadData()

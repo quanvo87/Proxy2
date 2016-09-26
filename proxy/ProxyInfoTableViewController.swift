@@ -92,12 +92,9 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     // MARK: - Database
     func observeUnread() {
         unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
-            var unread = 0
-            for convo in snapshot.children {
-                let convo = convo as! FIRDataSnapshot
-                unread += convo.value as! Int
-            }
-            self.navigationItem.title = unread.toTitleSuffix()
+            self.api.getUnread(forProxy: snapshot, completion: { (unread) in
+                self.navigationItem.title = unread.toTitleSuffix()
+            })
         })
     }
     
@@ -111,14 +108,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     
     func observeConvos() {
         convosRefHandle = convosRef.queryOrderedByChild(Path.Timestamp).observeEventType(.Value, withBlock: { (snapshot) in
-            var convos = [Convo]()
-            for child in snapshot.children {
-                let convo = Convo(anyObject: child.value)
-                if !convo.didLeaveConvo && !convo.senderDidDeleteProxy {
-                    convos.append(convo)
-                }
-            }
-            self.convos = convos.reverse()
+            self.convos = self.api.getConvos(fromSnapshot: snapshot)
             self.tableView.reloadSections(NSIndexSet(index: 1), withRowAnimation: .Automatic)
         })
     }

@@ -12,14 +12,16 @@ struct Proxy {
     var ownerId = ""
     var timeCreated = 0.0
     var timestamp = 0.0
+    var isDeleted = false
     
     init() {}
     
-    init(key: String, ownerId: String, timeCreated: Double, timestamp: Double) {
+    init(key: String, ownerId: String, timeCreated: Double, timestamp: Double, isDeleted: Bool) {
         self.key = key
         self.ownerId = ownerId
         self.timeCreated = timeCreated
         self.timestamp = timestamp
+        self.isDeleted = isDeleted
     }
     
     init(anyObject: AnyObject) {
@@ -27,6 +29,7 @@ struct Proxy {
         self.ownerId = anyObject["ownerId"] as? String ?? ""
         self.timeCreated = anyObject["timeCreated"] as? Double ?? 0.0
         self.timestamp = anyObject["timestamp"] as? Double ?? 0.0
+        self.isDeleted = anyObject["isDeleted"] as? Bool ?? false
     }
     
     func toAnyObject() -> AnyObject {
@@ -34,7 +37,8 @@ struct Proxy {
             "key": key,
             "ownerId": ownerId,
             "timeCreated": timeCreated,
-            "timestamp": timestamp
+            "timestamp": timestamp,
+            "isDeleted": isDeleted
         ]
     }
 }

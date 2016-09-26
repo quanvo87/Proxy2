@@ -159,14 +159,9 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
     // Observe unread for the user to keep the title updated.
     func observeUnread() {
         unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
-            var unread = 0
-            for proxy in snapshot.children {
-                for convo in proxy.children {
-                    let convo = convo as! FIRDataSnapshot
-                    unread += convo.value as! Int
-                }
-            }
-            self.navigationItem.title = "Proxies \(unread.toTitleSuffix())"
+            self.api.getUnread(forProxies: snapshot, completion: { (unread) in
+                self.navigationItem.title = "Proxies \(unread.toTitleSuffix())"
+            })
         })
     }
     
@@ -176,7 +171,9 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
             var proxies = [Proxy]()
             for child in snapshot.children {
                 let proxy = Proxy(anyObject: child.value)
-                proxies.append(proxy)
+                if !proxy.isDeleted {
+                    proxies.append(proxy)
+                }
             }
             self.proxies = proxies.reverse()
             self.tableView.reloadData()
