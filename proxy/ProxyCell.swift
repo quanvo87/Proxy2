@@ -15,6 +15,7 @@ class ProxyCell: UITableViewCell {
     @IBOutlet weak var iconImageView: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var nicknameLabel: UILabel!
+    @IBOutlet weak var convoCountLabel: UILabel!
     @IBOutlet weak var unreadLabel: UILabel!
     
     let api = API.sharedInstance
@@ -26,16 +27,19 @@ class ProxyCell: UITableViewCell {
     var nicknameRef = FIRDatabaseReference()
     var nicknameRefHandle = FIRDatabaseHandle()
     
+    var convoCountRef = FIRDatabaseReference()
+    var convoCountRefHandle = FIRDatabaseHandle()
+    
     var unreadRef = FIRDatabaseReference()
     var unreadRefHandle = FIRDatabaseHandle()
     
     var proxy = Proxy() {
         didSet {
             // Set up
-            accessoryType = .DisclosureIndicator
             iconImageView.kf_indicatorType = .Activity
             nameLabel.text = proxy.key
             nicknameLabel.text = ""
+            convoCountLabel.text = ""
             unreadLabel.text = ""
             
             // Set up 'new proxy' indicator image
@@ -48,6 +52,7 @@ class ProxyCell: UITableViewCell {
             // Observe dynamic values
             observeIcon()
             observeNickname()
+            observeConvoCount()
             observeUnread()
         }
     }
@@ -55,6 +60,7 @@ class ProxyCell: UITableViewCell {
     deinit {
         iconRef.removeObserverWithHandle(iconRefHandle)
         nicknameRef.removeObserverWithHandle(nicknameRefHandle)
+        convoCountRef.removeObserverWithHandle(convoCountRefHandle)
         unreadRef.removeObserverWithHandle(unreadRefHandle)
     }
     
@@ -62,6 +68,7 @@ class ProxyCell: UITableViewCell {
         super.prepareForReuse()
         iconRef.removeObserverWithHandle(iconRefHandle)
         nicknameRef.removeObserverWithHandle(nicknameRefHandle)
+        convoCountRef.removeObserverWithHandle(convoCountRefHandle)
         unreadRef.removeObserverWithHandle(unreadRefHandle)
     }
     
@@ -82,6 +89,20 @@ class ProxyCell: UITableViewCell {
         nicknameRefHandle = nicknameRef.observeEventType(.Value, withBlock: { (snapshot) in
             guard let nickname = snapshot.value as? String else { return }
             self.nicknameLabel.text = nickname
+        })
+    }
+    
+    func observeConvoCount() {
+        convoCountRef = ref.child(Path.Convos).child(proxy.key)
+        convoCountRefHandle = convoCountRef.observeEventType(.Value, withBlock: { (snapshot) in
+            var count = 0
+            for child in snapshot.children {
+                let convo = Convo(anyObject: child.value)
+                if !convo.didLeaveConvo {
+                    count += 1
+                }
+            }
+            self.convoCountLabel.text = count == 0 ? "" : String(count)
         })
     }
     
