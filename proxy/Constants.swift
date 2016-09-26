@@ -24,9 +24,13 @@ struct Path {
     static let Present = "present"
     static let Typing = "typing"
     
+    // Proxy
+    static let IsDeleted = "isDeleted"
+    
     // Convo
     static let Unread = "unread"
     static let DidLeaveConvo = "didLeaveConvo"
+    static let SenderDidDeleteProxy = "senderDidDeleteProxy"
     static let ReceiverDidDeleteProxy = "receiverDidDeleteProxy"
     
     // Message

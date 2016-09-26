@@ -114,7 +114,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
             var convos = [Convo]()
             for child in snapshot.children {
                 let convo = Convo(anyObject: child.value)
-                if !convo.didLeaveConvo {
+                if !convo.didLeaveConvo && !convo.senderDidDeleteProxy {
                     convos.append(convo)
                 }
             }

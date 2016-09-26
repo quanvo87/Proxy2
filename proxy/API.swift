@@ -389,37 +389,34 @@ class API {
         })
     }
     
-    /// Deletes a proxy's user and global copy.
-    /// Deletes all sender side convos under that proxy.
-    /// Notifies all receivers of those convos that this proxy has been deleted.
-    /// (The actual receiver is not notified.)
-    /// Deletes proxy's icon, nickname, and unread entries.
+    /// Deletes a proxy's global copy.
+    /// Sets the proxy to deleted.
+    /// Sets sender's copies of convo to deleted.
+    /// Deletes sender's copies of convo's `nickname` and `unread`.
+    /// Sets convo to deleted in receiver's copies.
     func delete(proxy proxy: Proxy, withConvos convos: [Convo]) {
-        
-        /// Loop through all convos this proxy is in
-        for convo in convos {
-            
-            /// Notify receivers in convos that this proxy is deleted
-            set(true, a: Path.Convos, b: convo.receiverId, c: convo.key, d: Path.ReceiverDidDeleteProxy)
-            set(true, a: Path.Convos, b: convo.receiverProxy, c: convo.key, d: Path.ReceiverDidDeleteProxy)
-            
-            /// Delete the sender's copies of the convo
-            delete(a: Path.Convos, b: convo.senderId, c: convo.key, d: nil)
-            delete(a: Path.Convos, b: convo.senderProxy, c: convo.key, d: nil)
-            
-            /// Delete convo's metadata
-            delete(a: Path.Nickname, b: convo.senderId, c: convo.key, d: nil)
-            delete(a: Path.Unread, b: convo.senderId, c: convo.senderProxy, d: convo.key)
-        }
         
         /// Delete the global copy of the proxy
         delete(a: Path.Proxies, b: proxy.key, c: nil, d: nil)
         
-        /// Delete the user's copy of the proxy
-        delete(a: Path.Proxies, b: uid, c: proxy.key, d: nil)
+        /// Set proxy to deleted.
+        set(true, a: Path.Proxies, b: uid, c: proxy.key, d: Path.IsDeleted)
         
-        /// Delete nickname
-        delete(a: Path.Nickname, b: proxy.key, c: nil, d: nil)
+        /// Loop through all convos this proxy is in
+        for convo in convos {
+            
+            /// Set sender's copies as deleted
+            set(true, a: Path.Convos, b: convo.senderId, c: convo.key, d: Path.SenderDidDeleteProxy)
+            set(true, a: Path.Convos, b: convo.senderProxy, c: convo.key, d: Path.SenderDidDeleteProxy)
+            
+            /// Delete sender's copies of convo's `nickname` and `unread`.
+            delete(a: Path.Nickname, b: convo.senderId, c: convo.key, d: nil)
+            delete(a: Path.Unread, b: convo.senderId, c: convo.senderProxy, d: convo.key)
+            
+            /// Set convo as deleted on receiver's side
+            set(true, a: Path.Convos, b: convo.receiverId, c: convo.key, d: Path.ReceiverDidDeleteProxy)
+            set(true, a: Path.Convos, b: convo.receiverProxy, c: convo.key, d: Path.ReceiverDidDeleteProxy)
+        }
     }
     
     // MARK: - Message
