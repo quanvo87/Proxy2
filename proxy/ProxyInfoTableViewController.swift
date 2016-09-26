@@ -33,19 +33,23 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         super.viewDidLoad()
         setUp()
         observeUnread()
-        observeConvos()
-        observeNickname()
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(true)
         showNewConvo()
+        observeConvos()
+        observeNickname()
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(true)
+        nicknameRef.removeObserverWithHandle(nicknameRefHandle)
+        convosRef.removeObserverWithHandle(convosRefHandle)
     }
     
     deinit {
         unreadRef.removeObserverWithHandle(unreadRefHandle)
-        nicknameRef.removeObserverWithHandle(nicknameRefHandle)
-        convosRef.removeObserverWithHandle(convosRefHandle)
     }
     
     // MARK: - Set up
@@ -58,6 +62,10 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         for case let scrollView as UIScrollView in tableView.subviews {
             scrollView.delaysContentTouches = false
         }
+        
+        unreadRef = ref.child(Path.Unread).child(api.uid).child(proxy.key)
+        nicknameRef = ref.child(Path.Nickname).child(proxy.key).child(Path.Nickname)
+        convosRef = ref.child(Path.Convos).child(proxy.key)
     }
     
     func addNavBarButtons() {
@@ -76,18 +84,24 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         self.navigationItem.rightBarButtonItems = [newMessageBarButton, deleteProxyBarButton]
     }
     
+    // Dismiss keyboard when scroll table view down
+    override func scrollViewWillBeginDragging(scrollView: UIScrollView) {
+        view.endEditing(true)
+    }
+    
     // MARK: - Database
     func observeUnread() {
-//        unreadRef = ref.child("proxies").child(proxy.owner).child(proxy.key).child("unread")
-//        unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { snapshot in
-//            if let unread = snapshot.value as? Int {
-//                self.navigationItem.title = "\(unread.toTitleSuffix())"
-//            }
-//        })
+        unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
+            var unread = 0
+            for convo in snapshot.children {
+                let convo = convo as! FIRDataSnapshot
+                unread += convo.value as! Int
+            }
+            self.navigationItem.title = unread.toTitleSuffix()
+        })
     }
     
     func observeNickname() {
-        nicknameRef = ref.child(Path.Nickname).child(proxy.key).child(Path.Nickname)
         nicknameRefHandle = nicknameRef.observeEventType(.Value, withBlock: { (snapshot) in
             if let nickname = snapshot.value as? String {
                 self.nickname = nickname
@@ -96,7 +110,6 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     }
     
     func observeConvos() {
-        convosRef = ref.child(Path.Convos).child(proxy.key)
         convosRefHandle = convosRef.queryOrderedByChild(Path.Timestamp).observeEventType(.Value, withBlock: { (snapshot) in
             var convos = [Convo]()
             for child in snapshot.children {
@@ -108,11 +121,6 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
             self.convos = convos.reverse()
             self.tableView.reloadSections(NSIndexSet(index: 1), withRowAnimation: .Automatic)
         })
-    }
-    
-    // Dismiss keyboard when scroll table view down
-    override func scrollViewWillBeginDragging(scrollView: UIScrollView) {
-        view.endEditing(true)
     }
     
     // MARK: - Table view delegate
@@ -176,6 +184,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         // Header
         case 0:
             let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.SenderProxyInfoCell, forIndexPath: indexPath) as! SenderProxyInfoCell
+            cell.removeObservers()
             cell.proxy = proxy
             cell.nicknameButton.addTarget(self, action: #selector(ProxyInfoTableViewController.showEditNicknameAlert), forControlEvents: .TouchUpInside)
             cell.changeIconButton.addTarget(self, action: #selector(ProxyInfoTableViewController.showIconPickerViewController), forControlEvents: .TouchUpInside)

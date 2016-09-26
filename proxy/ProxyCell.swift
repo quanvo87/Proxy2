@@ -86,10 +86,15 @@ class ProxyCell: UITableViewCell {
     }
     
     func observeUnread() {
-//        unreadRef = ref.child(Path.Unread).child(convo.senderId).child(convo.key)
-//        unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
-//            guard let unread = snapshot.value as? Int else { return }
-//            self.unreadLabel.text = unread.toUnreadLabel()
-//        })
+        unreadRef = ref.child(Path.Unread).child(api.uid).child(proxy.key)
+        unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
+            var unread = 0
+            for convo in snapshot.children {
+                let convo = convo as! FIRDataSnapshot
+                unread += convo.value as! Int
+            }
+            self.unreadLabel.text = unread.toUnreadLabel()
+        })
+
     }
 }

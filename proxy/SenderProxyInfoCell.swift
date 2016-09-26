@@ -37,6 +37,11 @@ class SenderProxyInfoCell: UITableViewCell {
         nicknameRef.removeObserverWithHandle(nicknameRefHandle)
     }
     
+    func removeObservers() {
+        iconRef.removeObserverWithHandle(iconRefHandle)
+        nicknameRef.removeObserverWithHandle(nicknameRefHandle)
+    }
+    
     func observeIcon() {
         iconRef = ref.child(Path.Icon).child(proxy.key).child(Path.Icon)
         iconRefHandle = iconRef.observeEventType(.Value, withBlock: { (snapshot) in

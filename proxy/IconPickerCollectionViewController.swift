@@ -22,7 +22,6 @@ class IconPickerCollectionViewController: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUp()
-        observeIcons()
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -30,7 +29,13 @@ class IconPickerCollectionViewController: UICollectionViewController {
         navigationItem.hidesBackButton = true
     }
     
-    deinit {
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(true)
+        observeIcons()
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(true)
         iconRef.removeObserverWithHandle(iconRefHandle)
     }
     
@@ -49,6 +54,8 @@ class IconPickerCollectionViewController: UICollectionViewController {
         for case let scrollView as UIScrollView in collectionView!.subviews {
             scrollView.delaysContentTouches = false
         }
+        
+        iconRef = ref.child("icons").child(api.uid)
     }
     
     func setUpCancelButton() {
@@ -64,7 +71,6 @@ class IconPickerCollectionViewController: UICollectionViewController {
     }
     
     func observeIcons() {
-        iconRef = ref.child("icons").child(api.uid)
         iconRefHandle = iconRef.queryOrderedByChild("name").observeEventType(.Value, withBlock: { (snapshot) in
             var icons = [String]()
             for child in snapshot.children {

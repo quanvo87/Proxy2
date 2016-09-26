@@ -22,10 +22,15 @@ class SelectProxyViewController: UIViewController, UITableViewDelegate, UITableV
     override func viewDidLoad() {
         super.viewDidLoad()
         setUp()
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(true)
         observeProxies()
     }
     
-    deinit {
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(true)
         proxiesRef.removeObserverWithHandle(proxiesRefHandle)
     }
     
@@ -36,10 +41,10 @@ class SelectProxyViewController: UIViewController, UITableViewDelegate, UITableV
         tableView.dataSource = self
         tableView.rowHeight = 80
         tableView.estimatedRowHeight = 80
+        proxiesRef = ref.child(Path.Proxies).child(api.uid)
     }
     
     func observeProxies() {
-        proxiesRef = ref.child(Path.Proxies).child(api.uid)
         proxiesRefHandle = proxiesRef.queryOrderedByChild(Path.Timestamp).observeEventType(.Value, withBlock: { snapshot in
             var proxies = [Proxy]()
             for child in snapshot.children {

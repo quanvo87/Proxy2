@@ -393,7 +393,6 @@ class API {
     /// Deletes all sender side convos under that proxy.
     /// Notifies all receivers of those convos that this proxy has been deleted.
     /// (The actual receiver is not notified.)
-    /// Decrement's user's unread by the remaining unread in the proxy.
     /// Deletes proxy's icon, nickname, and unread entries.
     func delete(proxy proxy: Proxy, withConvos convos: [Convo]) {
         
@@ -410,7 +409,7 @@ class API {
             
             /// Delete convo's metadata
             delete(a: Path.Nickname, b: convo.senderId, c: convo.key, d: nil)
-//            delete(a: Path.Unread, b: convo.senderId, c: convo.senderProxy, d: convo.key)
+            delete(a: Path.Unread, b: convo.senderId, c: convo.senderProxy, d: convo.key)
         }
         
         /// Delete the global copy of the proxy
@@ -418,9 +417,6 @@ class API {
         
         /// Delete the user's copy of the proxy
         delete(a: Path.Proxies, b: uid, c: proxy.key, d: nil)
-        
-        /// Delete icon
-        delete(a: Path.Icon, b: proxy.key, c: nil, d: nil)
         
         /// Delete nickname
         delete(a: Path.Nickname, b: proxy.key, c: nil, d: nil)
@@ -523,7 +519,7 @@ class API {
             /// Receiver updates
             if !convo.receiverDidDeleteProxy && !convo.receiverIsBlocking {
                 self.set(timestamp, a: Path.Proxies, b: convo.receiverId, c: convo.receiverProxy, d: Path.Timestamp)
-//                self.increment(amount: receiverIsPresent ? 0 : 1, a: Path.Unread, b: convo.receiverId, c: convo.receiverProxy, d: convo.key)
+                self.increment(amount: receiverIsPresent ? 0 : 1, a: Path.Unread, b: convo.receiverId, c: convo.receiverProxy, d: convo.key)
             }
             
             if !convo.receiverDidDeleteProxy {
@@ -559,10 +555,10 @@ class API {
     /// Sets the message's `read` to true.
     /// Gives the message a current `timeRead`.
     /// Decrements `user`'s convo's unread by 1.
-    func setRead(forMessage message: Message, forUser user: String) {
+    func setRead(forMessage message: Message, forUser user: String, forProxy proxy: String) {
         set(true, a: Path.Messages, b: message.convo, c: message.key, d: Path.Read)
         set(NSDate().timeIntervalSince1970, a: Path.Messages, b: message.convo, c: message.key, d: Path.TimeRead)
-//        increment(amount: -1, a: Path.Unread, b: user, c: message.convo, d: nil)
+        increment(amount: -1, a: Path.Unread, b: user, c: proxy, d: message.convo)
     }
     
     /// Sets a message's `mediaType` and `mediaURL`.

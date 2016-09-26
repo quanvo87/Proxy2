@@ -36,7 +36,6 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
         super.viewDidLoad()
         setUp()
         observeUnread()
-        observeProxies()
         
         // In case user creates a proxy from the Home VC, scroll this VC to top
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ProxiesTableViewController.scrollToTop), name: Notifications.CreatedNewProxyFromHomeTab, object: nil)
@@ -44,13 +43,18 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(true)
+        observeProxies()
         showNewConvo()
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(true)
+        proxiesRef.removeObserverWithHandle(proxiesRefHandle)
     }
     
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
         unreadRef.removeObserverWithHandle(unreadRefHandle)
-        proxiesRef.removeObserverWithHandle(proxiesRefHandle)
     }
     
     // MARK: - Set up
@@ -66,6 +70,8 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
         tableView.estimatedRowHeight = 80
         tableView.separatorStyle = .None
         tableView.allowsMultipleSelectionDuringEditing = true
+        unreadRef = ref.child(Path.Unread).child(api.uid)
+        proxiesRef = ref.child(Path.Proxies).child(api.uid)
     }
     
     func createNewMessageButton() -> UIBarButtonItem {
@@ -152,17 +158,20 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
     // MARK: - Database
     // Observe unread for the user to keep the title updated.
     func observeUnread() {
-//        unreadRef = ref.child("unread").child(api.uid)
-//        unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { snapshot in
-//            if let unread = snapshot.value as? Int {
-//                self.navigationItem.title = "Proxies \(unread.toTitleSuffix())"
-//            }
-//        })
+        unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
+            var unread = 0
+            for proxy in snapshot.children {
+                for convo in proxy.children {
+                    let convo = convo as! FIRDataSnapshot
+                    unread += convo.value as! Int
+                }
+            }
+            self.navigationItem.title = "Proxies \(unread.toTitleSuffix())"
+        })
     }
     
     // Observe proxies for this user to display in this VC.
     func observeProxies() {
-        proxiesRef = ref.child(Path.Proxies).child(api.uid)
         proxiesRefHandle = proxiesRef.queryOrderedByChild(Path.Timestamp).observeEventType(.Value, withBlock: { snapshot in
             var proxies = [Proxy]()
             for child in snapshot.children {
@@ -209,7 +218,6 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
         if shouldShowNewConvo {
             let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.ConvoViewController) as! ConvoViewController
             dest.convo = convo
-            dest.hidesBottomBarWhenPushed = true
             shouldShowNewConvo = false
             self.navigationController!.pushViewController(dest, animated: true)
         }

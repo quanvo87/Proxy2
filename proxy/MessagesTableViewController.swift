@@ -36,7 +36,6 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
         super.viewDidLoad()
         setUpTabBar()
         setUp()
-        checkLogInStatus()
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -44,10 +43,17 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
         showNewConvo()
     }
     
-    deinit {
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(true)
+        checkLogInStatus()
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(true)
         unreadRef.removeObserverWithHandle(unreadRefHandle)
         convosRef.removeObserverWithHandle(convosRefHandle)
     }
+    
     
     // MARK: - Set up
     func setUpTabBar() {
@@ -173,21 +179,22 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
     
     // MARK: - Database
     func observeUnread() {
-//        unreadRef = ref.child(Path.Unread).child(api.uid)
-//        unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
-//            var unread = 0
-//            for proxy in snapshot.children {
-//                for convo in proxy.children {
-//                    print(convo)
-//                }
-//            }
-//            self.navigationItem.title = "Messages \(unread.toTitleSuffix())"
-//            self.tabBarController?.tabBar.items?.first?.badgeValue = unread == 0 ? nil : String(unread)
-//        })
+        self.unreadRef = self.ref.child(Path.Unread).child(self.api.uid)
+        unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
+            var unread = 0
+            for proxy in snapshot.children {
+                for convo in proxy.children {
+                    let convo = convo as! FIRDataSnapshot
+                    unread += convo.value as! Int
+                }
+            }
+            self.navigationItem.title = "Messages \(unread.toTitleSuffix())"
+            self.tabBarController?.tabBar.items?.first?.badgeValue = unread == 0 ? nil : String(unread)
+        })
     }
     
     func observeConvos() {
-        convosRef = ref.child(Path.Convos).child(api.uid)
+        self.convosRef = self.ref.child(Path.Convos).child(self.api.uid)
         convosRefHandle = convosRef.queryOrderedByChild(Path.Timestamp).observeEventType(.Value, withBlock: { (snapshot) in
             var convos = [Convo]()
             for child in snapshot.children {

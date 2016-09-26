@@ -27,15 +27,21 @@ class ConvoInfoTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUp()
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(true)
         observeSenderNickname()
         observeReceiverNickname()
     }
     
-    deinit {
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(true)
         senderNicknameRef.removeObserverWithHandle(senderNicknameRefHandle)
         receiverNicknameRef.removeObserverWithHandle(receiverNicknameRefHandle)
     }
     
+    // MARK: - Set up
     func setUp() {
         navigationItem.title = "Conversation"
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: Identifiers.Cell)
@@ -51,11 +57,19 @@ class ConvoInfoTableViewController: UITableViewController {
             self.senderProxy = proxy
             self.tableView.reloadSections(NSIndexSet(index: 1), withRowAnimation: .Automatic)
         })
+        
+        senderNicknameRef = ref.child(Path.Nickname).child(convo.senderProxy).child(Path.Nickname)
+        receiverNicknameRef = ref.child(Path.Nickname).child(convo.senderId).child(convo.key).child(Path.Nickname)
     }
     
+    // Dismiss keyboard when scroll table view down
+    override func scrollViewWillBeginDragging(scrollView: UIScrollView) {
+        view.endEditing(true)
+    }
+    
+    // MARK: - Database
     // Keep up to date sender nickname
     func observeSenderNickname() {
-        senderNicknameRef = ref.child(Path.Nickname).child(convo.senderProxy).child(Path.Nickname)
         senderNicknameRefHandle = senderNicknameRef.observeEventType(.Value, withBlock: { (snapshot) in
             if let nickname = snapshot.value as? String {
                 self.senderNickname = nickname
@@ -65,17 +79,11 @@ class ConvoInfoTableViewController: UITableViewController {
     
     // Keep up to date receiver nickname
     func observeReceiverNickname() {
-        receiverNicknameRef = ref.child(Path.Nickname).child(convo.senderId).child(convo.key).child(Path.Nickname)
         receiverNicknameRefHandle = receiverNicknameRef.observeEventType(.Value, withBlock: { (snapshot) in
             if let nickname = snapshot.value as? String {
                 self.receiverNickname = nickname
             }
         })
-    }
-    
-    // Dismiss keyboard when scroll table view down
-    override func scrollViewWillBeginDragging(scrollView: UIScrollView) {
-        view.endEditing(true)
     }
     
     //Mark: - Table view delegate
@@ -167,6 +175,7 @@ class ConvoInfoTableViewController: UITableViewController {
         // Receiver proxy info
         case 0:
             let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.ReceiverProxyInfoCell, forIndexPath: indexPath) as! ReceiverProxyInfoCell
+            cell.removeObservers()
             cell.convo = convo
             cell.nicknameButton.addTarget(self, action: #selector(ConvoInfoTableViewController.showEditReceiverProxyNicknameAlert), forControlEvents: .TouchUpInside)
             return cell
@@ -174,6 +183,7 @@ class ConvoInfoTableViewController: UITableViewController {
         // Sender proxy info
         case 1:
             let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.SenderProxyInfoCell, forIndexPath: indexPath) as! SenderProxyInfoCell
+            cell.removeObservers()
             if let senderProxy = senderProxy {
                 cell.proxy = senderProxy
                 cell.nicknameButton.addTarget(self, action: #selector(ConvoInfoTableViewController.showEditNicknameAlert), forControlEvents: .TouchUpInside)
