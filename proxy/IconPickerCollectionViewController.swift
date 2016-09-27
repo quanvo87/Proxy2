@@ -43,19 +43,14 @@ class IconPickerCollectionViewController: UICollectionViewController {
         navigationItem.title = "Select An Icon"
         collectionView?.backgroundColor = UIColor.whiteColor()
         setUpCancelButton()
-        
-        // Set up cells
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.itemSize = CGSizeMake(60, 90)
         collectionView?.setCollectionViewLayout(flowLayout, animated: true)
-        
-        // So buttons inside cells detect touches immediately (there's a delay on by default)
         collectionView!.delaysContentTouches = false
         for case let scrollView as UIScrollView in collectionView!.subviews {
             scrollView.delaysContentTouches = false
         }
-        
-        iconRef = ref.child("icons").child(api.uid)
+        iconRef = ref.child(Path.Icons).child(api.uid)
     }
     
     func setUpCancelButton() {
@@ -71,7 +66,7 @@ class IconPickerCollectionViewController: UICollectionViewController {
     }
     
     func observeIcons() {
-        iconRefHandle = iconRef.queryOrderedByChild("name").observeEventType(.Value, withBlock: { (snapshot) in
+        iconRefHandle = iconRef.queryOrderedByChild(Path.Name).observeEventType(.Value, withBlock: { (snapshot) in
             var icons = [String]()
             for child in snapshot.children {
                 icons.append(child.value["name"] as! String)
@@ -87,7 +82,22 @@ class IconPickerCollectionViewController: UICollectionViewController {
     
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(Identifiers.IconPickerCell, forIndexPath: indexPath) as! IconPickerCell
-        cell.icon = icons[indexPath.row]
+        let icon = icons[indexPath.row]
+        
+        // Set icon
+        cell.iconImageView.kf_indicatorType = .Activity
+        api.getURL(forIcon: icon) { (url) in
+            guard let url = url.absoluteString where url != "" else { return }
+            cell.iconImageView.kf_setImageWithURL(NSURL(string: url), placeholderImage: nil)
+        }
+        
+        // Set name
+        let index = icon.endIndex.advancedBy(-3)
+        cell.iconNameLabel.text = icon.substringToIndex(index)
+        
+        // Set up
+        cell.layer.cornerRadius = 5
+        
         return cell
     }
     
@@ -102,7 +112,7 @@ class IconPickerCollectionViewController: UICollectionViewController {
     }
     
     override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        api.set(icon: icons[indexPath.row], forProxy: proxy.key)
+        api.set(icon: icons[indexPath.row], forProxy: proxy)
         navigationController?.popViewControllerAnimated(true)
     }
 }

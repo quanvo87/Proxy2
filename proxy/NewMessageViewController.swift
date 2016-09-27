@@ -22,8 +22,7 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
     let api = API.sharedInstance
     let ref = FIRDatabase.database().reference()
     var proxy: Proxy?
-    var createdNewProxy = false
-    var savingNewProxy = false
+    var usingNewProxy = false
     var delegate: NewMessageViewControllerDelegate!
     
     override func viewDidLoad() {
@@ -116,10 +115,6 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
     
     // MARK: - Select proxy delegate
     func selectProxy(proxy: Proxy) {
-        if createdNewProxy {
-            api.cancelCreating(proxy: proxy)
-            savingNewProxy = false
-        }
         self.proxy = proxy
         selectProxyButton.setTitle(proxy.key, forState: .Normal)
     }
@@ -127,23 +122,23 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
     // MARK: - New proxy
     @IBAction func tapNewButton(sender: AnyObject) {
         disableButtons()
-        if createdNewProxy {
+        if usingNewProxy {
             api.reroll(proxy: proxy!, completion: { (proxy) in
                 self.setProxy(proxy)
             })
         } else {
             api.create(proxy: { (proxy) in
                 self.setProxy(proxy)
+                self.usingNewProxy = true
             })
         }
     }
     
     func setProxy(proxy: Proxy?) {
+        usingNewProxy = false
         if let proxy = proxy {
             self.proxy = proxy
             selectProxyButton.setTitle(proxy.key, forState: .Normal)
-            createdNewProxy = true
-            savingNewProxy = true
         }
         enableButtons()
     }
@@ -214,9 +209,7 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
     }
     
     func cancelNewMessage() {
-        if createdNewProxy && !savingNewProxy {
-            api.cancelCreating(proxy: proxy!)
-        }
+        api.cancelCreatingProxy()
         navigationController?.popViewControllerAnimated(true)
     }
     

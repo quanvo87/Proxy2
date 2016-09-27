@@ -18,7 +18,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     let ref = FIRDatabase.database().reference()
     var convo = Convo()
     var readReceiptIndex = -1
-    var _didLeaveConvo = false
+    var _leftConvo = false
     
     var incomingBubble: JSQMessagesBubbleImage!
     var outgoingBubble: JSQMessagesBubbleImage!
@@ -72,7 +72,12 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         setUp()
         setUpBubbles()
         setUpSenderIsPresent()
+        observeReceiverIsPresent()
+        observeSenderIcon()
+        observeSenderNickname()
+        observeReceiverIcon()
         observeReceiverNickname()
+        observeTyping()
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -86,11 +91,6 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
             senderIsPresent = true
         }
         leaveConvo()
-        observeReceiverIsPresent()
-        observeSenderIcon()
-        observeReceiverIcon()
-        observeSenderNickname()
-        observeTyping()
         observeMessages()
     }
     
@@ -103,16 +103,17 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         super.viewDidDisappear(true)
         senderIsPresent = false
         userIsTyping = false
-        receiverIsPresentRef.removeObserverWithHandle(receiverIsPresentRefHandle)
-        senderIconRef.removeObserverWithHandle(senderIconRefHandle)
-        receiverIconRef.removeObserverWithHandle(receiverIconRefHandle)
-        senderNicknameRef.removeObserverWithHandle(senderNicknameRefHandle)
-        membersAreTypingRef.removeObserverWithHandle(membersAreTypingRefHandle)
         messagesRef.removeObserverWithHandle(messagesRefHandle)
+        // TODO: bool that detects when user on screen, for unread msg purposes
     }
     
     deinit {
+        receiverIsPresentRef.removeObserverWithHandle(receiverIsPresentRefHandle)
+        senderIconRef.removeObserverWithHandle(senderIconRefHandle)
+        senderNicknameRef.removeObserverWithHandle(senderNicknameRefHandle)
+        receiverIconRef.removeObserverWithHandle(receiverIconRefHandle)
         receiverNicknameRef.removeObserverWithHandle(receiverNicknameRefHandle)
+        membersAreTypingRef.removeObserverWithHandle(membersAreTypingRefHandle)
     }
     
     // MARK: - Set up
@@ -670,12 +671,12 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     }
     
     // MARK: - ConvoInfoTableViewControllerDelegate
-    func didLeaveConvo() {
-        _didLeaveConvo = true
+    func leftConvo() {
+        _leftConvo = true
     }
     
     func leaveConvo() {
-        if _didLeaveConvo {
+        if _leftConvo {
             navigationController?.popViewControllerAnimated(true)
         }
     }

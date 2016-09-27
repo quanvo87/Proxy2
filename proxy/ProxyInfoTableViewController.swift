@@ -13,18 +13,17 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     
     let api = API.sharedInstance
     let ref = FIRDatabase.database().reference()
+    
+    var proxyRef = FIRDatabaseReference()
+    var proxyRefHandle = FIRDatabaseHandle()
     var proxy = Proxy()
-    
-    var unreadRef = FIRDatabaseReference()
-    var unreadRefHandle = FIRDatabaseHandle()
-    
-    var nicknameRef = FIRDatabaseReference()
-    var nicknameRefHandle = FIRDatabaseHandle()
-    var nickname = ""
     
     var convosRef = FIRDatabaseReference()
     var convosRefHandle = FIRDatabaseHandle()
     var convos = [Convo]()
+    
+    var unreadRef = FIRDatabaseReference()
+    var unreadRefHandle = FIRDatabaseHandle()
     
     var convo = Convo()
     var shouldShowNewConvo = false
@@ -32,23 +31,19 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     override func viewDidLoad() {
         super.viewDidLoad()
         setUp()
+        observeProxy()
+        observeConvos()
         observeUnread()
     }
     
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(true)
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(true)
         showNewConvo()
-        observeConvos()
-        observeNickname()
-    }
-    
-    override func viewDidDisappear(animated: Bool) {
-        super.viewDidDisappear(true)
-        nicknameRef.removeObserverWithHandle(nicknameRefHandle)
-        convosRef.removeObserverWithHandle(convosRefHandle)
     }
     
     deinit {
+        proxyRef.removeObserverWithHandle(proxyRefHandle)
+        convosRef.removeObserverWithHandle(convosRefHandle)
         unreadRef.removeObserverWithHandle(unreadRefHandle)
     }
     
@@ -56,16 +51,13 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     func setUp() {
         addNavBarButtons()
         tableView.separatorStyle = .None
-        
-        // So buttons inside cells detect touches immediately (there's a delay on by default)
         tableView.delaysContentTouches = false
         for case let scrollView as UIScrollView in tableView.subviews {
             scrollView.delaysContentTouches = false
         }
-        
-        unreadRef = ref.child(Path.Unread).child(api.uid).child(proxy.key)
-        nicknameRef = ref.child(Path.Nickname).child(proxy.key).child(Path.Nickname)
+        proxyRef = ref.child(Path.Proxies).child(proxy.ownerId).child(proxy.key)
         convosRef = ref.child(Path.Convos).child(proxy.key)
+        unreadRef = ref.child(Path.Proxies).child(proxy.ownerId).child(proxy.key).child(Path.Unread)
     }
     
     func addNavBarButtons() {
@@ -84,25 +76,11 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         self.navigationItem.rightBarButtonItems = [newMessageBarButton, deleteProxyBarButton]
     }
     
-    // Dismiss keyboard when scroll table view down
-    override func scrollViewWillBeginDragging(scrollView: UIScrollView) {
-        view.endEditing(true)
-    }
-    
     // MARK: - Database
-    func observeUnread() {
-        unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
-            self.api.getUnread(forProxy: snapshot, completion: { (unread) in
-                self.navigationItem.title = unread.toTitleSuffix()
-            })
-        })
-    }
-    
-    func observeNickname() {
-        nicknameRefHandle = nicknameRef.observeEventType(.Value, withBlock: { (snapshot) in
-            if let nickname = snapshot.value as? String {
-                self.nickname = nickname
-            }
+    func observeProxy() {
+        proxyRefHandle = proxyRef.observeEventType(.Value, withBlock: { (snapshot) in
+            self.proxy = Proxy(anyObject: snapshot.value!)
+            self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
         })
     }
     
@@ -110,6 +88,13 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         convosRefHandle = convosRef.queryOrderedByChild(Path.Timestamp).observeEventType(.Value, withBlock: { (snapshot) in
             self.convos = self.api.getConvos(fromSnapshot: snapshot)
             self.tableView.reloadSections(NSIndexSet(index: 1), withRowAnimation: .Automatic)
+        })
+    }
+    
+    func observeUnread() {
+        unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
+            guard let unread = snapshot.value as? Int else { return }
+            self.navigationItem.title = unread.toTitleSuffix()
         })
     }
     
@@ -174,17 +159,44 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         // Header
         case 0:
             let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.SenderProxyInfoCell, forIndexPath: indexPath) as! SenderProxyInfoCell
+            
+            // Set icon
+            cell.iconImageView.kf_indicatorType = .Activity
+            api.getURL(forIcon: proxy.icon) { (url) in
+                guard let url = url.absoluteString where url != "" else { return }
+                cell.iconImageView.kf_setImageWithURL(NSURL(string: url), placeholderImage: nil)
+            }
+            
+            // Set labels
+            cell.nameLabel.text = proxy.key
+            cell.nicknameButton.setTitle(proxy.nickname == "" ? "Enter A Nickname" : proxy.nickname, forState: .Normal)
+            
+            // Set up
             cell.selectionStyle = .None
-            cell.removeObservers()
-            cell.proxy = proxy
             cell.nicknameButton.addTarget(self, action: #selector(ProxyInfoTableViewController.showEditNicknameAlert), forControlEvents: .TouchUpInside)
             cell.changeIconButton.addTarget(self, action: #selector(ProxyInfoTableViewController.showIconPickerViewController), forControlEvents: .TouchUpInside)
+            
             return cell
             
         // This proxy's convos
         case 1:
             let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.ConvoCell, forIndexPath: indexPath) as! ConvoCell
-            cell.convo = convos[indexPath.row]
+            let convo = convos[indexPath.row]
+            
+            // Set icon
+            cell.iconImageView.kf_indicatorType = .Activity
+            api.getURL(forIcon: convo.receiverIcon) { (url) in
+                guard let url = url.absoluteString where url != "" else { return }
+                cell.iconImageView.image = nil
+                cell.iconImageView.kf_setImageWithURL(NSURL(string: url), placeholderImage: nil)
+            }
+            
+            // Set labels
+            cell.titleLabel.attributedText = api.getConvoTitle(convo.receiverNickname, receiverName: convo.receiverProxy, senderNickname: convo.senderNickname, senderName: convo.senderProxy)
+            cell.lastMessageLabel.text = convo.message
+            cell.timestampLabel.text = convo.timestamp.toTimeAgo()
+            cell.unreadLabel.text = convo.unread.toUnreadLabel()
+            
             return cell
             
         default: break
@@ -209,13 +221,13 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
             textField.autocorrectionType = .Yes
             textField.clearButtonMode = .WhileEditing
             textField.placeholder = "Enter A Nickname"
-            textField.text = self.nickname
+            textField.text = self.proxy.nickname
         })
         alert.addAction(UIAlertAction(title: "Save", style: .Default, handler: { (action) -> Void in
             let nickname = alert.textFields![0].text
             let trim = nickname!.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
             if !(nickname != "" && trim == "") {
-                self.api.set(nickname: nickname!, forProxy: self.proxy.key)
+                self.api.set(nickname: nickname!, forProxy: self.proxy)
             }
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))

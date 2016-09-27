@@ -13,76 +13,54 @@ class ConvoInfoTableViewController: UITableViewController {
     let api = API.sharedInstance
     let ref = FIRDatabase.database().reference()
     var convo = Convo()
-    var senderProxy: Proxy?
     var delegate: ConvoInfoTableViewControllerDelegate!
     
-    var senderNicknameRef = FIRDatabaseReference()
-    var senderNicknameRefHandle = FIRDatabaseHandle()
-    var senderNickname: String?
+    var receiverIconRef = FIRDatabaseReference()
+    var receiverIconRefHandle = FIRDatabaseHandle()
+    var receiverIcon: String?
     
-    var receiverNicknameRef = FIRDatabaseReference()
-    var receiverNicknameRefHandle = FIRDatabaseHandle()
     var receiverNickname: String?
+    
+    var senderProxyRef = FIRDatabaseReference()
+    var senderProxyRefHandle = FIRDatabaseHandle()
+    var senderProxy: Proxy?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setUp()
+        observeReceiverIcon()
+        observeSenderProxy()
     }
     
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(true)
-        observeSenderNickname()
-        observeReceiverNickname()
-    }
-    
-    override func viewDidDisappear(animated: Bool) {
-        super.viewDidDisappear(true)
-        senderNicknameRef.removeObserverWithHandle(senderNicknameRefHandle)
-        receiverNicknameRef.removeObserverWithHandle(receiverNicknameRefHandle)
+    deinit {
+        receiverIconRef.removeObserverWithHandle(receiverIconRefHandle)
+        senderProxyRef.removeObserverWithHandle(senderProxyRefHandle)
     }
     
     // MARK: - Set up
     func setUp() {
         navigationItem.title = "Conversation"
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: Identifiers.Cell)
-        
-        // So buttons inside cells detect touches immediately (there's a delay on by default)
         tableView.delaysContentTouches = false
         for case let scrollView as UIScrollView in tableView.subviews {
             scrollView.delaysContentTouches = false
         }
-        
-        // Get's the user's proxy for the user proxy cell
-        api.getProxy(withKey: convo.senderProxy, belongingToUser: convo.senderId, completion: { (proxy) in
-            self.senderProxy = proxy
-            self.tableView.reloadSections(NSIndexSet(index: 1), withRowAnimation: .Automatic)
-        })
-        
-        senderNicknameRef = ref.child(Path.Nickname).child(convo.senderProxy).child(Path.Nickname)
-        receiverNicknameRef = ref.child(Path.Nickname).child(convo.senderId).child(convo.key).child(Path.Nickname)
-    }
-    
-    // Dismiss keyboard when scroll table view down
-    override func scrollViewWillBeginDragging(scrollView: UIScrollView) {
-        view.endEditing(true)
+        receiverIconRef = ref.child(Path.Proxies).child(convo.receiverId).child(convo.receiverProxy)
+        senderProxyRef = ref.child(Path.Proxies).child(convo.senderId).child(convo.senderProxy)
     }
     
     // MARK: - Database
-    // Keep up to date sender nickname
-    func observeSenderNickname() {
-        senderNicknameRefHandle = senderNicknameRef.observeEventType(.Value, withBlock: { (snapshot) in
-            if let nickname = snapshot.value as? String {
-                self.senderNickname = nickname
-            }
+    func observeReceiverIcon() {
+        receiverIconRefHandle = receiverIconRef.observeEventType(.Value, withBlock: { (snapshot) in
+            self.receiverIcon = snapshot.value as? String
+            self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
         })
     }
     
-    // Keep up to date receiver nickname
-    func observeReceiverNickname() {
-        receiverNicknameRefHandle = receiverNicknameRef.observeEventType(.Value, withBlock: { (snapshot) in
-            if let nickname = snapshot.value as? String {
-                self.receiverNickname = nickname
-            }
+    func observeSenderProxy() {
+        senderProxyRefHandle = senderProxyRef.observeEventType(.Value, withBlock: { (snapshot) in
+            self.senderProxy = Proxy(anyObject: snapshot.value!)
+            self.tableView.reloadSections(NSIndexSet(index: 1), withRowAnimation: .Automatic)
         })
     }
     
@@ -175,20 +153,43 @@ class ConvoInfoTableViewController: UITableViewController {
         // Receiver proxy info
         case 0:
             let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.ReceiverProxyInfoCell, forIndexPath: indexPath) as! ReceiverProxyInfoCell
+            if let receiverIcon = self.receiverIcon {
+                
+                // Set icon
+                cell.iconImageView.kf_indicatorType = .Activity
+                self.api.getURL(forIcon: receiverIcon) { (url) in
+                    guard let url = url.absoluteString where url != "" else { return }
+                    cell.iconImageView.kf_setImageWithURL(NSURL(string: url), placeholderImage: nil)
+                }
+                
+                // Set up
+                cell.nicknameButton.addTarget(self, action: #selector(ConvoInfoTableViewController.showEditReceiverProxyNicknameAlert), forControlEvents: .TouchUpInside)
+            }
             cell.selectionStyle = .None
-            cell.convo = convo
-            cell.nicknameButton.addTarget(self, action: #selector(ConvoInfoTableViewController.showEditReceiverProxyNicknameAlert), forControlEvents: .TouchUpInside)
+            
             return cell
             
         // Sender proxy info
         case 1:
             let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.SenderProxyInfoCell, forIndexPath: indexPath) as! SenderProxyInfoCell
             if let senderProxy = senderProxy {
-                cell.proxy = senderProxy
-                cell.nicknameButton.addTarget(self, action: #selector(ConvoInfoTableViewController.showEditNicknameAlert), forControlEvents: .TouchUpInside)
+                
+                // Set icon
+                cell.iconImageView.kf_indicatorType = .Activity
+                api.getURL(forIcon: senderProxy.icon) { (url) in
+                    guard let url = url.absoluteString where url != "" else { return }
+                    cell.iconImageView.kf_setImageWithURL(NSURL(string: url), placeholderImage: nil)
+                }
+                
+                // Set labels
+                cell.nameLabel.text = senderProxy.key
+                cell.nicknameButton.setTitle(senderProxy.nickname == "" ? "Enter A Nickname" : senderProxy.nickname, forState: .Normal)
+                
+                // Set up
+                cell.accessoryType = .DisclosureIndicator
+                cell.nicknameButton.addTarget(self, action: #selector(ConvoInfoTableViewController.showEditSenderProxyNicknameAlert), forControlEvents: .TouchUpInside)
                 cell.changeIconButton.addTarget(self, action: #selector(ConvoInfoTableViewController.showIconPickerCollectionViewController), forControlEvents: .TouchUpInside)
             }
-            cell.accessoryType = .DisclosureIndicator
             return cell
             
         case 2:
@@ -196,9 +197,9 @@ class ConvoInfoTableViewController: UITableViewController {
             cell.selectionStyle = .None
             switch indexPath.row {
                 
-            // Allow pictures, videos, etc.
+            // Allow pictures & video
             case 0:
-                cell.textLabel?.text = "Allow pictures & videos"
+                cell.textLabel?.text = "Allow pictures & video"
                 
                 let settingSwitch = UISwitch()
                 settingSwitch.tag = indexPath.row
@@ -258,7 +259,6 @@ class ConvoInfoTableViewController: UITableViewController {
         return UITableViewCell()
     }
     
-    // Show alert for user to edit the receiver's nickname that they see for this convo.
     func showEditReceiverProxyNicknameAlert() {
         let alert = UIAlertController(title: "Edit Receiver's Nickname", message: "Only you see this nickname.", preferredStyle: .Alert)
         alert.addTextFieldWithConfigurationHandler({ (textField) -> Void in
@@ -283,15 +283,14 @@ class ConvoInfoTableViewController: UITableViewController {
         self.presentViewController(alert, animated: true, completion: nil)
     }
     
-    // Show alert for user to edit their proxy's nickname.
-    func showEditNicknameAlert() {
+    func showEditSenderProxyNicknameAlert() {
         let alert = UIAlertController(title: "Edit Nickname", message: "Only you see your nickname.", preferredStyle: .Alert)
         alert.addTextFieldWithConfigurationHandler({ (textField) -> Void in
             textField.autocapitalizationType = .Sentences
             textField.autocorrectionType = .Yes
             textField.clearButtonMode = .WhileEditing
             textField.placeholder = "Enter A Nickname"
-            if let senderNickname = self.senderNickname {
+            if let senderNickname = self.senderProxy?.nickname {
                 textField.text = senderNickname
             } else {
                 textField.text = ""
@@ -301,15 +300,25 @@ class ConvoInfoTableViewController: UITableViewController {
             let nickname = alert.textFields![0].text
             let trim = nickname!.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
             if !(nickname != "" && trim == "") {
-                self.api.set(nickname: nickname!, forProxy: self.senderProxy!.key)
+                self.api.set(nickname: nickname!, forProxy: self.senderProxy!)
             }
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
         self.presentViewController(alert, animated: true, completion: nil)
     }
     
+    func showLeaveConvoAlert() {
+        let alert = UIAlertController(title: "Leave Conversation?", message: "The other user will not be notified.", preferredStyle: .Alert)
+        alert.addAction(UIAlertAction(title: "Leave", style: .Destructive, handler: { (void) in
+            self.api.leave(convo: self.convo)
+            self.delegate?.leftConvo()
+            self.navigationController?.popViewControllerAnimated(true)
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
+    
     // MARK: - Navigation
-    // Show the Icon Picker so user can choose a new icon for this proxy.
     func showIconPickerCollectionViewController() {
         api.getConvos(forProxy: senderProxy!) { (convos) in
             let dest = self.storyboard?.instantiateViewControllerWithIdentifier(Identifiers.IconPickerCollectionViewController) as! IconPickerCollectionViewController
@@ -319,25 +328,11 @@ class ConvoInfoTableViewController: UITableViewController {
         }
     }
     
-    // Show Proxy Info VC for sender proxy.
     func showProxyInfoTableViewController() {
         if let senderProxy = senderProxy {
             let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.ProxyInfoTableViewController) as! ProxyInfoTableViewController
             dest.proxy = senderProxy
             self.navigationController!.pushViewController(dest, animated: true)
         }
-    }
-    
-    // Show alert for user to confirm they want to leave this convo.
-    // Leave the convo and pop this VC if they say yes.
-    func showLeaveConvoAlert() {
-        let alert = UIAlertController(title: "Leave Conversation?", message: "The other user will not be notified.", preferredStyle: .Alert)
-        alert.addAction(UIAlertAction(title: "Leave", style: .Destructive, handler: { (void) in
-            self.api.leave(convo: self.convo)
-            self.delegate?.didLeaveConvo()
-            self.navigationController?.popViewControllerAnimated(true)
-        }))
-        alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-        self.presentViewController(alert, animated: true, completion: nil)
     }
 }

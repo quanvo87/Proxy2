@@ -15,13 +15,13 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
     let api = API.sharedInstance
     let ref = FIRDatabase.database().reference()
     
-    var unreadRef = FIRDatabaseReference()
-    var unreadRefHandle = FIRDatabaseHandle()
-    
     var proxiesRef = FIRDatabaseReference()
     var proxiesRefHandle = FIRDatabaseHandle()
     var proxies = [Proxy]()
     var proxiesToDelete = [Proxy]()
+    
+    var unreadRef = FIRDatabaseReference()
+    var unreadRefHandle = FIRDatabaseHandle()
     
     var convo = Convo()
     var shouldShowNewConvo = false
@@ -35,25 +35,19 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
     override func viewDidLoad() {
         super.viewDidLoad()
         setUp()
+        observeProxies()
         observeUnread()
-        
-        // In case user creates a proxy from the Home VC, scroll this VC to top
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ProxiesTableViewController.scrollToTop), name: Notifications.CreatedNewProxyFromHomeTab, object: nil)
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(true)
-        observeProxies()
         showNewConvo()
-    }
-    
-    override func viewDidDisappear(animated: Bool) {
-        super.viewDidDisappear(true)
-        proxiesRef.removeObserverWithHandle(proxiesRefHandle)
     }
     
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
+        proxiesRef.removeObserverWithHandle(proxiesRefHandle)
         unreadRef.removeObserverWithHandle(unreadRefHandle)
     }
     
@@ -70,8 +64,8 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
         tableView.estimatedRowHeight = 80
         tableView.separatorStyle = .None
         tableView.allowsMultipleSelectionDuringEditing = true
-        unreadRef = ref.child(Path.Unread).child(api.uid)
         proxiesRef = ref.child(Path.Proxies).child(api.uid)
+        unreadRef = ref.child(Path.Unread).child(api.uid).child(Path.Unread)
     }
     
     func createNewMessageButton() -> UIBarButtonItem {
@@ -156,27 +150,24 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
     }
     
     // MARK: - Database
-    // Observe unread for the user to keep the title updated.
-    func observeUnread() {
-        unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
-            self.api.getUnread(forProxies: snapshot, completion: { (unread) in
-                self.navigationItem.title = "Proxies \(unread.toTitleSuffix())"
-            })
-        })
-    }
-    
-    // Observe proxies for this user to display in this VC.
     func observeProxies() {
         proxiesRefHandle = proxiesRef.queryOrderedByChild(Path.Timestamp).observeEventType(.Value, withBlock: { snapshot in
             var proxies = [Proxy]()
             for child in snapshot.children {
                 let proxy = Proxy(anyObject: child.value)
-                if !proxy.isDeleted {
+                if !proxy.deleted {
                     proxies.append(proxy)
                 }
             }
             self.proxies = proxies.reverse()
             self.tableView.reloadData()
+        })
+    }
+    
+    func observeUnread() {
+        unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
+            guard let unread = snapshot.value as? Int else { return }
+            self.navigationItem.title = "Proxies \(unread.toTitleSuffix())"
         })
     }
     
@@ -201,7 +192,28 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
     // MARK: - Table view data source
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.ProxyCell, forIndexPath: indexPath) as! ProxyCell
-        cell.proxy = proxies[indexPath.row]
+        let proxy = proxies[indexPath.row]
+        
+        // Set 'new' image
+        cell.newImageView.hidden = true
+        let secondsAgo = -NSDate(timeIntervalSince1970: proxy.created).timeIntervalSinceNow
+        if secondsAgo < 60 * Settings.NewProxyIndicatorDuration {
+            cell.newImageView.hidden = false
+        }
+        
+        // Set icon
+        cell.iconImageView.kf_indicatorType = .Activity
+        api.getURL(forIcon: proxy.icon) { (url) in
+            guard let url = url.absoluteString where url != "" else { return }
+            cell.iconImageView.kf_setImageWithURL(NSURL(string: url), placeholderImage: nil)
+        }
+        
+        // Set labels
+        cell.nameLabel.text = proxy.key
+        cell.nicknameLabel.text = proxy.nickname
+        cell.convoCountLabel.text = "999"
+        cell.unreadLabel.text = proxy.unread.toUnreadLabel()
+        
         return cell
     }
     

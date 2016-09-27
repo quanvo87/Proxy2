@@ -15,13 +15,13 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
     let api = API.sharedInstance
     let ref = FIRDatabase.database().reference()
     
-    var unreadRef = FIRDatabaseReference()
-    var unreadRefHandle = FIRDatabaseHandle()
-    
     var convosRef = FIRDatabaseReference()
     var convosRefHandle = FIRDatabaseHandle()
     var convos = [Convo]()
     var convosToLeave = [Convo]()
+    
+    var unreadRef = FIRDatabaseReference()
+    var unreadRefHandle = FIRDatabaseHandle()
     
     var convo = Convo()
     var shouldShowConvo = false
@@ -38,22 +38,14 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
         setUp()
     }
     
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(true)
-        showNewConvo()
-    }
-    
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(true)
         checkLogInStatus()
-    }
-    
-    override func viewDidDisappear(animated: Bool) {
-        super.viewDidDisappear(true)
-        convosRef.removeObserverWithHandle(convosRefHandle)
+        showNewConvo()
     }
     
     deinit {
+        convosRef.removeObserverWithHandle(convosRefHandle)
         unreadRef.removeObserverWithHandle(unreadRefHandle)
     }
     
@@ -167,8 +159,8 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
         FIRAuth.auth()?.addAuthStateDidChangeListener { (auth, user) in
             if let user = user {
                 self.api.uid = user.uid
-                self.observeUnread()
                 self.observeConvos()
+                self.observeUnread()
             } else {
                 self.showLogInViewController()
             }
@@ -182,21 +174,20 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
     }
     
     // MARK: - Database
-    func observeUnread() {
-        unreadRef = self.ref.child(Path.Unread).child(self.api.uid)
-        unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
-            self.api.getUnread(forProxies: snapshot, completion: { (unread) in
-                self.navigationItem.title = "Messages \(unread.toTitleSuffix())"
-                self.tabBarController?.tabBar.items?.first?.badgeValue = unread == 0 ? nil : String(unread)
-            })
-        })
-    }
-    
     func observeConvos() {
         convosRef = self.ref.child(Path.Convos).child(self.api.uid)
         convosRefHandle = convosRef.queryOrderedByChild(Path.Timestamp).observeEventType(.Value, withBlock: { (snapshot) in
             self.convos = self.api.getConvos(fromSnapshot: snapshot)
             self.tableView.reloadData()
+        })
+    }
+    
+    func observeUnread() {
+        unreadRef = self.ref.child(Path.Unread).child(self.api.uid).child(Path.Unread)
+        unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
+            guard let unread = snapshot.value as? Int else { return }
+            self.navigationItem.title = "Messages \(unread.toTitleSuffix())"
+            self.tabBarController?.tabBar.items?.first?.badgeValue = unread == 0 ? nil : String(unread)
         })
     }
     
@@ -222,7 +213,22 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
     // MARK: - Table view data source
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.ConvoCell, forIndexPath: indexPath) as! ConvoCell
-        cell.convo = convos[indexPath.row]
+        let convo = convos[indexPath.row]
+        
+        // Set icon
+        cell.iconImageView.kf_indicatorType = .Activity
+        api.getURL(forIcon: convo.receiverIcon) { (url) in
+            guard let url = url.absoluteString where url != "" else { return }
+            cell.iconImageView.image = nil
+            cell.iconImageView.kf_setImageWithURL(NSURL(string: url), placeholderImage: nil)
+        }
+        
+        // Set labels
+        cell.titleLabel.attributedText = api.getConvoTitle(convo.receiverNickname, receiverName: convo.receiverProxy, senderNickname: convo.senderNickname, senderName: convo.senderProxy)
+        cell.lastMessageLabel.text = convo.message
+        cell.timestampLabel.text = convo.timestamp.toTimeAgo()
+        cell.unreadLabel.text = convo.unread.toUnreadLabel()
+        
         return cell
     }
     
