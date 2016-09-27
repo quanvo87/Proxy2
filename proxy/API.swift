@@ -366,8 +366,8 @@ class API {
         // Set for both copies of receiver's convo for all convos this proxy is in
         getConvos(forProxy: proxy) { (convos) in
             for convo in convos {
-                self.set(icon, a: Path.Convos, b: convo.receiverId, c: convo.key, d: Path.Icon)
-                self.set(icon, a: Path.Convos, b: convo.receiverProxy, c: convo.key, d: Path.Icon)
+                self.set(icon, a: Path.Convos, b: convo.receiverId, c: convo.key, d: Path.ReceiverIcon)
+                self.set(icon, a: Path.Convos, b: convo.receiverProxy, c: convo.key, d: Path.ReceiverIcon)
             }
         }
     }

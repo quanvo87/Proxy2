@@ -217,9 +217,9 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
         
         // Set icon
         cell.iconImageView.kf_indicatorType = .Activity
+        cell.iconImageView.image = nil
         api.getURL(forIcon: convo.receiverIcon) { (url) in
             guard let url = url.absoluteString where url != "" else { return }
-            cell.iconImageView.image = nil
             cell.iconImageView.kf_setImageWithURL(NSURL(string: url), placeholderImage: nil)
         }
         

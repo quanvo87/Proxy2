@@ -14,18 +14,26 @@ class ConvoInfoTableViewController: UITableViewController {
     let ref = FIRDatabase.database().reference()
     var convo = Convo()
     var delegate: ConvoInfoTableViewControllerDelegate!
+    var senderProxy: Proxy?
     
+    var receiverNicknameRef = FIRDatabaseReference()
+    var receiverNicknameRefHandle = FIRDatabaseHandle()
     var receiverNickname: String?
     
-    var senderProxy: Proxy?
+    var senderNicknameRef = FIRDatabaseReference()
+    var senderNicknameRefHandle = FIRDatabaseHandle()
+    var senderNickname: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setUp()
+        observeReceiverNickname()
+        observerSenderNickname()
     }
     
     deinit {
-        
+        receiverNicknameRef.removeObserverWithHandle(receiverNicknameRefHandle)
+        senderNicknameRef.removeObserverWithHandle(senderNicknameRefHandle)
     }
     
     // MARK: - Set up
@@ -40,9 +48,24 @@ class ConvoInfoTableViewController: UITableViewController {
             self.senderProxy = proxy
             self.tableView.reloadSections(NSIndexSet(index: 1), withRowAnimation: .Automatic)
         }
+        receiverNicknameRef = ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.ReceiverNickname)
+        senderNicknameRef = ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderNickname)
     }
     
     // MARK: - Database
+    func observeReceiverNickname() {
+        receiverNicknameRefHandle = receiverNicknameRef.observeEventType(.Value, withBlock: { (snapshot) in
+            guard let receiverNickname = snapshot.value as? String else { return }
+            self.receiverNickname = receiverNickname
+        })
+    }
+    
+    func observerSenderNickname() {
+        senderNicknameRefHandle = senderNicknameRef.observeEventType(.Value, withBlock: { (snapshot) in
+            guard let senderNickname = snapshot.value as? String else { return }
+            self.senderNickname = senderNickname
+        })
+    }
     
     //Mark: - Table view delegate
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -247,7 +270,7 @@ class ConvoInfoTableViewController: UITableViewController {
             textField.autocorrectionType = .Yes
             textField.clearButtonMode = .WhileEditing
             textField.placeholder = "Enter A Nickname"
-            if let senderNickname = self.senderProxy?.nickname {
+            if let senderNickname = self.senderNickname {
                 textField.text = senderNickname
             } else {
                 textField.text = ""
