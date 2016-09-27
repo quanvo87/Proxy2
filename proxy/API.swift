@@ -287,7 +287,7 @@ class API {
         for convo in proxy.children {
             let convo = convo as! FIRDataSnapshot
             self.getConvo(withKey: convo.key, belongingToUser: self.uid, completion: { (convo_) in
-                if !convo_.didLeaveConvo && !convo_.senderDidDeleteProxy && !convo_.senderIsBlocking {
+                if !convo_.didLeaveConvo && !convo_.didDeleteProxy && !convo_.senderIsBlocking {
                     unread += convo.value as! Int
                 }
                 convoCount -= 1
@@ -439,8 +439,8 @@ class API {
         delete(a: Path.Proxies, b: proxy.key, c: nil, d: nil)
         set(true, a: Path.Proxies, b: uid, c: proxy.key, d: Path.IsDeleted)
         for convo in convos {
-            set(true, a: Path.Convos, b: convo.senderId, c: convo.key, d: Path.SenderDidDeleteProxy)
-            set(true, a: Path.Convos, b: convo.senderProxy, c: convo.key, d: Path.SenderDidDeleteProxy)
+            set(true, a: Path.Convos, b: convo.senderId, c: convo.key, d: Path.DidDeleteProxy)
+            set(true, a: Path.Convos, b: convo.senderProxy, c: convo.key, d: Path.DidDeleteProxy)
         }
     }
     
@@ -614,7 +614,7 @@ class API {
         var convos = [Convo]()
         for child in snapshot.children {
             let convo = Convo(anyObject: child.value)
-            if !convo.didLeaveConvo && !convo.senderDidDeleteProxy && !convo.senderIsBlocking {
+            if !convo.didLeaveConvo && !convo.didDeleteProxy && !convo.senderIsBlocking {
                 convos.append(convo)
             }
         }

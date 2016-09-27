@@ -50,8 +50,11 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(true)
-        unreadRef.removeObserverWithHandle(unreadRefHandle)
         convosRef.removeObserverWithHandle(convosRefHandle)
+    }
+    
+    deinit {
+        unreadRef.removeObserverWithHandle(unreadRefHandle)
     }
     
     
@@ -160,6 +163,7 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
     
     // MARK: - Log in
     func checkLogInStatus() {
+        unreadRef.removeObserverWithHandle(unreadRefHandle)
         FIRAuth.auth()?.addAuthStateDidChangeListener { (auth, user) in
             if let user = user {
                 self.api.uid = user.uid

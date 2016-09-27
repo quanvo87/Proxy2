@@ -12,8 +12,8 @@ struct Convo {
     var senderId = ""
     var senderProxy = ""
     var senderIsBlocking = false
-    var senderDidDeleteProxy = false
     var didLeaveConvo = false
+    var didDeleteProxy = false
     var receiverId = ""
     var receiverProxy = ""
     var receiverIsBlocking = false
@@ -26,8 +26,8 @@ struct Convo {
         self.senderId = anyObject["senderId"] as? String ?? ""
         self.senderProxy = anyObject["senderProxy"] as? String ?? ""
         self.senderIsBlocking = anyObject["senderIsBlocking"] as? Bool ?? false
-        self.senderDidDeleteProxy = anyObject["senderDidDeleteProxy"] as? Bool ?? false
         self.didLeaveConvo = anyObject["didLeaveConvo"] as? Bool ?? false
+        self.didDeleteProxy = anyObject["didDeleteProxy"] as? Bool ?? false
         self.receiverId = anyObject["receiverId"] as? String ?? ""
         self.receiverProxy = anyObject["receiverProxy"] as? String ?? ""
         self.receiverIsBlocking = anyObject["receiverIsBlocking"] as? Bool ?? false
@@ -40,8 +40,8 @@ struct Convo {
             "senderId": senderId,
             "senderProxy": senderProxy,
             "senderIsBlocking": senderIsBlocking,
-            "senderDidDeleteProxy": senderDidDeleteProxy,
             "didLeaveConvo": didLeaveConvo,
+            "didDeleteProxy": didDeleteProxy,
             "receiverId": receiverId,
             "receiverProxy": receiverProxy,
             "receiverIsBlocking": receiverIsBlocking,
