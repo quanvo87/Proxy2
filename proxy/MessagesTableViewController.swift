@@ -224,7 +224,7 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
         }
         
         // Set labels
-        cell.titleLabel.attributedText = api.getConvoTitle(convo.receiverNickname, receiverName: convo.receiverProxy, senderNickname: convo.senderNickname, senderName: convo.senderProxy)
+        cell.titleLabel.attributedText = api.getConvoTitle(receiverNickname: convo.receiverNickname, receiverName: convo.receiverProxy, senderNickname: convo.senderNickname, senderName: convo.senderProxy)
         cell.lastMessageLabel.text = convo.message
         cell.timestampLabel.text = convo.timestamp.toTimeAgo()
         cell.unreadLabel.text = convo.unread.toUnreadLabel()

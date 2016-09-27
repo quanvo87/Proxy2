@@ -15,26 +15,17 @@ class ConvoInfoTableViewController: UITableViewController {
     var convo = Convo()
     var delegate: ConvoInfoTableViewControllerDelegate!
     
-    var receiverIconRef = FIRDatabaseReference()
-    var receiverIconRefHandle = FIRDatabaseHandle()
-    var receiverIcon: String?
-    
     var receiverNickname: String?
     
-    var senderProxyRef = FIRDatabaseReference()
-    var senderProxyRefHandle = FIRDatabaseHandle()
     var senderProxy: Proxy?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setUp()
-        observeReceiverIcon()
-        observeSenderProxy()
     }
     
     deinit {
-        receiverIconRef.removeObserverWithHandle(receiverIconRefHandle)
-        senderProxyRef.removeObserverWithHandle(senderProxyRefHandle)
+        
     }
     
     // MARK: - Set up
@@ -45,24 +36,13 @@ class ConvoInfoTableViewController: UITableViewController {
         for case let scrollView as UIScrollView in tableView.subviews {
             scrollView.delaysContentTouches = false
         }
-        receiverIconRef = ref.child(Path.Proxies).child(convo.receiverId).child(convo.receiverProxy)
-        senderProxyRef = ref.child(Path.Proxies).child(convo.senderId).child(convo.senderProxy)
+        api.getProxy(withKey: convo.senderProxy, belongingToUser: convo.senderId) { (proxy) in
+            self.senderProxy = proxy
+            self.tableView.reloadSections(NSIndexSet(index: 1), withRowAnimation: .Automatic)
+        }
     }
     
     // MARK: - Database
-    func observeReceiverIcon() {
-        receiverIconRefHandle = receiverIconRef.observeEventType(.Value, withBlock: { (snapshot) in
-            self.receiverIcon = snapshot.value as? String
-            self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
-        })
-    }
-    
-    func observeSenderProxy() {
-        senderProxyRefHandle = senderProxyRef.observeEventType(.Value, withBlock: { (snapshot) in
-            self.senderProxy = Proxy(anyObject: snapshot.value!)
-            self.tableView.reloadSections(NSIndexSet(index: 1), withRowAnimation: .Automatic)
-        })
-    }
     
     //Mark: - Table view delegate
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -153,39 +133,16 @@ class ConvoInfoTableViewController: UITableViewController {
         // Receiver proxy info
         case 0:
             let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.ReceiverProxyInfoCell, forIndexPath: indexPath) as! ReceiverProxyInfoCell
-            if let receiverIcon = self.receiverIcon {
-                
-                // Set icon
-                cell.iconImageView.kf_indicatorType = .Activity
-                self.api.getURL(forIcon: receiverIcon) { (url) in
-                    guard let url = url.absoluteString where url != "" else { return }
-                    cell.iconImageView.kf_setImageWithURL(NSURL(string: url), placeholderImage: nil)
-                }
-                
-                // Set up
-                cell.nicknameButton.addTarget(self, action: #selector(ConvoInfoTableViewController.showEditReceiverProxyNicknameAlert), forControlEvents: .TouchUpInside)
-            }
+            cell.convo = convo
             cell.selectionStyle = .None
-            
+            cell.nicknameButton.addTarget(self, action: #selector(ConvoInfoTableViewController.showEditReceiverProxyNicknameAlert), forControlEvents: .TouchUpInside)
             return cell
             
         // Sender proxy info
         case 1:
             let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.SenderProxyInfoCell, forIndexPath: indexPath) as! SenderProxyInfoCell
             if let senderProxy = senderProxy {
-                
-                // Set icon
-                cell.iconImageView.kf_indicatorType = .Activity
-                api.getURL(forIcon: senderProxy.icon) { (url) in
-                    guard let url = url.absoluteString where url != "" else { return }
-                    cell.iconImageView.kf_setImageWithURL(NSURL(string: url), placeholderImage: nil)
-                }
-                
-                // Set labels
-                cell.nameLabel.text = senderProxy.key
-                cell.nicknameButton.setTitle(senderProxy.nickname == "" ? "Enter A Nickname" : senderProxy.nickname, forState: .Normal)
-                
-                // Set up
+                cell.proxy = senderProxy
                 cell.accessoryType = .DisclosureIndicator
                 cell.nicknameButton.addTarget(self, action: #selector(ConvoInfoTableViewController.showEditSenderProxyNicknameAlert), forControlEvents: .TouchUpInside)
                 cell.changeIconButton.addTarget(self, action: #selector(ConvoInfoTableViewController.showIconPickerCollectionViewController), forControlEvents: .TouchUpInside)

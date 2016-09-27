@@ -30,6 +30,7 @@ struct Path {
     // Convo
     static let SenderNickname = "senderNickname"
     static let ReceiverNickname = "receiverNickname"
+    static let ReceiverIcon = "receiverIcon"
     static let LeftConvo = "leftConvo"
     static let SenderDeletedProxy = "senderDeletedProxy"
     static let ReceiverDeletedProxy = "receiverDeletedProxy"

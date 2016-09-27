@@ -14,8 +14,6 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     let api = API.sharedInstance
     let ref = FIRDatabase.database().reference()
     
-    var proxyRef = FIRDatabaseReference()
-    var proxyRefHandle = FIRDatabaseHandle()
     var proxy = Proxy()
     
     var convosRef = FIRDatabaseReference()
@@ -31,7 +29,6 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     override func viewDidLoad() {
         super.viewDidLoad()
         setUp()
-        observeProxy()
         observeConvos()
         observeUnread()
     }
@@ -42,7 +39,6 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     }
     
     deinit {
-        proxyRef.removeObserverWithHandle(proxyRefHandle)
         convosRef.removeObserverWithHandle(convosRefHandle)
         unreadRef.removeObserverWithHandle(unreadRefHandle)
     }
@@ -55,7 +51,6 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         for case let scrollView as UIScrollView in tableView.subviews {
             scrollView.delaysContentTouches = false
         }
-        proxyRef = ref.child(Path.Proxies).child(proxy.ownerId).child(proxy.key)
         convosRef = ref.child(Path.Convos).child(proxy.key)
         unreadRef = ref.child(Path.Proxies).child(proxy.ownerId).child(proxy.key).child(Path.Unread)
     }
@@ -77,13 +72,6 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     }
     
     // MARK: - Database
-    func observeProxy() {
-        proxyRefHandle = proxyRef.observeEventType(.Value, withBlock: { (snapshot) in
-            self.proxy = Proxy(anyObject: snapshot.value!)
-            self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
-        })
-    }
-    
     func observeConvos() {
         convosRefHandle = convosRef.queryOrderedByChild(Path.Timestamp).observeEventType(.Value, withBlock: { (snapshot) in
             self.convos = self.api.getConvos(fromSnapshot: snapshot)
@@ -156,26 +144,13 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         switch indexPath.section {
         
-        // Header
+        // Proxy info
         case 0:
             let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.SenderProxyInfoCell, forIndexPath: indexPath) as! SenderProxyInfoCell
-            
-            // Set icon
-            cell.iconImageView.kf_indicatorType = .Activity
-            api.getURL(forIcon: proxy.icon) { (url) in
-                guard let url = url.absoluteString where url != "" else { return }
-                cell.iconImageView.kf_setImageWithURL(NSURL(string: url), placeholderImage: nil)
-            }
-            
-            // Set labels
-            cell.nameLabel.text = proxy.key
-            cell.nicknameButton.setTitle(proxy.nickname == "" ? "Enter A Nickname" : proxy.nickname, forState: .Normal)
-            
-            // Set up
+            cell.proxy = proxy
             cell.selectionStyle = .None
             cell.nicknameButton.addTarget(self, action: #selector(ProxyInfoTableViewController.showEditNicknameAlert), forControlEvents: .TouchUpInside)
             cell.changeIconButton.addTarget(self, action: #selector(ProxyInfoTableViewController.showIconPickerViewController), forControlEvents: .TouchUpInside)
-            
             return cell
             
         // This proxy's convos
@@ -192,7 +167,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
             }
             
             // Set labels
-            cell.titleLabel.attributedText = api.getConvoTitle(convo.receiverNickname, receiverName: convo.receiverProxy, senderNickname: convo.senderNickname, senderName: convo.senderProxy)
+            cell.titleLabel.attributedText = api.getConvoTitle(receiverNickname: convo.receiverNickname, receiverName: convo.receiverProxy, senderNickname: convo.senderNickname, senderName: convo.senderProxy)
             cell.lastMessageLabel.text = convo.message
             cell.timestampLabel.text = convo.timestamp.toTimeAgo()
             cell.unreadLabel.text = convo.unread.toUnreadLabel()

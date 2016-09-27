@@ -60,7 +60,7 @@ class API {
     }
     
     /// Saves `anyObject` under `a`/`b`/`c`/`d`.
-    /// Leave unneeded nodes blank starting from grandchild, working back to parent.
+    /// Leave unneeded nodes blank starting from `d`, working back to `a`.
     /// There must be at least node `a`.
     func set(anyObject: AnyObject, a: String, b: String?, c: String?, d: String?) {
         if let ref = getRef(a: a, b: b, c: c, d: d) {
@@ -69,7 +69,7 @@ class API {
     }
     
     /// Deletes object under `a`/`b`/`c`/`d`.
-    /// Leave unneeded nodes blank starting from grandchild, working back to parent.
+    /// Leave unneeded nodes blank starting from `d`, working back to `a`.
     /// There must be at least node `a`.
     func delete(a a: String, b: String?, c: String?, d: String?) {
         if let ref = getRef(a: a, b: b, c: c, d: d) {
@@ -78,7 +78,7 @@ class API {
     }
     
     /// Increments object at `a`/`b`/`c`/`d` by `amount`.
-    /// Leave unneeded nodes blank starting from grandchild, working back to parent.
+    /// Leave unneeded nodes blank starting from `d`, working back to `a`.
     /// There must be at least node `a`.
     func increment(amount amount: Int, a: String, b: String?, c: String?, d: String?) {
         if let ref = getRef(a: a, b: b, c: c, d: d) {
@@ -97,15 +97,14 @@ class API {
     /// Returns the UIImage for a url.
     func getUIImage(fromURL url: NSURL, completion: (image: UIImage) -> Void) {
         guard let urlString = url.absoluteString else { return }
-        
-        /// Check cache first.
+        // Check cache first.
         KingfisherManager.sharedManager.cache.retrieveImageForKey(urlString, options: nil) { (image, cacheType) -> () in
             if let image = image {
                 completion(image: image)
                 return
             }
         
-            /// Not in cache, retrieve online.
+            // Not in cache, retrieve online.
             KingfisherManager.sharedManager.downloader.downloadImageWithURL(url, progressBlock: nil) { (image, error, imageURL, originalData) -> () in
                 if let image = image {
                     KingfisherManager.sharedManager.cache.storeImage(image, forKey: urlString, toDisk: true, completionHandler: nil)
@@ -117,11 +116,10 @@ class API {
     
     /// Returns the UIImage for an icon.
     func getUIImage(forIcon icon: String, completion: (image: UIImage) -> Void) {
-        
-        /// Get url for icon in storage.
+        // Get url for icon in storage.
         getURL(forIcon: icon, completion: { (url) in
             
-            /// Get image from url.
+            // Get image from url.
             self.getUIImage(fromURL: url, completion: { (image) in
                 completion(image: image)
             })
@@ -130,12 +128,11 @@ class API {
     
     /// Returns the NSURL of an icon's url in storage.
     func getURL(forIcon icon: String, completion: (url: NSURL) -> Void) {
-        
-        /// Check cache first.
+        // Check cache first.
         if let url = iconURLCache[icon] {
             completion(url: url)
             
-            /// Else get url from storage.
+        // Else get url from storage.
         } else {
             let iconRef = storageRef.child(Path.Icons).child("\(icon).png")
             iconRef.downloadURLWithCompletion { (url, error) -> Void in
@@ -163,13 +160,12 @@ class API {
     /// Uploads compressed version of video to storage.
     /// Returns url to the video in storage.
     func uploadVideo(fromURL url: NSURL, completion: (url: NSURL) -> Void) {
-
-        /// Compress video.
+        // Compress video.
         let compressedURL = NSURL.fileURLWithPath(NSTemporaryDirectory() + NSUUID().UUIDString + ".m4v")
         compressVideo(fromURL: url, toURL: compressedURL) { (session) in
             if session.status == .Completed {
                 
-                /// Upload to storage.
+                // Upload to storage.
                 self.storageRef.child(Path.UserFiles).child(String(NSDate().timeIntervalSince1970)).putFile(compressedURL, metadata: nil) { metadata, error in
                     guard let url = metadata?.downloadURL() else { return }
                     completion(url: url)
@@ -285,7 +281,6 @@ class API {
     
     /// Returns a new proxy with a unique name.
     func tryCreating(proxy completion: (proxy: Proxy) -> Void) {
-        
         // Create a global proxy and save it.
         let uniqueKey = ref.child(Path.Proxies).childByAutoId().key
         let key = proxyNameGenerator.generateProxyName()
@@ -420,32 +415,32 @@ class API {
     }
     
     // MARK: - Message
-    /// Error checks before sending it off to the appropriate message sending fuction.
+    /// Error checks before sending message.
     /// Returns sender's convo and message on success.
     /// Returns an ErrorAlert on failure.
     func sendMessage(fromSenderProxy senderProxy: Proxy, toReceiverProxyName receiverProxyName: String, withText text: String, withMediaType mediaType: String, completion: (error: ErrorAlert?, convo: Convo?, message: Message?) -> Void ) {
         
-        /// Check if receiver exists
+        // Check if receiver exists
         self.ref.child(Path.Proxies).queryOrderedByChild(Path.Key).queryEqualToValue(receiverProxyName).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
             guard snapshot.childrenCount == 1 else {
                 completion(error: ErrorAlert(title: "Recipient Not Found", message: "Perhaps there was a spelling error?"), convo: nil, message: nil)
                 return
             }
             
-            /// Check if sender is trying to send to him/herself
+            // Check if sender is trying to send to him/herself
             let receiverProxy = Proxy(anyObject: snapshot.children.nextObject()!.value)
             guard senderProxy.ownerId != receiverProxy.ownerId else {
                 completion(error: ErrorAlert(title: "Cannot Send To Self", message: "Did you enter yourself as a recipient by mistake?"), convo: nil, message: nil)
                 return
             }
             
-            /// Build convo key by sorting and concatenizing the proxy keys
+            // Build convo key by sorting and concatenizing the proxy keys
             let convoKey = [senderProxy.key, receiverProxy.key].sort().joinWithSeparator("")
             
-            /// Check if convo exists between proxies
+            // Check if convo exists between proxies
             self.ref.child(Path.Convos).child(senderProxy.ownerId).queryEqualToValue(convoKey).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
                 
-                /// Existing convo found, use it to send the message
+                // Existing convo found, use it to send the message
                 if snapshot.childrenCount == 1 {
                     let convo = Convo(anyObject: snapshot.value!)
                     self.sendMessage(withText: text, withMediaType: mediaType, usingSenderConvo: convo, completion: { (convo, message) in
@@ -453,7 +448,7 @@ class API {
                     })
                 }
                 
-                /// No convo found, set up a new convo before sending message
+                // No convo found, set up a new convo before sending message
                 self.setUpFirstMessage(fromSenderProxy: senderProxy, toReceiverProxy: receiverProxy, usingConvoKey: convoKey, withText: text, withMediaType: mediaType, completion: { (convo, message) in
                     completion(error: nil, convo: convo, message: message)
                 })
@@ -461,17 +456,17 @@ class API {
         })
     }
     
-    /// Sets up the first message between two proxies.
+    /// Sets up the first message between two proxies and sends the message.
     /// Returns sender's convo and message.
     func setUpFirstMessage(fromSenderProxy senderProxy: Proxy, toReceiverProxy receiverProxy: Proxy, usingConvoKey convoKey: String, withText text: String, withMediaType mediaType: String, completion: (convo: Convo, message: Message) -> Void) {
         
-        /// Check if sender is in receiver's blocked list
+        // Check if sender is in receiver's blocked list
         ref.child(Path.Blocked).child(receiverProxy.ownerId).child(senderProxy.ownerId).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
             var senderConvo = Convo()
             var receiverConvo = Convo()
             let senderBlocked = snapshot.childrenCount == 1
             
-            /// Set up sender side
+            // Set up sender side
             senderConvo.key = convoKey
             senderConvo.senderId = senderProxy.ownerId
             senderConvo.senderProxy = senderProxy.key
@@ -484,7 +479,7 @@ class API {
             self.set(senderConvoAnyObject, a: Path.Convos, b: senderConvo.senderProxy, c: senderConvo.key, d: nil)
             self.increment(amount: 1, a: Path.ProxiesInteractedWith, b: senderProxy.ownerId, c: Path.ProxiesInteractedWith, d: nil)
             
-            /// Set up receiver side
+            // Set up receiver side
             receiverConvo.key = convoKey
             receiverConvo.senderId = receiverProxy.ownerId
             receiverConvo.senderProxy = receiverProxy.key
@@ -497,14 +492,14 @@ class API {
             self.set(receiverConvoAnyObject, a: Path.Convos, b: receiverConvo.senderProxy, c: receiverConvo.key, d: nil)
             self.increment(amount: 1, a: Path.ProxiesInteractedWith, b: receiverProxy.ownerId, c: Path.ProxiesInteractedWith, d: nil)
             
-            /// Set message
+            // Set message
             self.sendMessage(withText: text, withMediaType: mediaType, usingSenderConvo: senderConvo, completion: { (convo, message) in
                 completion(convo: convo, message: message)
             })
         })
     }
     
-    /// Sends a message using the sender's copy of the convo.
+    /// Sends a message.
     /// Returns sender's convo and message.
     func sendMessage(withText text: String, withMediaType mediaType: String, usingSenderConvo convo: Convo, completion: (convo: Convo, message: Message) -> Void) {
         userIsPresent(user: convo.receiverId, convo: convo.key) { (receiverIsPresent) in
@@ -540,6 +535,13 @@ class API {
         }
     }
     
+    /// Returns a Bool indicating whether or not a user is in a convo.
+    func userIsPresent(user user: String, convo: String, completion: (userIsPresent: Bool) -> Void) {
+        ref.child(Path.Present).child(convo).child(user).child(Path.Present).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            completion(userIsPresent: snapshot.value as? Bool ?? false)
+        })
+    }
+    
     /// Sets `leftConvo`, `message`, & `timestamp` for a user's convo.
     func setConvoValuesOnMessageSend(user: String, proxy: String, convo: String, message: String, timestamp: Double) {
         set(false, a: Path.Convos, b: user, c: convo, d: Path.LeftConvo)
@@ -548,13 +550,6 @@ class API {
         set(message, a: Path.Convos, b: proxy, c: convo, d: Path.Message)
         set(timestamp, a: Path.Convos, b: user, c: convo, d: Path.Timestamp)
         set(timestamp, a: Path.Convos, b: proxy, c: convo, d: Path.Timestamp)
-    }
-    
-    /// Returns a Bool indicating whether or not a user is in a convo.
-    func userIsPresent(user user: String, convo: String, completion: (userIsPresent: Bool) -> Void) {
-        ref.child(Path.Present).child(convo).child(user).child(Path.Present).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            completion(userIsPresent: snapshot.value as? Bool ?? false)
-        })
     }
     
     /// Sets the message's `read` & `timeRead`.
@@ -582,19 +577,11 @@ class API {
     }
     
     // MARK: - Conversation (Convo)
-    /// Returns a convo.
-    // TODO: prob don't need this
-    func getConvo(withKey key: String, belongingToUser user: String, completion: (convo: Convo) -> Void) {
-        ref.child(Path.Convos).child(user).child(key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            completion(convo: Convo(anyObject: snapshot.value!))
-        })
-    }
-    
     /// Sets receiver's nickname for the convo.
     /// (Only the sender sees this nickname).
     func set(nickname nickname: String, forReceiverInConvo convo: Convo) {
-        set(nickname, a: Path.Convos, b: convo.senderId, c: convo.key, d: Path.Name)
-        set(nickname, a: Path.Convos, b: convo.senderProxy, c: convo.key, d: Path.Name)
+        set(nickname, a: Path.Convos, b: convo.senderId, c: convo.key, d: Path.ReceiverNickname)
+        set(nickname, a: Path.Convos, b: convo.senderProxy, c: convo.key, d: Path.ReceiverNickname)
     }
     
     /// Leaves a convo.
@@ -607,21 +594,8 @@ class API {
         increment(amount: -convo.unread, a: Path.Proxies, b: convo.senderId, c: convo.senderProxy, d: Path.Unread)
     }
     
-    /// Returns an array of Convo's.
-    /// Filters out convos we don't want to see.
-    func getConvos(fromSnapshot snapshot: FIRDataSnapshot) -> [Convo] {
-        var convos = [Convo]()
-        for child in snapshot.children {
-            let convo = Convo(anyObject: child.value)
-            if !convo.leftConvo && !convo.senderDeletedProxy && !convo.senderIsBlocking {
-                convos.append(convo)
-            }
-        }
-        return convos.reverse()
-    }
-    
     /// Returns a convo title.
-    func getConvoTitle(receiverNickname: String, receiverName: String, senderNickname: String, senderName: String) -> NSAttributedString {
+    func getConvoTitle(receiverNickname receiverNickname: String, receiverName: String, senderNickname: String, senderName: String) -> NSAttributedString {
         let grayAttribute = [NSForegroundColorAttributeName: UIColor.grayColor()]
         var first: NSMutableAttributedString
         var second: NSMutableAttributedString
@@ -641,6 +615,19 @@ class API {
         
         first.appendAttributedString(second)
         return first
+    }
+    
+    /// Returns an array of Convo's.
+    /// Filters out convos we don't want to see.
+    func getConvos(fromSnapshot snapshot: FIRDataSnapshot) -> [Convo] {
+        var convos = [Convo]()
+        for child in snapshot.children {
+            let convo = Convo(anyObject: child.value)
+            if !convo.leftConvo && !convo.senderDeletedProxy && !convo.senderIsBlocking {
+                convos.append(convo)
+            }
+        }
+        return convos.reverse()
     }
     
     // When you mute a convo, you stop getting push notifications for it.
