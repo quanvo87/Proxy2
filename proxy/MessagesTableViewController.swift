@@ -185,9 +185,13 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
     func observeUnread() {
         unreadRef = self.ref.child(Path.Unread).child(self.api.uid).child(Path.Unread)
         unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
-            guard let unread = snapshot.value as? Int else { return }
-            self.navigationItem.title = "Messages \(unread.toTitleSuffix())"
-            self.tabBarController?.tabBar.items?.first?.badgeValue = unread == 0 ? nil : String(unread)
+            if let unread = snapshot.value as? Int {
+                self.navigationItem.title = "Messages \(unread.toTitleSuffix())"
+                self.tabBarController?.tabBar.items?.first?.badgeValue = unread == 0 ? nil : String(unread)
+            } else {
+                self.navigationItem.title = "Messages"
+                self.tabBarController?.tabBar.items?.first?.badgeValue = nil
+            }
         })
     }
     
@@ -218,7 +222,7 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
         // Set icon
         cell.iconImageView.kf_indicatorType = .Activity
         cell.iconImageView.image = nil
-        api.getURL(forIcon: convo.receiverIcon) { (url) in
+        api.getURL(forIcon: convo.icon) { (url) in
             guard let url = url.absoluteString where url != "" else { return }
             cell.iconImageView.kf_setImageWithURL(NSURL(string: url), placeholderImage: nil)
         }
@@ -227,7 +231,7 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
         cell.titleLabel.attributedText = api.getConvoTitle(receiverNickname: convo.receiverNickname, receiverName: convo.receiverProxy, senderNickname: convo.senderNickname, senderName: convo.senderProxy)
         cell.lastMessageLabel.text = convo.message
         cell.timestampLabel.text = convo.timestamp.toTimeAgo()
-        cell.unreadLabel.text = convo.unread.toUnreadLabel()
+        cell.unreadLabel.text = convo.unread.toNumberLabel()
         
         return cell
     }

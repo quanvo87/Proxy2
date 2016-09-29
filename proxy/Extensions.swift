@@ -15,7 +15,7 @@ extension UIViewController {
 }
 
 extension Int {
-    func toUnreadLabel() -> String {
+    func toNumberLabel() -> String {
         return self == 0 ? "" : String(self)
     }
     

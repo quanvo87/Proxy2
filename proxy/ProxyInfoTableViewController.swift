@@ -161,7 +161,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
             // Set icon
             cell.iconImageView.kf_indicatorType = .Activity
             cell.iconImageView.image = nil
-            api.getURL(forIcon: convo.receiverIcon) { (url) in
+            api.getURL(forIcon: convo.icon) { (url) in
                 guard let url = url.absoluteString where url != "" else { return }
                 cell.iconImageView.kf_setImageWithURL(NSURL(string: url), placeholderImage: nil)
             }
@@ -170,7 +170,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
             cell.titleLabel.attributedText = api.getConvoTitle(receiverNickname: convo.receiverNickname, receiverName: convo.receiverProxy, senderNickname: convo.senderNickname, senderName: convo.senderProxy)
             cell.lastMessageLabel.text = convo.message
             cell.timestampLabel.text = convo.timestamp.toTimeAgo()
-            cell.unreadLabel.text = convo.unread.toUnreadLabel()
+            cell.unreadLabel.text = convo.unread.toNumberLabel()
             
             return cell
             

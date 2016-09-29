@@ -29,12 +29,11 @@ struct Path {
     
     // Convo
     static let SenderNickname = "senderNickname"
-    static let ReceiverNickname = "receiverNickname"
-    static let ReceiverIcon = "receiverIcon"
-    static let LeftConvo = "leftConvo"
+    static let SenderLeftConvo = "senderLeftConvo"
     static let SenderDeletedProxy = "senderDeletedProxy"
+    static let ReceiverNickname = "receiverNickname"
+    static let ReceiverLeftConvo = "receiverLeftConvo"
     static let ReceiverDeletedProxy = "receiverDeletedProxy"
-    static let Unread = "unread"
     
     // Message
     static let Read = "read"
@@ -49,6 +48,7 @@ struct Path {
     static let Icon = "icon"
     static let Message = "message"
     static let Timestamp = "timestamp"
+    static let Unread = "unread"
 }
 
 struct URLs {

@@ -7,5 +7,5 @@
 //
 
 protocol ConvoInfoTableViewControllerDelegate {
-    func leftConvo()
+    func senderLeftConvo()
 }

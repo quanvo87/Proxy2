@@ -10,6 +10,7 @@ import FirebaseAuth
 import FirebaseDatabase
 import FirebaseStorage
 import AVFoundation
+import JSQMessagesViewController
 
 class API {
     
@@ -366,8 +367,8 @@ class API {
         // Set for both copies of receiver's convo for all convos this proxy is in
         getConvos(forProxy: proxy) { (convos) in
             for convo in convos {
-                self.set(icon, a: Path.Convos, b: convo.receiverId, c: convo.key, d: Path.ReceiverIcon)
-                self.set(icon, a: Path.Convos, b: convo.receiverProxy, c: convo.key, d: Path.ReceiverIcon)
+                self.set(icon, a: Path.Convos, b: convo.receiverId, c: convo.key, d: Path.Icon)
+                self.set(icon, a: Path.Convos, b: convo.receiverProxy, c: convo.key, d: Path.Icon)
             }
         }
     }
@@ -419,47 +420,47 @@ class API {
     /// Returns sender's convo and message on success.
     /// Returns an ErrorAlert on failure.
     func sendMessage(fromSenderProxy senderProxy: Proxy, toReceiverProxyName receiverProxyName: String, withText text: String, withMediaType mediaType: String, completion: (error: ErrorAlert?, convo: Convo?, message: Message?) -> Void ) {
-        
         // Check if receiver exists
         self.ref.child(Path.Proxies).queryOrderedByChild(Path.Key).queryEqualToValue(receiverProxyName).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
             guard snapshot.childrenCount == 1 else {
                 completion(error: ErrorAlert(title: "Recipient Not Found", message: "Perhaps there was a spelling error?"), convo: nil, message: nil)
                 return
             }
-            
             // Check if sender is trying to send to him/herself
             let receiverProxy = Proxy(anyObject: snapshot.children.nextObject()!.value)
             guard senderProxy.ownerId != receiverProxy.ownerId else {
                 completion(error: ErrorAlert(title: "Cannot Send To Self", message: "Did you enter yourself as a recipient by mistake?"), convo: nil, message: nil)
                 return
             }
-            
-            // Build convo key by sorting and concatenizing the proxy keys
-            let convoKey = [senderProxy.key, receiverProxy.key].sort().joinWithSeparator("")
-            
-            // Check if convo exists between proxies
-            self.ref.child(Path.Convos).child(senderProxy.ownerId).queryEqualToValue(convoKey).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            // Get receiver's proxy
+            self.getProxy(withKey: receiverProxy.key, belongingToUser: receiverProxy.ownerId, completion: { (receiverProxy) in
                 
-                // Existing convo found, use it to send the message
-                if snapshot.childrenCount == 1 {
-                    let convo = Convo(anyObject: snapshot.value!)
-                    self.sendMessage(withText: text, withMediaType: mediaType, usingSenderConvo: convo, completion: { (convo, message) in
+                // Build convo key by sorting and concatenizing the proxy keys
+                let convoKey = [senderProxy.key, receiverProxy.key].sort().joinWithSeparator("")
+                
+                // Check if convo exists between proxies
+                self.ref.child(Path.Convos).child(senderProxy.ownerId).queryEqualToValue(convoKey).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+                    
+                    // Existing convo found, use it to send the message
+                    if snapshot.childrenCount == 1 {
+                        let convo = Convo(anyObject: snapshot.value!)
+                        self.sendMessage(withText: text, withMediaType: mediaType, usingSenderConvo: convo, completion: { (convo, message) in
+                            completion(error: nil, convo: convo, message: message)
+                        })
+                    }
+                    // No convo found, set up a new convo before sending message
+                    self.setUpFirstMessage(fromSenderProxy: senderProxy, toReceiverProxy: receiverProxy, usingConvoKey: convoKey, withText: text, withMediaType: mediaType, completion: { (convo, message) in
                         completion(error: nil, convo: convo, message: message)
                     })
-                }
-                
-                // No convo found, set up a new convo before sending message
-                self.setUpFirstMessage(fromSenderProxy: senderProxy, toReceiverProxy: receiverProxy, usingConvoKey: convoKey, withText: text, withMediaType: mediaType, completion: { (convo, message) in
-                    completion(error: nil, convo: convo, message: message)
                 })
             })
+            
         })
     }
     
     /// Sets up the first message between two proxies and sends the message.
     /// Returns sender's convo and message.
     func setUpFirstMessage(fromSenderProxy senderProxy: Proxy, toReceiverProxy receiverProxy: Proxy, usingConvoKey convoKey: String, withText text: String, withMediaType mediaType: String, completion: (convo: Convo, message: Message) -> Void) {
-        
         // Check if sender is in receiver's blocked list
         ref.child(Path.Blocked).child(receiverProxy.ownerId).child(senderProxy.ownerId).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
             var senderConvo = Convo()
@@ -472,7 +473,7 @@ class API {
             senderConvo.senderProxy = senderProxy.key
             senderConvo.receiverId = receiverProxy.ownerId
             senderConvo.receiverProxy = receiverProxy.key
-            senderConvo.receiverIcon = receiverProxy.icon
+            senderConvo.icon = receiverProxy.icon
             senderConvo.receiverIsBlocking = senderBlocked
             let senderConvoAnyObject = senderConvo.toAnyObject()
             self.set(senderConvoAnyObject, a: Path.Convos, b: senderConvo.senderId, c: senderConvo.key, d: nil)
@@ -485,14 +486,14 @@ class API {
             receiverConvo.senderProxy = receiverProxy.key
             receiverConvo.receiverId = senderProxy.ownerId
             receiverConvo.receiverProxy = senderProxy.key
-            receiverConvo.receiverIcon = senderProxy.icon
+            receiverConvo.icon = senderProxy.icon
             receiverConvo.senderIsBlocking = senderBlocked
             let receiverConvoAnyObject = receiverConvo.toAnyObject()
             self.set(receiverConvoAnyObject, a: Path.Convos, b: receiverConvo.senderId, c: receiverConvo.key, d: nil)
             self.set(receiverConvoAnyObject, a: Path.Convos, b: receiverConvo.senderProxy, c: receiverConvo.key, d: nil)
             self.increment(amount: 1, a: Path.ProxiesInteractedWith, b: receiverProxy.ownerId, c: Path.ProxiesInteractedWith, d: nil)
             
-            // Set message
+            // Send message
             self.sendMessage(withText: text, withMediaType: mediaType, usingSenderConvo: senderConvo, completion: { (convo, message) in
                 completion(convo: convo, message: message)
             })
@@ -507,7 +508,15 @@ class API {
             
             // Sender updates
             self.set(timestamp, a: Path.Proxies, b: convo.senderId, c: convo.senderProxy, d: Path.Timestamp)
-            self.setConvoValuesOnMessageSend(convo.senderId, proxy: convo.senderProxy, convo: convo.key, message: "You: \(text)", timestamp: timestamp)
+            self.setConvoValuesOnMessageSend(convo.senderId, proxy: convo.senderProxy, convo: convo.key, leftConvo: convo.senderLeftConvo, message: "You: \(text)", timestamp: timestamp)
+            // TODO: have to get most recent values here
+            if convo.senderLeftConvo {
+                self.set(false, a: Path.Convos, b: convo.senderId, c: convo.key, d: Path.SenderLeftConvo)
+                self.set(false, a: Path.Convos, b: convo.senderProxy, c: convo.key, d: Path.SenderLeftConvo)
+                self.set(false, a: Path.Convos, b: convo.receiverId, c: convo.key, d: Path.ReceiverLeftConvo)
+                self.set(false, a: Path.Convos, b: convo.receiverProxy, c: convo.key, d: Path.ReceiverLeftConvo)
+                self.increment(amount: 1, a: Path.Proxies, b: convo.senderId, c: convo.senderProxy, d: Path.Convos)
+            }
             self.increment(amount: 1, a: Path.MessagesSent, b: convo.receiverId, c: Path.MessagesSent, d: nil)
             
             // Receiver updates
@@ -519,9 +528,16 @@ class API {
                 self.increment(amount: increment, a: Path.Unread, b: convo.receiverId, c: Path.Unread, d: nil)
             }
             if !convo.receiverDeletedProxy {
-                self.setConvoValuesOnMessageSend(convo.receiverId, proxy: convo.receiverProxy, convo: convo.key, message: text, timestamp: timestamp)
+                self.setConvoValuesOnMessageSend(convo.receiverId, proxy: convo.receiverProxy, convo: convo.key, leftConvo: convo.receiverLeftConvo, message: text, timestamp: timestamp)
                 self.increment(amount: increment, a: Path.Convos, b: convo.receiverId, c: convo.key, d: Path.Unread)
                 self.increment(amount: increment, a: Path.Convos, b: convo.receiverProxy, c: convo.key, d: Path.Unread)
+            }
+            if convo.receiverLeftConvo {
+                self.set(false, a: Path.Convos, b: convo.senderId, c: convo.key, d: Path.ReceiverLeftConvo)
+                self.set(false, a: Path.Convos, b: convo.senderProxy, c: convo.key, d: Path.ReceiverLeftConvo)
+                self.set(false, a: Path.Convos, b: convo.receiverId, c: convo.key, d: Path.SenderLeftConvo)
+                self.set(false, a: Path.Convos, b: convo.receiverProxy, c: convo.key, d: Path.SenderLeftConvo)
+                self.increment(amount: 1, a: Path.Proxies, b: convo.receiverId, c: convo.receiverProxy, d: Path.Convos)
             }
             self.increment(amount: 1, a: Path.MessagesReceived, b: convo.receiverId, c: Path.MessagesReceived, d: nil)
             
@@ -542,10 +558,12 @@ class API {
         })
     }
     
-    /// Sets `leftConvo`, `message`, & `timestamp` for a user's convo.
-    func setConvoValuesOnMessageSend(user: String, proxy: String, convo: String, message: String, timestamp: Double) {
-        set(false, a: Path.Convos, b: user, c: convo, d: Path.LeftConvo)
-        set(false, a: Path.Convos, b: proxy, c: convo, d: Path.LeftConvo)
+    /// Sets `senderLeftConvo`, `message`, & `timestamp` for a user's convo.
+    func setConvoValuesOnMessageSend(user: String, proxy: String, convo: String, leftConvo: Bool, message: String, timestamp: Double) {
+        if leftConvo {
+            
+            
+        }
         set(message, a: Path.Convos, b: user, c: convo, d: Path.Message)
         set(message, a: Path.Convos, b: proxy, c: convo, d: Path.Message)
         set(timestamp, a: Path.Convos, b: user, c: convo, d: Path.Timestamp)
@@ -555,8 +573,8 @@ class API {
     /// Sets the message's `read` & `timeRead`.
     /// Decrements unread's for user.
     func setRead(forMessage message: Message, forUser user: String, forProxy proxy: String) {
-        set(true, a: Path.Messages, b: message.convo, c: message.key, d: Path.Read)
-        set(NSDate().timeIntervalSince1970, a: Path.Messages, b: message.convo, c: message.key, d: Path.TimeRead)
+        let ref = getRef(a: Path.Messages, b: message.convo, c: message.key, d: nil)
+        ref!.updateChildValues([Path.TimeRead: NSDate().timeIntervalSince1970, Path.Read: true])
         increment(amount: -1, a: Path.Unread, b: user, c: Path.Unread, d: nil)
         increment(amount: -1, a: Path.Proxies, b: user, c: proxy, d: Path.Unread)
         increment(amount: -1, a: Path.Convos, b: user, c: message.convo, d: Path.Unread)
@@ -572,11 +590,27 @@ class API {
     /// Returns a message.
     func getMessage(withKey messageKey: String, inConvo convoKey: String, completion: (message: Message) -> Void) {
         ref.child(Path.Messages).child(convoKey).child(messageKey).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            completion(message: Message(anyObject: snapshot.value!))
+            if let mediaType = snapshot.value!["mediaType"] as? String {
+                switch mediaType {
+                case "image":
+                    completion(message: Message(anyObject: snapshot.value!, media: JSQPhotoMediaItem()))
+                case "video":
+                    completion(message: Message(anyObject: snapshot.value!, media: JSQVideoMediaItem()))
+                default:
+                    completion(message: Message(anyObject: snapshot.value!))
+                }
+            }
         })
     }
     
     // MARK: - Conversation (Convo)
+    /// Returns a convo.
+    func getConvo(withKey key: String, belongingToUser user: String, completion: (convo: Convo) -> Void) {
+        ref.child(Path.Convos).child(user).child(key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            completion(convo: Convo(anyObject: snapshot.value!))
+        })
+    }
+    
     /// Sets receiver's nickname for the convo.
     /// (Only the sender sees this nickname).
     func set(nickname nickname: String, forReceiverInConvo convo: Convo) {
@@ -586,10 +620,13 @@ class API {
     
     /// Leaves a convo.
     func leave(convo convo: Convo) {
-        set(true, a: Path.Convos, b: convo.senderId, c: convo.key, d: Path.LeftConvo)
-        set(true, a: Path.Convos, b: convo.senderProxy, c: convo.key, d: Path.LeftConvo)
+        set(true, a: Path.Convos, b: convo.senderId, c: convo.key, d: Path.SenderLeftConvo)
+        set(true, a: Path.Convos, b: convo.senderProxy, c: convo.key, d: Path.SenderLeftConvo)
+        set(true, a: Path.Convos, b: convo.receiverId, c: convo.key, d: Path.ReceiverLeftConvo)
+        set(true, a: Path.Convos, b: convo.receiverProxy, c: convo.key, d: Path.ReceiverLeftConvo)
         set(0, a: Path.Convos, b: convo.senderId, c: convo.key, d: Path.Unread)
         set(0, a: Path.Convos, b: convo.senderProxy, c: convo.key, d: Path.Unread)
+        increment(amount: -1, a: Path.Proxies, b: convo.senderId, c: convo.senderProxy, d: Path.Convos)
         increment(amount: -convo.unread, a: Path.Unread, b: convo.senderId, c: Path.Unread, d: nil)
         increment(amount: -convo.unread, a: Path.Proxies, b: convo.senderId, c: convo.senderProxy, d: Path.Unread)
     }
@@ -600,19 +637,16 @@ class API {
         var first: NSMutableAttributedString
         var second: NSMutableAttributedString
         let comma = ", "
-        
         if receiverNickname == "" {
             first = NSMutableAttributedString(string: receiverName + comma)
         } else {
             first = NSMutableAttributedString(string: receiverNickname + comma)
         }
-        
         if senderNickname == "" {
             second = NSMutableAttributedString(string: senderName, attributes: grayAttribute)
         } else {
             second = NSMutableAttributedString(string: senderNickname, attributes: grayAttribute)
         }
-        
         first.appendAttributedString(second)
         return first
     }
@@ -623,7 +657,7 @@ class API {
         var convos = [Convo]()
         for child in snapshot.children {
             let convo = Convo(anyObject: child.value)
-            if !convo.leftConvo && !convo.senderDeletedProxy && !convo.senderIsBlocking {
+            if !convo.senderLeftConvo && !convo.senderDeletedProxy && !convo.senderIsBlocking {
                 convos.append(convo)
             }
         }

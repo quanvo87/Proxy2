@@ -16,6 +16,7 @@ struct Proxy {
     var deleted = false
     var created = NSDate().timeIntervalSince1970
     var timestamp = NSDate().timeIntervalSince1970
+    var convos = 0
     var unread = 0
     
     init() {}
@@ -40,6 +41,7 @@ struct Proxy {
         self.deleted = anyObject["deleted"] as? Bool ?? false
         self.created = anyObject["created"] as? Double ?? 0.0
         self.timestamp = anyObject["timestamp"] as? Double ?? 0.0
+        self.convos = anyObject["convos"] as? Int ?? 0
         self.unread = anyObject["unread"] as? Int ?? 0
     }
     
@@ -53,6 +55,7 @@ struct Proxy {
             "deleted": deleted,
             "created": created,
             "timestamp": timestamp,
+            "convos": convos,
             "unread": unread
         ]
     }

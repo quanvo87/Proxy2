@@ -291,7 +291,7 @@ class ConvoInfoTableViewController: UITableViewController {
         let alert = UIAlertController(title: "Leave Conversation?", message: "The other user will not be notified.", preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: "Leave", style: .Destructive, handler: { (void) in
             self.api.leave(convo: self.convo)
-            self.delegate?.leftConvo()
+            self.delegate?.senderLeftConvo()
             self.navigationController?.popViewControllerAnimated(true)
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))

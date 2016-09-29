@@ -15,11 +15,12 @@ struct Convo {
     var receiverId = ""
     var receiverProxy = ""
     var receiverNickname = ""
-    var receiverIcon = ""
+    var icon = ""
     var message = ""
-    var leftConvo = false
+    var senderLeftConvo = true
     var senderDeletedProxy = false
     var senderIsBlocking = false
+    var receiverLeftConvo = true
     var receiverDeletedProxy = false
     var receiverIsBlocking = false
     var timestamp = 0.0
@@ -35,11 +36,12 @@ struct Convo {
         self.receiverId = anyObject["receiverId"] as? String ?? ""
         self.receiverProxy = anyObject["receiverProxy"] as? String ?? ""
         self.receiverNickname = anyObject["receiverNickname"] as? String ?? ""
-        self.receiverIcon = anyObject["receiverIcon"] as? String ?? ""
+        self.icon = anyObject["icon"] as? String ?? ""
         self.message = anyObject["message"] as? String ?? ""
-        self.leftConvo = anyObject["leftConvo"] as? Bool ?? false
+        self.senderLeftConvo = anyObject["senderLeftConvo"] as? Bool ?? false
         self.senderDeletedProxy = anyObject["senderDeletedProxy"] as? Bool ?? false
         self.senderIsBlocking = anyObject["senderIsBlocking"] as? Bool ?? false
+        self.receiverLeftConvo = anyObject["receiverLeftConvo"] as? Bool ?? false
         self.receiverDeletedProxy = anyObject["receiverDeletedProxy"] as? Bool ?? false
         self.receiverIsBlocking = anyObject["receiverIsBlocking"] as? Bool ?? false
         self.timestamp = anyObject["timestamp"] as? Double ?? 0.0
@@ -55,11 +57,12 @@ struct Convo {
             "receiverId": receiverId,
             "receiverProxy": receiverProxy,
             "receiverNickname": receiverNickname,
-            "receiverIcon" : receiverIcon,
+            "icon": icon,
             "message": message,
-            "leftConvo": leftConvo,
+            "senderLeftConvo": senderLeftConvo,
             "senderDeletedProxy": senderDeletedProxy,
             "senderIsBlocking": senderIsBlocking,
+            "receiverLeftConvo": receiverLeftConvo,
             "receiverDeletedProxy": receiverDeletedProxy,
             "receiverIsBlocking": receiverIsBlocking,
             "timestamp": timestamp,

@@ -203,6 +203,7 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
         
         // Set icon
         cell.iconImageView.kf_indicatorType = .Activity
+        cell.iconImageView.image = nil
         api.getURL(forIcon: proxy.icon) { (url) in
             guard let url = url.absoluteString where url != "" else { return }
             cell.iconImageView.kf_setImageWithURL(NSURL(string: url), placeholderImage: nil)
@@ -211,8 +212,8 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
         // Set labels
         cell.nameLabel.text = proxy.key
         cell.nicknameLabel.text = proxy.nickname
-        cell.convoCountLabel.text = "999"
-        cell.unreadLabel.text = proxy.unread.toUnreadLabel()
+        cell.convoCountLabel.text = proxy.convos.toNumberLabel()
+        cell.unreadLabel.text = proxy.unread.toNumberLabel()
         
         return cell
     }

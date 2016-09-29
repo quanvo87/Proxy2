@@ -36,7 +36,7 @@ class ReceiverProxyInfoCell: UITableViewCell {
     }
     
     func observeIcon() {
-        iconRef = ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.ReceiverIcon)
+        iconRef = ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.Icon)
         iconRefHandle = iconRef.observeEventType(.Value, withBlock: { (snapshot) in
             guard let icon = snapshot.value as? String where icon != "" else { return }
             self.api.getURL(forIcon: icon) { (url) in

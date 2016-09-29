@@ -17,8 +17,9 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     let api = API.sharedInstance
     let ref = FIRDatabase.database().reference()
     var convo = Convo()
+    var convoIsUpdated = false
     var readReceiptIndex = -1
-    var leftConvo_ = false
+    var senderLeftConvo_ = false
     
     var incomingBubble: JSQMessagesBubbleImage!
     var outgoingBubble: JSQMessagesBubbleImage!
@@ -35,11 +36,9 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         }
     }
     
-    var receiverIsPresentRef = FIRDatabaseReference()
-    var receiverIsPresentRefHandle = FIRDatabaseHandle()
-    
     var messagesRef = FIRDatabaseReference()
     var messagesRefHandle = FIRDatabaseHandle()
+    var lastMessageRefHandle = FIRDatabaseHandle()
     var messages = [Message]()
     var unreadMessages = [Message]()
     
@@ -73,8 +72,8 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         setUp()
         setUpBubbles()
         setUpSenderIsPresent()
-        observeReceiverIsPresent()
         observeMessages()
+        observeLastMessage()
         observeSenderIcon()
         observeReceiverIcon()
         observeSenderNickname()
@@ -108,8 +107,8 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     }
     
     deinit {
-        receiverIsPresentRef.removeObserverWithHandle(receiverIsPresentRefHandle)
         messagesRef.removeObserverWithHandle(messagesRefHandle)
+        messagesRef.removeObserverWithHandle(lastMessageRefHandle)
         senderIconRef.removeObserverWithHandle(senderIconRefHandle)
         receiverIconRef.removeObserverWithHandle(receiverIconRefHandle)
         senderNicknameRef.removeObserverWithHandle(senderNicknameRefHandle)
@@ -129,10 +128,9 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         collectionView?.collectionViewLayout.outgoingAvatarViewSize = CGSize(width: kJSQMessagesCollectionViewAvatarSizeDefault, height:kJSQMessagesCollectionViewAvatarSizeDefault)
         senderId = convo.senderId
         senderDisplayName = ""
-        receiverIsPresentRef = ref.child(Path.Present).child(convo.key).child(convo.receiverId).child(Path.Present)
         messagesRef = ref.child(Path.Messages).child(convo.key)
         senderIconRef = ref.child(Path.Proxies).child(convo.senderId).child(convo.senderProxy).child(Path.Icon)
-        receiverIconRef = ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.ReceiverIcon)
+        receiverIconRef = ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.Icon)
         senderNicknameRef = ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderNickname)
         receiverNicknameRef = ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.ReceiverNickname)
         membersAreTypingRef = ref.child(Path.Typing).child(convo.key)
@@ -165,25 +163,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         senderIsPresent = true
     }
     
-    // Observe when receiver enters the convo while we are in it.
-    // If this happens, refresh the cell with our last message to them to display the read receipt.
-    func observeReceiverIsPresent() {
-        receiverIsPresentRefHandle = receiverIsPresentRef.observeEventType(.Value, withBlock: { (snapshot) in
-            guard let present = snapshot.value as? Bool
-                where present && self.readReceiptIndex > -1 && !self.messages[self.readReceiptIndex].read
-                else { return }
-            
-            // Get the most recent version of this message to get the `readTime`.
-            let message = self.messages[self.readReceiptIndex]
-            self.api.getMessage(withKey: message.key, inConvo: message.convo, completion: { (message) in
-                self.messages[self.readReceiptIndex] = message
-                self.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: self.readReceiptIndex, inSection: 0)])
-                self.scrollToBottomAnimated(true)
-            })
-        })
-    }
-    
-    // Observe messages and load them.
+    // Observe and load messages.
     func observeMessages() {
         messagesRefHandle = messagesRef.queryOrderedByChild(Path.Timestamp).observeEventType(.ChildAdded, withBlock: { (snapshot) in
             let message = Message(anyObject: snapshot.value!)
@@ -302,8 +282,24 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
                 // Keep track of the last message you sent.
                 self.readReceiptIndex = self.messages.count - 1
                 
-                // Fix last two bubbles with read receipts.
+                // Fix message bubble with read receipt.
                 self.collectionView.reloadData()
+            }
+        })
+    }
+    
+    func observeLastMessage() {
+        lastMessageRefHandle = messagesRef.queryOrderedByChild(Path.Timestamp).queryLimitedToLast(1).observeEventType(.Value, withBlock: { (snapshot) in
+            let message = Message(anyObject: snapshot.children.nextObject()!.value)
+            if message.senderId == self.senderId && message.read {
+                let message_ = self.messages[self.readReceiptIndex]
+                if !message_.read {
+                    message_.read = message.read
+                    message_.timeRead = message.timeRead
+                    self.messages[self.readReceiptIndex] = message_
+                    self.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: self.readReceiptIndex, inSection: 0)])
+                    self.scrollToBottomAnimated(true)
+                }
             }
         })
     }
@@ -373,6 +369,13 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
             }
             self.showTypingIndicator = snapshot.childrenCount > 0
             self.scrollToBottomAnimated(true)
+        })
+    }
+    
+    func updateConvo() {
+        api.getConvo(withKey: convo.key, belongingToUser: convo.senderId, completion: { (convo) in
+            self.convo = convo
+            self.convoIsUpdated = true
         })
     }
     
@@ -549,10 +552,22 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         }
     }
     
-    // Write the message to the database when user taps send.
+    // Write message to database.
     override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: NSDate!) {
-        api.sendMessage(withText: text, withMediaType: "", usingSenderConvo: convo) { (convo, message) in
-            self.finishedWritingMessage()
+        func sendMessage() {
+            api.sendMessage(withText: text, withMediaType: "", usingSenderConvo: convo) { (convo, message) in
+                self.convoIsUpdated = false
+                self.finishedWritingMessage()
+                self.updateConvo()
+            }
+        }
+        if convoIsUpdated {
+            sendMessage()
+        } else {
+            self.api.getConvo(withKey: convo.key, belongingToUser: convo.senderId, completion: { (convo) in
+                self.convo = convo
+                sendMessage()
+            })
         }
     }
     
@@ -634,35 +649,59 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     }
     
     func send(image image: UIImage) {
-        // First send a placeholder message that displays a loading indicator.
-        api.sendMessage(withText: "[Photo 📸]", withMediaType: "imagePlaceholder", usingSenderConvo: self.convo) { (convo, message) in
-            self.finishSendingMessage()
-            
-            // Then upload the image to storage.
-            self.api.upload(image: image, completion: { (url) in
+        func sendImage() {
+            // First send a placeholder message that displays a loading indicator.
+            api.sendMessage(withText: "[Photo 📸]", withMediaType: "imagePlaceholder", usingSenderConvo: self.convo) { (convo, message) in
+                self.convoIsUpdated = false
+                self.finishSendingMessage()
+                self.updateConvo()
                 
-                // The upload returns the URL to the image we just uploaded.
-                // Update the placeholder message with this info.
-                guard let url = url.absoluteString else { return }
-                self.api.setMedia(forMessage: message, mediaType: "image", mediaURL: url)
-                self.finishedWritingMessage()
+                // Then upload the image to storage.
+                self.api.upload(image: image, completion: { (url) in
+                    
+                    // The upload returns the URL to the image we just uploaded.
+                    // Update the placeholder message with this info.
+                    guard let url = url.absoluteString else { return }
+                    self.api.setMedia(forMessage: message, mediaType: "image", mediaURL: url)
+                    self.finishedWritingMessage()
+                })
+            }
+        }
+        if convoIsUpdated {
+            sendImage()
+        } else {
+            self.api.getConvo(withKey: convo.key, belongingToUser: convo.senderId, completion: { (convo) in
+                self.convo = convo
+                sendImage()
             })
         }
     }
     
     func send(videoWithURL url: NSURL) {
-        // First send a placeholder message that displays a loading indicator.
-        api.sendMessage(withText: "[Video 🎥]", withMediaType: "videoPlaceholder", usingSenderConvo: self.convo) { (convo, message) in
-            self.finishSendingMessage()
-            
-            // Then upload the image to storage.
-            self.api.uploadVideo(fromURL: url, completion: { (url) in
-              
-                // The upload returns the URL to the image we just uploaded.
-                // Update the placeholder message with this info.
-                guard let url = url.absoluteString else { return }
-                self.api.setMedia(forMessage: message, mediaType: "video", mediaURL: url)
-                self.finishedWritingMessage()
+        func sendVideo() {
+            // First send a placeholder message that displays a loading indicator.
+            api.sendMessage(withText: "[Video 🎥]", withMediaType: "videoPlaceholder", usingSenderConvo: self.convo) { (convo, message) in
+                self.convoIsUpdated = false
+                self.finishSendingMessage()
+                self.updateConvo()
+                
+                // Then upload the image to storage.
+                self.api.uploadVideo(fromURL: url, completion: { (url) in
+                    
+                    // The upload returns the URL to the image we just uploaded.
+                    // Update the placeholder message with this info.
+                    guard let url = url.absoluteString else { return }
+                    self.api.setMedia(forMessage: message, mediaType: "video", mediaURL: url)
+                    self.finishedWritingMessage()
+                })
+            }
+        }
+        if convoIsUpdated {
+            sendVideo()
+        } else {
+            self.api.getConvo(withKey: convo.key, belongingToUser: convo.senderId, completion: { (convo) in
+                self.convo = convo
+                sendVideo()
             })
         }
     }
@@ -675,12 +714,12 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     }
     
     // MARK: - ConvoInfoTableViewControllerDelegate
-    func leftConvo() {
-        leftConvo_ = true
+    func senderLeftConvo() {
+        senderLeftConvo_ = true
     }
     
     func leaveConvo() {
-        if leftConvo_ {
+        if senderLeftConvo_ {
             navigationController?.popViewControllerAnimated(true)
         }
     }

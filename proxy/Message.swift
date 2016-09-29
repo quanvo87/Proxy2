@@ -46,6 +46,16 @@ class Message: JSQMessage {
         super.init(senderId: anyObject["senderId"] as? String ?? "", senderDisplayName: anyObject["senderDisplayName"] as? String ?? "", date: NSDate(timeIntervalSince1970: anyObject["date"] as? Double ?? 0.0), text: anyObject["text"] as? String ?? "")
     }
     
+    init(anyObject: AnyObject, media: JSQMessageMediaData) {
+        self.key = anyObject["key"] as? String ?? ""
+        self.convo = anyObject["convo"] as? String ?? ""
+        self.mediaType = anyObject["mediaType"] as? String ?? ""
+        self.mediaURL = anyObject["mediaURL"] as? String ?? ""
+        self.read = anyObject["read"] as? Bool ?? false
+        self.timeRead = anyObject["timeRead"] as? Double ?? 0.0
+        super.init(senderId: anyObject["senderId"] as? String ?? "", senderDisplayName: anyObject["senderDisplayName"] as? String ?? "", date: NSDate(timeIntervalSince1970: anyObject["date"] as? Double ?? 0.0), media: media)
+    }
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
