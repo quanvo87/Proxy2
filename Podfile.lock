@@ -57,6 +57,7 @@ PODS:
   - JSQSystemSoundPlayer (2.0.1)
   - Kingfisher (2.6.0)
   - MobilePlayer (1.1.5)
+  - TextFieldEffects (1.2.0)
   - VideoSplashKit (1.1.0)
 
 DEPENDENCIES:
@@ -70,6 +71,7 @@ DEPENDENCIES:
   - JSQMessagesViewController
   - Kingfisher (~> 2.6.0)
   - MobilePlayer
+  - TextFieldEffects
   - VideoSplashKit
 
 SPEC CHECKSUMS:
@@ -93,8 +95,9 @@ SPEC CHECKSUMS:
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
   Kingfisher: d84c5fd176ea86cc7b8aac65fd55feda6f70f130
   MobilePlayer: 2fdc07a564fa89da65ff660f8fdcf06ab75f775d
+  TextFieldEffects: bc4fd3bd557321bd61a0762f3f50965477a36f62
   VideoSplashKit: 0aa63d0bb37c5bd357de3e6a2a13dea5acad4d66
 
-PODFILE CHECKSUM: b32d9a0016586cd50cb82aaddfd2eab2f8488ced
+PODFILE CHECKSUM: 088625ef5d362d80575da2c0940cc06fc7761109
 
 COCOAPODS: 1.0.1

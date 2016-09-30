@@ -19,13 +19,13 @@ class LogInViewController: VideoSplashViewController {
     
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
-    @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
+    @IBOutlet weak var logInButton: UIButton!
+    @IBOutlet weak var createNewAccountButton: UIButton!
+    @IBOutlet weak var facebookButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setUp()
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LogInViewController.keyboardWillShow), name:UIKeyboardWillShowNotification, object: self.view.window)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LogInViewController.keyboardWillHide), name:UIKeyboardWillHideNotification, object: self.view.window)
     }
     
     deinit {
@@ -34,8 +34,21 @@ class LogInViewController: VideoSplashViewController {
     
     func setUp() {
         setUpVideoSplash()
-        bottomConstraint.constant = view.frame.size.height / 3
-        bottomConstraintConstant = bottomConstraint.constant
+        logInButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        logInButton.layer.cornerRadius = 5
+        logInButton.layer.borderWidth = 1
+        logInButton.layer.borderColor = UIColor.whiteColor().CGColor
+        
+        createNewAccountButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        createNewAccountButton.layer.cornerRadius = 5
+        createNewAccountButton.layer.borderWidth = 1
+        createNewAccountButton.layer.borderColor = UIColor.whiteColor().CGColor
+        
+        facebookButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        facebookButton.layer.cornerRadius = 5
+        facebookButton.layer.borderWidth = 1
+        facebookButton.layer.borderColor = UIColor.whiteColor().CGColor
+        
         emailTextField.clearButtonMode = .WhileEditing
         passwordTextField.clearButtonMode = .WhileEditing
         passwordTextField.secureTextEntry = true
@@ -53,7 +66,6 @@ class LogInViewController: VideoSplashViewController {
         self.alpha = 0.9
         self.backgroundColor = UIColor.whiteColor()
         self.contentURL = url
-        self.restartForeground = true
     }
     
     @IBAction func logIn(sender: AnyObject) {
@@ -129,18 +141,6 @@ class LogInViewController: VideoSplashViewController {
     }
     
     // MARK: - Keyboard
-    func keyboardWillShow(notification: NSNotification) {
-        let info = notification.userInfo!
-        let keyboardFrame = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
-        UIView.animateWithDuration(0.1, animations: { () -> Void in
-            self.bottomConstraint.constant = keyboardFrame.size.height
-        })
-    }
-    
-    func keyboardWillHide(sender: NSNotification) {
-        bottomConstraint.constant = bottomConstraintConstant
-    }
-    
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         self.view.endEditing(true)
     }

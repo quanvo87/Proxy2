@@ -21,26 +21,29 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Email" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Zmp-Od-UCu">
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="F9C-uS-p6m">
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lC3-B0-m18">
-                                <state key="normal" title="Create New Account"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <state key="normal" title="Sign Up"/>
                                 <connections>
                                     <action selector="createNewAccount:" destination="sjW-YU-fmh" eventType="touchUpInside" id="Fn3-dQ-qyN"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4Pt-qC-dIL">
-                                <state key="normal" title="Log In / Sign Up Through Facebook"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <state key="normal" title="Log In With Facebook"/>
                                 <connections>
                                     <action selector="logInWithFacebook:" destination="sjW-YU-fmh" eventType="touchUpInside" id="DLw-p3-sKU"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ant-pc-zQG">
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <state key="normal" title="Log In"/>
                                 <connections>
                                     <action selector="logIn:" destination="sjW-YU-fmh" eventType="touchUpInside" id="zom-mx-77G"/>
@@ -49,32 +52,34 @@
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="4Pt-qC-dIL" firstAttribute="top" secondItem="Ant-pc-zQG" secondAttribute="bottom" constant="40" id="1nd-Cg-XO6"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="4Pt-qC-dIL" secondAttribute="trailing" constant="10" id="2vm-6K-haR"/>
-                            <constraint firstItem="F9C-uS-p6m" firstAttribute="width" secondItem="4Pt-qC-dIL" secondAttribute="width" id="4ke-IZ-JzB"/>
-                            <constraint firstItem="wIr-b4-xYr" firstAttribute="top" secondItem="4Pt-qC-dIL" secondAttribute="bottom" constant="179" id="52l-XR-0WG"/>
-                            <constraint firstItem="Zmp-Od-UCu" firstAttribute="width" secondItem="4Pt-qC-dIL" secondAttribute="width" id="66X-vM-pfd"/>
-                            <constraint firstItem="4Pt-qC-dIL" firstAttribute="top" secondItem="Zmp-Od-UCu" secondAttribute="bottom" constant="111" id="IkI-HD-n6O"/>
-                            <constraint firstItem="Ant-pc-zQG" firstAttribute="width" secondItem="4Pt-qC-dIL" secondAttribute="width" id="SEf-di-O4K"/>
-                            <constraint firstItem="lC3-B0-m18" firstAttribute="width" secondItem="4Pt-qC-dIL" secondAttribute="width" id="Tsd-VK-EI2"/>
-                            <constraint firstItem="lC3-B0-m18" firstAttribute="centerX" secondItem="DSr-cA-6Ed" secondAttribute="centerX" id="U1O-FY-3MN"/>
-                            <constraint firstItem="F9C-uS-p6m" firstAttribute="centerX" secondItem="DSr-cA-6Ed" secondAttribute="centerX" id="eqO-Bg-ODO"/>
-                            <constraint firstItem="4Pt-qC-dIL" firstAttribute="leading" secondItem="DSr-cA-6Ed" secondAttribute="leadingMargin" constant="10" id="gXl-pr-I21"/>
-                            <constraint firstItem="4Pt-qC-dIL" firstAttribute="top" secondItem="lC3-B0-m18" secondAttribute="bottom" constant="5" id="iaG-Xp-pyo"/>
-                            <constraint firstItem="4Pt-qC-dIL" firstAttribute="top" secondItem="F9C-uS-p6m" secondAttribute="bottom" constant="76" id="lkh-Sq-OiR"/>
-                            <constraint firstItem="Ant-pc-zQG" firstAttribute="centerX" secondItem="4Pt-qC-dIL" secondAttribute="centerX" id="qaj-gb-3lx"/>
-                            <constraint firstItem="Zmp-Od-UCu" firstAttribute="centerX" secondItem="DSr-cA-6Ed" secondAttribute="centerX" id="xGt-kA-BzX"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Zmp-Od-UCu" secondAttribute="trailing" constant="10" id="Bd0-rA-Iij"/>
+                            <constraint firstItem="lC3-B0-m18" firstAttribute="width" secondItem="Ant-pc-zQG" secondAttribute="width" id="HIu-jz-nDB"/>
+                            <constraint firstItem="4Pt-qC-dIL" firstAttribute="top" secondItem="lC3-B0-m18" secondAttribute="bottom" constant="5" id="ZSj-IP-8Cl"/>
+                            <constraint firstItem="Zmp-Od-UCu" firstAttribute="leading" secondItem="DSr-cA-6Ed" secondAttribute="leadingMargin" constant="10" id="bCK-1M-cU8"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="4Pt-qC-dIL" secondAttribute="trailing" constant="10" id="fT3-f0-kDs"/>
+                            <constraint firstItem="4Pt-qC-dIL" firstAttribute="leading" secondItem="DSr-cA-6Ed" secondAttribute="leadingMargin" constant="10" id="i6l-UN-2g0"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="F9C-uS-p6m" secondAttribute="trailing" constant="10" id="keF-zA-9UM"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Ant-pc-zQG" secondAttribute="trailing" constant="10" id="lO5-FU-jar"/>
+                            <constraint firstItem="lC3-B0-m18" firstAttribute="leading" secondItem="DSr-cA-6Ed" secondAttribute="leadingMargin" constant="10" id="oIc-3F-HT0"/>
+                            <constraint firstItem="lC3-B0-m18" firstAttribute="top" secondItem="F9C-uS-p6m" secondAttribute="bottom" constant="5" id="u9p-9z-49t"/>
+                            <constraint firstItem="Ant-pc-zQG" firstAttribute="leading" secondItem="lC3-B0-m18" secondAttribute="trailing" constant="10" id="umC-he-S0S"/>
+                            <constraint firstItem="F9C-uS-p6m" firstAttribute="top" secondItem="Zmp-Od-UCu" secondAttribute="bottom" constant="5" id="v0F-UB-V8z"/>
+                            <constraint firstItem="F9C-uS-p6m" firstAttribute="leading" secondItem="DSr-cA-6Ed" secondAttribute="leadingMargin" constant="10" id="vdh-IS-dDd"/>
+                            <constraint firstItem="Ant-pc-zQG" firstAttribute="centerY" secondItem="DSr-cA-6Ed" secondAttribute="centerY" id="xZV-CU-sKo"/>
+                            <constraint firstItem="lC3-B0-m18" firstAttribute="centerY" secondItem="DSr-cA-6Ed" secondAttribute="centerY" id="zjx-f4-m48"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="bottomConstraint" destination="52l-XR-0WG" id="wP1-eF-ipP"/>
+                        <outlet property="createNewAccountButton" destination="lC3-B0-m18" id="Mbs-yV-CtC"/>
                         <outlet property="emailTextField" destination="Zmp-Od-UCu" id="F1b-3A-NbT"/>
+                        <outlet property="facebookButton" destination="4Pt-qC-dIL" id="dMQ-OY-65v"/>
+                        <outlet property="logInButton" destination="Ant-pc-zQG" id="jIu-VW-ikb"/>
                         <outlet property="passwordTextField" destination="F9C-uS-p6m" id="LpS-BJ-9qs"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="q0Y-h1-qcx" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2015" y="-97"/>
+            <point key="canvasLocation" x="-2015.2" y="-97.601199400299862"/>
         </scene>
         <!--Proxy Info Table View Controller-->
         <scene sceneID="rCS-hE-jUK">
@@ -747,7 +752,7 @@
                                         <rect key="frame" x="0.0" y="28" width="383" height="80"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="VJJ-nO-xK1" id="LTt-oz-ohx">
-                                            <frame key="frameInset" width="383" height="79"/>
+                                            <frame key="frameInset" width="383" height="80"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="0yX-sn-CJU">

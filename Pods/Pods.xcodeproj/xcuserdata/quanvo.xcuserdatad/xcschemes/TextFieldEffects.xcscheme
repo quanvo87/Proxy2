@@ -14,10 +14,10 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = 'E3BE5915DF306E9922298A60F629D943'
-               BlueprintName = 'VideoSplashKit'
+               BlueprintIdentifier = 'DDA37D30B254E2FC46F00DCED9028A4E'
+               BlueprintName = 'TextFieldEffects'
                ReferencedContainer = 'container:Pods.xcodeproj'
-               BuildableName = 'VideoSplashKit.framework'>
+               BuildableName = 'TextFieldEffects.framework'>
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

@@ -110,6 +110,8 @@ public class VideoSplashViewController: UIViewController {
               forKeyPath: "status",
               options: .New,
               context: nil)
+            do { try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryAmbient)
+            } catch {}
             self.moviePlayer.player?.play()
             self.moviePlayer.player?.volume = self.moviePlayerSoundLevel
           }
