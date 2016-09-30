@@ -8,7 +8,7 @@
 
 struct ProxyNameGenerator {
     
-    let numRange: UInt32 = 9
+    let numRange: UInt32 = 10
     var adjs = [String]()
     var nouns = [String]()
     var isLoaded = false
@@ -18,7 +18,7 @@ struct ProxyNameGenerator {
         let nounsCount = UInt32(nouns.count)
         let adj = adjs[Int(arc4random_uniform(adjsCount))].lowercaseString
         let noun = nouns[Int(arc4random_uniform(nounsCount))].lowercaseString.capitalizedString
-        let num = String(Int(arc4random_uniform(numRange)) + 1)
+        let num = String(Int(arc4random_uniform(numRange)))
         return adj + noun + num
     }
 }

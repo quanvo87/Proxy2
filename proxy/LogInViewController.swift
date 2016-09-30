@@ -9,8 +9,9 @@
 import FirebaseAuth
 import FirebaseDatabase
 import FacebookLogin
+import VideoSplashKit
 
-class LogInViewController: UIViewController {
+class LogInViewController: VideoSplashViewController {
     
     let api = API.sharedInstance
     let ref = FIRDatabase.database().reference()
@@ -32,11 +33,27 @@ class LogInViewController: UIViewController {
     }
     
     func setUp() {
+        setUpVideoSplash()
         bottomConstraint.constant = view.frame.size.height / 3
         bottomConstraintConstant = bottomConstraint.constant
         emailTextField.clearButtonMode = .WhileEditing
         passwordTextField.clearButtonMode = .WhileEditing
         passwordTextField.secureTextEntry = true
+    }
+    
+    func setUpVideoSplash() {
+        let videoNames = ["dragontailzipline", "arabiangulf", "beachpalm", "hawaiiancoast", "sanfran"]
+        let videoNamesCount = UInt32(videoNames.count)
+        let random = Int(arc4random_uniform(videoNamesCount))
+        let url = NSURL.fileURLWithPath(NSBundle.mainBundle().pathForResource(videoNames[random], ofType: "mp4")!)
+        self.videoFrame = view.frame
+        self.fillMode = .ResizeAspectFill
+        self.alwaysRepeat = true
+        self.sound = false
+        self.alpha = 0.9
+        self.backgroundColor = UIColor.whiteColor()
+        self.contentURL = url
+        self.restartForeground = true
     }
     
     @IBAction func logIn(sender: AnyObject) {

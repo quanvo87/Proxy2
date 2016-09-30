@@ -57,6 +57,7 @@ PODS:
   - JSQSystemSoundPlayer (2.0.1)
   - Kingfisher (2.6.0)
   - MobilePlayer (1.1.5)
+  - VideoSplashKit (1.1.0)
 
 DEPENDENCIES:
   - FacebookCore
@@ -69,6 +70,7 @@ DEPENDENCIES:
   - JSQMessagesViewController
   - Kingfisher (~> 2.6.0)
   - MobilePlayer
+  - VideoSplashKit
 
 SPEC CHECKSUMS:
   Bolts: 8a7995239dbe724f9cba2248b766d48b7ebdd322
@@ -91,7 +93,8 @@ SPEC CHECKSUMS:
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
   Kingfisher: d84c5fd176ea86cc7b8aac65fd55feda6f70f130
   MobilePlayer: 2fdc07a564fa89da65ff660f8fdcf06ab75f775d
+  VideoSplashKit: 0aa63d0bb37c5bd357de3e6a2a13dea5acad4d66
 
-PODFILE CHECKSUM: 4f94a2b2c99a61cc17ed9d9a642b28cb3b4feb81
+PODFILE CHECKSUM: b32d9a0016586cd50cb82aaddfd2eab2f8488ced
 
 COCOAPODS: 1.0.1

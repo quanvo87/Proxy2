@@ -64,6 +64,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>VideoSplashKit.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
@@ -87,11 +92,6 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>68B49935BE8707F21EE5973C45CC697D</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>7380ABD049E12DCFEC9B9E1D2D52C627</key>
 		<dict>
 			<key>primary</key>
@@ -107,6 +107,11 @@
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>8FA7AEA2242F9BE704233EA960A0F89E</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>9C4E70BB64168FAB91408AF7402CE1BF</key>
 		<dict>
 			<key>primary</key>
@@ -118,6 +123,11 @@
 			<true/>
 		</dict>
 		<key>A14D8BA6703C474E6BC2E4686663CD68</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D32D5974181598D7430DB84901D382CD</key>
 		<dict>
 			<key>primary</key>
 			<true/>

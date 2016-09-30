@@ -16,5 +16,6 @@ target 'proxy' do
     pod 'JSQMessagesViewController'
     pod 'Fusuma'
     pod 'MobilePlayer'
+    pod 'VideoSplashKit'
 
 end
