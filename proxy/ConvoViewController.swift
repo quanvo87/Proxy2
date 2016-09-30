@@ -288,6 +288,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         })
     }
     
+    // Observe most recent message to see if it's an outgoing message that's been read.
     func observeLastMessage() {
         lastMessageRefHandle = messagesRef.queryOrderedByChild(Path.Timestamp).queryLimitedToLast(1).observeEventType(.Value, withBlock: { (snapshot) in
             let message = Message(anyObject: snapshot.children.nextObject()!.value)
@@ -304,6 +305,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         })
     }
     
+    // Mark messages as read for incoming messages that came in while convo was open but not on screen.
     func readMessages() {
         for message in unreadMessages {
             api.setRead(forMessage: message, forUser: self.convo.senderId, forProxy: self.convo.senderProxy)
@@ -372,13 +374,6 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         })
     }
     
-    func updateConvo() {
-        api.getConvo(withKey: convo.key, belongingToUser: convo.senderId, completion: { (convo) in
-            self.convo = convo
-            self.convoIsUpdated = true
-        })
-    }
-    
     // MARK: - JSQMessagesCollectionView
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return messages.count
@@ -403,8 +398,8 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         if message.senderId == senderId {
             cell.textView!.textColor = UIColor.whiteColor()
             cell.messageBubbleTopLabel.textInsets = UIEdgeInsetsMake(0, 0, 0, 40)
-        
-        // Incoming message.
+            
+            // Incoming message.
         } else {
             cell.textView?.textColor = UIColor.blackColor()
             cell.messageBubbleTopLabel.textInsets = UIEdgeInsetsMake(0, 40, 0, 0)
@@ -487,7 +482,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         if indexPath.item == messages.count - 1 {
             return kJSQMessagesCollectionViewCellLabelHeightDefault
         }
-
+        
         let curr = self.messages[indexPath.item]
         let next = self.messages[indexPath.item + 1]
         if curr.senderId != next.senderId {
@@ -554,21 +549,12 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     
     // Write message to database.
     override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: NSDate!) {
-        func sendMessage() {
-            api.sendMessage(withText: text, withMediaType: "", usingSenderConvo: convo) { (convo, message) in
-                self.convoIsUpdated = false
+        api.getConvo(withKey: convo.key, belongingToUser: convo.senderId, completion: { (convo) in
+            self.convo = convo
+            self.api.sendMessage(withText: text, withMediaType: "", usingSenderConvo: convo) { (convo, message) in
                 self.finishedWritingMessage()
-                self.updateConvo()
             }
-        }
-        if convoIsUpdated {
-            sendMessage()
-        } else {
-            self.api.getConvo(withKey: convo.key, belongingToUser: convo.senderId, completion: { (convo) in
-                self.convo = convo
-                sendMessage()
-            })
-        }
+        })
     }
     
     // Show multi media message options when user taps attachments button.
@@ -578,7 +564,6 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         
         // Send photo/video
         alert.addAction(UIAlertAction(title: "Photo 📸 / Video 🎥", style: .Default, handler: { action in
-            
             // Show Fusuma, our VC that can handle camera, photos, and video.
             let fusuma = FusumaViewController()
             fusuma.delegate = self
@@ -586,33 +571,6 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
             self.presentViewController(fusuma, animated: true, completion: nil)
         }))
         
-//        let locationAction = UIAlertAction(title: "Send location", style: .Default) { (action) in
-//            /**
-//             *  Add fake location
-//             */
-//            let locationItem = self.buildLocationItem()
-//
-//            self.addMedia(locationItem)
-//        }
-//
-//        let videoAction = UIAlertAction(title: "Send video", style: .Default) { (action) in
-//            /**
-//             *  Add fake video
-//             */
-//            let videoItem = self.buildVideoItem()
-//            
-//            self.addMedia(videoItem)
-//        }
-//        
-//        let audioAction = UIAlertAction(title: "Send audio", style: .Default) { (action) in
-//            /**
-//             *  Add fake audio
-//             */
-//            let audioItem = self.buildAudioItem()
-//            
-//            self.addMedia(audioItem)
-//        }
-//        
         alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
         self.presentViewController(alert, animated: true, completion: nil)
     }
@@ -649,12 +607,12 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     }
     
     func send(image image: UIImage) {
-        func sendImage() {
+        api.getConvo(withKey: convo.key, belongingToUser: convo.senderId, completion: { (convo) in
+            self.convo = convo
+            
             // First send a placeholder message that displays a loading indicator.
-            api.sendMessage(withText: "[Photo 📸]", withMediaType: "imagePlaceholder", usingSenderConvo: self.convo) { (convo, message) in
-                self.convoIsUpdated = false
+            self.api.sendMessage(withText: "[Photo 📸]", withMediaType: "imagePlaceholder", usingSenderConvo: self.convo) { (convo, message) in
                 self.finishSendingMessage()
-                self.updateConvo()
                 
                 // Then upload the image to storage.
                 self.api.upload(image: image, completion: { (url) in
@@ -666,24 +624,16 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
                     self.finishedWritingMessage()
                 })
             }
-        }
-        if convoIsUpdated {
-            sendImage()
-        } else {
-            self.api.getConvo(withKey: convo.key, belongingToUser: convo.senderId, completion: { (convo) in
-                self.convo = convo
-                sendImage()
-            })
-        }
+        })
     }
     
     func send(videoWithURL url: NSURL) {
-        func sendVideo() {
+        api.getConvo(withKey: convo.key, belongingToUser: convo.senderId, completion: { (convo) in
+            self.convo = convo
+            
             // First send a placeholder message that displays a loading indicator.
-            api.sendMessage(withText: "[Video 🎥]", withMediaType: "videoPlaceholder", usingSenderConvo: self.convo) { (convo, message) in
-                self.convoIsUpdated = false
+            self.api.sendMessage(withText: "[Video 🎥]", withMediaType: "videoPlaceholder", usingSenderConvo: self.convo) { (convo, message) in
                 self.finishSendingMessage()
-                self.updateConvo()
                 
                 // Then upload the image to storage.
                 self.api.uploadVideo(fromURL: url, completion: { (url) in
@@ -695,15 +645,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
                     self.finishedWritingMessage()
                 })
             }
-        }
-        if convoIsUpdated {
-            sendVideo()
-        } else {
-            self.api.getConvo(withKey: convo.key, belongingToUser: convo.senderId, completion: { (convo) in
-                self.convo = convo
-                sendVideo()
-            })
-        }
+        })
     }
     
     // MARK: - Text view

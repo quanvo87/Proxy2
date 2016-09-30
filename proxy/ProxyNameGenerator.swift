@@ -8,7 +8,7 @@
 
 struct ProxyNameGenerator {
     
-    let numRange: UInt32 = 99
+    let numRange: UInt32 = 9
     var adjs = [String]()
     var nouns = [String]()
     var isLoaded = false

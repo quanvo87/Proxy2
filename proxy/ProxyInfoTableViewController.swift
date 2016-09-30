@@ -159,8 +159,8 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
             let convo = convos[indexPath.row]
             
             // Set icon
-            cell.iconImageView.kf_indicatorType = .Activity
             cell.iconImageView.image = nil
+            cell.iconImageView.kf_indicatorType = .Activity
             api.getURL(forIcon: convo.icon) { (url) in
                 guard let url = url.absoluteString where url != "" else { return }
                 cell.iconImageView.kf_setImageWithURL(NSURL(string: url), placeholderImage: nil)

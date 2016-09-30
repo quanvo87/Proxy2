@@ -85,6 +85,7 @@ class IconPickerCollectionViewController: UICollectionViewController {
         let icon = icons[indexPath.row]
         
         // Set icon
+        cell.iconImageView.image = nil
         cell.iconImageView.kf_indicatorType = .Activity
         api.getURL(forIcon: icon) { (url) in
             guard let url = url.absoluteString where url != "" else { return }

@@ -509,7 +509,6 @@ class API {
             // Sender updates
             self.set(timestamp, a: Path.Proxies, b: convo.senderId, c: convo.senderProxy, d: Path.Timestamp)
             self.setConvoValuesOnMessageSend(convo.senderId, proxy: convo.senderProxy, convo: convo.key, leftConvo: convo.senderLeftConvo, message: "You: \(text)", timestamp: timestamp)
-            // TODO: have to get most recent values here
             if convo.senderLeftConvo {
                 self.set(false, a: Path.Convos, b: convo.senderId, c: convo.key, d: Path.SenderLeftConvo)
                 self.set(false, a: Path.Convos, b: convo.senderProxy, c: convo.key, d: Path.SenderLeftConvo)
@@ -574,7 +573,8 @@ class API {
     /// Decrements unread's for user.
     func setRead(forMessage message: Message, forUser user: String, forProxy proxy: String) {
         let ref = getRef(a: Path.Messages, b: message.convo, c: message.key, d: nil)
-        ref!.updateChildValues([Path.TimeRead: NSDate().timeIntervalSince1970, Path.Read: true])
+        let update = [Path.TimeRead: NSDate().timeIntervalSince1970, Path.Read: true]
+        ref!.updateChildValues(update as [NSObject : AnyObject])
         increment(amount: -1, a: Path.Unread, b: user, c: Path.Unread, d: nil)
         increment(amount: -1, a: Path.Proxies, b: user, c: proxy, d: Path.Unread)
         increment(amount: -1, a: Path.Convos, b: user, c: message.convo, d: Path.Unread)
