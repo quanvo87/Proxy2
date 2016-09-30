@@ -31,9 +31,11 @@ struct Path {
     static let SenderNickname = "senderNickname"
     static let SenderLeftConvo = "senderLeftConvo"
     static let SenderDeletedProxy = "senderDeletedProxy"
+    static let SenderIsBlocking = "senderIsBlocking"
     static let ReceiverNickname = "receiverNickname"
     static let ReceiverLeftConvo = "receiverLeftConvo"
     static let ReceiverDeletedProxy = "receiverDeletedProxy"
+    static let ReceiverIsBlocking = "receiverIsBlocking"
     
     // Message
     static let Read = "read"

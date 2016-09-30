@@ -8,18 +8,15 @@
 
 import FirebaseDatabase
 import JSQMessagesViewController
-import Photos
 import Fusuma
 import MobilePlayer
 
-class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControllerDelegate, FusumaDelegate {
+class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     
     let api = API.sharedInstance
     let ref = FIRDatabase.database().reference()
     var convo = Convo()
-    var convoIsUpdated = false
     var readReceiptIndex = -1
-    var senderLeftConvo_ = false
     
     var incomingBubble: JSQMessagesBubbleImage!
     var outgoingBubble: JSQMessagesBubbleImage!
@@ -88,7 +85,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(true)
-        leaveConvo()
+        checkStatus()
         if senderIsPresentIsSetUp {
             senderIsPresent = true
         }
@@ -155,6 +152,36 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
     }
     
     // MARK: - Database
+    func checkStatus() {
+        checkLeftConvo()
+        checkDeletedProxy()
+        checkIsBlocking()
+    }
+    
+    func checkLeftConvo() {
+        ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderLeftConvo).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            if let leftConvo = snapshot.value as? Bool where leftConvo {
+                self.navigationController?.popViewControllerAnimated(true)
+            }
+        })
+    }
+    
+    func checkDeletedProxy() {
+        ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderDeletedProxy).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            if let deletedProxy = snapshot.value as? Bool where deletedProxy {
+                self.navigationController?.popViewControllerAnimated(true)
+            }
+        })
+    }
+    
+    func checkIsBlocking() {
+        ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderIsBlocking).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            if let isBlocking = snapshot.value as? Bool where isBlocking {
+                self.navigationController?.popViewControllerAnimated(true)
+            }
+        })
+    }
+    
     // Set user as present in the convo.
     func setUpSenderIsPresent() {
         senderIsPresentRef = ref.child(Path.Present).child(convo.key).child(convo.senderId).child(Path.Present)
@@ -655,22 +682,10 @@ class ConvoViewController: JSQMessagesViewController, ConvoInfoTableViewControll
         userIsTyping = textView.text != ""
     }
     
-    // MARK: - ConvoInfoTableViewControllerDelegate
-    func senderLeftConvo() {
-        senderLeftConvo_ = true
-    }
-    
-    func leaveConvo() {
-        if senderLeftConvo_ {
-            navigationController?.popViewControllerAnimated(true)
-        }
-    }
-    
     // MARK: - Navigation
     func showConvoInfoTableViewController() {
         let dest = storyboard?.instantiateViewControllerWithIdentifier(Identifiers.ConvoInfoTableViewController) as! ConvoInfoTableViewController
         dest.convo = convo
-        dest.delegate = self
         navigationController?.pushViewController(dest, animated: true)
     }
 }

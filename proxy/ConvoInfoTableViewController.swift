@@ -13,7 +13,6 @@ class ConvoInfoTableViewController: UITableViewController {
     let api = API.sharedInstance
     let ref = FIRDatabase.database().reference()
     var convo = Convo()
-    var delegate: ConvoInfoTableViewControllerDelegate!
     var senderProxy: Proxy?
     
     var receiverNicknameRef = FIRDatabaseReference()
@@ -29,6 +28,11 @@ class ConvoInfoTableViewController: UITableViewController {
         setUp()
         observeReceiverNickname()
         observerSenderNickname()
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(true)
+        checkStatus()
     }
     
     deinit {
@@ -53,6 +57,36 @@ class ConvoInfoTableViewController: UITableViewController {
     }
     
     // MARK: - Database
+    func checkStatus() {
+        checkLeftConvo()
+        checkDeletedProxy()
+        checkIsBlocking()
+    }
+    
+    func checkLeftConvo() {
+        ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderLeftConvo).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            if let leftConvo = snapshot.value as? Bool where leftConvo {
+                self.navigationController?.popViewControllerAnimated(true)
+            }
+        })
+    }
+    
+    func checkDeletedProxy() {
+        ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderDeletedProxy).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            if let deletedProxy = snapshot.value as? Bool where deletedProxy {
+                self.navigationController?.popViewControllerAnimated(true)
+            }
+        })
+    }
+    
+    func checkIsBlocking() {
+        ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderIsBlocking).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            if let isBlocking = snapshot.value as? Bool where isBlocking {
+                self.navigationController?.popViewControllerAnimated(true)
+            }
+        })
+    }
+    
     func observeReceiverNickname() {
         receiverNicknameRefHandle = receiverNicknameRef.observeEventType(.Value, withBlock: { (snapshot) in
             guard let receiverNickname = snapshot.value as? String else { return }
@@ -291,7 +325,6 @@ class ConvoInfoTableViewController: UITableViewController {
         let alert = UIAlertController(title: "Leave Conversation?", message: "The other user will not be notified.", preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: "Leave", style: .Destructive, handler: { (void) in
             self.api.leave(convo: self.convo)
-            self.delegate?.senderLeftConvo()
             self.navigationController?.popViewControllerAnimated(true)
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))

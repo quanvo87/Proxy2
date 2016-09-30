@@ -380,6 +380,18 @@ class API {
         }
     }
     
+    /// Returns the convos that a proxy is in.
+    func getConvos(forProxy proxy: Proxy, completion: (convos: [Convo]) -> Void) {
+        ref.child(Path.Convos).child(proxy.key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            var convos = [Convo]()
+            for child in snapshot.children {
+                let convo = Convo(anyObject: child.value)
+                convos.append(convo)
+            }
+            completion(convos: convos)
+        })
+    }
+    
     /// Sets a proxy and its convos to deleted.
     func delete(proxy proxy: Proxy, withConvos convos: [Convo]) {
         // Delete the global proxy
@@ -393,6 +405,7 @@ class API {
         
         // Loop through the proxy's convos
         for convo in convos {
+            
             // Set convo to deleted for sender convos
             self.set(true, a: Path.Convos, b: convo.senderId, c: convo.key, d: Path.SenderDeletedProxy)
             self.set(true, a: Path.Convos, b: convo.senderProxy, c: convo.key, d: Path.SenderDeletedProxy)
@@ -401,18 +414,6 @@ class API {
             self.set(true, a: Path.Convos, b: convo.receiverId, c: convo.key, d: Path.ReceiverDeletedProxy)
             self.set(true, a: Path.Convos, b: convo.receiverProxy, c: convo.key, d: Path.ReceiverDeletedProxy)
         }
-    }
-    
-    /// Returns the convos that a proxy is in.
-    func getConvos(forProxy proxy: Proxy, completion: (convos: [Convo]) -> Void) {
-        ref.child(Path.Convos).child(proxy.key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            var convos = [Convo]()
-            for child in snapshot.children {
-                let convo = Convo(anyObject: child.value)
-                convos.append(convo)
-            }
-            completion(convos: convos)
-        })
     }
     
     // MARK: - Message

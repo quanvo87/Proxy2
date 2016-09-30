@@ -13,7 +13,6 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     
     let api = API.sharedInstance
     let ref = FIRDatabase.database().reference()
-    
     var proxy = Proxy()
     
     var convosRef = FIRDatabaseReference()
@@ -23,7 +22,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     var unreadRef = FIRDatabaseReference()
     var unreadRefHandle = FIRDatabaseHandle()
     
-    var convo = Convo()
+    var convo: Convo?
     var shouldShowNewConvo = false
     
     override func viewDidLoad() {
@@ -35,6 +34,9 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(true)
+        if convo != nil {
+            checkDeleted()
+        }
         showNewConvo()
     }
     
@@ -72,6 +74,14 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     }
     
     // MARK: - Database
+    func checkDeleted() {
+        ref.child(Path.Convos).child(convo!.senderId).child(convo!.key).child(Path.SenderLeftConvo).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            if let deleted = snapshot.value as? Bool where deleted {
+                self.navigationController?.popViewControllerAnimated(true)
+            }
+        })
+    }
+    
     func observeConvos() {
         convosRefHandle = convosRef.queryOrderedByChild(Path.Timestamp).observeEventType(.Value, withBlock: { (snapshot) in
             self.convos = self.api.getConvos(fromSnapshot: snapshot)
@@ -218,7 +228,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     func showNewConvo() {
         if shouldShowNewConvo {
             let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.ConvoViewController) as! ConvoViewController
-            dest.convo = convo
+            dest.convo = convo!
             shouldShowNewConvo = false
             self.navigationController!.pushViewController(dest, animated: true)
         }
