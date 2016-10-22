@@ -83,21 +83,17 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
     
     func tapLogOut() {
         let alert = UIAlertController(title: "Log Out", message: "Are you sure you want to log out?", preferredStyle: .Alert)
-        let yesButton: UIAlertAction = UIAlertAction(title: "Yes", style: .Default) { action in
+        alert.addAction(UIAlertAction(title: "Yes", style: .Default) { action in
             let firebaseAuth = FIRAuth.auth()
             do {
                 try firebaseAuth?.signOut()
                 let logInViewController  = self.storyboard!.instantiateViewControllerWithIdentifier("Log In View Controller") as! LogInViewController
                 let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
                 appDelegate.window?.rootViewController = logInViewController
-            } catch let error as NSError {
-                self.showAlert("Error Logging Out", message: error.localizedDescription)
-            }
-        }
-        let cancelButton: UIAlertAction = UIAlertAction(title: "Cancel", style: .Cancel) { action in
-        }
-        alert.addAction(yesButton)
-        alert.addAction(cancelButton)
+            } catch {}
+        })
+        alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { action in
+        })
         self.presentViewController(alert, animated: true, completion: nil)
     }
     

@@ -64,7 +64,7 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>TextFieldEffects.xcscheme</key>
+		<key>RAMAnimatedTabBarController.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -77,6 +77,11 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>0FB457D44D46AA176A8859E278ACD563</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>1ED4DFAAD25E1999D0244868457A351E</key>
 		<dict>
 			<key>primary</key>
@@ -97,6 +102,11 @@
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>65963AB9A76CB9DE56E4F153623A8112</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>7380ABD049E12DCFEC9B9E1D2D52C627</key>
 		<dict>
 			<key>primary</key>
@@ -108,6 +118,11 @@
 			<true/>
 		</dict>
 		<key>8329B4DD82B7A073B34A61C9527865D0</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>9962210773145C0D716E324E253F9680</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -127,22 +142,7 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>A968E55310DD4BE3682D41D6EA0E3497</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>DB8CB83631B4029238A634161894D539</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>DDA37D30B254E2FC46F00DCED9028A4E</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>E3BE5915DF306E9922298A60F629D943</key>
 		<dict>
 			<key>primary</key>
 			<true/>

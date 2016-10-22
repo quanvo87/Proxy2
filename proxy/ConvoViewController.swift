@@ -219,9 +219,8 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
                         // Load the image to the cell.
                         (_message.media as! JSQPhotoMediaItem).image = image
                         
-                        // Reload the cell.
-                        let indexPath = NSIndexPath(forItem: self.messages.count - 1, inSection: 0)
-                        self.collectionView.reloadItemsAtIndexPaths([indexPath])
+                        // Reload the collection view.
+                        self.collectionView.reloadData()
                         
                         // Remove database observer for this message.
                         messageRef.removeObserverWithHandle(messageRefHandle)
@@ -242,9 +241,8 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
                     // Load the image to the cell.
                     (_message.media as! JSQPhotoMediaItem).image = image
                     
-                    // Reload the cell.
-                    let indexPath = NSIndexPath(forItem: self.messages.count - 1, inSection: 0)
-                    self.collectionView.reloadItemsAtIndexPaths([indexPath])
+                    // Reload the collection view.
+                    self.collectionView.reloadData()
                 })
                 
             case "videoPlaceholder":
@@ -269,9 +267,8 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
                     (_message.media as! JSQVideoMediaItem).isReadyToPlay = true
                     (_message.media as! JSQVideoMediaItem).appliesMediaViewMaskAsOutgoing = message.senderId == self.senderId
                     
-                    // Reload the cell.
-                    let indexPath = NSIndexPath(forItem: self.messages.count - 1, inSection: 0)
-                    self.collectionView.reloadItemsAtIndexPaths([indexPath])
+                    // Reload the collection view.
+                    self.collectionView.reloadData()
                     
                     // Remove database observer for this message.
                     messageRef.removeObserverWithHandle(messageRefHandle)
@@ -571,7 +568,23 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
             let playerVC = MobilePlayerViewController(contentURL: url)
             playerVC.activityItems = [url]
             presentMoviePlayerViewControllerAnimated(playerVC)
+            return
         }
+        if message.mediaType == "image" {
+            let image = (message.media as! JSQPhotoMediaItem).image
+            let newImageView = UIImageView(image: image)
+            newImageView.frame = self.view.frame
+            newImageView.backgroundColor = .blackColor()
+            newImageView.contentMode = .ScaleAspectFit
+            newImageView.userInteractionEnabled = true
+            let tap = UITapGestureRecognizer(target: self, action: #selector(ConvoViewController.dismissFullscreenImage(_:)))
+            newImageView.addGestureRecognizer(tap)
+            self.view.addSubview(newImageView)
+        }
+    }
+    
+    func dismissFullscreenImage(sender: UITapGestureRecognizer) {
+        sender.view?.removeFromSuperview()
     }
     
     // Write message to database.

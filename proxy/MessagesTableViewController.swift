@@ -34,13 +34,13 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        checkLogInStatus()
         setUpTabBar()
         setUp()
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(true)
-        checkLogInStatus()
         showNewConvo()
     }
     
@@ -48,7 +48,6 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
         convosRef.removeObserverWithHandle(convosRefHandle)
         unreadRef.removeObserverWithHandle(unreadRefHandle)
     }
-    
     
     // MARK: - Set up
     func setUpTabBar() {
@@ -155,7 +154,6 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
     
     // MARK: - Log in
     func checkLogInStatus() {
-        unreadRef.removeObserverWithHandle(unreadRefHandle)
         FIRAuth.auth()?.addAuthStateDidChangeListener { (auth, user) in
             if let user = user {
                 self.api.uid = user.uid
@@ -168,14 +166,14 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
     }
     
     func showLogInViewController() {
-        let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.LogInViewController) as! LogInViewController
+        let dest = storyboard!.instantiateViewControllerWithIdentifier(Identifiers.LogInViewController) as! LogInViewController
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.window?.rootViewController = dest
     }
     
     // MARK: - Database
     func observeConvos() {
-        convosRef = self.ref.child(Path.Convos).child(self.api.uid)
+        convosRef = ref.child(Path.Convos).child(api.uid)
         convosRefHandle = convosRef.queryOrderedByChild(Path.Timestamp).observeEventType(.Value, withBlock: { (snapshot) in
             self.convos = self.api.getConvos(fromSnapshot: snapshot)
             self.tableView.reloadData()
@@ -183,7 +181,7 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
     }
     
     func observeUnread() {
-        unreadRef = self.ref.child(Path.Unread).child(self.api.uid).child(Path.Unread)
+        unreadRef = ref.child(Path.Unread).child(api.uid).child(Path.Unread)
         unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
             if let unread = snapshot.value as? Int {
                 self.navigationItem.title = "Messages \(unread.toTitleSuffix())"

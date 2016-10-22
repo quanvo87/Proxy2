@@ -13,7 +13,6 @@ import AVFoundation
 import JSQMessagesViewController
 
 class API {
-    
     static let sharedInstance = API()
     
     let ref = FIRDatabase.database().reference()
@@ -558,12 +557,8 @@ class API {
         })
     }
     
-    /// Sets `senderLeftConvo`, `message`, & `timestamp` for a user's convo.
+    /// Sets `message` & `timestamp` for a user's convo.
     func setConvoValuesOnMessageSend(user: String, proxy: String, convo: String, leftConvo: Bool, message: String, timestamp: Double) {
-        if leftConvo {
-            
-            
-        }
         set(message, a: Path.Convos, b: user, c: convo, d: Path.Message)
         set(message, a: Path.Convos, b: proxy, c: convo, d: Path.Message)
         set(timestamp, a: Path.Convos, b: user, c: convo, d: Path.Timestamp)

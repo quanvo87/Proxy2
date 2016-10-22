@@ -64,7 +64,7 @@ class LogInViewController: VideoSplashViewController {
         self.alwaysRepeat = true
         self.sound = false
         self.alpha = 0.9
-        self.backgroundColor = UIColor.whiteColor()
+        self.restartForeground = true
         self.contentURL = url
     }
     
@@ -140,15 +140,14 @@ class LogInViewController: VideoSplashViewController {
         }
     }
     
-    // MARK: - Keyboard
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        self.view.endEditing(true)
-    }
-    
-    // MARK: - Navigation
     func showHomeScreen() {
         let tabBarController = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.TabBarController) as! UITabBarController
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.window?.rootViewController = tabBarController
+    }
+    
+    // MARK: - Keyboard
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        self.view.endEditing(true)
     }
 }

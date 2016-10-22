@@ -429,7 +429,7 @@ Creative Commons may be contacted at http://creativecommons.org/.
 			<key>FooterText</key>
 			<string>The MIT License (MIT)
 
-Copyright (c) 2015 Raul Riera
+Copyright (c) 2014 Ramotion
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -451,7 +451,7 @@ SOFTWARE.
 
 </string>
 			<key>Title</key>
-			<string>TextFieldEffects</string>
+			<string>RAMAnimatedTabBarController</string>
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 		</dict>
