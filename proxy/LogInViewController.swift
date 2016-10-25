@@ -55,7 +55,7 @@ class LogInViewController: VideoSplashViewController {
     }
     
     func setUpVideoSplash() {
-        let videoNames = ["dragontailzipline", "arabiangulf", "beachpalm", "hawaiiancoast", "sanfran"]
+        let videoNames = ["dragontailzipline", "arabiangulf", "beachpalm", "hawaiiancoast"]
         let videoNamesCount = UInt32(videoNames.count)
         let random = Int(arc4random_uniform(videoNamesCount))
         let url = NSURL.fileURLWithPath(NSBundle.mainBundle().pathForResource(videoNames[random], ofType: "mp4")!)

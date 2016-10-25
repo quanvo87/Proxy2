@@ -103,15 +103,14 @@ class ConvoInfoTableViewController: UITableViewController {
     
     //Mark: - Table view delegate
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 4
+        return 3
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0: return 1
         case 1: return 1
-        case 2: return 3
-        case 3: return 2
+        case 2: return 2
         default: return 0
         }
     }
@@ -162,7 +161,7 @@ class ConvoInfoTableViewController: UITableViewController {
     override func tableView(tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         switch section {
         case 0: return "Them"
-        case 3: return "Users are not notified when you take these actions."
+        case 2: return "Users are not notified when you take these actions."
         default: return nil
         }
     }
@@ -172,7 +171,7 @@ class ConvoInfoTableViewController: UITableViewController {
         switch indexPath.section {
         case 1:
             showProxyInfoTableViewController()
-        case 3:
+        case 2:
             switch indexPath.row {
             case 0:
                 showLeaveConvoAlert()
@@ -207,47 +206,6 @@ class ConvoInfoTableViewController: UITableViewController {
             return cell
             
         case 2:
-            let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.Cell, forIndexPath: indexPath)
-            cell.selectionStyle = .None
-            switch indexPath.row {
-                
-            // Allow pictures & video
-            case 0:
-                cell.textLabel?.text = "Allow pictures & video"
-                
-                let settingSwitch = UISwitch()
-                settingSwitch.tag = indexPath.row
-                //                settingSwitch.on = defaults.boolForKey(row.rawValue) ?? false
-                //                settingSwitch.addTarget(self, action: #selector(switchValueChanged), forControlEvents: .ValueChanged)
-                cell.accessoryView = settingSwitch
-                return cell
-                
-            // Do not disturb
-            case 1:
-                cell.textLabel?.text = "Do not disturb"
-                
-                let settingSwitch = UISwitch()
-                settingSwitch.tag = indexPath.row
-                //                settingSwitch.on = defaults.boolForKey(row.rawValue) ?? false
-                //                settingSwitch.addTarget(self, action: #selector(switchValueChanged), forControlEvents: .ValueChanged)
-                cell.accessoryView = settingSwitch
-                return cell
-                
-            // Send read receipts
-            case 2:
-                cell.textLabel?.text = "Send read receipts"
-                
-                let settingSwitch = UISwitch()
-                settingSwitch.tag = indexPath.row
-                //                settingSwitch.on = defaults.boolForKey(row.rawValue) ?? false
-                //                settingSwitch.addTarget(self, action: #selector(switchValueChanged), forControlEvents: .ValueChanged)
-                cell.accessoryView = settingSwitch
-                return cell
-                
-            default: break
-            }
-            
-        case 3:
             let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.Cell, forIndexPath: indexPath)
             switch indexPath.row {
                 

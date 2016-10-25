@@ -80,6 +80,8 @@ struct Identifiers {
     static let ConvoInfoTableViewController = "Convo Info Table View Controller"
     static let ConvoCell = "Convo Cell"
     
+    static let MeTableViewCell = "Me Table View Cell"
+    
     static let Cell = "Cell"
 }
 
