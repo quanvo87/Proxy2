@@ -174,13 +174,13 @@
 			name = Proxies;
 			sourceTree = "<group>";
 		};
-		143F76F61D72BE4100EF305F /* Settings */ = {
+		143F76F61D72BE4100EF305F /* Me */ = {
 			isa = PBXGroup;
 			children = (
 				592673B71DBECDA200C2FD6F /* MeTableViewController.swift */,
 				593302CE1DBF35D400D26805 /* MeTableViewCell.swift */,
 			);
-			name = Settings;
+			name = Me;
 			sourceTree = "<group>";
 		};
 		143F76F71D72BE7400EF305F /* Utility */ = {
@@ -241,7 +241,7 @@
 				143F76F41D72BE1D00EF305F /* Messages */,
 				1434057E1D85315400B75BF3 /* Convos */,
 				143F76F51D72BE2C00EF305F /* Proxies */,
-				143F76F61D72BE4100EF305F /* Settings */,
+				143F76F61D72BE4100EF305F /* Me */,
 				14383B101D7380130086CA6C /* Model */,
 				14383B131D73AD1F0086CA6C /* View */,
 				143F76F71D72BE7400EF305F /* Utility */,

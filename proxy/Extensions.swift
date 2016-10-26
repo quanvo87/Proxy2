@@ -22,6 +22,28 @@ extension Int {
     func toTitleSuffix() -> String {
         return self == 0 ? "" : "(\(self))"
     }
+    
+    func shortened() -> String {
+        
+        var num = Double(self)
+        let sign = ((num < 0) ? "-" : "" )
+        
+        num = fabs(num)
+        
+        if (num < 1000000000.0) {
+            let formatter = NSNumberFormatter()
+            formatter.numberStyle = .DecimalStyle
+            return formatter.stringFromNumber(Int(num))!
+        }
+        
+        let exp = Int(log10(num) / 3.0 ) //log10(1000))
+        
+        let units = ["K","M","G","T","P","E"]
+        
+        let roundedNum = round(10 * num / pow(1000.0,Double(exp))) / 10
+        
+        return "\(sign)\(roundedNum)\(units[exp-1])"
+    }
 }
 
 extension String {

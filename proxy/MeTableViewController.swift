@@ -7,13 +7,21 @@
 //
 
 import FirebaseAuth
-import FacebookLogin
+import FirebaseDatabase
 
 class MeTableViewController: UITableViewController {
 
-    var messagesReceived = 0
-    var messagesSent = 0
-    var proxiesInteractedWith = 0
+    let api = API.sharedInstance
+    let ref = FIRDatabase.database().reference()
+    
+    var messagesReceivedRef = FIRDatabaseReference()
+    var messagesReceived = "0"
+    
+    var messagesSentRef = FIRDatabaseReference()
+    var messagesSent = "0"
+    
+    var proxiesInteractedWithRef = FIRDatabaseReference()
+    var proxiesInteractedWith = "0"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,7 +34,38 @@ class MeTableViewController: UITableViewController {
             }
         }
         
+        messagesReceivedRef = ref.child(Path.MessagesReceived).child(api.uid).child(Path.MessagesReceived)
+        messagesSentRef = ref.child(Path.MessagesSent).child(api.uid).child(Path.MessagesSent)
+        proxiesInteractedWithRef = ref.child(Path.ProxiesInteractedWith).child(api.uid).child(Path.ProxiesInteractedWith)
+        
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: Identifiers.Cell)
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(true)
+        
+        messagesReceivedRef.observeEventType(.Value, withBlock: { (snapshot) in
+            self.messagesReceived = (snapshot.value as! Int).shortened()
+            self.tableView.reloadData()
+        })
+        
+        messagesSentRef.observeEventType(.Value, withBlock: { (snapshot) in
+            self.messagesSent = (snapshot.value as! Int).shortened()
+            self.tableView.reloadData()
+        })
+        
+        proxiesInteractedWithRef.observeEventType(.Value, withBlock: { (snapshot) in
+            self.proxiesInteractedWith = (snapshot.value as! Int).shortened()
+            self.tableView.reloadData()
+        })
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(true)
+        
+        messagesReceivedRef.removeAllObservers()
+        messagesSentRef.removeAllObservers()
+        proxiesInteractedWithRef.removeAllObservers()
     }
 
     // MARK: - Table view data source
@@ -54,15 +93,15 @@ class MeTableViewController: UITableViewController {
             case 0:
                 cell.iconImageView.image = UIImage(named: "messages-received")?.resize(toNewSize: size, isAspectRatio: isAspectRatio)
                 cell.titleLabel?.text = "Messages Received"
-                cell.subtitleLabel.text = String(messagesReceived)
+                cell.subtitleLabel.text = messagesReceived
             case 1:
                 cell.iconImageView.image = UIImage(named: "messages-sent")?.resize(toNewSize: size, isAspectRatio: isAspectRatio)
                 cell.titleLabel?.text = "Messages Sent"
-                cell.subtitleLabel.text = String(messagesSent)
+                cell.subtitleLabel.text = messagesSent
             case 2:
                 cell.iconImageView.image = UIImage(named: "proxies-interacted-with")?.resize(toNewSize: size, isAspectRatio: isAspectRatio)
                 cell.titleLabel?.text = "Proxies Interacted With"
-                cell.subtitleLabel.text = String(proxiesInteractedWith)
+                cell.subtitleLabel.text = proxiesInteractedWith
             default: break
             }
             
