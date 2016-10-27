@@ -212,6 +212,18 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
         }
     }
     
+    override func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+        var index = 0
+        let convo = convos[indexPath.row]
+        for _convo in convosToLeave {
+            if _convo.key == convo.key {
+                convosToLeave.removeAtIndex(index)
+                return
+            }
+            index += 1
+        }
+    }
+    
     // MARK: - Table view data source
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.ConvoCell, forIndexPath: indexPath) as! ConvoCell

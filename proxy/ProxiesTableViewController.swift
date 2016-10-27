@@ -189,6 +189,18 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
         }
     }
     
+    override func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+        var index = 0
+        let proxy = proxies[indexPath.row]
+        for _proxy in proxiesToDelete {
+            if _proxy.key == proxy.key {
+                proxiesToDelete.removeAtIndex(index)
+                return
+            }
+            index += 1
+        }
+    }
+    
     // MARK: - Table view data source
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.ProxyCell, forIndexPath: indexPath) as! ProxyCell

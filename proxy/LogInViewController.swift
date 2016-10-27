@@ -8,8 +8,8 @@
 
 import FirebaseAuth
 import FirebaseDatabase
-import FacebookLogin
 import VideoSplashKit
+import FacebookLogin
 
 class LogInViewController: VideoSplashViewController {
     

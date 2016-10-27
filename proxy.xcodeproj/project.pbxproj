@@ -45,6 +45,7 @@
 		595463BC1D9EC8F80079BEA3 /* arabiangulf.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 595463B91D9EC8F80079BEA3 /* arabiangulf.mp4 */; };
 		595463BD1D9EC8F80079BEA3 /* beachpalm.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 595463BA1D9EC8F80079BEA3 /* beachpalm.mp4 */; };
 		595463BE1D9EC8F80079BEA3 /* hawaiiancoast.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 595463BB1D9EC8F80079BEA3 /* hawaiiancoast.mp4 */; };
+		6BA416E0405C691A2A0D975A /* Pods_proxy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 42B14E4F2F6BB0AA66125CA8 /* Pods_proxy.framework */; };
 		F8601D08682CD23B0A712CAD /* Pods_proxy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38C5C6B48B79F08C65113251 /* Pods_proxy.framework */; };
 /* End PBXBuildFile section */
 
@@ -107,6 +108,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F8601D08682CD23B0A712CAD /* Pods_proxy.framework in Frameworks */,
+				6BA416E0405C691A2A0D975A /* Pods_proxy.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -402,7 +404,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		846E7DA1B37D3C9D1AC7926C /* [CP] Embed Pods Frameworks */ = {
@@ -595,6 +597,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = proxy/proxy.entitlements;
 				DEVELOPMENT_TEAM = 8UMN526X69;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = proxy/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.quanvo.proxy;
@@ -612,6 +618,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = proxy/proxy.entitlements;
 				DEVELOPMENT_TEAM = 8UMN526X69;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = proxy/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.quanvo.proxy;

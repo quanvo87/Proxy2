@@ -13,6 +13,5 @@
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import <Kingfisher/Kingfisher.h>
 #import "NSDate+NVTimeAgo.h"
-//#import <LLSimpleCamera/LLSimpleCamera.h>
 
 #endif /* Header_h */

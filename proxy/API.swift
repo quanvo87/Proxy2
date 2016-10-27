@@ -516,7 +516,7 @@ class API {
                 self.set(false, a: Path.Convos, b: convo.receiverProxy, c: convo.key, d: Path.ReceiverLeftConvo)
                 self.increment(amount: 1, a: Path.Proxies, b: convo.senderId, c: convo.senderProxy, d: Path.Convos)
             }
-            self.increment(amount: 1, a: Path.MessagesSent, b: convo.receiverId, c: Path.MessagesSent, d: nil)
+            self.increment(amount: 1, a: Path.MessagesSent, b: convo.senderId, c: Path.MessagesSent, d: nil)
             
             // Receiver updates
             let increment = receiverIsPresent ? 0 : 1

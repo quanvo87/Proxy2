@@ -10,12 +10,12 @@ target 'proxy' do
     pod 'FirebaseAuth'
     pod 'Firebase/Database'
     pod 'Firebase/Storage'
-    pod 'FacebookCore'
+    pod 'FacebookCore', '~> 0.1.0'
     pod 'FacebookLogin'
     pod 'Kingfisher', '~> 2.6.0'
     pod 'JSQMessagesViewController'
     pod 'Fusuma'
-    pod 'MobilePlayer'
+    pod 'MobilePlayer', '~> 1.1.0'
     pod 'VideoSplashKit'
 
 end

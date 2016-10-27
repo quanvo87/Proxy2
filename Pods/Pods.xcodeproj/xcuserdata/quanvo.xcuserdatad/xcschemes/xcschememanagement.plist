@@ -34,6 +34,16 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>GTMSessionFetcher.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>GoogleToolboxForMac.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>JSQMessagesViewController.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -64,11 +74,6 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>RAMAnimatedTabBarController.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>VideoSplashKit.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -77,12 +82,12 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>0FB457D44D46AA176A8859E278ACD563</key>
+		<key>1ED4DFAAD25E1999D0244868457A351E</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>1ED4DFAAD25E1999D0244868457A351E</key>
+		<key>23BA9083ED0D2392A167A8AFA04427FA</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -102,7 +107,7 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>65963AB9A76CB9DE56E4F153623A8112</key>
+		<key>66831939B6757595A43EC9DDE5B59BF1</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -117,12 +122,17 @@
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>7D04535608058A2FABC0D16935868FB9</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>8329B4DD82B7A073B34A61C9527865D0</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>9962210773145C0D716E324E253F9680</key>
+		<key>98E158B01100725BAD3B8152F6F10011</key>
 		<dict>
 			<key>primary</key>
 			<true/>

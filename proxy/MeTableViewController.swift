@@ -37,8 +37,6 @@ class MeTableViewController: UITableViewController {
         messagesReceivedRef = ref.child(Path.MessagesReceived).child(api.uid).child(Path.MessagesReceived)
         messagesSentRef = ref.child(Path.MessagesSent).child(api.uid).child(Path.MessagesSent)
         proxiesInteractedWithRef = ref.child(Path.ProxiesInteractedWith).child(api.uid).child(Path.ProxiesInteractedWith)
-        
-        tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: Identifiers.Cell)
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -156,7 +154,7 @@ class MeTableViewController: UITableViewController {
     }
     
     func showAbout() {
-        let alert = UIAlertController(title: "About proxy:", message: "Contact:\nqvo1987@gmail.com\n\nUpcoming features:\nsound in videos, location sharing", preferredStyle: .Alert)
+        let alert = UIAlertController(title: "About proxy:", message: "Contact:\nqvo1987@gmail.com\n\nUpcoming features:\nsound in videos, location sharing\n\nIcons from icons8.com", preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: "Ok", style: .Cancel) { action in
         })
         self.presentViewController(alert, animated: true, completion: nil)

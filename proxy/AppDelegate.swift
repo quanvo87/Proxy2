@@ -7,7 +7,6 @@
 //
 
 import Firebase
-import FacebookLogin
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {

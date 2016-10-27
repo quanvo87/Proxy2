@@ -24,7 +24,6 @@ extension Int {
     }
     
     func shortened() -> String {
-        
         var num = Double(self)
         let sign = ((num < 0) ? "-" : "" )
         
