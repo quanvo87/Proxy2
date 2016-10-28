@@ -74,7 +74,7 @@ struct Identifiers {
     static let IconPickerCell = "Icon Picker Cell"
     
     static let NewMessageViewController = "New Message View Controller"
-    static let SelectProxyViewController = "Select Proxy View Controller"
+    static let SenderProxyPicker = "Sender Proxy Picker"
     
     static let ConvoViewController = "Convo View Controller"
     static let ConvoInfoTableViewController = "Convo Info Table View Controller"

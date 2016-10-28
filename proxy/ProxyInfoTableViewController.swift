@@ -235,7 +235,6 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     }
     
     // MARK: - Navigation
-    // Show VC to choose a new icon for the user's proxy.
     func showIconPickerViewController() {
         let dest = self.storyboard?.instantiateViewControllerWithIdentifier(Identifiers.IconPickerCollectionViewController) as! IconPickerCollectionViewController
         dest.proxy = proxy
@@ -251,7 +250,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     
     func showNewMessageViewController() {
         let dest = storyboard?.instantiateViewControllerWithIdentifier(Identifiers.NewMessageViewController) as! NewMessageViewController
-        dest.proxy = proxy
+        dest.senderProxy = proxy
         dest.delegate = self
         navigationController?.pushViewController(dest, animated: true)
     }

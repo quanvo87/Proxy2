@@ -8,44 +8,46 @@
 
 import FirebaseDatabase
 
-class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate, SelectProxyViewControllerDelegate {
+class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate, SenderProxyPickerDelegate {
     
-    @IBOutlet weak var selectProxyButton: UIButton!
+    @IBOutlet weak var selectSenderProxyButton: UIButton!
     @IBOutlet weak var newButton: UIButton!
-    @IBOutlet weak var firstTextField: UITextField!
-    @IBOutlet weak var secondTextField: UITextField!
-    @IBOutlet weak var numTextField: UITextField!
+    @IBOutlet weak var selectReceiverProxyButton: UIButton!
     @IBOutlet weak var messageTextView: UITextView!
     @IBOutlet weak var sendButton: UIButton!
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     
     let api = API.sharedInstance
     let ref = FIRDatabase.database().reference()
-    var proxy: Proxy?
-    var usingNewProxy = false
     var delegate: NewMessageViewControllerDelegate!
+    var usingNewProxy = false
+    
+    var senderProxy: Proxy? {
+        didSet {
+            enableSendButton()
+        }
+    }
+    
+    var receiverProxy: Proxy? {
+        didSet {
+            selectReceiverProxyButton.setTitle(receiverProxy!.key, forState: .Normal)
+            enableSendButton()
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setUp()
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(NewMessageViewController.keyboardWillShow), name:UIKeyboardWillShowNotification, object: self.view.window)
-        setDefaultProxy()
-        setUpTextField()
-        setUpTextView()
-    }
-    
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(true)
-        navigationItem.hidesBackButton = true
-    }
-    
-    // MARK: - Set up
-    func setUp() {
+        
         navigationItem.title = "New Message"
-        setUpCancelButton()
-    }
-    
-    func setUpCancelButton() {
+        messageTextView.becomeFirstResponder()
+        messageTextView.delegate = self
+        sendButton.enabled = false
+        
+        if senderProxy != nil {
+            setSelectSenderProxyButtonTitle()
+        }
+        
         let cancelButton = UIButton(type: .Custom)
         cancelButton.setImage(UIImage(named: "cancel"), forState: UIControlState.Normal)
         cancelButton.addTarget(self, action: #selector(NewMessageViewController.cancelNewMessage), forControlEvents: UIControlEvents.TouchUpInside)
@@ -53,77 +55,52 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: cancelButton)
     }
     
-    /*
-     If user starts a new message from a proxy info view, load the new message
-     view with that proxy pre-selected.
-     */
-    func setDefaultProxy() {
-        if let proxy = proxy {
-            selectProxy(proxy)
-        }
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(true)
+        navigationItem.hidesBackButton = true
     }
     
     func disableButtons() {
-        selectProxyButton.enabled = false
+        selectSenderProxyButton.enabled = false
         newButton.enabled = false
+        selectReceiverProxyButton.enabled = false
         sendButton.enabled = false
     }
     
     func enableButtons() {
-        selectProxyButton.enabled = true
+        selectSenderProxyButton.enabled = true
         newButton.enabled = true
-        sendButton.enabled = true
+        selectReceiverProxyButton.enabled = true
     }
     
-    @IBAction func tapSendButton(sender: AnyObject) {
+    func enableSendButton() {
+        if senderProxy != nil && receiverProxy != nil && messageTextView.text != "" {
+            sendButton.enabled = true
+        }
+    }
+    
+    func setSelectSenderProxyButtonTitle() {
+        selectSenderProxyButton.setTitle(senderProxy!.key, forState: .Normal)
+    }
+    
+    @IBAction func tapSendButton() {
         disableButtons()
-        
-        // Make sure user selected/created a proxy
-        guard proxy != nil else {
-            enableButtonsAndShowAlert("Select A Proxy", message: "Please select a proxy to send your message from. Or create a new one!")
-            return
-        }
-        
-        // Check for empty fields
-        guard
-            let first = firstTextField.text?.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " ")),
-            let second = secondTextField.text?.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " ")),
-            let num = numTextField.text?.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " ")),
-            let text = messageTextView.text?.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
-            where first != "" && second != "" && num != "" && text != "" && text != "Message..." else {
-                enableButtonsAndShowAlert("Missing Fields", message: "Please enter a value for each field.")
-                return
-        }
-        
-        // Build receiver proxy name
-        let receiverProxyName = first.lowercaseString + second.lowercaseString.capitalizedString + num
-        
-        // Try to send message
-        api.sendMessage(fromSenderProxy: proxy!, toReceiverProxyName: receiverProxyName, withText: text, withMediaType: "") { (error, convo, message) in
-            if let error = error {
-                self.enableButtonsAndShowAlert(error.title, message: error.message)
-            } else {
-                self.goToConvo(convo!)
-            }
+        api.sendMessage(fromSenderProxy: senderProxy!, toReceiverProxyName: receiverProxy!.key, withText: messageTextView.text, withMediaType: "") { (error, convo, message) in
+            self.goToConvo(convo!)
         }
     }
     
-    func enableButtonsAndShowAlert(title: String, message: String) {
-        enableButtons()
-        showAlert(title, message: message)
-    }
-    
-    // MARK: - Select proxy delegate
-    func selectProxy(proxy: Proxy) {
-        self.proxy = proxy
-        selectProxyButton.setTitle(proxy.key, forState: .Normal)
+    // MARK: - Sender proxy picker delegate
+    func setSenderProxy(proxy: Proxy) {
+        senderProxy = proxy
+        setSelectSenderProxyButtonTitle()
     }
     
     // MARK: - New proxy
-    @IBAction func tapNewButton(sender: AnyObject) {
+    @IBAction func tapNewButton() {
         disableButtons()
         if usingNewProxy {
-            api.reroll(proxy: proxy!, completion: { (proxy) in
+            api.reroll(proxy: senderProxy!, completion: { (proxy) in
                 self.setProxy(proxy)
             })
         } else {
@@ -137,59 +114,15 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
     func setProxy(proxy: Proxy?) {
         usingNewProxy = false
         if let proxy = proxy {
-            self.proxy = proxy
-            selectProxyButton.setTitle(proxy.key, forState: .Normal)
+            self.senderProxy = proxy
+            selectSenderProxyButton.setTitle(proxy.key, forState: .Normal)
         }
         enableButtons()
     }
     
-    // MARK: - Text field
-    func setUpTextField() {
-        firstTextField.becomeFirstResponder()
-        firstTextField.delegate = self
-        firstTextField.clearButtonMode = .WhileEditing
-        firstTextField.returnKeyType = .Next
-        firstTextField.tag = 0
-        secondTextField.delegate = self
-        secondTextField.clearButtonMode = .WhileEditing
-        secondTextField.returnKeyType = .Next
-        secondTextField.tag = 1
-        numTextField.delegate = self
-        numTextField.clearButtonMode = .WhileEditing
-        numTextField.returnKeyType = .Next
-        numTextField.tag = 2
-        numTextField.keyboardType = .NumbersAndPunctuation
-    }
-    
-    func textFieldDidBeginEditing(textField: UITextField) {
-        textField.selectedTextRange = textField.textRangeFromPosition(textField.beginningOfDocument, toPosition: textField.endOfDocument)
-    }
-    
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
-        let nextTag = textField.tag + 1
-        if let nextResponder = textField.superview!.viewWithTag(nextTag){
-            nextResponder.becomeFirstResponder()
-        } else {
-            messageTextView.becomeFirstResponder()
-        }
-        return false
-    }
-    
     // MARK: - Text view
-    func setUpTextView() {
-        messageTextView.delegate = self
-    }
-    
-    func textViewDidBeginEditing(textView: UITextView) {
-        if messageTextView.text == "Message..." {
-            messageTextView.text = ""
-        }
-    }
-    
-    func textViewDidEndEditing(textView: UITextView) {
-        if messageTextView.text == "" {
-            messageTextView.text = "Message..."
-        }
+    func textViewDidChange(textView: UITextView) { //Handle the text changes here
+        enableSendButton()
     }
     
     // MARK: - Keyboard
@@ -202,10 +135,14 @@ class NewMessageViewController: UIViewController, UITextFieldDelegate, UITextVie
     }
     
     // MARK: - Navigation
-    @IBAction func showSelectProxyViewController(sender: AnyObject) {
-        let dest = self.storyboard?.instantiateViewControllerWithIdentifier(Identifiers.SelectProxyViewController) as! SelectProxyViewController
+    @IBAction func showSenderProxyPicker() {
+        let dest = self.storyboard?.instantiateViewControllerWithIdentifier(Identifiers.SenderProxyPicker) as! SenderProxyPicker
         dest.delegate = self
         navigationController?.pushViewController(dest, animated: true)
+    }
+    
+    @IBAction func showReceiverProxyPicker() {
+        
     }
     
     func cancelNewMessage() {

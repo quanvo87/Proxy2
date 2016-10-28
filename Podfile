@@ -17,5 +17,6 @@ target 'proxy' do
     pod 'Fusuma'
     pod 'MobilePlayer', '~> 1.1.0'
     pod 'VideoSplashKit'
+    pod 'RAMReel', '~> 1.2.1'
 
 end

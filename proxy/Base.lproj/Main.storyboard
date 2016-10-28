@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="pFd-dJ-gNl">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="16B2555" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="pFd-dJ-gNl">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
@@ -210,7 +210,7 @@
         <scene sceneID="LLx-ej-ogN">
             <objects>
                 <collectionViewController storyboardIdentifier="Icon Picker Collection View Controller" id="myi-c3-T5y" customClass="IconPickerCollectionViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="JDm-gc-1XX">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" dataMode="prototypes" id="JDm-gc-1XX">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="P5Q-EW-UUp">
@@ -497,7 +497,7 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="LfE-yp-YW0" userLabel="Proxies" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Proxies" id="iOS-6g-J6E"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="2C5-MT-khQ">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="2C5-MT-khQ">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -663,16 +663,16 @@
                                 <color key="textColor" red="0.50196081400000003" green="0.50196081400000003" blue="0.50196081400000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cCU-KM-BgS">
-                                <state key="normal" title="Select A Proxy"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cCU-KM-BgS" userLabel="Select Sender Proxy Button">
+                                <state key="normal" title="Select Proxy"/>
                                 <connections>
-                                    <action selector="showSelectProxyViewController:" destination="t9h-Vt-RKS" eventType="touchUpInside" id="Dwg-LV-0NB"/>
+                                    <action selector="showSenderProxyPicker" destination="t9h-Vt-RKS" eventType="touchUpInside" id="gih-0P-3lt"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Wjj-lH-XZu">
                                 <state key="normal" title="New"/>
                                 <connections>
-                                    <action selector="tapNewButton:" destination="t9h-Vt-RKS" eventType="touchUpInside" id="su5-in-9A2"/>
+                                    <action selector="tapNewButton" destination="t9h-Vt-RKS" eventType="touchUpInside" id="RcK-xU-Tt0"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="To:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8ol-Eh-fx6">
@@ -680,21 +680,12 @@
                                 <color key="textColor" red="0.50196081400000003" green="0.50196081400000003" blue="0.50196081400000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="First Word" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="m0a-Hi-Vxj">
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="249" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Second Word" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="2cU-9m-tAW">
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="##" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Fvv-XE-FPi">
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="70" id="Ai6-i8-enj"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pwd-90-tRg">
+                                <state key="normal" title="Select Proxy"/>
+                                <connections>
+                                    <action selector="showReceiverProxyPicker" destination="t9h-Vt-RKS" eventType="touchUpInside" id="5ij-CZ-7ad"/>
+                                </connections>
+                            </button>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Message..." textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="91z-h3-rmO">
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <color key="textColor" red="0.50196081400000003" green="0.50196081400000003" blue="0.50196081400000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -704,31 +695,25 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1by-x2-XdQ" userLabel="Send">
                                 <state key="normal" title="Send"/>
                                 <connections>
-                                    <action selector="tapSendButton:" destination="t9h-Vt-RKS" eventType="touchUpInside" id="VD6-hW-OlL"/>
+                                    <action selector="tapSendButton" destination="t9h-Vt-RKS" eventType="touchUpInside" id="Ml0-h4-W5b"/>
                                 </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="cCU-KM-BgS" firstAttribute="leading" secondItem="Fpp-bY-Fz7" secondAttribute="trailing" constant="10" id="0bu-3A-DZC"/>
-                            <constraint firstItem="m0a-Hi-Vxj" firstAttribute="leading" secondItem="cCU-KM-BgS" secondAttribute="leading" id="1VU-78-tHJ"/>
                             <constraint firstAttribute="bottomMargin" secondItem="1by-x2-XdQ" secondAttribute="bottom" id="3YD-QO-s6S"/>
                             <constraint firstItem="cCU-KM-BgS" firstAttribute="firstBaseline" secondItem="Fpp-bY-Fz7" secondAttribute="firstBaseline" id="6Vd-vh-H6J"/>
-                            <constraint firstItem="2cU-9m-tAW" firstAttribute="centerY" secondItem="m0a-Hi-Vxj" secondAttribute="centerY" id="6YM-vq-INe"/>
                             <constraint firstItem="1by-x2-XdQ" firstAttribute="width" secondItem="91z-h3-rmO" secondAttribute="width" id="6aI-VK-b3x"/>
-                            <constraint firstItem="Fvv-XE-FPi" firstAttribute="leading" secondItem="2cU-9m-tAW" secondAttribute="trailing" constant="10" id="72r-5f-rQ0"/>
                             <constraint firstAttribute="trailingMargin" secondItem="91z-h3-rmO" secondAttribute="trailing" constant="-10" id="7bb-EA-WHe"/>
                             <constraint firstItem="1by-x2-XdQ" firstAttribute="top" secondItem="91z-h3-rmO" secondAttribute="bottom" constant="10" id="8pH-lA-EQa"/>
                             <constraint firstItem="1by-x2-XdQ" firstAttribute="centerX" secondItem="JVl-Bo-Q0q" secondAttribute="centerX" id="DE9-Xr-iZS"/>
-                            <constraint firstItem="2cU-9m-tAW" firstAttribute="width" secondItem="m0a-Hi-Vxj" secondAttribute="width" id="DcE-HV-WgG"/>
-                            <constraint firstItem="Fvv-XE-FPi" firstAttribute="centerY" secondItem="m0a-Hi-Vxj" secondAttribute="centerY" id="FH3-be-xr3"/>
-                            <constraint firstItem="Fvv-XE-FPi" firstAttribute="trailing" secondItem="Wjj-lH-XZu" secondAttribute="trailing" id="N5K-NI-A6W"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Wjj-lH-XZu" secondAttribute="trailing" constant="-5" id="P8d-c4-YoZ"/>
-                            <constraint firstItem="m0a-Hi-Vxj" firstAttribute="centerY" secondItem="8ol-Eh-fx6" secondAttribute="centerY" id="QCX-vF-Jmr"/>
                             <constraint firstItem="Fpp-bY-Fz7" firstAttribute="top" secondItem="HzN-jJ-R1h" secondAttribute="bottom" constant="10" id="Qqm-Sf-vtY"/>
+                            <constraint firstItem="pwd-90-tRg" firstAttribute="leading" secondItem="cCU-KM-BgS" secondAttribute="leading" id="X7m-BW-d4q"/>
                             <constraint firstItem="Fpp-bY-Fz7" firstAttribute="leading" secondItem="JVl-Bo-Q0q" secondAttribute="leadingMargin" constant="-5" id="XT6-hI-LEM"/>
                             <constraint firstItem="91z-h3-rmO" firstAttribute="leading" secondItem="JVl-Bo-Q0q" secondAttribute="leadingMargin" constant="-10" id="YkX-Hy-WgB"/>
-                            <constraint firstItem="2cU-9m-tAW" firstAttribute="leading" secondItem="m0a-Hi-Vxj" secondAttribute="trailing" constant="10" id="atI-f1-6cA"/>
+                            <constraint firstItem="pwd-90-tRg" firstAttribute="baseline" secondItem="8ol-Eh-fx6" secondAttribute="baseline" id="bda-ZK-bHv"/>
                             <constraint firstItem="8ol-Eh-fx6" firstAttribute="top" secondItem="Fpp-bY-Fz7" secondAttribute="bottom" constant="25" id="gRF-GV-Jsm"/>
                             <constraint firstItem="91z-h3-rmO" firstAttribute="top" secondItem="8ol-Eh-fx6" secondAttribute="bottom" constant="20" id="hwS-07-w9U"/>
                             <constraint firstItem="Wjj-lH-XZu" firstAttribute="centerY" secondItem="cCU-KM-BgS" secondAttribute="centerY" id="zTw-45-3O1"/>
@@ -738,12 +723,10 @@
                     <navigationItem key="navigationItem" id="sQS-y4-Shs"/>
                     <connections>
                         <outlet property="bottomConstraint" destination="3YD-QO-s6S" id="5mi-NV-Tbv"/>
-                        <outlet property="firstTextField" destination="m0a-Hi-Vxj" id="q0I-fP-Hkp"/>
                         <outlet property="messageTextView" destination="91z-h3-rmO" id="XPP-fM-Qyd"/>
                         <outlet property="newButton" destination="Wjj-lH-XZu" id="B5p-BN-z8X"/>
-                        <outlet property="numTextField" destination="Fvv-XE-FPi" id="JuE-ja-zFs"/>
-                        <outlet property="secondTextField" destination="2cU-9m-tAW" id="cMY-fW-q5d"/>
-                        <outlet property="selectProxyButton" destination="cCU-KM-BgS" id="6Dx-P9-huO"/>
+                        <outlet property="selectReceiverProxyButton" destination="pwd-90-tRg" id="EFF-eC-LG2"/>
+                        <outlet property="selectSenderProxyButton" destination="cCU-KM-BgS" id="Edn-PL-0ww"/>
                         <outlet property="sendButton" destination="1by-x2-XdQ" id="HKT-5Z-zly"/>
                     </connections>
                 </viewController>
@@ -751,10 +734,10 @@
             </objects>
             <point key="canvasLocation" x="-2015" y="1448"/>
         </scene>
-        <!--Select Proxy View Controller-->
+        <!--Sender Proxy Picker-->
         <scene sceneID="Zpb-v0-RP1">
             <objects>
-                <viewController storyboardIdentifier="Select Proxy View Controller" id="9cd-P2-YMi" customClass="SelectProxyViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Sender Proxy Picker" id="9cd-P2-YMi" customClass="SenderProxyPicker" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="uw1-wN-UMD"/>
                         <viewControllerLayoutGuide type="bottom" id="jT8-2Q-AuT"/>
@@ -767,10 +750,10 @@
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Proxy Cell" rowHeight="80" id="VJJ-nO-xK1" customClass="ProxyCell" customModule="proxy" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="1000" height="80"/>
+                                        <rect key="frame" x="0.0" y="28" width="383" height="80"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="VJJ-nO-xK1" id="LTt-oz-ohx">
-                                            <frame key="frameInset" width="1000" height="79"/>
+                                            <frame key="frameInset" width="383" height="79"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="0yX-sn-CJU">
@@ -834,7 +817,7 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="EGG-kf-Fg2" userLabel="Home" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Messages" id="FaN-XB-C5v"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="RUp-Qx-BNr">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="RUp-Qx-BNr">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -853,7 +836,7 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="PGe-ha-qrd" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Me" id="8DJ-gV-5Kk"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="3Im-Fz-MvD">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="3Im-Fz-MvD">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -890,7 +873,7 @@
             <objects>
                 <navigationController storyboardIdentifier="Icon Picker Navigation Controller" automaticallyAdjustsScrollViewInsets="NO" id="xgT-pv-zVk" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="7tw-w6-7Ur">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="7tw-w6-7Ur">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>

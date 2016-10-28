@@ -1,5 +1,5 @@
 //
-//  SelectProxyViewController.swift
+//  SenderProxyPicker.swift
 //  proxy
 //
 //  Created by Quan Vo on 8/28/16.
@@ -8,14 +8,14 @@
 
 import FirebaseDatabase
 
-class SelectProxyViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class SenderProxyPicker: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     let api = API.sharedInstance
     let ref = FIRDatabase.database().reference()
     var proxiesRef = FIRDatabaseReference()
     var proxiesRefHandle = FIRDatabaseHandle()
     var proxies = [Proxy]()
-    var delegate: SelectProxyViewControllerDelegate!
+    var delegate: SenderProxyPickerDelegate!
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -35,7 +35,7 @@ class SelectProxyViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     func setUp() {
-        navigationItem.title = "Select A Proxy"
+        navigationItem.title = "Select Sender Proxy"
         automaticallyAdjustsScrollViewInsets = false
         tableView.delegate = self
         tableView.dataSource = self
@@ -69,7 +69,7 @@ class SelectProxyViewController: UIViewController, UITableViewDelegate, UITableV
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let proxy = self.proxies[indexPath.row]
-        delegate.selectProxy(proxy)
+        delegate.setSenderProxy(proxy)
         navigationController?.popViewControllerAnimated(true)
     }
 }
