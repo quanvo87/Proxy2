@@ -248,7 +248,7 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
     // MARK: - Navigation
     func showNewMessageViewController() {
         let dest = storyboard!.instantiateViewControllerWithIdentifier(Identifiers.NewMessageViewController) as! NewMessageViewController
-        dest.delegate = self
+        dest.newMessageViewControllerDelegate = self
         navigationController?.pushViewController(dest, animated: true)
     }
     

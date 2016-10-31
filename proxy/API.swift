@@ -188,6 +188,7 @@ class API {
     }
     
     // MARK: - User
+    
     /// Gives a user access to the default icons.
     func setDefaultIcons(forUser user: String) {
         let defaultIcons = DefaultIcons(id: user).defaultIcons
@@ -251,6 +252,7 @@ class API {
     func blockUser() {}
     
     // MARK: - Proxy
+    
     /// Returns a new proxy with a unique name.
     func create(proxy completion: (proxy: Proxy) -> Void) {
         isCreatingProxy = true
@@ -416,93 +418,35 @@ class API {
     }
     
     // MARK: - Message
-    /// Error checks before sending message.
-    /// Returns sender's convo and message on success.
-    /// Returns an ErrorAlert on failure.
-    func sendMessage(fromSenderProxy senderProxy: Proxy, toReceiverProxyName receiverProxyName: String, withText text: String, withMediaType mediaType: String, completion: (error: ErrorAlert?, convo: Convo?, message: Message?) -> Void ) {
-        // Check if receiver exists
-        self.ref.child(Path.Proxies).queryOrderedByChild(Path.Key).queryEqualToValue(receiverProxyName).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            guard snapshot.childrenCount == 1 else {
-                completion(error: ErrorAlert(title: "Recipient Not Found", message: "Perhaps there was a spelling error?"), convo: nil, message: nil)
-                return
+    
+    func sendMessage(sender: Proxy, receiver: Proxy, text: String, completion: (convo: Convo) -> Void) {
+        
+        // Build convo key out of sender and reciever keys
+        let convoKey = [sender.key, receiver.key].sort().joinWithSeparator("")
+        
+        // Check if convo exists
+        ref.child(Path.Convos).child(sender.ownerId).queryEqualToValue(convoKey).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            
+            // Convo exists, use it to send the message
+            if snapshot.childrenCount == 1 {
+                let convo = Convo(anyObject: snapshot.value!)
+                self.sendMessage(withText: text, withMediaType: "", usingSenderConvo: convo, completion: { (convo, message) in
+                    completion(convo: convo)
+                })
             }
-            // Check if sender is trying to send to him/herself
-            let receiverProxy = Proxy(anyObject: snapshot.children.nextObject()!.value)
-            guard senderProxy.ownerId != receiverProxy.ownerId else {
-                completion(error: ErrorAlert(title: "Cannot Send To Self", message: "Did you enter yourself as a recipient by mistake?"), convo: nil, message: nil)
-                return
-            }
-            // Get receiver's proxy
-            self.getProxy(withKey: receiverProxy.key, belongingToUser: receiverProxy.ownerId, completion: { (receiverProxy) in
-                
-                // Build convo key by sorting and concatenizing the proxy keys
-                let convoKey = [senderProxy.key, receiverProxy.key].sort().joinWithSeparator("")
-                
-                // Check if convo exists between proxies
-                self.ref.child(Path.Convos).child(senderProxy.ownerId).queryEqualToValue(convoKey).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-                    
-                    // Existing convo found, use it to send the message
-                    if snapshot.childrenCount == 1 {
-                        let convo = Convo(anyObject: snapshot.value!)
-                        self.sendMessage(withText: text, withMediaType: mediaType, usingSenderConvo: convo, completion: { (convo, message) in
-                            completion(error: nil, convo: convo, message: message)
-                        })
-                    }
-                    // No convo found, set up a new convo before sending message
-                    self.setUpFirstMessage(fromSenderProxy: senderProxy, toReceiverProxy: receiverProxy, usingConvoKey: convoKey, withText: text, withMediaType: mediaType, completion: { (convo, message) in
-                        completion(error: nil, convo: convo, message: message)
-                    })
+            
+            // Convo does not exist, create the convo before sending message
+            self.createConvo(sender, receiver: receiver, convoKey: convoKey, text: text, completion: { (convo) in
+                self.sendMessage(withText: text, withMediaType: "", usingSenderConvo: convo, completion: { (convo, message) in
+                    completion(convo: convo)
                 })
             })
-            
         })
     }
     
-    /// Sets up the first message between two proxies and sends the message.
-    /// Returns sender's convo and message.
-    func setUpFirstMessage(fromSenderProxy senderProxy: Proxy, toReceiverProxy receiverProxy: Proxy, usingConvoKey convoKey: String, withText text: String, withMediaType mediaType: String, completion: (convo: Convo, message: Message) -> Void) {
-        // Check if sender is in receiver's blocked list
-        ref.child(Path.Blocked).child(receiverProxy.ownerId).child(senderProxy.ownerId).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            var senderConvo = Convo()
-            var receiverConvo = Convo()
-            let senderBlocked = snapshot.childrenCount == 1
-            
-            // Set up sender side
-            senderConvo.key = convoKey
-            senderConvo.senderId = senderProxy.ownerId
-            senderConvo.senderProxy = senderProxy.key
-            senderConvo.receiverId = receiverProxy.ownerId
-            senderConvo.receiverProxy = receiverProxy.key
-            senderConvo.icon = receiverProxy.icon
-            senderConvo.receiverIsBlocking = senderBlocked
-            let senderConvoAnyObject = senderConvo.toAnyObject()
-            self.set(senderConvoAnyObject, a: Path.Convos, b: senderConvo.senderId, c: senderConvo.key, d: nil)
-            self.set(senderConvoAnyObject, a: Path.Convos, b: senderConvo.senderProxy, c: senderConvo.key, d: nil)
-            self.increment(amount: 1, a: Path.ProxiesInteractedWith, b: senderProxy.ownerId, c: Path.ProxiesInteractedWith, d: nil)
-            
-            // Set up receiver side
-            receiverConvo.key = convoKey
-            receiverConvo.senderId = receiverProxy.ownerId
-            receiverConvo.senderProxy = receiverProxy.key
-            receiverConvo.receiverId = senderProxy.ownerId
-            receiverConvo.receiverProxy = senderProxy.key
-            receiverConvo.icon = senderProxy.icon
-            receiverConvo.senderIsBlocking = senderBlocked
-            let receiverConvoAnyObject = receiverConvo.toAnyObject()
-            self.set(receiverConvoAnyObject, a: Path.Convos, b: receiverConvo.senderId, c: receiverConvo.key, d: nil)
-            self.set(receiverConvoAnyObject, a: Path.Convos, b: receiverConvo.senderProxy, c: receiverConvo.key, d: nil)
-            self.increment(amount: 1, a: Path.ProxiesInteractedWith, b: receiverProxy.ownerId, c: Path.ProxiesInteractedWith, d: nil)
-            
-            // Send message
-            self.sendMessage(withText: text, withMediaType: mediaType, usingSenderConvo: senderConvo, completion: { (convo, message) in
-                completion(convo: convo, message: message)
-            })
-        })
-    }
-    
-    /// Sends a message.
-    /// Returns sender's convo and message.
     func sendMessage(withText text: String, withMediaType mediaType: String, usingSenderConvo convo: Convo, completion: (convo: Convo, message: Message) -> Void) {
+        
+        // Check if receiver is present to mark message as read
         userIsPresent(user: convo.receiverId, convo: convo.key) { (receiverIsPresent) in
             let timestamp = NSDate().timeIntervalSince1970
             
@@ -600,6 +544,45 @@ class API {
     }
     
     // MARK: - Conversation (Convo)
+    
+    func createConvo(sender: Proxy, receiver: Proxy, convoKey: String, text: String, completion: (convo: Convo) -> Void) {
+        
+        // Check if sender is in receiver's blocked list
+        ref.child(Path.Blocked).child(receiver.ownerId).child(sender.ownerId).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            var senderConvo = Convo()
+            var receiverConvo = Convo()
+            let senderBlocked = snapshot.childrenCount == 1
+            
+            // Set up sender side
+            senderConvo.key = convoKey
+            senderConvo.senderId = sender.ownerId
+            senderConvo.senderProxy = sender.key
+            senderConvo.receiverId = receiver.ownerId
+            senderConvo.receiverProxy = receiver.key
+            senderConvo.icon = receiver.icon
+            senderConvo.receiverIsBlocking = senderBlocked
+            let senderConvoAnyObject = senderConvo.toAnyObject()
+            self.set(senderConvoAnyObject, a: Path.Convos, b: senderConvo.senderId, c: senderConvo.key, d: nil)
+            self.set(senderConvoAnyObject, a: Path.Convos, b: senderConvo.senderProxy, c: senderConvo.key, d: nil)
+            self.increment(amount: 1, a: Path.ProxiesInteractedWith, b: sender.ownerId, c: Path.ProxiesInteractedWith, d: nil)
+            
+            // Set up receiver side
+            receiverConvo.key = convoKey
+            receiverConvo.senderId = receiver.ownerId
+            receiverConvo.senderProxy = receiver.key
+            receiverConvo.receiverId = sender.ownerId
+            receiverConvo.receiverProxy = sender.key
+            receiverConvo.icon = sender.icon
+            receiverConvo.senderIsBlocking = senderBlocked
+            let receiverConvoAnyObject = receiverConvo.toAnyObject()
+            self.set(receiverConvoAnyObject, a: Path.Convos, b: receiverConvo.senderId, c: receiverConvo.key, d: nil)
+            self.set(receiverConvoAnyObject, a: Path.Convos, b: receiverConvo.senderProxy, c: receiverConvo.key, d: nil)
+            self.increment(amount: 1, a: Path.ProxiesInteractedWith, b: receiver.ownerId, c: Path.ProxiesInteractedWith, d: nil)
+            
+            completion(convo: senderConvo)
+        })
+    }
+    
     /// Returns a convo.
     func getConvo(withKey key: String, belongingToUser user: String, completion: (convo: Convo) -> Void) {
         ref.child(Path.Convos).child(user).child(key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
@@ -659,8 +642,4 @@ class API {
         }
         return convos.reverse()
     }
-    
-    // When you mute a convo, you stop getting push notifications for it.
-    // TODO: Implement when get to push notifications
-    func muteConvo() {}
 }

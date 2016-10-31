@@ -264,7 +264,7 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
     // MARK: - Navigation
     func showNewMessageViewController() {
         let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.NewMessageViewController) as! NewMessageViewController
-        dest.delegate = self
+        dest.newMessageViewControllerDelegate = self
         navigationController?.pushViewController(dest, animated: true)
     }
     

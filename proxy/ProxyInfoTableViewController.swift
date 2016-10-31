@@ -250,8 +250,8 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     
     func showNewMessageViewController() {
         let dest = storyboard?.instantiateViewControllerWithIdentifier(Identifiers.NewMessageViewController) as! NewMessageViewController
-        dest.senderProxy = proxy
-        dest.delegate = self
+        dest.sender = proxy
+        dest.newMessageViewControllerDelegate = self
         navigationController?.pushViewController(dest, animated: true)
     }
 }
