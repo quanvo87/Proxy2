@@ -664,7 +664,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cCU-KM-BgS" userLabel="Select Sender Button">
-                                <state key="normal" title="Select Proxy"/>
+                                <state key="normal" title="Select Sender"/>
                                 <connections>
                                     <action selector="showSelectSenderTableViewController" destination="t9h-Vt-RKS" eventType="touchUpInside" id="ZXr-dA-8QB"/>
                                 </connections>
@@ -681,9 +681,9 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pwd-90-tRg" userLabel="Select Receiver Button">
-                                <state key="normal" title="Select Proxy"/>
+                                <state key="normal" title="Select Receiver"/>
                                 <connections>
-                                    <action selector="showReceiverProxyPicker" destination="t9h-Vt-RKS" eventType="touchUpInside" id="5ij-CZ-7ad"/>
+                                    <action selector="showSelectReceiverViewController" destination="t9h-Vt-RKS" eventType="touchUpInside" id="VkF-k0-lZu"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Message:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uqt-RE-x4F">
@@ -739,6 +739,24 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uSP-F3-p1r" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-2015.2" y="1447.8260869565217"/>
+        </scene>
+        <!--Select Receiver View Controller-->
+        <scene sceneID="gw0-eS-ztx">
+            <objects>
+                <viewController storyboardIdentifier="Select Receiver View Controller" id="6Md-rJ-pWN" customClass="SelectReceiverViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="nCv-mV-9Rd"/>
+                        <viewControllerLayoutGuide type="bottom" id="Six-lP-vG1"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="0mM-YC-A42">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ec9-iw-SmG" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-2015" y="2898"/>
         </scene>
         <!--Select Sender Table View Controller-->
         <scene sceneID="Ena-oa-9tp">

@@ -1,38 +1,18 @@
 /*
+ select receiver vc:
+ - add button to select currently highlighted proxy, above keyboard
+ - when proxy selected, remove placeholder text?
+ 
  toggle photos/videos in chat
- 
- pull certain amount of data at a time, and pull more as needed
- 
  profanity filter
  
- add that meta data to users
  maybe fire streaks, hearts
- 
- fancy convo titles
  
  toggle sound
  
  recent list in new message
  
- add the images
- fanciest log in screen possible
- swipe/page libraries
- fancy custom nav bar library
- 
- case 0:
- cell.textLabel?.text = "Messages Received"
- return cell
- case 1:
- cell.textLabel?.text = "Messages Sent"
- return cell
- case 2:
- cell.textLabel?.text = "Proxies Interacted With"
- return cell
- case 3:
- cell.textLabel?.text = "Date Created"
- return cell
- 
- level up you proxy by getting some kind of currency. love, likes, pp (proxy points)
+ level up your proxy by getting some kind of currency. love, likes, pp (proxy points)
  you can only receive pp by
  every day each user's pp resets to 3
  leaderboard

@@ -75,6 +75,7 @@ struct Identifiers {
     
     static let NewMessageViewController = "New Message View Controller"
     static let SelectSenderTableViewController = "Select Sender Table View Controller"
+    static let SelectReceiverViewController = "Select Receiver View Controller"
     
     static let ConvoViewController = "Convo View Controller"
     static let ConvoInfoTableViewController = "Convo Info Table View Controller"

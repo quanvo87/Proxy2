@@ -45,6 +45,7 @@
 		595463BD1D9EC8F80079BEA3 /* beachpalm.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 595463BA1D9EC8F80079BEA3 /* beachpalm.mp4 */; };
 		595463BE1D9EC8F80079BEA3 /* hawaiiancoast.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 595463BB1D9EC8F80079BEA3 /* hawaiiancoast.mp4 */; };
 		599B4D2F1DC8384900C476D5 /* SelectSenderTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599B4D2E1DC8384900C476D5 /* SelectSenderTableViewController.swift */; };
+		59F455FE1DC85BD0003EBA69 /* SelectReceiverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F455FD1DC85BD0003EBA69 /* SelectReceiverViewController.swift */; };
 		6BA416E0405C691A2A0D975A /* Pods_proxy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 42B14E4F2F6BB0AA66125CA8 /* Pods_proxy.framework */; };
 		F8601D08682CD23B0A712CAD /* Pods_proxy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38C5C6B48B79F08C65113251 /* Pods_proxy.framework */; };
 /* End PBXBuildFile section */
@@ -96,8 +97,8 @@
 		595463B91D9EC8F80079BEA3 /* arabiangulf.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = arabiangulf.mp4; sourceTree = "<group>"; };
 		595463BA1D9EC8F80079BEA3 /* beachpalm.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = beachpalm.mp4; sourceTree = "<group>"; };
 		595463BB1D9EC8F80079BEA3 /* hawaiiancoast.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = hawaiiancoast.mp4; sourceTree = "<group>"; };
-		595463BF1D9EC9060079BEA3 /* sanfran.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = sanfran.mp4; sourceTree = "<group>"; };
 		599B4D2E1DC8384900C476D5 /* SelectSenderTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectSenderTableViewController.swift; sourceTree = "<group>"; };
+		59F455FD1DC85BD0003EBA69 /* SelectReceiverViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectReceiverViewController.swift; sourceTree = "<group>"; };
 		A04F46FD8A0D68BCC97F95BC /* Pods-proxy.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-proxy.debug.xcconfig"; path = "Pods/Target Support Files/Pods-proxy/Pods-proxy.debug.xcconfig"; sourceTree = "<group>"; };
 		D44F5C36773BB980E0E0A068 /* Pods-proxy.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-proxy.debug.xcconfig"; path = "Pods/Target Support Files/Pods-proxy/Pods-proxy.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -154,6 +155,7 @@
 				14383B261D755C300086CA6C /* NewMessageViewControllerDelegate.swift */,
 				599B4D2E1DC8384900C476D5 /* SelectSenderTableViewController.swift */,
 				14383B0E1D7341070086CA6C /* SelectSenderDelegate.swift */,
+				59F455FD1DC85BD0003EBA69 /* SelectReceiverViewController.swift */,
 				14383B241D7555670086CA6C /* ConvoViewController.swift */,
 				14383B5C1D7B81530086CA6C /* ConvoInfoTableViewController.swift */,
 			);
@@ -250,7 +252,6 @@
 		595463C11D9EC90C0079BEA3 /* Splash Videos */ = {
 			isa = PBXGroup;
 			children = (
-				595463BF1D9EC9060079BEA3 /* sanfran.mp4 */,
 				595463B91D9EC8F80079BEA3 /* arabiangulf.mp4 */,
 				595463BA1D9EC8F80079BEA3 /* beachpalm.mp4 */,
 				595463BB1D9EC8F80079BEA3 /* hawaiiancoast.mp4 */,
@@ -444,6 +445,7 @@
 				14E19A5C1D612CE80030B366 /* Extensions.swift in Sources */,
 				1415611F1D62A8A3002022BC /* ProxyCell.swift in Sources */,
 				14383B5D1D7B81530086CA6C /* ConvoInfoTableViewController.swift in Sources */,
+				59F455FE1DC85BD0003EBA69 /* SelectReceiverViewController.swift in Sources */,
 				14383B5B1D7B0CB60086CA6C /* NSDate+NVTimeAgo.m in Sources */,
 				593302CF1DBF35D400D26805 /* MeTableViewCell.swift in Sources */,
 				145E9D0C1D8A1DF00043F34F /* ReceiverProxyInfoCell.swift in Sources */,

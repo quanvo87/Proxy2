@@ -146,8 +146,9 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SelectSend
         navigationController?.pushViewController(dest, animated: true)
     }
     
-    @IBAction func showReceiverProxyPicker() {
-        
+    @IBAction func showSelectReceiverViewController() {
+        let dest = self.storyboard?.instantiateViewControllerWithIdentifier(Identifiers.SelectReceiverViewController) as! SelectReceiverViewController
+        navigationController?.pushViewController(dest, animated: true)
     }
     
     func cancelNewMessage() {
