@@ -8,11 +8,11 @@
 
 import FirebaseDatabase
 
-class NewMessageViewController: UIViewController, UITextViewDelegate, SenderProxyPickerDelegate {
+class NewMessageViewController: UIViewController, UITextViewDelegate, SelectSenderDelegate {
     
-    @IBOutlet weak var selectSenderProxyButton: UIButton!
+    @IBOutlet weak var selectSenderButton: UIButton!
     @IBOutlet weak var newButton: UIButton!
-    @IBOutlet weak var selectReceiverProxyButton: UIButton!
+    @IBOutlet weak var selectReceiverButton: UIButton!
     @IBOutlet weak var messageTextView: UITextView!
     @IBOutlet weak var sendButton: UIButton!
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
@@ -30,7 +30,7 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderProx
     
     var receiver: Proxy? {
         didSet {
-            selectReceiverProxyButton.setTitle(receiver!.key, forState: .Normal)
+            selectReceiverButton.setTitle(receiver!.key, forState: .Normal)
             enableSendButton()
         }
     }
@@ -48,7 +48,7 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderProx
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: cancelButton)
         
         if sender != nil {
-            setSelectSenderProxyButtonTitle()
+            setSelectSenderButtonTitle()
         }
         
         messageTextView.becomeFirstResponder()
@@ -66,16 +66,16 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderProx
     }
     
     func disableButtons() {
-        selectSenderProxyButton.enabled = false
+        selectSenderButton.enabled = false
         newButton.enabled = false
-        selectReceiverProxyButton.enabled = false
+        selectReceiverButton.enabled = false
         sendButton.enabled = false
     }
     
     func enableButtons() {
-        selectSenderProxyButton.enabled = true
+        selectSenderButton.enabled = true
         newButton.enabled = true
-        selectReceiverProxyButton.enabled = true
+        selectReceiverButton.enabled = true
     }
     
     func enableSendButton() {
@@ -84,8 +84,8 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderProx
         }
     }
     
-    func setSelectSenderProxyButtonTitle() {
-        selectSenderProxyButton.setTitle(sender!.key, forState: .Normal)
+    func setSelectSenderButtonTitle() {
+        selectSenderButton.setTitle(sender!.key, forState: .Normal)
     }
     
     @IBAction func tapSendButton() {
@@ -95,10 +95,10 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderProx
         }
     }
     
-    // MARK: - Sender proxy picker delegate
-    func setSenderProxy(proxy: Proxy) {
+    // MARK: - Select sender delegate
+    func setSender(proxy: Proxy) {
         sender = proxy
-        setSelectSenderProxyButtonTitle()
+        setSelectSenderButtonTitle()
     }
     
     // MARK: - New proxy
@@ -120,7 +120,7 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderProx
         isUsingNewProxy = false
         if let proxy = proxy {
             self.sender = proxy
-            selectSenderProxyButton.setTitle(proxy.key, forState: .Normal)
+            selectSenderButton.setTitle(proxy.key, forState: .Normal)
         }
         enableButtons()
     }
@@ -140,9 +140,9 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderProx
     }
     
     // MARK: - Navigation
-    @IBAction func showSenderProxyPicker() {
-        let dest = self.storyboard?.instantiateViewControllerWithIdentifier(Identifiers.SenderProxyPicker) as! SenderProxyPicker
-        dest.delegate = self
+    @IBAction func showSelectSenderTableViewController() {
+        let dest = self.storyboard?.instantiateViewControllerWithIdentifier(Identifiers.SelectSenderTableViewController) as! SelectSenderTableViewController
+        dest.selectSenderDelegate = self
         navigationController?.pushViewController(dest, animated: true)
     }
     

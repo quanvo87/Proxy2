@@ -80,7 +80,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(true)
-        self.tabBarController?.tabBar.hidden = true
+        tabBarController?.tabBar.hidden = true
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -94,7 +94,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(true)
-        self.tabBarController?.tabBar.hidden = false
+        tabBarController?.tabBar.hidden = false
     }
     
     override func viewDidDisappear(animated: Bool) {

@@ -60,10 +60,12 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
         confirmDeleteProxiesButton = createConfirmDeleteProxiesButton()
         cancelDeleteProxiesButton = createCancelDeleteProxiesButton()
         setDefaultButtons()
-        tableView.rowHeight = 80
-        tableView.estimatedRowHeight = 80
+        
+        tableView.rowHeight = 60
+        tableView.estimatedRowHeight = 60
         tableView.separatorStyle = .None
         tableView.allowsMultipleSelectionDuringEditing = true
+        
         proxiesRef = ref.child(Path.Proxies).child(api.uid)
         unreadRef = ref.child(Path.Unread).child(api.uid).child(Path.Unread)
     }
