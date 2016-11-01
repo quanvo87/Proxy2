@@ -37,7 +37,7 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderProx
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(NewMessageViewController.keyboardWillShow), name:UIKeyboardWillShowNotification, object: self.view.window)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(NewMessageViewController.keyboardWillShow), name: UIKeyboardWillShowNotification, object: self.view.window)
         
         navigationItem.title = "New Message"
         
@@ -53,7 +53,11 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderProx
         
         messageTextView.becomeFirstResponder()
         messageTextView.delegate = self
+        
         sendButton.enabled = false
+        sendButton.layer.cornerRadius = 5
+        sendButton.layer.borderWidth = 1
+        sendButton.layer.borderColor = UIColor.lightGrayColor().CGColor
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -131,7 +135,7 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderProx
         let info = notification.userInfo!
         let keyboardFrame = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
         UIView.animateWithDuration(0.1, animations: { () -> Void in
-            self.bottomConstraint.constant = keyboardFrame.size.height
+            self.bottomConstraint.constant = keyboardFrame.size.height + 5
         })
     }
     

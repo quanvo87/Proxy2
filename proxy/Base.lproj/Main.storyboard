@@ -686,9 +686,8 @@
                                     <action selector="showReceiverProxyPicker" destination="t9h-Vt-RKS" eventType="touchUpInside" id="5ij-CZ-7ad"/>
                                 </connections>
                             </button>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Message..." textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="91z-h3-rmO">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="91z-h3-rmO">
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <color key="textColor" red="0.50196081400000003" green="0.50196081400000003" blue="0.50196081400000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
@@ -698,6 +697,11 @@
                                     <action selector="tapSendButton" destination="t9h-Vt-RKS" eventType="touchUpInside" id="Ml0-h4-W5b"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Message:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uqt-RE-x4F">
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <color key="textColor" red="0.50196081400000003" green="0.50196081400000003" blue="0.50196081400000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -708,14 +712,16 @@
                             <constraint firstAttribute="trailingMargin" secondItem="91z-h3-rmO" secondAttribute="trailing" constant="-10" id="7bb-EA-WHe"/>
                             <constraint firstItem="1by-x2-XdQ" firstAttribute="top" secondItem="91z-h3-rmO" secondAttribute="bottom" constant="10" id="8pH-lA-EQa"/>
                             <constraint firstItem="1by-x2-XdQ" firstAttribute="centerX" secondItem="JVl-Bo-Q0q" secondAttribute="centerX" id="DE9-Xr-iZS"/>
+                            <constraint firstItem="91z-h3-rmO" firstAttribute="top" secondItem="uqt-RE-x4F" secondAttribute="bottom" constant="5" id="Ns0-jo-k6a"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Wjj-lH-XZu" secondAttribute="trailing" constant="-5" id="P8d-c4-YoZ"/>
                             <constraint firstItem="Fpp-bY-Fz7" firstAttribute="top" secondItem="HzN-jJ-R1h" secondAttribute="bottom" constant="10" id="Qqm-Sf-vtY"/>
                             <constraint firstItem="pwd-90-tRg" firstAttribute="leading" secondItem="cCU-KM-BgS" secondAttribute="leading" id="X7m-BW-d4q"/>
                             <constraint firstItem="Fpp-bY-Fz7" firstAttribute="leading" secondItem="JVl-Bo-Q0q" secondAttribute="leadingMargin" constant="-5" id="XT6-hI-LEM"/>
                             <constraint firstItem="91z-h3-rmO" firstAttribute="leading" secondItem="JVl-Bo-Q0q" secondAttribute="leadingMargin" constant="-10" id="YkX-Hy-WgB"/>
                             <constraint firstItem="pwd-90-tRg" firstAttribute="baseline" secondItem="8ol-Eh-fx6" secondAttribute="baseline" id="bda-ZK-bHv"/>
+                            <constraint firstItem="uqt-RE-x4F" firstAttribute="top" secondItem="8ol-Eh-fx6" secondAttribute="bottom" constant="25" id="dcc-0L-wij"/>
                             <constraint firstItem="8ol-Eh-fx6" firstAttribute="top" secondItem="Fpp-bY-Fz7" secondAttribute="bottom" constant="25" id="gRF-GV-Jsm"/>
-                            <constraint firstItem="91z-h3-rmO" firstAttribute="top" secondItem="8ol-Eh-fx6" secondAttribute="bottom" constant="20" id="hwS-07-w9U"/>
+                            <constraint firstItem="uqt-RE-x4F" firstAttribute="leading" secondItem="8ol-Eh-fx6" secondAttribute="leading" id="p8I-24-Thp"/>
                             <constraint firstItem="Wjj-lH-XZu" firstAttribute="centerY" secondItem="cCU-KM-BgS" secondAttribute="centerY" id="zTw-45-3O1"/>
                             <constraint firstItem="8ol-Eh-fx6" firstAttribute="leading" secondItem="Fpp-bY-Fz7" secondAttribute="leading" id="zye-ff-t8Y"/>
                         </constraints>
@@ -732,7 +738,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uSP-F3-p1r" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2015" y="1448"/>
+            <point key="canvasLocation" x="-2015.2" y="1447.8260869565217"/>
         </scene>
         <!--Sender Proxy Picker-->
         <scene sceneID="Zpb-v0-RP1">

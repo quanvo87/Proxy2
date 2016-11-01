@@ -142,6 +142,7 @@
 				145E9D0B1D8A1DF00043F34F /* ReceiverProxyInfoCell.swift */,
 				140E0D021D82AEA000D68F71 /* IconPickerCell.swift */,
 				140E0D081D83544C00D68F71 /* ConvoCell.swift */,
+				593302CE1DBF35D400D26805 /* MeTableViewCell.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -180,7 +181,6 @@
 			isa = PBXGroup;
 			children = (
 				592673B71DBECDA200C2FD6F /* MeTableViewController.swift */,
-				593302CE1DBF35D400D26805 /* MeTableViewCell.swift */,
 			);
 			name = Me;
 			sourceTree = "<group>";

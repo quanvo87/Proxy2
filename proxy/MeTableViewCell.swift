@@ -6,8 +6,6 @@
 //  Copyright © 2016 Quan Vo. All rights reserved.
 //
 
-import UIKit
-
 class MeTableViewCell: UITableViewCell {
 
     @IBOutlet weak var iconImageView: UIImageView!
