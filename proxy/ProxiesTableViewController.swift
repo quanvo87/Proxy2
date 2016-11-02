@@ -214,6 +214,7 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
         if secondsAgo < 60 * Settings.NewProxyIndicatorDuration {
             cell.newImageView.hidden = false
         }
+        cell.contentView.bringSubviewToFront(cell.newImageView)
         
         // Set icon
         cell.iconImageView.image = nil
