@@ -101,7 +101,7 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
     func createConfirmDeleteProxiesButton() -> UIBarButtonItem {
         let confirmDeleteProxiesButton = UIButton(type: .Custom)
         confirmDeleteProxiesButton.setImage(UIImage(named: "confirm"), forState: UIControlState.Normal)
-        confirmDeleteProxiesButton.addTarget(self, action: #selector(ProxiesTableViewController.deleteSelectedProxies), forControlEvents: UIControlEvents.TouchUpInside)
+        confirmDeleteProxiesButton.addTarget(self, action: #selector(ProxiesTableViewController.confirmDeleteProxies), forControlEvents: UIControlEvents.TouchUpInside)
         confirmDeleteProxiesButton.frame = CGRectMake(0, 0, 25, 25)
         return UIBarButtonItem(customView: confirmDeleteProxiesButton)
     }
@@ -141,6 +141,19 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
             api.delete(proxy: proxy)
         }
         proxiesToDelete = []
+    }
+    
+    func confirmDeleteProxies() {
+        guard !proxiesToDelete.isEmpty else {
+            toggleEditMode()
+            return
+        }
+        let alert = UIAlertController(title: "Delete Proxies", message: "Are you sure you want to delete these Proxies?", preferredStyle: .Alert)
+        alert.addAction(UIAlertAction(title: "Yes", style: .Default, handler: { (action) in
+            self.deleteSelectedProxies()
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+        self.presentViewController(alert, animated: true, completion: nil)
     }
     
     func createNewProxy() {

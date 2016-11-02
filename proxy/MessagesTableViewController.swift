@@ -101,7 +101,7 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
     func createConfirmLeaveConvosButton() -> UIBarButtonItem {
         let confirmLeaveConvosButton = UIButton(type: .Custom)
         confirmLeaveConvosButton.setImage(UIImage(named: "confirm"), forState: UIControlState.Normal)
-        confirmLeaveConvosButton.addTarget(self, action: #selector(MessagesTableViewController.leaveSelectedConvos), forControlEvents: UIControlEvents.TouchUpInside)
+        confirmLeaveConvosButton.addTarget(self, action: #selector(MessagesTableViewController.confirmLeaveConvos), forControlEvents: UIControlEvents.TouchUpInside)
         confirmLeaveConvosButton.frame = CGRectMake(0, 0, 25, 25)
         return UIBarButtonItem(customView: confirmLeaveConvosButton)
     }
@@ -141,6 +141,19 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
             api.leave(convo: convo)
         }
         convosToLeave = []
+    }
+    
+    func confirmLeaveConvos() {
+        guard !convosToLeave.isEmpty else {
+            toggleEditMode()
+            return
+        }
+        let alert = UIAlertController(title: "Leave Conversations", message: "Are you sure you want to leave these conversations?", preferredStyle: .Alert)
+        alert.addAction(UIAlertAction(title: "Yes", style: .Default, handler: { (action) in
+            self.leaveSelectedConvos()
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+        self.presentViewController(alert, animated: true, completion: nil)
     }
     
     func createNewProxy() {

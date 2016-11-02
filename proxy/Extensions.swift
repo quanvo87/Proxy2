@@ -29,13 +29,13 @@ extension Int {
         
         num = fabs(num)
         
-        if (num < 1000000000.0) {
+        if num < 1000000000.0 {
             let formatter = NSNumberFormatter()
             formatter.numberStyle = .DecimalStyle
             return formatter.stringFromNumber(Int(num))!
         }
         
-        let exp = Int(log10(num) / 3.0 ) //log10(1000))
+        let exp = Int(log10(num) / 3.0 ) // log10(1000)
         
         let units = ["K","M","G","T","P","E"]
         
