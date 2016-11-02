@@ -210,7 +210,7 @@
         <scene sceneID="LLx-ej-ogN">
             <objects>
                 <collectionViewController storyboardIdentifier="Icon Picker Collection View Controller" id="myi-c3-T5y" customClass="IconPickerCollectionViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" dataMode="prototypes" id="JDm-gc-1XX">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="JDm-gc-1XX">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="P5Q-EW-UUp">
@@ -497,7 +497,7 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="LfE-yp-YW0" userLabel="Proxies" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Proxies" id="iOS-6g-J6E"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="2C5-MT-khQ">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="2C5-MT-khQ">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -697,6 +697,7 @@
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1by-x2-XdQ" userLabel="Send Button">
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <state key="normal" title="Send"/>
                                 <connections>
                                     <action selector="tapSendButton" destination="t9h-Vt-RKS" eventType="touchUpInside" id="Ml0-h4-W5b"/>
@@ -751,12 +752,40 @@
                     <view key="view" contentMode="scaleToFill" id="0mM-YC-A42">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vg6-Kw-tyQ">
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <state key="normal" title="Select Highlighted Receiver"/>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap 'Done' on keyboard to confirm" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7ds-yk-9rS">
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Scroll through choices to make a selection" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WNl-JF-vJo">
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailingMargin" secondItem="WNl-JF-vJo" secondAttribute="trailing" constant="5" id="4mU-An-vez"/>
+                            <constraint firstItem="WNl-JF-vJo" firstAttribute="top" secondItem="nCv-mV-9Rd" secondAttribute="bottom" constant="10" id="Pi4-M7-AO1"/>
+                            <constraint firstItem="Six-lP-vG1" firstAttribute="top" secondItem="7ds-yk-9rS" secondAttribute="bottom" constant="5" id="SSq-ZI-okz"/>
+                            <constraint firstItem="vg6-Kw-tyQ" firstAttribute="centerX" secondItem="0mM-YC-A42" secondAttribute="centerX" id="XzQ-PX-9BI"/>
+                            <constraint firstItem="7ds-yk-9rS" firstAttribute="top" secondItem="vg6-Kw-tyQ" secondAttribute="bottom" constant="5" id="bAe-fL-oAa"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="WNl-JF-vJo" secondAttribute="leading" constant="5" id="jZf-dG-ha5"/>
+                            <constraint firstItem="7ds-yk-9rS" firstAttribute="centerX" secondItem="0mM-YC-A42" secondAttribute="centerX" id="lRm-bP-she"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="bottomConstraint" destination="SSq-ZI-okz" id="EfM-9O-z6N"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ec9-iw-SmG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2015" y="2898"/>
+            <point key="canvasLocation" x="-2015.2" y="2897.9010494752624"/>
         </scene>
         <!--Select Sender Table View Controller-->
         <scene sceneID="Ena-oa-9tp">
@@ -814,10 +843,10 @@
                                         <constraint firstItem="hmk-Ue-VwV" firstAttribute="leading" secondItem="1lM-8q-xIO" secondAttribute="trailing" constant="10" id="BjV-n9-XLd"/>
                                         <constraint firstAttribute="bottomMargin" secondItem="CIc-y6-RXc" secondAttribute="bottom" id="NQT-Bv-xTj"/>
                                         <constraint firstItem="CIc-y6-RXc" firstAttribute="leading" secondItem="GcN-Hq-waI" secondAttribute="trailing" constant="5" id="NsH-NX-a7U"/>
-                                        <constraint firstAttribute="trailingMargin" secondItem="CIc-y6-RXc" secondAttribute="trailing" id="RfY-3S-oim"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="CIc-y6-RXc" secondAttribute="trailing" constant="5" id="RfY-3S-oim"/>
                                         <constraint firstItem="F2I-Pf-bGF" firstAttribute="top" secondItem="WXj-CE-KEF" secondAttribute="topMargin" id="dz7-Pv-3vJ"/>
                                         <constraint firstItem="mw7-uG-B6d" firstAttribute="top" secondItem="WXj-CE-KEF" secondAttribute="topMargin" id="f8o-dp-cKD"/>
-                                        <constraint firstAttribute="trailingMargin" secondItem="mw7-uG-B6d" secondAttribute="trailing" id="i24-rA-T5j"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="mw7-uG-B6d" secondAttribute="trailing" constant="5" id="i24-rA-T5j"/>
                                         <constraint firstItem="mw7-uG-B6d" firstAttribute="leading" secondItem="hmk-Ue-VwV" secondAttribute="trailing" constant="5" id="p1Z-Id-owr"/>
                                         <constraint firstAttribute="bottomMargin" secondItem="GcN-Hq-waI" secondAttribute="bottom" id="rSX-Nk-2zd"/>
                                         <constraint firstItem="1lM-8q-xIO" firstAttribute="leading" secondItem="WXj-CE-KEF" secondAttribute="leadingMargin" constant="10" id="xHq-H2-OOq"/>
@@ -850,7 +879,7 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="EGG-kf-Fg2" userLabel="Home" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Messages" id="FaN-XB-C5v"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="RUp-Qx-BNr">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="RUp-Qx-BNr">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -869,7 +898,7 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="PGe-ha-qrd" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Me" id="8DJ-gV-5Kk"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="3Im-Fz-MvD">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="3Im-Fz-MvD">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -906,7 +935,7 @@
             <objects>
                 <navigationController storyboardIdentifier="Icon Picker Navigation Controller" automaticallyAdjustsScrollViewInsets="NO" id="xgT-pv-zVk" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="7tw-w6-7Ur">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="7tw-w6-7Ur">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>

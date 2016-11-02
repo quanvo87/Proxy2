@@ -297,7 +297,7 @@ class API {
                 
                 // Re-save the global proxy by name instead of the Firebase key.
                 self.delete(a: Path.Proxies, b: uniqueKey, c: nil, d: nil)
-                self.set(proxy.toAnyObject(), a: Path.Proxies, b: key, c: nil, d: nil)
+                self.set(proxy.toAnyObject(), a: Path.Proxies, b: key.lowercaseString, c: nil, d: nil)
                 
                 // Stop trying to create a proxy.
                 self.isCreatingProxy = false
@@ -337,6 +337,17 @@ class API {
     /// Stop trying to create a proxy.
     func cancelCreatingProxy() {
         isCreatingProxy = false
+    }
+    
+    func getProxy(key: String, completion: (proxy: Proxy?) -> Void) {
+        ref.child(Path.Proxies).child(key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            let proxy = Proxy(anyObject: snapshot.value!)
+            if proxy.key != "" {
+                completion(proxy: proxy)
+            } else {
+                completion(proxy: nil)
+            }
+        })
     }
     
     /// Returns the Proxy with `key` belonging to `user`.

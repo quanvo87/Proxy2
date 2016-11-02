@@ -8,7 +8,7 @@
 
 import FirebaseDatabase
 
-class NewMessageViewController: UIViewController, UITextViewDelegate, SelectSenderDelegate {
+class NewMessageViewController: UIViewController, UITextViewDelegate, SelectSenderDelegate, SelectReceiverDelegate {
     
     @IBOutlet weak var selectSenderButton: UIButton!
     @IBOutlet weak var newButton: UIButton!
@@ -20,7 +20,7 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SelectSend
     let api = API.sharedInstance
     let ref = FIRDatabase.database().reference()
     var newMessageViewControllerDelegate: NewMessageViewControllerDelegate!
-    var isUsingNewProxy = false
+    var usingNewProxy = false
     
     var sender: Proxy? {
         didSet {
@@ -37,6 +37,7 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SelectSend
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(NewMessageViewController.keyboardWillShow), name: UIKeyboardWillShowNotification, object: self.view.window)
         
         navigationItem.title = "New Message"
@@ -55,14 +56,23 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SelectSend
         messageTextView.delegate = self
         
         sendButton.enabled = false
-        sendButton.layer.cornerRadius = 5
-        sendButton.layer.borderWidth = 1
-        sendButton.layer.borderColor = UIColor.lightGrayColor().CGColor
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(true)
         navigationItem.hidesBackButton = true
+    }
+    
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
+    func keyboardWillShow(notification: NSNotification) {
+        let info = notification.userInfo!
+        let keyboardFrame = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
+        UIView.animateWithDuration(0.1, animations: { () -> Void in
+            self.bottomConstraint.constant = keyboardFrame.size.height + 5
+        })
     }
     
     func disableButtons() {
@@ -79,8 +89,10 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SelectSend
     }
     
     func enableSendButton() {
-        if sender != nil && receiver != nil && sender?.key != receiver?.key && messageTextView.text != "" {
+        if sender != nil && receiver != nil && receiver?.ownerId != api.uid && messageTextView.text != "" {
             sendButton.enabled = true
+        } else {
+            sendButton.enabled = false
         }
     }
     
@@ -88,11 +100,8 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SelectSend
         selectSenderButton.setTitle(sender!.key, forState: .Normal)
     }
     
-    @IBAction func tapSendButton() {
-        disableButtons()
-        api.sendMessage(sender!, receiver: receiver!, text: messageTextView.text) { (convo) in
-            self.goToConvo(convo)
-        }
+    func setSelectReceiverButtonTitle() {
+        selectReceiverButton.setTitle(receiver?.key, forState: .Normal)
     }
     
     // MARK: - Select sender delegate
@@ -101,23 +110,29 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SelectSend
         setSelectSenderButtonTitle()
     }
     
+    // MARK: - Select receiver delegate
+    func setReceiver(proxy: Proxy) {
+        receiver = proxy
+        setSelectReceiverButtonTitle()
+    }
+    
     // MARK: - New proxy
     @IBAction func tapNewButton() {
         disableButtons()
-        if isUsingNewProxy {
+        if usingNewProxy {
             api.reroll(proxy: sender!, completion: { (proxy) in
                 self.setProxy(proxy)
             })
         } else {
             api.create(proxy: { (proxy) in
                 self.setProxy(proxy)
-                self.isUsingNewProxy = true
+                self.usingNewProxy = true
             })
         }
     }
     
     func setProxy(proxy: Proxy?) {
-        isUsingNewProxy = false
+        usingNewProxy = false
         if let proxy = proxy {
             self.sender = proxy
             selectSenderButton.setTitle(proxy.key, forState: .Normal)
@@ -130,13 +145,12 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SelectSend
         enableSendButton()
     }
     
-    // MARK: - Keyboard
-    func keyboardWillShow(notification: NSNotification) {
-        let info = notification.userInfo!
-        let keyboardFrame = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
-        UIView.animateWithDuration(0.1, animations: { () -> Void in
-            self.bottomConstraint.constant = keyboardFrame.size.height + 5
-        })
+    // MARK: - Send
+    @IBAction func tapSendButton() {
+        disableButtons()
+        api.sendMessage(sender!, receiver: receiver!, text: messageTextView.text) { (convo) in
+            self.goToConvo(convo)
+        }
     }
     
     // MARK: - Navigation
@@ -148,6 +162,7 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SelectSend
     
     @IBAction func showSelectReceiverViewController() {
         let dest = self.storyboard?.instantiateViewControllerWithIdentifier(Identifiers.SelectReceiverViewController) as! SelectReceiverViewController
+        dest.selectReceiverDelegate = self
         navigationController?.pushViewController(dest, animated: true)
     }
     
