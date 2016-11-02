@@ -378,33 +378,19 @@ class API {
         }
     }
     
-    /// Sets a proxy and its convos to deleted.
     func delete(proxy proxy: Proxy) {
         getConvos(forProxy: proxy) { (convos) in
             self.delete(proxy: proxy, withConvos: convos)
         }
     }
     
-    /// Returns the convos that a proxy is in.
-    func getConvos(forProxy proxy: Proxy, completion: (convos: [Convo]) -> Void) {
-        ref.child(Path.Convos).child(proxy.key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            var convos = [Convo]()
-            for child in snapshot.children {
-                let convo = Convo(anyObject: child.value)
-                convos.append(convo)
-            }
-            completion(convos: convos)
-        })
-    }
-    
-    /// Sets a proxy and its convos to deleted.
     func delete(proxy proxy: Proxy, withConvos convos: [Convo]) {
         
         // Delete the global proxy
         delete(a: Path.Proxies, b: proxy.key.lowercaseString, c: nil, d: nil)
         
-        // Set proxy to deleted
-        set(true, a: Path.Proxies, b: uid, c: proxy.key, d: Path.Deleted)
+        // Delete proxy
+        delete(a: Path.Proxies, b: uid, c: proxy.key, d: nil)
         
         // Decrement user's unread by the proxy's unread
         increment(amount: -proxy.unread, a: Path.Unread, b: proxy.ownerId, c: Path.Unread, d: nil)
@@ -419,15 +405,19 @@ class API {
             // Set convo to deleted for receiver convos
             self.set(true, a: Path.Convos, b: convo.receiverId, c: convo.key, d: Path.ReceiverDeletedProxy)
             self.set(true, a: Path.Convos, b: convo.receiverProxy, c: convo.key, d: Path.ReceiverDeletedProxy)
+            
+            self.getConvo(withKey: convo.key, belongingToUser: convo.senderId, completion: { (convo) in
+                if let convo = convo {
+                    self.deleteConvo(convo)
+                }
+            })
         }
     }
     
     // MARK: - Message
     
     func sendMessage(sender: Proxy, receiver: Proxy, text: String, completion: (convo: Convo) -> Void) {
-        
-        // Build convo key out of sender and reciever keys
-        let convoKey = [sender.key, receiver.key].sort().joinWithSeparator("")
+        let convoKey = createConvoKey(sender.key, senderOwner: sender.ownerId, receiverKey: receiver.key, receiverOwner: receiver.ownerId)
         
         // Check if convo exists
         ref.child(Path.Convos).child(sender.ownerId).queryEqualToValue(convoKey).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
@@ -550,6 +540,10 @@ class API {
     
     // MARK: - Conversation (Convo)
     
+    func createConvoKey(senderKey: String, senderOwner: String, receiverKey: String, receiverOwner: String) -> String {
+        return [senderKey, senderOwner, receiverKey, receiverOwner].sort().joinWithSeparator("")
+    }
+    
     func createConvo(sender: Proxy, receiver: Proxy, convoKey: String, text: String, completion: (convo: Convo) -> Void) {
         
         // Check if sender is in receiver's blocked list
@@ -589,9 +583,25 @@ class API {
     }
     
     /// Returns a convo.
-    func getConvo(withKey key: String, belongingToUser user: String, completion: (convo: Convo) -> Void) {
+    func getConvo(withKey key: String, belongingToUser user: String, completion: (convo: Convo?) -> Void) {
         ref.child(Path.Convos).child(user).child(key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            completion(convo: Convo(anyObject: snapshot.value!))
+            let convo = Convo(anyObject: snapshot.value!)
+            if convo.key == "" {
+                completion(convo: nil)
+            } else {
+                completion(convo: convo)
+            }
+        })
+    }
+    
+    func getConvos(forProxy proxy: Proxy, completion: (convos: [Convo]) -> Void) {
+        ref.child(Path.Convos).child(proxy.key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            var convos = [Convo]()
+            for child in snapshot.children {
+                let convo = Convo(anyObject: child.value)
+                convos.append(convo)
+            }
+            completion(convos: convos)
         })
     }
     
@@ -646,5 +656,14 @@ class API {
             }
         }
         return convos.reverse()
+    }
+    
+    func deleteConvo(convo: Convo) {
+        if convo.senderDeletedProxy && convo.receiverDeletedProxy {
+            delete(a: Path.Convos, b: convo.senderId, c: convo.key, d: nil)
+            delete(a: Path.Convos, b: convo.senderProxy, c: convo.key, d: nil)
+            delete(a: Path.Convos, b: convo.receiverId, c: convo.key, d: nil)
+            delete(a: Path.Convos, b: convo.receiverProxy, c: convo.key, d: nil)
+        }
     }
 }

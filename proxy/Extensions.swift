@@ -23,7 +23,7 @@ extension Int {
         return self == 0 ? "" : "(\(self))"
     }
     
-    func shortened() -> String {
+    func formatted() -> String {
         var num = Double(self)
         let sign = ((num < 0) ? "-" : "" )
         

@@ -6,8 +6,7 @@
  - credits to libraries
  - intro tutorial
  - confirm dialog for leave convo/delete proxy
- - add owner id's to proxies
- - fix 'new' in new message vc
+ - add owner id's to convos
  - test send message
  
  toggle photos/videos in chat

@@ -13,7 +13,6 @@ struct Proxy {
     var icon = ""
     var nickname = ""
     var message = ""
-    var deleted = false
     var created = NSDate().timeIntervalSince1970
     var timestamp = NSDate().timeIntervalSince1970
     var convos = 0
@@ -38,7 +37,6 @@ struct Proxy {
         self.icon = anyObject["icon"] as? String ?? ""
         self.nickname = anyObject["nickname"] as? String ?? ""
         self.message = anyObject["message"] as? String ?? ""
-        self.deleted = anyObject["deleted"] as? Bool ?? false
         self.created = anyObject["created"] as? Double ?? 0.0
         self.timestamp = anyObject["timestamp"] as? Double ?? 0.0
         self.convos = anyObject["convos"] as? Int ?? 0
@@ -52,7 +50,6 @@ struct Proxy {
             "icon": icon,
             "nickname": nickname,
             "message": message,
-            "deleted": deleted,
             "created": created,
             "timestamp": timestamp,
             "convos": convos,

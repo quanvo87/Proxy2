@@ -15,13 +15,13 @@ class MeTableViewController: UITableViewController {
     let ref = FIRDatabase.database().reference()
     
     var messagesReceivedRef = FIRDatabaseReference()
-    var messagesReceived = "0"
+    var messagesReceived = ""
     
     var messagesSentRef = FIRDatabaseReference()
-    var messagesSent = "0"
+    var messagesSent = ""
     
     var proxiesInteractedWithRef = FIRDatabaseReference()
-    var proxiesInteractedWith = "0"
+    var proxiesInteractedWith = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,17 +43,17 @@ class MeTableViewController: UITableViewController {
         super.viewDidAppear(true)
         
         messagesReceivedRef.observeEventType(.Value, withBlock: { (snapshot) in
-            self.messagesReceived = (snapshot.value as! Int).shortened()
+            self.messagesReceived = (snapshot.value as! Int).formatted()
             self.tableView.reloadData()
         })
         
         messagesSentRef.observeEventType(.Value, withBlock: { (snapshot) in
-            self.messagesSent = (snapshot.value as! Int).shortened()
+            self.messagesSent = (snapshot.value as! Int).formatted()
             self.tableView.reloadData()
         })
         
         proxiesInteractedWithRef.observeEventType(.Value, withBlock: { (snapshot) in
-            self.proxiesInteractedWith = (snapshot.value as! Int).shortened()
+            self.proxiesInteractedWith = (snapshot.value as! Int).formatted()
             self.tableView.reloadData()
         })
     }

@@ -32,9 +32,7 @@ class SelectSenderTableViewController: UITableViewController {
         FIRDatabase.database().reference().child(Path.Proxies).child(api.uid).queryOrderedByChild(Path.Timestamp).observeSingleEventOfType(.Value, withBlock: { snapshot in
             for child in snapshot.children {
                 let proxy = Proxy(anyObject: child.value)
-                if !proxy.deleted {
-                    self.proxies.append(proxy)
-                }
+                self.proxies.append(proxy)
             }
             self.proxies = self.proxies.reverse()
             self.tableView.reloadData()

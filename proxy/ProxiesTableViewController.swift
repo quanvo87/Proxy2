@@ -161,9 +161,7 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
             var proxies = [Proxy]()
             for child in snapshot.children {
                 let proxy = Proxy(anyObject: child.value)
-                if !proxy.deleted {
-                    proxies.append(proxy)
-                }
+                proxies.append(proxy)
             }
             self.proxies = proxies.reverse()
             self.tableView.reloadData()
@@ -172,8 +170,11 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
     
     func observeUnread() {
         unreadRefHandle = unreadRef.observeEventType(.Value, withBlock: { (snapshot) in
-            guard let unread = snapshot.value as? Int else { return }
-            self.navigationItem.title = "Proxies \(unread.toTitleSuffix())"
+            if let unread = snapshot.value as? Int {
+                self.navigationItem.title = "Proxies \(unread.toTitleSuffix())"
+            } else {
+                self.navigationItem.title = "Proxies"
+            }
         })
     }
     

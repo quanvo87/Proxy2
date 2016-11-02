@@ -44,20 +44,19 @@ class SelectReceiverViewController: UIViewController, UICollectionViewDelegate {
             let dataSource = SimplePrefixQueryDataSource(proxies)
             var ramReel: RAMReel<RAMCell, RAMTextField, SimplePrefixQueryDataSource>!
             ramReel = RAMReel(frame: self.view.bounds, dataSource: dataSource, placeholder: "Tap to begin typing…") {
-                if $0 != "" {
-                    self.api.getProxy($0, completion: { (proxy) in
-                        if let proxy = proxy {
-                            if proxy.ownerId == self.api.uid {
-                                self.showAlert("Cannot Send To Self", message: "Please select a proxy that does not belong to you.")
-                            } else {
-                                self.selectReceiverDelegate.setReceiver(proxy)
-                                self.close()
-                            }
-                        } else {
-                            self.showAlert("Receiver Not Found", message: "Please try again.")
-                        }
-                    })
-                }
+                guard $0 != "" else { return }
+                self.api.getProxy($0, completion: { (proxy) in
+                    guard let proxy = proxy else {
+                        self.showAlert("Receiver Not Found", message: "Make sure to type the receiver's full name or tap 'Select Highlighted Receiver'.")
+                        return
+                    }
+                    guard proxy.ownerId != self.api.uid else {
+                        self.showAlert("Cannot Send To Self", message: "Please select a proxy that does not belong to you.")
+                        return
+                    }
+                    self.selectReceiverDelegate.setReceiver(proxy)
+                    self.close()
+                })
             }
             
             self.view.addSubview(ramReel.view)
