@@ -47,8 +47,12 @@ class SelectReceiverViewController: UIViewController, UICollectionViewDelegate {
                 if $0 != "" {
                     self.api.getProxy($0, completion: { (proxy) in
                         if let proxy = proxy {
-                            self.selectReceiverDelegate.setReceiver(proxy)
-                            self.close()
+                            if proxy.ownerId == self.api.uid {
+                                self.showAlert("Cannot Send To Self", message: "Please select a proxy that does not belong to you.")
+                            } else {
+                                self.selectReceiverDelegate.setReceiver(proxy)
+                                self.close()
+                            }
                         } else {
                             self.showAlert("Receiver Not Found", message: "Please try again.")
                         }

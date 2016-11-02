@@ -44,7 +44,7 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SelectSend
         
         let cancelButton = UIButton(type: .Custom)
         cancelButton.setImage(UIImage(named: "cancel"), forState: UIControlState.Normal)
-        cancelButton.addTarget(self, action: #selector(NewMessageViewController.cancelNewMessage), forControlEvents: UIControlEvents.TouchUpInside)
+        cancelButton.addTarget(self, action: #selector(NewMessageViewController.cancel), forControlEvents: UIControlEvents.TouchUpInside)
         cancelButton.frame = CGRectMake(0, 0, 25, 25)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: cancelButton)
         
@@ -89,7 +89,7 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SelectSend
     }
     
     func enableSendButton() {
-        if sender != nil && receiver != nil && receiver?.ownerId != api.uid && messageTextView.text != "" {
+        if sender != nil && receiver != nil && messageTextView.text != "" {
             sendButton.enabled = true
         } else {
             sendButton.enabled = false
@@ -106,6 +106,10 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SelectSend
     
     // MARK: - Select sender delegate
     func setSender(proxy: Proxy) {
+        if usingNewProxy {
+            api.delete(proxy: sender!)
+            usingNewProxy = false
+        }
         sender = proxy
         setSelectSenderButtonTitle()
     }
@@ -119,24 +123,22 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SelectSend
     // MARK: - New proxy
     @IBAction func tapNewButton() {
         disableButtons()
-        if usingNewProxy {
-            api.reroll(proxy: sender!, completion: { (proxy) in
-                self.setProxy(proxy)
+        if !usingNewProxy {
+            api.create(proxy: { (proxy) in
+                self.setSenderToNewProxy(proxy)
             })
         } else {
+            api.delete(proxy: sender!)
             api.create(proxy: { (proxy) in
-                self.setProxy(proxy)
-                self.usingNewProxy = true
+                self.setSenderToNewProxy(proxy)
             })
         }
     }
     
-    func setProxy(proxy: Proxy?) {
-        usingNewProxy = false
-        if let proxy = proxy {
-            self.sender = proxy
-            selectSenderButton.setTitle(proxy.key, forState: .Normal)
-        }
+    func setSenderToNewProxy(proxy: Proxy) {
+        sender = proxy
+        usingNewProxy = true
+        setSelectSenderButtonTitle()
         enableButtons()
     }
     
@@ -166,8 +168,11 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SelectSend
         navigationController?.pushViewController(dest, animated: true)
     }
     
-    func cancelNewMessage() {
+    func cancel() {
         api.cancelCreatingProxy()
+        if usingNewProxy {
+            api.delete(proxy: sender!)
+        }
         navigationController?.popViewControllerAnimated(true)
     }
     

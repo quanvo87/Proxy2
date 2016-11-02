@@ -1,7 +1,14 @@
 /*
- select receiver vc:
- - add button to select currently highlighted proxy, above keyboard
- - when proxy selected, remove placeholder text?
+ - stagger message load
+ - implement block
+ - app icon
+ - notifications
+ - credits to libraries
+ - intro tutorial
+ - confirm dialog for leave convo/delete proxy
+ - add owner id's to proxies
+ - fix 'new' in new message vc
+ - test send message
  
  toggle photos/videos in chat
  profanity filter
@@ -34,5 +41,4 @@
  sell/trade names?
  every week, lottery. 1% of proxies randomly chosen get a random level upgrade. could be any level!
  maybe as you use a proxy more, you level it up, and gain prestige there
- 
  */

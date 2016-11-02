@@ -35,7 +35,6 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
     override func viewDidLoad() {
         super.viewDidLoad()
         setUp()
-        observeProxies()
         observeUnread()
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ProxiesTableViewController.scrollToTop), name: Notifications.CreatedNewProxyFromHomeTab, object: nil)
     }
@@ -43,11 +42,16 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(true)
         showNewConvo()
+        observeProxies()
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(true)
+        proxiesRef.removeObserverWithHandle(proxiesRefHandle)
     }
     
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
-        proxiesRef.removeObserverWithHandle(proxiesRefHandle)
         unreadRef.removeObserverWithHandle(unreadRefHandle)
     }
     

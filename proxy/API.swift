@@ -283,6 +283,7 @@ class API {
     
     /// Returns a new proxy with a unique name.
     func tryCreating(proxy completion: (proxy: Proxy) -> Void) {
+        
         // Create a global proxy and save it.
         let uniqueKey = ref.child(Path.Proxies).childByAutoId().key
         let key = proxyNameGenerator.generateProxyName()
@@ -323,14 +324,6 @@ class API {
                     completion(proxy: proxy)
                 })
             }
-        })
-    }
-    
-    /// Deletes `proxy` and returns a new one.
-    func reroll(proxy proxy: Proxy, completion: (proxy: Proxy) -> Void) {
-        delete(proxy: proxy)
-        tryCreating(proxy: { (proxy) in
-            completion(proxy: proxy)
         })
     }
     
@@ -406,8 +399,9 @@ class API {
     
     /// Sets a proxy and its convos to deleted.
     func delete(proxy proxy: Proxy, withConvos convos: [Convo]) {
+        
         // Delete the global proxy
-        delete(a: Path.Proxies, b: proxy.key, c: nil, d: nil)
+        delete(a: Path.Proxies, b: proxy.key.lowercaseString, c: nil, d: nil)
         
         // Set proxy to deleted
         set(true, a: Path.Proxies, b: uid, c: proxy.key, d: Path.Deleted)
