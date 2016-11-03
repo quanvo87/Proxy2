@@ -18,11 +18,10 @@ struct Convo {
     var icon = ""
     var message = ""
     var senderLeftConvo = true
-    var senderDeletedProxy = false
     var senderIsBlocking = false
     var receiverLeftConvo = true
-    var receiverDeletedProxy = false
     var receiverIsBlocking = false
+    var receiverDeletedProxy = false
     var timestamp = 0.0
     var unread = 0
     
@@ -39,11 +38,10 @@ struct Convo {
         self.icon = anyObject["icon"] as? String ?? ""
         self.message = anyObject["message"] as? String ?? ""
         self.senderLeftConvo = anyObject["senderLeftConvo"] as? Bool ?? false
-        self.senderDeletedProxy = anyObject["senderDeletedProxy"] as? Bool ?? false
         self.senderIsBlocking = anyObject["senderIsBlocking"] as? Bool ?? false
         self.receiverLeftConvo = anyObject["receiverLeftConvo"] as? Bool ?? false
-        self.receiverDeletedProxy = anyObject["receiverDeletedProxy"] as? Bool ?? false
         self.receiverIsBlocking = anyObject["receiverIsBlocking"] as? Bool ?? false
+        self.receiverDeletedProxy = anyObject["receiverDeletedProxy"] as? Bool ?? false
         self.timestamp = anyObject["timestamp"] as? Double ?? 0.0
         self.unread = anyObject["unread"] as? Int ?? 0
     }
@@ -60,11 +58,10 @@ struct Convo {
             "icon": icon,
             "message": message,
             "senderLeftConvo": senderLeftConvo,
-            "senderDeletedProxy": senderDeletedProxy,
             "senderIsBlocking": senderIsBlocking,
             "receiverLeftConvo": receiverLeftConvo,
-            "receiverDeletedProxy": receiverDeletedProxy,
             "receiverIsBlocking": receiverIsBlocking,
+            "receiverDeletedProxy": receiverDeletedProxy,
             "timestamp": timestamp,
             "unread": unread
         ]

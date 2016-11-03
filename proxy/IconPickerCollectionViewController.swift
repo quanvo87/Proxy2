@@ -88,8 +88,8 @@ class IconPickerCollectionViewController: UICollectionViewController {
         cell.iconImageView.image = nil
         cell.iconImageView.kf_indicatorType = .Activity
         api.getURL(forIcon: icon) { (url) in
-            guard let url = url.absoluteString where url != "" else { return }
-            cell.iconImageView.kf_setImageWithURL(NSURL(string: url), placeholderImage: nil)
+            guard let url = url else { return }
+            cell.iconImageView.kf_setImageWithURL(url, placeholderImage: nil)
         }
         
         // Set name

@@ -47,8 +47,8 @@ class SenderProxyInfoCell: UITableViewCell {
         iconRefHandle = iconRef.observeEventType(.Value, withBlock: { (snapshot) in
             guard let icon = snapshot.value as? String where icon != "" else { return }
             self.api.getURL(forIcon: icon) { (url) in
-                guard let url = url.absoluteString where url != "" else { return }
-                self.iconImageView.kf_setImageWithURL(NSURL(string: url), placeholderImage: nil)
+                guard let url = url else { return }
+                self.iconImageView.kf_setImageWithURL(url, placeholderImage: nil)
             }
         })
     }

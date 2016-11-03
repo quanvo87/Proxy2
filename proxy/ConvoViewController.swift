@@ -197,6 +197,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
             switch message.mediaType {
                 
             case "imagePlaceholder":
+                
                 // Send message with placeholder.
                 let media = JSQPhotoMediaItem()
                 let _message = Message(key: message.key, convo: message.convo, mediaType: message.mediaType, mediaURL: message.mediaURL, read: message.read, timeRead: message.timeRead, senderId: message.senderId, date: message.date.timeIntervalSince1970, text: message.text, media: media)
