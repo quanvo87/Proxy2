@@ -39,6 +39,7 @@ class API {
     }
     
     // MARK: - Utility
+    
     /// Returns the Firebase reference with path `a`/`b`/`c`/`d`.
     /// Leave unneeded nodes blank starting from `d`, working back to `a`.
     /// There must be at least node `a`, else returns nil.
@@ -97,6 +98,7 @@ class API {
     /// Returns the UIImage for a url.
     func getUIImage(fromURL url: NSURL, completion: (image: UIImage) -> Void) {
         guard let urlString = url.absoluteString else { return }
+        
         // Check cache first.
         KingfisherManager.sharedManager.cache.retrieveImageForKey(urlString, options: nil) { (image, cacheType) -> () in
             if let image = image {
@@ -116,6 +118,7 @@ class API {
     
     /// Returns the UIImage for an icon.
     func getUIImage(forIcon icon: String, completion: (image: UIImage) -> Void) {
+        
         // Get url for icon in storage.
         getURL(forIcon: icon, completion: { (url) in
             
@@ -128,6 +131,7 @@ class API {
     
     /// Returns the NSURL of an icon's url in storage.
     func getURL(forIcon icon: String, completion: (url: NSURL) -> Void) {
+        
         // Check cache first.
         if let url = iconURLCache[icon] {
             completion(url: url)
@@ -160,6 +164,7 @@ class API {
     /// Uploads compressed version of video to storage.
     /// Returns url to the video in storage.
     func uploadVideo(fromURL url: NSURL, completion: (url: NSURL) -> Void) {
+        
         // Compress video.
         let compressedURL = NSURL.fileURLWithPath(NSTemporaryDirectory() + NSUUID().UUIDString + ".m4v")
         compressVideo(fromURL: url, toURL: compressedURL) { (session) in
@@ -214,40 +219,6 @@ class API {
         return icons[Int(arc4random_uniform(count))]
     }
     
-    /**
-     When you block a user, set the 'blocked' in your two copies of the convo to
-     true.
-     
-     Then loop through all your convos, if the receiverId matches this user's id,
-     set that convo's 'blocked' to true as well, again for both your copies of
-     the convo.
-     
-     When you load convos in your home view or proxy info view, if a convo's
-     'blocked' is true, then don't load it.
-     
-     When someone sends you a message and it is the first message between the
-     two proxies, they will pull your /blocked/uid. If their uid exists in your
-     blocked, they will send you a message as normal, except that your two
-     copies of the convo will have 'blocked' == true, and your proxy and global
-     unread will not increment. This means if you unblock that user, you will
-     then see all messages they have been sending you, from any proxy.
-     
-     Keep a copy of the users you have blocked as
-     
-     /blocked/uid/blockedUserId/blockedUserProxy
-     
-     blockedUserProxy is the proxy name you blocked the user as.
-     
-     You can see those you have blocked somewhere in Settings -> Blocked Users,
-     represented as blockedUserProxy.
-     
-     You can unblock users, and when this happens, loop through all your convos,
-     if the receiverId matches the userId you unblocked, set that convo's
-     'blocked' to false, for both copies of your convo. Then increment your
-     your global unread by that convo's unread.
-     
-     Then delete that user's entry in your /blocked/uid/blockedUserId.
-     */
     // TODO: Implement
     func blockUser() {}
     
@@ -261,22 +232,22 @@ class API {
                 completion(proxy: proxy)
             })
         } else {
-            load(proxyNameGenerator: { (proxy) in
-                completion(proxy: proxy)
+            load(proxyNameGenerator: { () in
+                self.tryCreating(proxy: { (proxy) in
+                    completion(proxy: proxy)
+                })
             })
         }
     }
     
     /// Loads proxyNameGenerator and returns a new proxy.
-    func load(proxyNameGenerator completion: (proxy: Proxy) -> Void) {
+    func load(proxyNameGenerator completion: () -> Void) {
         ref.child(Path.WordBank).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
             if let words = snapshot.value, let adjs = words["adjectives"], let nouns = words["nouns"] {
                 self.proxyNameGenerator.adjs = adjs as! [String]
                 self.proxyNameGenerator.nouns = nouns as! [String]
                 self.proxyNameGenerator.isLoaded = true
-                self.tryCreating(proxy: { (proxy) in
-                    completion(proxy: proxy)
-                })
+                completion()
             }
         })
     }
@@ -335,10 +306,10 @@ class API {
     func getProxy(key: String, completion: (proxy: Proxy?) -> Void) {
         ref.child(Path.Proxies).child(key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
             let proxy = Proxy(anyObject: snapshot.value!)
-            if proxy.key != "" {
-                completion(proxy: proxy)
-            } else {
+            if proxy.key == "" {
                 completion(proxy: nil)
+            } else {
+                completion(proxy: proxy)
             }
         })
     }
@@ -352,6 +323,7 @@ class API {
     
     /// Sets a proxy's nickname.
     func set(nickname nickname: String, forProxy proxy: Proxy) {
+        
         // Set for proxy
         set(nickname, a: Path.Proxies, b: proxy.ownerId, c: proxy.key, d: Path.Nickname)
         
@@ -366,6 +338,7 @@ class API {
     
     /// Sets a proxy's icon.
     func set(icon icon: String, forProxy proxy: Proxy) {
+        
         // Set for proxy
         set(icon, a: Path.Proxies, b: proxy.ownerId, c: proxy.key, d: Path.Icon)
         

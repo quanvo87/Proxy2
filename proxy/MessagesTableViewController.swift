@@ -148,7 +148,7 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
             toggleEditMode()
             return
         }
-        let alert = UIAlertController(title: "Leave Conversations", message: "Are you sure you want to leave these conversations?", preferredStyle: .Alert)
+        let alert = UIAlertController(title: "Leave Conversations?", message: "This will hide them until you receive another message in them.", preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: "Yes", style: .Default, handler: { (action) in
             self.leaveSelectedConvos()
         }))

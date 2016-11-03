@@ -154,7 +154,7 @@ class MeTableViewController: UITableViewController {
     }
     
     func showAbout() {
-        let alert = UIAlertController(title: "About Proxy:", message: "Contact:\nqvo1987@gmail.com\n\nUpcoming features:\nsound in videos, location sharing\n\nIcons from icons8.com", preferredStyle: .Alert)
+        let alert = UIAlertController(title: "About Proxy:", message: "Contact: qvo1987@gmail.com\n\nUpcoming features: sound in videos, location sharing\n\nIcons from icons8.com\n\nLibraries used: Kingfisher, JSQMessagesViewController, Fusuma, MobilePlayer, VideoSplashKit, RAMReel\n\nVersion 0.1", preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: "Ok", style: .Cancel) { action in
         })
         self.presentViewController(alert, animated: true, completion: nil)

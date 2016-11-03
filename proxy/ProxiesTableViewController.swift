@@ -148,7 +148,7 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
             toggleEditMode()
             return
         }
-        let alert = UIAlertController(title: "Delete Proxies", message: "Are you sure you want to delete these Proxies?", preferredStyle: .Alert)
+        let alert = UIAlertController(title: "Delete Proxies?", message: "You will not be able to view their conversations anymore.", preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: "Yes", style: .Default, handler: { (action) in
             self.deleteSelectedProxies()
         }))

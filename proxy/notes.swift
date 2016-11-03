@@ -3,10 +3,9 @@
  - implement block
  - app icon
  - notifications
- - credits to libraries
  - intro tutorial
- - confirm dialog for leave convo/delete proxy
  - test send message
+ - proxy cap
  
  toggle photos/videos in chat
  profanity filter
