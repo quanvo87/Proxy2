@@ -68,13 +68,14 @@ class MeTableViewController: UITableViewController {
 
     // MARK: - Table view data source
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 2
+        return 3
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0: return 3
-        case 1: return 2
+        case 1: return 1
+        case 2: return 2
         default: return 0
         }
     }
@@ -104,6 +105,12 @@ class MeTableViewController: UITableViewController {
             }
             
         case 1:
+            cell.iconImageView.image = UIImage(named: "blocked")?.resize(toNewSize: size, isAspectRatio: isAspectRatio)
+            cell.titleLabel.text = "Blocked Users"
+            cell.subtitleLabel.text = ""
+            cell.accessoryType = .DisclosureIndicator
+            
+        case 2:
             cell.subtitleLabel.text = ""
             switch indexPath.row {
             case 0:
@@ -122,7 +129,7 @@ class MeTableViewController: UITableViewController {
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         switch indexPath.section {
-        case 1:
+        case 2:
             tableView.deselectRowAtIndexPath(indexPath, animated: true)
             switch indexPath.row {
             case 0:

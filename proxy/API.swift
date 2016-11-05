@@ -227,8 +227,38 @@ class API {
         return icons[Int(arc4random_uniform(count))]
     }
     
-    // TODO: Implement
-    func blockUser() {}
+    func blockReceiverInConvo(convo: Convo) {
+    
+        // Add receiver to sender's blocked list
+        let blockedUser = BlockedUser(id: convo.receiverId, icon: convo.icon, name: convo.receiverProxy, nickname: convo.receiverNickname)
+        set(blockedUser.toAnyObject(), a: Path.Blocked, b: uid, c: convo.receiverId, d: nil)
+        
+        // Loop through sender's convos
+        getConvos(convo.senderId) { (convos) in
+            for _convo in convos {
+                
+                // For any convo with receiver
+                if _convo.receiverId == convo.receiverId {
+                    
+                    // Set senderIsBlocking to true for sender's versions
+                    self.set(true, a: Path.Convos, b: _convo.senderId, c: _convo.key, d: Path.SenderIsBlocking)
+                    self.set(true, a: Path.Convos, b: _convo.senderProxy, c: _convo.key, d: Path.SenderIsBlocking)
+                    
+                    // Set receiverIsBlocking to true for receiver's versions
+                    self.set(true, a: Path.Convos, b: _convo.receiverId, c: _convo.key, d: Path.ReceiverIsBlocking)
+                    self.set(true, a: Path.Convos, b: _convo.receiverProxy, c: _convo.key, d: Path.ReceiverIsBlocking)
+                
+                    // Decrement unreads by convo's unread
+                    self.increment(_convo.unread, a: Path.Unread, b: _convo.senderId, c: Path.Unread, d: nil)
+                    self.increment(_convo.unread, a: Path.Proxies, b: _convo.senderId, c: _convo.senderProxy, d: Path.Unread)
+                }
+            }
+        }
+    }
+    
+    func unblockUser(blockedUser: String) {
+        delete(Path.Blocked, b: uid, c: blockedUser, d: nil)
+    }
     
     // MARK: - Proxy
     
@@ -551,6 +581,17 @@ class API {
     
     func getConvos(forProxy proxy: Proxy, completion: (convos: [Convo]) -> Void) {
         ref.child(Path.Convos).child(proxy.key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            var convos = [Convo]()
+            for child in snapshot.children {
+                let convo = Convo(anyObject: child.value)
+                convos.append(convo)
+            }
+            completion(convos: convos)
+        })
+    }
+    
+    func getConvos(user: String, completion: (convos: [Convo]) -> Void) {
+        ref.child(Path.Convos).child(user).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
             var convos = [Convo]()
             for child in snapshot.children {
                 let convo = Convo(anyObject: child.value)

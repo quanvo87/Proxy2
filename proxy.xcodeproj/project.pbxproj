@@ -38,6 +38,9 @@
 		14E19A4F1D60EF100030B366 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 14E19A4D1D60EF100030B366 /* LaunchScreen.storyboard */; };
 		14E19A5C1D612CE80030B366 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E19A5B1D612CE80030B366 /* Extensions.swift */; };
 		14E19A5E1D6148700030B366 /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E19A5D1D6148700030B366 /* LogInViewController.swift */; };
+		590AD6571DCE61A200473245 /* BlockedUsersTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 590AD6561DCE61A200473245 /* BlockedUsersTableViewController.swift */; };
+		590AD6591DCE644100473245 /* BlockedUsersTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 590AD6581DCE644100473245 /* BlockedUsersTableViewCell.swift */; };
+		590AD65B1DCE71C300473245 /* BlockedUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 590AD65A1DCE71C300473245 /* BlockedUser.swift */; };
 		592673B81DBECDA200C2FD6F /* MeTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592673B71DBECDA200C2FD6F /* MeTableViewController.swift */; };
 		593302CF1DBF35D400D26805 /* MeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 593302CE1DBF35D400D26805 /* MeTableViewCell.swift */; };
 		595463B81D9EC65B0079BEA3 /* dragontailzipline.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 595463B71D9EC65B0079BEA3 /* dragontailzipline.mp4 */; };
@@ -92,6 +95,9 @@
 		21E247E04340B3517641BD5C /* Pods-proxy.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-proxy.release.xcconfig"; path = "Pods/Target Support Files/Pods-proxy/Pods-proxy.release.xcconfig"; sourceTree = "<group>"; };
 		38C5C6B48B79F08C65113251 /* Pods_proxy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_proxy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		42B14E4F2F6BB0AA66125CA8 /* Pods_proxy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_proxy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		590AD6561DCE61A200473245 /* BlockedUsersTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockedUsersTableViewController.swift; sourceTree = "<group>"; };
+		590AD6581DCE644100473245 /* BlockedUsersTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockedUsersTableViewCell.swift; sourceTree = "<group>"; };
+		590AD65A1DCE71C300473245 /* BlockedUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockedUser.swift; sourceTree = "<group>"; };
 		592673B71DBECDA200C2FD6F /* MeTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeTableViewController.swift; sourceTree = "<group>"; };
 		593302CE1DBF35D400D26805 /* MeTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeTableViewCell.swift; sourceTree = "<group>"; };
 		595463B71D9EC65B0079BEA3 /* dragontailzipline.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = dragontailzipline.mp4; sourceTree = "<group>"; };
@@ -124,6 +130,7 @@
 				14383B111D73802B0086CA6C /* Proxy.swift */,
 				14383B161D73D42E0086CA6C /* Convo.swift */,
 				14383B181D73D8F50086CA6C /* Message.swift */,
+				590AD65A1DCE71C300473245 /* BlockedUser.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -137,6 +144,7 @@
 				140E0D021D82AEA000D68F71 /* IconPickerCell.swift */,
 				140E0D081D83544C00D68F71 /* ConvoCell.swift */,
 				593302CE1DBF35D400D26805 /* MeTableViewCell.swift */,
+				590AD6581DCE644100473245 /* BlockedUsersTableViewCell.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -179,6 +187,7 @@
 			isa = PBXGroup;
 			children = (
 				592673B71DBECDA200C2FD6F /* MeTableViewController.swift */,
+				590AD6561DCE61A200473245 /* BlockedUsersTableViewController.swift */,
 			);
 			name = Me;
 			sourceTree = "<group>";
@@ -448,11 +457,13 @@
 				14E19A5C1D612CE80030B366 /* Extensions.swift in Sources */,
 				1415611F1D62A8A3002022BC /* ProxyCell.swift in Sources */,
 				14383B5D1D7B81530086CA6C /* ConvoInfoTableViewController.swift in Sources */,
+				590AD6571DCE61A200473245 /* BlockedUsersTableViewController.swift in Sources */,
 				59F456001DC987EF003EBA69 /* SelectReceiverDelegate.swift in Sources */,
 				59F455FE1DC85BD0003EBA69 /* SelectReceiverViewController.swift in Sources */,
 				14383B5B1D7B0CB60086CA6C /* NSDate+NVTimeAgo.m in Sources */,
 				593302CF1DBF35D400D26805 /* MeTableViewCell.swift in Sources */,
 				145E9D0C1D8A1DF00043F34F /* ReceiverProxyInfoCell.swift in Sources */,
+				590AD6591DCE644100473245 /* BlockedUsersTableViewCell.swift in Sources */,
 				14383B121D73802B0086CA6C /* Proxy.swift in Sources */,
 				145A4D321D84A6EC00BA64DC /* MessagesTableViewController.swift in Sources */,
 				14E19A5E1D6148700030B366 /* LogInViewController.swift in Sources */,
@@ -463,6 +474,7 @@
 				147B5C381D82736700D18C73 /* SenderProxyInfoCell.swift in Sources */,
 				140E0D091D83544C00D68F71 /* ConvoCell.swift in Sources */,
 				140E0D071D82AF2F00D68F71 /* IconPickerCollectionViewController.swift in Sources */,
+				590AD65B1DCE71C300473245 /* BlockedUser.swift in Sources */,
 				1415610D1D620DB7002022BC /* API.swift in Sources */,
 				14383B191D73D8F50086CA6C /* Message.swift in Sources */,
 				14383B271D755C300086CA6C /* NewMessageViewControllerDelegate.swift in Sources */,

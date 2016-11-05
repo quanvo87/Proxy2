@@ -48,6 +48,7 @@ struct Path {
     static let Nickname = "nickname"
     static let Icon = "icon"
     static let Message = "message"
+    static let Created = "created"
     static let Timestamp = "timestamp"
     static let Unread = "unread"
 }
@@ -82,6 +83,8 @@ struct Identifiers {
     static let ConvoCell = "Convo Cell"
     
     static let MeTableViewCell = "Me Table View Cell"
+    static let BlockedUseresTableViewController = "Blocked Users Table View Controller"
+    static let BlockedUsersTableViewCell = "Blocked Users Table View Cell"
     
     static let Cell = "Cell"
 }
