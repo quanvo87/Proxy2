@@ -15,7 +15,6 @@ class BlockedUsersTableViewCell: UITableViewCell {
     @IBOutlet weak var nicknameLabel: UILabel!
     
     let api = API.sharedInstance
-    let ref = FIRDatabase.database().reference()
     var blockedUser: BlockedUser?
     
     @IBAction func unblock(sender: AnyObject) {

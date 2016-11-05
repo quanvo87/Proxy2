@@ -249,8 +249,8 @@ class API {
                     self.set(true, a: Path.Convos, b: _convo.receiverProxy, c: _convo.key, d: Path.ReceiverIsBlocking)
                 
                     // Decrement unreads by convo's unread
-                    self.increment(_convo.unread, a: Path.Unread, b: _convo.senderId, c: Path.Unread, d: nil)
-                    self.increment(_convo.unread, a: Path.Proxies, b: _convo.senderId, c: _convo.senderProxy, d: Path.Unread)
+                    self.increment(-_convo.unread, a: Path.Unread, b: _convo.senderId, c: Path.Unread, d: nil)
+                    self.increment(-_convo.unread, a: Path.Proxies, b: _convo.senderId, c: _convo.senderProxy, d: Path.Unread)
                 }
             }
         }
@@ -258,6 +258,22 @@ class API {
     
     func unblockUser(blockedUser: String) {
         delete(Path.Blocked, b: uid, c: blockedUser, d: nil)
+        
+        getConvos(uid) { (convos) in
+            for convo in convos {
+                if convo.receiverId == blockedUser {
+                    
+                    self.set(false, a: Path.Convos, b: convo.senderId, c: convo.key, d: Path.SenderIsBlocking)
+                    self.set(false, a: Path.Convos, b: convo.senderProxy, c: convo.key, d: Path.SenderIsBlocking)
+                    
+                    self.set(false, a: Path.Convos, b: convo.receiverId, c: convo.key, d: Path.ReceiverIsBlocking)
+                    self.set(false, a: Path.Convos, b: convo.receiverProxy, c: convo.key, d: Path.ReceiverIsBlocking)
+                    
+                    self.increment(convo.unread, a: Path.Unread, b: convo.senderId, c: Path.Unread, d: nil)
+                    self.increment(convo.unread, a: Path.Proxies, b: convo.senderId, c: convo.senderProxy, d: Path.Unread)
+                }
+            }
+        }
     }
     
     // MARK: - Proxy
