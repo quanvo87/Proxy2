@@ -298,9 +298,9 @@ class API {
     
     /// Returns a new proxy with a unique name.
     func create(proxy completion: (proxy: Proxy?) -> Void) {
-        if proxyCount == -1 {
+        if proxyCount < 0 {
             loadProxyCount({ 
-                if self.proxyCount > 50 {
+                if self.proxyCount > 49 {
                     completion(proxy: nil)
                 } else {
                     self.loadCreateProxyInfo({
@@ -312,7 +312,7 @@ class API {
                 }
             })
         } else {
-            if proxyCount > 50 {
+            if proxyCount > 49 {
                 completion(proxy: nil)
             } else {
                 isCreatingProxy = true
@@ -345,7 +345,7 @@ class API {
         set(proxy.toAnyObject(), a: Path.Proxies, b: uniqueKey, c: nil, d: nil)
         
         // Get all global proxies with this name.
-        ref.child(Path.Proxies).queryOrderedByChild(Path.Key).queryEqualToValue(key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+        ref.child(Path.Proxies).queryOrderedByChild(Path.Key).queryEqualToValue(key.lowercaseString).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
             
             // If there's only one, we've got a unique proxy name.
             if snapshot.childrenCount == 1 {
@@ -367,20 +367,19 @@ class API {
                 self.updateProxyCount(1, completion: { 
                     completion(proxy: proxy)
                 })
-            }
-            
-            print("a")
-            
-            // Else name is taken so delete the proxy you just created.
-            self.delete(Path.Proxies, b: uniqueKey, c: nil, d: nil)
-            
-            // Check if user has cancelled the process.
-            if self.isCreatingProxy {
+            } else {
                 
-                // If not, try the process again.
-                self.tryCreating(proxy: { (proxy) in
-                    completion(proxy: proxy)
-                })
+                // Else name is taken so delete the proxy you just created.
+                self.delete(Path.Proxies, b: uniqueKey, c: nil, d: nil)
+                
+                // Check if user has cancelled the process.
+                if self.isCreatingProxy {
+                    
+                    // If not, try the process again.
+                    self.tryCreating(proxy: { (proxy) in
+                        completion(proxy: proxy)
+                    })
+                }
             }
         })
     }

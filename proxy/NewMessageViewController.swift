@@ -125,12 +125,17 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SelectSend
         disableButtons()
         if !usingNewProxy {
             api.create(proxy: { (proxy) in
+                guard let proxy = proxy else {
+                    self.showAlert("Proxy Limit Reached", message: "Cannot exceed 50 proxies. Delete some old ones, then try again!")
+                    self.enableButtons()
+                    return
+                }
                 self.setSenderToNewProxy(proxy)
             })
         } else {
             api.delete(proxy: sender!)
             api.create(proxy: { (proxy) in
-                self.setSenderToNewProxy(proxy)
+                self.setSenderToNewProxy(proxy!)
             })
         }
     }
