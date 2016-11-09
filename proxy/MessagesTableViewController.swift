@@ -159,8 +159,12 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
     func createNewProxy() {
         navigationItem.rightBarButtonItems![1].enabled = false
         api.create { (proxy) in
-            NSNotificationCenter.defaultCenter().postNotificationName(Notifications.CreatedNewProxyFromHomeTab, object: nil)
             self.navigationItem.rightBarButtonItems![1].enabled = true
+            guard proxy != nil else {
+                self.showAlert("Proxy Limit Reached", message: "Cannot exceed 50 proxies. Delete some old ones, then try again!")
+                return
+            }
+            NSNotificationCenter.defaultCenter().postNotificationName(Notifications.CreatedNewProxyFromHomeTab, object: nil)
             self.tabBarController?.selectedIndex = 1
         }
     }

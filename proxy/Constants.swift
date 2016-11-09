@@ -7,6 +7,7 @@
 //
 
 struct Path {
+    
     // Objects
     static let Proxies = "proxies"
     static let Convos = "convos"
@@ -16,15 +17,13 @@ struct Path {
     static let UserFiles = "userFiles"
     
     // User
+    static let ProxyCount = "proxyCount"
     static let ProxiesInteractedWith = "proxiesInteractedWith"
     static let MessagesSent = "messagesSent"
     static let MessagesReceived = "messagesReceived"
     static let Blocked = "blocked"
     static let Present = "present"
     static let Typing = "typing"
-    
-    // Proxy
-    static let Deleted = "deleted"
     
     // Convo
     static let SenderNickname = "senderNickname"

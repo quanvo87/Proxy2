@@ -15,28 +15,18 @@ import JSQMessagesViewController
 class API {
     static let sharedInstance = API()
     
+    var uid = ""
     let ref = FIRDatabase.database().reference()
     let storageRef = FIRStorage.storage().referenceForURL(URLs.Storage)
     
-    var proxyNameGenerator = ProxyNameGenerator()
+    var proxyCount = -1
     var isCreatingProxy = false
-    
-    var iconsRef = FIRDatabaseReference()
-    var iconsRefHandle = FIRDatabaseHandle()
+    let dispatch_group = dispatch_group_create()
+    var proxyNameGenerator = ProxyNameGenerator()
     var icons = [String]()
     var iconURLCache = [String: NSURL]()
     
-    var uid: String = "" {
-        didSet {
-            observeIcons()
-        }
-    }
-    
     private init() {}
-    
-    deinit {
-        iconsRef.removeObserverWithHandle(iconsRefHandle)
-    }
     
     // MARK: - Utility
     
@@ -202,22 +192,42 @@ class API {
     
     // MARK: - User
     
+    func loadProxyCount(completion: () -> ()) {
+        ref.child(Path.ProxyCount).child(uid).child(Path.ProxyCount).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            let value = snapshot.value
+            self.proxyCount = value as? Int ?? 0
+            completion()
+        })
+    }
+    
+    func updateProxyCount(amount: Int, completion: () -> ()) {
+        ref.child(Path.ProxyCount).child(uid).child(Path.ProxyCount).runTransactionBlock( { (currentData: FIRMutableData) -> FIRTransactionResult in
+            if let value = currentData.value {
+                let _value = (value as? Int ?? 0) + amount
+                currentData.value = _value
+                return FIRTransactionResult.successWithValue(currentData)
+            }
+            return FIRTransactionResult.successWithValue(currentData)
+        }) { (error, committed, snapshot) in
+            guard error == nil else { return }
+            self.proxyCount = snapshot?.value as! Int
+            completion()
+        }
+    }
+    
     /// Gives a user access to the default icons.
     func setDefaultIcons(forUser user: String) {
         let defaultIcons = DefaultIcons(id: user).defaultIcons
         ref.updateChildValues(defaultIcons as! [NSObject : AnyObject])
     }
     
-    /// Keeps an up-to-date list of the icons the user has unlocked.
-    /// These are Strings of the icon names used to build urls to the files in storage.
-    func observeIcons() {
-        iconsRef = ref.child(Path.Icons).child(uid)
-        iconsRefHandle = iconsRef.observeEventType(.Value, withBlock: { (snapshot) in
-            var icons = [String]()
+    func loadIcons() {
+        dispatch_group_enter(dispatch_group)
+        ref.child(Path.Icons).child(uid).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
             for child in snapshot.children {
-                icons.append(child.value[Path.Name] as! String)
+                self.icons.append(child.value[Path.Name] as! String)
             }
-            self.icons = icons
+            dispatch_group_leave(self.dispatch_group)
         })
     }
     
@@ -278,30 +288,49 @@ class API {
     
     // MARK: - Proxy
     
+    func loadCreateProxyInfo(completion: () -> Void) {
+        loadProxyNameGenerator()
+        loadIcons()
+        dispatch_group_notify(dispatch_group, dispatch_get_main_queue()) {
+            completion()
+        }
+    }
+    
     /// Returns a new proxy with a unique name.
-    func create(proxy completion: (proxy: Proxy) -> Void) {
-        isCreatingProxy = true
-        if proxyNameGenerator.isLoaded {
-            tryCreating(proxy: { (proxy) in
-                completion(proxy: proxy)
+    func create(proxy completion: (proxy: Proxy?) -> Void) {
+        if proxyCount == -1 {
+            loadProxyCount({ 
+                if self.proxyCount > 50 {
+                    completion(proxy: nil)
+                } else {
+                    self.loadCreateProxyInfo({
+                        self.isCreatingProxy = true
+                        self.tryCreating(proxy: { (proxy) in
+                            completion(proxy: proxy)
+                        })
+                    })
+                }
             })
         } else {
-            load(proxyNameGenerator: { () in
-                self.tryCreating(proxy: { (proxy) in
+            if proxyCount > 50 {
+                completion(proxy: nil)
+            } else {
+                isCreatingProxy = true
+                tryCreating(proxy: { (proxy) in
                     completion(proxy: proxy)
                 })
-            })
+            }
         }
     }
     
     /// Loads proxyNameGenerator and returns a new proxy.
-    func load(proxyNameGenerator completion: () -> Void) {
+    func loadProxyNameGenerator() {
+        dispatch_group_enter(dispatch_group)
         ref.child(Path.WordBank).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
             if let words = snapshot.value, let adjs = words["adjectives"], let nouns = words["nouns"] {
                 self.proxyNameGenerator.adjs = adjs as! [String]
                 self.proxyNameGenerator.nouns = nouns as! [String]
-                self.proxyNameGenerator.isLoaded = true
-                completion()
+                dispatch_group_leave(self.dispatch_group)
             }
         })
     }
@@ -334,9 +363,13 @@ class API {
                 // Save the user's proxy.
                 self.set(proxy.toAnyObject(), a: Path.Proxies, b: self.uid, c: key, d: nil)
                 
-                completion(proxy: proxy)
-                return
+                // Increment proxyCount
+                self.updateProxyCount(1, completion: { 
+                    completion(proxy: proxy)
+                })
             }
+            
+            print("a")
             
             // Else name is taken so delete the proxy you just created.
             self.delete(Path.Proxies, b: uniqueKey, c: nil, d: nil)
@@ -419,6 +452,9 @@ class API {
         
         // Delete proxy
         delete(Path.Proxies, b: uid, c: proxy.key, d: nil)
+        
+        // Decrement user's proxy count
+        updateProxyCount(-1) {}
         
         // Decrement user's unread by the proxy's unread
         increment(-proxy.unread, a: Path.Unread, b: proxy.ownerId, c: Path.Unread, d: nil)

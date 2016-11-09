@@ -27,6 +27,12 @@ class IconPickerCollectionViewController: UICollectionViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(true)
         navigationItem.hidesBackButton = true
+        tabBarController?.tabBar.hidden = true
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(true)
+        tabBarController?.tabBar.hidden = false
     }
     
     override func viewDidAppear(animated: Bool) {

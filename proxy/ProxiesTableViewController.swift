@@ -159,8 +159,12 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
     func createNewProxy() {
         navigationItem.rightBarButtonItems![1].enabled = false
         api.create { (proxy) in
-            self.scrollToTop()
             self.navigationItem.rightBarButtonItems![1].enabled = true
+            guard proxy != nil else {
+                self.showAlert("Proxy Limit Reached", message: "Cannot exceed 50 proxies. Delete some old ones, then try again!")
+                return
+            }
+            self.scrollToTop()
         }
     }
     

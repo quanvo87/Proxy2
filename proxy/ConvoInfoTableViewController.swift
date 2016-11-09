@@ -169,12 +169,11 @@ class ConvoInfoTableViewController: UITableViewController {
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         switch indexPath.section {
-        case 1:
-            showProxyInfoTableViewController()
+        case 1: showProxyInfoTableViewController()
         case 2:
             switch indexPath.row {
-            case 0:
-                showLeaveConvoAlert()
+            case 0: showLeaveConvoAlert()
+            case 1: showBlockUserConfirmation()
             default:
                 return
             }
@@ -283,6 +282,16 @@ class ConvoInfoTableViewController: UITableViewController {
         let alert = UIAlertController(title: "Leave Conversation?", message: "The other user will not be notified.", preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: "Leave", style: .Destructive, handler: { (void) in
             self.api.leave(convo: self.convo)
+            self.navigationController?.popViewControllerAnimated(true)
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
+    
+    func showBlockUserConfirmation() {
+        let alert = UIAlertController(title: "Block User?", message: "You will no longer see any conversations with this user. You can unblock users in the 'Me' tab.", preferredStyle: .Alert)
+        alert.addAction(UIAlertAction(title: "Block", style: .Destructive, handler: { (void) in
+            self.api.blockReceiverInConvo(self.convo)
             self.navigationController?.popViewControllerAnimated(true)
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))

@@ -129,19 +129,22 @@ class MeTableViewController: UITableViewController {
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         switch indexPath.section {
+        case 1: showBlockedUsersTableViewController()
         case 2:
             tableView.deselectRowAtIndexPath(indexPath, animated: true)
             switch indexPath.row {
-            case 0:
-                logOut()
-            case 1:
-                showAbout()
-            default:
-                return
+            case 0: logOut()
+            case 1: showAbout()
+            default: return
             }
         default:
             return
         }
+    }
+    
+    func showBlockedUsersTableViewController() {
+        let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.BlockedUseresTableViewController) as! BlockedUsersTableViewController
+        navigationController?.pushViewController(dest, animated: true)
     }
     
     func logOut() {

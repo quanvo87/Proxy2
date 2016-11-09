@@ -11,7 +11,6 @@ struct ProxyNameGenerator {
     let numRange: UInt32 = 9
     var adjs = [String]()
     var nouns = [String]()
-    var isLoaded = false
     
     func generateProxyName() -> String {
         let adjsCount = UInt32(adjs.count)

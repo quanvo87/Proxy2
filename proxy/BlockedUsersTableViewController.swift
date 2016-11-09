@@ -21,6 +21,12 @@ class BlockedUsersTableViewController: UITableViewController {
         
         navigationItem.title = "Blocked Users"
         
+        let cancelButton = UIButton(type: .Custom)
+        cancelButton.setImage(UIImage(named: "cancel"), forState: UIControlState.Normal)
+        cancelButton.addTarget(self, action: #selector(BlockedUsersTableViewController.cancel), forControlEvents: UIControlEvents.TouchUpInside)
+        cancelButton.frame = CGRectMake(0, 0, 25, 25)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: cancelButton)
+        
         tableView.rowHeight = 60
         tableView.estimatedRowHeight = 60
         
@@ -37,8 +43,23 @@ class BlockedUsersTableViewController: UITableViewController {
         })
     }
     
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(true)
+        navigationItem.hidesBackButton = true
+        tabBarController?.tabBar.hidden = true
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(true)
+        tabBarController?.tabBar.hidden = false
+    }
+    
     deinit {
         blockedUsersRef.removeObserverWithHandle(blockedUsersRefHandle)
+    }
+    
+    func cancel() {
+        navigationController?.popViewControllerAnimated(true)
     }
 
     // MARK: - Table view data source
