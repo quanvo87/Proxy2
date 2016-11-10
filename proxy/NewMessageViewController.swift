@@ -21,13 +21,7 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SelectSend
     let ref = FIRDatabase.database().reference()
     var newMessageViewControllerDelegate: NewMessageViewControllerDelegate!
     var usingNewProxy = false
-    
-    var sender: Proxy? {
-        didSet {
-            enableSendButton()
-        }
-    }
-    
+    var sender: Proxy?
     var receiver: Proxy? {
         didSet {
             selectReceiverButton.setTitle(receiver!.key, forState: .Normal)
@@ -86,6 +80,7 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SelectSend
         selectSenderButton.enabled = true
         newButton.enabled = true
         selectReceiverButton.enabled = true
+        enableSendButton()
     }
     
     func enableSendButton() {
@@ -111,6 +106,7 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SelectSend
             usingNewProxy = false
         }
         sender = proxy
+        enableSendButton()
         setSelectSenderButtonTitle()
     }
     
@@ -123,7 +119,12 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SelectSend
     // MARK: - New proxy
     @IBAction func tapNewButton() {
         disableButtons()
-        if !usingNewProxy {
+        if usingNewProxy {
+            api.delete(proxy: sender!)
+            api.create(proxy: { (proxy) in
+                self.setSenderToNewProxy(proxy!)
+            })
+        } else {
             api.create(proxy: { (proxy) in
                 guard let proxy = proxy else {
                     self.showAlert("Proxy Limit Reached", message: "Cannot exceed 50 proxies. Delete some old ones, then try again!")
@@ -131,11 +132,6 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SelectSend
                     return
                 }
                 self.setSenderToNewProxy(proxy)
-            })
-        } else {
-            api.delete(proxy: sender!)
-            api.create(proxy: { (proxy) in
-                self.setSenderToNewProxy(proxy!)
             })
         }
     }

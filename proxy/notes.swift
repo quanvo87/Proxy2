@@ -1,11 +1,5 @@
 /*
  
- make `create proxy` button check if `uid` loaded, if not, do nothing
- when `create proxy` button tapped, check if `proxyCount` and `wordBank` are loaded, if not, load them and run create proxy again
- dont have icons be observed, just load when needed and keep in memory. if they were to theoretically earn new icons, just update to server and locally then.
- same with proxyCount
- 
- - proxy cap
  - test send message
  - test blocking users
  - stagger message load
@@ -37,4 +31,5 @@
  sell/trade names?
  every week, lottery. 1% of proxies randomly chosen get a random level upgrade. could be any level!
  maybe as you use a proxy more, you level it up, and gain prestige there
+ 
  */

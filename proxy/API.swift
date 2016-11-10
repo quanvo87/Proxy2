@@ -341,7 +341,7 @@ class API {
         // Create a global proxy and save it.
         let uniqueKey = ref.child(Path.Proxies).childByAutoId().key
         let key = proxyNameGenerator.generateProxyName()
-        let proxy = Proxy(key: key, ownerId: self.uid)
+        let proxy = Proxy(key: key.lowercaseString, ownerId: self.uid)
         set(proxy.toAnyObject(), a: Path.Proxies, b: uniqueKey, c: nil, d: nil)
         
         // Get all global proxies with this name.
