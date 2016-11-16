@@ -298,6 +298,10 @@ class API {
     
     /// Returns a new proxy with a unique name.
     func create(proxy completion: (proxy: Proxy?) -> Void) {
+        if uid == "" {
+            completion(proxy: nil)
+            return
+        }
         if proxyCount < 0 {
             loadProxyCount({ 
                 if self.proxyCount > 49 {

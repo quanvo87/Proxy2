@@ -70,7 +70,6 @@ class SelectSenderTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.ProxyCell, forIndexPath: indexPath) as! ProxyCell
         let proxy = proxies[indexPath.row]
         
-        // Set 'new' image
         cell.newImageView.hidden = true
         let secondsAgo = -NSDate(timeIntervalSince1970: proxy.created).timeIntervalSinceNow
         if secondsAgo < 60 * Settings.NewProxyIndicatorDuration {
@@ -78,9 +77,8 @@ class SelectSenderTableViewController: UITableViewController {
         }
         cell.contentView.bringSubviewToFront(cell.newImageView)
         
-        // Set icon
-        cell.iconImageView.image = nil
         cell.iconImageView.kf_indicatorType = .Activity
+        cell.iconImageView.image = nil
         api.getURL(forIcon: proxy.icon) { (url) in
             guard let url = url else { return }
             cell.iconImageView.kf_setImageWithURL(url, placeholderImage: nil)

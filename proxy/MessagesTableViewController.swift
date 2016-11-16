@@ -26,17 +26,73 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
     var convo = Convo()
     var shouldShowConvo = false
     
-    var newMessageButton = UIBarButtonItem()
-    var newProxyButton = UIBarButtonItem()
-    var leaveConvosButton = UIBarButtonItem()
-    var confirmLeaveConvosButton = UIBarButtonItem()
-    var cancelLeaveConvosButton = UIBarButtonItem()
+    var newMessageBarButton = UIBarButtonItem()
+    var newProxyBarButton = UIBarButtonItem()
+    var leaveConvosBarButton = UIBarButtonItem()
+    var confirmLeaveConvosBarButton = UIBarButtonItem()
+    var cancelLeaveConvosBarButton = UIBarButtonItem()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        checkLogInStatus()
-        setUpTabBar()
-        setUp()
+        
+        let items = self.tabBarController?.tabBar.items
+        let size = CGSize(width: 30, height: 30)
+        let isAspectRatio = true
+        items![0].image = UIImage(named: "messages-tab")?.resize(toNewSize: size, isAspectRatio: isAspectRatio)
+        items![1].image = UIImage(named: "proxies-tab")?.resize(toNewSize: size, isAspectRatio: isAspectRatio)
+        items![2].image = UIImage(named: "me-tab")?.resize(toNewSize: size, isAspectRatio: isAspectRatio)
+        
+        navigationItem.title = "Messages"
+        
+        let newMessageButton = UIButton(type: .Custom)
+        newMessageButton.setImage(UIImage(named: "new-message.png"), forState: UIControlState.Normal)
+        newMessageButton.addTarget(self, action: #selector(MessagesTableViewController.showNewMessageViewController), forControlEvents: UIControlEvents.TouchUpInside)
+        newMessageButton.frame = CGRectMake(0, 0, 25, 25)
+        newMessageBarButton = UIBarButtonItem(customView: newMessageButton)
+        
+        let newProxyButton = UIButton(type: .Custom)
+        newProxyButton.setImage(UIImage(named: "new-proxy.png"), forState: UIControlState.Normal)
+        newProxyButton.addTarget(self, action: #selector(MessagesTableViewController.createNewProxy), forControlEvents: UIControlEvents.TouchUpInside)
+        newProxyButton.frame = CGRectMake(0, 0, 25, 25)
+        newProxyBarButton = UIBarButtonItem(customView: newProxyButton)
+        
+        let leaveConvosButton = UIButton(type: .Custom)
+        leaveConvosButton.setImage(UIImage(named: "delete.png"), forState: UIControlState.Normal)
+        leaveConvosButton.addTarget(self, action: #selector(MessagesTableViewController.toggleEditMode), forControlEvents: UIControlEvents.TouchUpInside)
+        leaveConvosButton.frame = CGRectMake(0, 0, 25, 25)
+        leaveConvosBarButton = UIBarButtonItem(customView: leaveConvosButton)
+        
+        let confirmLeaveConvosButton = UIButton(type: .Custom)
+        confirmLeaveConvosButton.setImage(UIImage(named: "confirm"), forState: UIControlState.Normal)
+        confirmLeaveConvosButton.addTarget(self, action: #selector(MessagesTableViewController.confirmLeaveConvos), forControlEvents: UIControlEvents.TouchUpInside)
+        confirmLeaveConvosButton.frame = CGRectMake(0, 0, 25, 25)
+        confirmLeaveConvosBarButton = UIBarButtonItem(customView: confirmLeaveConvosButton)
+        
+        let cancelDeleteProxiesButton = UIButton(type: .Custom)
+        cancelDeleteProxiesButton.setImage(UIImage(named: "cancel"), forState: UIControlState.Normal)
+        cancelDeleteProxiesButton.addTarget(self, action: #selector(MessagesTableViewController.toggleEditMode), forControlEvents: UIControlEvents.TouchUpInside)
+        cancelDeleteProxiesButton.frame = CGRectMake(0, 0, 25, 25)
+        cancelLeaveConvosBarButton = UIBarButtonItem(customView: cancelDeleteProxiesButton)
+        
+        setDefaultButtons()
+        
+        edgesForExtendedLayout = .All
+        tableView.rowHeight = 80
+        tableView.estimatedRowHeight = 80
+        tableView.separatorStyle = .None
+        tableView.allowsMultipleSelectionDuringEditing = true
+        
+        FIRAuth.auth()?.addAuthStateDidChangeListener { (auth, user) in
+            if let user = user {
+                self.api.uid = user.uid
+                self.observeConvos()
+                self.observeUnread()
+            } else {
+                let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.LogInViewController) as! LogInViewController
+                let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+                appDelegate.window?.rootViewController = dest
+            }
+        }
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -49,79 +105,14 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
         unreadRef.removeObserverWithHandle(unreadRefHandle)
     }
     
-    // MARK: - Set up
-    func setUpTabBar() {
-        let items = tabBarController?.tabBar.items
-        let size = CGSize(width: 30, height: 30)
-        let isAspectRatio = true
-        items![0].image = UIImage(named: "messages-tab")?.resize(toNewSize: size, isAspectRatio: isAspectRatio)
-        items![1].image = UIImage(named: "proxies-tab")?.resize(toNewSize: size, isAspectRatio: isAspectRatio)
-        items![2].image = UIImage(named: "me-tab")?.resize(toNewSize: size, isAspectRatio: isAspectRatio)
-    }
-    
-    func setUp() {
-        navigationItem.title = "Messages"
-        newMessageButton = createNewMessageButton()
-        newProxyButton = createNewProxyButton()
-        leaveConvosButton = createLeaveConvosButton()
-        confirmLeaveConvosButton = createConfirmLeaveConvosButton()
-        cancelLeaveConvosButton = createCancelDeleteProxiesButton()
-        setDefaultButtons()
-        edgesForExtendedLayout = .All
-        tableView.rowHeight = 80
-        tableView.estimatedRowHeight = 80
-        tableView.separatorStyle = .None
-        tableView.allowsMultipleSelectionDuringEditing = true
-    }
-    
-    func createNewMessageButton() -> UIBarButtonItem {
-        let newMessageButton = UIButton(type: .Custom)
-        newMessageButton.setImage(UIImage(named: "new-message.png"), forState: UIControlState.Normal)
-        newMessageButton.addTarget(self, action: #selector(MessagesTableViewController.showNewMessageViewController), forControlEvents: UIControlEvents.TouchUpInside)
-        newMessageButton.frame = CGRectMake(0, 0, 25, 25)
-        return UIBarButtonItem(customView: newMessageButton)
-    }
-    
-    func createNewProxyButton() -> UIBarButtonItem {
-        let newProxyButton = UIButton(type: .Custom)
-        newProxyButton.setImage(UIImage(named: "new-proxy.png"), forState: UIControlState.Normal)
-        newProxyButton.addTarget(self, action: #selector(MessagesTableViewController.createNewProxy), forControlEvents: UIControlEvents.TouchUpInside)
-        newProxyButton.frame = CGRectMake(0, 0, 25, 25)
-        return UIBarButtonItem(customView: newProxyButton)
-    }
-    
-    func createLeaveConvosButton() -> UIBarButtonItem {
-        let leaveConvosButton = UIButton(type: .Custom)
-        leaveConvosButton.setImage(UIImage(named: "delete.png"), forState: UIControlState.Normal)
-        leaveConvosButton.addTarget(self, action: #selector(MessagesTableViewController.toggleEditMode), forControlEvents: UIControlEvents.TouchUpInside)
-        leaveConvosButton.frame = CGRectMake(0, 0, 25, 25)
-        return UIBarButtonItem(customView: leaveConvosButton)
-    }
-    
-    func createConfirmLeaveConvosButton() -> UIBarButtonItem {
-        let confirmLeaveConvosButton = UIButton(type: .Custom)
-        confirmLeaveConvosButton.setImage(UIImage(named: "confirm"), forState: UIControlState.Normal)
-        confirmLeaveConvosButton.addTarget(self, action: #selector(MessagesTableViewController.confirmLeaveConvos), forControlEvents: UIControlEvents.TouchUpInside)
-        confirmLeaveConvosButton.frame = CGRectMake(0, 0, 25, 25)
-        return UIBarButtonItem(customView: confirmLeaveConvosButton)
-    }
-    
-    func createCancelDeleteProxiesButton() -> UIBarButtonItem {
-        let cancelDeleteProxiesButton = UIButton(type: .Custom)
-        cancelDeleteProxiesButton.setImage(UIImage(named: "cancel"), forState: UIControlState.Normal)
-        cancelDeleteProxiesButton.addTarget(self, action: #selector(MessagesTableViewController.toggleEditMode), forControlEvents: UIControlEvents.TouchUpInside)
-        cancelDeleteProxiesButton.frame = CGRectMake(0, 0, 25, 25)
-        return UIBarButtonItem(customView: cancelDeleteProxiesButton)
-    }
-    
     func setDefaultButtons() {
-        navigationItem.leftBarButtonItem = leaveConvosButton
-        navigationItem.rightBarButtonItems = [newMessageButton, newProxyButton]
+        navigationItem.leftBarButtonItem = leaveConvosBarButton
+        navigationItem.rightBarButtonItems = [newMessageBarButton, newProxyBarButton]
     }
     
     func setEditModeButtons() {
-        navigationItem.leftBarButtonItem = cancelLeaveConvosButton
-        navigationItem.rightBarButtonItems = [confirmLeaveConvosButton]
+        navigationItem.leftBarButtonItem = cancelLeaveConvosBarButton
+        navigationItem.rightBarButtonItems = [confirmLeaveConvosBarButton]
     }
     
     func toggleEditMode() {
@@ -144,7 +135,7 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
     }
     
     func confirmLeaveConvos() {
-        guard !convosToLeave.isEmpty else {
+        if convosToLeave.isEmpty {
             toggleEditMode()
             return
         }
@@ -169,26 +160,6 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
         }
     }
     
-    // MARK: - Log in
-    func checkLogInStatus() {
-        FIRAuth.auth()?.addAuthStateDidChangeListener { (auth, user) in
-            if let user = user {
-                self.api.uid = user.uid
-                self.observeConvos()
-                self.observeUnread()
-            } else {
-                self.showLogInViewController()
-            }
-        }
-    }
-    
-    func showLogInViewController() {
-        let dest = storyboard!.instantiateViewControllerWithIdentifier(Identifiers.LogInViewController) as! LogInViewController
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.window?.rootViewController = dest
-    }
-    
-    // MARK: - Database
     func observeConvos() {
         convosRef = ref.child(Path.Convos).child(api.uid)
         convosRefHandle = convosRef.queryOrderedByChild(Path.Timestamp).observeEventType(.Value, withBlock: { (snapshot) in
@@ -241,20 +212,17 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
         }
     }
     
-    // MARK: - Table view data source
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.ConvoCell, forIndexPath: indexPath) as! ConvoCell
         let convo = convos[indexPath.row]
         
-        // Set icon
-        cell.iconImageView.image = nil
         cell.iconImageView.kf_indicatorType = .Activity
+        cell.iconImageView.image = nil
         api.getURL(forIcon: convo.icon) { (url) in
             guard let url = url else { return }
             cell.iconImageView.kf_setImageWithURL(url, placeholderImage: nil)
         }
         
-        // Set labels
         cell.titleLabel.attributedText = api.getConvoTitle(receiverNickname: convo.receiverNickname, receiverName: convo.receiverProxy, senderNickname: convo.senderNickname, senderName: convo.senderProxy)
         cell.lastMessageLabel.text = convo.message
         cell.timestampLabel.text = convo.timestamp.toTimeAgo()

@@ -25,15 +25,19 @@ class LogInViewController: VideoSplashViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setUp()
-    }
-    
-    deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
-    }
-    
-    func setUp() {
-        setUpVideoSplash()
+        
+        let videoNames = ["dragontailzipline", "arabiangulf", "beachpalm", "hawaiiancoast"]
+        let videoNamesCount = UInt32(videoNames.count)
+        let random = Int(arc4random_uniform(videoNamesCount))
+        let url = NSURL.fileURLWithPath(NSBundle.mainBundle().pathForResource(videoNames[random], ofType: "mp4")!)
+        self.videoFrame = view.frame
+        self.fillMode = .ResizeAspectFill
+        self.alwaysRepeat = true
+        self.sound = false
+        self.alpha = 0.9
+        self.restartForeground = true
+        self.contentURL = url
+        
         logInButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         logInButton.layer.cornerRadius = 5
         logInButton.layer.borderWidth = 1
@@ -54,18 +58,12 @@ class LogInViewController: VideoSplashViewController {
         passwordTextField.secureTextEntry = true
     }
     
-    func setUpVideoSplash() {
-        let videoNames = ["dragontailzipline", "arabiangulf", "beachpalm", "hawaiiancoast"]
-        let videoNamesCount = UInt32(videoNames.count)
-        let random = Int(arc4random_uniform(videoNamesCount))
-        let url = NSURL.fileURLWithPath(NSBundle.mainBundle().pathForResource(videoNames[random], ofType: "mp4")!)
-        self.videoFrame = view.frame
-        self.fillMode = .ResizeAspectFill
-        self.alwaysRepeat = true
-        self.sound = false
-        self.alpha = 0.9
-        self.restartForeground = true
-        self.contentURL = url
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        self.view.endEditing(true)
     }
     
     @IBAction func logIn(sender: AnyObject) {
@@ -77,8 +75,8 @@ class LogInViewController: VideoSplashViewController {
                 return
         }
         FIRAuth.auth()?.signInWithEmail(email, password: password) { (user, error) in
-            if let error = error {
-                self.showAlert("Error Logging In", message: error.localizedDescription)
+            guard error == nil else {
+                self.showAlert("Error Logging In", message: error!.localizedDescription)
                 return
             }
             self.showHomeScreen()
@@ -94,15 +92,14 @@ class LogInViewController: VideoSplashViewController {
                 return
         }
         FIRAuth.auth()?.createUserWithEmail(email, password: password) { (user, error) in
-            if let error = error {
-                self.showAlert("Error Creating Account", message: error.localizedDescription)
+            guard error == nil else {
+                self.showAlert("Error Creating Account", message: error!.localizedDescription)
                 return
             }
             let changeRequest = user!.profileChangeRequest()
             changeRequest.displayName = user!.email!
             changeRequest.commitChangesWithCompletion() { error in
-                if let error = error {
-                    self.showAlert("Error Setting Display Name For User", message: error.localizedDescription)
+                guard error == nil else {
                     return
                 }
                 let user = user!.uid
@@ -117,15 +114,15 @@ class LogInViewController: VideoSplashViewController {
         loginManager.logIn([ .PublicProfile ], viewController: self) { (loginResult) in
             switch loginResult {
             case .Failed:
-                self.showAlert("Error Logging In With Facebook", message: "Please check your Facebook credentials or try again another time.")
+                self.showAlert("Error Logging In With Facebook", message: "Please check your Facebook credentials or try again.")
                 return
             case .Cancelled:
                 return
             case .Success:
                 let credential = FIRFacebookAuthProvider.credentialWithAccessToken(FBSDKAccessToken.currentAccessToken().tokenString)
                 FIRAuth.auth()?.signInWithCredential(credential) { (user, error) in
-                    if let error = error {
-                        self.showAlert("Error Logging In With Facebook", message: error.localizedDescription)
+                    guard error == nil else {
+                        self.showAlert("Error Logging In With Facebook", message: error!.localizedDescription)
                         return
                     }
                     let user = user?.uid
@@ -144,10 +141,5 @@ class LogInViewController: VideoSplashViewController {
         let tabBarController = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.TabBarController) as! UITabBarController
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.window?.rootViewController = tabBarController
-    }
-    
-    // MARK: - Keyboard
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        self.view.endEditing(true)
     }
 }

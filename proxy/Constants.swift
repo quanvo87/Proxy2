@@ -82,7 +82,7 @@ struct Identifiers {
     static let ConvoCell = "Convo Cell"
     
     static let MeTableViewCell = "Me Table View Cell"
-    static let BlockedUseresTableViewController = "Blocked Users Table View Controller"
+    static let BlockedUsersTableViewController = "Blocked Users Table View Controller"
     static let BlockedUsersTableViewCell = "Blocked Users Table View Cell"
     
     static let Cell = "Cell"

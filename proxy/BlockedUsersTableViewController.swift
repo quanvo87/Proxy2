@@ -76,12 +76,10 @@ class BlockedUsersTableViewController: UITableViewController {
         let blockedUser = blockedUsers[indexPath.row]
         let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.BlockedUsersTableViewCell, forIndexPath: indexPath) as! BlockedUsersTableViewCell
         
-        cell.selectionStyle = .None
-        cell.accessoryType = .None
         cell.blockedUser = blockedUser
         
-        cell.iconImageView.image = nil
         cell.iconImageView.kf_indicatorType = .Activity
+        cell.iconImageView.image = nil
         api.getURL(forIcon: blockedUser.icon) { (url) in
             guard let url = url else { return }
             cell.iconImageView.kf_setImageWithURL(url, placeholderImage: nil)
@@ -89,6 +87,9 @@ class BlockedUsersTableViewController: UITableViewController {
         
         cell.nameLabel.text = blockedUser.name
         cell.nicknameLabel.text = blockedUser.nickname
+        
+        cell.selectionStyle = .None
+        cell.accessoryType = .None
         
         return cell
     }

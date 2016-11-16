@@ -29,8 +29,6 @@ class MeTableViewController: UITableViewController {
         FIRAuth.auth()?.addAuthStateDidChangeListener { auth, user in
             if let user = user {
                 self.navigationItem.title = user.displayName
-            } else {
-                self.navigationItem.title = ""
             }
         }
         
@@ -129,44 +127,44 @@ class MeTableViewController: UITableViewController {
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         switch indexPath.section {
-        case 1: showBlockedUsersTableViewController()
+        case 1:
+            
+            // Show blocked users
+            let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.BlockedUsersTableViewController) as! BlockedUsersTableViewController
+            navigationController?.pushViewController(dest, animated: true)
+            
         case 2:
             tableView.deselectRowAtIndexPath(indexPath, animated: true)
             switch indexPath.row {
-            case 0: logOut()
-            case 1: showAbout()
+            case 0:
+                
+                // Log out
+                let alert = UIAlertController(title: "Log Out", message: "Are you sure you want to log out?", preferredStyle: .Alert)
+                alert.addAction(UIAlertAction(title: "Yes", style: .Default) { action in
+                    let firebaseAuth = FIRAuth.auth()
+                    do {
+                        try firebaseAuth?.signOut()
+                        let logInViewController  = self.storyboard!.instantiateViewControllerWithIdentifier("Log In View Controller") as! LogInViewController
+                        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+                        appDelegate.window?.rootViewController = logInViewController
+                    } catch {}
+                    })
+                alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { action in
+                    })
+                presentViewController(alert, animated: true, completion: nil)
+                
+            case 1:
+
+                // Show About
+                let alert = UIAlertController(title: "About Proxy:", message: "Contact: qvo1987@gmail.com\n\nUpcoming features: sound in videos, location sharing\n\nIcons from icons8.com\n\nLibraries used: Kingfisher, JSQMessagesViewController, Fusuma, MobilePlayer, VideoSplashKit, RAMReel\n\nVersion 0.1", preferredStyle: .Alert)
+                alert.addAction(UIAlertAction(title: "Ok", style: .Cancel) { action in
+                    })
+                self.presentViewController(alert, animated: true, completion: nil)
+                
             default: return
             }
         default:
             return
         }
-    }
-    
-    func showBlockedUsersTableViewController() {
-        let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.BlockedUseresTableViewController) as! BlockedUsersTableViewController
-        navigationController?.pushViewController(dest, animated: true)
-    }
-    
-    func logOut() {
-        let alert = UIAlertController(title: "Log Out", message: "Are you sure you want to log out?", preferredStyle: .Alert)
-        alert.addAction(UIAlertAction(title: "Yes", style: .Default) { action in
-            let firebaseAuth = FIRAuth.auth()
-            do {
-                try firebaseAuth?.signOut()
-                let logInViewController  = self.storyboard!.instantiateViewControllerWithIdentifier("Log In View Controller") as! LogInViewController
-                let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-                appDelegate.window?.rootViewController = logInViewController
-            } catch {}
-            })
-        alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { action in
-            })
-        self.presentViewController(alert, animated: true, completion: nil)
-    }
-    
-    func showAbout() {
-        let alert = UIAlertController(title: "About Proxy:", message: "Contact: qvo1987@gmail.com\n\nUpcoming features: sound in videos, location sharing\n\nIcons from icons8.com\n\nLibraries used: Kingfisher, JSQMessagesViewController, Fusuma, MobilePlayer, VideoSplashKit, RAMReel\n\nVersion 0.1", preferredStyle: .Alert)
-        alert.addAction(UIAlertAction(title: "Ok", style: .Cancel) { action in
-        })
-        self.presentViewController(alert, animated: true, completion: nil)
     }
 }

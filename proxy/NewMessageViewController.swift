@@ -32,8 +32,6 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SelectSend
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(NewMessageViewController.keyboardWillShow), name: UIKeyboardWillShowNotification, object: view.window)
-        
         navigationItem.title = "New Message"
         
         let cancelButton = UIButton(type: .Custom)
@@ -50,6 +48,8 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SelectSend
         messageTextView.delegate = self
         
         sendButton.enabled = false
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(NewMessageViewController.keyboardWillShow), name: UIKeyboardWillShowNotification, object: view.window)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -116,7 +116,6 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SelectSend
         setSelectReceiverButtonTitle()
     }
     
-    // MARK: - New proxy
     @IBAction func tapNewButton() {
         disableButtons()
         if usingNewProxy {
@@ -143,12 +142,10 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SelectSend
         enableButtons()
     }
     
-    // MARK: - Text view
     func textViewDidChange(textView: UITextView) {
         enableSendButton()
     }
     
-    // MARK: - Send
     @IBAction func tapSendButton() {
         disableButtons()
         api.sendMessage(sender!, receiver: receiver!, text: messageTextView.text) { (convo) in
@@ -156,7 +153,6 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SelectSend
         }
     }
     
-    // MARK: - Navigation
     @IBAction func showSelectSenderTableViewController() {
         let dest = self.storyboard?.instantiateViewControllerWithIdentifier(Identifiers.SelectSenderTableViewController) as! SelectSenderTableViewController
         dest.selectSenderDelegate = self
