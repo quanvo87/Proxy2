@@ -146,7 +146,7 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
             return
         }
         let alert = UIAlertController(title: "Delete Proxies?", message: "You will not be able to view their conversations anymore.", preferredStyle: .Alert)
-        alert.addAction(UIAlertAction(title: "Yes", style: .Default, handler: { (action) in
+        alert.addAction(UIAlertAction(title: "Delete", style: .Destructive, handler: { (action) in
             self.deleteSelectedProxies()
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
@@ -253,7 +253,7 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
     }
     
     // MARK: - Select proxy view controller delegate
-    func showNewConvo(convo: Convo) {
+    func goToNewConvo(convo: Convo) {
         self.convo = convo
         shouldShowNewConvo = true
     }
@@ -276,6 +276,7 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
     
     func showProxyInfoTableViewController(proxy: Proxy) {
         let dest = storyboard?.instantiateViewControllerWithIdentifier(Identifiers.ProxyInfoTableViewController) as! ProxyInfoTableViewController
+        print(proxy)
         dest.proxy = proxy
         navigationController?.pushViewController(dest, animated: true)
     }

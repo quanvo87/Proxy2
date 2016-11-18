@@ -140,7 +140,7 @@ class MeTableViewController: UITableViewController {
                 
                 // Log out
                 let alert = UIAlertController(title: "Log Out", message: "Are you sure you want to log out?", preferredStyle: .Alert)
-                alert.addAction(UIAlertAction(title: "Yes", style: .Default) { action in
+                alert.addAction(UIAlertAction(title: "Log Out", style: .Destructive) { action in
                     let firebaseAuth = FIRAuth.auth()
                     do {
                         try firebaseAuth?.signOut()

@@ -19,9 +19,6 @@ class SelectReceiverViewController: UIViewController, UICollectionViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SelectReceiverViewController.keyboardWillShow), name: UIKeyboardWillShowNotification, object: self.view.window)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SelectReceiverViewController.keyboardWillHide), name: UIKeyboardWillHideNotification, object: self.view.window)
-        
         navigationItem.title = "Select Receiver"
         
         let cancelButton = UIButton(type: .Custom)
@@ -30,8 +27,7 @@ class SelectReceiverViewController: UIViewController, UICollectionViewDelegate {
         cancelButton.frame = CGRectMake(0, 0, 25, 25)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: cancelButton)
         
-        FIRDatabase.database().reference().child(Path.Proxies).queryOrderedByChild(Path.Key).observeSingleEventOfType(.Value, withBlock: { snapshot in
-            
+        api.ref.child(Path.Proxies).queryOrderedByChild(Path.Key).observeSingleEventOfType(.Value, withBlock: { snapshot in
             var proxies = [String]()
             
             for child in snapshot.children {
@@ -62,6 +58,9 @@ class SelectReceiverViewController: UIViewController, UICollectionViewDelegate {
             self.view.addSubview(ramReel.view)
             ramReel.view.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
         })
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SelectReceiverViewController.keyboardWillShow), name: UIKeyboardWillShowNotification, object: self.view.window)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SelectReceiverViewController.keyboardWillHide), name: UIKeyboardWillHideNotification, object: self.view.window)
     }
     
     override func viewWillAppear(animated: Bool) {

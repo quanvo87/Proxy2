@@ -29,7 +29,7 @@ class SelectSenderTableViewController: UITableViewController {
         tableView.estimatedRowHeight = 60
         tableView.separatorStyle = .None
         
-        FIRDatabase.database().reference().child(Path.Proxies).child(api.uid).queryOrderedByChild(Path.Timestamp).observeSingleEventOfType(.Value, withBlock: { snapshot in
+        api.ref.child(Path.Proxies).child(api.uid).queryOrderedByChild(Path.Timestamp).observeSingleEventOfType(.Value, withBlock: { snapshot in
             for child in snapshot.children {
                 let proxy = Proxy(anyObject: child.value)
                 self.proxies.append(proxy)
@@ -74,8 +74,8 @@ class SelectSenderTableViewController: UITableViewController {
         let secondsAgo = -NSDate(timeIntervalSince1970: proxy.created).timeIntervalSinceNow
         if secondsAgo < 60 * Settings.NewProxyIndicatorDuration {
             cell.newImageView.hidden = false
+            cell.contentView.bringSubviewToFront(cell.newImageView)
         }
-        cell.contentView.bringSubviewToFront(cell.newImageView)
         
         cell.iconImageView.kf_indicatorType = .Activity
         cell.iconImageView.image = nil
@@ -94,7 +94,7 @@ class SelectSenderTableViewController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let proxy = self.proxies[indexPath.row]
+        let proxy = proxies[indexPath.row]
         selectSenderDelegate.setSender(proxy)
         navigationController?.popViewControllerAnimated(true)
     }

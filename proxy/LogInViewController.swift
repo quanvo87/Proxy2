@@ -14,7 +14,6 @@ import FacebookLogin
 class LogInViewController: VideoSplashViewController {
     
     let api = API.sharedInstance
-    let ref = FIRDatabase.database().reference()
     var bottomConstraintConstant: CGFloat = 0.0
     
     @IBOutlet weak var emailTextField: UITextField!
@@ -38,24 +37,24 @@ class LogInViewController: VideoSplashViewController {
         self.restartForeground = true
         self.contentURL = url
         
-        logInButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-        logInButton.layer.cornerRadius = 5
-        logInButton.layer.borderWidth = 1
-        logInButton.layer.borderColor = UIColor.whiteColor().CGColor
+        emailTextField.clearButtonMode = .WhileEditing
+        passwordTextField.clearButtonMode = .WhileEditing
+        passwordTextField.secureTextEntry = true
         
         createNewAccountButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         createNewAccountButton.layer.cornerRadius = 5
         createNewAccountButton.layer.borderWidth = 1
         createNewAccountButton.layer.borderColor = UIColor.whiteColor().CGColor
         
+        logInButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        logInButton.layer.cornerRadius = 5
+        logInButton.layer.borderWidth = 1
+        logInButton.layer.borderColor = UIColor.whiteColor().CGColor
+        
         facebookButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         facebookButton.layer.cornerRadius = 5
         facebookButton.layer.borderWidth = 1
         facebookButton.layer.borderColor = UIColor.whiteColor().CGColor
-        
-        emailTextField.clearButtonMode = .WhileEditing
-        passwordTextField.clearButtonMode = .WhileEditing
-        passwordTextField.secureTextEntry = true
     }
     
     deinit {
@@ -126,7 +125,7 @@ class LogInViewController: VideoSplashViewController {
                         return
                     }
                     let user = user?.uid
-                    self.ref.child(Path.Icons).queryOrderedByKey().queryEqualToValue(user).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+                    self.api.ref.child(Path.Icons).queryOrderedByKey().queryEqualToValue(user).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
                         if !snapshot.hasChildren() {
                             self.api.setDefaultIcons(forUser: user!)
                         }

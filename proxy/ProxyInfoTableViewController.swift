@@ -157,7 +157,6 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         // Proxy info
         case 0:
             let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.SenderProxyInfoCell, forIndexPath: indexPath) as! SenderProxyInfoCell
-            cell.proxy = proxy
             cell.selectionStyle = .None
             cell.nicknameButton.addTarget(self, action: #selector(ProxyInfoTableViewController.showEditNicknameAlert), forControlEvents: .TouchUpInside)
             cell.changeIconButton.addTarget(self, action: #selector(ProxyInfoTableViewController.showIconPickerViewController), forControlEvents: .TouchUpInside)
@@ -220,7 +219,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     }
     
     // MARK: - Select proxy view controller delegate
-    func showNewConvo(convo: Convo) {
+    func goToNewConvo(convo: Convo) {
         self.convo = convo
         shouldShowNewConvo = true
     }

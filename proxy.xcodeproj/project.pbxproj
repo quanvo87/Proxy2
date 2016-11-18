@@ -139,8 +139,8 @@
 			isa = PBXGroup;
 			children = (
 				1415611E1D62A8A3002022BC /* ProxyCell.swift */,
-				147B5C371D82736700D18C73 /* SenderProxyInfoCell.swift */,
 				145E9D0B1D8A1DF00043F34F /* ReceiverProxyInfoCell.swift */,
+				147B5C371D82736700D18C73 /* SenderProxyInfoCell.swift */,
 				140E0D021D82AEA000D68F71 /* IconPickerCell.swift */,
 				140E0D081D83544C00D68F71 /* ConvoCell.swift */,
 				593302CE1DBF35D400D26805 /* MeTableViewCell.swift */,
