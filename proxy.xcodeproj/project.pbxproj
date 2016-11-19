@@ -13,7 +13,7 @@
 		1415610D1D620DB7002022BC /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1415610C1D620DB7002022BC /* API.swift */; };
 		1415611F1D62A8A3002022BC /* ProxyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1415611E1D62A8A3002022BC /* ProxyCell.swift */; };
 		142029A01D812859008B29DB /* ErrorAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1420299F1D812859008B29DB /* ErrorAlert.swift */; };
-		14383B0F1D7341070086CA6C /* SelectSenderDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14383B0E1D7341070086CA6C /* SelectSenderDelegate.swift */; };
+		14383B0F1D7341070086CA6C /* SenderPickerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14383B0E1D7341070086CA6C /* SenderPickerDelegate.swift */; };
 		14383B121D73802B0086CA6C /* Proxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14383B111D73802B0086CA6C /* Proxy.swift */; };
 		14383B171D73D42E0086CA6C /* Convo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14383B161D73D42E0086CA6C /* Convo.swift */; };
 		14383B191D73D8F50086CA6C /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14383B181D73D8F50086CA6C /* Message.swift */; };
@@ -47,9 +47,9 @@
 		595463BC1D9EC8F80079BEA3 /* arabiangulf.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 595463B91D9EC8F80079BEA3 /* arabiangulf.mp4 */; };
 		595463BD1D9EC8F80079BEA3 /* beachpalm.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 595463BA1D9EC8F80079BEA3 /* beachpalm.mp4 */; };
 		595463BE1D9EC8F80079BEA3 /* hawaiiancoast.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 595463BB1D9EC8F80079BEA3 /* hawaiiancoast.mp4 */; };
-		599B4D2F1DC8384900C476D5 /* SelectSenderTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599B4D2E1DC8384900C476D5 /* SelectSenderTableViewController.swift */; };
-		59F455FE1DC85BD0003EBA69 /* SelectReceiverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F455FD1DC85BD0003EBA69 /* SelectReceiverViewController.swift */; };
-		59F456001DC987EF003EBA69 /* SelectReceiverDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F455FF1DC987EF003EBA69 /* SelectReceiverDelegate.swift */; };
+		599B4D2F1DC8384900C476D5 /* SenderPickerTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599B4D2E1DC8384900C476D5 /* SenderPickerTableViewController.swift */; };
+		59F455FE1DC85BD0003EBA69 /* ReceiverPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F455FD1DC85BD0003EBA69 /* ReceiverPickerViewController.swift */; };
+		59F456001DC987EF003EBA69 /* ReceiverPickerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F455FF1DC987EF003EBA69 /* ReceiverPickerDelegate.swift */; };
 		6BA416E0405C691A2A0D975A /* Pods_proxy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 42B14E4F2F6BB0AA66125CA8 /* Pods_proxy.framework */; };
 		F8601D08682CD23B0A712CAD /* Pods_proxy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38C5C6B48B79F08C65113251 /* Pods_proxy.framework */; };
 /* End PBXBuildFile section */
@@ -61,7 +61,7 @@
 		1415610C1D620DB7002022BC /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = API.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		1415611E1D62A8A3002022BC /* ProxyCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = ProxyCell.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		1420299F1D812859008B29DB /* ErrorAlert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ErrorAlert.swift; sourceTree = "<group>"; };
-		14383B0E1D7341070086CA6C /* SelectSenderDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectSenderDelegate.swift; sourceTree = "<group>"; };
+		14383B0E1D7341070086CA6C /* SenderPickerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SenderPickerDelegate.swift; sourceTree = "<group>"; };
 		14383B111D73802B0086CA6C /* Proxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Proxy.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		14383B161D73D42E0086CA6C /* Convo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Convo.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		14383B181D73D8F50086CA6C /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
@@ -104,9 +104,9 @@
 		595463B91D9EC8F80079BEA3 /* arabiangulf.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = arabiangulf.mp4; sourceTree = "<group>"; };
 		595463BA1D9EC8F80079BEA3 /* beachpalm.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = beachpalm.mp4; sourceTree = "<group>"; };
 		595463BB1D9EC8F80079BEA3 /* hawaiiancoast.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = hawaiiancoast.mp4; sourceTree = "<group>"; };
-		599B4D2E1DC8384900C476D5 /* SelectSenderTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectSenderTableViewController.swift; sourceTree = "<group>"; };
-		59F455FD1DC85BD0003EBA69 /* SelectReceiverViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectReceiverViewController.swift; sourceTree = "<group>"; };
-		59F455FF1DC987EF003EBA69 /* SelectReceiverDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectReceiverDelegate.swift; sourceTree = "<group>"; };
+		599B4D2E1DC8384900C476D5 /* SenderPickerTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SenderPickerTableViewController.swift; sourceTree = "<group>"; };
+		59F455FD1DC85BD0003EBA69 /* ReceiverPickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceiverPickerViewController.swift; sourceTree = "<group>"; };
+		59F455FF1DC987EF003EBA69 /* ReceiverPickerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceiverPickerDelegate.swift; sourceTree = "<group>"; };
 		A04F46FD8A0D68BCC97F95BC /* Pods-proxy.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-proxy.debug.xcconfig"; path = "Pods/Target Support Files/Pods-proxy/Pods-proxy.debug.xcconfig"; sourceTree = "<group>"; };
 		D44F5C36773BB980E0E0A068 /* Pods-proxy.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-proxy.debug.xcconfig"; path = "Pods/Target Support Files/Pods-proxy/Pods-proxy.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -163,10 +163,10 @@
 				145A4D311D84A6EC00BA64DC /* MessagesTableViewController.swift */,
 				14A6F1A11D6FB5090015431E /* NewMessageViewController.swift */,
 				14383B261D755C300086CA6C /* NewMessageViewControllerDelegate.swift */,
-				599B4D2E1DC8384900C476D5 /* SelectSenderTableViewController.swift */,
-				14383B0E1D7341070086CA6C /* SelectSenderDelegate.swift */,
-				59F455FD1DC85BD0003EBA69 /* SelectReceiverViewController.swift */,
-				59F455FF1DC987EF003EBA69 /* SelectReceiverDelegate.swift */,
+				599B4D2E1DC8384900C476D5 /* SenderPickerTableViewController.swift */,
+				14383B0E1D7341070086CA6C /* SenderPickerDelegate.swift */,
+				59F455FD1DC85BD0003EBA69 /* ReceiverPickerViewController.swift */,
+				59F455FF1DC987EF003EBA69 /* ReceiverPickerDelegate.swift */,
 				14383B241D7555670086CA6C /* ConvoViewController.swift */,
 				14383B5C1D7B81530086CA6C /* ConvoInfoTableViewController.swift */,
 			);
@@ -458,8 +458,8 @@
 				1415611F1D62A8A3002022BC /* ProxyCell.swift in Sources */,
 				14383B5D1D7B81530086CA6C /* ConvoInfoTableViewController.swift in Sources */,
 				590AD6571DCE61A200473245 /* BlockedUsersTableViewController.swift in Sources */,
-				59F456001DC987EF003EBA69 /* SelectReceiverDelegate.swift in Sources */,
-				59F455FE1DC85BD0003EBA69 /* SelectReceiverViewController.swift in Sources */,
+				59F456001DC987EF003EBA69 /* ReceiverPickerDelegate.swift in Sources */,
+				59F455FE1DC85BD0003EBA69 /* ReceiverPickerViewController.swift in Sources */,
 				14383B5B1D7B0CB60086CA6C /* NSDate+NVTimeAgo.m in Sources */,
 				593302CF1DBF35D400D26805 /* MeTableViewCell.swift in Sources */,
 				145E9D0C1D8A1DF00043F34F /* ReceiverProxyInfoCell.swift in Sources */,
@@ -467,7 +467,7 @@
 				14383B121D73802B0086CA6C /* Proxy.swift in Sources */,
 				145A4D321D84A6EC00BA64DC /* MessagesTableViewController.swift in Sources */,
 				14E19A5E1D6148700030B366 /* LogInViewController.swift in Sources */,
-				599B4D2F1DC8384900C476D5 /* SelectSenderTableViewController.swift in Sources */,
+				599B4D2F1DC8384900C476D5 /* SenderPickerTableViewController.swift in Sources */,
 				592673B81DBECDA200C2FD6F /* MeTableViewController.swift in Sources */,
 				1470F3A21D83FA9800E932A1 /* ProxiesTableViewController.swift in Sources */,
 				14A6F18E1D6BDA880015431E /* Constants.swift in Sources */,
@@ -483,7 +483,7 @@
 				14A6F1941D6CF1410015431E /* ProxyNameGenerator.swift in Sources */,
 				14A6F1A21D6FB5090015431E /* NewMessageViewController.swift in Sources */,
 				14383B291D75EA950086CA6C /* notes.swift in Sources */,
-				14383B0F1D7341070086CA6C /* SelectSenderDelegate.swift in Sources */,
+				14383B0F1D7341070086CA6C /* SenderPickerDelegate.swift in Sources */,
 				14383B2D1D78A7210086CA6C /* ProxyInfoTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

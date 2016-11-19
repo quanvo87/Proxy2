@@ -8,7 +8,7 @@
 
 import FirebaseDatabase
 
-class NewMessageViewController: UIViewController, UITextViewDelegate, SelectSenderDelegate, SelectReceiverDelegate {
+class NewMessageViewController: UIViewController, UITextViewDelegate, SenderPickerDelegate, ReceiverPickerDelegate {
     
     @IBOutlet weak var selectSenderButton: UIButton!
     @IBOutlet weak var newButton: UIButton!
@@ -99,8 +99,8 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SelectSend
     }
     
     @IBAction func showSelectSenderTableViewController() {
-        let dest = self.storyboard?.instantiateViewControllerWithIdentifier(Identifiers.SelectSenderTableViewController) as! SelectSenderTableViewController
-        dest.selectSenderDelegate = self
+        let dest = self.storyboard?.instantiateViewControllerWithIdentifier(Identifiers.SenderPickerTableViewController) as! SenderPickerTableViewController
+        dest.senderPickerDelegate = self
         navigationController?.pushViewController(dest, animated: true)
     }
     
@@ -114,7 +114,7 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SelectSend
         } else {
             api.create(proxy: { (proxy) in
                 guard let proxy = proxy else {
-                    self.showAlert("Proxy Limit Reached", message: "Cannot exceed 50 proxies. Delete some old ones, then try again!")
+                    self.showAlert("Cannot Exceed 50 Proxies", message: "Delete some proxies and try again!")
                     self.enableButtons()
                     return
                 }
@@ -131,8 +131,8 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SelectSend
     }
     
     @IBAction func showSelectReceiverViewController() {
-        let dest = self.storyboard?.instantiateViewControllerWithIdentifier(Identifiers.SelectReceiverViewController) as! SelectReceiverViewController
-        dest.selectReceiverDelegate = self
+        let dest = self.storyboard?.instantiateViewControllerWithIdentifier(Identifiers.ReceiverPickerViewController) as! ReceiverPickerViewController
+        dest.receiverPickerDelegate = self
         navigationController?.pushViewController(dest, animated: true)
     }
     
@@ -156,7 +156,7 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SelectSend
         navigationController?.popViewControllerAnimated(true)
     }
     
-    // MARK: - Select sender delegate
+    // MARK: - Sender picker delegate
     func setSender(proxy: Proxy) {
         if usingNewProxy {
             api.delete(proxy: sender!)
@@ -167,7 +167,7 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SelectSend
         setSelectSenderButtonTitle()
     }
     
-    // MARK: - Select receiver delegate
+    // MARK: - Receiver picker delegate
     func setReceiver(proxy: Proxy) {
         receiver = proxy
         setSelectReceiverButtonTitle()

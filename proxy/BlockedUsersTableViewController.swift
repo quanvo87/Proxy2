@@ -28,7 +28,6 @@ class BlockedUsersTableViewController: UITableViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: cancelButton)
         
         tableView.rowHeight = 60
-        tableView.estimatedRowHeight = 60
         
         blockedUsersRef = ref.child(Path.Blocked).child(api.uid)
         blockedUsersRefHandle = blockedUsersRef.queryOrderedByChild(Path.Created).observeEventType(.Value, withBlock: { (snapshot) in

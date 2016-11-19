@@ -63,7 +63,6 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
         setDefaultButtons()
         
         tableView.rowHeight = 60
-        tableView.estimatedRowHeight = 60
         tableView.separatorStyle = .None
         tableView.allowsMultipleSelectionDuringEditing = true
         
@@ -276,7 +275,6 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
     
     func showProxyInfoTableViewController(proxy: Proxy) {
         let dest = storyboard?.instantiateViewControllerWithIdentifier(Identifiers.ProxyInfoTableViewController) as! ProxyInfoTableViewController
-        print(proxy)
         dest.proxy = proxy
         navigationController?.pushViewController(dest, animated: true)
     }

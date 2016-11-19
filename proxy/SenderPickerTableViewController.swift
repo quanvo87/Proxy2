@@ -1,5 +1,5 @@
 //
-//  SelectSenderTableViewController.swift
+//  SenderPickerTableViewController.swift
 //  proxy
 //
 //  Created by Quan Vo on 10/31/16.
@@ -8,11 +8,11 @@
 
 import FirebaseDatabase
 
-class SelectSenderTableViewController: UITableViewController {
+class SenderPickerTableViewController: UITableViewController {
 
     let api = API.sharedInstance
     var proxies = [Proxy]()
-    var selectSenderDelegate: SelectSenderDelegate!
+    var senderPickerDelegate: SenderPickerDelegate!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,12 +21,11 @@ class SelectSenderTableViewController: UITableViewController {
         
         let cancelButton = UIButton(type: .Custom)
         cancelButton.setImage(UIImage(named: "cancel"), forState: UIControlState.Normal)
-        cancelButton.addTarget(self, action: #selector(SelectSenderTableViewController.cancel), forControlEvents: UIControlEvents.TouchUpInside)
+        cancelButton.addTarget(self, action: #selector(SenderPickerTableViewController.cancel), forControlEvents: UIControlEvents.TouchUpInside)
         cancelButton.frame = CGRectMake(0, 0, 25, 25)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: cancelButton)
         
         tableView.rowHeight = 60
-        tableView.estimatedRowHeight = 60
         tableView.separatorStyle = .None
         
         api.ref.child(Path.Proxies).child(api.uid).queryOrderedByChild(Path.Timestamp).observeSingleEventOfType(.Value, withBlock: { snapshot in
@@ -95,7 +94,7 @@ class SelectSenderTableViewController: UITableViewController {
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let proxy = proxies[indexPath.row]
-        selectSenderDelegate.setSender(proxy)
+        senderPickerDelegate.setSender(proxy)
         navigationController?.popViewControllerAnimated(true)
     }
 }

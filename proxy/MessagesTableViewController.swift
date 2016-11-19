@@ -55,7 +55,7 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
         
         let confirmLeaveConvosButton = UIButton(type: .Custom)
         confirmLeaveConvosButton.setImage(UIImage(named: "confirm"), forState: UIControlState.Normal)
-        confirmLeaveConvosButton.addTarget(self, action: #selector(MessagesTableViewController.confirmLeaveConvos), forControlEvents: UIControlEvents.TouchUpInside)
+        confirmLeaveConvosButton.addTarget(self, action: #selector(MessagesTableViewController.leaveConvos), forControlEvents: UIControlEvents.TouchUpInside)
         confirmLeaveConvosButton.frame = CGRectMake(0, 0, 25, 25)
         confirmLeaveConvosBarButton = UIBarButtonItem(customView: confirmLeaveConvosButton)
         
@@ -69,7 +69,6 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
         
         edgesForExtendedLayout = .All
         tableView.rowHeight = 80
-        tableView.estimatedRowHeight = 80
         tableView.separatorStyle = .None
         tableView.allowsMultipleSelectionDuringEditing = true
         
@@ -144,26 +143,22 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
         }
     }
     
-    func leaveSelectedConvos() {
-        tableView.setEditing(false, animated: true)
-        setDefaultButtons()
-        for convo in convosToLeave {
-            api.leave(convo: convo)
-        }
-        convosToLeave = []
-    }
-    
-    func confirmLeaveConvos() {
+    func leaveConvos() {
         if convosToLeave.isEmpty {
             toggleEditMode()
             return
         }
         let alert = UIAlertController(title: "Leave Conversations?", message: "This will hide them until you receive another message in them.", preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: "Leave", style: .Destructive, handler: { (action) in
-            self.leaveSelectedConvos()
+            self.tableView.setEditing(false, animated: true)
+            self.setDefaultButtons()
+            for convo in self.convosToLeave {
+                self.api.leave(convo: convo)
+            }
+            self.convosToLeave = []
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-        self.presentViewController(alert, animated: true, completion: nil)
+        presentViewController(alert, animated: true, completion: nil)
     }
     
     func createNewProxy() {
@@ -185,7 +180,7 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
         navigationController?.pushViewController(dest, animated: true)
     }
     
-    // MARK: - Select proxy view controller delegate
+    // MARK: - New message view controller delegate
     func goToNewConvo(convo: Convo) {
         self.convo = convo
         shouldGoToNewConvo = true
@@ -196,7 +191,7 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
             let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.ConvoViewController) as! ConvoViewController
             dest.convo = convo
             shouldGoToNewConvo = false
-            self.navigationController!.pushViewController(dest, animated: true)
+            navigationController!.pushViewController(dest, animated: true)
         }
     }
     
@@ -213,7 +208,7 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
         let convo = convos[indexPath.row]
         if !tableView.editing {
             tableView.deselectRowAtIndexPath(indexPath, animated: true)
-            let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.ConvoViewController) as! ConvoViewController
+            let dest = storyboard!.instantiateViewControllerWithIdentifier(Identifiers.ConvoViewController) as! ConvoViewController
             dest.convo = convo
             navigationController!.pushViewController(dest, animated: true)
         } else {

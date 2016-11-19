@@ -1,5 +1,5 @@
 //
-//  SelectReceiverViewController.swift
+//  ReceiverPickerViewController.swift
 //  proxy
 //
 //  Created by Quan Vo on 11/1/16.
@@ -9,12 +9,14 @@
 import FirebaseDatabase
 import RAMReel
 
-class SelectReceiverViewController: UIViewController, UICollectionViewDelegate {
+class ReceiverPickerViewController: UIViewController, UICollectionViewDelegate {
     
+    
+    @IBOutlet weak var selectThisReceiverButton: UIButton!
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     
     let api = API.sharedInstance
-    var selectReceiverDelegate: SelectReceiverDelegate!
+    var receiverPickerDelegate: ReceiverPickerDelegate!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,13 +25,12 @@ class SelectReceiverViewController: UIViewController, UICollectionViewDelegate {
         
         let cancelButton = UIButton(type: .Custom)
         cancelButton.setImage(UIImage(named: "cancel"), forState: UIControlState.Normal)
-        cancelButton.addTarget(self, action: #selector(SelectReceiverViewController.close), forControlEvents: UIControlEvents.TouchUpInside)
+        cancelButton.addTarget(self, action: #selector(ReceiverPickerViewController.close), forControlEvents: UIControlEvents.TouchUpInside)
         cancelButton.frame = CGRectMake(0, 0, 25, 25)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: cancelButton)
         
         api.ref.child(Path.Proxies).queryOrderedByChild(Path.Key).observeSingleEventOfType(.Value, withBlock: { snapshot in
             var proxies = [String]()
-            
             for child in snapshot.children {
                 let proxy = Proxy(anyObject: child.value)
                 if proxy.key != "" {
@@ -43,14 +44,14 @@ class SelectReceiverViewController: UIViewController, UICollectionViewDelegate {
                 guard $0 != "" else { return }
                 self.api.getProxy($0, completion: { (proxy) in
                     guard let proxy = proxy else {
-                        self.showAlert("Receiver Not Found", message: "Make sure to type the receiver's full name or tap 'Select Highlighted Receiver'.")
+                        self.showAlert("Receiver Not Found", message: "Make sure to type the receiver's full name or tap 'Select This Receiver'.")
                         return
                     }
                     guard proxy.ownerId != self.api.uid else {
-                        self.showAlert("Cannot Send To Self", message: "Please select a proxy that does not belong to you.")
+                        self.showAlert("Cannot Send To Self", message: "Did you select your own proxy by mistake? 😂")
                         return
                     }
-                    self.selectReceiverDelegate.setReceiver(proxy)
+                    self.receiverPickerDelegate.setReceiver(proxy)
                     self.close()
                 })
             }
@@ -59,8 +60,12 @@ class SelectReceiverViewController: UIViewController, UICollectionViewDelegate {
             ramReel.view.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
         })
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SelectReceiverViewController.keyboardWillShow), name: UIKeyboardWillShowNotification, object: self.view.window)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SelectReceiverViewController.keyboardWillHide), name: UIKeyboardWillHideNotification, object: self.view.window)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ReceiverPickerViewController.keyboardWillShow), name: UIKeyboardWillShowNotification, object: self.view.window)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ReceiverPickerViewController.keyboardWillHide), name: UIKeyboardWillHideNotification, object: self.view.window)
+        
+        selectThisReceiverButton.layer.cornerRadius = 5
+        selectThisReceiverButton.layer.borderWidth = 1
+        selectThisReceiverButton.layer.borderColor = UIColor().blue().CGColor
     }
     
     override func viewWillAppear(animated: Bool) {
