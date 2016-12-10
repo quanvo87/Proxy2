@@ -68,9 +68,9 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
         setDefaultButtons()
         
         edgesForExtendedLayout = .All
+        tableView.allowsMultipleSelectionDuringEditing = true
         tableView.rowHeight = 80
         tableView.separatorStyle = .None
-        tableView.allowsMultipleSelectionDuringEditing = true
         
         FIRAuth.auth()?.addAuthStateDidChangeListener { (auth, user) in
             if let user = user {
@@ -94,7 +94,12 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(true)
-        goToNewConvo()
+        if shouldGoToNewConvo {
+            let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.ConvoViewController) as! ConvoViewController
+            dest.convo = convo
+            shouldGoToNewConvo = false
+            navigationController!.pushViewController(dest, animated: true)
+        }
     }
     
     deinit {
@@ -184,15 +189,6 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
     func goToNewConvo(convo: Convo) {
         self.convo = convo
         shouldGoToNewConvo = true
-    }
-    
-    func goToNewConvo() {
-        if shouldGoToNewConvo {
-            let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.ConvoViewController) as! ConvoViewController
-            dest.convo = convo
-            shouldGoToNewConvo = false
-            navigationController!.pushViewController(dest, animated: true)
-        }
     }
     
     // MARK: - Table view delegate

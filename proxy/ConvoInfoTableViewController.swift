@@ -35,11 +35,11 @@ class ConvoInfoTableViewController: UITableViewController {
         
         navigationItem.title = "Conversation"
         
-        tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: Identifiers.Cell)
-        tableView.delaysContentTouches = false
         for case let scrollView as UIScrollView in tableView.subviews {
             scrollView.delaysContentTouches = false
         }
+        tableView.delaysContentTouches = false
+        tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: Identifiers.Cell)
         
         api.getProxy(withKey: convo.senderProxy, belongingToUser: convo.senderId) { (proxy) in
             self.senderProxy = proxy
@@ -154,8 +154,8 @@ class ConvoInfoTableViewController: UITableViewController {
             let view = UIView()
             let label = UILabel(frame: CGRectMake(15, 0, tableView.frame.width, 30))
             label.font = label.font.fontWithSize(13)
-            label.textColor = UIColor.grayColor()
             label.text = "Them"
+            label.textColor = UIColor.grayColor()
             view.addSubview(label)
             return view
             
@@ -163,10 +163,10 @@ class ConvoInfoTableViewController: UITableViewController {
             let view = UIView()
             let label = UILabel(frame: CGRectMake(0, 0, tableView.frame.width - 15, 30))
             label.autoresizingMask = .FlexibleRightMargin
-            label.textAlignment = .Right
             label.font = label.font.fontWithSize(13)
-            label.textColor = UIColor.grayColor()
             label.text = "You"
+            label.textAlignment = .Right
+            label.textColor = UIColor.grayColor()
             view.addSubview(label)
             return view
             
@@ -234,16 +234,16 @@ class ConvoInfoTableViewController: UITableViewController {
                 
             // Leave convo
             case 0:
+                cell.textLabel!.font = UIFont.systemFontOfSize(17, weight: UIFontWeightRegular)
                 cell.textLabel?.text = "Leave conversation"
                 cell.textLabel?.textColor = UIColor.redColor()
-                cell.textLabel!.font = UIFont.systemFontOfSize(17, weight: UIFontWeightRegular)
                 return cell
                 
             // Block user
             case 1:
+                cell.textLabel!.font = UIFont.systemFontOfSize(17, weight: UIFontWeightRegular)
                 cell.textLabel?.text = "Block user"
                 cell.textLabel?.textColor = UIColor.redColor()
-                cell.textLabel!.font = UIFont.systemFontOfSize(17, weight: UIFontWeightRegular)
                 return cell
                 
             default: break
@@ -304,10 +304,10 @@ class ConvoInfoTableViewController: UITableViewController {
             } else {
                 textField.text = ""
             }
-            textField.placeholder = "Enter A Nickname"
             textField.autocapitalizationType = .Sentences
             textField.autocorrectionType = .Yes
             textField.clearButtonMode = .WhileEditing
+            textField.placeholder = "Enter A Nickname"
         })
         alert.addAction(UIAlertAction(title: "Save", style: .Default, handler: { (action) -> Void in
             let nickname = alert.textFields![0].text
@@ -328,10 +328,10 @@ class ConvoInfoTableViewController: UITableViewController {
             } else {
                 textField.text = ""
             }
-            textField.placeholder = "Enter A Nickname"
             textField.autocapitalizationType = .Sentences
             textField.autocorrectionType = .Yes
             textField.clearButtonMode = .WhileEditing
+            textField.placeholder = "Enter A Nickname"
         })
         alert.addAction(UIAlertAction(title: "Save", style: .Default, handler: { (action) -> Void in
             let nickname = alert.textFields![0].text

@@ -63,9 +63,9 @@ class ReceiverPickerViewController: UIViewController, UICollectionViewDelegate {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ReceiverPickerViewController.keyboardWillShow), name: UIKeyboardWillShowNotification, object: self.view.window)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ReceiverPickerViewController.keyboardWillHide), name: UIKeyboardWillHideNotification, object: self.view.window)
         
-        selectThisReceiverButton.layer.cornerRadius = 5
-        selectThisReceiverButton.layer.borderWidth = 1
         selectThisReceiverButton.layer.borderColor = UIColor().blue().CGColor
+        selectThisReceiverButton.layer.borderWidth = 1
+        selectThisReceiverButton.layer.cornerRadius = 5
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -83,6 +83,10 @@ class ReceiverPickerViewController: UIViewController, UICollectionViewDelegate {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
+    func close() {
+        navigationController?.popViewControllerAnimated(true)
+    }
+    
     func keyboardWillShow(notification: NSNotification) {
         let info = notification.userInfo!
         let keyboardFrame = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
@@ -93,9 +97,5 @@ class ReceiverPickerViewController: UIViewController, UICollectionViewDelegate {
     
     func keyboardWillHide(notification: NSNotification) {
         bottomConstraint.constant = 5
-    }
-    
-    func close() {
-        navigationController?.popViewControllerAnimated(true)
     }
 }

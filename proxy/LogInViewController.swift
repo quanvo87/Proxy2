@@ -25,40 +25,36 @@ class LogInViewController: VideoSplashViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let videoNames = ["dragontailzipline", "arabiangulf", "beachpalm", "hawaiiancoast"]
+        let videoNames = ["arabiangulf", "beachpalm", "dragontailzipline", "hawaiiancoast"]
         let videoNamesCount = UInt32(videoNames.count)
         let random = Int(arc4random_uniform(videoNamesCount))
         let url = NSURL.fileURLWithPath(NSBundle.mainBundle().pathForResource(videoNames[random], ofType: "mp4")!)
-        self.videoFrame = view.frame
-        self.fillMode = .ResizeAspectFill
-        self.alwaysRepeat = true
-        self.sound = false
         self.alpha = 0.9
-        self.restartForeground = true
+        self.alwaysRepeat = true
         self.contentURL = url
+        self.fillMode = .ResizeAspectFill
+        self.restartForeground = true
+        self.sound = false
+        self.videoFrame = view.frame
         
         emailTextField.clearButtonMode = .WhileEditing
         passwordTextField.clearButtonMode = .WhileEditing
         passwordTextField.secureTextEntry = true
         
         createNewAccountButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-        createNewAccountButton.layer.cornerRadius = 5
-        createNewAccountButton.layer.borderWidth = 1
         createNewAccountButton.layer.borderColor = UIColor.whiteColor().CGColor
+        createNewAccountButton.layer.borderWidth = 1
+        createNewAccountButton.layer.cornerRadius = 5
         
         logInButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-        logInButton.layer.cornerRadius = 5
-        logInButton.layer.borderWidth = 1
         logInButton.layer.borderColor = UIColor.whiteColor().CGColor
+        logInButton.layer.borderWidth = 1
+        logInButton.layer.cornerRadius = 5
         
         facebookButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-        facebookButton.layer.cornerRadius = 5
-        facebookButton.layer.borderWidth = 1
         facebookButton.layer.borderColor = UIColor.whiteColor().CGColor
-    }
-    
-    deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        facebookButton.layer.borderWidth = 1
+        facebookButton.layer.cornerRadius = 5
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
