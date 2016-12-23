@@ -6,10 +6,10 @@
 //  Copyright © 2016 Quan Vo. All rights reserved.
 //
 
+import AVFoundation
 import FirebaseAuth
 import FirebaseDatabase
 import FirebaseStorage
-import AVFoundation
 import JSQMessagesViewController
 
 class API {
@@ -181,8 +181,8 @@ class API {
     func compressVideo(fromURL url: NSURL, toURL outputURL: NSURL, handler: (session: AVAssetExportSession) -> Void) {
         let urlAsset = AVURLAsset(URL: url, options: nil)
         if let exportSession = AVAssetExportSession(asset: urlAsset, presetName: AVAssetExportPresetMediumQuality) {
-            exportSession.outputURL = outputURL
             exportSession.outputFileType = AVFileTypeQuickTimeMovie
+            exportSession.outputURL = outputURL
             exportSession.shouldOptimizeForNetworkUse = true
             exportSession.exportAsynchronouslyWithCompletionHandler { () -> Void in
                 handler(session: exportSession)
@@ -298,7 +298,7 @@ class API {
     
     /// Returns a new proxy with a unique name.
     func create(proxy completion: (proxy: Proxy?) -> Void) {
-        if uid == "" {
+        guard uid != "" else {
             completion(proxy: nil)
             return
         }

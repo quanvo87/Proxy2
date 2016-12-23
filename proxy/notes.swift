@@ -1,5 +1,5 @@
 /*
- 
+ - revamp models
  - names of storyboard elements
  - make proxy info keep track of nickname so that it can be placed in placeholder when editing nickname
  - test send message
@@ -8,6 +8,8 @@
  - notifications
  - intro tutorial
  - app icon
+ 
+ - consistent object and function naming when learn more about swift
  
  photo/video permission
  profanity filter

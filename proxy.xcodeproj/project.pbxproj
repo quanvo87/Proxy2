@@ -12,7 +12,6 @@
 		140E0D091D83544C00D68F71 /* ConvoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 140E0D081D83544C00D68F71 /* ConvoCell.swift */; };
 		1415610D1D620DB7002022BC /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1415610C1D620DB7002022BC /* API.swift */; };
 		1415611F1D62A8A3002022BC /* ProxyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1415611E1D62A8A3002022BC /* ProxyCell.swift */; };
-		142029A01D812859008B29DB /* ErrorAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1420299F1D812859008B29DB /* ErrorAlert.swift */; };
 		14383B0F1D7341070086CA6C /* SenderPickerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14383B0E1D7341070086CA6C /* SenderPickerDelegate.swift */; };
 		14383B121D73802B0086CA6C /* Proxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14383B111D73802B0086CA6C /* Proxy.swift */; };
 		14383B171D73D42E0086CA6C /* Convo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14383B161D73D42E0086CA6C /* Convo.swift */; };
@@ -60,7 +59,6 @@
 		140E0D081D83544C00D68F71 /* ConvoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvoCell.swift; sourceTree = "<group>"; };
 		1415610C1D620DB7002022BC /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = API.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		1415611E1D62A8A3002022BC /* ProxyCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = ProxyCell.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		1420299F1D812859008B29DB /* ErrorAlert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ErrorAlert.swift; sourceTree = "<group>"; };
 		14383B0E1D7341070086CA6C /* SenderPickerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SenderPickerDelegate.swift; sourceTree = "<group>"; };
 		14383B111D73802B0086CA6C /* Proxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Proxy.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		14383B161D73D42E0086CA6C /* Convo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Convo.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -198,7 +196,6 @@
 				1415610C1D620DB7002022BC /* API.swift */,
 				14A6F18D1D6BDA880015431E /* Constants.swift */,
 				14E19A5B1D612CE80030B366 /* Extensions.swift */,
-				1420299F1D812859008B29DB /* ErrorAlert.swift */,
 				14A6F1931D6CF1410015431E /* ProxyNameGenerator.swift */,
 				147B5C391D82891300D18C73 /* DefaultIcons.swift */,
 				14383B591D7B0CB60086CA6C /* NSDate+NVTimeAgo.h */,
@@ -450,7 +447,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				142029A01D812859008B29DB /* ErrorAlert.swift in Sources */,
 				14383B251D7555670086CA6C /* ConvoViewController.swift in Sources */,
 				14383B171D73D42E0086CA6C /* Convo.swift in Sources */,
 				147B5C3A1D82891300D18C73 /* DefaultIcons.swift in Sources */,

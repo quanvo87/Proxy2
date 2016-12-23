@@ -113,16 +113,15 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
         membersAreTypingRef.removeObserverWithHandle(membersAreTypingRefHandle)
     }
     
-    // MARK: - Set up
     func setUp() {
         names[convo.senderId] = convo.senderProxy
         names[convo.receiverId] = convo.receiverProxy
         setTitle()
         navigationController!.view.backgroundColor = UIColor.whiteColor()
         navigationItem.rightBarButtonItem = createInfoButton()
-        collectionView.contentInset.bottom = 0
         collectionView?.collectionViewLayout.incomingAvatarViewSize = CGSize(width: kJSQMessagesCollectionViewAvatarSizeDefault, height:kJSQMessagesCollectionViewAvatarSizeDefault)
         collectionView?.collectionViewLayout.outgoingAvatarViewSize = CGSize(width: kJSQMessagesCollectionViewAvatarSizeDefault, height:kJSQMessagesCollectionViewAvatarSizeDefault)
+        collectionView.contentInset.bottom = 0
         senderId = convo.senderId
         senderDisplayName = ""
         messagesRef = ref.child(Path.Messages).child(convo.key)
@@ -161,7 +160,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     func checkLeftConvo() {
         ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderLeftConvo).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
             if let leftConvo = snapshot.value as? Bool where leftConvo {
-                self.navigationController?.popViewControllerAnimated(true)
+                self.close()
             }
         })
     }
@@ -169,7 +168,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     func checkDeletedProxy() {
         ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderDeletedProxy).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
             if let deletedProxy = snapshot.value as? Bool where deletedProxy {
-                self.navigationController?.popViewControllerAnimated(true)
+                self.close()
             }
         })
     }
@@ -177,9 +176,13 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     func checkIsBlocking() {
         ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderIsBlocking).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
             if let isBlocking = snapshot.value as? Bool where isBlocking {
-                self.navigationController?.popViewControllerAnimated(true)
+                self.close()
             }
         })
+    }
+    
+    func close() {
+        navigationController?.popViewControllerAnimated(true)
     }
     
     // Set user as present in the convo.
@@ -229,6 +232,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
                 })
                 
             case "image":
+                
                 // Create message with placeholder.
                 let media = JSQPhotoMediaItem()
                 let _message = Message(key: message.key, convo: message.convo, mediaType: message.mediaType, mediaURL: message.mediaURL, read: message.read, timeRead: message.timeRead, senderId: message.senderId, date: message.date.timeIntervalSince1970, text: message.text, media: media)
@@ -247,6 +251,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
                 })
                 
             case "videoPlaceholder":
+                
                 // Create message with placeholder.
                 let media = JSQVideoMediaItem()
                 let _message = Message(key: message.key, convo: message.convo, mediaType: "video", mediaURL: message.mediaURL, read: message.read, timeRead: message.timeRead, senderId: message.senderId, date: message.date.timeIntervalSince1970, text: message.text, media: media)
@@ -264,9 +269,9 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
                         where mediaURLString != "" else { return }
                     
                     // Load cell with url to local file.
+                    (_message.media as! JSQVideoMediaItem).appliesMediaViewMaskAsOutgoing = message.senderId == self.senderId
                     (_message.media as! JSQVideoMediaItem).fileURL = NSURL(string: mediaURLString)
                     (_message.media as! JSQVideoMediaItem).isReadyToPlay = true
-                    (_message.media as! JSQVideoMediaItem).appliesMediaViewMaskAsOutgoing = message.senderId == self.senderId
                     
                     // Reload the collection view.
                     self.collectionView.reloadData()
@@ -276,6 +281,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
                 })
                 
             case "video":
+                
                 // Build JSQVideoMediaItem.
                 guard let mediaURL = NSURL(string: message.mediaURL) else { break }
                 let media = JSQVideoMediaItem(fileURL: mediaURL, isReadyToPlay: true)
@@ -421,16 +427,16 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
         
         // Outgoing message.
         if message.senderId == senderId {
-            cell.textView!.textColor = UIColor.whiteColor()
             cell.messageBubbleTopLabel.textInsets = UIEdgeInsetsMake(0, 0, 0, 40)
+            cell.textView!.textColor = UIColor.whiteColor()
             
-            // Incoming message.
+        // Incoming message.
         } else {
-            cell.textView?.textColor = UIColor.blackColor()
             cell.messageBubbleTopLabel.textInsets = UIEdgeInsetsMake(0, 40, 0, 0)
             cell.textView.linkTextAttributes = [
                 NSForegroundColorAttributeName: UIColor().blue(),
                 NSUnderlineStyleAttributeName: NSUnderlineStyle.StyleSingle.rawValue]
+            cell.textView?.textColor = UIColor.blackColor()
         }
         
         return cell
@@ -574,9 +580,9 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
         if message.mediaType == "image" {
             let image = (message.media as! JSQPhotoMediaItem).image
             let newImageView = UIImageView(image: image)
-            newImageView.frame = self.view.frame
             newImageView.backgroundColor = .blackColor()
             newImageView.contentMode = .ScaleAspectFit
+            newImageView.frame = self.view.frame
             newImageView.userInteractionEnabled = true
             let tap = UITapGestureRecognizer(target: self, action: #selector(ConvoViewController.dismissFullscreenImage(_:)))
             newImageView.addGestureRecognizer(tap)
