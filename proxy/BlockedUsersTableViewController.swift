@@ -22,9 +22,9 @@ class BlockedUsersTableViewController: UITableViewController {
         navigationItem.title = "Blocked Users"
         
         let cancelButton = UIButton(type: .Custom)
-        cancelButton.setImage(UIImage(named: "cancel"), forState: UIControlState.Normal)
         cancelButton.addTarget(self, action: #selector(BlockedUsersTableViewController.cancel), forControlEvents: UIControlEvents.TouchUpInside)
         cancelButton.frame = CGRectMake(0, 0, 25, 25)
+        cancelButton.setImage(UIImage(named: "cancel"), forState: UIControlState.Normal)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: cancelButton)
         
         tableView.rowHeight = 60
@@ -75,10 +75,13 @@ class BlockedUsersTableViewController: UITableViewController {
         let blockedUser = blockedUsers[indexPath.row]
         let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.BlockedUsersTableViewCell, forIndexPath: indexPath) as! BlockedUsersTableViewCell
         
+        cell.accessoryType = .None
+        cell.selectionStyle = .None
+        
         cell.blockedUser = blockedUser
         
-        cell.iconImageView.kf_indicatorType = .Activity
         cell.iconImageView.image = nil
+        cell.iconImageView.kf_indicatorType = .Activity
         api.getURL(forIcon: blockedUser.icon) { (url) in
             guard let url = url else { return }
             cell.iconImageView.kf_setImageWithURL(url, placeholderImage: nil)
@@ -86,9 +89,6 @@ class BlockedUsersTableViewController: UITableViewController {
         
         cell.nameLabel.text = blockedUser.name
         cell.nicknameLabel.text = blockedUser.nickname
-        
-        cell.selectionStyle = .None
-        cell.accessoryType = .None
         
         return cell
     }

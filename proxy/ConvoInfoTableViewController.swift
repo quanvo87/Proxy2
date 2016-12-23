@@ -189,8 +189,10 @@ class ConvoInfoTableViewController: UITableViewController {
         case 0:
             let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.ReceiverProxyInfoCell, forIndexPath: indexPath) as! ReceiverProxyInfoCell
             
-            cell.iconImageView.kf_indicatorType = .Activity
+            cell.selectionStyle = .None
+            
             cell.iconImageView = nil
+            cell.iconImageView.kf_indicatorType = .Activity
             cell.iconImageView.kf_setImageWithURL(receiverIconURL, placeholderImage: nil)
             cell.nameLabel.text = convo.receiverProxy
             
@@ -202,16 +204,16 @@ class ConvoInfoTableViewController: UITableViewController {
             
             cell.nicknameButton.addTarget(self, action: #selector(ConvoInfoTableViewController.editReceiverNickname), forControlEvents: .TouchUpInside)
             
-            cell.selectionStyle = .None
-            
             return cell
             
         // Sender proxy info
         case 1:
             let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.SenderProxyInfoCell, forIndexPath: indexPath) as! SenderProxyInfoCell
             
-            cell.iconImageView.kf_indicatorType = .Activity
+            cell.accessoryType = .DisclosureIndicator
+            
             cell.iconImageView = nil
+            cell.iconImageView.kf_indicatorType = .Activity
             cell.iconImageView.kf_setImageWithURL(senderIconURL, placeholderImage: nil)
             cell.nameLabel.text = convo.senderProxy
             
@@ -223,8 +225,6 @@ class ConvoInfoTableViewController: UITableViewController {
             
             cell.nicknameButton.addTarget(self, action: #selector(ConvoInfoTableViewController.editSenderNickname), forControlEvents: .TouchUpInside)
             cell.changeIconButton.addTarget(self, action: #selector(ConvoInfoTableViewController.goToIconPicker), forControlEvents: .TouchUpInside)
-            
-            cell.accessoryType = .DisclosureIndicator
             
             return cell
             

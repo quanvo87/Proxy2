@@ -34,9 +34,9 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderPick
         navigationItem.title = "New Message"
         
         let cancelButton = UIButton(type: .Custom)
-        cancelButton.setImage(UIImage(named: "cancel"), forState: UIControlState.Normal)
         cancelButton.addTarget(self, action: #selector(NewMessageViewController.cancel), forControlEvents: UIControlEvents.TouchUpInside)
         cancelButton.frame = CGRectMake(0, 0, 25, 25)
+        cancelButton.setImage(UIImage(named: "cancel"), forState: UIControlState.Normal)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: cancelButton)
         
         if sender != nil {
@@ -46,9 +46,9 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderPick
         messageTextView.becomeFirstResponder()
         messageTextView.delegate = self
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(NewMessageViewController.keyboardWillShow), name: UIKeyboardWillShowNotification, object: view.window)
-        
         sendButton.enabled = false
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(NewMessageViewController.keyboardWillShow), name: UIKeyboardWillShowNotification, object: view.window)
     }
     
     override func viewWillAppear(animated: Bool) {

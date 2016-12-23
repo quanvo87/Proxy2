@@ -11,7 +11,6 @@ import RAMReel
 
 class ReceiverPickerViewController: UIViewController, UICollectionViewDelegate {
     
-    
     @IBOutlet weak var selectThisReceiverButton: UIButton!
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     
@@ -24,9 +23,9 @@ class ReceiverPickerViewController: UIViewController, UICollectionViewDelegate {
         navigationItem.title = "Select Receiver"
         
         let cancelButton = UIButton(type: .Custom)
-        cancelButton.setImage(UIImage(named: "cancel"), forState: UIControlState.Normal)
         cancelButton.addTarget(self, action: #selector(ReceiverPickerViewController.close), forControlEvents: UIControlEvents.TouchUpInside)
         cancelButton.frame = CGRectMake(0, 0, 25, 25)
+        cancelButton.setImage(UIImage(named: "cancel"), forState: UIControlState.Normal)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: cancelButton)
         
         api.ref.child(Path.Proxies).queryOrderedByChild(Path.Key).observeSingleEventOfType(.Value, withBlock: { snapshot in
@@ -60,12 +59,12 @@ class ReceiverPickerViewController: UIViewController, UICollectionViewDelegate {
             ramReel.view.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
         })
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ReceiverPickerViewController.keyboardWillShow), name: UIKeyboardWillShowNotification, object: self.view.window)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ReceiverPickerViewController.keyboardWillHide), name: UIKeyboardWillHideNotification, object: self.view.window)
-        
         selectThisReceiverButton.layer.borderColor = UIColor().blue().CGColor
         selectThisReceiverButton.layer.borderWidth = 1
         selectThisReceiverButton.layer.cornerRadius = 5
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ReceiverPickerViewController.keyboardWillShow), name: UIKeyboardWillShowNotification, object: self.view.window)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ReceiverPickerViewController.keyboardWillHide), name: UIKeyboardWillHideNotification, object: self.view.window)
     }
     
     override func viewWillAppear(animated: Bool) {

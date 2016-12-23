@@ -6,21 +6,21 @@
 //  Copyright © 2016 Quan Vo. All rights reserved.
 //
 
+import FacebookLogin
 import FirebaseAuth
 import FirebaseDatabase
 import VideoSplashKit
-import FacebookLogin
 
 class LogInViewController: VideoSplashViewController {
-    
-    let api = API.sharedInstance
-    var bottomConstraintConstant: CGFloat = 0.0
     
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var logInButton: UIButton!
     @IBOutlet weak var createNewAccountButton: UIButton!
     @IBOutlet weak var facebookButton: UIButton!
+    
+    let api = API.sharedInstance
+    var bottomConstraintConstant: CGFloat = 0.0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,20 +41,20 @@ class LogInViewController: VideoSplashViewController {
         passwordTextField.clearButtonMode = .WhileEditing
         passwordTextField.secureTextEntry = true
         
-        createNewAccountButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         createNewAccountButton.layer.borderColor = UIColor.whiteColor().CGColor
         createNewAccountButton.layer.borderWidth = 1
         createNewAccountButton.layer.cornerRadius = 5
+        createNewAccountButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         
-        logInButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         logInButton.layer.borderColor = UIColor.whiteColor().CGColor
         logInButton.layer.borderWidth = 1
         logInButton.layer.cornerRadius = 5
+        logInButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         
-        facebookButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         facebookButton.layer.borderColor = UIColor.whiteColor().CGColor
         facebookButton.layer.borderWidth = 1
         facebookButton.layer.cornerRadius = 5
+        facebookButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {

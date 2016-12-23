@@ -20,9 +20,9 @@ class SenderPickerTableViewController: UITableViewController {
         navigationItem.title = "Select Sender"
         
         let cancelButton = UIButton(type: .Custom)
-        cancelButton.setImage(UIImage(named: "cancel"), forState: UIControlState.Normal)
         cancelButton.addTarget(self, action: #selector(SenderPickerTableViewController.cancel), forControlEvents: UIControlEvents.TouchUpInside)
         cancelButton.frame = CGRectMake(0, 0, 25, 25)
+        cancelButton.setImage(UIImage(named: "cancel"), forState: UIControlState.Normal)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: cancelButton)
         
         tableView.rowHeight = 60
@@ -76,8 +76,8 @@ class SenderPickerTableViewController: UITableViewController {
             cell.contentView.bringSubviewToFront(cell.newImageView)
         }
         
-        cell.iconImageView.kf_indicatorType = .Activity
         cell.iconImageView.image = nil
+        cell.iconImageView.kf_indicatorType = .Activity
         api.getURL(forIcon: proxy.icon) { (url) in
             guard let url = url else { return }
             cell.iconImageView.kf_setImageWithURL(url, placeholderImage: nil)
