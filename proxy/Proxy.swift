@@ -31,16 +31,29 @@ struct Proxy {
         self.icon = icon
     }
     
-    init(anyObject: AnyObject) {
-        self.key = anyObject["key"] as? String ?? ""
-        self.ownerId = anyObject["ownerId"] as? String ?? ""
-        self.icon = anyObject["icon"] as? String ?? ""
-        self.nickname = anyObject["nickname"] as? String ?? ""
-        self.message = anyObject["message"] as? String ?? ""
-        self.created = anyObject["created"] as? Double ?? 0.0
-        self.timestamp = anyObject["timestamp"] as? Double ?? 0.0
-        self.convos = anyObject["convos"] as? Int ?? 0
-        self.unread = anyObject["unread"] as? Int ?? 0
+    init?(anyObject: AnyObject) {
+        if
+            let key = anyObject["key"] as? String,
+            let ownerId = anyObject["ownerId"] as? String,
+            let icon = anyObject["icon"] as? String,
+            let nickname = anyObject["nickname"] as? String,
+            let message = anyObject["message"] as? String,
+            let created = anyObject["created"] as? Double,
+            let timestamp = anyObject["timestamp"] as? Double,
+            let convos = anyObject["convos"] as? Int,
+            let unread = anyObject["unread"] as? Int {
+            self.key = key
+            self.ownerId = ownerId
+            self.icon = icon
+            self.nickname = nickname
+            self.message = message
+            self.created = created
+            self.timestamp = timestamp
+            self.convos = convos
+            self.unread = unread
+        } else {
+            return nil
+        }
     }
     
     func toAnyObject() -> AnyObject {

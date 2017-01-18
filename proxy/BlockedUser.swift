@@ -8,10 +8,10 @@
 
 struct BlockedUser {
     
-    var id: String
-    var icon: String
-    var name: String
-    var nickname: String
+    var id = ""
+    var icon = ""
+    var name = ""
+    var nickname = ""
     var created = NSDate().timeIntervalSince1970
     
     init(id: String, icon: String, name: String, nickname: String) {

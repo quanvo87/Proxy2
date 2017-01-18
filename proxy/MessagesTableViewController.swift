@@ -124,7 +124,8 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
     func observeConvos() {
         convosRef = api.ref.child(Path.Convos).child(api.uid)
         convosRefHandle = convosRef.queryOrderedByChild(Path.Timestamp).observeEventType(.Value, withBlock: { (snapshot) in
-            self.convos = self.api.getConvos(fromSnapshot: snapshot)
+            guard let convos = self.api.getConvos(fromSnapshot: snapshot) else { return }
+            self.convos = convos
             self.tableView.reloadData()
         })
     }

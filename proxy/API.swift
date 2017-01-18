@@ -396,7 +396,7 @@ class API {
     /// Returns the global Proxy with `key`.
     func getProxy(key: String, completion: (proxy: Proxy?) -> Void) {
         ref.child(Path.Proxies).child(key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            let proxy = Proxy(anyObject: snapshot.value!)
+            guard let proxy = Proxy(anyObject: snapshot.value!) else { return }
             if proxy.key == "" {
                 completion(proxy: nil)
             } else {
@@ -408,7 +408,8 @@ class API {
     /// Returns the Proxy with `key` belonging to `user`.
     func getProxy(withKey key: String, belongingToUser user: String, completion: (proxy: Proxy) -> Void) {
         ref.child(Path.Proxies).child(user).child(key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            completion(proxy: Proxy(anyObject: snapshot.value!))
+            guard let proxy = Proxy(anyObject: snapshot.value!) else { return }
+            completion(proxy: proxy)
         })
     }
     
@@ -485,7 +486,7 @@ class API {
             
             // Convo exists, use it to send the message
             if snapshot.childrenCount == 1 {
-                let convo = Convo(anyObject: snapshot.value!)
+                guard let convo = Convo(anyObject: snapshot.value!) else { return }
                 self.sendMessage(withText: text, withMediaType: "", usingSenderConvo: convo, completion: { (convo, message) in
                     completion(convo: convo)
                 })
@@ -625,7 +626,7 @@ class API {
     
     func getConvo(withKey key: String, belongingToUser user: String, completion: (convo: Convo?) -> Void) {
         ref.child(Path.Convos).child(user).child(key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            let convo = Convo(anyObject: snapshot.value!)
+            guard let convo = Convo(anyObject: snapshot.value!) else { return }
             if convo.key == "" {
                 completion(convo: nil)
             } else {
@@ -638,7 +639,7 @@ class API {
         ref.child(Path.Convos).child(proxy.key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
             var convos = [Convo]()
             for child in snapshot.children {
-                let convo = Convo(anyObject: child.value)
+                guard let convo = Convo(anyObject: child.value) else { return }
                 convos.append(convo)
             }
             completion(convos: convos)
@@ -649,7 +650,7 @@ class API {
         ref.child(Path.Convos).child(user).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
             var convos = [Convo]()
             for child in snapshot.children {
-                let convo = Convo(anyObject: child.value)
+                guard let convo = Convo(anyObject: child.value) else { return }
                 convos.append(convo)
             }
             completion(convos: convos)
@@ -658,10 +659,10 @@ class API {
     
     /// Returns an array of Convo's from `snapshot`.
     /// Filters out Convo's that should not be shown.
-    func getConvos(fromSnapshot snapshot: FIRDataSnapshot) -> [Convo] {
+    func getConvos(fromSnapshot snapshot: FIRDataSnapshot) -> [Convo]? {
         var convos = [Convo]()
         for child in snapshot.children {
-            let convo = Convo(anyObject: child.value)
+            guard let convo = Convo(anyObject: child.value) else { return nil }
             if !convo.senderLeftConvo && !convo.senderIsBlocking {
                 convos.append(convo)
             }

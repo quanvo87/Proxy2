@@ -31,7 +31,7 @@ class ReceiverPickerViewController: UIViewController, UICollectionViewDelegate {
         api.ref.child(Path.Proxies).queryOrderedByChild(Path.Key).observeSingleEventOfType(.Value, withBlock: { snapshot in
             var proxies = [String]()
             for child in snapshot.children {
-                let proxy = Proxy(anyObject: child.value)
+                guard let proxy = Proxy(anyObject: child.value) else { return }
                 if proxy.key != "" {
                     proxies.append(proxy.key.lowercaseString)
                 }

@@ -55,7 +55,8 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         
         convosRef = ref.child(Path.Convos).child(proxy.key)
         convosRefHandle = convosRef.queryOrderedByChild(Path.Timestamp).observeEventType(.Value, withBlock: { (snapshot) in
-            self.convos = self.api.getConvos(fromSnapshot: snapshot)
+            guard let convos = self.api.getConvos(fromSnapshot: snapshot) else { return }
+            self.convos = convos
             self.tableView.reloadSections(NSIndexSet(index: 1), withRowAnimation: .Automatic)
         })
     }

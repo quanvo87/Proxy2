@@ -196,7 +196,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     // Observe and load messages.
     func observeMessages() {
         messagesRefHandle = messagesRef.queryOrderedByChild(Path.Timestamp).observeEventType(.ChildAdded, withBlock: { (snapshot) in
-            let message = Message(anyObject: snapshot.value!)
+            guard let message = Message(anyObject: snapshot.value!) else { return }
             switch message.mediaType {
                 
             case "imagePlaceholder":
@@ -322,7 +322,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     // Observe most recent message to see if it's an outgoing message that's been read.
     func observeLastMessage() {
         lastMessageRefHandle = messagesRef.queryOrderedByChild(Path.Timestamp).queryLimitedToLast(1).observeEventType(.Value, withBlock: { (snapshot) in
-            let message = Message(anyObject: snapshot.children.nextObject()!.value)
+            guard let message = Message(anyObject: snapshot.children.nextObject()!.value) else { return }
             if message.senderId == self.senderId && message.read {
                 let message_ = self.messages[self.readReceiptIndex]
                 if !message_.read {

@@ -27,23 +27,43 @@ struct Convo {
     
     init() {}
     
-    init(anyObject: AnyObject) {
-        self.key = anyObject["key"] as? String ?? ""
-        self.senderId = anyObject["senderId"] as? String ?? ""
-        self.senderProxy = anyObject["senderProxy"] as? String ?? ""
-        self.senderNickname = anyObject["senderNickname"] as? String ?? ""
-        self.receiverId = anyObject["receiverId"] as? String ?? ""
-        self.receiverProxy = anyObject["receiverProxy"] as? String ?? ""
-        self.receiverNickname = anyObject["receiverNickname"] as? String ?? ""
-        self.icon = anyObject["icon"] as? String ?? ""
-        self.message = anyObject["message"] as? String ?? ""
-        self.senderLeftConvo = anyObject["senderLeftConvo"] as? Bool ?? false
-        self.senderIsBlocking = anyObject["senderIsBlocking"] as? Bool ?? false
-        self.receiverLeftConvo = anyObject["receiverLeftConvo"] as? Bool ?? false
-        self.receiverIsBlocking = anyObject["receiverIsBlocking"] as? Bool ?? false
-        self.receiverDeletedProxy = anyObject["receiverDeletedProxy"] as? Bool ?? false
-        self.timestamp = anyObject["timestamp"] as? Double ?? 0.0
-        self.unread = anyObject["unread"] as? Int ?? 0
+    init?(anyObject: AnyObject) {
+        if
+            let key = anyObject["key"] as? String,
+            let senderId = anyObject["senderId"] as? String,
+            let senderProxy = anyObject["senderProxy"] as? String,
+            let senderNickname = anyObject["senderNickname"] as? String,
+            let receiverId = anyObject["receiverId"] as? String,
+            let receiverProxy = anyObject["receiverProxy"] as? String,
+            let receiverNickname = anyObject["receiverNickname"] as? String,
+            let icon = anyObject["icon"] as? String,
+            let message = anyObject["message"] as? String,
+            let senderLeftConvo = anyObject["senderLeftConvo"] as? Bool,
+            let senderIsBlocking = anyObject["senderIsBlocking"] as? Bool,
+            let receiverLeftConvo = anyObject["receiverLeftConvo"] as? Bool,
+            let receiverIsBlocking = anyObject["receiverIsBlocking"] as? Bool,
+            let receiverDeletedProxy = anyObject["receiverDeletedProxy"] as? Bool,
+            let timestamp = anyObject["timestamp"] as? Double,
+            let unread = anyObject["unread"] as? Int {
+            self.key = key
+            self.senderId = senderId
+            self.senderProxy = senderProxy
+            self.senderNickname = senderNickname
+            self.receiverId = receiverId
+            self.receiverProxy = receiverProxy
+            self.receiverNickname = receiverNickname
+            self.icon = icon
+            self.message = message
+            self.senderLeftConvo = senderLeftConvo
+            self.senderIsBlocking = senderIsBlocking
+            self.receiverLeftConvo = receiverLeftConvo
+            self.receiverIsBlocking = receiverIsBlocking
+            self.receiverDeletedProxy = receiverDeletedProxy
+            self.timestamp = timestamp
+            self.unread = unread
+        } else {
+            return nil
+        }
     }
     
     func toAnyObject() -> AnyObject {
