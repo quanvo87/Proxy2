@@ -320,7 +320,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     // Observe most recent message to see if it's an outgoing message that's been read.
     func observeLastMessage() {
         lastMessageRefHandle = messagesRef.queryOrdered(byChild: Path.Timestamp).queryLimited(toLast: 1).observe(.value, with: { (snapshot) in
-            guard let message = Message(anyObject: (snapshot.children.nextObject()! as AnyObject).value) else { return }
+            guard let message = Message(anyObject: (snapshot.children.nextObject()! as! FIRDataSnapshot).value as AnyObject) else { return }
             if message.senderId == self.senderId && message.read {
                 let message_ = self.messages[self.readReceiptIndex]
                 if !message_.read {

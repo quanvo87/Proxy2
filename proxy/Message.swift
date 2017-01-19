@@ -87,7 +87,7 @@ class Message: JSQMessage {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func toAnyObject() -> AnyObject {
+    func toAnyObject() -> Any {
         return [
             "key": key,
             "convo": convo,

@@ -56,7 +56,7 @@ struct Proxy {
         }
     }
     
-    func toAnyObject() -> AnyObject {
+    func toAnyObject() -> Any {
         return [
             "key": key,
             "ownerId": ownerId,

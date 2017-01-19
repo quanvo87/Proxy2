@@ -23,7 +23,7 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderPick
     var sender: Proxy?
     var receiver: Proxy? {
         didSet {
-            selectReceiverButton.setTitle(receiver!.key, forState: .Normal)
+            selectReceiverButton.setTitle(receiver!.key, for: .normal)
             enableSendButton()
         }
     }
@@ -33,10 +33,10 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderPick
         
         navigationItem.title = "New Message"
         
-        let cancelButton = UIButton(type: .Custom)
-        cancelButton.addTarget(self, action: #selector(NewMessageViewController.cancel), forControlEvents: UIControlEvents.TouchUpInside)
-        cancelButton.frame = CGRectMake(0, 0, 25, 25)
-        cancelButton.setImage(UIImage(named: "cancel"), forState: UIControlState.Normal)
+        let cancelButton = UIButton(type: .custom)
+        cancelButton.addTarget(self, action: #selector(NewMessageViewController.cancel), for: UIControlEvents.touchUpInside)
+        cancelButton.frame = CGRect(x: 0, y: 0, width: 25, height: 25)
+        cancelButton.setImage(UIImage(named: "cancel"), for: UIControlState.normal)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: cancelButton)
         
         if sender != nil {
@@ -46,9 +46,9 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderPick
         messageTextView.becomeFirstResponder()
         messageTextView.delegate = self
         
-        sendButton.enabled = false
+        sendButton.isEnabled = false
         
-        NotificationCenter.defaultCenter().addObserver(self, selector: #selector(NewMessageViewController.keyboardWillShow), name: UIKeyboardWillShowNotification, object: view.window)
+        NotificationCenter.default.addObserver(self, selector: #selector(NewMessageViewController.keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: view.window)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -62,44 +62,44 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderPick
     
     func keyboardWillShow(_ notification: Notification) {
         let info = notification.userInfo!
-        let keyboardFrame = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
-        UIView.animateWithDuration(0.1, animations: { () -> Void in
+        let keyboardFrame = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
+        UIView.animate(withDuration: 0.1, animations: { () -> Void in
             self.bottomConstraint.constant = keyboardFrame.size.height + 5
         })
     }
     
     func disableButtons() {
-        selectSenderButton.enabled = false
-        newButton.enabled = false
-        selectReceiverButton.enabled = false
-        sendButton.enabled = false
+        selectSenderButton.isEnabled = false
+        newButton.isEnabled = false
+        selectReceiverButton.isEnabled = false
+        sendButton.isEnabled = false
     }
     
     func enableButtons() {
-        selectSenderButton.enabled = true
-        newButton.enabled = true
-        selectReceiverButton.enabled = true
+        selectSenderButton.isEnabled = true
+        newButton.isEnabled = true
+        selectReceiverButton.isEnabled = true
         enableSendButton()
     }
     
     func enableSendButton() {
         if sender != nil && receiver != nil && messageTextView.text != "" {
-            sendButton.enabled = true
+            sendButton.isEnabled = true
         } else {
-            sendButton.enabled = false
+            sendButton.isEnabled = false
         }
     }
     
     func setSelectSenderButtonTitle() {
-        selectSenderButton.setTitle(sender!.key, forState: .Normal)
+        selectSenderButton.setTitle(sender!.key, for: .normal)
     }
     
     func setSelectReceiverButtonTitle() {
-        selectReceiverButton.setTitle(receiver?.key, forState: .Normal)
+        selectReceiverButton.setTitle(receiver?.key, for: .normal)
     }
     
     @IBAction func showSelectSenderTableViewController() {
-        let dest = self.storyboard?.instantiateViewControllerWithIdentifier(Identifiers.SenderPickerTableViewController) as! SenderPickerTableViewController
+        let dest = self.storyboard?.instantiateViewController(withIdentifier: Identifiers.SenderPickerTableViewController) as! SenderPickerTableViewController
         dest.senderPickerDelegate = self
         navigationController?.pushViewController(dest, animated: true)
     }
@@ -131,7 +131,7 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderPick
     }
     
     @IBAction func showSelectReceiverViewController() {
-        let dest = self.storyboard?.instantiateViewControllerWithIdentifier(Identifiers.ReceiverPickerViewController) as! ReceiverPickerViewController
+        let dest = self.storyboard?.instantiateViewController(withIdentifier: Identifiers.ReceiverPickerViewController) as! ReceiverPickerViewController
         dest.receiverPickerDelegate = self
         navigationController?.pushViewController(dest, animated: true)
     }
@@ -144,7 +144,7 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderPick
         disableButtons()
         api.sendMessage(sender!, receiver: receiver!, text: messageTextView.text) { (convo) in
             self.newMessageViewControllerDelegate.goToNewConvo(convo)
-            self.navigationController?.popViewControllerAnimated(true)
+            _ = self.navigationController?.popViewController(animated: true)
         }
     }
     
@@ -153,7 +153,7 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderPick
         if usingNewProxy {
             api.delete(proxy: sender!)
         }
-        navigationController?.popViewControllerAnimated(true)
+        _ = navigationController?.popViewController(animated: true)
     }
     
     // MARK: - Sender picker delegate

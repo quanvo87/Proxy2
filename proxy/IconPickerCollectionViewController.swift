@@ -39,7 +39,7 @@ class IconPickerCollectionViewController: UICollectionViewController {
         
         ref.child(Path.Icons).child(api.uid).queryOrdered(byChild: Path.Name).observeSingleEvent(of: .value, with: { (snapshot) in
             for child in snapshot.children {
-                self.icons.append((child as AnyObject).value["name"] as! String)
+                self.icons.append(((child as! FIRDataSnapshot).value as AnyObject)[Path.Name] as! String)
             }
             self.collectionView?.reloadData()
         })

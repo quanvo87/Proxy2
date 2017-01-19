@@ -86,7 +86,7 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
         proxiesRefHandle = proxiesRef.queryOrdered(byChild: Path.Timestamp).observe(.value, with: { snapshot in
             var proxies = [Proxy]()
             for child in snapshot.children {
-                guard let proxy = Proxy(anyObject: (child as AnyObject).value) else { return }
+                guard let proxy = Proxy(anyObject: (child as! FIRDataSnapshot).value as AnyObject) else { return }
                 proxies.append(proxy)
             }
             self.proxies = proxies.reversed()

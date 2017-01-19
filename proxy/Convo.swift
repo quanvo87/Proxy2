@@ -66,7 +66,7 @@ struct Convo {
         }
     }
     
-    func toAnyObject() -> AnyObject {
+    func toAnyObject() -> Any {
         return [
             "key": key,
             "senderId": senderId,

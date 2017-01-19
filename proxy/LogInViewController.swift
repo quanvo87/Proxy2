@@ -99,22 +99,22 @@ class LogInViewController: UIViewController {
     
     @IBAction func logInWithFacebook(_ sender: AnyObject) {
         let loginManager = LoginManager()
-        loginManager.logIn([ .PublicProfile ], viewController: self) { (loginResult) in
+        loginManager.logIn([ .publicProfile ], viewController: self) { (loginResult) in
             switch loginResult {
-            case .Failed:
+            case .failed:
                 self.showAlert("Error Logging In With Facebook", message: "Please check your Facebook credentials or try again.")
                 return
-            case .Cancelled:
+            case .cancelled:
                 return
-            case .Success:
-                let credential = FIRFacebookAuthProvider.credentialWithAccessToken(FBSDKAccessToken.currentAccessToken().tokenString)
-                FIRAuth.auth()?.signInWithCredential(credential) { (user, error) in
+            case .success:
+                let credential = FIRFacebookAuthProvider.credential(withAccessToken: FBSDKAccessToken.current().tokenString)
+                FIRAuth.auth()?.signIn(with: credential) { (user, error) in
                     guard error == nil else {
                         self.showAlert("Error Logging In With Facebook", message: error!.localizedDescription)
                         return
                     }
                     let user = user?.uid
-                    self.api.ref.child(Path.Icons).queryOrderedByKey().queryEqualToValue(user).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+                    self.api.ref.child(Path.Icons).queryOrderedByKey().queryEqual(toValue: user).observeSingleEvent(of: .value, with: { (snapshot) in
                         if !snapshot.hasChildren() {
                             self.api.setDefaultIcons(forUser: user!)
                         }

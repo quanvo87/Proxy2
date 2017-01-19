@@ -38,7 +38,7 @@ struct BlockedUser {
         }
     }
     
-    func toAnyObject() -> AnyObject {
+    func toAnyObject() -> Any {
         return [
            "id": id,
            "icon": icon,

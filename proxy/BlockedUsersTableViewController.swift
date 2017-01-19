@@ -33,7 +33,7 @@ class BlockedUsersTableViewController: UITableViewController {
         blockedUsersRefHandle = blockedUsersRef.queryOrdered(byChild: Path.Created).observe(.value, with: { (snapshot) in
             var blockedUsers = [BlockedUser]()
             for child in snapshot.children {
-                if let blockedUser = BlockedUser(anyObject: (child as AnyObject).value) {
+                if let blockedUser = BlockedUser(anyObject: (child as! FIRDataSnapshot).value as AnyObject) {
                     blockedUsers.append(blockedUser)
                 }
             }
