@@ -1,6 +1,6 @@
 /*
+ - function naming consistency (gotoview vs showview, etc)
  - names of storyboard elements
- - make proxy info keep track of nickname so that it can be placed in placeholder when editing nickname
  - test send message
  - test blocking users
  - stagger message load

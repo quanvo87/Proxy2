@@ -329,7 +329,8 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
                     message_.read = message.read
                     message_.timeRead = message.timeRead
                     self.messages[self.readReceiptIndex] = message_
-                    self.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: self.readReceiptIndex, inSection: 0)])
+                    self.collectionView.reloadData()
+//                    self.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: self.readReceiptIndex, inSection: 0)])
                     self.scrollToBottomAnimated(true)
                 }
             }

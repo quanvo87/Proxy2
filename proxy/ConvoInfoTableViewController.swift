@@ -188,44 +188,26 @@ class ConvoInfoTableViewController: UITableViewController {
         // Receiver proxy info
         case 0:
             let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.ReceiverProxyInfoCell, forIndexPath: indexPath) as! ReceiverProxyInfoCell
-            
-            cell.selectionStyle = .None
-            
+            cell.nameLabel.text = convo.receiverProxy
+            cell.nicknameButton.setTitle(receiverNickname == "" ? "Enter A Nickname" : receiverNickname, forState: .Normal)
+            cell.nicknameButton.addTarget(self, action: #selector(ConvoInfoTableViewController.editReceiverNickname), forControlEvents: .TouchUpInside)
             cell.iconImageView = nil
             cell.iconImageView.kf_indicatorType = .Activity
             cell.iconImageView.kf_setImageWithURL(receiverIconURL, placeholderImage: nil)
-            cell.nameLabel.text = convo.receiverProxy
-            
-            if receiverNickname == "" {
-                cell.nicknameButton.setTitle("Enter A Nickname", forState: .Normal)
-            } else {
-                cell.nicknameButton.setTitle(receiverNickname, forState: .Normal)
-            }
-            
-            cell.nicknameButton.addTarget(self, action: #selector(ConvoInfoTableViewController.editReceiverNickname), forControlEvents: .TouchUpInside)
-            
+            cell.selectionStyle = .None
             return cell
             
         // Sender proxy info
         case 1:
             let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.SenderProxyInfoCell, forIndexPath: indexPath) as! SenderProxyInfoCell
-            
-            cell.accessoryType = .DisclosureIndicator
-            
+            cell.nameLabel.text = convo.senderProxy
+            cell.nicknameButton.setTitle(senderNickname == "" ? "Enter A Nickname" : senderNickname, forState: .Normal)
+            cell.nicknameButton.addTarget(self, action: #selector(ConvoInfoTableViewController.editSenderNickname), forControlEvents: .TouchUpInside)
             cell.iconImageView = nil
             cell.iconImageView.kf_indicatorType = .Activity
             cell.iconImageView.kf_setImageWithURL(senderIconURL, placeholderImage: nil)
-            cell.nameLabel.text = convo.senderProxy
-            
-            if senderNickname == "" {
-                cell.nicknameButton.setTitle("Enter A Nickname", forState: .Normal)
-            } else {
-                cell.nicknameButton.setTitle(senderNickname, forState: .Normal)
-            }
-            
-            cell.nicknameButton.addTarget(self, action: #selector(ConvoInfoTableViewController.editSenderNickname), forControlEvents: .TouchUpInside)
             cell.changeIconButton.addTarget(self, action: #selector(ConvoInfoTableViewController.goToIconPicker), forControlEvents: .TouchUpInside)
-            
+            cell.accessoryType = .DisclosureIndicator
             return cell
             
         case 2:
