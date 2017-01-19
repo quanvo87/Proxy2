@@ -31,7 +31,7 @@ class IconPickerCollectionViewController: UICollectionViewController {
         collectionView!.delaysContentTouches = false
         
         let flowLayout = UICollectionViewFlowLayout()
-        flowLayout.itemSize = CGSize(width: 60, height: 60)
+        flowLayout.itemSize = CGSize(width: 60, height: 90)
         collectionView?.setCollectionViewLayout(flowLayout, animated: true)
         for case let scrollView as UIScrollView in collectionView!.subviews {
             scrollView.delaysContentTouches = false

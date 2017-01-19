@@ -1,5 +1,7 @@
 /*
- - function naming consistency (gotoview vs showview, etc)
+ - swift 3 conventions
+ - make everything as power efficient as possible
+ - function naming consistency (gotoview vs showview, etc) (try to copy apple)
  - names of storyboard elements
  - test send message
  - test blocking users
