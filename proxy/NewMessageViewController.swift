@@ -48,19 +48,19 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderPick
         
         sendButton.enabled = false
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(NewMessageViewController.keyboardWillShow), name: UIKeyboardWillShowNotification, object: view.window)
+        NotificationCenter.defaultCenter().addObserver(self, selector: #selector(NewMessageViewController.keyboardWillShow), name: UIKeyboardWillShowNotification, object: view.window)
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         navigationItem.hidesBackButton = true
     }
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
-    func keyboardWillShow(notification: NSNotification) {
+    func keyboardWillShow(_ notification: Notification) {
         let info = notification.userInfo!
         let keyboardFrame = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
         UIView.animateWithDuration(0.1, animations: { () -> Void in
@@ -123,7 +123,7 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderPick
         }
     }
     
-    func setSenderToNewProxy(proxy: Proxy) {
+    func setSenderToNewProxy(_ proxy: Proxy) {
         sender = proxy
         usingNewProxy = true
         setSelectSenderButtonTitle()
@@ -136,7 +136,7 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderPick
         navigationController?.pushViewController(dest, animated: true)
     }
     
-    func textViewDidChange(textView: UITextView) {
+    func textViewDidChange(_ textView: UITextView) {
         enableSendButton()
     }
     
@@ -157,7 +157,7 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderPick
     }
     
     // MARK: - Sender picker delegate
-    func setSender(proxy: Proxy) {
+    func setSender(_ proxy: Proxy) {
         if usingNewProxy {
             api.delete(proxy: sender!)
             usingNewProxy = false
@@ -168,7 +168,7 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderPick
     }
     
     // MARK: - Receiver picker delegate
-    func setReceiver(proxy: Proxy) {
+    func setReceiver(_ proxy: Proxy) {
         receiver = proxy
         setSelectReceiverButtonTitle()
     }

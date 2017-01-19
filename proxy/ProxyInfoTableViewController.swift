@@ -27,16 +27,16 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let newMessageButton = UIButton(type: .Custom)
-        newMessageButton.addTarget(self, action: #selector(ProxyInfoTableViewController.showNewMessageViewController), forControlEvents: UIControlEvents.TouchUpInside)
-        newMessageButton.frame = CGRectMake(0, 0, 25, 25)
-        newMessageButton.setImage(UIImage(named: "new-message.png"), forState: UIControlState.Normal)
+        let newMessageButton = UIButton(type: .custom)
+        newMessageButton.addTarget(self, action: #selector(ProxyInfoTableViewController.showNewMessageViewController), for: UIControlEvents.touchUpInside)
+        newMessageButton.frame = CGRect(x: 0, y: 0, width: 25, height: 25)
+        newMessageButton.setImage(UIImage(named: "new-message.png"), for: UIControlState.normal)
         let newMessageBarButton = UIBarButtonItem(customView: newMessageButton)
         
-        let deleteProxyButton = UIButton(type: .Custom)
-        deleteProxyButton.addTarget(self, action: #selector(ProxyInfoTableViewController.showDeleteProxyAlert), forControlEvents: UIControlEvents.TouchUpInside)
-        deleteProxyButton.frame = CGRectMake(0, 0, 25, 25)
-        deleteProxyButton.setImage(UIImage(named: "delete.png"), forState: UIControlState.Normal)
+        let deleteProxyButton = UIButton(type: .custom)
+        deleteProxyButton.addTarget(self, action: #selector(ProxyInfoTableViewController.showDeleteProxyAlert), for: UIControlEvents.touchUpInside)
+        deleteProxyButton.frame = CGRect(x: 0, y: 0, width: 25, height: 25)
+        deleteProxyButton.setImage(UIImage(named: "delete.png"), for: UIControlState.normal)
         let deleteProxyBarButton = UIBarButtonItem(customView: deleteProxyButton)
         
         navigationItem.rightBarButtonItems = [newMessageBarButton, deleteProxyBarButton]
@@ -45,100 +45,100 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
             scrollView.delaysContentTouches = false
         }
         tableView.delaysContentTouches = false
-        tableView.separatorStyle = .None
+        tableView.separatorStyle = .none
         
         proxyRef = ref.child(Path.Proxies).child(proxy.ownerId).child(proxy.key)
         convosRef = ref.child(Path.Convos).child(proxy.key)
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
         
         if convo != nil {
-            ref.child(Path.Convos).child(convo!.senderId).child(convo!.key).child(Path.SenderLeftConvo).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-                if let deleted = snapshot.value as? Bool where deleted {
-                    self.navigationController?.popViewControllerAnimated(true)
+            ref.child(Path.Convos).child(convo!.senderId).child(convo!.key).child(Path.SenderLeftConvo).observeSingleEvent(of: .value, with: { (snapshot) in
+                if let deleted = snapshot.value as? Bool, deleted {
+                    _ = self.navigationController?.popViewController(animated: true)
                 }
             })
         }
         
         if shouldShowNewConvo {
-            let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.ConvoViewController) as! ConvoViewController
+            let dest = self.storyboard!.instantiateViewController(withIdentifier: Identifiers.ConvoViewController) as! ConvoViewController
             dest.convo = convo!
             shouldShowNewConvo = false
             self.navigationController!.pushViewController(dest, animated: true)
         }
         
-        proxyRefHandle = proxyRef.observeEventType(.Value, withBlock: { (snapshot) in
-            guard let proxy = Proxy(anyObject: snapshot.value!) else { return }
+        proxyRefHandle = proxyRef.observe(.value, with: { (snapshot) in
+            guard let proxy = Proxy(anyObject: snapshot.value! as AnyObject) else { return }
             self.proxy = proxy
             self.navigationItem.title = proxy.unread.toTitleSuffix()
             self.tableView.reloadData()
         })
         
-        convosRefHandle = convosRef.queryOrderedByChild(Path.Timestamp).observeEventType(.Value, withBlock: { (snapshot) in
+        convosRefHandle = convosRef.queryOrdered(byChild: Path.Timestamp).observe(.value, with: { (snapshot) in
             guard let convos = self.api.getConvos(fromSnapshot: snapshot) else { return }
             self.convos = convos
             self.tableView.reloadData()
         })
     }
     
-    override func viewDidDisappear(animated: Bool) {
+    override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(true)
         proxyRef.removeAllObservers()
         convosRef.removeAllObservers()
     }
     
     func showNewMessageViewController() {
-        let dest = storyboard?.instantiateViewControllerWithIdentifier(Identifiers.NewMessageViewController) as! NewMessageViewController
+        let dest = storyboard?.instantiateViewController(withIdentifier: Identifiers.NewMessageViewController) as! NewMessageViewController
         dest.newMessageViewControllerDelegate = self
         dest.sender = proxy
         navigationController?.pushViewController(dest, animated: true)
     }
     
     func showDeleteProxyAlert() {
-        let alert = UIAlertController(title: "Delete Proxy?", message: "You will not be able to see this proxy or its conversations again. Other users will not be notified.", preferredStyle: .Alert)
-        alert.addAction(UIAlertAction(title: "Delete", style: .Destructive, handler: { (void) in
+        let alert = UIAlertController(title: "Delete Proxy?", message: "You will not be able to see this proxy or its conversations again. Other users will not be notified.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { (void) in
             self.api.delete(proxy: self.proxy, withConvos: self.convos)
-            self.navigationController?.popViewControllerAnimated(true)
+            _ = self.navigationController?.popViewController(animated: true)
         }))
-        alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-        self.presentViewController(alert, animated: true, completion: nil)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        self.present(alert, animated: true, completion: nil)
     }
     
     func showIconPickerViewController() {
-        let dest = self.storyboard?.instantiateViewControllerWithIdentifier(Identifiers.IconPickerCollectionViewController) as! IconPickerCollectionViewController
+        let dest = self.storyboard?.instantiateViewController(withIdentifier: Identifiers.IconPickerCollectionViewController) as! IconPickerCollectionViewController
         dest.convos = convos
         dest.proxy = proxy
         self.navigationController?.pushViewController(dest, animated: true)
     }
     
     func showEditNicknameAlert() {
-        let alert = UIAlertController(title: "Edit Nickname", message: "Only you see your nickname.", preferredStyle: .Alert)
-        alert.addTextFieldWithConfigurationHandler({ (textField) -> Void in
-            textField.autocapitalizationType = .Sentences
-            textField.autocorrectionType = .Yes
-            textField.clearButtonMode = .WhileEditing
+        let alert = UIAlertController(title: "Edit Nickname", message: "Only you see your nickname.", preferredStyle: .alert)
+        alert.addTextField(configurationHandler: { (textField) -> Void in
+            textField.autocapitalizationType = .sentences
+            textField.autocorrectionType = .yes
+            textField.clearButtonMode = .whileEditing
             textField.placeholder = "Enter A Nickname"
             textField.text = self.proxy.nickname
         })
-        alert.addAction(UIAlertAction(title: "Save", style: .Default, handler: { (action) -> Void in
+        alert.addAction(UIAlertAction(title: "Save", style: .default, handler: { (action) -> Void in
             let nickname = alert.textFields![0].text
-            let trim = nickname!.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
+            let trim = nickname!.trimmingCharacters(in: NSCharacterSet(charactersIn: " ") as CharacterSet)
             if !(nickname != "" && trim == "") {
                 self.api.set(nickname: nickname!, forProxy: self.proxy)
             }
         }))
-        alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-        self.presentViewController(alert, animated: true, completion: nil)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        self.present(alert, animated: true, completion: nil)
     }
     
     // MARK: - Table view delegate
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0: return 1
         case 1: return convos.count
@@ -146,22 +146,22 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         }
     }
     
-    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         switch section {
-        case 0: return CGFloat.min
+        case 0: return CGFloat.leastNormalMagnitude
         case 1: return 15
         default: return 0
         }
     }
     
-    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
         case 1: return "CONVERSATIONS"
         default: return nil
         }
     }
     
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.section {
         case 0: return 140
         case 1: return 80
@@ -169,7 +169,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         }
     }
     
-    override func tableView(tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+    override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         switch section {
         case 1:
             if convos.count == 0 {
@@ -181,42 +181,42 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         }
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 1 {
-            let dest = self.storyboard?.instantiateViewControllerWithIdentifier(Identifiers.ConvoViewController) as! ConvoViewController
+            let dest = self.storyboard?.instantiateViewController(withIdentifier: Identifiers.ConvoViewController) as! ConvoViewController
             dest.convo = convos[tableView.indexPathForSelectedRow!.row]
             navigationController?.pushViewController(dest, animated: true)
         }
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.section {
         
         // Proxy info
         case 0:
-            let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.SenderProxyInfoCell, forIndexPath: indexPath) as! SenderProxyInfoCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.SenderProxyInfoCell, for: indexPath as IndexPath) as! SenderProxyInfoCell
             cell.nameLabel.text = proxy.key
-            cell.nicknameButton.setTitle(proxy.nickname == "" ? "Enter A Nickname" : proxy.nickname, forState: .Normal)
-            cell.nicknameButton.addTarget(self, action: #selector(ProxyInfoTableViewController.showEditNicknameAlert), forControlEvents: .TouchUpInside)
+            cell.nicknameButton.setTitle(proxy.nickname == "" ? "Enter A Nickname" : proxy.nickname, for: .normal)
+            cell.nicknameButton.addTarget(self, action: #selector(ProxyInfoTableViewController.showEditNicknameAlert), for: .touchUpInside)
             cell.iconImageView.image = nil
-            cell.iconImageView.kf_indicatorType = .Activity
+            cell.iconImageView.kf.indicatorType = .activity
             api.getURL(forIcon: proxy.icon, completion: { (url) in
                 guard let url = url else { return }
-                cell.iconImageView.kf_setImageWithURL(url, placeholderImage: nil)
+                cell.iconImageView.kf.setImage(with: url, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
             })
-            cell.changeIconButton.addTarget(self, action: #selector(ProxyInfoTableViewController.showIconPickerViewController), forControlEvents: .TouchUpInside)
-            cell.selectionStyle = .None
+            cell.changeIconButton.addTarget(self, action: #selector(ProxyInfoTableViewController.showIconPickerViewController), for: .touchUpInside)
+            cell.selectionStyle = .none
             return cell
             
         // This proxy's convos
         case 1:
-            let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.ConvoCell, forIndexPath: indexPath) as! ConvoCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.ConvoCell, for: indexPath as IndexPath) as! ConvoCell
             let convo = convos[indexPath.row]
             cell.iconImageView.image = nil
-            cell.iconImageView.kf_indicatorType = .Activity
+            cell.iconImageView.kf.indicatorType = .activity
             api.getURL(forIcon: convo.icon) { (url) in
                 guard let url = url else { return }
-                cell.iconImageView.kf_setImageWithURL(url, placeholderImage: nil)
+                cell.iconImageView.kf.setImage(with: url, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
             }
             cell.titleLabel.attributedText = api.getConvoTitle(receiverNickname: convo.receiverNickname, receiverName: convo.receiverProxy, senderNickname: convo.senderNickname, senderName: convo.senderProxy)
             cell.lastMessageLabel.text = convo.message
@@ -230,7 +230,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     }
     
     // MARK: - Select proxy view controller delegate
-    func goToNewConvo(convo: Convo) {
+    func goToNewConvo(_ convo: Convo) {
         self.convo = convo
         shouldShowNewConvo = true
     }

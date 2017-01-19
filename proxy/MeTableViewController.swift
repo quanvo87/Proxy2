@@ -26,7 +26,7 @@ class MeTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        FIRAuth.auth()?.addAuthStateDidChangeListener { auth, user in
+        FIRAuth.auth()?.addStateDidChangeListener { auth, user in
             if let user = user {
                 self.navigationItem.title = user.displayName
             }
@@ -37,39 +37,38 @@ class MeTableViewController: UITableViewController {
         proxiesInteractedWithRef = ref.child(Path.ProxiesInteractedWith).child(api.uid).child(Path.ProxiesInteractedWith)
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
         
-        messagesReceivedRef.observeEventType(.Value, withBlock: { (snapshot) in
+        messagesReceivedRef.observe(.value, with: { (snapshot) in
             self.messagesReceived = (snapshot.value as! Int).formatted()
             self.tableView.reloadData()
         })
         
-        messagesSentRef.observeEventType(.Value, withBlock: { (snapshot) in
+        messagesSentRef.observe(.value, with: { (snapshot) in
             self.messagesSent = (snapshot.value as! Int).formatted()
             self.tableView.reloadData()
         })
         
-        proxiesInteractedWithRef.observeEventType(.Value, withBlock: { (snapshot) in
+        proxiesInteractedWithRef.observe(.value, with: { (snapshot) in
             self.proxiesInteractedWith = (snapshot.value as! Int).formatted()
             self.tableView.reloadData()
         })
     }
     
-    override func viewDidDisappear(animated: Bool) {
+    override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(true)
-        
         messagesReceivedRef.removeAllObservers()
         messagesSentRef.removeAllObservers()
         proxiesInteractedWithRef.removeAllObservers()
     }
 
     // MARK: - Table view data source
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 3
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0: return 3
         case 1: return 1
@@ -78,14 +77,14 @@ class MeTableViewController: UITableViewController {
         }
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.MeTableViewCell, forIndexPath: indexPath) as! MeTableViewCell
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.MeTableViewCell, for: indexPath as IndexPath) as! MeTableViewCell
         let size = CGSize(width: 30, height: 30)
         let isAspectRatio = true
         switch indexPath.section {
             
         case 0:
-            cell.selectionStyle = .None
+            cell.selectionStyle = .none
             switch indexPath.row {
             case 0:
                 cell.iconImageView.image = UIImage(named: "messages-received")?.resize(toNewSize: size, isAspectRatio: isAspectRatio)
@@ -103,7 +102,7 @@ class MeTableViewController: UITableViewController {
             }
             
         case 1:
-            cell.accessoryType = .DisclosureIndicator
+            cell.accessoryType = .disclosureIndicator
             cell.iconImageView.image = UIImage(named: "blocked")?.resize(toNewSize: size, isAspectRatio: isAspectRatio)
             cell.subtitleLabel.text = ""
             cell.titleLabel.text = "Blocked Users"
@@ -125,41 +124,40 @@ class MeTableViewController: UITableViewController {
         return cell
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch indexPath.section {
+        
+        // Show blocked users
         case 1:
-            
-            // Show blocked users
-            let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.BlockedUsersTableViewController) as! BlockedUsersTableViewController
+            let dest = self.storyboard!.instantiateViewController(withIdentifier: Identifiers.BlockedUsersTableViewController) as! BlockedUsersTableViewController
             navigationController?.pushViewController(dest, animated: true)
             
         case 2:
-            tableView.deselectRowAtIndexPath(indexPath, animated: true)
+            tableView.deselectRow(at: indexPath, animated: true)
             switch indexPath.row {
+            
+            // Log out
             case 0:
-                
-                // Log out
-                let alert = UIAlertController(title: "Log Out", message: "Are you sure you want to log out?", preferredStyle: .Alert)
-                alert.addAction(UIAlertAction(title: "Log Out", style: .Destructive) { action in
+                let alert = UIAlertController(title: "Log Out", message: "Are you sure you want to log out?", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Log Out", style: .destructive) { action in
                     let firebaseAuth = FIRAuth.auth()
                     do {
                         try firebaseAuth?.signOut()
-                        let logInViewController  = self.storyboard!.instantiateViewControllerWithIdentifier("Log In View Controller") as! LogInViewController
-                        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+                        let logInViewController  = self.storyboard!.instantiateViewController(withIdentifier: "Log In View Controller") as! LogInViewController
+                        let appDelegate = UIApplication.shared.delegate as! AppDelegate
                         appDelegate.window?.rootViewController = logInViewController
                     } catch {}
                     })
-                alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { action in
+                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { action in
                     })
-                presentViewController(alert, animated: true, completion: nil)
+                present(alert, animated: true, completion: nil)
                 
+            // Show About
             case 1:
-
-                // Show About
-                let alert = UIAlertController(title: "About Proxy:", message: "Contact: qvo1987@gmail.com\n\nUpcoming features: sound in videos, location sharing\n\nIcons from icons8.com\n\nLibraries used: Kingfisher, JSQMessagesViewController, Fusuma, MobilePlayer, VideoSplashKit, RAMReel\n\nVersion 0.1", preferredStyle: .Alert)
-                alert.addAction(UIAlertAction(title: "Ok", style: .Cancel) { action in
+                let alert = UIAlertController(title: "About Proxy:", message: "Contact: qvo1987@gmail.com\n\nUpcoming features: sound in videos, location sharing\n\nIcons from icons8.com\n\nLibraries used: Kingfisher, JSQMessagesViewController, Fusuma, MobilePlayer, VideoSplashKit, RAMReel\n\nVersion 0.1", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Ok", style: .cancel) { action in
                     })
-                self.presentViewController(alert, animated: true, completion: nil)
+                self.present(alert, animated: true, completion: nil)
                 
             default: return
             }

@@ -7,5 +7,5 @@
 //
 
 protocol SenderPickerDelegate {
-    func setSender(proxy: Proxy)
+    func setSender(_ proxy: Proxy)
 }

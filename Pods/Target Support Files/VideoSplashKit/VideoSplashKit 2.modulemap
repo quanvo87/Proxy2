@@ -1,6 +1,0 @@
-framework module VideoSplashKit {
-  umbrella header "VideoSplashKit-umbrella.h"
-
-  export *
-  module * { export * }
-}

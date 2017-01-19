@@ -7,10 +7,10 @@
 //
 
 extension UIViewController {
-    func showAlert(title: String, message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .Alert)
-        alert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: nil))
-        self.presentViewController(alert, animated: true, completion: nil)
+    func showAlert(_ title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
     }
 }
 
@@ -30,9 +30,9 @@ extension Int {
         num = fabs(num)
         
         if num < 1000000000.0 {
-            let formatter = NSNumberFormatter()
-            formatter.numberStyle = .DecimalStyle
-            return formatter.stringFromNumber(Int(num))!
+            let formatter = NumberFormatter()
+            formatter.numberStyle = .decimal
+            return formatter.string(from: NSNumber(integerLiteral: Int(num)))!
         }
         
         let exp = Int(log10(num) / 3.0 ) // log10(1000)
@@ -47,7 +47,7 @@ extension Int {
 
 extension String {
     func makeBold(withSize size: CGFloat) -> NSMutableAttributedString {
-        let boldAttr = [NSFontAttributeName: UIFont.boldSystemFontOfSize(size)]
+        let boldAttr = [NSFontAttributeName: UIFont.boldSystemFont(ofSize: size)]
         return NSMutableAttributedString(string: self, attributes: boldAttr)
     }
 }
@@ -64,7 +64,7 @@ extension UIImage {
         let originalRatio = self.size.width / self.size.height
         let newRatio = newSize.width / newSize.height
         
-        var size: CGSize = CGSizeZero
+        var size = CGSize(width: 0, height: 0)
         
         if aspect {
             if originalRatio < newRatio {
@@ -83,7 +83,7 @@ extension UIImage {
         size.height /= scale
         
         UIGraphicsBeginImageContextWithOptions(size, false, scale)
-        self.drawInRect(CGRectMake(0, 0, size.width, size.height))
+        self.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
         let newImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         

@@ -16,7 +16,7 @@ class ConvoInfoTableViewController: UITableViewController {
     
     var receiverIconRef = FIRDatabaseReference()
     var receiverIconRefHandle = FIRDatabaseHandle()
-    var receiverIconURL = NSURL()
+    var receiverIconURL = URL(fileURLWithPath: "")
     
     var receiverNicknameRef = FIRDatabaseReference()
     var receiverNicknameRefHandle = FIRDatabaseHandle()
@@ -24,7 +24,7 @@ class ConvoInfoTableViewController: UITableViewController {
     
     var senderIconRef = FIRDatabaseReference()
     var senderIconRefHandle = FIRDatabaseHandle()
-    var senderIconURL = NSURL()
+    var senderIconURL = URL(fileURLWithPath: "")
     
     var senderNicknameRef = FIRDatabaseReference()
     var senderNicknameRefHandle = FIRDatabaseHandle()
@@ -39,7 +39,7 @@ class ConvoInfoTableViewController: UITableViewController {
             scrollView.delaysContentTouches = false
         }
         tableView.delaysContentTouches = false
-        tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: Identifiers.Cell)
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: Identifiers.Cell)
         
         api.getProxy(withKey: convo.senderProxy, belongingToUser: convo.senderId) { (proxy) in
             self.senderProxy = proxy
@@ -51,31 +51,31 @@ class ConvoInfoTableViewController: UITableViewController {
         senderNicknameRef = api.ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderNickname)
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
         
         // Check if convo info should be closed
-        api.ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderLeftConvo).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            if let leftConvo = snapshot.value as? Bool where leftConvo {
+        api.ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderLeftConvo).observeSingleEvent(of: .value, with: { (snapshot) in
+            if let leftConvo = snapshot.value as? Bool, leftConvo {
                 self.close()
             }
         })
         
-        api.ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderDeletedProxy).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            if let deletedProxy = snapshot.value as? Bool where deletedProxy {
+        api.ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderDeletedProxy).observeSingleEvent(of: .value, with: { (snapshot) in
+            if let deletedProxy = snapshot.value as? Bool, deletedProxy {
                 self.close()
             }
         })
         
-        api.ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderIsBlocking).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            if let isBlocking = snapshot.value as? Bool where isBlocking {
+        api.ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderIsBlocking).observeSingleEvent(of: .value, with: { (snapshot) in
+            if let isBlocking = snapshot.value as? Bool, isBlocking {
                 self.close()
             }
         })
         
         // Observe database values
-        receiverIconRefHandle = receiverIconRef.observeEventType(.Value, withBlock: { (snapshot) in
-            guard let icon = snapshot.value as? String where icon != "" else { return }
+        receiverIconRefHandle = receiverIconRef.observe(.value, with: { (snapshot) in
+            guard let icon = snapshot.value as? String, icon != "" else { return }
             self.api.getURL(forIcon: icon) { (url) in
                 guard let url = url else { return }
                 self.receiverIconURL = url
@@ -83,14 +83,14 @@ class ConvoInfoTableViewController: UITableViewController {
             }
         })
         
-        receiverNicknameRefHandle = receiverNicknameRef.observeEventType(.Value, withBlock: { (snapshot) in
+        receiverNicknameRefHandle = receiverNicknameRef.observe(.value, with: { (snapshot) in
             guard let receiverNickname = snapshot.value as? String else { return }
             self.receiverNickname = receiverNickname
             self.tableView.reloadData()
         })
         
-        senderIconRefHandle = senderIconRef.observeEventType(.Value, withBlock: { (snapshot) in
-            guard let icon = snapshot.value as? String where icon != "" else { return }
+        senderIconRefHandle = senderIconRef.observe(.value, with: { (snapshot) in
+            guard let icon = snapshot.value as? String, icon != "" else { return }
             self.api.getURL(forIcon: icon) { (url) in
                 guard let url = url else { return }
                 self.senderIconURL = url
@@ -98,31 +98,31 @@ class ConvoInfoTableViewController: UITableViewController {
             }
         })
         
-        senderNicknameRefHandle = senderNicknameRef.observeEventType(.Value, withBlock: { (snapshot) in
+        senderNicknameRefHandle = senderNicknameRef.observe(.value, with: { (snapshot) in
             guard let senderNickname = snapshot.value as? String else { return }
             self.senderNickname = senderNickname
             self.tableView.reloadData()
         })
     }
     
-    override func viewDidDisappear(animated: Bool) {
+    override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(true)
-        receiverIconRef.removeObserverWithHandle(receiverNicknameRefHandle)
-        receiverNicknameRef.removeObserverWithHandle(receiverNicknameRefHandle)
-        senderIconRef.removeObserverWithHandle(senderIconRefHandle)
-        senderNicknameRef.removeObserverWithHandle(senderNicknameRefHandle)
+        receiverIconRef.removeObserver(withHandle: receiverNicknameRefHandle)
+        receiverNicknameRef.removeObserver(withHandle: receiverNicknameRefHandle)
+        senderIconRef.removeObserver(withHandle: senderIconRefHandle)
+        senderNicknameRef.removeObserver(withHandle: senderNicknameRefHandle)
     }
     
     func close() {
-        self.navigationController?.popViewControllerAnimated(true)
+        _ = navigationController?.popViewController(animated: true)
     }
     
     //Mark: - Table view delegate
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 3
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0: return 1
         case 1: return 1
@@ -131,7 +131,7 @@ class ConvoInfoTableViewController: UITableViewController {
         }
     }
     
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.section {
         case 0: return 80
         case 1: return 80
@@ -139,7 +139,7 @@ class ConvoInfoTableViewController: UITableViewController {
         }
     }
     
-    override func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         switch section {
         case 0: return 15
         case 1: return 15
@@ -147,26 +147,26 @@ class ConvoInfoTableViewController: UITableViewController {
         }
     }
     
-    override func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         switch section {
             
         case 0:
             let view = UIView()
-            let label = UILabel(frame: CGRectMake(15, 0, tableView.frame.width, 30))
-            label.font = label.font.fontWithSize(13)
+            let label = UILabel(frame: CGRect(x: 15, y: 0, width: tableView.frame.width, height: 30))
+            label.font = label.font.withSize(13)
             label.text = "Them"
-            label.textColor = UIColor.grayColor()
+            label.textColor = UIColor.gray
             view.addSubview(label)
             return view
             
         case 1:
             let view = UIView()
-            let label = UILabel(frame: CGRectMake(0, 0, tableView.frame.width - 15, 30))
-            label.autoresizingMask = .FlexibleRightMargin
-            label.font = label.font.fontWithSize(13)
+            let label = UILabel(frame: CGRect(x: 0, y: 0, width: tableView.frame.width - 15, height: 30))
+            label.autoresizingMask = .flexibleRightMargin
+            label.font = label.font.withSize(13)
             label.text = "You"
-            label.textAlignment = .Right
-            label.textColor = UIColor.grayColor()
+            label.textAlignment = .right
+            label.textColor = UIColor.gray
             view.addSubview(label)
             return view
             
@@ -174,7 +174,7 @@ class ConvoInfoTableViewController: UITableViewController {
         }
     }
     
-    override func tableView(tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+    override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         switch section {
         case 0: return "Them"
         case 2: return "Users are not notified when you take these actions."
@@ -182,50 +182,50 @@ class ConvoInfoTableViewController: UITableViewController {
         }
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.section {
             
         // Receiver proxy info
         case 0:
-            let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.ReceiverProxyInfoCell, forIndexPath: indexPath) as! ReceiverProxyInfoCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.ReceiverProxyInfoCell, for: indexPath as IndexPath) as! ReceiverProxyInfoCell
             cell.nameLabel.text = convo.receiverProxy
-            cell.nicknameButton.setTitle(receiverNickname == "" ? "Enter A Nickname" : receiverNickname, forState: .Normal)
-            cell.nicknameButton.addTarget(self, action: #selector(ConvoInfoTableViewController.editReceiverNickname), forControlEvents: .TouchUpInside)
+            cell.nicknameButton.setTitle(receiverNickname == "" ? "Enter A Nickname" : receiverNickname, for: .normal)
+            cell.nicknameButton.addTarget(self, action: #selector(ConvoInfoTableViewController.editReceiverNickname), for: .touchUpInside)
             cell.iconImageView = nil
-            cell.iconImageView.kf_indicatorType = .Activity
-            cell.iconImageView.kf_setImageWithURL(receiverIconURL, placeholderImage: nil)
-            cell.selectionStyle = .None
+            cell.iconImageView.kf.indicatorType = .activity
+            cell.iconImageView.kf.setImage(with: receiverIconURL, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
+            cell.selectionStyle = .none
             return cell
             
         // Sender proxy info
         case 1:
-            let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.SenderProxyInfoCell, forIndexPath: indexPath) as! SenderProxyInfoCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.SenderProxyInfoCell, for: indexPath as IndexPath) as! SenderProxyInfoCell
             cell.nameLabel.text = convo.senderProxy
-            cell.nicknameButton.setTitle(senderNickname == "" ? "Enter A Nickname" : senderNickname, forState: .Normal)
-            cell.nicknameButton.addTarget(self, action: #selector(ConvoInfoTableViewController.editSenderNickname), forControlEvents: .TouchUpInside)
+            cell.nicknameButton.setTitle(senderNickname == "" ? "Enter A Nickname" : senderNickname, for: .normal)
+            cell.nicknameButton.addTarget(self, action: #selector(ConvoInfoTableViewController.editSenderNickname), for: .touchUpInside)
             cell.iconImageView = nil
-            cell.iconImageView.kf_indicatorType = .Activity
-            cell.iconImageView.kf_setImageWithURL(senderIconURL, placeholderImage: nil)
-            cell.changeIconButton.addTarget(self, action: #selector(ConvoInfoTableViewController.goToIconPicker), forControlEvents: .TouchUpInside)
-            cell.accessoryType = .DisclosureIndicator
+            cell.iconImageView.kf.indicatorType = .activity
+            cell.iconImageView.kf.setImage(with: senderIconURL, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
+            cell.changeIconButton.addTarget(self, action: #selector(ConvoInfoTableViewController.goToIconPicker), for: .touchUpInside)
+            cell.accessoryType = .disclosureIndicator
             return cell
             
         case 2:
-            let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.Cell, forIndexPath: indexPath)
+            let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.Cell, for: indexPath as IndexPath)
             switch indexPath.row {
                 
             // Leave convo
             case 0:
-                cell.textLabel!.font = UIFont.systemFontOfSize(17, weight: UIFontWeightRegular)
+                cell.textLabel!.font = UIFont.systemFont(ofSize: 17, weight: UIFontWeightRegular)
                 cell.textLabel?.text = "Leave conversation"
-                cell.textLabel?.textColor = UIColor.redColor()
+                cell.textLabel?.textColor = UIColor.red
                 return cell
                 
             // Block user
             case 1:
-                cell.textLabel!.font = UIFont.systemFontOfSize(17, weight: UIFontWeightRegular)
+                cell.textLabel!.font = UIFont.systemFont(ofSize: 17, weight: UIFontWeightRegular)
                 cell.textLabel?.text = "Block user"
-                cell.textLabel?.textColor = UIColor.redColor()
+                cell.textLabel?.textColor = UIColor.red
                 return cell
                 
             default: break
@@ -235,41 +235,40 @@ class ConvoInfoTableViewController: UITableViewController {
         return UITableViewCell()
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
         switch indexPath.section {
+        
+        // Go to sender proxy info
         case 1:
-            
-            // Go to sender proxy info
             if let senderProxy = senderProxy {
-                let dest = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.ProxyInfoTableViewController) as! ProxyInfoTableViewController
+                let dest = self.storyboard!.instantiateViewController(withIdentifier: Identifiers.ProxyInfoTableViewController) as! ProxyInfoTableViewController
                 dest.proxy = senderProxy
                 self.navigationController!.pushViewController(dest, animated: true)
             }
             
         case 2:
             switch indexPath.row {
+            
+            // Leave convo
             case 0:
-                
-                // Leave convo
-                let alert = UIAlertController(title: "Leave Conversation?", message: "The other user will not be notified.", preferredStyle: .Alert)
-                alert.addAction(UIAlertAction(title: "Leave", style: .Destructive, handler: { (void) in
+                let alert = UIAlertController(title: "Leave Conversation?", message: "The other user will not be notified.", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Leave", style: .destructive, handler: { (void) in
                     self.api.leave(convo: self.convo)
-                    self.navigationController?.popViewControllerAnimated(true)
+                    _ = self.navigationController?.popViewController(animated: true)
                 }))
-                alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-                presentViewController(alert, animated: true, completion: nil)
+                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+                present(alert, animated: true, completion: nil)
                 
+            // Block user
             case 1:
-                
-                // Block user
-                let alert = UIAlertController(title: "Block User?", message: "You will no longer see any conversations with this user. You can unblock users in the 'Me' tab.", preferredStyle: .Alert)
-                alert.addAction(UIAlertAction(title: "Block", style: .Destructive, handler: { (void) in
+                let alert = UIAlertController(title: "Block User?", message: "You will no longer see any conversations with this user. You can unblock users in the 'Me' tab.", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Block", style: .destructive, handler: { (void) in
                     self.api.blockReceiverInConvo(self.convo)
-                    self.navigationController?.popViewControllerAnimated(true)
+                    _ = self.navigationController?.popViewController(animated: true)
                 }))
-                alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-                presentViewController(alert, animated: true, completion: nil)
+                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+                present(alert, animated: true, completion: nil)
                 
             default:
                 return
@@ -279,56 +278,56 @@ class ConvoInfoTableViewController: UITableViewController {
     }
     
     func editReceiverNickname() {
-        let alert = UIAlertController(title: "Edit Receiver's Nickname", message: "Only you see this nickname.", preferredStyle: .Alert)
-        alert.addTextFieldWithConfigurationHandler({ (textField) -> Void in
+        let alert = UIAlertController(title: "Edit Receiver's Nickname", message: "Only you see this nickname.", preferredStyle: .alert)
+        alert.addTextField(configurationHandler: { (textField) -> Void in
             if let receiverNickname = self.receiverNickname {
                 textField.text = receiverNickname
             } else {
                 textField.text = ""
             }
-            textField.autocapitalizationType = .Sentences
-            textField.autocorrectionType = .Yes
-            textField.clearButtonMode = .WhileEditing
+            textField.autocapitalizationType = .sentences
+            textField.autocorrectionType = .yes
+            textField.clearButtonMode = .whileEditing
             textField.placeholder = "Enter A Nickname"
         })
-        alert.addAction(UIAlertAction(title: "Save", style: .Default, handler: { (action) -> Void in
+        alert.addAction(UIAlertAction(title: "Save", style: .default, handler: { (action) -> Void in
             let nickname = alert.textFields![0].text
-            let trim = nickname!.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
+            let trim = nickname!.trimmingCharacters(in: NSCharacterSet(charactersIn: " ") as CharacterSet)
             if !(nickname != "" && trim == "") {
                 self.api.set(nickname: nickname!, forReceiverInConvo: self.convo)
             }
         }))
-        alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-        presentViewController(alert, animated: true, completion: nil)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        present(alert, animated: true, completion: nil)
     }
     
     func editSenderNickname() {
-        let alert = UIAlertController(title: "Edit Nickname", message: "Only you see your nickname.", preferredStyle: .Alert)
-        alert.addTextFieldWithConfigurationHandler({ (textField) -> Void in
+        let alert = UIAlertController(title: "Edit Nickname", message: "Only you see your nickname.", preferredStyle: .alert)
+        alert.addTextField(configurationHandler: { (textField) -> Void in
             if let senderNickname = self.senderNickname {
                 textField.text = senderNickname
             } else {
                 textField.text = ""
             }
-            textField.autocapitalizationType = .Sentences
-            textField.autocorrectionType = .Yes
-            textField.clearButtonMode = .WhileEditing
+            textField.autocapitalizationType = .sentences
+            textField.autocorrectionType = .yes
+            textField.clearButtonMode = .whileEditing
             textField.placeholder = "Enter A Nickname"
         })
-        alert.addAction(UIAlertAction(title: "Save", style: .Default, handler: { (action) -> Void in
+        alert.addAction(UIAlertAction(title: "Save", style: .default, handler: { (action) -> Void in
             let nickname = alert.textFields![0].text
-            let trim = nickname!.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
+            let trim = nickname!.trimmingCharacters(in: NSCharacterSet(charactersIn: " ") as CharacterSet)
             if !(nickname != "" && trim == "") {
                 self.api.set(nickname: nickname!, forProxy: self.senderProxy!)
             }
         }))
-        alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-        presentViewController(alert, animated: true, completion: nil)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        present(alert, animated: true, completion: nil)
     }
     
     func goToIconPicker() {
         api.getConvos(forProxy: senderProxy!) { (convos) in
-            let dest = self.storyboard?.instantiateViewControllerWithIdentifier(Identifiers.IconPickerCollectionViewController) as! IconPickerCollectionViewController
+            let dest = self.storyboard?.instantiateViewController(withIdentifier: Identifiers.IconPickerCollectionViewController) as! IconPickerCollectionViewController
             dest.proxy = self.senderProxy!
             dest.convos = convos
             self.navigationController?.pushViewController(dest, animated: true)

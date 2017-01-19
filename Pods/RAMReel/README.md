@@ -1,16 +1,21 @@
-![header](https://raw.githubusercontent.com/Ramotion/reel-search/master/header.png)
+[![header](https://raw.githubusercontent.com/Ramotion/reel-search/master/header.png)](https://business.ramotion.com?utm_source=gthb&utm_medium=special&utm_campaign=reel-search-logo)
 # RAMReel
 [![Swift 2.2](https://img.shields.io/badge/Swift-2.2-green.svg?style=flat)](https://developer.apple.com/swift/)
 [![CocoaPods](https://img.shields.io/cocoapods/p/RAMReel.svg)](https://cocoapods.org/pods/RAMReel)
 [![CocoaPods](https://img.shields.io/cocoapods/v/RAMReel.svg)](http://cocoapods.org/pods/RAMReel)
-
+[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Ramotion/reel-search)
 [![codebeat badge](https://codebeat.co/badges/a591dc07-0f55-4321-929b-b33904c3dca8)](https://codebeat.co/projects/github-com-ramotion-reel-search)
 [![Travis](https://img.shields.io/travis/Ramotion/reel-search.svg)](https://travis-ci.org/Ramotion/reel-search)
 
 [![Twitter](https://img.shields.io/badge/Twitter-@Ramotion-blue.svg?style=flat)](http://twitter.com/Ramotion)
 
-Controller that allows you to choose options from a list, like in our [shot on dribble](https://dribbble.com/shots/2516684-Doctor-On-Demand-iOS-App)
-![animated](https://raw.githubusercontent.com/Ramotion/reel-search/master/reel-search.gif)
+## About
+This project is maintained by Ramotion, Inc.<br>
+We specialize in the designing and coding of custom UI for Mobile Apps and Websites.<br><br>**Looking for developers for your project?** [[▶︎CONTACT OUR TEAM◀︎](http://business.ramotion.com/#Get_in_Touch?utm_source=gthb&utm_medium=special&utm_campaign=reel-search-contact-us)]
+
+
+
+[![animated](https://raw.githubusercontent.com/Ramotion/reel-search/master/reel-search.gif)](https://dribbble.com/shots/2516684-Telemedicine-iOS-App-Swift-Open-Source)
 
 
 The [iPhone mockup](https://store.ramotion.com/product/iphone-6-mockups?utm_source=gthb&utm_medium=special&utm_campaign=reel-search) available [here](https://store.ramotion.com/product/iphone-6-mockups?utm_source=gthb&utm_medium=special&utm_campaign=reel-search).
@@ -18,7 +23,7 @@ The [iPhone mockup](https://store.ramotion.com/product/iphone-6-mockups?utm_sour
 ## Requirements
 
 - iOS 8.0+
-- Swift 2.2
+- Swift 3.0
 
 ## Installation
 
@@ -29,6 +34,11 @@ Just put this in your `Podfile`:
 ~~~ruby
 pod 'RAMReel'
 ~~~
+
+or [Carthage](https://github.com/Carthage/Carthage) users can simply add Mantle to their `Cartfile`:
+```
+github "Ramotion/reel-search"
+```
 
 ## Usage
 
@@ -111,9 +121,7 @@ let theme = RAMTheme(textColor: textColor, listBackgroundColor: listBackgroundCo
 
 See more at [RAMReel docs](https://rawgit.com/Ramotion/reel-search/master/docs/index.html)
 
-## About
-The project maintained by [app development agency](https://ramotion.com?utm_source=gthb&utm_medium=special&utm_campaign=reel-search) [Ramotion Inc.](https://ramotion.com?utm_source=gthb&utm_medium=special&utm_campaign=reel-search)
-See our other [open-source projects](https://github.com/ramotion) or [hire](https://ramotion.com?utm_source=gthb&utm_medium=special&utm_campaign=reel-search) us to design, develop, and grow your product.
+## Follow Us
 
 [![Twitter URL](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=https://github.com/ramotion/reel-search)
 [![Twitter Follow](https://img.shields.io/twitter/follow/ramotion.svg?style=social)](https://twitter.com/ramotion)

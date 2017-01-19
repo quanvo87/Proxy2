@@ -8,7 +8,7 @@
 
 struct DefaultIcons {
     
-    let defaultIcons: AnyObject
+    let defaultIcons: Any
     
     init(id: String) {
         let timestamp = NSDate().timeIntervalSince1970

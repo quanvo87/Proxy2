@@ -19,82 +19,82 @@ class SenderPickerTableViewController: UITableViewController {
         
         navigationItem.title = "Select Sender"
         
-        let cancelButton = UIButton(type: .Custom)
-        cancelButton.addTarget(self, action: #selector(SenderPickerTableViewController.cancel), forControlEvents: UIControlEvents.TouchUpInside)
-        cancelButton.frame = CGRectMake(0, 0, 25, 25)
-        cancelButton.setImage(UIImage(named: "cancel"), forState: UIControlState.Normal)
+        let cancelButton = UIButton(type: .custom)
+        cancelButton.addTarget(self, action: #selector(SenderPickerTableViewController.cancel), for: UIControlEvents.touchUpInside)
+        cancelButton.frame = CGRect(x: 0, y: 0, width: 25, height: 25)
+        cancelButton.setImage(UIImage(named: "cancel"), for: UIControlState.normal)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: cancelButton)
         
         tableView.rowHeight = 60
-        tableView.separatorStyle = .None
+        tableView.separatorStyle = .none
         
-        api.ref.child(Path.Proxies).child(api.uid).queryOrderedByChild(Path.Timestamp).observeSingleEventOfType(.Value, withBlock: { snapshot in
+        api.ref.child(Path.Proxies).child(api.uid).queryOrdered(byChild: Path.Timestamp).observeSingleEvent(of: .value, with: { snapshot in
             for child in snapshot.children {
-                guard let proxy = Proxy(anyObject: child.value) else { return }
+                guard let proxy = Proxy(anyObject: (child as AnyObject).value) else { return }
                 self.proxies.append(proxy)
             }
-            self.proxies = self.proxies.reverse()
+            self.proxies = self.proxies.reversed()
             self.tableView.reloadData()
         })
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         navigationItem.hidesBackButton = true
-        tabBarController?.tabBar.hidden = true
+        tabBarController?.tabBar.isHidden = true
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
-        tabBarController?.tabBar.hidden = false
+        tabBarController?.tabBar.isHidden = false
     }
     
     func cancel() {
-        navigationController?.popViewControllerAnimated(true)
+        _ = navigationController?.popViewController(animated: true)
     }
 
-    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return CGFloat.min
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return CGFloat.leastNormalMagnitude
     }
     
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return proxies.count
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.ProxyCell, forIndexPath: indexPath) as! ProxyCell
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.ProxyCell, for: indexPath as IndexPath) as! ProxyCell
         let proxy = proxies[indexPath.row]
         
-        cell.newImageView.hidden = true
-        let secondsAgo = -NSDate(timeIntervalSince1970: proxy.created).timeIntervalSinceNow
+        cell.newImageView.isHidden = true
+        let secondsAgo = -Date(timeIntervalSince1970: proxy.created).timeIntervalSinceNow
         if secondsAgo < 60 * Settings.NewProxyIndicatorDuration {
-            cell.newImageView.hidden = false
-            cell.contentView.bringSubviewToFront(cell.newImageView)
+            cell.newImageView.isHidden = false
+            cell.contentView.bringSubview(toFront: cell.newImageView)
         }
         
         cell.iconImageView.image = nil
-        cell.iconImageView.kf_indicatorType = .Activity
+        cell.iconImageView.kf.indicatorType = .activity
         api.getURL(forIcon: proxy.icon) { (url) in
             guard let url = url else { return }
-            cell.iconImageView.kf_setImageWithURL(url, placeholderImage: nil)
+            cell.iconImageView.kf.setImage(with: url, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
         }
         
         cell.nameLabel.text = proxy.key
         cell.nicknameLabel.text = proxy.nickname
         cell.convoCountLabel.text = proxy.convos.toNumberLabel()
         cell.unreadLabel.text = proxy.unread.toNumberLabel()
-        cell.accessoryType = .None
+        cell.accessoryType = .none
         
         return cell
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let proxy = proxies[indexPath.row]
         senderPickerDelegate.setSender(proxy)
-        navigationController?.popViewControllerAnimated(true)
+        _ = navigationController?.popViewController(animated: true)
     }
 }

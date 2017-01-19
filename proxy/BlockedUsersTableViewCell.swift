@@ -17,7 +17,7 @@ class BlockedUsersTableViewCell: UITableViewCell {
     let api = API.sharedInstance
     var blockedUser: BlockedUser?
     
-    @IBAction func unblock(sender: AnyObject) {
+    @IBAction func unblock(_ sender: AnyObject) {
         if let blockedUser = blockedUser {
             api.unblockUser(blockedUser.id)
         }

@@ -22,18 +22,18 @@ class ReceiverPickerViewController: UIViewController, UICollectionViewDelegate {
         
         navigationItem.title = "Select Receiver"
         
-        let cancelButton = UIButton(type: .Custom)
-        cancelButton.addTarget(self, action: #selector(ReceiverPickerViewController.close), forControlEvents: UIControlEvents.TouchUpInside)
-        cancelButton.frame = CGRectMake(0, 0, 25, 25)
-        cancelButton.setImage(UIImage(named: "cancel"), forState: UIControlState.Normal)
+        let cancelButton = UIButton(type: .custom)
+        cancelButton.addTarget(self, action: #selector(ReceiverPickerViewController.close), for: UIControlEvents.touchUpInside)
+        cancelButton.frame = CGRect(x: 0, y: 0, width: 25, height: 25)
+        cancelButton.setImage(UIImage(named: "cancel"), for: UIControlState.normal)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: cancelButton)
         
-        api.ref.child(Path.Proxies).queryOrderedByChild(Path.Key).observeSingleEventOfType(.Value, withBlock: { snapshot in
+        api.ref.child(Path.Proxies).queryOrdered(byChild: Path.Key).observeSingleEvent(of: .value, with: { snapshot in
             var proxies = [String]()
             for child in snapshot.children {
-                guard let proxy = Proxy(anyObject: child.value) else { return }
+                guard let proxy = Proxy(anyObject: (child as AnyObject).value) else { return }
                 if proxy.key != "" {
-                    proxies.append(proxy.key.lowercaseString)
+                    proxies.append(proxy.key.lowercased())
                 }
             }
             
@@ -43,11 +43,11 @@ class ReceiverPickerViewController: UIViewController, UICollectionViewDelegate {
                 guard $0 != "" else { return }
                 self.api.getProxy($0, completion: { (proxy) in
                     guard let proxy = proxy else {
-                        self.showAlert("Receiver Not Found", message: "Make sure to type the receiver's full name or tap 'Select This Receiver'.")
+                        self.showAlert("Receiver Not Found", message: "Tap 'Select This Receiver' once you have found the desired one.")
                         return
                     }
                     guard proxy.ownerId != self.api.uid else {
-                        self.showAlert("Cannot Send To Self", message: "Did you select your own proxy by mistake? 😂")
+                        self.showAlert("Cannot Send To Self", message: "Did you select your own proxy by mistake?")
                         return
                     }
                     self.receiverPickerDelegate.setReceiver(proxy)
@@ -56,45 +56,45 @@ class ReceiverPickerViewController: UIViewController, UICollectionViewDelegate {
             }
             
             self.view.addSubview(ramReel.view)
-            ramReel.view.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
+            ramReel.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         })
         
-        selectThisReceiverButton.layer.borderColor = UIColor().blue().CGColor
+        selectThisReceiverButton.layer.borderColor = UIColor().blue().cgColor
         selectThisReceiverButton.layer.borderWidth = 1
         selectThisReceiverButton.layer.cornerRadius = 5
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ReceiverPickerViewController.keyboardWillShow), name: UIKeyboardWillShowNotification, object: self.view.window)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ReceiverPickerViewController.keyboardWillHide), name: UIKeyboardWillHideNotification, object: self.view.window)
+        NotificationCenter.default.addObserver(self, selector: #selector(ReceiverPickerViewController.keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: self.view.window)
+        NotificationCenter.default.addObserver(self, selector: #selector(ReceiverPickerViewController.keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: self.view.window)
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         navigationItem.hidesBackButton = true
-        tabBarController?.tabBar.hidden = true
+        tabBarController?.tabBar.isHidden = true
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
-        tabBarController?.tabBar.hidden = false
+        tabBarController?.tabBar.isHidden = false
     }
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
     func close() {
-        navigationController?.popViewControllerAnimated(true)
+        _ = navigationController?.popViewController(animated: true)
     }
     
-    func keyboardWillShow(notification: NSNotification) {
+    func keyboardWillShow(_ notification: Notification) {
         let info = notification.userInfo!
-        let keyboardFrame = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
-        UIView.animateWithDuration(0.1, animations: { () -> Void in
+        let keyboardFrame = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
+        UIView.animate(withDuration: 0.1, animations: { () -> Void in
             self.bottomConstraint.constant = keyboardFrame.size.height + 5
         })
     }
     
-    func keyboardWillHide(notification: NSNotification) {
+    func keyboardWillHide(_ notification: Notification) {
         bottomConstraint.constant = 5
     }
 }

@@ -9,9 +9,8 @@
 import FacebookLogin
 import FirebaseAuth
 import FirebaseDatabase
-import VideoSplashKit
 
-class LogInViewController: VideoSplashViewController {
+class LogInViewController: UIViewController {
     
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
@@ -25,51 +24,46 @@ class LogInViewController: VideoSplashViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let videoNames = ["arabiangulf", "beachpalm", "dragontailzipline", "hawaiiancoast"]
-        let videoNamesCount = UInt32(videoNames.count)
-        let random = Int(arc4random_uniform(videoNamesCount))
-        let url = NSURL.fileURLWithPath(NSBundle.mainBundle().pathForResource(videoNames[random], ofType: "mp4")!)
-        self.alpha = 0.9
-        self.alwaysRepeat = true
-        self.contentURL = url
-        self.fillMode = .ResizeAspectFill
-        self.restartForeground = true
-        self.sound = false
-        self.videoFrame = view.frame
+//        let videoNames = ["arabiangulf", "beachpalm", "dragontailzipline", "hawaiiancoast"]
+//        let videoNamesCount = UInt32(videoNames.count)
+//        let random = Int(arc4random_uniform(videoNamesCount))
+//        let url = URL(fileURLWithPath: Bundle.main.path(forResource: videoNames[random], ofType: "mp4")!)
+//        self.alpha = 0.9
+//        self.alwaysRepeat = true
+//        self.contentURL = url
+//        self.fillMode = .resizeAspectFill
+//        self.restartForeground = true
+//        self.sound = false
+//        self.videoFrame = view.frame
         
-        emailTextField.clearButtonMode = .WhileEditing
-        passwordTextField.clearButtonMode = .WhileEditing
-        passwordTextField.secureTextEntry = true
+        emailTextField.clearButtonMode = .whileEditing
+        passwordTextField.clearButtonMode = .whileEditing
+        passwordTextField.isSecureTextEntry = true
         
-        createNewAccountButton.layer.borderColor = UIColor.whiteColor().CGColor
+        createNewAccountButton.layer.borderColor = UIColor.white.cgColor
         createNewAccountButton.layer.borderWidth = 1
         createNewAccountButton.layer.cornerRadius = 5
-        createNewAccountButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        createNewAccountButton.setTitleColor(UIColor.white, for: UIControlState())
         
-        logInButton.layer.borderColor = UIColor.whiteColor().CGColor
+        logInButton.layer.borderColor = UIColor.white.cgColor
         logInButton.layer.borderWidth = 1
         logInButton.layer.cornerRadius = 5
-        logInButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        logInButton.setTitleColor(UIColor.white, for: UIControlState())
         
-        facebookButton.layer.borderColor = UIColor.whiteColor().CGColor
+        facebookButton.layer.borderColor = UIColor.white.cgColor
         facebookButton.layer.borderWidth = 1
         facebookButton.layer.cornerRadius = 5
-        facebookButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        facebookButton.setTitleColor(UIColor.white, for: UIControlState())
     }
     
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        self.view.endEditing(true)
-    }
-    
-    @IBAction func logIn(sender: AnyObject) {
+    @IBAction func logIn(_ sender: AnyObject) {
         guard
-            let email = emailTextField.text?.lowercaseString,
-            let password = passwordTextField.text
-            where email != "" && password != "" else {
+            let email = emailTextField.text?.lowercased(),
+            let password = passwordTextField.text, email != "" && password != "" else {
                 showAlert("Missing Fields", message: "Please enter an email and password.")
                 return
         }
-        FIRAuth.auth()?.signInWithEmail(email, password: password) { (user, error) in
+        FIRAuth.auth()?.signIn(withEmail: email, password: password) { (user, error) in
             guard error == nil else {
                 self.showAlert("Error Logging In", message: error!.localizedDescription)
                 return
@@ -78,22 +72,21 @@ class LogInViewController: VideoSplashViewController {
         }
     }
     
-    @IBAction func createNewAccount(sender: AnyObject) {
+    @IBAction func createNewAccount(_ sender: AnyObject) {
         guard
-            let email = emailTextField.text?.lowercaseString,
-            let password = passwordTextField.text
-            where email != "" && password != "" else {
+            let email = emailTextField.text?.lowercased(),
+            let password = passwordTextField.text, email != "" && password != "" else {
                 showAlert("Invalid Email/Password", message: "Please enter a valid email and password.")
                 return
         }
-        FIRAuth.auth()?.createUserWithEmail(email, password: password) { (user, error) in
+        FIRAuth.auth()?.createUser(withEmail: email, password: password) { (user, error) in
             guard error == nil else {
                 self.showAlert("Error Creating Account", message: error!.localizedDescription)
                 return
             }
             let changeRequest = user!.profileChangeRequest()
             changeRequest.displayName = user!.email!
-            changeRequest.commitChangesWithCompletion() { error in
+            changeRequest.commitChanges() { error in
                 guard error == nil else {
                     return
                 }
@@ -104,7 +97,7 @@ class LogInViewController: VideoSplashViewController {
         }
     }
     
-    @IBAction func logInWithFacebook(sender: AnyObject) {
+    @IBAction func logInWithFacebook(_ sender: AnyObject) {
         let loginManager = LoginManager()
         loginManager.logIn([ .PublicProfile ], viewController: self) { (loginResult) in
             switch loginResult {
@@ -133,8 +126,8 @@ class LogInViewController: VideoSplashViewController {
     }
     
     func showHomeScreen() {
-        let tabBarController = self.storyboard!.instantiateViewControllerWithIdentifier(Identifiers.TabBarController) as! UITabBarController
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        let tabBarController = self.storyboard!.instantiateViewController(withIdentifier: Identifiers.TabBarController) as! UITabBarController
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
         appDelegate.window?.rootViewController = tabBarController
     }
 }

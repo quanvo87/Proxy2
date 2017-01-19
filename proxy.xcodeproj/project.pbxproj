@@ -348,7 +348,7 @@
 					14E19A3D1D60EF100030B366 = {
 						CreatedOnToolsVersion = 7.3.1;
 						DevelopmentTeam = 8UMN526X69;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 0820;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.Keychain = {
@@ -614,7 +614,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.quanvo.proxy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = proxy/Header.h;
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -636,7 +636,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.quanvo.proxy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = proxy/Header.h;
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};

@@ -78,12 +78,12 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
         observeTyping()
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        tabBarController?.tabBar.hidden = true
+        tabBarController?.tabBar.isHidden = true
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
         checkStatus()
         if senderIsPresentIsSetUp {
@@ -92,32 +92,32 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
         readMessages()
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
-        tabBarController?.tabBar.hidden = false
+        tabBarController?.tabBar.isHidden = false
     }
     
-    override func viewDidDisappear(animated: Bool) {
+    override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(true)
         senderIsPresent = false
         userIsTyping = false
     }
     
     deinit {
-        messagesRef.removeObserverWithHandle(messagesRefHandle)
-        messagesRef.removeObserverWithHandle(lastMessageRefHandle)
-        senderIconRef.removeObserverWithHandle(senderIconRefHandle)
-        receiverIconRef.removeObserverWithHandle(receiverIconRefHandle)
-        senderNicknameRef.removeObserverWithHandle(senderNicknameRefHandle)
-        receiverNicknameRef.removeObserverWithHandle(receiverNicknameRefHandle)
-        membersAreTypingRef.removeObserverWithHandle(membersAreTypingRefHandle)
+        messagesRef.removeObserver(withHandle: messagesRefHandle)
+        messagesRef.removeObserver(withHandle: lastMessageRefHandle)
+        senderIconRef.removeObserver(withHandle: senderIconRefHandle)
+        receiverIconRef.removeObserver(withHandle: receiverIconRefHandle)
+        senderNicknameRef.removeObserver(withHandle: senderNicknameRefHandle)
+        receiverNicknameRef.removeObserver(withHandle: receiverNicknameRefHandle)
+        membersAreTypingRef.removeObserver(withHandle: membersAreTypingRefHandle)
     }
     
     func setUp() {
         names[convo.senderId] = convo.senderProxy
         names[convo.receiverId] = convo.receiverProxy
         setTitle()
-        navigationController!.view.backgroundColor = UIColor.whiteColor()
+        navigationController!.view.backgroundColor = UIColor.white
         navigationItem.rightBarButtonItem = createInfoButton()
         collectionView?.collectionViewLayout.incomingAvatarViewSize = CGSize(width: kJSQMessagesCollectionViewAvatarSizeDefault, height:kJSQMessagesCollectionViewAvatarSizeDefault)
         collectionView?.collectionViewLayout.outgoingAvatarViewSize = CGSize(width: kJSQMessagesCollectionViewAvatarSizeDefault, height:kJSQMessagesCollectionViewAvatarSizeDefault)
@@ -137,17 +137,17 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     }
     
     func createInfoButton() -> UIBarButtonItem {
-        let infoButton = UIButton(type: .Custom)
-        infoButton.setImage(UIImage(named: "info.png"), forState: UIControlState.Normal)
-        infoButton.addTarget(self, action: #selector(ConvoViewController.showConvoInfoTableViewController), forControlEvents: UIControlEvents.TouchUpInside)
-        infoButton.frame = CGRectMake(0, 0, 25, 25)
+        let infoButton = UIButton(type: .custom)
+        infoButton.setImage(UIImage(named: "info.png"), for: UIControlState())
+        infoButton.addTarget(self, action: #selector(ConvoViewController.showConvoInfoTableViewController), for: UIControlEvents.touchUpInside)
+        infoButton.frame = CGRect(x: 0, y: 0, width: 25, height: 25)
         return UIBarButtonItem(customView: infoButton)
     }
     
     func setUpBubbles() {
         let factory = JSQMessagesBubbleImageFactory()
-        incomingBubble = factory.incomingMessagesBubbleImageWithColor(UIColor.jsq_messageBubbleLightGrayColor())
-        outgoingBubble = factory.outgoingMessagesBubbleImageWithColor(UIColor.jsq_messageBubbleBlueColor())
+        incomingBubble = factory?.incomingMessagesBubbleImage(with: UIColor.jsq_messageBubbleLightGray())
+        outgoingBubble = factory?.outgoingMessagesBubbleImage(with: UIColor.jsq_messageBubbleBlue())
     }
     
     // MARK: - Database
@@ -158,31 +158,31 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     }
     
     func checkLeftConvo() {
-        ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderLeftConvo).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            if let leftConvo = snapshot.value as? Bool where leftConvo {
+        ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderLeftConvo).observeSingleEvent(of: .value, with: { (snapshot) in
+            if let leftConvo = snapshot.value as? Bool, leftConvo {
                 self.close()
             }
         })
     }
     
     func checkDeletedProxy() {
-        ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderDeletedProxy).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            if let deletedProxy = snapshot.value as? Bool where deletedProxy {
+        ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderDeletedProxy).observeSingleEvent(of: .value, with: { (snapshot) in
+            if let deletedProxy = snapshot.value as? Bool, deletedProxy {
                 self.close()
             }
         })
     }
     
     func checkIsBlocking() {
-        ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderIsBlocking).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            if let isBlocking = snapshot.value as? Bool where isBlocking {
+        ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderIsBlocking).observeSingleEvent(of: .value, with: { (snapshot) in
+            if let isBlocking = snapshot.value as? Bool, isBlocking {
                 self.close()
             }
         })
     }
     
     func close() {
-        navigationController?.popViewControllerAnimated(true)
+        _ = navigationController?.popViewController(animated: true)
     }
     
     // Set user as present in the convo.
@@ -195,8 +195,8 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     
     // Observe and load messages.
     func observeMessages() {
-        messagesRefHandle = messagesRef.queryOrderedByChild(Path.Timestamp).observeEventType(.ChildAdded, withBlock: { (snapshot) in
-            guard let message = Message(anyObject: snapshot.value!) else { return }
+        messagesRefHandle = messagesRef.queryOrdered(byChild: Path.Timestamp).observe(.childAdded, with: { (snapshot) in
+            guard let message = Message(anyObject: snapshot.value! as AnyObject) else { return }
             switch message.mediaType {
                 
             case "imagePlaceholder":
@@ -211,11 +211,10 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
                 // Once this happens, the message's `mediaURL` will be updated.
                 var messageRefHandle = FIRDatabaseHandle()
                 let messageRef = self.ref.child(Path.Messages).child(message.convo).child(message.key).child(Path.MediaURL)
-                messageRefHandle = messageRef.observeEventType(.Value, withBlock: { (snapshot) in
+                messageRefHandle = messageRef.observe(.value, with: { (snapshot) in
                     
                     // Get `mediaURL`.
-                    guard let url = NSURL(string: snapshot.value as! String)
-                        where url.absoluteString != "" else { return }
+                    guard let url = URL(string: snapshot.value as! String), url.absoluteString != "" else { return }
                     
                     // Get the image from `mediaURL`.
                     self.api.getUIImage(fromURL: url, completion: { (image) in
@@ -227,7 +226,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
                         self.collectionView.reloadData()
                         
                         // Remove database observer for this message.
-                        messageRef.removeObserverWithHandle(messageRefHandle)
+                        messageRef.removeObserver(withHandle: messageRefHandle)
                     })
                 })
                 
@@ -240,7 +239,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
                 self.finishReceivingMessage()
                 
                 // Get the image from `mediaURL`.
-                guard let url = NSURL(string: message.mediaURL) else { break }
+                guard let url = URL(string: message.mediaURL) else { break }
                 self.api.getUIImage(fromURL: url, completion: { (image) in
                     
                     // Load the image to the cell.
@@ -262,33 +261,32 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
                 // Once this happens, the message's `mediaURL` will be updated.
                 var messageRefHandle = FIRDatabaseHandle()
                 let messageRef = self.ref.child(Path.Messages).child(message.convo).child(message.key).child(Path.MediaURL)
-                messageRefHandle = messageRef.observeEventType(.Value, withBlock: { (snapshot) in
+                messageRefHandle = messageRef.observe(.value, with: { (snapshot) in
                     
                     // Get `mediaURL`.
-                    guard let mediaURLString = snapshot.value as? String
-                        where mediaURLString != "" else { return }
+                    guard let mediaURLString = snapshot.value as? String, mediaURLString != "" else { return }
                     
                     // Load cell with url to local file.
                     (_message.media as! JSQVideoMediaItem).appliesMediaViewMaskAsOutgoing = message.senderId == self.senderId
-                    (_message.media as! JSQVideoMediaItem).fileURL = NSURL(string: mediaURLString)
+                    (_message.media as! JSQVideoMediaItem).fileURL = URL(string: mediaURLString)
                     (_message.media as! JSQVideoMediaItem).isReadyToPlay = true
                     
                     // Reload the collection view.
                     self.collectionView.reloadData()
                     
                     // Remove database observer for this message.
-                    messageRef.removeObserverWithHandle(messageRefHandle)
+                    messageRef.removeObserver(withHandle: messageRefHandle)
                 })
                 
             case "video":
                 
                 // Build JSQVideoMediaItem.
-                guard let mediaURL = NSURL(string: message.mediaURL) else { break }
+                guard let mediaURL = URL(string: message.mediaURL) else { break }
                 let media = JSQVideoMediaItem(fileURL: mediaURL, isReadyToPlay: true)
-                media.appliesMediaViewMaskAsOutgoing = message.senderId == self.senderId
+                media?.appliesMediaViewMaskAsOutgoing = message.senderId == self.senderId
                 
                 // Attach JSQVideoMediaItem.
-                let _message = Message(key: message.key, convo: message.convo, mediaType: message.mediaType, mediaURL: message.mediaURL, read: message.read, timeRead: message.timeRead, senderId: message.senderId, date: message.date.timeIntervalSince1970, text: message.text, media: media)
+                let _message = Message(key: message.key, convo: message.convo, mediaType: message.mediaType, mediaURL: message.mediaURL, read: message.read, timeRead: message.timeRead, senderId: message.senderId, date: message.date.timeIntervalSince1970, text: message.text, media: media!)
                 
                 // Send message.
                 self.messages.append(_message)
@@ -321,8 +319,8 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     
     // Observe most recent message to see if it's an outgoing message that's been read.
     func observeLastMessage() {
-        lastMessageRefHandle = messagesRef.queryOrderedByChild(Path.Timestamp).queryLimitedToLast(1).observeEventType(.Value, withBlock: { (snapshot) in
-            guard let message = Message(anyObject: snapshot.children.nextObject()!.value) else { return }
+        lastMessageRefHandle = messagesRef.queryOrdered(byChild: Path.Timestamp).queryLimited(toLast: 1).observe(.value, with: { (snapshot) in
+            guard let message = Message(anyObject: (snapshot.children.nextObject()! as AnyObject).value) else { return }
             if message.senderId == self.senderId && message.read {
                 let message_ = self.messages[self.readReceiptIndex]
                 if !message_.read {
@@ -331,7 +329,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
                     self.messages[self.readReceiptIndex] = message_
                     self.collectionView.reloadData()
 //                    self.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: self.readReceiptIndex, inSection: 0)])
-                    self.scrollToBottomAnimated(true)
+                    self.scrollToBottom(animated: true)
                 }
             }
         })
@@ -347,7 +345,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     
     // Observe when sender changes his/her icon to update all cells that are displaying it.
     func observeSenderIcon() {
-        senderIconRefHandle = senderIconRef.observeEventType(.Value, withBlock: { (snapshot) in
+        senderIconRefHandle = senderIconRef.observe(.value, with: { (snapshot) in
             if let icon = snapshot.value as? String {
                 self.api.getUIImage(forIcon: icon, completion: { (image) in
                     self.icons[self.convo.senderId] = JSQMessagesAvatarImage(placeholder: image)
@@ -359,7 +357,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     
     // Observe when receiver changes his/her icon to update all cells that are displaying it.
     func observeReceiverIcon() {
-        receiverIconRefHandle = receiverIconRef.observeEventType(.Value, withBlock: { (snapshot) in
+        receiverIconRefHandle = receiverIconRef.observe(.value, with: { (snapshot) in
             if let icon = snapshot.value as? String {
                 self.api.getUIImage(forIcon: icon, completion: { (image) in
                     self.icons[self.convo.receiverId] = JSQMessagesAvatarImage(placeholder: image)
@@ -371,7 +369,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     
     // Observe when sender changes their nickname and update all cells that are displaying it.
     func observeSenderNickname() {
-        senderNicknameRefHandle = senderNicknameRef.observeEventType(.Value, withBlock: { (snapshot) in
+        senderNicknameRefHandle = senderNicknameRef.observe(.value, with: { (snapshot) in
             if let nickname = snapshot.value as? String {
                 self.names[self.convo.senderId] = nickname == "" ? self.convo.senderProxy : nickname
                 self.collectionView.reloadData()
@@ -382,7 +380,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     // Observe when sender changes receiver's nickname for this convo and update all cells that are displaying it.
     // Also update navigation bar title.
     func observeReceiverNickname() {
-        receiverNicknameRefHandle = receiverNicknameRef.observeEventType(.Value, withBlock: { (snapshot) in
+        receiverNicknameRefHandle = receiverNicknameRef.observe(.value, with: { (snapshot) in
             if let nickname = snapshot.value as? String {
                 self.names[self.convo.receiverId] = nickname == "" ? self.convo.receiverProxy : nickname
                 self.setTitle()
@@ -397,28 +395,28 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
         userIsTypingRef.onDisconnectRemoveValue()
         
         // Show typing indicator when other user is typing.
-        membersAreTypingRefHandle = membersAreTypingRef.observeEventType(.Value, withBlock: { (snapshot) in
+        membersAreTypingRefHandle = membersAreTypingRef.observe(.value, with: { (snapshot) in
             if snapshot.childrenCount == 1 && self.userIsTyping {
                 return
             }
             self.showTypingIndicator = snapshot.childrenCount > 0
-            self.scrollToBottomAnimated(true)
+            self.scrollToBottom(animated: true)
         })
     }
     
     // MARK: - JSQMessagesCollectionView
-    override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return messages.count
     }
     
     // Distinguish between sender and receiver chat bubble.
-    override func collectionView(collectionView: JSQMessagesCollectionView!, messageBubbleImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageBubbleImageDataSource! {
+    override func collectionView(_ collectionView: JSQMessagesCollectionView!, messageBubbleImageDataForItemAt indexPath: IndexPath!) -> JSQMessageBubbleImageDataSource! {
         return messages[indexPath.item].senderId == self.senderId ? outgoingBubble : incomingBubble
     }
     
     // Set up cell.
-    override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = super.collectionView(collectionView, cellForItemAtIndexPath: indexPath) as! JSQMessagesCollectionViewCell
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = super.collectionView(collectionView, cellForItemAt: indexPath) as! JSQMessagesCollectionViewCell
         let message = messages[indexPath.item]
         
         // Messages with media don't have textfields.
@@ -429,22 +427,22 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
         // Outgoing message.
         if message.senderId == senderId {
             cell.messageBubbleTopLabel.textInsets = UIEdgeInsetsMake(0, 0, 0, 40)
-            cell.textView!.textColor = UIColor.whiteColor()
+            cell.textView!.textColor = UIColor.white
             
         // Incoming message.
         } else {
             cell.messageBubbleTopLabel.textInsets = UIEdgeInsetsMake(0, 40, 0, 0)
             cell.textView.linkTextAttributes = [
                 NSForegroundColorAttributeName: UIColor().blue(),
-                NSUnderlineStyleAttributeName: NSUnderlineStyle.StyleSingle.rawValue]
-            cell.textView?.textColor = UIColor.blackColor()
+                NSUnderlineStyleAttributeName: NSUnderlineStyle.styleSingle.rawValue]
+            cell.textView?.textColor = UIColor.black
         }
         
         return cell
     }
     
     // Make space for timestamp.
-    override func collectionView(collectionView: JSQMessagesCollectionView, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout, heightForCellTopLabelAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    override func collectionView(_ collectionView: JSQMessagesCollectionView, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout, heightForCellTopLabelAt indexPath: IndexPath) -> CGFloat {
         
         // First message of convo.
         if indexPath.item == 0 {
@@ -454,7 +452,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
         // When too much time has passed between two messages.
         let prev = self.messages[indexPath.item - 1]
         let curr = self.messages[indexPath.item]
-        if curr.date.timeIntervalSinceDate(prev.date) / 60 > Settings.TimeBetweenTimestamps {
+        if curr.date.timeIntervalSince(prev.date) / 60 > Settings.TimeBetweenTimestamps {
             return kJSQMessagesCollectionViewCellLabelHeightDefault
         }
         
@@ -462,25 +460,25 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     }
     
     // Get timestamp.
-    override func collectionView(collectionView: JSQMessagesCollectionView, attributedTextForCellTopLabelAtIndexPath indexPath: NSIndexPath) -> NSAttributedString? {
+    override func collectionView(_ collectionView: JSQMessagesCollectionView, attributedTextForCellTopLabelAt indexPath: IndexPath) -> NSAttributedString? {
         let curr = self.messages[indexPath.item]
         
         // First message of convo.
         if indexPath.item == 0 {
-            return JSQMessagesTimestampFormatter.sharedFormatter().attributedTimestampForDate(curr.date)
+            return JSQMessagesTimestampFormatter.shared().attributedTimestamp(for: curr.date)
         }
         
         // When too much time has passed between two messages.
         let prev = self.messages[indexPath.item - 1]
-        if curr.date.timeIntervalSinceDate(prev.date) / 60 > Settings.TimeBetweenTimestamps {
-            return JSQMessagesTimestampFormatter.sharedFormatter().attributedTimestampForDate(curr.date)
+        if curr.date.timeIntervalSince(prev.date) / 60 > Settings.TimeBetweenTimestamps {
+            return JSQMessagesTimestampFormatter.shared().attributedTimestamp(for: curr.date)
         }
         
         return nil
     }
     
     // Get avatars.
-    override func collectionView(collectionView: JSQMessagesCollectionView!, avatarImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageAvatarImageDataSource! {
+    override func collectionView(_ collectionView: JSQMessagesCollectionView!, avatarImageDataForItemAt indexPath: IndexPath!) -> JSQMessageAvatarImageDataSource! {
         let curr = self.messages[indexPath.item]
         
         // Display an avatar for the first message of the convo.
@@ -508,7 +506,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     }
     
     // Make space for proxy names.
-    override func collectionView(collectionView: JSQMessagesCollectionView, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout, heightForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    override func collectionView(_ collectionView: JSQMessagesCollectionView, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout, heightForMessageBubbleTopLabelAt indexPath: IndexPath) -> CGFloat {
         
         // Show names/nicknames for last message by either user.
         if indexPath.item == messages.count - 1 {
@@ -525,7 +523,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     }
     
     // Get proxy names.
-    override func collectionView(collectionView: JSQMessagesCollectionView, attributedTextForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath) -> NSAttributedString? {
+    override func collectionView(_ collectionView: JSQMessagesCollectionView, attributedTextForMessageBubbleTopLabelAt indexPath: IndexPath) -> NSAttributedString? {
         let curr = self.messages[indexPath.item]
         
         // Show names/nicknames for last message by either user.
@@ -542,7 +540,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     }
     
     // Make space for read receipt.
-    override func collectionView(collectionView: JSQMessagesCollectionView!, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout!, heightForCellBottomLabelAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
+    override func collectionView(_ collectionView: JSQMessagesCollectionView!, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout!, heightForCellBottomLabelAt indexPath: IndexPath!) -> CGFloat {
         let message = messages[indexPath.item]
         if indexPath.item == readReceiptIndex && message.senderId == senderId && message.read {
             return kJSQMessagesCollectionViewCellLabelHeightDefault
@@ -551,28 +549,27 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     }
     
     // Get read receipt.
-    override func collectionView(collectionView: JSQMessagesCollectionView!, attributedTextForCellBottomLabelAtIndexPath indexPath: NSIndexPath!) -> NSAttributedString! {
+    override func collectionView(_ collectionView: JSQMessagesCollectionView!, attributedTextForCellBottomLabelAt indexPath: IndexPath!) -> NSAttributedString! {
         let message = messages[indexPath.item]
         if indexPath.item == readReceiptIndex && message.senderId == senderId && message.read {
             let read = "Read ".makeBold(withSize: 12)
             let timestamp = NSAttributedString(string: message.timeRead.toTimeAgo())
-            read.appendAttributedString(timestamp)
+            read.append(timestamp)
             return read
         }
         return nil
     }
     
     // Get message data for row.
-    override func collectionView(collectionView: JSQMessagesCollectionView!, messageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageData! {
+    override func collectionView(_ collectionView: JSQMessagesCollectionView!, messageDataForItemAt indexPath: IndexPath!) -> JSQMessageData! {
         return messages[indexPath.item]
     }
     
     // Play video if user taps a video bubble.
-    override func collectionView(collectionView: JSQMessagesCollectionView!, didTapMessageBubbleAtIndexPath indexPath: NSIndexPath!) {
+    override func collectionView(_ collectionView: JSQMessagesCollectionView!, didTapMessageBubbleAt indexPath: IndexPath!) {
         let message = messages[indexPath.item]
         if message.mediaType == "video" {
-            guard let url = (message.media as! JSQVideoMediaItem).fileURL
-                where url.absoluteString != "" else { return }
+            guard let url = (message.media as! JSQVideoMediaItem).fileURL, url.absoluteString != "" else { return }
             let playerVC = MobilePlayerViewController(contentURL: url)
             playerVC.activityItems = [url]
             presentMoviePlayerViewControllerAnimated(playerVC)
@@ -581,22 +578,22 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
         if message.mediaType == "image" {
             let image = (message.media as! JSQPhotoMediaItem).image
             let newImageView = UIImageView(image: image)
-            newImageView.backgroundColor = .blackColor()
-            newImageView.contentMode = .ScaleAspectFit
+            newImageView.backgroundColor = .black
+            newImageView.contentMode = .scaleAspectFit
             newImageView.frame = self.view.frame
-            newImageView.userInteractionEnabled = true
+            newImageView.isUserInteractionEnabled = true
             let tap = UITapGestureRecognizer(target: self, action: #selector(ConvoViewController.dismissFullscreenImage(_:)))
             newImageView.addGestureRecognizer(tap)
             self.view.addSubview(newImageView)
         }
     }
     
-    func dismissFullscreenImage(sender: UITapGestureRecognizer) {
+    func dismissFullscreenImage(_ sender: UITapGestureRecognizer) {
         sender.view?.removeFromSuperview()
     }
     
     // Write message to database.
-    override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: NSDate!) {
+    override func didPressSend(_ button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: Date!) {
         api.getConvo(withKey: convo.key, belongingToUser: convo.senderId, completion: { (convo) in
             if let convo = convo {
                 self.convo = convo
@@ -608,21 +605,21 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     }
     
     // Show multi media message options when user taps attachments button.
-    override func didPressAccessoryButton(sender: UIButton!) {
+    override func didPressAccessoryButton(_ sender: UIButton!) {
         self.inputToolbar.contentView!.textView!.resignFirstResponder()
-        let alert = UIAlertController(title: "Send:", message: nil, preferredStyle: .ActionSheet)
+        let alert = UIAlertController(title: "Send:", message: nil, preferredStyle: .actionSheet)
         
         // Send photo/video
-        alert.addAction(UIAlertAction(title: "Photo 📸 / Video 🎥", style: .Default, handler: { action in
+        alert.addAction(UIAlertAction(title: "Photo 📸 / Video 🎥", style: .default, handler: { action in
             // Show Fusuma, our VC that can handle camera, photos, and video.
             let fusuma = FusumaViewController()
             fusuma.delegate = self
             fusuma.hasVideo = true
-            self.presentViewController(fusuma, animated: true, completion: nil)
+            self.present(fusuma, animated: true, completion: nil)
         }))
         
-        alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-        self.presentViewController(alert, animated: true, completion: nil)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        self.present(alert, animated: true, completion: nil)
     }
     
     func finishedWritingMessage() {
@@ -632,31 +629,32 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     }
     
     // MARK: - Fusuma delegate
+    
     // Return the image which is selected from camera roll or is taken via the camera.
-    func fusumaImageSelected(image: UIImage) {
+    func fusumaImageSelected(_ image: UIImage) {
     }
     
     // Return the image but called after is dismissed.
-    func fusumaDismissedWithImage(image: UIImage) {
+    func fusumaDismissedWithImage(_ image: UIImage) {
         send(image: image)
     }
     
-    func fusumaVideoCompleted(withFileURL fileURL: NSURL) {
+    func fusumaVideoCompleted(withFileURL fileURL: URL) {
         send(videoWithURL: fileURL)
     }
     
     // Call when camera roll not authorized.
     func fusumaCameraRollUnauthorized() {
-        let alert = UIAlertController(title: "Access Camera", message: "Access the camera to send and take photos.", preferredStyle: .Alert)
-        alert.addAction(UIAlertAction(title: "Go To Settings", style: .Default) { (action) in
-            if let appSettings = NSURL(string: UIApplicationOpenSettingsURLString) {
-                UIApplication.sharedApplication().openURL(appSettings, options: [:], completionHandler: nil)
+        let alert = UIAlertController(title: "Access Camera", message: "Access the camera to send and take photos.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Go To Settings", style: .default) { (action) in
+            if let appSettings = URL(string: UIApplicationOpenSettingsURLString) {
+                UIApplication.shared.open(appSettings, options: [:], completionHandler: nil)
             }})
-        alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-        presentViewController(alert, animated: true, completion: nil)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        present(alert, animated: true, completion: nil)
     }
     
-    func send(image image: UIImage) {
+    func send(image: UIImage) {
         api.getConvo(withKey: convo.key, belongingToUser: convo.senderId, completion: { (convo) in
             guard let convo = convo else { return }
             self.convo = convo
@@ -670,15 +668,14 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
                     
                     // The upload returns the URL to the image we just uploaded.
                     // Update the placeholder message with this info.
-                    guard let url = url.absoluteString else { return }
-                    self.api.setMedia(forMessage: message, mediaType: "image", mediaURL: url)
+                    self.api.setMedia(forMessage: message, mediaType: "image", mediaURL: url.absoluteString)
                     self.finishedWritingMessage()
                 })
             }
         })
     }
     
-    func send(videoWithURL url: NSURL) {
+    func send(videoWithURL url: URL) {
         api.getConvo(withKey: convo.key, belongingToUser: convo.senderId, completion: { (convo) in
             guard let convo = convo else { return }
             self.convo = convo
@@ -692,24 +689,25 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
                     
                     // The upload returns the URL to the image we just uploaded.
                     // Update the placeholder message with this info.
-                    guard let url = url.absoluteString else { return }
-                    self.api.setMedia(forMessage: message, mediaType: "video", mediaURL: url)
+                    self.api.setMedia(forMessage: message, mediaType: "video", mediaURL: url.absoluteString)
                     self.finishedWritingMessage()
                 })
             }
         })
     }
     
+    public func fusumaImageSelected(_ image: UIImage, source: FusumaMode) {}
+    
     // MARK: - Text view
     // Keep track of when user is typing.
-    override func textViewDidChange(textView: UITextView) {
+    override func textViewDidChange(_ textView: UITextView) {
         super.textViewDidChange(textView)
         userIsTyping = textView.text != ""
     }
     
     // MARK: - Navigation
     func showConvoInfoTableViewController() {
-        let dest = storyboard?.instantiateViewControllerWithIdentifier(Identifiers.ConvoInfoTableViewController) as! ConvoInfoTableViewController
+        let dest = storyboard?.instantiateViewController(withIdentifier: Identifiers.ConvoInfoTableViewController) as! ConvoInfoTableViewController
         dest.convo = convo
         navigationController?.pushViewController(dest, animated: true)
     }

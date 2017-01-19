@@ -7,5 +7,5 @@
 //
 
 protocol NewMessageViewControllerDelegate {
-    func goToNewConvo(convo: Convo)
+    func goToNewConvo(_ convo: Convo)
 }

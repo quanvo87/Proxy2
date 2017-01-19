@@ -21,70 +21,70 @@ class BlockedUsersTableViewController: UITableViewController {
         
         navigationItem.title = "Blocked Users"
         
-        let cancelButton = UIButton(type: .Custom)
-        cancelButton.addTarget(self, action: #selector(BlockedUsersTableViewController.cancel), forControlEvents: UIControlEvents.TouchUpInside)
-        cancelButton.frame = CGRectMake(0, 0, 25, 25)
-        cancelButton.setImage(UIImage(named: "cancel"), forState: UIControlState.Normal)
+        let cancelButton = UIButton(type: .custom)
+        cancelButton.addTarget(self, action: #selector(BlockedUsersTableViewController.cancel), for: UIControlEvents.touchUpInside)
+        cancelButton.frame = CGRect(x: 0, y: 0, width: 25, height: 25)
+        cancelButton.setImage(UIImage(named: "cancel"), for: UIControlState.normal)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: cancelButton)
         
         tableView.rowHeight = 60
         
         blockedUsersRef = ref.child(Path.Blocked).child(api.uid)
-        blockedUsersRefHandle = blockedUsersRef.queryOrderedByChild(Path.Created).observeEventType(.Value, withBlock: { (snapshot) in
+        blockedUsersRefHandle = blockedUsersRef.queryOrdered(byChild: Path.Created).observe(.value, with: { (snapshot) in
             var blockedUsers = [BlockedUser]()
             for child in snapshot.children {
-                if let blockedUser = BlockedUser(anyObject: child.value) {
+                if let blockedUser = BlockedUser(anyObject: (child as AnyObject).value) {
                     blockedUsers.append(blockedUser)
                 }
             }
-            self.blockedUsers = blockedUsers.reverse()
+            self.blockedUsers = blockedUsers.reversed()
             self.tableView.reloadData()
         })
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         navigationItem.hidesBackButton = true
-        tabBarController?.tabBar.hidden = true
+        tabBarController?.tabBar.isHidden = true
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
-        tabBarController?.tabBar.hidden = false
+        tabBarController?.tabBar.isHidden = false
     }
     
     deinit {
-        blockedUsersRef.removeObserverWithHandle(blockedUsersRefHandle)
+        blockedUsersRef.removeObserver(withHandle: blockedUsersRefHandle)
     }
     
     func cancel() {
-        navigationController?.popViewControllerAnimated(true)
+        _ = navigationController?.popViewController(animated: true)
     }
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return blockedUsers.count
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let blockedUser = blockedUsers[indexPath.row]
-        let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.BlockedUsersTableViewCell, forIndexPath: indexPath) as! BlockedUsersTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.BlockedUsersTableViewCell, for: indexPath as IndexPath) as! BlockedUsersTableViewCell
         
-        cell.accessoryType = .None
-        cell.selectionStyle = .None
+        cell.accessoryType = .none
+        cell.selectionStyle = .none
         
         cell.blockedUser = blockedUser
         
         cell.iconImageView.image = nil
-        cell.iconImageView.kf_indicatorType = .Activity
+        cell.iconImageView.kf.indicatorType = .activity
         api.getURL(forIcon: blockedUser.icon) { (url) in
             guard let url = url else { return }
-            cell.iconImageView.kf_setImageWithURL(url, placeholderImage: nil)
+            cell.iconImageView.kf.setImage(with: url, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
         }
         
         cell.nameLabel.text = blockedUser.name

@@ -23,7 +23,7 @@ class Message: JSQMessage {
         self.mediaType = mediaType
         self.read = read
         self.timeRead = timeRead
-        super.init(senderId: senderId, senderDisplayName: "", date: NSDate(timeIntervalSince1970: date), text: text)
+        super.init(senderId: senderId, senderDisplayName: "", date: Date(timeIntervalSince1970: date), text: text)
     }
     
     init(key: String, convo: String, mediaType: String, mediaURL: String, read: Bool, timeRead: Double, senderId: String, date: Double, text: String, media: JSQMessageMediaData) {
@@ -33,7 +33,7 @@ class Message: JSQMessage {
         self.mediaURL = mediaURL
         self.read = read
         self.timeRead = timeRead
-        super.init(senderId: senderId, senderDisplayName: "", date: NSDate(timeIntervalSince1970: date), media: media)
+        super.init(senderId: senderId, senderDisplayName: "", date: Date(timeIntervalSince1970: date), media: media)
     }
     
     init?(anyObject: AnyObject) {
@@ -54,7 +54,7 @@ class Message: JSQMessage {
             self.mediaURL = mediaURL
             self.read = read
             self.timeRead = timeRead
-            super.init(senderId: senderId, senderDisplayName: senderDisplayName, date: NSDate(timeIntervalSince1970: date), text: text)
+            super.init(senderId: senderId, senderDisplayName: senderDisplayName, date: Date(timeIntervalSince1970: date), text: text)
         } else {
             return nil
         }
@@ -77,7 +77,7 @@ class Message: JSQMessage {
             self.mediaURL = mediaURL
             self.read = read
             self.timeRead = timeRead
-            super.init(senderId: senderId, senderDisplayName: senderDisplayName, date: NSDate(timeIntervalSince1970: date), media: media)
+            super.init(senderId: senderId, senderDisplayName: senderDisplayName, date: Date(timeIntervalSince1970: date), media: media)
         } else {
             return nil
         }
