@@ -29,32 +29,27 @@ class ReceiverPickerViewController: UIViewController, UICollectionViewDelegate {
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: cancelButton)
         
         api.ref.child(Path.Proxies).queryOrdered(byChild: Path.Key).observeSingleEvent(of: .value, with: { snapshot in
+            let dict = snapshot.children.nextObject() as AnyObject
             var proxies = [String]()
-            for child in snapshot.children {
+            for child in dict.children {
                 guard let proxy = Proxy(anyObject: (child as! FIRDataSnapshot).value as AnyObject) else { return }
-                if proxy.key != "" {
+                if proxy.key != "" && proxy.ownerId != self.api.uid {
                     proxies.append(proxy.key.lowercased())
                 }
             }
-            
             let dataSource = SimplePrefixQueryDataSource(proxies)
             var ramReel: RAMReel<RAMCell, RAMTextField, SimplePrefixQueryDataSource>!
             ramReel = RAMReel(frame: self.view.bounds, dataSource: dataSource, placeholder: "Tap to begin typing…") {
                 guard $0 != "" else { return }
                 self.api.getProxy($0, completion: { (proxy) in
                     guard let proxy = proxy else {
-                        self.showAlert("Receiver Not Found", message: "Tap 'Select This Receiver' once you have found the desired one.")
-                        return
-                    }
-                    guard proxy.ownerId != self.api.uid else {
-                        self.showAlert("Cannot Send To Self", message: "Did you select your own proxy by mistake?")
+                        self.showAlert("Receiver Not Found", message: "Highlight the receiver then tap 'Select This Receiver'.")
                         return
                     }
                     self.receiverPickerDelegate.setReceiver(proxy)
                     self.close()
                 })
             }
-            
             self.view.addSubview(ramReel.view)
             ramReel.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         })
