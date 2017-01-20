@@ -872,37 +872,38 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vg6-Kw-tyQ" userLabel="Select This Reciever">
-                                <rect key="frame" x="110" y="603" width="156" height="33"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <state key="normal" title="Select This Receiver"/>
-                            </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap 'Done' on keyboard to confirm" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7ds-yk-9rS">
-                                <rect key="frame" x="56" y="641" width="263" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Scroll through choices to make a selection" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WNl-JF-vJo">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Type the receiver's name" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WNl-JF-vJo">
                                 <rect key="frame" x="11" y="30" width="343" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap 'Done' on the keyboard to confirm" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ip9-Im-btj">
+                                <rect key="frame" x="16" y="59" width="343" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vg6-Kw-tyQ" userLabel="Select This Reciever">
+                                <rect key="frame" x="134" y="614" width="107" height="33"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <state key="normal" title="Autocomplete"/>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="trailingMargin" secondItem="WNl-JF-vJo" secondAttribute="trailing" constant="5" id="4mU-An-vez"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="Ip9-Im-btj" secondAttribute="leading" id="Bgw-MY-jQz"/>
                             <constraint firstItem="WNl-JF-vJo" firstAttribute="top" secondItem="nCv-mV-9Rd" secondAttribute="bottom" constant="10" id="Pi4-M7-AO1"/>
-                            <constraint firstItem="Six-lP-vG1" firstAttribute="top" secondItem="7ds-yk-9rS" secondAttribute="bottom" constant="5" id="SSq-ZI-okz"/>
+                            <constraint firstItem="Ip9-Im-btj" firstAttribute="top" secondItem="WNl-JF-vJo" secondAttribute="bottom" constant="8" id="Wg2-bN-vvK"/>
                             <constraint firstItem="vg6-Kw-tyQ" firstAttribute="centerX" secondItem="0mM-YC-A42" secondAttribute="centerX" id="XzQ-PX-9BI"/>
-                            <constraint firstItem="7ds-yk-9rS" firstAttribute="top" secondItem="vg6-Kw-tyQ" secondAttribute="bottom" constant="5" id="bAe-fL-oAa"/>
                             <constraint firstAttribute="leadingMargin" secondItem="WNl-JF-vJo" secondAttribute="leading" constant="5" id="jZf-dG-ha5"/>
-                            <constraint firstItem="7ds-yk-9rS" firstAttribute="centerX" secondItem="0mM-YC-A42" secondAttribute="centerX" id="lRm-bP-she"/>
+                            <constraint firstItem="Six-lP-vG1" firstAttribute="top" secondItem="vg6-Kw-tyQ" secondAttribute="bottom" constant="20" id="qbL-94-xug"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Ip9-Im-btj" secondAttribute="trailing" id="wH0-hZ-0FT"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="bottomConstraint" destination="SSq-ZI-okz" id="EfM-9O-z6N"/>
+                        <outlet property="bottomConstraint" destination="qbL-94-xug" id="lsE-LJ-msf"/>
                         <outlet property="selectThisReceiverButton" destination="vg6-Kw-tyQ" id="lOU-aZ-3Jo"/>
                     </connections>
                 </viewController>

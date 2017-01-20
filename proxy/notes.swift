@@ -3,14 +3,11 @@
  - make everything as power efficient as possible
  - function naming consistency (gotoview vs showview, etc) (try to copy apple)
  - names of storyboard elements
- - test send message
  - test blocking users
  - stagger message load
  - notifications
  - intro tutorial
  - app icon
- 
- - consistent object and function naming when learn more about swift
  
  photo/video permission
  profanity filter

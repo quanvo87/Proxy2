@@ -15,23 +15,23 @@ class MeTableViewController: UITableViewController {
     let ref = FIRDatabase.database().reference()
     
     var messagesReceivedRef = FIRDatabaseReference()
-    var messagesReceived = ""
+    var messagesReceived = "-"
     
     var messagesSentRef = FIRDatabaseReference()
-    var messagesSent = ""
+    var messagesSent = "-"
     
     var proxiesInteractedWithRef = FIRDatabaseReference()
-    var proxiesInteractedWith = ""
+    var proxiesInteractedWith = "-"
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         FIRAuth.auth()?.addStateDidChangeListener { auth, user in
             if let user = user {
                 self.navigationItem.title = user.displayName
             }
         }
-        
+        tableView.reloadData()
         messagesReceivedRef = ref.child(Path.MessagesReceived).child(api.uid).child(Path.MessagesReceived)
         messagesSentRef = ref.child(Path.MessagesSent).child(api.uid).child(Path.MessagesSent)
         proxiesInteractedWithRef = ref.child(Path.ProxiesInteractedWith).child(api.uid).child(Path.ProxiesInteractedWith)
@@ -41,18 +41,22 @@ class MeTableViewController: UITableViewController {
         super.viewDidAppear(true)
         
         messagesReceivedRef.observe(.value, with: { (snapshot) in
-            self.messagesReceived = (snapshot.value as! Int).formatted()
-            self.tableView.reloadData()
+            if let messagesReceived = snapshot.value as? Int {
+                self.messagesReceived = messagesReceived.formatted()
+                self.tableView.reloadData()
+            }
         })
-        
         messagesSentRef.observe(.value, with: { (snapshot) in
-            self.messagesSent = (snapshot.value as! Int).formatted()
-            self.tableView.reloadData()
+            if let messagesSent = snapshot.value as? Int {
+                self.messagesSent = messagesSent.formatted()
+                self.tableView.reloadData()
+            }
         })
-        
         proxiesInteractedWithRef.observe(.value, with: { (snapshot) in
-            self.proxiesInteractedWith = (snapshot.value as! Int).formatted()
-            self.tableView.reloadData()
+            if let proxiesInteractedWith = snapshot.value as? Int {
+                self.proxiesInteractedWith = proxiesInteractedWith.formatted()
+                self.tableView.reloadData()
+            }
         })
     }
     
@@ -154,7 +158,7 @@ class MeTableViewController: UITableViewController {
                 
             // Show About
             case 1:
-                let alert = UIAlertController(title: "About Proxy:", message: "Contact: qvo1987@gmail.com\n\nUpcoming features: sound in videos, location sharing\n\nIcons from icons8.com\n\nLibraries used: Kingfisher, JSQMessagesViewController, Fusuma, MobilePlayer, VideoSplashKit, RAMReel\n\nVersion 0.1", preferredStyle: .alert)
+                let alert = UIAlertController(title: "About Proxy:", message: "Contact: qvo1987@gmail.com\n\nUpcoming features: sound in videos, location sharing\n\nIcons from icons8.com\n\nLibraries used: Kingfisher, JSQMessagesViewController, Fusuma, MobilePlayer, RAMReel\n\nVersion 0.1", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "Ok", style: .cancel) { action in
                     })
                 self.present(alert, animated: true, completion: nil)
