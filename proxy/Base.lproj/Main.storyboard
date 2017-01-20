@@ -298,7 +298,7 @@
         <scene sceneID="LLx-ej-ogN">
             <objects>
                 <collectionViewController storyboardIdentifier="Icon Picker Collection View Controller" id="myi-c3-T5y" customClass="IconPickerCollectionViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="JDm-gc-1XX">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" dataMode="prototypes" id="JDm-gc-1XX">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="P5Q-EW-UUp">
@@ -601,7 +601,7 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="LfE-yp-YW0" userLabel="Proxies" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Proxies" id="iOS-6g-J6E"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="2C5-MT-khQ">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="2C5-MT-khQ">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -782,9 +782,9 @@
                                     <action selector="showSelectSenderTableViewController" destination="t9h-Vt-RKS" eventType="touchUpInside" id="ZXr-dA-8QB"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Wjj-lH-XZu">
-                                <rect key="frame" x="333" y="24" width="31" height="30"/>
-                                <state key="normal" title="New"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Wjj-lH-XZu" userLabel="New Proxy Button">
+                                <rect key="frame" x="291" y="24" width="73" height="30"/>
+                                <state key="normal" title="New Proxy"/>
                                 <connections>
                                     <action selector="tapNewButton" destination="t9h-Vt-RKS" eventType="touchUpInside" id="RcK-xU-Tt0"/>
                                 </connections>
@@ -850,7 +850,7 @@
                     <connections>
                         <outlet property="bottomConstraint" destination="3YD-QO-s6S" id="5mi-NV-Tbv"/>
                         <outlet property="messageTextView" destination="91z-h3-rmO" id="XPP-fM-Qyd"/>
-                        <outlet property="newButton" destination="Wjj-lH-XZu" id="B5p-BN-z8X"/>
+                        <outlet property="newProxyButton" destination="Wjj-lH-XZu" id="Ljv-bc-ImR"/>
                         <outlet property="selectReceiverButton" destination="pwd-90-tRg" id="hlt-IO-NoP"/>
                         <outlet property="selectSenderButton" destination="cCU-KM-BgS" id="PxI-r0-r23"/>
                         <outlet property="sendButton" destination="1by-x2-XdQ" id="HKT-5Z-zly"/>
@@ -878,7 +878,7 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap 'Done' on the keyboard to confirm" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ip9-Im-btj">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap 'Done' on keyboard to select" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ip9-Im-btj">
                                 <rect key="frame" x="16" y="59" width="343" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
@@ -1009,7 +1009,7 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="EGG-kf-Fg2" userLabel="Home" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Messages" id="FaN-XB-C5v"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="RUp-Qx-BNr">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="RUp-Qx-BNr">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -1028,7 +1028,7 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="PGe-ha-qrd" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Me" id="8DJ-gV-5Kk"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="3Im-Fz-MvD">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="3Im-Fz-MvD">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>

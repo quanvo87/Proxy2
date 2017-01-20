@@ -29,6 +29,7 @@ class ReceiverPickerViewController: UIViewController, UICollectionViewDelegate {
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: cancelButton)
         
         api.ref.child(Path.Proxies).queryOrdered(byChild: Path.Key).observeSingleEvent(of: .value, with: { snapshot in
+            guard snapshot.hasChildren() else { return }
             let dict = snapshot.children.nextObject() as AnyObject
             var proxies = [String]()
             for child in dict.children {

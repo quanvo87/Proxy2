@@ -11,7 +11,7 @@ import FirebaseDatabase
 class NewMessageViewController: UIViewController, UITextViewDelegate, SenderPickerDelegate, ReceiverPickerDelegate {
     
     @IBOutlet weak var selectSenderButton: UIButton!
-    @IBOutlet weak var newButton: UIButton!
+    @IBOutlet weak var newProxyButton: UIButton!
     @IBOutlet weak var selectReceiverButton: UIButton!
     @IBOutlet weak var messageTextView: UITextView!
     @IBOutlet weak var sendButton: UIButton!
@@ -70,14 +70,14 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderPick
     
     func disableButtons() {
         selectSenderButton.isEnabled = false
-        newButton.isEnabled = false
+        newProxyButton.isEnabled = false
         selectReceiverButton.isEnabled = false
         sendButton.isEnabled = false
     }
     
     func enableButtons() {
         selectSenderButton.isEnabled = true
-        newButton.isEnabled = true
+        newProxyButton.isEnabled = true
         selectReceiverButton.isEnabled = true
         enableSendButton()
     }
