@@ -33,12 +33,9 @@ class ReceiverPickerViewController: UIViewController, UICollectionViewDelegate {
             let dict = snapshot.children.nextObject() as AnyObject
             var proxies = [String]()
             for child in dict.children {
-                guard let proxy = Proxy(anyObject: (child as! FIRDataSnapshot).value as AnyObject) else { return }
-                // TODO: - use this one when start testing with two phones
-//                if proxy.key != "" && proxy.ownerId != self.api.uid {
-//                    proxies.append(proxy.key.lowercased())
-//                }
-                if proxy.key != "" {
+                if let proxy = Proxy(anyObject: (child as! FIRDataSnapshot).value as AnyObject) {
+                    // TODO: - add this when start testing with two phones
+                    // , proxy.ownerId != self.api.uid {
                     proxies.append(proxy.key.lowercased())
                 }
             }

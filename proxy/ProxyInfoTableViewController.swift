@@ -77,9 +77,10 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         })
         
         convosRefHandle = convosRef.queryOrdered(byChild: Path.Timestamp).observe(.value, with: { (snapshot) in
-            guard let convos = self.api.getConvos(fromSnapshot: snapshot) else { return }
-            self.convos = convos
-            self.tableView.reloadData()
+            if let convos = self.api.getConvos(fromSnapshot: snapshot) {
+                self.convos = convos
+                self.tableView.reloadData()
+            }
         })
     }
     
@@ -169,18 +170,6 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         }
     }
     
-    override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        switch section {
-        case 1:
-            if convos.count == 0 {
-                return "No conversations yet. Start one with the 'New Message' button on the top right!"
-            } else {
-                return nil
-            }
-        default: return nil
-        }
-    }
-    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 1 {
             let dest = self.storyboard?.instantiateViewController(withIdentifier: Identifiers.ConvoViewController) as! ConvoViewController
@@ -195,7 +184,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         // Proxy info
         case 0:
             let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.SenderProxyInfoCell, for: indexPath as IndexPath) as! SenderProxyInfoCell
-            cell.nameLabel.text = proxy.key
+            cell.nameLabel.text = proxy.name
             cell.nicknameButton.setTitle(proxy.nickname == "" ? "Enter A Nickname" : proxy.nickname, for: .normal)
             cell.nicknameButton.addTarget(self, action: #selector(ProxyInfoTableViewController.showEditNicknameAlert), for: .touchUpInside)
             cell.iconImageView.image = nil
@@ -218,7 +207,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
                 guard let url = url else { return }
                 cell.iconImageView.kf.setImage(with: url, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
             }
-            cell.titleLabel.attributedText = api.getConvoTitle(receiverNickname: convo.receiverNickname, receiverName: convo.receiverProxy, senderNickname: convo.senderNickname, senderName: convo.senderProxy)
+            cell.titleLabel.attributedText = api.getConvoTitle(receiverNickname: convo.receiverNickname, receiverName: convo.receiverProxyName, senderNickname: convo.senderNickname, senderName: convo.senderProxyName)
             cell.lastMessageLabel.text = convo.message
             cell.timestampLabel.text = convo.timestamp.toTimeAgo()
             cell.unreadLabel.text = convo.unread.toNumberLabel()

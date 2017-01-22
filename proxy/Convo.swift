@@ -10,10 +10,12 @@ struct Convo {
     
     var key = ""
     var senderId = ""
-    var senderProxy = ""
+    var senderProxyKey = ""
+    var senderProxyName = ""
     var senderNickname = ""
     var receiverId = ""
-    var receiverProxy = ""
+    var receiverProxyKey = ""
+    var receiverProxyName = ""
     var receiverNickname = ""
     var icon = ""
     var message = ""
@@ -31,10 +33,12 @@ struct Convo {
         if
             let key = anyObject["key"] as? String,
             let senderId = anyObject["senderId"] as? String,
-            let senderProxy = anyObject["senderProxy"] as? String,
+            let senderProxyKey = anyObject["senderProxyKey"] as? String,
+            let senderProxyName = anyObject["senderProxyName"] as? String,
             let senderNickname = anyObject["senderNickname"] as? String,
             let receiverId = anyObject["receiverId"] as? String,
-            let receiverProxy = anyObject["receiverProxy"] as? String,
+            let receiverProxyKey = anyObject["receiverProxyKey"] as? String,
+            let receiverProxyName = anyObject["receiverProxyName"] as? String,
             let receiverNickname = anyObject["receiverNickname"] as? String,
             let icon = anyObject["icon"] as? String,
             let message = anyObject["message"] as? String,
@@ -47,10 +51,12 @@ struct Convo {
             let unread = anyObject["unread"] as? Int {
             self.key = key
             self.senderId = senderId
-            self.senderProxy = senderProxy
+            self.senderProxyKey = senderProxyKey
+            self.senderProxyName = senderProxyName
             self.senderNickname = senderNickname
             self.receiverId = receiverId
-            self.receiverProxy = receiverProxy
+            self.receiverProxyKey = receiverProxyKey
+            self.receiverProxyName = receiverProxyName
             self.receiverNickname = receiverNickname
             self.icon = icon
             self.message = message
@@ -70,10 +76,12 @@ struct Convo {
         return [
             "key": key,
             "senderId": senderId,
-            "senderProxy": senderProxy,
+            "senderProxyKey": senderProxyKey,
+            "senderProxyName": senderProxyName,
             "senderNickname": senderNickname,
             "receiverId": receiverId,
-            "receiverProxy": receiverProxy,
+            "receiverProxyKey": receiverProxyKey,
+            "receiverProxyName": receiverProxyName,
             "receiverNickname": receiverNickname,
             "icon": icon,
             "message": message,

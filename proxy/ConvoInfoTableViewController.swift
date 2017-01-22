@@ -41,13 +41,13 @@ class ConvoInfoTableViewController: UITableViewController {
         tableView.delaysContentTouches = false
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: Identifiers.Cell)
         
-        api.getProxy(withKey: convo.senderProxy, belongingToUser: convo.senderId) { (proxy) in
+        api.getProxy(withKey: convo.senderProxyKey, belongingToUser: convo.senderId) { (proxy) in
             self.senderProxy = proxy
         }
         
         receiverIconRef = api.ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.Icon)
         receiverNicknameRef = api.ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.ReceiverNickname)
-        senderIconRef = api.ref.child(Path.Proxies).child(convo.senderId).child(convo.senderProxy).child(Path.Icon)
+        senderIconRef = api.ref.child(Path.Proxies).child(convo.senderId).child(convo.senderProxyKey).child(Path.Icon)
         senderNicknameRef = api.ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderNickname)
     }
     
@@ -188,7 +188,7 @@ class ConvoInfoTableViewController: UITableViewController {
         // Receiver proxy info
         case 0:
             let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.ReceiverProxyInfoCell, for: indexPath as IndexPath) as! ReceiverProxyInfoCell
-            cell.nameLabel.text = convo.receiverProxy
+            cell.nameLabel.text = convo.receiverProxyName
             cell.nicknameButton.setTitle(receiverNickname == "" ? "Enter A Nickname" : receiverNickname, for: .normal)
             cell.nicknameButton.addTarget(self, action: #selector(ConvoInfoTableViewController.editReceiverNickname), for: .touchUpInside)
             cell.iconImageView = nil
@@ -200,7 +200,7 @@ class ConvoInfoTableViewController: UITableViewController {
         // Sender proxy info
         case 1:
             let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.SenderProxyInfoCell, for: indexPath as IndexPath) as! SenderProxyInfoCell
-            cell.nameLabel.text = convo.senderProxy
+            cell.nameLabel.text = convo.senderProxyName
             cell.nicknameButton.setTitle(senderNickname == "" ? "Enter A Nickname" : senderNickname, for: .normal)
             cell.nicknameButton.addTarget(self, action: #selector(ConvoInfoTableViewController.editSenderNickname), for: .touchUpInside)
             cell.iconImageView = nil

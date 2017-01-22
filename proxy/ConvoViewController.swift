@@ -114,8 +114,8 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     }
     
     func setUp() {
-        names[convo.senderId] = convo.senderProxy
-        names[convo.receiverId] = convo.receiverProxy
+        names[convo.senderId] = convo.senderProxyName
+        names[convo.receiverId] = convo.receiverProxyName
         setTitle()
         navigationController!.view.backgroundColor = UIColor.white
         navigationItem.rightBarButtonItem = createInfoButton()
@@ -125,7 +125,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
         senderId = convo.senderId
         senderDisplayName = ""
         messagesRef = ref.child(Path.Messages).child(convo.key)
-        senderIconRef = ref.child(Path.Proxies).child(convo.senderId).child(convo.senderProxy).child(Path.Icon)
+        senderIconRef = ref.child(Path.Proxies).child(convo.senderId).child(convo.senderProxyKey).child(Path.Icon)
         receiverIconRef = ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.Icon)
         senderNicknameRef = ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderNickname)
         receiverNicknameRef = ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.ReceiverNickname)
@@ -302,7 +302,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
             if message.senderId != self.senderId {
                 if !message.read {
                     if self.senderIsPresent {
-                        self.api.setRead(forMessage: message, forUser: self.convo.senderId, forProxy: self.convo.senderProxy)
+                        self.api.setRead(forMessage: message, forUser: self.convo.senderId, forProxy: self.convo.senderProxyKey)
                     } else {
                         self.unreadMessages.append(message)
                     }
@@ -320,6 +320,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     // Observe most recent message to see if it's an outgoing message that's been read.
     func observeLastMessage() {
         lastMessageRefHandle = messagesRef.queryOrdered(byChild: Path.Timestamp).queryLimited(toLast: 1).observe(.value, with: { (snapshot) in
+            guard snapshot.hasChildren() else { return }
             guard let message = Message(anyObject: (snapshot.children.nextObject()! as! FIRDataSnapshot).value as AnyObject) else { return }
             if message.senderId == self.senderId && message.read {
                 let message_ = self.messages[self.readReceiptIndex]
@@ -338,7 +339,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     // Mark messages as read for incoming messages that came in while convo was open but not on screen.
     func readMessages() {
         for message in unreadMessages {
-            api.setRead(forMessage: message, forUser: self.convo.senderId, forProxy: self.convo.senderProxy)
+            api.setRead(forMessage: message, forUser: self.convo.senderId, forProxy: self.convo.senderProxyKey)
         }
         unreadMessages = []
     }
@@ -371,7 +372,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     func observeSenderNickname() {
         senderNicknameRefHandle = senderNicknameRef.observe(.value, with: { (snapshot) in
             if let nickname = snapshot.value as? String {
-                self.names[self.convo.senderId] = nickname == "" ? self.convo.senderProxy : nickname
+                self.names[self.convo.senderId] = nickname == "" ? self.convo.senderProxyName : nickname
                 self.collectionView.reloadData()
             }
         })
@@ -382,7 +383,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     func observeReceiverNickname() {
         receiverNicknameRefHandle = receiverNicknameRef.observe(.value, with: { (snapshot) in
             if let nickname = snapshot.value as? String {
-                self.names[self.convo.receiverId] = nickname == "" ? self.convo.receiverProxy : nickname
+                self.names[self.convo.receiverId] = nickname == "" ? self.convo.receiverProxyName : nickname
                 self.setTitle()
                 self.collectionView.reloadData()
             }

@@ -231,7 +231,7 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
             cell.iconImageView.kf.setImage(with: url, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
         }
         
-        cell.titleLabel.attributedText = api.getConvoTitle(receiverNickname: convo.receiverNickname, receiverName: convo.receiverProxy, senderNickname: convo.senderNickname, senderName: convo.senderProxy)
+        cell.titleLabel.attributedText = api.getConvoTitle(receiverNickname: convo.receiverNickname, receiverName: convo.receiverProxyName, senderNickname: convo.senderNickname, senderName: convo.senderProxyName)
         cell.lastMessageLabel.text = convo.message
         cell.timestampLabel.text = convo.timestamp.toTimeAgo()
         cell.unreadLabel.text = convo.unread.toNumberLabel()

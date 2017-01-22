@@ -106,7 +106,7 @@ class API {
         // Get url for icon in storage.
         getURL(forIcon: icon, completion: { (url) in
             guard let url = url else { return }
-                
+            
             // Get image from url.
             self.getUIImage(fromURL: url, completion: { (image) in
                 guard let image = image else {
@@ -125,7 +125,7 @@ class API {
         if let url = iconURLCache[icon] {
             completion(url)
             
-        // Else get url from storage.
+            // Else get url from storage.
         } else {
             let iconRef = storageRef.child(Path.Icons).child("\(icon).png")
             iconRef.downloadURL { (url, error) -> Void in
@@ -229,9 +229,9 @@ class API {
     }
     
     func blockReceiverInConvo(_ convo: Convo) {
-    
+        
         // Add receiver to sender's blocked list
-        let blockedUser = BlockedUser(id: convo.receiverId, icon: convo.icon, name: convo.receiverProxy, nickname: convo.receiverNickname)
+        let blockedUser = BlockedUser(id: convo.receiverId, icon: convo.icon, name: convo.receiverProxyKey, nickname: convo.receiverNickname)
         set(blockedUser.toAnyObject() as AnyObject, a: Path.Blocked, b: uid, c: convo.receiverId, d: nil)
         
         // Loop through sender's convos
@@ -243,15 +243,15 @@ class API {
                     
                     // Set senderIsBlocking to true for sender's versions
                     self.set(true as AnyObject, a: Path.Convos, b: _convo.senderId, c: _convo.key, d: Path.SenderIsBlocking)
-                    self.set(true as AnyObject, a: Path.Convos, b: _convo.senderProxy, c: _convo.key, d: Path.SenderIsBlocking)
+                    self.set(true as AnyObject, a: Path.Convos, b: _convo.senderProxyKey, c: _convo.key, d: Path.SenderIsBlocking)
                     
                     // Set receiverIsBlocking to true for receiver's versions
                     self.set(true as AnyObject, a: Path.Convos, b: _convo.receiverId, c: _convo.key, d: Path.ReceiverIsBlocking)
-                    self.set(true as AnyObject, a: Path.Convos, b: _convo.receiverProxy, c: _convo.key, d: Path.ReceiverIsBlocking)
-                
+                    self.set(true as AnyObject, a: Path.Convos, b: _convo.receiverProxyKey, c: _convo.key, d: Path.ReceiverIsBlocking)
+                    
                     // Decrement unreads by convo's unread
                     self.increment(-_convo.unread, a: Path.Unread, b: _convo.senderId, c: Path.Unread, d: nil)
-                    self.increment(-_convo.unread, a: Path.Proxies, b: _convo.senderId, c: _convo.senderProxy, d: Path.Unread)
+                    self.increment(-_convo.unread, a: Path.Proxies, b: _convo.senderId, c: _convo.senderProxyKey, d: Path.Unread)
                 }
             }
         }
@@ -265,13 +265,13 @@ class API {
                 if convo.receiverId == blockedUser {
                     
                     self.set(false as AnyObject, a: Path.Convos, b: convo.senderId, c: convo.key, d: Path.SenderIsBlocking)
-                    self.set(false as AnyObject, a: Path.Convos, b: convo.senderProxy, c: convo.key, d: Path.SenderIsBlocking)
+                    self.set(false as AnyObject, a: Path.Convos, b: convo.senderProxyKey, c: convo.key, d: Path.SenderIsBlocking)
                     
                     self.set(false as AnyObject, a: Path.Convos, b: convo.receiverId, c: convo.key, d: Path.ReceiverIsBlocking)
-                    self.set(false as AnyObject, a: Path.Convos, b: convo.receiverProxy, c: convo.key, d: Path.ReceiverIsBlocking)
+                    self.set(false as AnyObject, a: Path.Convos, b: convo.receiverProxyKey, c: convo.key, d: Path.ReceiverIsBlocking)
                     
                     self.increment(convo.unread, a: Path.Unread, b: convo.senderId, c: Path.Unread, d: nil)
-                    self.increment(convo.unread, a: Path.Proxies, b: convo.senderId, c: convo.senderProxy, d: Path.Unread)
+                    self.increment(convo.unread, a: Path.Proxies, b: convo.senderId, c: convo.senderProxyKey, d: Path.Unread)
                 }
             }
         }
@@ -294,7 +294,7 @@ class API {
             return
         }
         if proxyCount < 0 {
-            loadProxyCount({ 
+            loadProxyCount({
                 if self.proxyCount > 49 {
                     completion(nil)
                 } else {
@@ -335,49 +335,51 @@ class API {
     func tryCreating(proxy completion: @escaping (_ proxy: Proxy) -> Void) {
         
         // Create a global proxy and save it.
-        let uniqueKey = ref.child(Path.Proxies).childByAutoId().key
-        let key = proxyNameGenerator.generateProxyName()
-        let proxy = Proxy(key: key.lowercased(), ownerId: self.uid)
-        set(proxy.toAnyObject() as AnyObject, a: Path.Proxies, b: uniqueKey, c: nil, d: nil)
-        
-        // Get all global proxies with this name.
-        ref.child(Path.Proxies).queryOrdered(byChild: Path.Key).queryEqual(toValue: key.lowercased()).observeSingleEvent(of: .value, with: { (snapshot) in
+        let autoId = ref.child(Path.Proxies).childByAutoId().key
+        let name = proxyNameGenerator.generateProxyName()
+        let key = name.lowercased()
+        let proxy = Proxy(name: name, ownerId: self.uid)
+        ref.child(Path.Proxies).child(autoId).setValue(proxy.toAnyObject()) { (error, proxyRef) in
             
-            // If there's only one, we've got a unique proxy name.
-            if snapshot.childrenCount == 1 {
+            // Get all global proxies with this name.
+            self.ref.child(Path.Proxies).queryOrdered(byChild: Path.Key).queryEqual(toValue: key).observeSingleEvent(of: .value, with: { (snapshot) in
                 
-                // Stop trying to create a proxy.
-                self.isCreatingProxy = false
-                
-                // Re-save the global proxy by name instead of the Firebase key.
-                self.delete(Path.Proxies, b: uniqueKey, c: nil, d: nil)
-                self.set(proxy.toAnyObject() as AnyObject, a: Path.Proxies, b: key.lowercased(), c: nil, d: nil)
-                
-                // Create the user's copy of the proxy with a random icon.
-                let proxy = Proxy(key: key, ownerId: self.uid, icon: self.getRandomIcon())
-                
-                // Save the user's proxy.
-                self.set(proxy.toAnyObject() as AnyObject, a: Path.Proxies, b: self.uid, c: key, d: nil)
-                
-                // Increment proxyCount
-                self.updateProxyCount(1, completion: { 
-                    completion(proxy)
-                })
-            } else {
-                
-                // Else name is taken so delete the proxy you just created.
-                self.delete(Path.Proxies, b: uniqueKey, c: nil, d: nil)
-                
-                // Check if user has cancelled the process.
-                if self.isCreatingProxy {
+                // If there's only one, we've got a unique proxy name.
+                if snapshot.childrenCount == 1 {
                     
-                    // If not, try the process again.
-                    self.tryCreating(proxy: { (proxy) in
+                    // Stop trying to create a proxy.
+                    self.isCreatingProxy = false
+                    
+                    // Re-save the global proxy by name instead of the Firebase key.
+                    self.delete(Path.Proxies, b: autoId, c: nil, d: nil)
+                    self.set(proxy.toAnyObject() as AnyObject, a: Path.Proxies, b: key, c: nil, d: nil)
+                    
+                    // Create the user's copy of the proxy with a random icon.
+                    let proxy = Proxy(name: name, ownerId: self.uid, icon: self.getRandomIcon())
+                    
+                    // Save the user's proxy.
+                    self.set(proxy.toAnyObject() as AnyObject, a: Path.Proxies, b: self.uid, c: key, d: nil)
+                    
+                    // Increment proxyCount
+                    self.updateProxyCount(1, completion: {
                         completion(proxy)
                     })
+                } else {
+                    
+                    // Else name is taken so delete the proxy you just created.
+                    self.delete(Path.Proxies, b: autoId, c: nil, d: nil)
+                    
+                    // Check if user has cancelled the process.
+                    if self.isCreatingProxy {
+                        
+                        // If not, try the process again.
+                        self.tryCreating(proxy: { (proxy) in
+                            completion(proxy)
+                        })
+                    }
                 }
-            }
-        })
+            })
+        }
     }
     
     /// Stop trying to create a proxy.
@@ -385,23 +387,31 @@ class API {
         isCreatingProxy = false
     }
     
-    /// Returns the global Proxy with `key`.
+    /// Returns the Proxy with `key`.
     func getProxy(_ key: String, completion: @escaping (_ proxy: Proxy?) -> Void) {
         ref.child(Path.Proxies).child(key).observeSingleEvent(of: .value, with: { (snapshot) in
-            guard let proxy = Proxy(anyObject: snapshot.value! as AnyObject) else { return }
-            if proxy.key == "" {
+            guard let proxy = Proxy(anyObject: snapshot.value! as AnyObject) else {
                 completion(nil)
-            } else {
-                completion(proxy)
+                return
             }
+            self.getProxy(withKey: key, belongingToUser: proxy.ownerId, completion: { (proxy) in
+                if let proxy = proxy {
+                    completion(proxy)
+                } else {
+                    completion(nil)
+                }
+            })
         })
     }
     
     /// Returns the Proxy with `key` belonging to `user`.
-    func getProxy(withKey key: String, belongingToUser user: String, completion: @escaping (_ proxy: Proxy) -> Void) {
+    func getProxy(withKey key: String, belongingToUser user: String, completion: @escaping (_ proxy: Proxy?) -> Void) {
         ref.child(Path.Proxies).child(user).child(key).observeSingleEvent(of: .value, with: { (snapshot) in
-            guard let proxy = Proxy(anyObject: snapshot.value! as AnyObject) else { return }
-            completion(proxy)
+            if let proxy = Proxy(anyObject: snapshot.value! as AnyObject) {
+                completion(proxy)
+            } else {
+                completion(nil)
+            }
         })
     }
     
@@ -415,7 +425,7 @@ class API {
         getConvos(forProxy: proxy) { (convos) in
             for convo in convos {
                 self.set(nickname as AnyObject, a: Path.Convos, b: convo.senderId, c: convo.key, d: Path.SenderNickname)
-                self.set(nickname as AnyObject, a: Path.Convos, b: convo.senderProxy, c: convo.key, d: Path.SenderNickname)
+                self.set(nickname as AnyObject, a: Path.Convos, b: convo.senderProxyKey, c: convo.key, d: Path.SenderNickname)
             }
         }
     }
@@ -430,7 +440,7 @@ class API {
         getConvos(forProxy: proxy) { (convos) in
             for convo in convos {
                 self.set(icon as AnyObject, a: Path.Convos, b: convo.receiverId, c: convo.key, d: Path.Icon)
-                self.set(icon as AnyObject, a: Path.Convos, b: convo.receiverProxy, c: convo.key, d: Path.Icon)
+                self.set(icon as AnyObject, a: Path.Convos, b: convo.receiverProxyKey, c: convo.key, d: Path.Icon)
             }
         }
     }
@@ -460,11 +470,11 @@ class API {
             
             // Delete sender's convos
             self.delete(Path.Convos, b: convo.senderId, c: convo.key, d: nil)
-            self.delete(Path.Convos, b: convo.senderProxy, c: convo.key, d: nil)
+            self.delete(Path.Convos, b: convo.senderProxyKey, c: convo.key, d: nil)
             
             // Set convo to deleted for receiver convos
             self.set(true as AnyObject, a: Path.Convos, b: convo.receiverId, c: convo.key, d: Path.ReceiverDeletedProxy)
-            self.set(true as AnyObject, a: Path.Convos, b: convo.receiverProxy, c: convo.key, d: Path.ReceiverDeletedProxy)
+            self.set(true as AnyObject, a: Path.Convos, b: convo.receiverProxyKey, c: convo.key, d: Path.ReceiverDeletedProxy)
         }
     }
     
@@ -500,39 +510,39 @@ class API {
             let timestamp = Date().timeIntervalSince1970
             
             // Sender updates
-            self.set(timestamp as AnyObject, a: Path.Proxies, b: convo.senderId, c: convo.senderProxy, d: Path.Timestamp)
-            self.setConvoValuesOnMessageSend(convo.senderId, proxy: convo.senderProxy, convo: convo.key, message: "You: \(text)", timestamp: timestamp)
+            self.set(timestamp as AnyObject, a: Path.Proxies, b: convo.senderId, c: convo.senderProxyKey, d: Path.Timestamp)
+            self.setConvoValuesOnMessageSend(convo.senderId, proxy: convo.senderProxyKey, convo: convo.key, message: "You: \(text)", timestamp: timestamp)
             if convo.senderLeftConvo {
                 self.set(false as AnyObject, a: Path.Convos, b: convo.senderId, c: convo.key, d: Path.SenderLeftConvo)
-                self.set(false as AnyObject, a: Path.Convos, b: convo.senderProxy, c: convo.key, d: Path.SenderLeftConvo)
+                self.set(false as AnyObject, a: Path.Convos, b: convo.senderProxyKey, c: convo.key, d: Path.SenderLeftConvo)
                 self.set(false as AnyObject, a: Path.Convos, b: convo.receiverId, c: convo.key, d: Path.ReceiverLeftConvo)
-                self.set(false as AnyObject, a: Path.Convos, b: convo.receiverProxy, c: convo.key, d: Path.ReceiverLeftConvo)
-                self.increment(1, a: Path.Proxies, b: convo.senderId, c: convo.senderProxy, d: Path.Convos)
+                self.set(false as AnyObject, a: Path.Convos, b: convo.receiverProxyKey, c: convo.key, d: Path.ReceiverLeftConvo)
+                self.increment(1, a: Path.Proxies, b: convo.senderId, c: convo.senderProxyKey, d: Path.Convos)
             }
             self.increment(1, a: Path.MessagesSent, b: convo.senderId, c: Path.MessagesSent, d: nil)
             
             // Receiver updates
             if !convo.receiverDeletedProxy && !convo.receiverIsBlocking {
-                self.set(text as AnyObject, a: Path.Proxies, b: convo.receiverId, c: convo.receiverProxy, d: Path.Message)
-                self.set(timestamp as AnyObject, a: Path.Proxies, b: convo.receiverId, c: convo.receiverProxy, d: Path.Timestamp)
+                self.set(text as AnyObject, a: Path.Proxies, b: convo.receiverId, c: convo.receiverProxyKey, d: Path.Message)
+                self.set(timestamp as AnyObject, a: Path.Proxies, b: convo.receiverId, c: convo.receiverProxyKey, d: Path.Timestamp)
                 if receiverIsPresent {
-                    self.increment(1, a: Path.Proxies, b: convo.receiverId, c: convo.receiverProxy, d: Path.Unread)
+                    self.increment(1, a: Path.Proxies, b: convo.receiverId, c: convo.receiverProxyKey, d: Path.Unread)
                     self.increment(1, a: Path.Unread, b: convo.receiverId, c: Path.Unread, d: nil)
                 }
             }
             if !convo.receiverDeletedProxy {
-                self.setConvoValuesOnMessageSend(convo.receiverId, proxy: convo.receiverProxy, convo: convo.key, message: text, timestamp: timestamp)
+                self.setConvoValuesOnMessageSend(convo.receiverId, proxy: convo.receiverProxyKey, convo: convo.key, message: text, timestamp: timestamp)
                 if receiverIsPresent {
                     self.increment(1, a: Path.Convos, b: convo.receiverId, c: convo.key, d: Path.Unread)
-                    self.increment(1, a: Path.Convos, b: convo.receiverProxy, c: convo.key, d: Path.Unread)
+                    self.increment(1, a: Path.Convos, b: convo.receiverProxyKey, c: convo.key, d: Path.Unread)
                 }
             }
             if convo.receiverLeftConvo {
                 self.set(false as AnyObject, a: Path.Convos, b: convo.senderId, c: convo.key, d: Path.ReceiverLeftConvo)
-                self.set(false as AnyObject, a: Path.Convos, b: convo.senderProxy, c: convo.key, d: Path.ReceiverLeftConvo)
+                self.set(false as AnyObject, a: Path.Convos, b: convo.senderProxyKey, c: convo.key, d: Path.ReceiverLeftConvo)
                 self.set(false as AnyObject, a: Path.Convos, b: convo.receiverId, c: convo.key, d: Path.SenderLeftConvo)
-                self.set(false as AnyObject, a: Path.Convos, b: convo.receiverProxy, c: convo.key, d: Path.SenderLeftConvo)
-                self.increment(1, a: Path.Proxies, b: convo.receiverId, c: convo.receiverProxy, d: Path.Convos)
+                self.set(false as AnyObject, a: Path.Convos, b: convo.receiverProxyKey, c: convo.key, d: Path.SenderLeftConvo)
+                self.increment(1, a: Path.Proxies, b: convo.receiverId, c: convo.receiverProxyKey, d: Path.Convos)
             }
             self.increment(1, a: Path.MessagesReceived, b: convo.receiverId, c: Path.MessagesReceived, d: nil)
             
@@ -589,27 +599,31 @@ class API {
             // Set up sender side
             senderConvo.key = convoKey
             senderConvo.senderId = sender.ownerId
-            senderConvo.senderProxy = sender.key
+            senderConvo.senderProxyKey = sender.key
+            senderConvo.senderProxyName = sender.name
             senderConvo.receiverId = receiver.ownerId
-            senderConvo.receiverProxy = receiver.key
+            senderConvo.receiverProxyKey = receiver.key
+            senderConvo.receiverProxyName = receiver.name
             senderConvo.icon = receiver.icon
             senderConvo.receiverIsBlocking = senderBlocked
             let senderConvoAnyObject = senderConvo.toAnyObject()
             self.set(senderConvoAnyObject as AnyObject, a: Path.Convos, b: senderConvo.senderId, c: senderConvo.key, d: nil)
-            self.set(senderConvoAnyObject as AnyObject, a: Path.Convos, b: senderConvo.senderProxy, c: senderConvo.key, d: nil)
+            self.set(senderConvoAnyObject as AnyObject, a: Path.Convos, b: senderConvo.senderProxyKey, c: senderConvo.key, d: nil)
             self.increment(1, a: Path.ProxiesInteractedWith, b: sender.ownerId, c: Path.ProxiesInteractedWith, d: nil)
             
             // Set up receiver side
             receiverConvo.key = convoKey
             receiverConvo.senderId = receiver.ownerId
-            receiverConvo.senderProxy = receiver.key
+            receiverConvo.senderProxyKey = receiver.key
+            receiverConvo.senderProxyName = receiver.name
             receiverConvo.receiverId = sender.ownerId
-            receiverConvo.receiverProxy = sender.key
+            receiverConvo.receiverProxyKey = sender.key
+            receiverConvo.receiverProxyName = sender.name
             receiverConvo.icon = sender.icon
             receiverConvo.senderIsBlocking = senderBlocked
             let receiverConvoAnyObject = receiverConvo.toAnyObject()
             self.set(receiverConvoAnyObject as AnyObject, a: Path.Convos, b: receiverConvo.senderId, c: receiverConvo.key, d: nil)
-            self.set(receiverConvoAnyObject as AnyObject, a: Path.Convos, b: receiverConvo.senderProxy, c: receiverConvo.key, d: nil)
+            self.set(receiverConvoAnyObject as AnyObject, a: Path.Convos, b: receiverConvo.senderProxyKey, c: receiverConvo.key, d: nil)
             self.increment(1, a: Path.ProxiesInteractedWith, b: receiver.ownerId, c: Path.ProxiesInteractedWith, d: nil)
             
             completion(senderConvo)
@@ -654,8 +668,8 @@ class API {
     func getConvos(fromSnapshot snapshot: FIRDataSnapshot) -> [Convo]? {
         var convos = [Convo]()
         for child in snapshot.children {
-            guard let convo = Convo(anyObject: (child as! FIRDataSnapshot).value as AnyObject) else { return nil }
-            if !convo.senderLeftConvo && !convo.senderIsBlocking {
+            if let convo = Convo(anyObject: (child as! FIRDataSnapshot).value as AnyObject),
+                !convo.senderLeftConvo && !convo.senderIsBlocking {
                 convos.append(convo)
             }
         }
@@ -686,7 +700,7 @@ class API {
     /// (Only the sender sees this nickname).
     func set(nickname: String, forReceiverInConvo convo: Convo) {
         set(nickname as AnyObject, a: Path.Convos, b: convo.senderId, c: convo.key, d: Path.ReceiverNickname)
-        set(nickname as AnyObject, a: Path.Convos, b: convo.senderProxy, c: convo.key, d: Path.ReceiverNickname)
+        set(nickname as AnyObject, a: Path.Convos, b: convo.senderProxyKey, c: convo.key, d: Path.ReceiverNickname)
     }
     
     /// Returns a Bool indicating whether or not `user` is currently in `convo`.
@@ -699,13 +713,13 @@ class API {
     /// Leaves a convo.
     func leave(convo: Convo) {
         set(true as AnyObject, a: Path.Convos, b: convo.senderId, c: convo.key, d: Path.SenderLeftConvo)
-        set(true as AnyObject, a: Path.Convos, b: convo.senderProxy, c: convo.key, d: Path.SenderLeftConvo)
+        set(true as AnyObject, a: Path.Convos, b: convo.senderProxyKey, c: convo.key, d: Path.SenderLeftConvo)
         set(true as AnyObject, a: Path.Convos, b: convo.receiverId, c: convo.key, d: Path.ReceiverLeftConvo)
-        set(true as AnyObject, a: Path.Convos, b: convo.receiverProxy, c: convo.key, d: Path.ReceiverLeftConvo)
+        set(true as AnyObject, a: Path.Convos, b: convo.receiverProxyKey, c: convo.key, d: Path.ReceiverLeftConvo)
         set(0 as AnyObject, a: Path.Convos, b: convo.senderId, c: convo.key, d: Path.Unread)
-        set(0 as AnyObject, a: Path.Convos, b: convo.senderProxy, c: convo.key, d: Path.Unread)
-        increment(-1, a: Path.Proxies, b: convo.senderId, c: convo.senderProxy, d: Path.Convos)
+        set(0 as AnyObject, a: Path.Convos, b: convo.senderProxyKey, c: convo.key, d: Path.Unread)
+        increment(-1, a: Path.Proxies, b: convo.senderId, c: convo.senderProxyKey, d: Path.Convos)
         increment(-convo.unread, a: Path.Unread, b: convo.senderId, c: Path.Unread, d: nil)
-        increment(-convo.unread, a: Path.Proxies, b: convo.senderId, c: convo.senderProxy, d: Path.Unread)
+        increment(-convo.unread, a: Path.Proxies, b: convo.senderId, c: convo.senderProxyKey, d: Path.Unread)
     }
 }

@@ -30,8 +30,9 @@ class SenderPickerTableViewController: UITableViewController {
         
         api.ref.child(Path.Proxies).child(api.uid).queryOrdered(byChild: Path.Timestamp).observeSingleEvent(of: .value, with: { snapshot in
             for child in snapshot.children {
-                guard let proxy = Proxy(anyObject: (child as! FIRDataSnapshot).value as AnyObject) else { return }
-                self.proxies.append(proxy)
+                if let proxy = Proxy(anyObject: (child as! FIRDataSnapshot).value as AnyObject) {
+                    self.proxies.append(proxy)
+                }
             }
             self.proxies = self.proxies.reversed()
             self.tableView.reloadData()
@@ -83,7 +84,7 @@ class SenderPickerTableViewController: UITableViewController {
             cell.iconImageView.kf.setImage(with: url, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
         }
         
-        cell.nameLabel.text = proxy.key
+        cell.nameLabel.text = proxy.name
         cell.nicknameLabel.text = proxy.nickname
         cell.convoCountLabel.text = proxy.convos.toNumberLabel()
         cell.unreadLabel.text = proxy.unread.toNumberLabel()

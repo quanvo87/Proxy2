@@ -9,6 +9,7 @@
 struct Proxy {
     
     var key = ""
+    var name = ""
     var ownerId = ""
     var icon = ""
     var nickname = ""
@@ -20,13 +21,15 @@ struct Proxy {
     
     init() {}
     
-    init(key: String, ownerId: String) {
-        self.key = key
+    init(name: String, ownerId: String) {
+        self.key = name.lowercased()
+        self.name = name
         self.ownerId = ownerId
     }
     
-    init(key: String, ownerId: String, icon: String) {
-        self.key = key
+    init(name: String, ownerId: String, icon: String) {
+        self.key = name.lowercased()
+        self.name = name
         self.ownerId = ownerId
         self.icon = icon
     }
@@ -34,6 +37,7 @@ struct Proxy {
     init?(anyObject: AnyObject) {
         if
             let key = anyObject["key"] as? String,
+            let name = anyObject["name"] as? String,
             let ownerId = anyObject["ownerId"] as? String,
             let icon = anyObject["icon"] as? String,
             let nickname = anyObject["nickname"] as? String,
@@ -43,6 +47,7 @@ struct Proxy {
             let convos = anyObject["convos"] as? Int,
             let unread = anyObject["unread"] as? Int {
             self.key = key
+            self.name = name
             self.ownerId = ownerId
             self.icon = icon
             self.nickname = nickname
@@ -59,6 +64,7 @@ struct Proxy {
     func toAnyObject() -> Any {
         return [
             "key": key,
+            "name": name,
             "ownerId": ownerId,
             "icon": icon,
             "nickname": nickname,

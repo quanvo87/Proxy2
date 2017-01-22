@@ -86,8 +86,9 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
         proxiesRefHandle = proxiesRef.queryOrdered(byChild: Path.Timestamp).observe(.value, with: { snapshot in
             var proxies = [Proxy]()
             for child in snapshot.children {
-                guard let proxy = Proxy(anyObject: (child as! FIRDataSnapshot).value as AnyObject) else { return }
-                proxies.append(proxy)
+                if let proxy = Proxy(anyObject: (child as! FIRDataSnapshot).value as AnyObject) {
+                    proxies.append(proxy)
+                }
             }
             self.proxies = proxies.reversed()
             self.tableView.reloadData()
@@ -200,7 +201,7 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
         let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.ProxyCell, for: indexPath as IndexPath) as! ProxyCell
         let proxy = proxies[indexPath.row]
         
-        // Set 'new' image
+        // 'New' image
         cell.newImageView.isHidden = true
         let secondsAgo = -Date(timeIntervalSince1970: proxy.created).timeIntervalSinceNow
         if secondsAgo < 60 * Settings.NewProxyIndicatorDuration {
@@ -208,7 +209,7 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
         }
         cell.contentView.bringSubview(toFront: cell.newImageView)
         
-        // Set icon
+        // Icon
         cell.iconImageView.image = nil
         cell.iconImageView.kf.indicatorType = .activity
         api.getURL(forIcon: proxy.icon) { (url) in
@@ -216,8 +217,8 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
             cell.iconImageView.kf.setImage(with: url, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
         }
         
-        // Set labels
-        cell.nameLabel.text = proxy.key
+        // Labels
+        cell.nameLabel.text = proxy.name
         cell.nicknameLabel.text = proxy.nickname
         cell.convoCountLabel.text = proxy.convos.toNumberLabel()
         cell.unreadLabel.text = proxy.unread.toNumberLabel()

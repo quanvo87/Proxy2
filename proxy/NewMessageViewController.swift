@@ -91,11 +91,11 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderPick
     }
     
     func setSelectSenderButtonTitle() {
-        selectSenderButton.setTitle(sender!.key, for: .normal)
+        selectSenderButton.setTitle(sender!.name, for: .normal)
     }
     
     func setSelectReceiverButtonTitle() {
-        selectReceiverButton.setTitle(receiver?.key, for: .normal)
+        selectReceiverButton.setTitle(receiver?.name, for: .normal)
     }
     
     @IBAction func showSelectSenderTableViewController() {

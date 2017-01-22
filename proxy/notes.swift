@@ -1,4 +1,7 @@
 /*
+ 
+ make proxy count ping data base every time rather than keep track.
+ 
  - swift 3 conventions
  - make everything as power efficient as possible
  - function naming consistency (gotoview vs showview, etc) (try to copy apple)
