@@ -191,7 +191,7 @@ class ConvoInfoTableViewController: UITableViewController {
             cell.nameLabel.text = convo.receiverProxyName
             cell.nicknameButton.setTitle(receiverNickname == "" ? "Enter A Nickname" : receiverNickname, for: .normal)
             cell.nicknameButton.addTarget(self, action: #selector(ConvoInfoTableViewController.editReceiverNickname), for: .touchUpInside)
-            cell.iconImageView = nil
+            cell.iconImageView.image = nil
             cell.iconImageView.kf.indicatorType = .activity
             cell.iconImageView.kf.setImage(with: receiverIconURL, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
             cell.selectionStyle = .none
@@ -203,7 +203,7 @@ class ConvoInfoTableViewController: UITableViewController {
             cell.nameLabel.text = convo.senderProxyName
             cell.nicknameButton.setTitle(senderNickname == "" ? "Enter A Nickname" : senderNickname, for: .normal)
             cell.nicknameButton.addTarget(self, action: #selector(ConvoInfoTableViewController.editSenderNickname), for: .touchUpInside)
-            cell.iconImageView = nil
+            cell.iconImageView.image = nil
             cell.iconImageView.kf.indicatorType = .activity
             cell.iconImageView.kf.setImage(with: senderIconURL, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
             cell.changeIconButton.addTarget(self, action: #selector(ConvoInfoTableViewController.goToIconPicker), for: .touchUpInside)
