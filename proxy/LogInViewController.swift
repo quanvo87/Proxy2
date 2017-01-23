@@ -6,6 +6,7 @@
 //  Copyright © 2016 Quan Vo. All rights reserved.
 //
 
+import AVFoundation
 import FacebookLogin
 import FirebaseAuth
 import FirebaseDatabase
@@ -19,22 +20,26 @@ class LogInViewController: UIViewController {
     @IBOutlet weak var facebookButton: UIButton!
     
     let api = API.sharedInstance
+    var player: AVPlayer?
     var bottomConstraintConstant: CGFloat = 0.0
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        let videoNames = ["arabiangulf", "beachpalm", "dragontailzipline", "hawaiiancoast"]
-//        let videoNamesCount = UInt32(videoNames.count)
-//        let random = Int(arc4random_uniform(videoNamesCount))
-//        let url = URL(fileURLWithPath: Bundle.main.path(forResource: videoNames[random], ofType: "mp4")!)
-//        self.alpha = 0.9
-//        self.alwaysRepeat = true
-//        self.contentURL = url
-//        self.fillMode = .resizeAspectFill
-//        self.restartForeground = true
-//        self.sound = false
-//        self.videoFrame = view.frame
+        let videoNames = ["arabiangulf", "beachpalm", "dragontailzipline", "hawaiiancoast"]
+        let random = Int(arc4random_uniform(UInt32(videoNames.count)))
+        let url = URL(fileURLWithPath: Bundle.main.path(forResource: videoNames[random], ofType: "mp4")!)
+        player = AVPlayer(url: url)
+        player?.actionAtItemEnd = .none
+        player?.isMuted = true
+        let playerLayer = AVPlayerLayer(player: player)
+        playerLayer.frame = view.frame
+        playerLayer.opacity = 0.9
+        playerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+        playerLayer.zPosition = -1
+        view.layer.addSublayer(playerLayer)
+        player?.play()
+        NotificationCenter.default.addObserver(self, selector: #selector(LogInViewController.loopVideo), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
         
         emailTextField.clearButtonMode = .whileEditing
         passwordTextField.clearButtonMode = .whileEditing
@@ -54,6 +59,11 @@ class LogInViewController: UIViewController {
         facebookButton.layer.borderWidth = 1
         facebookButton.layer.cornerRadius = 5
         facebookButton.setTitleColor(UIColor.white, for: UIControlState())
+    }
+    
+    func loopVideo() {
+        player?.seek(to: kCMTimeZero)
+        player?.play()
     }
     
     @IBAction func logIn(_ sender: AnyObject) {
