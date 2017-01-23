@@ -45,7 +45,7 @@ class ConvoInfoTableViewController: UITableViewController {
             self.senderProxy = proxy
         }
         
-        receiverIconRef = api.ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.Icon)
+        receiverIconRef = api.ref.child(Path.Proxies).child(convo.receiverId).child(convo.receiverProxyKey).child(Path.Icon)
         receiverNicknameRef = api.ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.ReceiverNickname)
         senderIconRef = api.ref.child(Path.Proxies).child(convo.senderId).child(convo.senderProxyKey).child(Path.Icon)
         senderNicknameRef = api.ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderNickname)
