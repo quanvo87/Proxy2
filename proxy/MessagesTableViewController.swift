@@ -72,24 +72,24 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
         tableView.rowHeight = 80
         tableView.separatorStyle = .none
         
-        FIRAuth.auth()?.addStateDidChangeListener { (auth, user) in
-            if let user = user {
-                self.api.uid = user.uid
-                self.observeUnread()
-                self.observeConvos()
-            } else {
-                let dest = self.storyboard!.instantiateViewController(withIdentifier: Identifiers.LogInViewController) as! LogInViewController
-                let appDelegate = UIApplication.shared.delegate as! AppDelegate
-                appDelegate.window?.rootViewController = dest
-            }
-        }
-        
         let items = self.tabBarController?.tabBar.items
         let size = CGSize(width: 30, height: 30)
         let isAspectRatio = true
         items![0].image = UIImage(named: "messages-tab")?.resize(toNewSize: size, isAspectRatio: isAspectRatio)
         items![1].image = UIImage(named: "proxies-tab")?.resize(toNewSize: size, isAspectRatio: isAspectRatio)
         items![2].image = UIImage(named: "me-tab")?.resize(toNewSize: size, isAspectRatio: isAspectRatio)
+        
+        FIRAuth.auth()?.addStateDidChangeListener { (auth, user) in
+            guard let user = user else {
+                let dest = self.storyboard!.instantiateViewController(withIdentifier: Identifiers.LogInViewController) as! LogInViewController
+                let appDelegate = UIApplication.shared.delegate as! AppDelegate
+                appDelegate.window?.rootViewController = dest
+                return
+            }
+            self.api.uid = user.uid
+            self.observeUnread()
+            self.observeConvos()
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -106,28 +106,6 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
     deinit {
         unreadRef.removeObserver(withHandle: unreadRefHandle)
         convosRef.removeObserver(withHandle: convosRefHandle)
-    }
-    
-    func observeUnread() {
-        unreadRef = api.ref.child(Path.Unread).child(api.uid).child(Path.Unread)
-        unreadRefHandle = unreadRef.observe(.value, with: { (snapshot) in
-            if let unread = snapshot.value as? Int {
-                self.navigationItem.title = "Messages \(unread.toTitleSuffix())"
-                self.tabBarController?.tabBar.items?.first?.badgeValue = unread == 0 ? nil : String(unread)
-            } else {
-                self.navigationItem.title = "Messages"
-                self.tabBarController?.tabBar.items?.first?.badgeValue = nil
-            }
-        })
-    }
-    
-    func observeConvos() {
-        convosRef = api.ref.child(Path.Convos).child(api.uid)
-        convosRefHandle = convosRef.queryOrdered(byChild: Path.Timestamp).observe(.value, with: { (snapshot) in
-            guard let convos = self.api.getConvos(fromSnapshot: snapshot) else { return }
-            self.convos = convos
-            self.tableView.reloadData()
-        })
     }
     
     func setDefaultButtons() {
@@ -179,6 +157,27 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
             NotificationCenter.default.post(name: Notification.Name(rawValue: Notifications.CreatedNewProxyFromHomeTab), object: nil)
             self.tabBarController?.selectedIndex = 1
         }
+    }
+    
+    func observeUnread() {
+        unreadRef = api.ref.child(Path.Unread).child(api.uid).child(Path.Unread)
+        unreadRefHandle = unreadRef.observe(.value, with: { (snapshot) in
+            if let unread = snapshot.value as? Int {
+                self.navigationItem.title = "Messages \(unread.toTitleSuffix())"
+                self.tabBarController?.tabBar.items?.first?.badgeValue = unread == 0 ? nil : String(unread)
+            } else {
+                self.navigationItem.title = "Messages"
+                self.tabBarController?.tabBar.items?.first?.badgeValue = nil
+            }
+        })
+    }
+    
+    func observeConvos() {
+        convosRef = api.ref.child(Path.Convos).child(api.uid)
+        convosRefHandle = convosRef.queryOrdered(byChild: Path.Timestamp).observe(.value, with: { (snapshot) in
+            self.convos = self.api.getConvos(fromSnapshot: snapshot)
+            self.tableView.reloadData()
+        })
     }
     
     func goToNewMessage() {

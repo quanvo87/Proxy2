@@ -116,14 +116,23 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     func setUp() {
         names[convo.senderId] = convo.senderProxyName
         names[convo.receiverId] = convo.receiverProxyName
+        
         setTitle()
+        
+        let infoButton = UIButton(type: .custom)
+        infoButton.setImage(UIImage(named: "info.png"), for: UIControlState())
+        infoButton.addTarget(self, action: #selector(ConvoViewController.showConvoInfoTableViewController), for: UIControlEvents.touchUpInside)
+        infoButton.frame = CGRect(x: 0, y: 0, width: 25, height: 25)
+        navigationItem.rightBarButtonItem =  UIBarButtonItem(customView: infoButton)
         navigationController!.view.backgroundColor = UIColor.white
-        navigationItem.rightBarButtonItem = createInfoButton()
+        
         collectionView?.collectionViewLayout.incomingAvatarViewSize = CGSize(width: kJSQMessagesCollectionViewAvatarSizeDefault, height:kJSQMessagesCollectionViewAvatarSizeDefault)
         collectionView?.collectionViewLayout.outgoingAvatarViewSize = CGSize(width: kJSQMessagesCollectionViewAvatarSizeDefault, height:kJSQMessagesCollectionViewAvatarSizeDefault)
         collectionView.contentInset.bottom = 0
+        
         senderId = convo.senderId
         senderDisplayName = ""
+        
         messagesRef = ref.child(Path.Messages).child(convo.key)
         senderIconRef = ref.child(Path.Proxies).child(convo.senderId).child(convo.senderProxyKey).child(Path.Icon)
         receiverIconRef = ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.Icon)
@@ -134,14 +143,6 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     
     func setTitle() {
         navigationItem.title = names[convo.receiverId]
-    }
-    
-    func createInfoButton() -> UIBarButtonItem {
-        let infoButton = UIButton(type: .custom)
-        infoButton.setImage(UIImage(named: "info.png"), for: UIControlState())
-        infoButton.addTarget(self, action: #selector(ConvoViewController.showConvoInfoTableViewController), for: UIControlEvents.touchUpInside)
-        infoButton.frame = CGRect(x: 0, y: 0, width: 25, height: 25)
-        return UIBarButtonItem(customView: infoButton)
     }
     
     func setUpBubbles() {
@@ -239,7 +240,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
                 self.finishReceivingMessage()
                 
                 // Get the image from `mediaURL`.
-                guard let url = URL(string: message.mediaURL) else { break }
+                guard let url = URL(string: message.mediaURL) else { return }
                 self.api.getUIImage(fromURL: url, completion: { (image) in
                     
                     // Load the image to the cell.
@@ -281,7 +282,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
             case "video":
                 
                 // Build JSQVideoMediaItem.
-                guard let mediaURL = URL(string: message.mediaURL) else { break }
+                guard let mediaURL = URL(string: message.mediaURL) else { return }
                 let media = JSQVideoMediaItem(fileURL: mediaURL, isReadyToPlay: true)
                 media?.appliesMediaViewMaskAsOutgoing = message.senderId == self.senderId
                 
@@ -308,6 +309,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
                     }
                 }
             } else {
+                
                 // Keep track of the last message you sent.
                 self.readReceiptIndex = self.messages.count - 1
                 
@@ -391,6 +393,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     }
     
     func observeTyping() {
+        
         // Stop monitoring user's typing when they disconnect.
         userIsTypingRef = ref.child(Path.Typing).child(convo.key).child(convo.senderId).child(Path.Typing)
         userIsTypingRef.onDisconnectRemoveValue()
@@ -609,16 +612,12 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     override func didPressAccessoryButton(_ sender: UIButton!) {
         self.inputToolbar.contentView!.textView!.resignFirstResponder()
         let alert = UIAlertController(title: "Send:", message: nil, preferredStyle: .actionSheet)
-        
-        // Send photo/video
         alert.addAction(UIAlertAction(title: "Photo 📸 / Video 🎥", style: .default, handler: { action in
-            // Show Fusuma, our VC that can handle camera, photos, and video.
             let fusuma = FusumaViewController()
             fusuma.delegate = self
             fusuma.hasVideo = true
             self.present(fusuma, animated: true, completion: nil)
         }))
-        
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }

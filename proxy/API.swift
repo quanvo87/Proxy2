@@ -633,7 +633,7 @@ class API {
     
     /// Returns an array of Convo's from `snapshot`.
     /// Filters out Convo's that should not be shown.
-    func getConvos(fromSnapshot snapshot: FIRDataSnapshot) -> [Convo]? {
+    func getConvos(fromSnapshot snapshot: FIRDataSnapshot) -> [Convo] {
         var convos = [Convo]()
         for child in snapshot.children {
             if let convo = Convo(anyObject: (child as! FIRDataSnapshot).value as AnyObject),

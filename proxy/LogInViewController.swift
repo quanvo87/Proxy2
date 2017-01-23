@@ -34,7 +34,7 @@ class LogInViewController: UIViewController {
         player?.isMuted = true
         let playerLayer = AVPlayerLayer(player: player)
         playerLayer.frame = view.frame
-        playerLayer.opacity = 0.9
+        playerLayer.opacity = 0.95
         playerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
         playerLayer.zPosition = -1
         view.layer.addSublayer(playerLayer)
@@ -128,8 +128,8 @@ class LogInViewController: UIViewController {
                         if !snapshot.hasChildren() {
                             self.api.setDefaultIcons(forUser: user!)
                         }
+                        self.showHomeScreen()
                     })
-                    self.showHomeScreen()
                 }
             }
         }

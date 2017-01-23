@@ -1,7 +1,7 @@
 /*
- 
- - swift 3 conventions
+ - code review - make sure i'm using guard statements correctly
  - make everything as power efficient as possible
+ - swift 3 conventions
  - function naming consistency (gotoview vs showview, etc) (try to copy apple)
  - names of storyboard elements
  - test blocking users
