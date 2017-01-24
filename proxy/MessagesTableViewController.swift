@@ -137,7 +137,7 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
             self.tableView.setEditing(false, animated: true)
             self.setDefaultButtons()
             for convo in self.convosToLeave {
-                self.api.leave(convo: convo)
+                self.api.leaveConvo(convo)
             }
             self.convosToLeave = []
         }))
@@ -147,7 +147,7 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
     
     func createNewProxy() {
         navigationItem.rightBarButtonItems![1].isEnabled = false
-        api.create { (proxy) in
+        api.createProxy { (proxy) in
             self.navigationItem.rightBarButtonItems![1].isEnabled = true
             guard proxy != nil else {
                 self.showAlert("Cannot Exceed 50 Proxies", message: "Delete some proxies and try again!")
@@ -174,7 +174,7 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
     func observeConvos() {
         convosRef = api.ref.child(Path.Convos).child(api.uid)
         convosRefHandle = convosRef.queryOrdered(byChild: Path.Timestamp).observe(.value, with: { (snapshot) in
-            self.convos = self.api.getConvos(fromSnapshot: snapshot)
+            self.convos = self.api.getConvos(from: snapshot)
             self.tableView.reloadData()
         })
     }
@@ -224,7 +224,7 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
         
         cell.iconImageView.image = nil
         cell.iconImageView.kf.indicatorType = .activity
-        api.getURL(forIcon: convo.icon) { (url) in
+        api.getURL(forIconName: convo.icon) { (url) in
             cell.iconImageView.kf.setImage(with: url, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
         }
         

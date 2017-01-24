@@ -78,7 +78,7 @@ class BlockedUsersTableViewController: UITableViewController {
         
         cell.iconImageView.image = nil
         cell.iconImageView.kf.indicatorType = .activity
-        api.getURL(forIcon: blockedUser.icon) { (url) in
+        api.getURL(forIconName: blockedUser.icon) { (url) in
             cell.iconImageView.kf.setImage(with: url, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
         }
         

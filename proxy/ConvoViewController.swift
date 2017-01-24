@@ -218,7 +218,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
                     guard let url = URL(string: snapshot.value as! String), url.absoluteString != "" else { return }
                     
                     // Get the image from `mediaURL`.
-                    self.api.getUIImage(fromURL: url, completion: { (image) in
+                    self.api.getUIImage(from: url, completion: { (image) in
                         
                         // Load the image to the cell.
                         (_message.media as! JSQPhotoMediaItem).image = image
@@ -241,7 +241,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
                 
                 // Get the image from `mediaURL`.
                 guard let url = URL(string: message.mediaURL) else { return }
-                self.api.getUIImage(fromURL: url, completion: { (image) in
+                self.api.getUIImage(from: url, completion: { (image) in
                     
                     // Load the image to the cell.
                     (_message.media as! JSQPhotoMediaItem).image = image
@@ -303,7 +303,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
             if message.senderId != self.senderId {
                 if !message.read {
                     if self.senderIsPresent {
-                        self.api.setRead(forMessage: message, forUser: self.convo.senderId, forProxy: self.convo.senderProxyKey)
+                        self.api.setRead(for: message, forProxyKey: self.convo.senderProxyKey, belongingToUserId: self.convo.senderId)
                     } else {
                         self.unreadMessages.append(message)
                     }
@@ -341,7 +341,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     // Mark messages as read for incoming messages that came in while convo was open but not on screen.
     func readMessages() {
         for message in unreadMessages {
-            api.setRead(forMessage: message, forUser: self.convo.senderId, forProxy: self.convo.senderProxyKey)
+            api.setRead(for: message, forProxyKey: self.convo.senderProxyKey, belongingToUserId: self.convo.senderId)
         }
         unreadMessages = []
     }
@@ -350,7 +350,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     func observeSenderIcon() {
         senderIconRefHandle = senderIconRef.observe(.value, with: { (snapshot) in
             if let icon = snapshot.value as? String {
-                self.api.getUIImage(forIcon: icon, completion: { (image) in
+                self.api.getUIImage(forIconName: icon, completion: { (image) in
                     self.icons[self.convo.senderId] = JSQMessagesAvatarImage(placeholder: image)
                     self.collectionView.reloadData()
                 })
@@ -362,7 +362,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     func observeReceiverIcon() {
         receiverIconRefHandle = receiverIconRef.observe(.value, with: { (snapshot) in
             if let icon = snapshot.value as? String {
-                self.api.getUIImage(forIcon: icon, completion: { (image) in
+                self.api.getUIImage(forIconName: icon, completion: { (image) in
                     self.icons[self.convo.receiverId] = JSQMessagesAvatarImage(placeholder: image)
                     self.collectionView.reloadData()
                 })
@@ -598,9 +598,9 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     
     // Write message to database.
     override func didPressSend(_ button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: Date!) {
-        api.getConvo(withKey: convo.key, belongingToUser: convo.senderId, completion: { (convo) in
+        api.getConvo(withKey: convo.key, belongingToUserId: convo.senderId, completion: { (convo) in
             self.convo = convo
-            self.api.sendMessage(withText: text, withMediaType: "", usingSenderConvo: convo) { (convo, message) in
+            self.api.sendMessage(text: text, mediaType: "", convo: convo) { (convo, message) in
                 self.finishedWritingMessage()
             }
         })
@@ -653,19 +653,19 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     }
     
     func send(image: UIImage) {
-        api.getConvo(withKey: convo.key, belongingToUser: convo.senderId, completion: { (convo) in
+        api.getConvo(withKey: convo.key, belongingToUserId: convo.senderId, completion: { (convo) in
             self.convo = convo
             
             // First send a placeholder message that displays a loading indicator.
-            self.api.sendMessage(withText: "[Photo 📸]", withMediaType: "imagePlaceholder", usingSenderConvo: self.convo) { (convo, message) in
+            self.api.sendMessage(text: "[Photo 📸]", mediaType: "imagePlaceholder", convo: self.convo) { (convo, message) in
                 self.finishSendingMessage()
                 
                 // Then upload the image to storage.
-                self.api.upload(image: image, completion: { (url) in
+                self.api.upload(image, completion: { (url) in
                     
                     // The upload returns the URL to the image we just uploaded.
                     // Update the placeholder message with this info.
-                    self.api.setMedia(forMessage: message, mediaType: "image", mediaURL: url.absoluteString)
+                    self.api.setMedia(for: message, mediaType: "image", mediaURL: url.absoluteString)
                     self.finishedWritingMessage()
                 })
             }
@@ -673,19 +673,19 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     }
     
     func send(videoWithURL url: URL) {
-        api.getConvo(withKey: convo.key, belongingToUser: convo.senderId, completion: { (convo) in
+        api.getConvo(withKey: convo.key, belongingToUserId: convo.senderId, completion: { (convo) in
             self.convo = convo
             
             // First send a placeholder message that displays a loading indicator.
-            self.api.sendMessage(withText: "[Video 🎥]", withMediaType: "videoPlaceholder", usingSenderConvo: self.convo) { (convo, message) in
+            self.api.sendMessage(text: "[Video 🎥]", mediaType: "videoPlaceholder", convo: self.convo) { (convo, message) in
                 self.finishSendingMessage()
                 
                 // Then upload the image to storage.
-                self.api.uploadVideo(fromURL: url, completion: { (url) in
+                self.api.uploadVideo(from: url, completion: { (url) in
                     
                     // The upload returns the URL to the image we just uploaded.
                     // Update the placeholder message with this info.
-                    self.api.setMedia(forMessage: message, mediaType: "video", mediaURL: url.absoluteString)
+                    self.api.setMedia(for: message, mediaType: "video", mediaURL: url.absoluteString)
                     self.finishedWritingMessage()
                 })
             }

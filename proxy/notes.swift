@@ -1,5 +1,5 @@
 /*
- - code review - make sure i'm using guard statements correctly
+ 
  - swift 3 conventions
  - function naming consistency (gotoview vs showview, etc) (try to copy apple)
  - names of storyboard elements

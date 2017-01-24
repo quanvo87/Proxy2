@@ -107,12 +107,12 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderPick
     @IBAction func tapNewButton() {
         disableButtons()
         if usingNewProxy {
-            api.delete(proxy: sender!)
-            api.create(proxy: { (proxy) in
+            api.deleteProxy(sender!)
+            api.createProxy(completion: { (proxy) in
                 self.setSenderToNewProxy(proxy!)
             })
         } else {
-            api.create(proxy: { (proxy) in
+            api.createProxy(completion: { (proxy) in
                 guard let proxy = proxy else {
                     self.showAlert("Cannot Exceed 50 Proxies", message: "Delete some proxies and try again!")
                     self.enableButtons()
@@ -142,7 +142,7 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderPick
     
     @IBAction func tapSendButton() {
         disableButtons()
-        api.sendMessage(sender!, receiver: receiver!, text: messageTextView.text) { (convo) in
+        api.sendMessage(sender: sender!, receiver: receiver!, text: messageTextView.text) { (convo) in
             self.newMessageViewControllerDelegate.goToNewConvo(convo)
             _ = self.navigationController?.popViewController(animated: true)
         }
@@ -151,7 +151,7 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderPick
     func cancel() {
         api.cancelCreatingProxy()
         if usingNewProxy {
-            api.delete(proxy: sender!)
+            api.deleteProxy(sender!)
         }
         _ = navigationController?.popViewController(animated: true)
     }
@@ -159,7 +159,7 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderPick
     // MARK: - Sender picker delegate
     func setSender(_ proxy: Proxy) {
         if usingNewProxy {
-            api.delete(proxy: sender!)
+            api.deleteProxy(sender!)
             usingNewProxy = false
         }
         sender = proxy

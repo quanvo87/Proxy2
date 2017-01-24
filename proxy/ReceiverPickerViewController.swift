@@ -43,7 +43,7 @@ class ReceiverPickerViewController: UIViewController, UICollectionViewDelegate {
             var ramReel: RAMReel<RAMCell, RAMTextField, SimplePrefixQueryDataSource>!
             ramReel = RAMReel(frame: self.view.bounds, dataSource: dataSource, placeholder: "Tap to begin typing…") {
                 guard $0 != "" else { return }
-                self.api.getProxy($0, completion: { (proxy) in
+                self.api.getProxy(withKey: $0, completion: { (proxy) in
                     guard let proxy = proxy else {
                         self.showAlert("Receiver Not Found", message: "Highlight the receiver then tap 'Select This Receiver'.")
                         return

@@ -68,7 +68,7 @@ class IconPickerCollectionViewController: UICollectionViewController {
         let icon = icons[indexPath.row]
         cell.iconImageView.image = nil
         cell.iconImageView.kf.indicatorType = .activity
-        api.getURL(forIcon: icon) { (url) in
+        api.getURL(forIconName: icon) { (url) in
             cell.iconImageView.kf.setImage(with: url, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
         }
         cell.iconNameLabel.text = icon.substring(to: icon.index(icon.endIndex, offsetBy: -3))
@@ -87,7 +87,7 @@ class IconPickerCollectionViewController: UICollectionViewController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        api.set(icon: icons[indexPath.row], forProxy: proxy)
+        api.setIcon(toIconNamed: icons[indexPath.row], for: proxy)
         _ = navigationController?.popViewController(animated: true)
     }
 }

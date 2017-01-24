@@ -41,7 +41,7 @@ class ConvoInfoTableViewController: UITableViewController {
         tableView.delaysContentTouches = false
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: Identifiers.Cell)
         
-        api.getProxy(withKey: convo.senderProxyKey, belongingToUser: convo.senderId) { (proxy) in
+        api.getProxy(withKey: convo.senderProxyKey, belongingToUserId: convo.senderId) { (proxy) in
             self.senderProxy = proxy
         }
         
@@ -76,7 +76,7 @@ class ConvoInfoTableViewController: UITableViewController {
         // Observe database values
         receiverIconRefHandle = receiverIconRef.observe(.value, with: { (snapshot) in
             guard let icon = snapshot.value as? String, icon != "" else { return }
-            self.api.getURL(forIcon: icon) { (url) in
+            self.api.getURL(forIconName: icon) { (url) in
                 self.receiverIconURL = url
                 self.tableView.reloadData()
             }
@@ -90,7 +90,7 @@ class ConvoInfoTableViewController: UITableViewController {
         
         senderIconRefHandle = senderIconRef.observe(.value, with: { (snapshot) in
             guard let icon = snapshot.value as? String, icon != "" else { return }
-            self.api.getURL(forIcon: icon) { (url) in
+            self.api.getURL(forIconName: icon) { (url) in
                 self.senderIconURL = url
                 self.tableView.reloadData()
             }
@@ -252,7 +252,7 @@ class ConvoInfoTableViewController: UITableViewController {
             case 0:
                 let alert = UIAlertController(title: "Leave Conversation?", message: "The other user will not be notified.", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "Leave", style: .destructive, handler: { (void) in
-                    self.api.leave(convo: self.convo)
+                    self.api.leaveConvo(self.convo)
                     _ = self.navigationController?.popViewController(animated: true)
                 }))
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -262,7 +262,7 @@ class ConvoInfoTableViewController: UITableViewController {
             case 1:
                 let alert = UIAlertController(title: "Block User?", message: "You will no longer see any conversations with this user. You can unblock users in the 'Me' tab.", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "Block", style: .destructive, handler: { (void) in
-                    self.api.blockReceiverInConvo(self.convo)
+                    self.api.blockReceiver(in: self.convo)
                     _ = self.navigationController?.popViewController(animated: true)
                 }))
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -292,7 +292,7 @@ class ConvoInfoTableViewController: UITableViewController {
             let nickname = alert.textFields![0].text
             let trim = nickname!.trimmingCharacters(in: NSCharacterSet(charactersIn: " ") as CharacterSet)
             if !(nickname != "" && trim == "") {
-                self.api.set(nickname: nickname!, forReceiverInConvo: self.convo)
+                self.api.setNickname(nickname!, forReceiverInConvo: self.convo)
             }
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -316,7 +316,7 @@ class ConvoInfoTableViewController: UITableViewController {
             let nickname = alert.textFields![0].text
             let trim = nickname!.trimmingCharacters(in: NSCharacterSet(charactersIn: " ") as CharacterSet)
             if !(nickname != "" && trim == "") {
-                self.api.set(nickname: nickname!, forProxy: self.senderProxy!)
+                self.api.setNickname(nickname!, for: self.senderProxy!)
             }
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -324,7 +324,7 @@ class ConvoInfoTableViewController: UITableViewController {
     }
     
     func goToIconPicker() {
-        api.getConvos(forProxy: senderProxy!) { (convos) in
+        api.getConvos(for: senderProxy!) { (convos) in
             let dest = self.storyboard?.instantiateViewController(withIdentifier: Identifiers.IconPickerCollectionViewController) as! IconPickerCollectionViewController
             dest.proxy = self.senderProxy!
             dest.convos = convos

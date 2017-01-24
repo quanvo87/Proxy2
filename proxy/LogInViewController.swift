@@ -101,7 +101,7 @@ class LogInViewController: UIViewController {
                     return
                 }
                 let user = user!.uid
-                self.api.setDefaultIcons(forUser: user)
+                self.api.setDefaultIcons(forUserId: user)
                 self.showHomeScreen()
             }
         }
@@ -126,7 +126,7 @@ class LogInViewController: UIViewController {
                     let user = user?.uid
                     self.api.ref.child(Path.Icons).queryOrderedByKey().queryEqual(toValue: user).observeSingleEvent(of: .value, with: { (snapshot) in
                         if !snapshot.hasChildren() {
-                            self.api.setDefaultIcons(forUser: user!)
+                            self.api.setDefaultIcons(forUserId: user!)
                         }
                         self.showHomeScreen()
                     })

@@ -19,7 +19,7 @@ class BlockedUsersTableViewCell: UITableViewCell {
     
     @IBAction func unblock(_ sender: AnyObject) {
         if let blockedUser = blockedUser {
-            api.unblockUser(blockedUser.id)
+            api.unblock(blockedUserId: blockedUser.id)
         }
     }
 }

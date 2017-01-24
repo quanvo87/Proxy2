@@ -77,7 +77,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         })
         
         convosRefHandle = convosRef.queryOrdered(byChild: Path.Timestamp).observe(.value, with: { (snapshot) in
-            self.convos = self.api.getConvos(fromSnapshot: snapshot)
+            self.convos = self.api.getConvos(from: snapshot)
             self.tableView.reloadData()
         })
     }
@@ -98,7 +98,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     func showDeleteProxyAlert() {
         let alert = UIAlertController(title: "Delete Proxy?", message: "You will not be able to see this proxy or its conversations again. Other users will not be notified.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { (void) in
-            self.api.delete(proxy: self.proxy, withConvos: self.convos)
+            self.api.deleteProxy(self.proxy, with: self.convos)
             _ = self.navigationController?.popViewController(animated: true)
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -125,7 +125,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
             let nickname = alert.textFields![0].text
             let trim = nickname!.trimmingCharacters(in: NSCharacterSet(charactersIn: " ") as CharacterSet)
             if !(nickname != "" && trim == "") {
-                self.api.set(nickname: nickname!, forProxy: self.proxy)
+                self.api.setNickname(nickname!, for: self.proxy)
             }
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -187,7 +187,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
             cell.nicknameButton.setTitle(proxy.nickname == "" ? "Enter A Nickname" : proxy.nickname, for: .normal)
             cell.iconImageView.image = nil
             cell.iconImageView.kf.indicatorType = .activity
-            api.getURL(forIcon: proxy.icon, completion: { (url) in
+            api.getURL(forIconName: proxy.icon, completion: { (url) in
                 cell.iconImageView.kf.setImage(with: url, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
             })
             cell.changeIconButton.addTarget(self, action: #selector(ProxyInfoTableViewController.showIconPickerViewController), for: .touchUpInside)
@@ -200,7 +200,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
             let convo = convos[indexPath.row]
             cell.iconImageView.image = nil
             cell.iconImageView.kf.indicatorType = .activity
-            api.getURL(forIcon: convo.icon) { (url) in
+            api.getURL(forIconName: convo.icon) { (url) in
                 cell.iconImageView.kf.setImage(with: url, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
             }
             cell.titleLabel.attributedText = api.getConvoTitle(receiverNickname: convo.receiverNickname, receiverName: convo.receiverProxyName, senderNickname: convo.senderNickname, senderName: convo.senderProxyName)

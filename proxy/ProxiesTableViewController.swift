@@ -133,7 +133,7 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
         tableView.setEditing(false, animated: true)
         setDefaultButtons()
         for proxy in proxiesToDelete {
-            api.delete(proxy: proxy)
+            api.deleteProxy(proxy)
         }
         proxiesToDelete = []
     }
@@ -153,7 +153,7 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
     
     func createNewProxy() {
         navigationItem.rightBarButtonItems![1].isEnabled = false
-        api.create { (proxy) in
+        api.createProxy { (proxy) in
             self.navigationItem.rightBarButtonItems![1].isEnabled = true
             guard proxy != nil else {
                 self.showAlert("Proxy Limit Reached", message: "Cannot exceed 50 proxies. Delete some old ones, then try again!")
@@ -212,7 +212,7 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
         // Icon
         cell.iconImageView.image = nil
         cell.iconImageView.kf.indicatorType = .activity
-        api.getURL(forIcon: proxy.icon) { (url) in
+        api.getURL(forIconName: proxy.icon) { (url) in
             cell.iconImageView.kf.setImage(with: url, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
         }
         
