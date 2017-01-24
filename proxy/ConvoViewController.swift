@@ -599,11 +599,9 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     // Write message to database.
     override func didPressSend(_ button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: Date!) {
         api.getConvo(withKey: convo.key, belongingToUser: convo.senderId, completion: { (convo) in
-            if let convo = convo {
-                self.convo = convo
-                self.api.sendMessage(withText: text, withMediaType: "", usingSenderConvo: convo) { (convo, message) in
-                    self.finishedWritingMessage()
-                }
+            self.convo = convo
+            self.api.sendMessage(withText: text, withMediaType: "", usingSenderConvo: convo) { (convo, message) in
+                self.finishedWritingMessage()
             }
         })
     }
@@ -656,7 +654,6 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     
     func send(image: UIImage) {
         api.getConvo(withKey: convo.key, belongingToUser: convo.senderId, completion: { (convo) in
-            guard let convo = convo else { return }
             self.convo = convo
             
             // First send a placeholder message that displays a loading indicator.
@@ -677,7 +674,6 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     
     func send(videoWithURL url: URL) {
         api.getConvo(withKey: convo.key, belongingToUser: convo.senderId, completion: { (convo) in
-            guard let convo = convo else { return }
             self.convo = convo
             
             // First send a placeholder message that displays a loading indicator.

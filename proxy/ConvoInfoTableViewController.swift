@@ -77,7 +77,6 @@ class ConvoInfoTableViewController: UITableViewController {
         receiverIconRefHandle = receiverIconRef.observe(.value, with: { (snapshot) in
             guard let icon = snapshot.value as? String, icon != "" else { return }
             self.api.getURL(forIcon: icon) { (url) in
-                guard let url = url else { return }
                 self.receiverIconURL = url
                 self.tableView.reloadData()
             }
@@ -92,7 +91,6 @@ class ConvoInfoTableViewController: UITableViewController {
         senderIconRefHandle = senderIconRef.observe(.value, with: { (snapshot) in
             guard let icon = snapshot.value as? String, icon != "" else { return }
             self.api.getURL(forIcon: icon) { (url) in
-                guard let url = url else { return }
                 self.senderIconURL = url
                 self.tableView.reloadData()
             }

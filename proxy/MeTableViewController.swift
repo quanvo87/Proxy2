@@ -23,41 +23,38 @@ class MeTableViewController: UITableViewController {
     var proxiesInteractedWithRef = FIRDatabaseReference()
     var proxiesInteractedWith = "-"
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        FIRAuth.auth()?.addStateDidChangeListener { auth, user in
-            if let user = user {
-                self.navigationItem.title = user.displayName
-            }
-        }
-        tableView.reloadData()
-        messagesReceivedRef = ref.child(Path.MessagesReceived).child(api.uid).child(Path.MessagesReceived)
-        messagesSentRef = ref.child(Path.MessagesSent).child(api.uid).child(Path.MessagesSent)
-        proxiesInteractedWithRef = ref.child(Path.ProxiesInteractedWith).child(api.uid).child(Path.ProxiesInteractedWith)
-    }
-    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
         
-        messagesReceivedRef.observe(.value, with: { (snapshot) in
-            if let messagesReceived = snapshot.value as? Int {
-                self.messagesReceived = messagesReceived.formatted()
-                self.tableView.reloadData()
+        FIRAuth.auth()?.addStateDidChangeListener { auth, user in
+            if let user = user {
+                self.navigationItem.title = user.displayName
+                
+                self.messagesReceivedRef = self.ref.child(Path.MessagesReceived).child(self.api.uid).child(Path.MessagesReceived)
+                self.messagesReceivedRef.observe(.value, with: { (snapshot) in
+                    if let messagesReceived = snapshot.value as? Int {
+                        self.messagesReceived = messagesReceived.formatted()
+                        self.tableView.reloadData()
+                    }
+                })
+                
+                self.messagesSentRef = self.ref.child(Path.MessagesSent).child(self.api.uid).child(Path.MessagesSent)
+                self.messagesSentRef.observe(.value, with: { (snapshot) in
+                    if let messagesSent = snapshot.value as? Int {
+                        self.messagesSent = messagesSent.formatted()
+                        self.tableView.reloadData()
+                    }
+                })
+                
+                self.proxiesInteractedWithRef = self.ref.child(Path.ProxiesInteractedWith).child(self.api.uid).child(Path.ProxiesInteractedWith)
+                self.proxiesInteractedWithRef.observe(.value, with: { (snapshot) in
+                    if let proxiesInteractedWith = snapshot.value as? Int {
+                        self.proxiesInteractedWith = proxiesInteractedWith.formatted()
+                        self.tableView.reloadData()
+                    }
+                })
             }
-        })
-        messagesSentRef.observe(.value, with: { (snapshot) in
-            if let messagesSent = snapshot.value as? Int {
-                self.messagesSent = messagesSent.formatted()
-                self.tableView.reloadData()
-            }
-        })
-        proxiesInteractedWithRef.observe(.value, with: { (snapshot) in
-            if let proxiesInteractedWith = snapshot.value as? Int {
-                self.proxiesInteractedWith = proxiesInteractedWith.formatted()
-                self.tableView.reloadData()
-            }
-        })
+        }
     }
     
     override func viewDidDisappear(_ animated: Bool) {

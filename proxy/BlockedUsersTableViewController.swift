@@ -13,7 +13,6 @@ class BlockedUsersTableViewController: UITableViewController {
     let api = API.sharedInstance
     let ref = FIRDatabase.database().reference()
     var blockedUsersRef = FIRDatabaseReference()
-    var blockedUsersRefHandle = FIRDatabaseHandle()
     var blockedUsers = [BlockedUser]()
     
     override func viewDidLoad() {
@@ -30,7 +29,7 @@ class BlockedUsersTableViewController: UITableViewController {
         tableView.rowHeight = 60
         
         blockedUsersRef = ref.child(Path.Blocked).child(api.uid)
-        blockedUsersRefHandle = blockedUsersRef.queryOrdered(byChild: Path.Created).observe(.value, with: { (snapshot) in
+        blockedUsersRef.queryOrdered(byChild: Path.Created).observe(.value, with: { (snapshot) in
             var blockedUsers = [BlockedUser]()
             for child in snapshot.children {
                 if let blockedUser = BlockedUser(anyObject: (child as! FIRDataSnapshot).value as AnyObject) {
@@ -54,7 +53,7 @@ class BlockedUsersTableViewController: UITableViewController {
     }
     
     deinit {
-        blockedUsersRef.removeObserver(withHandle: blockedUsersRefHandle)
+        blockedUsersRef.removeAllObservers()
     }
     
     func cancel() {
@@ -75,20 +74,19 @@ class BlockedUsersTableViewController: UITableViewController {
         let blockedUser = blockedUsers[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.BlockedUsersTableViewCell, for: indexPath as IndexPath) as! BlockedUsersTableViewCell
         
-        cell.accessoryType = .none
-        cell.selectionStyle = .none
-        
         cell.blockedUser = blockedUser
         
         cell.iconImageView.image = nil
         cell.iconImageView.kf.indicatorType = .activity
         api.getURL(forIcon: blockedUser.icon) { (url) in
-            guard let url = url else { return }
             cell.iconImageView.kf.setImage(with: url, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
         }
         
         cell.nameLabel.text = blockedUser.name
         cell.nicknameLabel.text = blockedUser.nickname
+        
+        cell.accessoryType = .none
+        cell.selectionStyle = .none
         
         return cell
     }

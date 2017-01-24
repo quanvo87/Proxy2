@@ -29,7 +29,6 @@ class IconPickerCollectionViewController: UICollectionViewController {
         
         collectionView?.backgroundColor = UIColor.white
         collectionView!.delaysContentTouches = false
-        
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.itemSize = CGSize(width: 60, height: 90)
         collectionView?.setCollectionViewLayout(flowLayout, animated: true)
@@ -70,11 +69,9 @@ class IconPickerCollectionViewController: UICollectionViewController {
         cell.iconImageView.image = nil
         cell.iconImageView.kf.indicatorType = .activity
         api.getURL(forIcon: icon) { (url) in
-            guard let url = url else { return }
             cell.iconImageView.kf.setImage(with: url, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
         }
-        let endIndex = icon.index(icon.endIndex, offsetBy: -3)
-        cell.iconNameLabel.text = icon.substring(to: endIndex)
+        cell.iconNameLabel.text = icon.substring(to: icon.index(icon.endIndex, offsetBy: -3))
         cell.layer.cornerRadius = 5
         return cell
     }

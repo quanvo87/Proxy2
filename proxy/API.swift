@@ -13,6 +13,7 @@ import FirebaseStorage
 import JSQMessagesViewController
 
 class API {
+    
     static let sharedInstance = API()
     
     var uid = ""
@@ -82,43 +83,35 @@ class API {
     }
     
     /// Returns the UIImage for `url`.
-    func getUIImage(fromURL url: URL, completion: @escaping (_ image: UIImage?) -> Void) {
+    func getUIImage(fromURL url: URL, completion: @escaping (_ image: UIImage) -> Void) {
         KingfisherManager.shared.cache.retrieveImage(forKey: url.absoluteString, options: nil) { (image, cachType) in
             if let image = image {
                 completion(image)
             } else {
                 KingfisherManager.shared.downloader.downloadImage(with: url, options: nil, progressBlock: nil, completionHandler: { (image, error, imageURL, data) in
-                    if let image = image {
-                        completion(image)
-                        KingfisherManager.shared.cache.store(image, original: nil, forKey: url.absoluteString, toDisk: true, completionHandler: nil)
-                    } else {
-                        completion(nil)
-                    }
+                    guard error == nil, let image = image else { return }
+                    completion(image)
+                    KingfisherManager.shared.cache.store(image, original: nil, forKey: url.absoluteString, toDisk: true, completionHandler: nil)
                 })
             }
         }
     }
     
     /// Returns the UIImage for `icon`.
-    func getUIImage(forIcon icon: String, completion: @escaping (_ image: UIImage?) -> Void) {
+    func getUIImage(forIcon icon: String, completion: @escaping (_ image: UIImage) -> Void) {
         
         // Get url for icon in storage.
         getURL(forIcon: icon, completion: { (url) in
-            guard let url = url else { return }
             
             // Get image from url.
             self.getUIImage(fromURL: url, completion: { (image) in
-                guard let image = image else {
-                    completion(nil)
-                    return
-                }
                 completion(image)
             })
         })
     }
     
     /// Returns the NSURL for `icon`.
-    func getURL(forIcon icon: String, completion: @escaping (_ url: URL?) -> Void) {
+    func getURL(forIcon icon: String, completion: @escaping (_ url: URL) -> Void) {
         
         // Check cache first.
         if let url = iconURLCache[icon] {
@@ -126,14 +119,11 @@ class API {
             
             // Else get url from storage.
         } else {
-            let iconRef = storageRef.child(Path.Icons).child("\(icon).png")
-            iconRef.downloadURL { (url, error) -> Void in
-                guard error == nil, let url = url else {
-                    completion(nil)
-                    return
+            storageRef.child(Path.Icons).child("\(icon).png").downloadURL { (url, error) -> Void in
+                if error == nil, let url = url {
+                    self.iconURLCache[icon] = url
+                    completion(url)
                 }
-                self.iconURLCache[icon] = url
-                completion(url)
             }
         }
     }
@@ -143,7 +133,7 @@ class API {
     func upload(image: UIImage, completion: @escaping (_ url: URL) -> Void) {
         guard let data = UIImageJPEGRepresentation(image, 0) else { return }
         storageRef.child(Path.UserFiles).child(uid + String(Date().timeIntervalSince1970)).put(data, metadata: nil) { (metadata, error) in
-            guard let url = metadata?.downloadURL() else { return }
+            guard error == nil, let url = metadata?.downloadURL() else { return }
             completion(url)
             KingfisherManager.shared.cache.store(image, forKey: url.absoluteString, toDisk: true, completionHandler: nil)
         }
@@ -160,7 +150,7 @@ class API {
                 
                 // Upload to storage.
                 self.storageRef.child(Path.UserFiles).child(String(Date().timeIntervalSince1970)).putFile(compressedURL, metadata: nil) { metadata, error in
-                    guard let url = metadata?.downloadURL() else { return }
+                    guard error == nil, let url = metadata?.downloadURL() else { return }
                     completion(url)
                 }
             }
@@ -291,7 +281,7 @@ class API {
         })
     }
     
-    /// Loads proxyNameGenerator and returns a new proxy.
+    /// Load proxyNameGenerator.
     func loadProxyNameGenerator() {
         dispatch_group.enter()
         ref.child(Path.WordBank).observeSingleEvent(of: .value, with: { (snapshot) in
@@ -366,23 +356,16 @@ class API {
                 return
             }
             self.getProxy(withKey: key, belongingToUser: proxy.ownerId, completion: { (proxy) in
-                if let proxy = proxy {
-                    completion(proxy)
-                } else {
-                    completion(nil)
-                }
+                completion(proxy)
             })
         })
     }
     
     /// Returns the Proxy with `key` belonging to `user`.
-    func getProxy(withKey key: String, belongingToUser user: String, completion: @escaping (_ proxy: Proxy?) -> Void) {
+    func getProxy(withKey key: String, belongingToUser user: String, completion: @escaping (_ proxy: Proxy) -> Void) {
         ref.child(Path.Proxies).child(user).child(key).observeSingleEvent(of: .value, with: { (snapshot) in
-            if let proxy = Proxy(anyObject: snapshot.value! as AnyObject) {
-                completion(proxy)
-            } else {
-                completion(nil)
-            }
+            guard let proxy = Proxy(anyObject: snapshot.value! as AnyObject) else { return }
+            completion(proxy)
         })
     }
     
@@ -455,19 +438,19 @@ class API {
         ref.child(Path.Convos).child(sender.ownerId).queryEqual(toValue: convoKey).observeSingleEvent(of: .value, with: { (snapshot) in
             
             // Convo exists, use it to send the message
-            if snapshot.childrenCount == 1 {
-                guard let convo = Convo(anyObject: snapshot.value! as AnyObject) else { return }
+            if snapshot.childrenCount == 1, let convo = Convo(anyObject: snapshot.value! as AnyObject) {
                 self.sendMessage(withText: text, withMediaType: "", usingSenderConvo: convo, completion: { (convo, message) in
                     completion(convo)
                 })
-            }
             
             // Convo does not exist, create the convo before sending message
-            self.createConvo(sender, receiver: receiver, convoKey: convoKey, text: text, completion: { (convo) in
-                self.sendMessage(withText: text, withMediaType: "", usingSenderConvo: convo, completion: { (convo, message) in
-                    completion(convo)
+            } else {
+                self.createConvo(sender, receiver: receiver, convoKey: convoKey, text: text, completion: { (convo) in
+                    self.sendMessage(withText: text, withMediaType: "", usingSenderConvo: convo, completion: { (convo, message) in
+                        completion(convo)
+                    })
                 })
-            })
+            }
         })
     }
     
@@ -598,14 +581,10 @@ class API {
         })
     }
     
-    func getConvo(withKey key: String, belongingToUser user: String, completion: @escaping (_ convo: Convo?) -> Void) {
+    func getConvo(withKey key: String, belongingToUser user: String, completion: @escaping (_ convo: Convo) -> Void) {
         ref.child(Path.Convos).child(user).child(key).observeSingleEvent(of: .value, with: { (snapshot) in
             guard let convo = Convo(anyObject: snapshot.value! as AnyObject) else { return }
-            if convo.key == "" {
-                completion(nil)
-            } else {
-                completion(convo)
-            }
+            completion(convo)
         })
     }
     
@@ -613,8 +592,9 @@ class API {
         ref.child(Path.Convos).child(proxy.key).observeSingleEvent(of: .value, with: { (snapshot) in
             var convos = [Convo]()
             for child in snapshot.children {
-                guard let convo = Convo(anyObject: (child as! FIRDataSnapshot).value as AnyObject) else { return }
-                convos.append(convo)
+                if let convo = Convo(anyObject: (child as! FIRDataSnapshot).value as AnyObject) {
+                    convos.append(convo)
+                }
             }
             completion(convos)
         })
@@ -624,8 +604,9 @@ class API {
         ref.child(Path.Convos).child(user).observeSingleEvent(of: .value, with: { (snapshot) in
             var convos = [Convo]()
             for child in snapshot.children {
-                guard let convo = Convo(anyObject: (child as! FIRDataSnapshot).value as AnyObject) else { return }
-                convos.append(convo)
+                if let convo = Convo(anyObject: (child as! FIRDataSnapshot).value as AnyObject) {
+                    convos.append(convo)
+                }
             }
             completion(convos)
         })

@@ -213,7 +213,6 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
         cell.iconImageView.image = nil
         cell.iconImageView.kf.indicatorType = .activity
         api.getURL(forIcon: proxy.icon) { (url) in
-            guard let url = url else { return }
             cell.iconImageView.kf.setImage(with: url, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
         }
         
