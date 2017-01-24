@@ -33,7 +33,7 @@ class API {
     /// Returns the Firebase reference with path `a`/`b`/`c`/`d`.
     /// Leave unneeded nodes blank starting from `d`, working back to `a`.
     /// There must be at least node `a`.
-    func getRef(_ a: String, b: String?, c: String?, d: String?) -> FIRDatabaseReference? {
+    func getRef(a: String, b: String?, c: String?, d: String?) -> FIRDatabaseReference? {
         guard a != "" else { return nil }
         if let b = b, let c = c, let d = d, b != "" && c != "" && d != "" {
             return ref.child(a).child(b).child(c).child(d)
@@ -48,19 +48,20 @@ class API {
     }
     
     /// Saves `anyObject` under `a`/`b`/`c`/`d`.
+    /// Existing data at the location is overwritten.
     /// Leave unneeded nodes blank starting from `d`, working back to `a`.
     /// There must be at least node `a`.
     func set(_ anyObject: AnyObject, a: String, b: String?, c: String?, d: String?) {
-        if let ref = getRef(a, b: b, c: c, d: d) {
+        if let ref = getRef(a: a, b: b, c: c, d: d) {
             ref.setValue(anyObject)
         }
     }
     
-    /// Deletes object under `a`/`b`/`c`/`d`.
+    /// Deletes whatever is at `a`/`b`/`c`/`d`.
     /// Leave unneeded nodes blank starting from `d`, working back to `a`.
     /// There must be at least node `a`.
-    func delete(_ a: String, b: String?, c: String?, d: String?) {
-        if let ref = getRef(a, b: b, c: c, d: d) {
+    func delete(a: String, b: String?, c: String?, d: String?) {
+        if let ref = getRef(a: a, b: b, c: c, d: d) {
             ref.removeValue()
         }
     }
@@ -69,7 +70,7 @@ class API {
     /// Leave unneeded nodes blank starting from `d`, working back to `a`.
     /// There must be at least node `a`.
     func increment(by amount: Int, a: String, b: String?, c: String?, d: String?) {
-        if let ref = getRef(a, b: b, c: c, d: d) {
+        if let ref = getRef(a: a, b: b, c: c, d: d) {
             ref.runTransactionBlock( { (currentData: FIRMutableData) -> FIRTransactionResult in
                 if let value = currentData.value {
                     var _value = value as? Int ?? 0
@@ -130,7 +131,7 @@ class API {
     
     /// Uploads compressed version of `image` to storage.
     /// Returns NSURL to the image in storage.
-    func upload(_ image: UIImage, completion: @escaping (_ url: URL) -> Void) {
+    func uploadImage(_ image: UIImage, completion: @escaping (_ url: URL) -> Void) {
         guard let data = UIImageJPEGRepresentation(image, 0) else { return }
         storageRef.child(Path.UserFiles).child(uid + String(Date().timeIntervalSince1970)).put(data, metadata: nil) { (metadata, error) in
             guard error == nil, let url = metadata?.downloadURL() else { return }
@@ -224,7 +225,7 @@ class API {
     }
     
     func unblock(blockedUserId blockedUser: String) {
-        delete(Path.Blocked, b: uid, c: blockedUser, d: nil)
+        delete(a: Path.Blocked, b: uid, c: blockedUser, d: nil)
         
         getConvos(forUserId: uid) { (convos) in
             for convo in convos {
@@ -314,7 +315,7 @@ class API {
                     self.isCreatingProxy = false
                     
                     // Re-save the global proxy by name instead of the Firebase key.
-                    self.delete(Path.Proxies, b: autoId, c: nil, d: nil)
+                    self.delete(a: Path.Proxies, b: autoId, c: nil, d: nil)
                     self.set(proxy.toAnyObject() as AnyObject, a: Path.Proxies, b: key, c: nil, d: nil)
                     
                     // Create the user's copy of the proxy with a random icon.
@@ -328,7 +329,7 @@ class API {
                 } else {
                     
                     // Else name is taken so delete the proxy you just created.
-                    self.delete(Path.Proxies, b: autoId, c: nil, d: nil)
+                    self.delete(a: Path.Proxies, b: autoId, c: nil, d: nil)
                     
                     // Check if user has cancelled the process.
                     if self.isCreatingProxy {
@@ -408,10 +409,10 @@ class API {
     func deleteProxy(_ proxy: Proxy, with convos: [Convo]) {
         
         // Delete the global proxy
-        delete(Path.Proxies, b: proxy.key.lowercased(), c: nil, d: nil)
+        delete(a: Path.Proxies, b: proxy.key.lowercased(), c: nil, d: nil)
         
         // Delete proxy
-        delete(Path.Proxies, b: uid, c: proxy.key, d: nil)
+        delete(a: Path.Proxies, b: uid, c: proxy.key, d: nil)
         
         // Decrement user's unread by the proxy's unread
         increment(by: -proxy.unread, a: Path.Unread, b: proxy.ownerId, c: Path.Unread, d: nil)
@@ -420,8 +421,8 @@ class API {
         for convo in convos {
             
             // Delete sender's convos
-            self.delete(Path.Convos, b: convo.senderId, c: convo.key, d: nil)
-            self.delete(Path.Convos, b: convo.senderProxyKey, c: convo.key, d: nil)
+            self.delete(a: Path.Convos, b: convo.senderId, c: convo.key, d: nil)
+            self.delete(a: Path.Convos, b: convo.senderProxyKey, c: convo.key, d: nil)
             
             // Set convo to deleted for receiver convos
             self.set(true as AnyObject, a: Path.Convos, b: convo.receiverId, c: convo.key, d: Path.ReceiverDeletedProxy)
@@ -518,7 +519,7 @@ class API {
     /// Sets `message`'s `read` & `timeRead`.
     /// Decrements unread's for `user`.
     func setRead(for message: Message, forProxyKey proxy: String, belongingToUserId user: String) {
-        let ref = getRef(Path.Messages, b: message.convo, c: message.key, d: nil)
+        let ref = getRef(a: Path.Messages, b: message.convo, c: message.key, d: nil)
         let update = [Path.TimeRead: Date().timeIntervalSince1970, Path.Read: true] as [String : Any]
         ref!.updateChildValues(update as [AnyHashable: Any])
         increment(by: -1, a: Path.Unread, b: user, c: Path.Unread, d: nil)

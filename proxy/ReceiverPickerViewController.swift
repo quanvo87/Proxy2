@@ -48,7 +48,7 @@ class ReceiverPickerViewController: UIViewController, UICollectionViewDelegate {
                         self.showAlert("Receiver Not Found", message: "Highlight the receiver then tap 'Select This Receiver'.")
                         return
                     }
-                    self.receiverPickerDelegate.setReceiver(proxy)
+                    self.receiverPickerDelegate.setReceiver(to: proxy)
                     self.close()
                 })
             }

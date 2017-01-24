@@ -7,5 +7,5 @@
 //
 
 protocol ReceiverPickerDelegate {
-    func setReceiver(_ proxy: Proxy)
+    func setReceiver(to proxy: Proxy)
 }

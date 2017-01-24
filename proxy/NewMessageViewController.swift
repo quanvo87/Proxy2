@@ -109,7 +109,7 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderPick
         if usingNewProxy {
             api.deleteProxy(sender!)
             api.createProxy(completion: { (proxy) in
-                self.setSenderToNewProxy(proxy!)
+                self.setSender(toNewProxy: proxy!)
             })
         } else {
             api.createProxy(completion: { (proxy) in
@@ -118,12 +118,12 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderPick
                     self.enableButtons()
                     return
                 }
-                self.setSenderToNewProxy(proxy)
+                self.setSender(toNewProxy: proxy)
             })
         }
     }
     
-    func setSenderToNewProxy(_ proxy: Proxy) {
+    func setSender(toNewProxy proxy: Proxy) {
         sender = proxy
         usingNewProxy = true
         setSelectSenderButtonTitle()
@@ -157,7 +157,7 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderPick
     }
     
     // MARK: - Sender picker delegate
-    func setSender(_ proxy: Proxy) {
+    func setSender(to proxy: Proxy) {
         if usingNewProxy {
             api.deleteProxy(sender!)
             usingNewProxy = false
@@ -168,7 +168,7 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderPick
     }
     
     // MARK: - Receiver picker delegate
-    func setReceiver(_ proxy: Proxy) {
+    func setReceiver(to proxy: Proxy) {
         receiver = proxy
         setSelectReceiverButtonTitle()
     }

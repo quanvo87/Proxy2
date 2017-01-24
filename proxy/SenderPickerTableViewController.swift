@@ -94,7 +94,7 @@ class SenderPickerTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let proxy = proxies[indexPath.row]
-        senderPickerDelegate.setSender(proxy)
+        senderPickerDelegate.setSender(to: proxy)
         _ = navigationController?.popViewController(animated: true)
     }
 }

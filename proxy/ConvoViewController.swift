@@ -661,7 +661,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
                 self.finishSendingMessage()
                 
                 // Then upload the image to storage.
-                self.api.upload(image, completion: { (url) in
+                self.api.uploadImage(image, completion: { (url) in
                     
                     // The upload returns the URL to the image we just uploaded.
                     // Update the placeholder message with this info.
