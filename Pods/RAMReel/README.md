@@ -1,6 +1,6 @@
 [![header](https://raw.githubusercontent.com/Ramotion/reel-search/master/header.png)](https://business.ramotion.com?utm_source=gthb&utm_medium=special&utm_campaign=reel-search-logo)
 # RAMReel
-[![Swift 2.2](https://img.shields.io/badge/Swift-2.2-green.svg?style=flat)](https://developer.apple.com/swift/)
+[![Swift 3.0](https://img.shields.io/badge/Swift-3.0-green.svg?style=flat)](https://developer.apple.com/swift/)
 [![CocoaPods](https://img.shields.io/cocoapods/p/RAMReel.svg)](https://cocoapods.org/pods/RAMReel)
 [![CocoaPods](https://img.shields.io/cocoapods/v/RAMReel.svg)](http://cocoapods.org/pods/RAMReel)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Ramotion/reel-search)
@@ -11,14 +11,21 @@
 
 ## About
 This project is maintained by Ramotion, Inc.<br>
-We specialize in the designing and coding of custom UI for Mobile Apps and Websites.<br><br>**Looking for developers for your project?** [[▶︎CONTACT OUR TEAM◀︎](http://business.ramotion.com/#Get_in_Touch?utm_source=gthb&utm_medium=special&utm_campaign=reel-search-contact-us)]
+We specialize in the designing and coding of custom UI for Mobile Apps and Websites.<br><br>**Looking for developers for your project?** 
+
+<a href="https://business.ramotion.com?utm_source=gthb&utm_medium=special&utm_campaign=reel-search-contact-us/#Get_in_Touch" > <img src="https://github.com/Ramotion/navigation-stack/raw/master/contact_our_team@2x.png" width="150" height="30"></a>
+
 
 
 
 [![animated](https://raw.githubusercontent.com/Ramotion/reel-search/master/reel-search.gif)](https://dribbble.com/shots/2516684-Telemedicine-iOS-App-Swift-Open-Source)
 
 
-The [iPhone mockup](https://store.ramotion.com/product/iphone-6-mockups?utm_source=gthb&utm_medium=special&utm_campaign=reel-search) available [here](https://store.ramotion.com/product/iphone-6-mockups?utm_source=gthb&utm_medium=special&utm_campaign=reel-search).
+The [iPhone mockup](https://store.ramotion.com?utm_source=gthb&utm_medium=special&utm_campaign=reel-search) available [here](https://store.ramotion.com?utm_source=gthb&utm_medium=special&utm_campaign=reel-search).
+
+## Try this UI control in action
+
+<a href="https://itunes.apple.com/app/apple-store/id1182360240?pt=550053&ct=gthb-reel-search&mt=8" > <img src="https://github.com/Ramotion/navigation-stack/raw/master/Download_on_the_App_Store_Badge_US-UK_135x40.png" width="170" height="58"></a>
 
 ## Requirements
 
@@ -35,7 +42,7 @@ Just put this in your `Podfile`:
 pod 'RAMReel'
 ~~~
 
-or [Carthage](https://github.com/Carthage/Carthage) users can simply add Mantle to their `Cartfile`:
+or [Carthage](https://github.com/Carthage/Carthage) users can simply add `reel-search` to their `Cartfile`:
 ```
 github "Ramotion/reel-search"
 ```

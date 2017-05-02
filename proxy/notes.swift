@@ -1,6 +1,5 @@
 /*
  
- - swift 3 conventions
  - function naming consistency (gotoview vs showview, etc) (try to copy apple)
  - names of storyboard elements
  - test blocking users
