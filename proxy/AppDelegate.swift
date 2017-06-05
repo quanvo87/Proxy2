@@ -14,7 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     override init() {
-        FIRApp.configure()
+        FirebaseApp.configure()
 //        FIRDatabase.database().persistenceEnabled = true
     }
     

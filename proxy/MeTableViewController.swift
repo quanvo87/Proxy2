@@ -12,21 +12,21 @@ import FirebaseDatabase
 class MeTableViewController: UITableViewController {
 
     let api = API.sharedInstance
-    let ref = FIRDatabase.database().reference()
+    let ref = Database.database().reference()
     
-    var messagesReceivedRef = FIRDatabaseReference()
+    var messagesReceivedRef = DatabaseReference()
     var messagesReceived = "-"
     
-    var messagesSentRef = FIRDatabaseReference()
+    var messagesSentRef = DatabaseReference()
     var messagesSent = "-"
     
-    var proxiesInteractedWithRef = FIRDatabaseReference()
+    var proxiesInteractedWithRef = DatabaseReference()
     var proxiesInteractedWith = "-"
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
         
-        FIRAuth.auth()?.addStateDidChangeListener { auth, user in
+        Auth.auth().addStateDidChangeListener { auth, user in
             if let user = user {
                 self.navigationItem.title = user.displayName
                 
@@ -141,9 +141,9 @@ class MeTableViewController: UITableViewController {
             case 0:
                 let alert = UIAlertController(title: "Log Out", message: "Are you sure you want to log out?", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "Log Out", style: .destructive) { action in
-                    let firebaseAuth = FIRAuth.auth()
+                    let firebaseAuth = Auth.auth()
                     do {
-                        try firebaseAuth?.signOut()
+                        try firebaseAuth.signOut()
                         let logInViewController  = self.storyboard!.instantiateViewController(withIdentifier: "Log In View Controller") as! LogInViewController
                         let appDelegate = UIApplication.shared.delegate as! AppDelegate
                         appDelegate.window?.rootViewController = logInViewController

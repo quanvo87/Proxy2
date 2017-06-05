@@ -11,8 +11,8 @@ import FirebaseDatabase
 class BlockedUsersTableViewController: UITableViewController {
 
     let api = API.sharedInstance
-    let ref = FIRDatabase.database().reference()
-    var blockedUsersRef = FIRDatabaseReference()
+    let ref = Database.database().reference()
+    var blockedUsersRef = DatabaseReference()
     var blockedUsers = [BlockedUser]()
     
     override func viewDidLoad() {
@@ -32,7 +32,7 @@ class BlockedUsersTableViewController: UITableViewController {
         blockedUsersRef.queryOrdered(byChild: Path.Created).observe(.value, with: { (snapshot) in
             var blockedUsers = [BlockedUser]()
             for child in snapshot.children {
-                if let blockedUser = BlockedUser(anyObject: (child as! FIRDataSnapshot).value as AnyObject) {
+                if let blockedUser = BlockedUser(anyObject: (child as! DataSnapshot).value as AnyObject) {
                     blockedUsers.append(blockedUser)
                 }
             }

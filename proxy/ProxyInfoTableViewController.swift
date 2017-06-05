@@ -11,14 +11,14 @@ import FirebaseDatabase
 class ProxyInfoTableViewController: UITableViewController, NewMessageViewControllerDelegate {
     
     let api = API.sharedInstance
-    let ref = FIRDatabase.database().reference()
+    let ref = Database.database().reference()
     
-    var proxyRef = FIRDatabaseReference()
-    var proxyRefHandle = FIRDatabaseHandle()
+    var proxyRef = DatabaseReference()
+    var proxyRefHandle = DatabaseHandle()
     var proxy = Proxy()
 
-    var convosRef = FIRDatabaseReference()
-    var convosRefHandle = FIRDatabaseHandle()
+    var convosRef = DatabaseReference()
+    var convosRefHandle = DatabaseHandle()
     var convos = [Convo]()
     
     var convo: Convo?

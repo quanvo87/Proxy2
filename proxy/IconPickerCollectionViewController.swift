@@ -11,7 +11,7 @@ import FirebaseDatabase
 class IconPickerCollectionViewController: UICollectionViewController {
     
     let api = API.sharedInstance
-    let ref = FIRDatabase.database().reference()
+    let ref = Database.database().reference()
     var icons = [String]()
     var proxy = Proxy()
     var convos = [Convo]()
@@ -38,7 +38,7 @@ class IconPickerCollectionViewController: UICollectionViewController {
         
         ref.child(Path.Icons).child(api.uid).queryOrdered(byChild: Path.Name).observeSingleEvent(of: .value, with: { (snapshot) in
             for child in snapshot.children {
-                self.icons.append(((child as! FIRDataSnapshot).value as AnyObject)[Path.Name] as! String)
+                self.icons.append(((child as! DataSnapshot).value as AnyObject)[Path.Name] as! String)
             }
             self.collectionView?.reloadData()
         })

@@ -13,7 +13,7 @@ import FirebaseStorage
 class ProxiesTableViewController: UITableViewController, NewMessageViewControllerDelegate {
     
     let api = API.sharedInstance
-    let ref = FIRDatabase.database().reference()
+    let ref = Database.database().reference()
     
     var newMessageBarButton = UIBarButtonItem()
     var newProxyBarButton = UIBarButtonItem()
@@ -21,11 +21,11 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
     var confirmDeleteProxiesBarButton = UIBarButtonItem()
     var cancelDeleteProxiesBarButton = UIBarButtonItem()
     
-    var unreadRef = FIRDatabaseReference()
-    var unreadRefHandle = FIRDatabaseHandle()
+    var unreadRef = DatabaseReference()
+    var unreadRefHandle = DatabaseHandle()
     
-    var proxiesRef = FIRDatabaseReference()
-    var proxiesRefHandle = FIRDatabaseHandle()
+    var proxiesRef = DatabaseReference()
+    var proxiesRefHandle = DatabaseHandle()
     var proxies = [Proxy]()
     var proxiesToDelete = [Proxy]()
     
@@ -86,7 +86,7 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
         proxiesRefHandle = proxiesRef.queryOrdered(byChild: Path.Timestamp).observe(.value, with: { snapshot in
             var proxies = [Proxy]()
             for child in snapshot.children {
-                if let proxy = Proxy(anyObject: (child as! FIRDataSnapshot).value as AnyObject) {
+                if let proxy = Proxy(anyObject: (child as! DataSnapshot).value as AnyObject) {
                     proxies.append(proxy)
                 }
             }

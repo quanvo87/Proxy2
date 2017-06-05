@@ -17,8 +17,8 @@ class API {
     static let sharedInstance = API()
     
     var uid = ""
-    let ref = FIRDatabase.database().reference()
-    let storageRef = FIRStorage.storage().reference(forURL: URLs.Storage)
+    let ref = Database.database().reference()
+    let storageRef = Storage.storage().reference(forURL: URLs.Storage)
     var proxyNameGenerator = ProxyNameGenerator()
     var icons = [String]()
     var iconURLCache = [String: URL]()
@@ -33,7 +33,7 @@ class API {
     /// Returns the Firebase reference with path `a`/`b`/`c`/`d`.
     /// Leave unneeded nodes blank starting from `d`, working back to `a`.
     /// There must be at least node `a`.
-    func getRef(a: String, b: String?, c: String?, d: String?) -> FIRDatabaseReference? {
+    func getRef(a: String, b: String?, c: String?, d: String?) -> DatabaseReference? {
         guard a != "" else { return nil }
         if let b = b, let c = c, let d = d, b != "" && c != "" && d != "" {
             return ref.child(a).child(b).child(c).child(d)
@@ -71,14 +71,14 @@ class API {
     /// There must be at least node `a`.
     func increment(by amount: Int, a: String, b: String?, c: String?, d: String?) {
         if let ref = getRef(a: a, b: b, c: c, d: d) {
-            ref.runTransactionBlock( { (currentData: FIRMutableData) -> FIRTransactionResult in
+            ref.runTransactionBlock( { (currentData: MutableData) -> TransactionResult in
                 if let value = currentData.value {
                     var _value = value as? Int ?? 0
                     _value += amount
                     currentData.value = _value > 0 ? _value : 0
-                    return FIRTransactionResult.success(withValue: currentData)
+                    return TransactionResult.success(withValue: currentData)
                 }
-                return FIRTransactionResult.success(withValue: currentData)
+                return TransactionResult.success(withValue: currentData)
             })
         }
     }
@@ -133,7 +133,7 @@ class API {
     /// Returns NSURL to the image in storage.
     func uploadImage(_ image: UIImage, completion: @escaping (_ url: URL) -> Void) {
         guard let data = UIImageJPEGRepresentation(image, 0) else { return }
-        storageRef.child(Path.UserFiles).child(uid + String(Date().timeIntervalSince1970)).put(data, metadata: nil) { (metadata, error) in
+        storageRef.child(Path.UserFiles).child(uid + String(Date().timeIntervalSince1970)).putData(data, metadata: nil) { (metadata, error) in
             guard error == nil, let url = metadata?.downloadURL() else { return }
             completion(url)
             KingfisherManager.shared.cache.store(image, forKey: url.absoluteString, toDisk: true, completionHandler: nil)
@@ -150,7 +150,7 @@ class API {
             if session.status == .completed {
                 
                 // Upload to storage.
-                self.storageRef.child(Path.UserFiles).child(String(Date().timeIntervalSince1970)).putFile(compressedURL, metadata: nil) { metadata, error in
+                self.storageRef.child(Path.UserFiles).child(String(Date().timeIntervalSince1970)).putFile(from: compressedURL, metadata: nil) { metadata, error in
                     guard error == nil, let url = metadata?.downloadURL() else { return }
                     completion(url)
                 }
@@ -183,7 +183,7 @@ class API {
         dispatch_group.enter()
         ref.child(Path.Icons).child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
             for child in snapshot.children {
-                self.icons.append(((child as! FIRDataSnapshot).value as AnyObject)[Path.Name] as! String)
+                self.icons.append(((child as! DataSnapshot).value as AnyObject)[Path.Name] as! String)
             }
             self.dispatch_group.leave()
         })
@@ -593,7 +593,7 @@ class API {
         ref.child(Path.Convos).child(proxy.key).observeSingleEvent(of: .value, with: { (snapshot) in
             var convos = [Convo]()
             for child in snapshot.children {
-                if let convo = Convo(anyObject: (child as! FIRDataSnapshot).value as AnyObject) {
+                if let convo = Convo(anyObject: (child as! DataSnapshot).value as AnyObject) {
                     convos.append(convo)
                 }
             }
@@ -605,7 +605,7 @@ class API {
         ref.child(Path.Convos).child(user).observeSingleEvent(of: .value, with: { (snapshot) in
             var convos = [Convo]()
             for child in snapshot.children {
-                if let convo = Convo(anyObject: (child as! FIRDataSnapshot).value as AnyObject) {
+                if let convo = Convo(anyObject: (child as! DataSnapshot).value as AnyObject) {
                     convos.append(convo)
                 }
             }
@@ -615,10 +615,10 @@ class API {
     
     /// Returns an array of Convo's from `snapshot`.
     /// Filters out Convo's that should not be shown.
-    func getConvos(from snapshot: FIRDataSnapshot) -> [Convo] {
+    func getConvos(from snapshot: DataSnapshot) -> [Convo] {
         var convos = [Convo]()
         for child in snapshot.children {
-            if let convo = Convo(anyObject: (child as! FIRDataSnapshot).value as AnyObject),
+            if let convo = Convo(anyObject: (child as! DataSnapshot).value as AnyObject),
                 !convo.senderLeftConvo && !convo.senderIsBlocking {
                 convos.append(convo)
             }

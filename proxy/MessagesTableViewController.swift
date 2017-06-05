@@ -19,11 +19,11 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
     var confirmLeaveConvosBarButton = UIBarButtonItem()
     var cancelLeaveConvosBarButton = UIBarButtonItem()
     
-    var unreadRef = FIRDatabaseReference()
-    var unreadRefHandle = FIRDatabaseHandle()
+    var unreadRef = DatabaseReference()
+    var unreadRefHandle = DatabaseHandle()
     
-    var convosRef = FIRDatabaseReference()
-    var convosRefHandle = FIRDatabaseHandle()
+    var convosRef = DatabaseReference()
+    var convosRefHandle = DatabaseHandle()
     var convos = [Convo]()
     var convosToLeave = [Convo]()
     
@@ -79,7 +79,7 @@ class MessagesTableViewController: UITableViewController, NewMessageViewControll
         items![1].image = UIImage(named: "proxies-tab")?.resize(toNewSize: size, isAspectRatio: isAspectRatio)
         items![2].image = UIImage(named: "me-tab")?.resize(toNewSize: size, isAspectRatio: isAspectRatio)
         
-        FIRAuth.auth()?.addStateDidChangeListener { (auth, user) in
+        Auth.auth().addStateDidChangeListener { (auth, user) in
             guard let user = user else {
                 let dest = self.storyboard!.instantiateViewController(withIdentifier: Identifiers.LogInViewController) as! LogInViewController
                 let appDelegate = UIApplication.shared.delegate as! AppDelegate

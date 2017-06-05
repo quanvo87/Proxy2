@@ -14,20 +14,20 @@ class ConvoInfoTableViewController: UITableViewController {
     var convo = Convo()
     var senderProxy: Proxy?
     
-    var receiverIconRef = FIRDatabaseReference()
-    var receiverIconRefHandle = FIRDatabaseHandle()
+    var receiverIconRef = DatabaseReference()
+    var receiverIconRefHandle = DatabaseHandle()
     var receiverIconURL = URL(fileURLWithPath: "")
     
-    var receiverNicknameRef = FIRDatabaseReference()
-    var receiverNicknameRefHandle = FIRDatabaseHandle()
+    var receiverNicknameRef = DatabaseReference()
+    var receiverNicknameRefHandle = DatabaseHandle()
     var receiverNickname: String?
     
-    var senderIconRef = FIRDatabaseReference()
-    var senderIconRefHandle = FIRDatabaseHandle()
+    var senderIconRef = DatabaseReference()
+    var senderIconRefHandle = DatabaseHandle()
     var senderIconURL = URL(fileURLWithPath: "")
     
-    var senderNicknameRef = FIRDatabaseReference()
-    var senderNicknameRefHandle = FIRDatabaseHandle()
+    var senderNicknameRef = DatabaseReference()
+    var senderNicknameRefHandle = DatabaseHandle()
     var senderNickname: String?
     
     override func viewDidLoad() {

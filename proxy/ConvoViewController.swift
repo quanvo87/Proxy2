@@ -14,7 +14,7 @@ import MobilePlayer
 class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     
     let api = API.sharedInstance
-    let ref = FIRDatabase.database().reference()
+    let ref = Database.database().reference()
     var convo = Convo()
     var readReceiptIndex = -1
     
@@ -22,7 +22,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     var outgoingBubble: JSQMessagesBubbleImage!
     
     var senderIsPresentIsSetUp = false
-    var senderIsPresentRef = FIRDatabaseReference()
+    var senderIsPresentRef = DatabaseReference()
     var senderIsPresent = false {
         didSet {
             if senderIsPresent {
@@ -33,27 +33,27 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
         }
     }
     
-    var messagesRef = FIRDatabaseReference()
-    var messagesRefHandle = FIRDatabaseHandle()
-    var lastMessageRefHandle = FIRDatabaseHandle()
+    var messagesRef = DatabaseReference()
+    var messagesRefHandle = DatabaseHandle()
+    var lastMessageRefHandle = DatabaseHandle()
     var messages = [Message]()
     var unreadMessages = [Message]()
     
-    var senderIconRef = FIRDatabaseReference()
-    var senderIconRefHandle = FIRDatabaseHandle()
-    var receiverIconRef = FIRDatabaseReference()
-    var receiverIconRefHandle = FIRDatabaseHandle()
+    var senderIconRef = DatabaseReference()
+    var senderIconRefHandle = DatabaseHandle()
+    var receiverIconRef = DatabaseReference()
+    var receiverIconRefHandle = DatabaseHandle()
     var icons = [String: JSQMessagesAvatarImage]()
     
-    var senderNicknameRef = FIRDatabaseReference()
-    var senderNicknameRefHandle = FIRDatabaseHandle()
-    var receiverNicknameRef = FIRDatabaseReference()
-    var receiverNicknameRefHandle = FIRDatabaseHandle()
+    var senderNicknameRef = DatabaseReference()
+    var senderNicknameRefHandle = DatabaseHandle()
+    var receiverNicknameRef = DatabaseReference()
+    var receiverNicknameRefHandle = DatabaseHandle()
     var names = [String: String]()
     
-    var membersAreTypingRef = FIRDatabaseReference()
-    var membersAreTypingRefHandle = FIRDatabaseHandle()
-    var userIsTypingRef = FIRDatabaseReference()
+    var membersAreTypingRef = DatabaseReference()
+    var membersAreTypingRefHandle = DatabaseHandle()
+    var userIsTypingRef = DatabaseReference()
     var userIsTyping = false {
         didSet {
             if userIsTyping {
@@ -210,7 +210,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
                 
                 // Wait for the message's content to be loaded to storage.
                 // Once this happens, the message's `mediaURL` will be updated.
-                var messageRefHandle = FIRDatabaseHandle()
+                var messageRefHandle = DatabaseHandle()
                 let messageRef = self.ref.child(Path.Messages).child(message.convo).child(message.key).child(Path.MediaURL)
                 messageRefHandle = messageRef.observe(.value, with: { (snapshot) in
                     
@@ -260,7 +260,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
                 
                 // Wait for the message's content to be loaded to storage.
                 // Once this happens, the message's `mediaURL` will be updated.
-                var messageRefHandle = FIRDatabaseHandle()
+                var messageRefHandle = DatabaseHandle()
                 let messageRef = self.ref.child(Path.Messages).child(message.convo).child(message.key).child(Path.MediaURL)
                 messageRefHandle = messageRef.observe(.value, with: { (snapshot) in
                     
@@ -323,7 +323,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     func observeLastMessage() {
         lastMessageRefHandle = messagesRef.queryOrdered(byChild: Path.Timestamp).queryLimited(toLast: 1).observe(.value, with: { (snapshot) in
             guard snapshot.hasChildren() else { return }
-            guard let message = Message(anyObject: (snapshot.children.nextObject()! as! FIRDataSnapshot).value as AnyObject) else { return }
+            guard let message = Message(anyObject: (snapshot.children.nextObject()! as! DataSnapshot).value as AnyObject) else { return }
             if message.senderId == self.senderId && message.read {
                 let message_ = self.messages[self.readReceiptIndex]
                 if !message_.read {
