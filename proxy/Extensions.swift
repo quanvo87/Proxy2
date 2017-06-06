@@ -6,6 +6,14 @@
 //  Copyright © 2016 Quan Vo. All rights reserved.
 //
 
+struct ProxyError: Error {
+    let localizedDescription: String
+    
+    init(_ errMessage: String) {
+        localizedDescription = errMessage
+    }
+}
+
 extension UIViewController {
     func showAlert(_ title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)

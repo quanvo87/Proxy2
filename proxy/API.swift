@@ -13,7 +13,6 @@ import FirebaseStorage
 import JSQMessagesViewController
 
 class API {
-    
     static let sharedInstance = API()
     
     var uid = ""
