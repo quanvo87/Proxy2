@@ -1,5 +1,5 @@
 //
-//  LogInAVPlayer.swift
+//  LogInVideoPlayer.swift
 //  proxy
 //
 //  Created by Quan Vo on 6/5/17.
