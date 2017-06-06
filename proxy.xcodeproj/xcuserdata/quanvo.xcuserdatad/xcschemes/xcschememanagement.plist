@@ -7,22 +7,12 @@
 		<key>proxy.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>0</integer>
+			<integer>30</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
 		<key>14E19A3D1D60EF100030B366</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>5982BC001EE684A700544035</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>5982BC0E1EE685F800544035</key>
 		<dict>
 			<key>primary</key>
 			<true/>

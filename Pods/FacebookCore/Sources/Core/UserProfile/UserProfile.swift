@@ -103,7 +103,7 @@ extension UserProfile {
    - parameter userId:     Facebook user id of the profile to fetch.
    - parameter completion: The closure to be executed once the profile is refreshed.
    */
-  public static func fetch(_ userId: String, completion: @escaping Completion) {
+  public static func fetch(userId: String, completion: @escaping Completion) {
     let request = GraphRequest(graphPath: userId,
                                parameters: ["fields" : "first_name,middle_name,last_name,name,link" as AnyObject],
                                httpMethod: .GET)
@@ -141,7 +141,7 @@ extension UserProfile {
    - parameter completion: Optional closure to be executed once the profile is refreshed. Default: `nil`.
    */
   public func refresh(_ completion: Completion?) {
-    UserProfile.fetch(userId) { result in
+    UserProfile.fetch(userId: userId) { result in
       completion?(result)
     }
   }
