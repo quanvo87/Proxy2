@@ -28,12 +28,12 @@ import FBSDKCoreKit
  should call them in the respective methods in your AppDelegate implementation.
  */
 public final class SDKApplicationDelegate {
-  fileprivate let delegate: FBSDKApplicationDelegate = FBSDKApplicationDelegate.sharedInstance()
+  private let delegate: FBSDKApplicationDelegate = FBSDKApplicationDelegate.sharedInstance()
 
   /// Returns the singleton instance of an application delegate.
   public static let shared = SDKApplicationDelegate()
 
-  fileprivate init() { }
+  private init() { }
 
   /**
    Call this function from the `UIApplicationDelegate.application(application:didFinishLaunchingWithOptions:)` function

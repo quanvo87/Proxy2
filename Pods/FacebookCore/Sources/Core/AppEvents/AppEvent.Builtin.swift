@@ -32,7 +32,7 @@ extension AppEvent {
 
    - returns: An app event that can be logged via `AppEventsLogger`.
    */
-  public static func completedRegistration(_ registrationMethod: String? = nil,
+  public static func completedRegistration(registrationMethod: String? = nil,
                                            valueToSum: Double? = nil,
                                            extraParameters: ParametersDictionary = [:]) -> AppEvent {
     var parameters = extraParameters
@@ -49,7 +49,7 @@ extension AppEvent {
 
    - returns: An app event that can be logged via `AppEventsLogger`.
    */
-  public static func completedTutorial(_ successful: Bool? = nil,
+  public static func completedTutorial(successful: Bool? = nil,
                                        valueToSum: Double? = nil,
                                        extraParameters: ParametersDictionary = [:]) -> AppEvent {
     var parameters = extraParameters
@@ -68,7 +68,7 @@ extension AppEvent {
 
    - returns: An app event that can be logged via `AppEventsLogger`.
    */
-  public static func viewedContent(_ contentType: String? = nil,
+  public static func viewedContent(contentType: String? = nil,
                                    contentId: String? = nil,
                                    currency: String? = nil,
                                    valueToSum: Double? = nil,
@@ -91,7 +91,7 @@ extension AppEvent {
 
    - returns: An app event that can be logged via `AppEventsLogger`.
    */
-  public static func searched(_ contentId: String? = nil,
+  public static func searched(contentId: String? = nil,
                               searchedString: String? = nil,
                               successful: Bool? = nil,
                               valueToSum: Double? = nil,
@@ -114,7 +114,7 @@ extension AppEvent {
 
    - returns: An app event that can be logged via `AppEventsLogger`.
    */
-  public static func rated<T: UnsignedInteger>(_ contentType: String? = nil,
+  public static func rated<T: UnsignedInteger>(contentType: String? = nil,
                            contentId: String? = nil,
                            maxRatingValue: T? = nil,
                            valueToSum: Double? = nil,
@@ -142,7 +142,7 @@ extension AppEvent {
 
    - returns: An app event that can be logged via `AppEventsLogger`.
    */
-  public static func purchased(_ amount: Double,
+  public static func purchased(amount: Double,
                                currency: String? = nil,
                                extraParameters: ParametersDictionary = [:]) -> AppEvent {
     var parameters = extraParameters
@@ -161,7 +161,7 @@ extension AppEvent {
 
    - returns: An app event that can be logged via `AppEventsLogger`.
    */
-  public static func addedToCart(_ contentType: String? = nil,
+  public static func addedToCart(contentType: String? = nil,
                                  contentId: String? = nil,
                                  currency: String? = nil,
                                  valueToSum: Double? = nil,
@@ -184,7 +184,7 @@ extension AppEvent {
 
    - returns: An app event that can be logged via `AppEventsLogger`.
    */
-  public static func addedToWishlist(_ contentType: String? = nil,
+  public static func addedToWishlist(contentType: String? = nil,
                                      contentId: String? = nil,
                                      currency: String? = nil,
                                      valueToSum: Double? = nil,
@@ -205,7 +205,7 @@ extension AppEvent {
 
    - returns: An app event that can be logged via `AppEventsLogger`.
    */
-  public static func addedPaymentInfo(_ successful: Bool? = nil,
+  public static func addedPaymentInfo(successful: Bool? = nil,
                                       valueToSum: Double? = nil,
                                       extraParameters: ParametersDictionary = [:]) -> AppEvent {
     var parameters = extraParameters
@@ -226,7 +226,7 @@ extension AppEvent {
 
    - returns: An app event that can be logged via `AppEventsLogger`.
    */
-  public static func initiatedCheckout<T: UnsignedInteger>(_ contentType: String? = nil,
+  public static func initiatedCheckout<T: UnsignedInteger>(contentType: String? = nil,
                                        contentId: String? = nil,
                                        itemCount: T? = nil,
                                        paymentInfoAvailable: Bool? = nil,
@@ -260,7 +260,7 @@ extension AppEvent {
 
    - returns: An app event that can be logged via `AppEventsLogger`.
    */
-  public static func achievedLevel(_ level: AppEventParameterValueType? = nil,
+  public static func achievedLevel(level: AppEventParameterValueType? = nil,
                                    valueToSum: Double? = nil,
                                    extraParameters: ParametersDictionary = [:]) -> AppEvent {
     var parameters = extraParameters
@@ -277,7 +277,7 @@ extension AppEvent {
 
    - returns: An app event that can be logged via `AppEventsLogger`.
    */
-  public static func unlockedAchievement(_ description: String? = nil,
+  public static func unlockedAchievement(description: String? = nil,
                                          valueToSum: Double? = nil,
                                          extraParameters: ParametersDictionary = [:]) -> AppEvent {
     var parameters = extraParameters
@@ -295,7 +295,7 @@ extension AppEvent {
 
    - returns: An app event that can be logged via `AppEventsLogger`.
    */
-  public static func spentCredits(_ contentType: String? = nil,
+  public static func spentCredits(contentType: String? = nil,
                                   contentId: String? = nil,
                                   valueToSum: Double? = nil,
                                   extraParameters: ParametersDictionary = [:]) -> AppEvent {
