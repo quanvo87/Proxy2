@@ -17,7 +17,10 @@ class proxyTests: XCTestCase {
 
         iconManager.getIconNames { (iconNames) in
             print(iconNames)
-            expectation.fulfill()
+            iconManager.getUIImage(forIconName: iconNames[0], completion: { (image) in
+                print(image as Any)
+                expectation.fulfill()
+            })
         }
         
         waitForExpectations(timeout: 10)

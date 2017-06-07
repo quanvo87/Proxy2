@@ -256,13 +256,13 @@
 		14E19A351D60EF100030B366 = {
 			isa = PBXGroup;
 			children = (
-				59C910061EE6136200ACF24A /* Splash Videos */,
 				14E19A401D60EF100030B366 /* proxy */,
-				9A83F3C766D4B654D2044BF6 /* Pods */,
 				5982BC1E1EE6886F00544035 /* proxyTests */,
+				9A83F3C766D4B654D2044BF6 /* Pods */,
 				F07A503573ADA0B0B8E01D98 /* Frameworks */,
 				DBF3053930EA74566F23AFC5 /* Products */,
 				595463C11D9EC90C0079BEA3 /* Splash Videos */,
+				59C910061EE6136200ACF24A /* Splash Videos */,
 			);
 			sourceTree = "<group>";
 		};
@@ -311,7 +311,7 @@
 				5982BC211EE6886F00544035 /* Info.plist */,
 			);
 			path = proxyTests;
-			sourceTree = "<group>";
+			sourceTree = SOURCE_ROOT;
 		};
 		8C58ABB3C024E5AA096A4135 /* Pods */ = {
 			isa = PBXGroup;
