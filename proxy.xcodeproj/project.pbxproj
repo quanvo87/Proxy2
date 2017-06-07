@@ -52,7 +52,6 @@
 		59F455FE1DC85BD0003EBA69 /* ReceiverPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F455FD1DC85BD0003EBA69 /* ReceiverPickerViewController.swift */; };
 		59F456001DC987EF003EBA69 /* ReceiverPickerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F455FF1DC987EF003EBA69 /* ReceiverPickerDelegate.swift */; };
 		6BA416E0405C691A2A0D975A /* Pods_proxy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 42B14E4F2F6BB0AA66125CA8 /* Pods_proxy.framework */; };
-		F8601D08682CD23B0A712CAD /* Pods_proxy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38C5C6B48B79F08C65113251 /* Pods_proxy.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -105,7 +104,6 @@
 		1A8B7BB021913611AC3882F6 /* Pods-proxyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-proxyTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-proxyTests/Pods-proxyTests.release.xcconfig"; sourceTree = "<group>"; };
 		21E247E04340B3517641BD5C /* Pods-proxy.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-proxy.release.xcconfig"; path = "Pods/Target Support Files/Pods-proxy/Pods-proxy.release.xcconfig"; sourceTree = "<group>"; };
 		35ED029DA0B290CDE1473724 /* Pods_proxyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_proxyTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		38C5C6B48B79F08C65113251 /* Pods_proxy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_proxy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		42B14E4F2F6BB0AA66125CA8 /* Pods_proxy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_proxy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		45316463CC267F4701C9ACF9 /* Pods-proxyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-proxyTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-proxyTests/Pods-proxyTests.debug.xcconfig"; sourceTree = "<group>"; };
 		590AD6561DCE61A200473245 /* BlockedUsersTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockedUsersTableViewController.swift; sourceTree = "<group>"; };
@@ -136,7 +134,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F8601D08682CD23B0A712CAD /* Pods_proxy.framework in Frameworks */,
 				6BA416E0405C691A2A0D975A /* Pods_proxy.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -261,7 +258,6 @@
 				14E19A401D60EF100030B366 /* proxy */,
 				5982BC1E1EE6886F00544035 /* proxyTests */,
 				F07A503573ADA0B0B8E01D98 /* Frameworks */,
-				D428DCAD961DE668E1D7D394 /* Frameworks */,
 				9A83F3C766D4B654D2044BF6 /* Pods */,
 				8C58ABB3C024E5AA096A4135 /* Pods */,
 				DBF3053930EA74566F23AFC5 /* Products */,
@@ -331,14 +327,6 @@
 				1A8B7BB021913611AC3882F6 /* Pods-proxyTests.release.xcconfig */,
 			);
 			name = Pods;
-			sourceTree = "<group>";
-		};
-		D428DCAD961DE668E1D7D394 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				38C5C6B48B79F08C65113251 /* Pods_proxy.framework */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		DBF3053930EA74566F23AFC5 /* Products */ = {
