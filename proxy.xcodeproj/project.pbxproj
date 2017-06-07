@@ -121,7 +121,7 @@
 		5982BC1F1EE6886F00544035 /* proxyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = proxyTests.swift; sourceTree = "<group>"; };
 		5982BC211EE6886F00544035 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		599B4D2E1DC8384900C476D5 /* SenderPickerTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SenderPickerTableViewController.swift; sourceTree = "<group>"; };
-		59C910061EE6136200ACF24A /* Splash Videos */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Splash Videos"; sourceTree = "<group>"; };
+		59C910061EE6136200ACF24A /* Splash Videos */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "Splash Videos"; path = "../Splash Videos"; sourceTree = "<group>"; };
 		59C910081EE6189500ACF24A /* LogInManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogInManager.swift; sourceTree = "<group>"; };
 		59CD49E21EE6796600E001C9 /* IconManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IconManager.swift; sourceTree = "<group>"; };
 		59E230341EE547DB00B59549 /* LogInVideoPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogInVideoPlayer.swift; sourceTree = "<group>"; };
@@ -233,7 +233,6 @@
 				147B5C391D82891300D18C73 /* DefaultIcons.swift */,
 				14383B591D7B0CB60086CA6C /* NSDate+NVTimeAgo.h */,
 				14383B5A1D7B0CB60086CA6C /* NSDate+NVTimeAgo.m */,
-				14E19A411D60EF100030B366 /* AppDelegate.swift */,
 			);
 			name = Common;
 			sourceTree = "<group>";
@@ -241,14 +240,17 @@
 		143F76F81D72BFB800EF305F /* Other */ = {
 			isa = PBXGroup;
 			children = (
-				145E9D0A1D8A04140043F34F /* proxy.entitlements */,
+				14E19A411D60EF100030B366 /* AppDelegate.swift */,
+				14E19A451D60EF100030B366 /* Main.storyboard */,
+				14E19A4B1D60EF100030B366 /* Assets.xcassets */,
 				14E19A4D1D60EF100030B366 /* LaunchScreen.storyboard */,
 				14E19A501D60EF100030B366 /* Info.plist */,
+				145E9D0A1D8A04140043F34F /* proxy.entitlements */,
 				14A6F18F1D6C21ED0015431E /* GoogleService-Info.plist */,
 				14E19A561D60F07A0030B366 /* Header.h */,
-				14E19A3F1D60EF100030B366 /* Products */,
-				8C58ABB3C024E5AA096A4135 /* Pods */,
-				D428DCAD961DE668E1D7D394 /* Frameworks */,
+				14383B281D75EA950086CA6C /* notes.swift */,
+				595463C11D9EC90C0079BEA3 /* Splash Videos */,
+				59C910061EE6136200ACF24A /* Splash Videos */,
 			);
 			name = Other;
 			sourceTree = "<group>";
@@ -258,11 +260,12 @@
 			children = (
 				14E19A401D60EF100030B366 /* proxy */,
 				5982BC1E1EE6886F00544035 /* proxyTests */,
-				9A83F3C766D4B654D2044BF6 /* Pods */,
 				F07A503573ADA0B0B8E01D98 /* Frameworks */,
+				D428DCAD961DE668E1D7D394 /* Frameworks */,
+				9A83F3C766D4B654D2044BF6 /* Pods */,
+				8C58ABB3C024E5AA096A4135 /* Pods */,
 				DBF3053930EA74566F23AFC5 /* Products */,
-				595463C11D9EC90C0079BEA3 /* Splash Videos */,
-				59C910061EE6136200ACF24A /* Splash Videos */,
+				14E19A3F1D60EF100030B366 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
@@ -272,7 +275,6 @@
 				14E19A3E1D60EF100030B366 /* proxy.app */,
 			);
 			name = Products;
-			path = ..;
 			sourceTree = "<group>";
 		};
 		14E19A401D60EF100030B366 /* proxy */ = {
@@ -285,9 +287,6 @@
 				14383B101D7380130086CA6C /* Model */,
 				14383B131D73AD1F0086CA6C /* View */,
 				143F76F71D72BE7400EF305F /* Common */,
-				14E19A451D60EF100030B366 /* Main.storyboard */,
-				14E19A4B1D60EF100030B366 /* Assets.xcassets */,
-				14383B281D75EA950086CA6C /* notes.swift */,
 				143F76F81D72BFB800EF305F /* Other */,
 			);
 			path = proxy;
@@ -302,6 +301,7 @@
 				595463B71D9EC65B0079BEA3 /* dragontailzipline.mp4 */,
 			);
 			name = "Splash Videos";
+			path = ..;
 			sourceTree = "<group>";
 		};
 		5982BC1E1EE6886F00544035 /* proxyTests */ = {
@@ -320,7 +320,6 @@
 				197B015D4173F5D5144C2ADC /* Pods-proxy.release.xcconfig */,
 			);
 			name = Pods;
-			path = ..;
 			sourceTree = "<group>";
 		};
 		9A83F3C766D4B654D2044BF6 /* Pods */ = {
@@ -340,7 +339,6 @@
 				38C5C6B48B79F08C65113251 /* Pods_proxy.framework */,
 			);
 			name = Frameworks;
-			path = ..;
 			sourceTree = "<group>";
 		};
 		DBF3053930EA74566F23AFC5 /* Products */ = {
