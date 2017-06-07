@@ -8,7 +8,6 @@
 
 import AVFoundation
 
-// TODO: - try to move videos somewhere else
 class LogInVideoPlayer {
     private let player: AVPlayer
 
@@ -16,14 +15,14 @@ class LogInVideoPlayer {
         let videos = ["arabiangulf", "beachpalm", "dragontailzipline", "hawaiiancoast"]
         let rand = Int(arc4random_uniform(UInt32(videos.count)))
 
-        guard let path = Bundle.main.path(forResource: "/Splash Videos/\(videos[rand])", ofType: "mp4") else {
+        guard let path = Bundle.main.path(forResource: "Assets/Splash Videos/\(videos[rand])", ofType: "mp4") else {
             return nil
         }
 
         let url = URL(fileURLWithPath: path)
         player = AVPlayer(url: url)
         player.isMuted = true
-
+        
         let playerLayer = AVPlayerLayer(player: player)
         playerLayer.frame = view.frame
         playerLayer.opacity = 0.95

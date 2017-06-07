@@ -43,9 +43,9 @@
 		590AD65B1DCE71C300473245 /* BlockedUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 590AD65A1DCE71C300473245 /* BlockedUser.swift */; };
 		592673B81DBECDA200C2FD6F /* MeTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592673B71DBECDA200C2FD6F /* MeTableViewController.swift */; };
 		593302CF1DBF35D400D26805 /* MeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 593302CE1DBF35D400D26805 /* MeTableViewCell.swift */; };
+		5958565D1EE7E58300FCA14B /* Assets in Resources */ = {isa = PBXBuildFile; fileRef = 5958565C1EE7E58300FCA14B /* Assets */; };
 		5982BC201EE6886F00544035 /* proxyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5982BC1F1EE6886F00544035 /* proxyTests.swift */; };
 		599B4D2F1DC8384900C476D5 /* SenderPickerTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599B4D2E1DC8384900C476D5 /* SenderPickerTableViewController.swift */; };
-		59C910071EE6136200ACF24A /* Splash Videos in Resources */ = {isa = PBXBuildFile; fileRef = 59C910061EE6136200ACF24A /* Splash Videos */; };
 		59C910091EE6189500ACF24A /* LogInManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C910081EE6189500ACF24A /* LogInManager.swift */; };
 		59CD49E31EE6796600E001C9 /* IconManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59CD49E21EE6796600E001C9 /* IconManager.swift */; };
 		59E230351EE547DB00B59549 /* LogInVideoPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E230341EE547DB00B59549 /* LogInVideoPlayer.swift */; };
@@ -111,10 +111,10 @@
 		593302CE1DBF35D400D26805 /* MeTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeTableViewCell.swift; sourceTree = "<group>"; };
 		595856571EE7DDF600FCA14B /* proxy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = proxy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		595856581EE7DDF900FCA14B /* proxyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = proxyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		5958565C1EE7E58300FCA14B /* Assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Assets; path = ../Assets; sourceTree = "<group>"; };
 		5982BC1F1EE6886F00544035 /* proxyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = proxyTests.swift; sourceTree = "<group>"; };
 		5982BC211EE6886F00544035 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		599B4D2E1DC8384900C476D5 /* SenderPickerTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SenderPickerTableViewController.swift; sourceTree = "<group>"; };
-		59C910061EE6136200ACF24A /* Splash Videos */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "Splash Videos"; path = "../Splash Videos"; sourceTree = "<group>"; };
 		59C910081EE6189500ACF24A /* LogInManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogInManager.swift; sourceTree = "<group>"; };
 		59CD49E21EE6796600E001C9 /* IconManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IconManager.swift; sourceTree = "<group>"; };
 		59E230341EE547DB00B59549 /* LogInVideoPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogInVideoPlayer.swift; sourceTree = "<group>"; };
@@ -240,7 +240,7 @@
 				14A6F18F1D6C21ED0015431E /* GoogleService-Info.plist */,
 				14E19A561D60F07A0030B366 /* Header.h */,
 				14383B281D75EA950086CA6C /* notes.swift */,
-				59C910061EE6136200ACF24A /* Splash Videos */,
+				5958565C1EE7E58300FCA14B /* Assets */,
 			);
 			name = Other;
 			sourceTree = "<group>";
@@ -276,15 +276,6 @@
 			children = (
 				595856571EE7DDF600FCA14B /* proxy.app */,
 				595856581EE7DDF900FCA14B /* proxyTests.xctest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		595856561EE7D84700FCA14B /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				595856541EE7D82400FCA14B /* proxy.app */,
-				595856551EE7D82900FCA14B /* proxyTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -415,7 +406,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				59C910071EE6136200ACF24A /* Splash Videos in Resources */,
+				5958565D1EE7E58300FCA14B /* Assets in Resources */,
 				14E19A4F1D60EF100030B366 /* LaunchScreen.storyboard in Resources */,
 				14A6F1901D6C21ED0015431E /* GoogleService-Info.plist in Resources */,
 				14E19A4C1D60EF100030B366 /* Assets.xcassets in Resources */,
