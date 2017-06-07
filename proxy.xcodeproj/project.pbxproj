@@ -109,10 +109,6 @@
 		590AD65A1DCE71C300473245 /* BlockedUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockedUser.swift; sourceTree = "<group>"; };
 		592673B71DBECDA200C2FD6F /* MeTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeTableViewController.swift; sourceTree = "<group>"; };
 		593302CE1DBF35D400D26805 /* MeTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeTableViewCell.swift; sourceTree = "<group>"; };
-		595463B71D9EC65B0079BEA3 /* dragontailzipline.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = dragontailzipline.mp4; sourceTree = "<group>"; };
-		595463B91D9EC8F80079BEA3 /* arabiangulf.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = arabiangulf.mp4; sourceTree = "<group>"; };
-		595463BA1D9EC8F80079BEA3 /* beachpalm.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = beachpalm.mp4; sourceTree = "<group>"; };
-		595463BB1D9EC8F80079BEA3 /* hawaiiancoast.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = hawaiiancoast.mp4; sourceTree = "<group>"; };
 		595856571EE7DDF600FCA14B /* proxy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = proxy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		595856581EE7DDF900FCA14B /* proxyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = proxyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5982BC1F1EE6886F00544035 /* proxyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = proxyTests.swift; sourceTree = "<group>"; };
@@ -244,7 +240,6 @@
 				14A6F18F1D6C21ED0015431E /* GoogleService-Info.plist */,
 				14E19A561D60F07A0030B366 /* Header.h */,
 				14383B281D75EA950086CA6C /* notes.swift */,
-				595463C11D9EC90C0079BEA3 /* Splash Videos */,
 				59C910061EE6136200ACF24A /* Splash Videos */,
 			);
 			name = Other;
@@ -274,18 +269,6 @@
 				143F76F81D72BFB800EF305F /* Other */,
 			);
 			path = proxy;
-			sourceTree = "<group>";
-		};
-		595463C11D9EC90C0079BEA3 /* Splash Videos */ = {
-			isa = PBXGroup;
-			children = (
-				595463B91D9EC8F80079BEA3 /* arabiangulf.mp4 */,
-				595463BA1D9EC8F80079BEA3 /* beachpalm.mp4 */,
-				595463BB1D9EC8F80079BEA3 /* hawaiiancoast.mp4 */,
-				595463B71D9EC65B0079BEA3 /* dragontailzipline.mp4 */,
-			);
-			name = "Splash Videos";
-			path = ..;
 			sourceTree = "<group>";
 		};
 		595856591EE7DE5500FCA14B /* Products */ = {
