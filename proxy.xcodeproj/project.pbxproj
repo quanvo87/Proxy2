@@ -280,6 +280,15 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		595856561EE7D84700FCA14B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				595856541EE7D82400FCA14B /* proxy.app */,
+				595856551EE7D82900FCA14B /* proxyTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		5982BC1E1EE6886F00544035 /* proxyTests */ = {
 			isa = PBXGroup;
 			children = (
