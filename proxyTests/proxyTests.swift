@@ -16,9 +16,8 @@ class proxyTests: XCTestCase {
         let iconManager = IconManager.singleton
 
         iconManager.getIconNames { (iconNames) in
-            print(iconNames)
             iconManager.getUIImage(forIconName: iconNames[0], completion: { (image) in
-                print(image as Any)
+                XCTAssertNotNil(image)
                 expectation.fulfill()
             })
         }
