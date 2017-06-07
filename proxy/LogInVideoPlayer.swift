@@ -8,6 +8,7 @@
 
 import AVFoundation
 
+// TODO: - try to move videos somewhere else
 class LogInVideoPlayer {
     private let player: AVPlayer
 

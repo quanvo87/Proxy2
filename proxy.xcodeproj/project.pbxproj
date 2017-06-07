@@ -109,16 +109,12 @@
 		590AD65A1DCE71C300473245 /* BlockedUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockedUser.swift; sourceTree = "<group>"; };
 		592673B71DBECDA200C2FD6F /* MeTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeTableViewController.swift; sourceTree = "<group>"; };
 		593302CE1DBF35D400D26805 /* MeTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeTableViewCell.swift; sourceTree = "<group>"; };
-		595463B71D9EC65B0079BEA3 /* dragontailzipline.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = dragontailzipline.mp4; sourceTree = "<group>"; };
-		595463B91D9EC8F80079BEA3 /* arabiangulf.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = arabiangulf.mp4; sourceTree = "<group>"; };
-		595463BA1D9EC8F80079BEA3 /* beachpalm.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = beachpalm.mp4; sourceTree = "<group>"; };
-		595463BB1D9EC8F80079BEA3 /* hawaiiancoast.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = hawaiiancoast.mp4; sourceTree = "<group>"; };
-		595856541EE7D82400FCA14B /* proxy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = proxy.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		595856551EE7D82900FCA14B /* proxyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = proxyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		595856571EE7DDF600FCA14B /* proxy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = proxy.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		595856581EE7DDF900FCA14B /* proxyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = proxyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5982BC1F1EE6886F00544035 /* proxyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = proxyTests.swift; sourceTree = "<group>"; };
 		5982BC211EE6886F00544035 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		599B4D2E1DC8384900C476D5 /* SenderPickerTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SenderPickerTableViewController.swift; sourceTree = "<group>"; };
-		59C910061EE6136200ACF24A /* Splash Videos */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Splash Videos"; sourceTree = "<group>"; };
+		59C910061EE6136200ACF24A /* Splash Videos */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "Splash Videos"; path = "../Splash Videos"; sourceTree = "<group>"; };
 		59C910081EE6189500ACF24A /* LogInManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogInManager.swift; sourceTree = "<group>"; };
 		59CD49E21EE6796600E001C9 /* IconManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IconManager.swift; sourceTree = "<group>"; };
 		59E230341EE547DB00B59549 /* LogInVideoPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogInVideoPlayer.swift; sourceTree = "<group>"; };
@@ -244,7 +240,7 @@
 				14A6F18F1D6C21ED0015431E /* GoogleService-Info.plist */,
 				14E19A561D60F07A0030B366 /* Header.h */,
 				14383B281D75EA950086CA6C /* notes.swift */,
-				595463C11D9EC90C0079BEA3 /* Splash Videos */,
+				59C910061EE6136200ACF24A /* Splash Videos */,
 			);
 			name = Other;
 			sourceTree = "<group>";
@@ -256,8 +252,7 @@
 				5982BC1E1EE6886F00544035 /* proxyTests */,
 				F07A503573ADA0B0B8E01D98 /* Frameworks */,
 				9A83F3C766D4B654D2044BF6 /* Pods */,
-				595856561EE7D84700FCA14B /* Products */,
-				59C910061EE6136200ACF24A /* Splash Videos */,
+				595856591EE7DE5500FCA14B /* Products */,
 			);
 			sourceTree = "<group>";
 		};
@@ -276,16 +271,13 @@
 			path = proxy;
 			sourceTree = "<group>";
 		};
-		595463C11D9EC90C0079BEA3 /* Splash Videos */ = {
+		595856591EE7DE5500FCA14B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				595463B91D9EC8F80079BEA3 /* arabiangulf.mp4 */,
-				595463BA1D9EC8F80079BEA3 /* beachpalm.mp4 */,
-				595463BB1D9EC8F80079BEA3 /* hawaiiancoast.mp4 */,
-				595463B71D9EC65B0079BEA3 /* dragontailzipline.mp4 */,
+				595856571EE7DDF600FCA14B /* proxy.app */,
+				595856581EE7DDF900FCA14B /* proxyTests.xctest */,
 			);
-			name = "Splash Videos";
-			path = ..;
+			name = Products;
 			sourceTree = "<group>";
 		};
 		595856561EE7D84700FCA14B /* Products */ = {
@@ -346,7 +338,7 @@
 			);
 			name = proxy;
 			productName = proxy;
-			productReference = 595856541EE7D82400FCA14B /* proxy.app */;
+			productReference = 595856571EE7DDF600FCA14B /* proxy.app */;
 			productType = "com.apple.product-type.application";
 		};
 		5982BC1C1EE6886F00544035 /* proxyTests */ = {
@@ -367,7 +359,7 @@
 			);
 			name = proxyTests;
 			productName = proxyTests;
-			productReference = 595856551EE7D82900FCA14B /* proxyTests.xctest */;
+			productReference = 595856581EE7DDF900FCA14B /* proxyTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -714,6 +706,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = proxy/proxy.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEBUG_ACTIVITY_MODE = "";
+				"DEBUG_ACTIVITY_MODE[sdk=iphonesimulator*]" = disable;
 				DEVELOPMENT_TEAM = 8UMN526X69;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -736,6 +730,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = proxy/proxy.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEBUG_ACTIVITY_MODE = "";
 				DEVELOPMENT_TEAM = 8UMN526X69;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
