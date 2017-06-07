@@ -91,7 +91,6 @@
 		14A6F18F1D6C21ED0015431E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		14A6F1931D6CF1410015431E /* ProxyNameGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyNameGenerator.swift; sourceTree = "<group>"; };
 		14A6F1A11D6FB5090015431E /* NewMessageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewMessageViewController.swift; sourceTree = "<group>"; };
-		14E19A3E1D60EF100030B366 /* proxy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = proxy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		14E19A411D60EF100030B366 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		14E19A461D60EF100030B366 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		14E19A4B1D60EF100030B366 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -114,7 +113,8 @@
 		595463B91D9EC8F80079BEA3 /* arabiangulf.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = arabiangulf.mp4; sourceTree = "<group>"; };
 		595463BA1D9EC8F80079BEA3 /* beachpalm.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = beachpalm.mp4; sourceTree = "<group>"; };
 		595463BB1D9EC8F80079BEA3 /* hawaiiancoast.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = hawaiiancoast.mp4; sourceTree = "<group>"; };
-		5982BC1D1EE6886F00544035 /* proxyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = proxyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		595856541EE7D82400FCA14B /* proxy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = proxy.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		595856551EE7D82900FCA14B /* proxyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = proxyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5982BC1F1EE6886F00544035 /* proxyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = proxyTests.swift; sourceTree = "<group>"; };
 		5982BC211EE6886F00544035 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		599B4D2E1DC8384900C476D5 /* SenderPickerTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SenderPickerTableViewController.swift; sourceTree = "<group>"; };
@@ -253,21 +253,12 @@
 			isa = PBXGroup;
 			children = (
 				14E19A401D60EF100030B366 /* proxy */,
-				59C910061EE6136200ACF24A /* Splash Videos */,
 				5982BC1E1EE6886F00544035 /* proxyTests */,
 				F07A503573ADA0B0B8E01D98 /* Frameworks */,
 				9A83F3C766D4B654D2044BF6 /* Pods */,
-				DBF3053930EA74566F23AFC5 /* Products */,
-				14E19A3F1D60EF100030B366 /* Products */,
+				595856561EE7D84700FCA14B /* Products */,
+				59C910061EE6136200ACF24A /* Splash Videos */,
 			);
-			sourceTree = "<group>";
-		};
-		14E19A3F1D60EF100030B366 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				14E19A3E1D60EF100030B366 /* proxy.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		14E19A401D60EF100030B366 /* proxy */ = {
@@ -297,6 +288,15 @@
 			path = ..;
 			sourceTree = "<group>";
 		};
+		595856561EE7D84700FCA14B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				595856541EE7D82400FCA14B /* proxy.app */,
+				595856551EE7D82900FCA14B /* proxyTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		5982BC1E1EE6886F00544035 /* proxyTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -315,14 +315,6 @@
 				1A8B7BB021913611AC3882F6 /* Pods-proxyTests.release.xcconfig */,
 			);
 			name = Pods;
-			sourceTree = "<group>";
-		};
-		DBF3053930EA74566F23AFC5 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				5982BC1D1EE6886F00544035 /* proxyTests.xctest */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		F07A503573ADA0B0B8E01D98 /* Frameworks */ = {
@@ -354,7 +346,7 @@
 			);
 			name = proxy;
 			productName = proxy;
-			productReference = 14E19A3E1D60EF100030B366 /* proxy.app */;
+			productReference = 595856541EE7D82400FCA14B /* proxy.app */;
 			productType = "com.apple.product-type.application";
 		};
 		5982BC1C1EE6886F00544035 /* proxyTests */ = {
@@ -375,7 +367,7 @@
 			);
 			name = proxyTests;
 			productName = proxyTests;
-			productReference = 5982BC1D1EE6886F00544035 /* proxyTests.xctest */;
+			productReference = 595856551EE7D82900FCA14B /* proxyTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -416,7 +408,7 @@
 				Base,
 			);
 			mainGroup = 14E19A351D60EF100030B366;
-			productRefGroup = DBF3053930EA74566F23AFC5 /* Products */;
+			productRefGroup = 14E19A351D60EF100030B366;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
