@@ -6,14 +6,6 @@
 //  Copyright © 2016 Quan Vo. All rights reserved.
 //
 
-struct ProxyError: Error {
-    let localizedDescription: String
-    
-    init(_ errMessage: String) {
-        localizedDescription = errMessage
-    }
-}
-
 extension UIViewController {
     func showAlert(_ title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
@@ -22,33 +14,42 @@ extension UIViewController {
     }
 }
 
+extension Error {
+    var description: String {
+        if let proxyError = self as? ProxyError {
+            return proxyError.localizedDescription
+        }
+        return self.localizedDescription
+    }
+}
+
 extension Int {
     func toNumberLabel() -> String {
         return self == 0 ? "" : String(self)
     }
-    
+
     func toTitleSuffix() -> String {
         return self == 0 ? "" : "(\(self))"
     }
-    
+
     func formatted() -> String {
         var num = Double(self)
         let sign = ((num < 0) ? "-" : "" )
-        
+
         num = fabs(num)
-        
+
         if num < 1000000000.0 {
             let formatter = NumberFormatter()
             formatter.numberStyle = .decimal
             return formatter.string(from: NSNumber(integerLiteral: Int(num)))!
         }
-        
+
         let exp = Int(log10(num) / 3.0 ) // log10(1000)
-        
+
         let units = ["K","M","G","T","P","E"]
-        
+
         let roundedNum = round(10 * num / pow(1000.0,Double(exp))) / 10
-        
+
         return "\(sign)\(roundedNum)\(units[exp-1])"
     }
 }
@@ -68,12 +69,12 @@ extension Double {
 
 extension UIImage {
     func resize(toNewSize newSize: CGSize, isAspectRatio aspect: Bool) -> UIImage {
-        
+
         let originalRatio = self.size.width / self.size.height
         let newRatio = newSize.width / newSize.height
-        
+
         var size = CGSize(width: 0, height: 0)
-        
+
         if aspect {
             if originalRatio < newRatio {
                 size.height = newSize.height
@@ -85,16 +86,16 @@ extension UIImage {
         } else {
             size = newSize
         }
-        
+
         let scale: CGFloat = 1.0
         size.width /= scale
         size.height /= scale
-        
+
         UIGraphicsBeginImageContextWithOptions(size, false, scale)
         self.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
         let newImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        
+
         return newImage!
     }
 }
@@ -103,11 +104,11 @@ extension UIColor {
     convenience init(red: Int, green: Int, blue: Int) {
         self.init(red: CGFloat(red) / 255.0, green: CGFloat(green) / 255.0, blue: CGFloat(blue) / 255.0, alpha: 1.0)
     }
-    
+
     convenience init(hex: Int) {
         self.init(red:(hex >> 16) & 0xff, green:(hex >> 8) & 0xff, blue:hex & 0xff)
     }
-    
+
     func blue() -> UIColor {
         return UIColor(red: 0, green: 122, blue: 255)
     }

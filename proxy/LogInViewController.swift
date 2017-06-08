@@ -6,13 +6,12 @@
 //  Copyright © 2016 Quan Vo. All rights reserved.
 //
 
-// TODO: - rename buttons
 // TODO: - add phone number sign up, maybe remove email sign up?
 class LogInViewController: UIViewController {
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var logInButton: UIButton!
-    @IBOutlet weak var createNewAccountButton: UIButton!
+    @IBOutlet weak var signUpButton: UIButton!
     @IBOutlet weak var facebookButton: UIButton!
 
     var videoPlayer: LogInVideoPlayer?
@@ -27,10 +26,10 @@ class LogInViewController: UIViewController {
         passwordTextField.clearButtonMode = .whileEditing
         passwordTextField.isSecureTextEntry = true
 
-        createNewAccountButton.layer.borderColor = UIColor.white.cgColor
-        createNewAccountButton.layer.borderWidth = 1
-        createNewAccountButton.layer.cornerRadius = 5
-        createNewAccountButton.setTitleColor(UIColor.white, for: UIControlState())
+        signUpButton.layer.borderColor = UIColor.white.cgColor
+        signUpButton.layer.borderWidth = 1
+        signUpButton.layer.cornerRadius = 5
+        signUpButton.setTitleColor(UIColor.white, for: UIControlState())
 
         logInButton.layer.borderColor = UIColor.white.cgColor
         logInButton.layer.borderWidth = 1
@@ -46,17 +45,17 @@ class LogInViewController: UIViewController {
     @IBAction func logIn(_ sender: AnyObject) {
         LogInManager.emailLogIn(email: emailTextField.text?.lowercased(), password: passwordTextField.text) { (error) in
             if let error = error {
-                self.showAlert("Error Logging In", message: error.localizedDescription)
+                self.showAlert("Error Logging In", message: error.description)
                 return
             }
             self.goToHomeScreen()
         }
     }
 
-    @IBAction func createNewAccount(_ sender: AnyObject) {
+    @IBAction func signUp(_ sender: AnyObject) {
         LogInManager.emailSignUp(email: emailTextField.text?.lowercased(), password: passwordTextField.text) { (error) in
             if let error = error {
-                self.showAlert("Error Signing Up", message: error.localizedDescription)
+                self.showAlert("Error Signing Up", message: error.description)
                 return
             }
             self.goToHomeScreen()
@@ -66,7 +65,7 @@ class LogInViewController: UIViewController {
     @IBAction func logInWithFacebook(_ sender: AnyObject) {
         LogInManager.facebookLogIn(viewController: self) { (error) in
             if let error = error {
-                self.showAlert("Error Logging In With Facebook", message: error.localizedDescription)
+                self.showAlert("Error Logging In With Facebook", message: error.description)
                 return
             }
             self.goToHomeScreen()

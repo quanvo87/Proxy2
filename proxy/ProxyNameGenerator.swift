@@ -6,6 +6,7 @@
 //  Copyright © 2016 Quan Vo. All rights reserved.
 //
 
+// TODO: - get words from firebase storage
 struct ProxyNameGenerator {
     
     let numRange: UInt32 = 9

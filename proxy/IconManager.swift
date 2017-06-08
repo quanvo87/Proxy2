@@ -6,31 +6,45 @@
 //  Copyright © 2017 Quan Vo. All rights reserved.
 //
 
-import Firebase
+import FirebaseStorage
 
 class IconManager {
-    static let singleton = IconManager()
-
+    static let shared = IconManager()
     fileprivate let ref = Storage.storage().reference(forURL: URLs.Storage + "/icons")
-
     fileprivate let getIconNamesComplete = DispatchGroup()
-
-    fileprivate var iconNames = [NSString]()
+    fileprivate var iconNames = [String]()
     fileprivate var iconURLCache = NSCache<NSString, NSURL>()
     fileprivate var iconCache = NSCache<NSString, UIImage>()
 
-    private init() {
-        getIconNames()
-    }
+    private init() {}
 
-    func getIconNames(completion: @escaping ([NSString]) -> Void) {
+    func getIconNames(completion: @escaping ([String]) -> Void) {
+        if !iconNames.isEmpty {
+            completion(iconNames)
+            return
+        }
+        getIconNamesComplete.enter()
+        ref.child("iconNames.json").getData(maxSize: 1 * 1024 * 1024) { (data, error) in
+            defer {
+                self.getIconNamesComplete.leave()
+            }
+            guard
+                let data = data,
+                let json = try? JSONSerialization.jsonObject(with: data, options: []),
+                let dictionary = json as? [String: Any],
+                let iconNames = dictionary["iconNames"] as? [NSString] else {
+                    print(error ?? #function)
+                    return
+            }
+            self.iconNames = iconNames as [String]
+        }
         getIconNamesComplete.notify(queue: DispatchQueue.main) {
             completion(self.iconNames)
         }
     }
 
-    func getUIImage(forIconName icon: NSString, completion: @escaping (UIImage?) -> Void) {
-        if let image = iconCache.object(forKey: icon) {
+    func getUIImage(forIconName icon: String, completion: @escaping (UIImage?) -> Void) {
+        if let image = iconCache.object(forKey: icon as NSString) {
             completion(image)
             return
         }
@@ -42,42 +56,26 @@ class IconManager {
                         completion(nil)
                         return
                 }
+                self.iconCache.setObject(image, forKey: icon as NSString)
                 completion(image)
-                self.iconCache.setObject(image, forKey: icon)
             }
         }
     }
 }
 
 private extension IconManager {
-    func getIconNames() {
-        getIconNamesComplete.enter()
-        ref.child("iconNames.json").getData(maxSize: 1 * 1024 * 1024) { (data, error) in
-            guard
-                let data = data,
-                let json = try? JSONSerialization.jsonObject(with: data, options: []),
-                let dictionary = json as? [String: Any],
-                let iconNames = dictionary["iconNames"] as? [NSString] else {
-                    print(error ?? "Error getting icons names.")
-                    return
-            }
-            self.iconNames = iconNames
-            self.getIconNamesComplete.leave()
-        }
-    }
-
-    func getIconURL(forIconName icon: NSString, completion: @escaping (URL) -> Void) {
-        if let url = iconURLCache.object(forKey: icon) as URL? {
+    func getIconURL(forIconName icon: String, completion: @escaping (URL) -> Void) {
+        if let url = iconURLCache.object(forKey: icon as NSString) as URL? {
             completion(url)
             return
         }
         ref.child("\(icon)").downloadURL { (url, error) in
             guard let url = url else {
-                print(error ?? "")
+                print(error ?? #function)
                 return
             }
+            self.iconURLCache.setObject(url as NSURL, forKey: icon as NSString)
             completion(url)
-            self.iconURLCache.setObject(url as NSURL, forKey: icon)
         }
     }
 }

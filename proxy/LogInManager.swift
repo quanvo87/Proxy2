@@ -9,7 +9,6 @@
 import FirebaseAuth
 import FacebookLogin
 
-// TODO: - icons
 struct LogInManager {}
 
 extension LogInManager {
@@ -17,13 +16,11 @@ extension LogInManager {
         guard
             let email = email, email != "",
             let password = password, password != "" else {
-                completion(ProxyError("Please enter a valid email and password."))
+                completion(ProxyError(.blankCredentials))
                 return
         }
         Auth.auth().signIn(withEmail: email, password: password) { (user, error) in
-            changeDisplayName(user: user, email: email, completion: {
-                completion(error)
-            })
+            changeDisplayName(user: user, error: error, email: email, completion: completion)
         }
     }
 
@@ -31,25 +28,21 @@ extension LogInManager {
         guard
             let email = email, email != "",
             let password = password, password != "" else {
-                completion(ProxyError("Please enter a valid email and password."))
+                completion(ProxyError(.blankCredentials))
                 return
         }
         Auth.auth().createUser(withEmail: email, password: password) { (user, error) in
-            changeDisplayName(user: user, email: email, completion: {
-                completion(error)
-            })
+            changeDisplayName(user: user, error: error, email: email, completion: completion)
         }
     }
 
-    private static func changeDisplayName(user: User?, email: String, completion: () -> Void) {
+    private static func changeDisplayName(user: User?, error: Error?, email: String, completion: (Error?) -> Void) {
         if let user = user, user.displayName != email {
             let changeRequest = user.createProfileChangeRequest()
             changeRequest.displayName = email
             changeRequest.commitChanges()
-            completion()
-            return
         }
-        completion()
+        finishLogin(user: user, error: error, completion: completion)
     }
 }
 
@@ -60,12 +53,23 @@ extension LogInManager {
             switch loginResult {
             case .success:
                 let credential = FacebookAuthProvider.credential(withAccessToken: FBSDKAccessToken.current().tokenString)
-                Auth.auth().signIn(with: credential) { (_, error) in
-                    completion(error)
+                Auth.auth().signIn(with: credential) { (user, error) in
+                    finishLogin(user: user, error: error, completion: completion)
                 }
-            default:
-                completion(ProxyError("Username/password may be incorrect. Please try again."))
+            case .failed(let error):
+                completion(error)
+            case .cancelled:
+                return
             }
         }
+    }
+}
+
+private extension LogInManager {
+    static func finishLogin(user: User?, error: Error?, completion: (Error?) -> Void) {
+        if let user = user {
+            UserManager.shared.uid = user.uid
+        }
+        completion(error)
     }
 }
