@@ -13,7 +13,7 @@ class proxyTests: XCTestCase {
     func test() {
         let expectation = self.expectation(description: #function)
 
-        let iconManager = IconManager.singleton
+        let iconManager = IconManager.shared
 
         iconManager.getIconNames { (iconNames) in
             iconManager.getUIImage(forIconName: iconNames[0], completion: { (image) in

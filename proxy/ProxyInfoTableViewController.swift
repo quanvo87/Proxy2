@@ -72,7 +72,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         proxyRefHandle = proxyRef.observe(.value, with: { (snapshot) in
             guard let proxy = Proxy(anyObject: snapshot.value! as AnyObject) else { return }
             self.proxy = proxy
-            self.navigationItem.title = proxy.unread.toTitleSuffix()
+            self.navigationItem.title = proxy.unread.asUnreadLabel()
             self.tableView.reloadData()
         })
         

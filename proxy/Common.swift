@@ -28,8 +28,8 @@ extension Int {
         return self == 0 ? "" : String(self)
     }
 
-    func toTitleSuffix() -> String {
-        return self == 0 ? "" : "(\(self))"
+    func asUnreadLabel() -> String {
+        return self == 0 ? "" : " (\(self))"
     }
 
     func formatted() -> String {

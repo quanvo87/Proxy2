@@ -43,28 +43,26 @@ class IconManager {
         }
     }
 
-    func getUIImage(forIconName icon: String, completion: @escaping (UIImage?) -> Void) {
-        if let image = iconCache.object(forKey: icon as NSString) {
-            completion(image)
-            return
+    func setIcon(_ icon: String, forImageView imageView: UIImageView) {
+        if let iconImage = iconCache.object(forKey: icon as NSString) {
+            imageView.image = iconImage
         }
         getIconURL(forIconName: icon) { (url) in
             DispatchQueue.global().async {
                 guard
                     let data = try? Data(contentsOf: url),
                     let image = UIImage(data: data) else {
-                        completion(nil)
                         return
                 }
                 self.iconCache.setObject(image, forKey: icon as NSString)
-                completion(image)
+                DispatchQueue.main.async {
+                    imageView.image = image
+                }
             }
         }
     }
-}
 
-private extension IconManager {
-    func getIconURL(forIconName icon: String, completion: @escaping (URL) -> Void) {
+    private func getIconURL(forIconName icon: String, completion: @escaping (URL) -> Void) {
         if let url = iconURLCache.object(forKey: icon as NSString) as URL? {
             completion(url)
             return
