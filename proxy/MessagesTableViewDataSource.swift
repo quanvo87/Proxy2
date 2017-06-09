@@ -8,21 +8,22 @@
 
 class MessagesTableViewDataSource: NSObject, UITableViewDataSource {
     weak var tableViewController: MessagesTableViewController?
-    let convosManager = ConvosManager()
+    lazy var convosObserver = ConvosObserver()
 
-    init(_ tableViewController: MessagesTableViewController) {
-        super.init()
+    override init() {}
+
+    func load(_ tableViewController: MessagesTableViewController) {
         self.tableViewController = tableViewController
-        convosManager.dataSource = self
+        convosObserver.observe(self)
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return convosManager.convos.count
+        return convosObserver.convos.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.ConvoCell, for: indexPath as IndexPath) as! ConvoCell
-        let convo = convosManager.convos[indexPath.row]
+        let convo = convosObserver.convos[indexPath.row]
 
         cell.iconImageView.image = nil
         IconManager.shared.setIcon(convo.icon + ".png", forImageView: cell.iconImageView) // TODO: - set the ".png" somewhere else

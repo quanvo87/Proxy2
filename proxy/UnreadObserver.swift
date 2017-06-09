@@ -8,17 +8,16 @@
 
 import FirebaseDatabase
 
-class UnreadManager {
-    private weak var delegate: UnreadManagerDelegate?
+class UnreadObserver {
     private var ref = DatabaseReference()
     private var handle = DatabaseHandle()
 
-    init(_ delegate: UnreadManagerDelegate) {
-        self.delegate = delegate
+    init() {}
 
+    func observe(_ delegate: UnreadObserverDelegate) {
         ref = Database.database().reference().child(Path.Unread).child(UserManager.shared.uid).child(Path.Unread)
-        handle = ref.observe(.value, with: { (snapshot) in
-            self.delegate?.setUnread(snapshot.value as? Int)
+        handle = ref.observe(.value, with: { [weak delegate = delegate] (snapshot) in
+            delegate?.setUnread(snapshot.value as? Int)
         })
     }
 
@@ -27,6 +26,6 @@ class UnreadManager {
     }
 }
 
-protocol UnreadManagerDelegate: class {
+protocol UnreadObserverDelegate: class {
     func setUnread(_ unread: Int?)
 }

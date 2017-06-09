@@ -11,10 +11,10 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Log In View Controller-->
+        <!--Login View Controller-->
         <scene sceneID="KpD-I8-wXj">
             <objects>
-                <viewController storyboardIdentifier="Log In View Controller" id="sjW-YU-fmh" userLabel="Log In View Controller" customClass="LogInViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Login View Controller" id="sjW-YU-fmh" customClass="LoginViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Bvm-Q4-VsS"/>
                         <viewControllerLayoutGuide type="bottom" id="wIr-b4-xYr"/>
@@ -38,7 +38,7 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <state key="normal" title="Sign Up"/>
                                 <connections>
-                                    <action selector="signUp:" destination="sjW-YU-fmh" eventType="touchUpInside" id="AwR-4M-jVX"/>
+                                    <action selector="signUp:" destination="sjW-YU-fmh" eventType="touchUpInside" id="bry-PN-C4k"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4Pt-qC-dIL">
@@ -46,15 +46,15 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <state key="normal" title="Log In With Facebook"/>
                                 <connections>
-                                    <action selector="logInWithFacebook:" destination="sjW-YU-fmh" eventType="touchUpInside" id="DLw-p3-sKU"/>
+                                    <action selector="loginWithFacebook:" destination="sjW-YU-fmh" eventType="touchUpInside" id="RAN-x1-vrE"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ant-pc-zQG">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ant-pc-zQG" userLabel="Login Button">
                                 <rect key="frame" x="190" y="317" width="159" height="33"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <state key="normal" title="Log In"/>
                                 <connections>
-                                    <action selector="logIn:" destination="sjW-YU-fmh" eventType="touchUpInside" id="zom-mx-77G"/>
+                                    <action selector="login:" destination="sjW-YU-fmh" eventType="touchUpInside" id="X0T-fp-RAa"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -80,7 +80,7 @@
                     <connections>
                         <outlet property="emailTextField" destination="Zmp-Od-UCu" id="F1b-3A-NbT"/>
                         <outlet property="facebookButton" destination="4Pt-qC-dIL" id="dMQ-OY-65v"/>
-                        <outlet property="logInButton" destination="Ant-pc-zQG" id="jIu-VW-ikb"/>
+                        <outlet property="loginButton" destination="Ant-pc-zQG" id="bhN-se-hvC"/>
                         <outlet property="passwordTextField" destination="F9C-uS-p6m" id="LpS-BJ-9qs"/>
                         <outlet property="signUpButton" destination="lC3-B0-m18" id="4dY-Dq-pM5"/>
                     </connections>

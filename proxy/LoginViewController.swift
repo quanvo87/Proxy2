@@ -1,5 +1,5 @@
 //
-//  LogInViewController.swift
+//  LoginViewController.swift
 //  proxy
 //
 //  Created by Quan Vo on 8/14/16.
@@ -7,43 +7,39 @@
 //
 
 // TODO: - add phone number sign up, maybe remove email sign up?
-class LogInViewController: UIViewController {
+class LoginViewController: UIViewController {
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
-    @IBOutlet weak var logInButton: UIButton!
+    @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var signUpButton: UIButton!
     @IBOutlet weak var facebookButton: UIButton!
 
-    var videoPlayer: LogInVideoPlayer?
+    lazy var videoPlayer = LoginVideoPlayer()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        videoPlayer = LogInVideoPlayer(view: view)
+        videoPlayer.play(self.view)
 
         emailTextField.clearButtonMode = .whileEditing
 
         passwordTextField.clearButtonMode = .whileEditing
         passwordTextField.isSecureTextEntry = true
 
-        signUpButton.layer.borderColor = UIColor.white.cgColor
-        signUpButton.layer.borderWidth = 1
-        signUpButton.layer.cornerRadius = 5
-        signUpButton.setTitleColor(UIColor.white, for: UIControlState())
-
-        logInButton.layer.borderColor = UIColor.white.cgColor
-        logInButton.layer.borderWidth = 1
-        logInButton.layer.cornerRadius = 5
-        logInButton.setTitleColor(UIColor.white, for: UIControlState())
-
-        facebookButton.layer.borderColor = UIColor.white.cgColor
-        facebookButton.layer.borderWidth = 1
-        facebookButton.layer.cornerRadius = 5
-        facebookButton.setTitleColor(UIColor.white, for: UIControlState())
+        setupButton(signUpButton)
+        setupButton(loginButton)
+        setupButton(facebookButton)
     }
 
-    @IBAction func logIn(_ sender: AnyObject) {
-        LogInManager.emailLogIn(email: emailTextField.text?.lowercased(), password: passwordTextField.text) { (error) in
+    func setupButton(_ button: UIButton) {
+        button.layer.borderColor = UIColor.white.cgColor
+        button.layer.borderWidth = 1
+        button.layer.cornerRadius = 5
+        button.setTitleColor(UIColor.white, for: UIControlState())
+    }
+
+    @IBAction func login(_ sender: AnyObject) {
+        Login.emailLogin(email: emailTextField.text?.lowercased(), password: passwordTextField.text) { (error) in
             if let error = error {
                 self.showAlert("Error Logging In", message: error.description)
                 return
@@ -53,7 +49,7 @@ class LogInViewController: UIViewController {
     }
 
     @IBAction func signUp(_ sender: AnyObject) {
-        LogInManager.emailSignUp(email: emailTextField.text?.lowercased(), password: passwordTextField.text) { (error) in
+        Login.emailSignUp(email: emailTextField.text?.lowercased(), password: passwordTextField.text) { (error) in
             if let error = error {
                 self.showAlert("Error Signing Up", message: error.description)
                 return
@@ -62,8 +58,8 @@ class LogInViewController: UIViewController {
         }
     }
 
-    @IBAction func logInWithFacebook(_ sender: AnyObject) {
-        LogInManager.facebookLogIn(viewController: self) { (error) in
+    @IBAction func loginWithFacebook(_ sender: AnyObject) {
+        Login.facebookLogin(viewController: self) { (error) in
             if let error = error {
                 self.showAlert("Error Logging In With Facebook", message: error.description)
                 return
@@ -73,7 +69,7 @@ class LogInViewController: UIViewController {
     }
 
     func goToHomeScreen() {
-        if  let tabBarController = self.storyboard?.instantiateViewController(withIdentifier: Identifiers.TabBarController) as? UITabBarController,
+        if  let tabBarController = storyboard?.instantiateViewController(withIdentifier: Identifiers.TabBarController) as? UITabBarController,
             let appDelegate = UIApplication.shared.delegate as? AppDelegate
         {
             appDelegate.window?.rootViewController = tabBarController

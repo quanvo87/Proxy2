@@ -6,19 +6,31 @@
 //  Copyright © 2017 Quan Vo. All rights reserved.
 //
 
-class NavigationItemManager {
-    let newProxyButton: UIBarButtonItem
-    let newMessageButton: UIBarButtonItem
-    let removeItemsButton: UIBarButtonItem
-    let confirmButton: UIBarButtonItem
-    let cancelButton: UIBarButtonItem
+struct NavigationItemManager {
+    var newProxyButton = UIBarButtonItem()
+    var newMessageButton = UIBarButtonItem()
+    var deleteButton = UIBarButtonItem()
+    var confirmButton = UIBarButtonItem()
+    var cancelButton = UIBarButtonItem()
 
-    init(_ delegate: NavigationItemManagerDelegate) {
-        newProxyButton = ButtonFactory.makeNewProxyButton(target: delegate, selector: #selector(delegate.createNewProxy))
-        newMessageButton = ButtonFactory.makeNewMessageButton(target: delegate, selector: #selector(delegate.createNewMessage))
-        removeItemsButton = ButtonFactory.makeDeleteButton(target: delegate, selector: #selector(delegate.toggleEditMode))
-        confirmButton = ButtonFactory.makeConfirmButton(target: delegate, selector: #selector(delegate.removeItems))
-        cancelButton = ButtonFactory.makeCancelButton(target: delegate, selector: #selector(delegate.toggleEditMode))
+    var itemsToDelete = [Any]()
+
+    init() {}
+
+    mutating func makeButtons(_ delegate: NavigationItemManagerDelegate) {
+        newProxyButton = makeButton(delegate: delegate, selector: #selector(delegate.createNewProxy), imageName: "new-proxy.png")
+        newMessageButton = makeButton(delegate: delegate, selector: #selector(delegate.createNewMessage), imageName: "new-message.png")
+        deleteButton = makeButton(delegate: delegate, selector: #selector(delegate.toggleEditMode), imageName: "delete.png")
+        confirmButton = makeButton(delegate: delegate, selector: #selector(delegate.deleteSelectedItems), imageName: "confirm")
+        cancelButton = makeButton(delegate: delegate, selector: #selector(delegate.toggleEditMode), imageName: "cancel")
+    }
+
+    private func makeButton(delegate: NavigationItemManagerDelegate, selector: Selector, imageName: String) -> UIBarButtonItem {
+        let button = UIButton(type: .custom)
+        button.addTarget(delegate, action: selector, for: UIControlEvents.touchUpInside)
+        button.frame = CGRect(x: 0, y: 0, width: 25, height: 25)
+        button.setImage(UIImage(named: imageName), for: UIControlState.normal)
+        return UIBarButtonItem(customView: button)
     }
 }
 
@@ -26,7 +38,7 @@ class NavigationItemManager {
     func setDefaultButtons()
     func setEditModeButtons()
     func toggleEditMode()
-    func removeItems()
+    func deleteSelectedItems()
     func createNewProxy()
     func createNewMessage()
 }

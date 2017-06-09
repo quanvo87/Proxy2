@@ -13,23 +13,23 @@ class MeTableViewController: UITableViewController {
 
     let api = API.sharedInstance
     let ref = Database.database().reference()
-    
+
     var messagesReceivedRef = DatabaseReference()
     var messagesReceived = "-"
-    
+
     var messagesSentRef = DatabaseReference()
     var messagesSent = "-"
-    
+
     var proxiesInteractedWithRef = DatabaseReference()
     var proxiesInteractedWith = "-"
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
-        
+
         Auth.auth().addStateDidChangeListener { auth, user in
             if let user = user {
                 self.navigationItem.title = user.displayName
-                
+
                 self.messagesReceivedRef = self.ref.child(Path.MessagesReceived).child(self.api.uid).child(Path.MessagesReceived)
                 self.messagesReceivedRef.observe(.value, with: { (snapshot) in
                     if let messagesReceived = snapshot.value as? Int {
@@ -37,7 +37,7 @@ class MeTableViewController: UITableViewController {
                         self.tableView.reloadData()
                     }
                 })
-                
+
                 self.messagesSentRef = self.ref.child(Path.MessagesSent).child(self.api.uid).child(Path.MessagesSent)
                 self.messagesSentRef.observe(.value, with: { (snapshot) in
                     if let messagesSent = snapshot.value as? Int {
@@ -45,7 +45,7 @@ class MeTableViewController: UITableViewController {
                         self.tableView.reloadData()
                     }
                 })
-                
+
                 self.proxiesInteractedWithRef = self.ref.child(Path.ProxiesInteractedWith).child(self.api.uid).child(Path.ProxiesInteractedWith)
                 self.proxiesInteractedWithRef.observe(.value, with: { (snapshot) in
                     if let proxiesInteractedWith = snapshot.value as? Int {
@@ -56,7 +56,7 @@ class MeTableViewController: UITableViewController {
             }
         }
     }
-    
+
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(true)
         messagesReceivedRef.removeAllObservers()
@@ -77,13 +77,13 @@ class MeTableViewController: UITableViewController {
         default: return 0
         }
     }
-    
+
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.MeTableViewCell, for: indexPath as IndexPath) as! MeTableViewCell
         let size = CGSize(width: 30, height: 30)
         let isAspectRatio = true
         switch indexPath.section {
-            
+
         case 0:
             cell.selectionStyle = .none
             switch indexPath.row {
@@ -101,13 +101,13 @@ class MeTableViewController: UITableViewController {
                 cell.titleLabel?.text = "Proxies Interacted With"
             default: break
             }
-            
+
         case 1:
             cell.accessoryType = .disclosureIndicator
             cell.iconImageView.image = UIImage(named: "blocked")?.resize(toNewSize: size, isAspectRatio: isAspectRatio)
             cell.subtitleLabel.text = ""
             cell.titleLabel.text = "Blocked Users"
-            
+
         case 2:
             cell.subtitleLabel.text = ""
             switch indexPath.row {
@@ -119,47 +119,40 @@ class MeTableViewController: UITableViewController {
                 cell.titleLabel?.text = "About"
             default: break
             }
-            
+
         default: break
         }
         return cell
     }
-    
+
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch indexPath.section {
-        
+
         // Show blocked users
         case 1:
             let dest = self.storyboard!.instantiateViewController(withIdentifier: Identifiers.BlockedUsersTableViewController) as! BlockedUsersTableViewController
             navigationController?.pushViewController(dest, animated: true)
-            
+
         case 2:
             tableView.deselectRow(at: indexPath, animated: true)
             switch indexPath.row {
-            
+
             // Log out
             case 0:
                 let alert = UIAlertController(title: "Log Out", message: "Are you sure you want to log out?", preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "Log Out", style: .destructive) { action in
-                    let firebaseAuth = Auth.auth()
-                    do {
-                        try firebaseAuth.signOut()
-                        let logInViewController  = self.storyboard!.instantiateViewController(withIdentifier: "Log In View Controller") as! LogInViewController
-                        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-                        appDelegate.window?.rootViewController = logInViewController
-                    } catch {}
-                    })
-                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { action in
-                    })
+                alert.addAction(UIAlertAction(title: "Log Out", style: .destructive) { _ in
+                    try? Auth.auth().signOut()
+                })
+                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
                 present(alert, animated: true, completion: nil)
-                
+
             // Show About
             case 1:
                 let alert = UIAlertController(title: "About Proxy:", message: "Contact: qvo1987@gmail.com\n\nUpcoming features: sound in videos, location sharing\n\nIcons from icons8.com\n\nLibraries used: Kingfisher, JSQMessagesViewController, Fusuma, MobilePlayer, RAMReel\n\nVersion 0.1", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "Ok", style: .cancel) { action in
-                    })
+                })
                 self.present(alert, animated: true, completion: nil)
-                
+
             default: return
             }
         default:

@@ -63,7 +63,7 @@ struct Settings {
 
 struct Identifiers {
     static let TabBarController = "Tab Bar Controller"
-    static let LogInViewController = "Log In View Controller"
+    static let LoginViewController = "Login View Controller"
     
     static let ProxyInfoTableViewController = "Proxy Info Table View Controller"
     static let ProxyCell = "Proxy Cell"

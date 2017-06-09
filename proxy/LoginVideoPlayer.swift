@@ -1,5 +1,5 @@
 //
-//  LogInVideoPlayer.swift
+//  LoginVideoPlayer.swift
 //  proxy
 //
 //  Created by Quan Vo on 6/5/17.
@@ -8,15 +8,18 @@
 
 import AVFoundation
 
-class LogInVideoPlayer {
-    private let player: AVPlayer
+// TODO: - load static image and then pull high quality vid from storage?
+class LoginVideoPlayer {
+    private lazy var player = AVPlayer()
 
-    init?(view: UIView) {
+    init() {}
+
+    func play(_ view: UIView) {
         let videos = ["arabiangulf", "beachpalm", "dragontailzipline", "hawaiiancoast"]
         let rand = Int(arc4random_uniform(UInt32(videos.count)))
 
         guard let path = Bundle.main.path(forResource: "Assets/Splash Videos/\(videos[rand])", ofType: "mp4") else {
-            return nil
+            return
         }
 
         let url = URL(fileURLWithPath: path)
@@ -32,7 +35,7 @@ class LogInVideoPlayer {
 
         player.play()
 
-        NotificationCenter.default.addObserver(self, selector: #selector(LogInVideoPlayer.loopVideo), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(LoginVideoPlayer.loopVideo), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
     }
 
     deinit {

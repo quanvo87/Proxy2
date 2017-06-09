@@ -46,6 +46,7 @@ class IconManager {
     func setIcon(_ icon: String, forImageView imageView: UIImageView) {
         if let iconImage = iconCache.object(forKey: icon as NSString) {
             imageView.image = iconImage
+            return
         }
         getIconURL(forIconName: icon) { (url) in
             DispatchQueue.global().async {

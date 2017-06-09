@@ -8,31 +8,32 @@
 
 import FirebaseDatabase
 
-class ConvosManager {
-    weak var dataSource: MessagesTableViewDataSource?
+class ConvosObserver {
     private var ref = DatabaseReference()
     private var handle = DatabaseHandle()
     var convos = [Convo]()
 
-    init() {
-        ref = Database.database().reference().child(Path.Convos).child(UserManager.shared.uid)
-        handle = ref.queryOrdered(byChild: Path.Timestamp).observe(.value, with: { (snapshot) in
-            self.convos = ConvosManager.getConvos(from: snapshot)
-            self.dataSource?.tableViewController?.tableView.reloadData()
-        })
-    }
+    init() {}
 
     deinit {
         ref.removeObserver(withHandle: handle)
     }
+
+    func observe(_ delegate: MessagesTableViewDataSource) {
+        ref = Database.database().reference().child(Path.Convos).child(UserManager.shared.uid)
+        handle = ref.queryOrdered(byChild: Path.Timestamp).observe(.value, with: { [weak self, weak delegate = delegate] (snapshot) in
+            self?.convos = ConvosObserver.getConvos(from: snapshot)
+            delegate?.tableViewController?.tableView.reloadData()
+        })
+    }
 }
 
-private extension ConvosManager {
+private extension ConvosObserver {
     static func getConvos(from snapshot: DataSnapshot) -> [Convo] {
         var convos = [Convo]()
         for child in snapshot.children {
-            if  let child = child as? DataSnapshot,
-                let convo = Convo(anyObject: child.value as AnyObject),
+            if  let data = child as? DataSnapshot,
+                let convo = Convo(anyObject: data.value as AnyObject),
                 !convo.senderLeftConvo && !convo.senderIsBlocking {
                 convos.append(convo)
             }
