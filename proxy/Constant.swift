@@ -7,7 +7,6 @@
 //
 
 struct Path {
-    
     // Objects
     static let Proxies = "proxies"
     static let Convos = "convos"

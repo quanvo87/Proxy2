@@ -6,6 +6,8 @@
 //  Copyright © 2016 Quan Vo. All rights reserved.
 //
 
+import FirebaseDatabase
+
 extension UIViewController {
     func showAlert(_ title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
@@ -20,6 +22,20 @@ extension Error {
             return proxyError.localizedDescription
         }
         return self.localizedDescription
+    }
+}
+
+extension DataSnapshot {
+    func toConvos() -> [Convo] {
+        var convos = [Convo]()
+        for child in self.children {
+            if  let snapshot = child as? DataSnapshot,
+                let convo = Convo(anyObject: snapshot.value as AnyObject),
+                !convo.senderLeftConvo && !convo.senderIsBlocking {
+                convos.append(convo)
+            }
+        }
+        return convos
     }
 }
 

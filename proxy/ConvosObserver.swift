@@ -22,22 +22,8 @@ class ConvosObserver {
     func observe(_ delegate: MessagesTableViewDataSource) {
         ref = Database.database().reference().child(Path.Convos).child(UserManager.shared.uid)
         handle = ref.queryOrdered(byChild: Path.Timestamp).observe(.value, with: { [weak self, weak delegate = delegate] (snapshot) in
-            self?.convos = ConvosObserver.getConvos(from: snapshot)
+            self?.convos = snapshot.toConvos().reversed()
             delegate?.tableViewController?.tableView.reloadData()
         })
-    }
-}
-
-private extension ConvosObserver {
-    static func getConvos(from snapshot: DataSnapshot) -> [Convo] {
-        var convos = [Convo]()
-        for child in snapshot.children {
-            if  let data = child as? DataSnapshot,
-                let convo = Convo(anyObject: data.value as AnyObject),
-                !convo.senderLeftConvo && !convo.senderIsBlocking {
-                convos.append(convo)
-            }
-        }
-        return convos.reversed()
     }
 }

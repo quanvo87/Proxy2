@@ -13,15 +13,17 @@ class proxyTests: XCTestCase {
     func test() {
         let expectation = self.expectation(description: #function)
 
-        let iconManager = IconManager.shared
+        let val = Int(arc4random_uniform(UInt32.max))
 
-        iconManager.getIconNames { (iconNames) in
-            iconManager.getUIImage(forIconName: iconNames[0], completion: { (image) in
-                XCTAssertNotNil(image)
+        DB.set(val, pathNodes: "a", "b") { (error) in
+            XCTAssertNil(error)
+
+            DB.get("a", "b", completion: { (snapshot) in
+                XCTAssertEqual(snapshot.value as? Int, val)
                 expectation.fulfill()
             })
         }
-        
+
         waitForExpectations(timeout: 10)
-    }    
+    }
 }
