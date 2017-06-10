@@ -9,13 +9,17 @@
 import FirebaseDatabase
 
 struct DB {
+    // TODO: - return errors
     static func ref(_ pathNodes: String...) -> DatabaseReference {
         return ref(pathNodes)
     }
 
     static func ref(_ pathNodes: [String]) -> DatabaseReference {
         var path = ""
-        _ = pathNodes.map({ path += $0 + "/" })
+        for node in pathNodes {
+            precondition(node != "")    // TODO: - return error
+            path += node + "/"
+        }
         return Database.database().reference().child(path)
     }
 

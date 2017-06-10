@@ -20,7 +20,7 @@ class ConvosObserver {
     }
 
     func observe(_ delegate: MessagesTableViewDataSource) {
-        ref = Database.database().reference().child(Path.Convos).child(UserManager.shared.uid)
+        ref = DB.ref(Path.Convos, UserManager.shared.uid)
         handle = ref.queryOrdered(byChild: Path.Timestamp).observe(.value, with: { [weak self, weak delegate = delegate] (snapshot) in
             self?.convos = snapshot.toConvos().reversed()
             delegate?.tableViewController?.tableView.reloadData()

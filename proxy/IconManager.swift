@@ -10,35 +10,29 @@ import FirebaseStorage
 
 class IconManager {
     static let shared = IconManager()
-    fileprivate let ref = Storage.storage().reference(forURL: URLs.Storage + "/icons")
-    fileprivate let getIconNamesComplete = DispatchGroup()
-    fileprivate var iconNames = [String]()
-    fileprivate var iconURLCache = NSCache<NSString, NSURL>()
-    fileprivate var iconCache = NSCache<NSString, UIImage>()
+    private let ref = Storage.storage().reference(forURL: URLs.Storage + "/icons")
+    private var iconNames = [String]()
+    private var iconURLCache = NSCache<NSString, NSURL>()
+    private var iconCache = NSCache<NSString, UIImage>()
 
     private init() {}
 
+    // TODO: - return errors?
     func getIconNames(completion: @escaping ([String]) -> Void) {
         if !iconNames.isEmpty {
             completion(iconNames)
             return
         }
-        getIconNamesComplete.enter()
         ref.child("iconNames.json").getData(maxSize: 1 * 1024 * 1024) { (data, error) in
-            defer {
-                self.getIconNamesComplete.leave()
-            }
             guard
                 let data = data,
                 let json = try? JSONSerialization.jsonObject(with: data, options: []),
                 let dictionary = json as? [String: Any],
                 let iconNames = dictionary["iconNames"] as? [NSString] else {
-                    print(error ?? #function)
+                    precondition(error == nil, String(describing: error))
                     return
             }
             self.iconNames = iconNames as [String]
-        }
-        getIconNamesComplete.notify(queue: DispatchQueue.main) {
             completion(self.iconNames)
         }
     }
@@ -70,7 +64,7 @@ class IconManager {
         }
         ref.child("\(icon)").downloadURL { (url, error) in
             guard let url = url else {
-                print(error ?? #function)
+                precondition(error == nil, String(describing: error))
                 return
             }
             self.iconURLCache.setObject(url as NSURL, forKey: icon as NSString)

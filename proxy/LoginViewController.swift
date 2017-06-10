@@ -22,20 +22,12 @@ class LoginViewController: UIViewController {
         videoPlayer.play(self.view)
 
         emailTextField.clearButtonMode = .whileEditing
-
         passwordTextField.clearButtonMode = .whileEditing
         passwordTextField.isSecureTextEntry = true
 
-        setupButton(signUpButton)
-        setupButton(loginButton)
-        setupButton(facebookButton)
-    }
-
-    func setupButton(_ button: UIButton) {
-        button.layer.borderColor = UIColor.white.cgColor
-        button.layer.borderWidth = 1
-        button.layer.cornerRadius = 5
-        button.setTitleColor(UIColor.white, for: UIControlState())
+        signUpButton.setupForLogin()
+        loginButton.setupForLogin()
+        facebookButton.setupForLogin()
     }
 
     @IBAction func login(_ sender: AnyObject) {
@@ -74,5 +66,14 @@ class LoginViewController: UIViewController {
         {
             appDelegate.window?.rootViewController = tabBarController
         }
+    }
+}
+
+private extension UIButton {
+    func setupForLogin() {
+        self.layer.borderColor = UIColor.white.cgColor
+        self.layer.borderWidth = 1
+        self.layer.cornerRadius = 5
+        self.setTitleColor(UIColor.white, for: UIControlState())
     }
 }

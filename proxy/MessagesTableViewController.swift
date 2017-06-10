@@ -47,7 +47,7 @@ extension MessagesTableViewController: AuthObserverDelegate {
     func logIn() {
         navigationItemManager.makeButtons(self)
         setDefaultButtons()
-        setupTabBar()
+        tabBarController?.tabBar.items?.setupForTabBar()
         dataSource.load(self)
         unreadObserver.observe(self)
     }
@@ -88,15 +88,17 @@ extension MessagesTableViewController: NavigationItemManagerDelegate {
             return
         }
         let alert = UIAlertController(title: "Leave Conversations?", message: "This will hide them until you receive another message in them.", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Leave", style: .destructive, handler: { (action) in
-            self.tableView.setEditing(false, animated: true)
-            self.setDefaultButtons()
+        alert.addAction(UIAlertAction(title: "Leave", style: .destructive, handler: { _ in
+            var idx = 0
             for item in self.navigationItemManager.itemsToDelete {
                 if let convo = item as? Convo {
                     API.sharedInstance.leaveConvo(convo)
                 }
+                self.navigationItemManager.itemsToDelete.remove(at: idx)
+                idx += 1
             }
-            self.navigationItemManager.itemsToDelete = []
+            self.tableView.setEditing(false, animated: true)
+            self.setDefaultButtons()
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         present(alert, animated: true, completion: nil)
@@ -172,15 +174,11 @@ extension MessagesTableViewController: NewMessageViewControllerDelegate {
     }
 }
 
-extension MessagesTableViewController {
-    func setupTabBar() {
-        guard let items = tabBarController?.tabBar.items else {
-            return
-        }
+private extension Array where Element: UITabBarItem {
+    func setupForTabBar() {
         let size = CGSize(width: 30, height: 30)
-        let isAspectRatio = true
-        items[0].image = UIImage(named: "messages-tab")?.resize(toNewSize: size, isAspectRatio: isAspectRatio)
-        items[1].image = UIImage(named: "proxies-tab")?.resize(toNewSize: size, isAspectRatio: isAspectRatio)
-        items[2].image = UIImage(named: "me-tab")?.resize(toNewSize: size, isAspectRatio: isAspectRatio)
+        self[0].image = UIImage(named: "messages-tab")?.resize(toNewSize: size, isAspectRatio: true)
+        self[1].image = UIImage(named: "proxies-tab")?.resize(toNewSize: size, isAspectRatio: true)
+        self[2].image = UIImage(named: "me-tab")?.resize(toNewSize: size, isAspectRatio: true)
     }
 }
