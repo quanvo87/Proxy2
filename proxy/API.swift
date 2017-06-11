@@ -438,7 +438,7 @@ class API {
         ref.child(Path.Convos).child(sender.ownerId).queryEqual(toValue: convoKey).observeSingleEvent(of: .value, with: { (snapshot) in
             
             // Convo exists, use it to send the message
-            if snapshot.childrenCount == 1, let convo = Convo(snapshot.value! as AnyObject) {
+            if snapshot.childrenCount == 1, let convo = try? Convo(snapshot.value! as AnyObject) {
                 self.sendMessage(text: text, mediaType: "", convo: convo, completion: { (convo, message) in
                     completion(convo)
                 })
@@ -583,7 +583,7 @@ class API {
     
     func getConvo(withKey key: String, belongingToUserId user: String, completion: @escaping (_ convo: Convo) -> Void) {
         ref.child(Path.Convos).child(user).child(key).observeSingleEvent(of: .value, with: { (snapshot) in
-            guard let convo = Convo(snapshot.value! as AnyObject) else { return }
+            guard let convo = try? Convo(snapshot.value! as AnyObject) else { return }
             completion(convo)
         })
     }
@@ -592,7 +592,7 @@ class API {
         ref.child(Path.Convos).child(proxy.key).observeSingleEvent(of: .value, with: { (snapshot) in
             var convos = [Convo]()
             for child in snapshot.children {
-                if let convo = Convo((child as! DataSnapshot).value as AnyObject) {
+                if let convo = try? Convo((child as! DataSnapshot).value as AnyObject) {
                     convos.append(convo)
                 }
             }
@@ -604,7 +604,7 @@ class API {
         ref.child(Path.Convos).child(user).observeSingleEvent(of: .value, with: { (snapshot) in
             var convos = [Convo]()
             for child in snapshot.children {
-                if let convo = Convo((child as! DataSnapshot).value as AnyObject) {
+                if let convo = try? Convo((child as! DataSnapshot).value as AnyObject) {
                     convos.append(convo)
                 }
             }
@@ -617,7 +617,7 @@ class API {
     func getConvos(from snapshot: DataSnapshot) -> [Convo] {
         var convos = [Convo]()
         for child in snapshot.children {
-            if let convo = Convo((child as! DataSnapshot).value as AnyObject),
+            if let convo = try? Convo((child as! DataSnapshot).value as AnyObject),
                 !convo.senderLeftConvo && !convo.senderIsBlocking {
                 convos.append(convo)
             }

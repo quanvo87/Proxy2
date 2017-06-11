@@ -7,7 +7,6 @@
 //
 
 struct BlockedUser {
-    
     var id = ""
     var icon = ""
     var name = ""

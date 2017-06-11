@@ -8,41 +8,84 @@
 
 import FirebaseDatabase
 
-// TODO: - return errors
 struct DB {
-    static func ref(_ pathNodes: String...) -> DatabaseReference {
-        return ref(pathNodes)
+    typealias Success = Bool
+    typealias Path = String
+    typealias Transactions = [Path: Any]
+
+    static func path(_ nodes: String...) -> Path {
+        return path(nodes)
     }
 
-    static func ref(_ pathNodes: [String]) -> DatabaseReference {
-        var path = ""
-        for node in pathNodes {
-            precondition(node != "")    // TODO: - return error
-            path += node + "/"
+    static func path(_ nodes: [String]) -> Path {
+        for node in nodes where node == "" {
+            return ""
+        }
+        return nodes.joined(separator: "/")
+    }
+
+    static func ref(_ nodes: String...) -> DatabaseReference? {
+        return ref(nodes)
+    }
+
+    static func ref(_ nodes: [String]) -> DatabaseReference? {
+        let path = DB.path(nodes)
+        guard path != "" else {
+            return nil
         }
         return Database.database().reference().child(path)
     }
 
-    static func get(_ pathNodes: String..., completion: @escaping (DataSnapshot) -> Void) {
-        ref(pathNodes).observeSingleEvent(of: .value) { (snapshot) in
+    static func get(_ pathNodes: String..., completion: @escaping (DataSnapshot?) -> Void) {
+        guard let ref = ref(pathNodes) else {
+            completion(nil)
+            return
+        }
+        ref.observeSingleEvent(of: .value) { (snapshot) in
             completion(snapshot)
         }
     }
 
-    static func set(_ value: Any, pathNodes: String..., completion: ((Error?) -> Void)? = nil) {
-        ref(pathNodes).setValue(value, withCompletionBlock: { (error, _) in
-            completion?(error)
-        })
-    }
-
-    static func delete(_ pathNodes: String..., completion: ((Error?) -> Void)? = nil) {
-        ref(pathNodes).removeValue { (error, _) in
-            completion?(error)
+    static func set(_ value: Any, pathNodes: String..., completion: @escaping ((Success) -> Void)) {
+        guard let ref = ref(pathNodes) else {
+            completion(false)
+            return
+        }
+        ref.setValue(value) { (error, _) in
+            completion(error == nil)
         }
     }
 
-    static func increment(_ amount: Int, pathNodes: String..., completion: ((Error?) -> Void)? = nil) {
-        ref(pathNodes).runTransactionBlock( { (currentData) -> TransactionResult in
+    static func set(_ transactions: Transactions, completion: @escaping (Success) -> Void) {
+        guard let ref = ref() else {
+            completion(false)
+            return
+        }
+        for paths in transactions.keys where paths == "" {
+            completion(false)
+            return
+        }
+        ref.updateChildValues(transactions) { (error, _) in
+            completion(error == nil)
+        }
+    }
+
+    static func delete(_ pathNodes: String..., completion: @escaping (Success) -> Void) {
+        guard let ref = ref(pathNodes) else {
+            completion(false)
+            return
+        }
+        ref.removeValue { (error, _) in
+            completion(error == nil)
+        }
+    }
+
+    static func increment(_ amount: Int, pathNodes: String..., completion: @escaping (Success) -> Void) {
+        guard let ref = ref(pathNodes) else {
+            completion(false)
+            return
+        }
+        ref.runTransactionBlock( { (currentData) -> TransactionResult in
             if let value = currentData.value {
                 var newValue = value as? Int ?? 0
                 newValue += amount
@@ -51,7 +94,7 @@ struct DB {
             }
             return TransactionResult.success(withValue: currentData)
         }) { (error, _, _) in
-            completion?(error)
+            completion(error == nil)
         }
     }
 }

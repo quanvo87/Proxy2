@@ -9,6 +9,11 @@
 import FirebaseDatabase
 import FirebaseStorage
 
+enum Result {
+    case success(Any)
+    case failure(Error)
+}
+
 extension Array where Element: UITableViewCell {
     func incrementTags() {
         _ = self.map({ $0.tag.increment() })
@@ -37,7 +42,7 @@ extension DataSnapshot {
         var convos = [Convo]()
         for child in self.children {
             if  let snapshot = child as? DataSnapshot,
-                let convo = Convo(snapshot.value as AnyObject),
+                let convo = try? Convo(snapshot.value as AnyObject),
                 !convo.senderLeftConvo && !convo.senderIsBlocking {
                 convos.append(convo)
             }

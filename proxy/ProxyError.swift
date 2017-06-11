@@ -9,11 +9,15 @@
 enum ProxyError: Error {
     case blankCredentials
     case facebookLoginFail
+    case invalidJSON
+    case invalidPath
 
     var localizedDescription: String {
         switch self {
         case .blankCredentials: return "Please enter a valid email and password."
         case .facebookLoginFail: return "Please check your Facebook username and password."
+        default:
+            return ""
         }
     }
 
