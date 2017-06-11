@@ -52,11 +52,12 @@
 		59392CA11EE9FBC2008BAE40 /* NavigationItemManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59392CA01EE9FBC2008BAE40 /* NavigationItemManager.swift */; };
 		59392CA51EEB426B008BAE40 /* DBConvo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59392CA41EEB426B008BAE40 /* DBConvo.swift */; };
 		59392CA71EEB4622008BAE40 /* DB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59392CA61EEB4622008BAE40 /* DB.swift */; };
+		595722351EED127600F7DD07 /* DBIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 595722341EED127600F7DD07 /* DBIcon.swift */; };
+		595722371EED12AD00F7DD07 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 595722361EED12AD00F7DD07 /* DataManager.swift */; };
 		5958565D1EE7E58300FCA14B /* Assets in Resources */ = {isa = PBXBuildFile; fileRef = 5958565C1EE7E58300FCA14B /* Assets */; };
 		5982BC201EE6886F00544035 /* proxyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5982BC1F1EE6886F00544035 /* proxyTests.swift */; };
 		599B4D2F1DC8384900C476D5 /* SenderPickerTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599B4D2E1DC8384900C476D5 /* SenderPickerTableViewController.swift */; };
 		59C910091EE6189500ACF24A /* Login.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C910081EE6189500ACF24A /* Login.swift */; };
-		59CD49E31EE6796600E001C9 /* IconManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59CD49E21EE6796600E001C9 /* IconManager.swift */; };
 		59E230351EE547DB00B59549 /* LoginVideoPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E230341EE547DB00B59549 /* LoginVideoPlayer.swift */; };
 		59F455FE1DC85BD0003EBA69 /* ReceiverPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F455FD1DC85BD0003EBA69 /* ReceiverPickerViewController.swift */; };
 		59F456001DC987EF003EBA69 /* ReceiverPickerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F455FF1DC987EF003EBA69 /* ReceiverPickerDelegate.swift */; };
@@ -127,6 +128,8 @@
 		59392CA01EE9FBC2008BAE40 /* NavigationItemManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationItemManager.swift; sourceTree = "<group>"; };
 		59392CA41EEB426B008BAE40 /* DBConvo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBConvo.swift; sourceTree = "<group>"; };
 		59392CA61EEB4622008BAE40 /* DB.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DB.swift; sourceTree = "<group>"; };
+		595722341EED127600F7DD07 /* DBIcon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBIcon.swift; sourceTree = "<group>"; };
+		595722361EED12AD00F7DD07 /* DataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		595856571EE7DDF600FCA14B /* proxy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = proxy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		595856581EE7DDF900FCA14B /* proxyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = proxyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5958565C1EE7E58300FCA14B /* Assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Assets; path = ../Assets; sourceTree = "<group>"; };
@@ -134,7 +137,6 @@
 		5982BC211EE6886F00544035 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		599B4D2E1DC8384900C476D5 /* SenderPickerTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SenderPickerTableViewController.swift; sourceTree = "<group>"; };
 		59C910081EE6189500ACF24A /* Login.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Login.swift; sourceTree = "<group>"; };
-		59CD49E21EE6796600E001C9 /* IconManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IconManager.swift; sourceTree = "<group>"; };
 		59E230341EE547DB00B59549 /* LoginVideoPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginVideoPlayer.swift; sourceTree = "<group>"; };
 		59F455FD1DC85BD0003EBA69 /* ReceiverPickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceiverPickerViewController.swift; sourceTree = "<group>"; };
 		59F455FF1DC987EF003EBA69 /* ReceiverPickerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceiverPickerDelegate.swift; sourceTree = "<group>"; };
@@ -239,8 +241,8 @@
 				1415610C1D620DB7002022BC /* API.swift */,
 				14E19A5B1D612CE80030B366 /* Common.swift */,
 				14A6F18D1D6BDA880015431E /* Constant.swift */,
+				595722361EED12AD00F7DD07 /* DataManager.swift */,
 				147B5C391D82891300D18C73 /* DefaultIcons.swift */,
-				59CD49E21EE6796600E001C9 /* IconManager.swift */,
 				59392CA01EE9FBC2008BAE40 /* NavigationItemManager.swift */,
 				14383B591D7B0CB60086CA6C /* NSDate+NVTimeAgo.h */,
 				14383B5A1D7B0CB60086CA6C /* NSDate+NVTimeAgo.m */,
@@ -310,6 +312,7 @@
 			children = (
 				59392CA61EEB4622008BAE40 /* DB.swift */,
 				59392CA41EEB426B008BAE40 /* DBConvo.swift */,
+				595722341EED127600F7DD07 /* DBIcon.swift */,
 			);
 			name = Database;
 			sourceTree = "<group>";
@@ -568,6 +571,7 @@
 				14383B171D73D42E0086CA6C /* Convo.swift in Sources */,
 				59392C8C1EE8D5E2008BAE40 /* UserManager.swift in Sources */,
 				147B5C3A1D82891300D18C73 /* DefaultIcons.swift in Sources */,
+				595722371EED12AD00F7DD07 /* DataManager.swift in Sources */,
 				14E19A5C1D612CE80030B366 /* Common.swift in Sources */,
 				1415611F1D62A8A3002022BC /* ProxyCell.swift in Sources */,
 				59C910091EE6189500ACF24A /* Login.swift in Sources */,
@@ -588,6 +592,7 @@
 				592673B81DBECDA200C2FD6F /* MeTableViewController.swift in Sources */,
 				1470F3A21D83FA9800E932A1 /* ProxiesTableViewController.swift in Sources */,
 				14A6F18E1D6BDA880015431E /* Constant.swift in Sources */,
+				595722351EED127600F7DD07 /* DBIcon.swift in Sources */,
 				147B5C381D82736700D18C73 /* SenderProxyInfoCell.swift in Sources */,
 				140E0D091D83544C00D68F71 /* ConvoCell.swift in Sources */,
 				59392CA51EEB426B008BAE40 /* DBConvo.swift in Sources */,
@@ -599,7 +604,6 @@
 				14383B191D73D8F50086CA6C /* Message.swift in Sources */,
 				59392C901EE91C7E008BAE40 /* MessagesTableViewDataSource.swift in Sources */,
 				59392CA71EEB4622008BAE40 /* DB.swift in Sources */,
-				59CD49E31EE6796600E001C9 /* IconManager.swift in Sources */,
 				14383B271D755C300086CA6C /* NewMessageViewControllerDelegate.swift in Sources */,
 				14E19A421D60EF100030B366 /* AppDelegate.swift in Sources */,
 				140E0D031D82AEA000D68F71 /* IconPickerCell.swift in Sources */,

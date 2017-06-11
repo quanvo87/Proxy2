@@ -26,7 +26,15 @@ class MessagesTableViewDataSource: NSObject, UITableViewDataSource {
         let convo = convosObserver.convos[indexPath.row]
 
         cell.iconImageView.image = nil
-        IconManager.shared.setIcon(convo.icon + ".png", forImageView: cell.iconImageView) // TODO: - set the ".png" somewhere else
+
+        // TODO: - set the ".png" somewhere else
+        DBIcon.getImageForIcon(convo.icon + ".png" as NSString, tag: cell.tag) { (image, tag, error) in
+            guard tag == cell.tag else { return }
+            guard let image = image else {
+                preconditionFailure(String(describing: error))
+            }
+            cell.iconImageView.image = image
+        }
 
         cell.titleLabel.attributedText = API.sharedInstance.getConvoTitle(receiverNickname: convo.receiverNickname,
                                                                           receiverName: convo.receiverProxyName,
@@ -35,7 +43,7 @@ class MessagesTableViewDataSource: NSObject, UITableViewDataSource {
         cell.lastMessageLabel.text = convo.message
         cell.timestampLabel.text = convo.timestamp.toTimeAgo()
         cell.unreadLabel.text = convo.unread.toNumberLabel()
-
+        
         return cell
     }
 }

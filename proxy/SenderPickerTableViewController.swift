@@ -30,7 +30,7 @@ class SenderPickerTableViewController: UITableViewController {
         
         api.ref.child(Path.Proxies).child(api.uid).queryOrdered(byChild: Path.Timestamp).observeSingleEvent(of: .value, with: { snapshot in
             for child in snapshot.children {
-                if let proxy = Proxy(anyObject: (child as! DataSnapshot).value as AnyObject) {
+                if let proxy = Proxy((child as! DataSnapshot).value as AnyObject) {
                     self.proxies.append(proxy)
                 }
             }

@@ -8,8 +8,8 @@
 
 import FirebaseDatabase
 
+// TODO: - return errors
 struct DB {
-    // TODO: - return errors
     static func ref(_ pathNodes: String...) -> DatabaseReference {
         return ref(pathNodes)
     }

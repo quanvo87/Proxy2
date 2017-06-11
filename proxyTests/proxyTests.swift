@@ -11,7 +11,7 @@ import XCTest
 
 class proxyTests: XCTestCase {
     func test() {
-        let expectation = self.expectation(description: #function)
+        let x = self.expectation(description: #function)
 
         let val = Int(arc4random_uniform(UInt32.max))
 
@@ -20,10 +20,38 @@ class proxyTests: XCTestCase {
 
             DB.get("a", "b", completion: { (snapshot) in
                 XCTAssertEqual(snapshot.value as? Int, val)
-                expectation.fulfill()
+                x.fulfill()
             })
         }
-
+        
         waitForExpectations(timeout: 10)
     }
+
+    func test1() {
+        let x = self.expectation(description: #function)
+
+        DBIcon.getIconNames { (iconNames, error) in
+            XCTAssertNil(error)
+            print(iconNames ?? "")
+            x.fulfill()
+        }
+
+        waitForExpectations(timeout: 5)
+    }
+
+//    func test2() {
+//        let x = self.expectation(description: #function)
+//
+//        
+//
+//        waitForExpectations(timeout: 10)
+//    }
+//
+//    func test3() {
+//        let x = self.expectation(description: #function)
+//
+//
+//
+//        waitForExpectations(timeout: 10)
+//    }
 }

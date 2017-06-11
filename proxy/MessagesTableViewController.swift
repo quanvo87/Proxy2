@@ -110,6 +110,7 @@ extension MessagesTableViewController: NavigationItemManagerDelegate {
             self.navigationItem.rightBarButtonItems![1].isEnabled = true
             guard proxy != nil else {
                 self.showAlert("Cannot Exceed 50 Proxies", message: "Delete some proxies and try again!")
+                self.tabBarController?.selectedIndex = 1
                 return
             }
             NotificationCenter.default.post(name: Notification.Name(rawValue: Notifications.CreatedNewProxyFromHomeTab), object: nil)

@@ -30,9 +30,9 @@ struct DBConvo {
             senderConvo.receiverProxyName = receiver.name
             senderConvo.icon = receiver.icon
             senderConvo.receiverIsBlocking = senderBlocked
-            let senderConvoAnyObject = senderConvo.toAnyObject()
-            DB.set(senderConvoAnyObject, pathNodes: Path.Convos, senderConvo.senderId, senderConvo.key)
-            DB.set(senderConvoAnyObject, pathNodes: Path.Convos, senderConvo.senderProxyKey, senderConvo.key)
+            let senderConvoJSON = senderConvo.toJSON()
+            DB.set(senderConvoJSON, pathNodes: Path.Convos, senderConvo.senderId, senderConvo.key)
+            DB.set(senderConvoJSON, pathNodes: Path.Convos, senderConvo.senderProxyKey, senderConvo.key)
             DB.increment(1, pathNodes: Path.ProxiesInteractedWith, sender.ownerId, Path.ProxiesInteractedWith)
 
             receiverConvo.key = convoKey
@@ -44,9 +44,9 @@ struct DBConvo {
             receiverConvo.receiverProxyName = sender.name
             receiverConvo.icon = sender.icon
             receiverConvo.senderIsBlocking = senderBlocked
-            let receiverConvoAnyObject = receiverConvo.toAnyObject()
-            DB.set(receiverConvoAnyObject, pathNodes: Path.Convos, receiverConvo.senderId, receiverConvo.key)
-            DB.set(receiverConvoAnyObject, pathNodes: Path.Convos, receiverConvo.senderProxyKey, receiverConvo.key)
+            let receiverConvoJSON = receiverConvo.toJSON()
+            DB.set(receiverConvoJSON, pathNodes: Path.Convos, receiverConvo.senderId, receiverConvo.key)
+            DB.set(receiverConvoJSON, pathNodes: Path.Convos, receiverConvo.senderProxyKey, receiverConvo.key)
             DB.increment(1, pathNodes: Path.ProxiesInteractedWith, receiver.ownerId, Path.ProxiesInteractedWith)
 
             completion(senderConvo)
@@ -55,7 +55,7 @@ struct DBConvo {
 
     static func getConvo(withKey key: String, belongingToUserId user: String, completion: @escaping (_ convo: Convo) -> Void) {
         DB.get(Path.Convos, user, key) { (snapshot) in
-            if let convo = Convo(anyObject: snapshot.value as AnyObject) {
+            if let convo = Convo(snapshot.value as AnyObject) {
                 completion(convo)
             }
         }

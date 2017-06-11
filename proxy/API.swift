@@ -302,7 +302,7 @@ class API {
         let name = proxyNameGenerator.generateProxyName()
         let key = name.lowercased()
         let proxy = Proxy(name: name, ownerId: self.uid)
-        ref.child(Path.Proxies).child(autoId).setValue(proxy.toAnyObject()) { (error, proxyRef) in
+        ref.child(Path.Proxies).child(autoId).setValue(proxy.toJSON()) { (error, proxyRef) in
             
             // Get all global proxies with this name.
             self.ref.child(Path.Proxies).queryOrdered(byChild: Path.Key).queryEqual(toValue: key).observeSingleEvent(of: .value, with: { (snapshot) in
@@ -315,13 +315,13 @@ class API {
                     
                     // Re-save the global proxy by name instead of the Firebase key.
                     self.delete(a: Path.Proxies, b: autoId, c: nil, d: nil)
-                    self.set(proxy.toAnyObject() as AnyObject, a: Path.Proxies, b: key, c: nil, d: nil)
+                    self.set(proxy.toJSON() as AnyObject, a: Path.Proxies, b: key, c: nil, d: nil)
                     
                     // Create the user's copy of the proxy with a random icon.
                     let proxy = Proxy(name: name, ownerId: self.uid, icon: self.getRandomIcon())
                     
                     // Save the user's proxy.
-                    self.set(proxy.toAnyObject() as AnyObject, a: Path.Proxies, b: self.uid, c: key, d: nil)
+                    self.set(proxy.toJSON() as AnyObject, a: Path.Proxies, b: self.uid, c: key, d: nil)
                     
                     completion(proxy)
                     
@@ -351,7 +351,7 @@ class API {
     /// Returns the Proxy with `key`.
     func getProxy(withKey key: String, completion: @escaping (_ proxy: Proxy?) -> Void) {
         ref.child(Path.Proxies).child(key).observeSingleEvent(of: .value, with: { (snapshot) in
-            guard let proxy = Proxy(anyObject: snapshot.value! as AnyObject) else {
+            guard let proxy = Proxy(snapshot.value! as AnyObject) else {
                 completion(nil)
                 return
             }
@@ -364,7 +364,7 @@ class API {
     /// Returns the Proxy with `key` belonging to `user`.
     func getProxy(withKey key: String, belongingToUserId user: String, completion: @escaping (_ proxy: Proxy) -> Void) {
         ref.child(Path.Proxies).child(user).child(key).observeSingleEvent(of: .value, with: { (snapshot) in
-            guard let proxy = Proxy(anyObject: snapshot.value! as AnyObject) else { return }
+            guard let proxy = Proxy(snapshot.value! as AnyObject) else { return }
             completion(proxy)
         })
     }
@@ -438,7 +438,7 @@ class API {
         ref.child(Path.Convos).child(sender.ownerId).queryEqual(toValue: convoKey).observeSingleEvent(of: .value, with: { (snapshot) in
             
             // Convo exists, use it to send the message
-            if snapshot.childrenCount == 1, let convo = Convo(anyObject: snapshot.value! as AnyObject) {
+            if snapshot.childrenCount == 1, let convo = Convo(snapshot.value! as AnyObject) {
                 self.sendMessage(text: text, mediaType: "", convo: convo, completion: { (convo, message) in
                     completion(convo)
                 })
@@ -557,7 +557,7 @@ class API {
             senderConvo.receiverProxyName = receiver.name
             senderConvo.icon = receiver.icon
             senderConvo.receiverIsBlocking = senderBlocked
-            let senderConvoAnyObject = senderConvo.toAnyObject()
+            let senderConvoAnyObject = senderConvo.toJSON()
             self.set(senderConvoAnyObject as AnyObject, a: Path.Convos, b: senderConvo.senderId, c: senderConvo.key, d: nil)
             self.set(senderConvoAnyObject as AnyObject, a: Path.Convos, b: senderConvo.senderProxyKey, c: senderConvo.key, d: nil)
             self.increment(by: 1, a: Path.ProxiesInteractedWith, b: sender.ownerId, c: Path.ProxiesInteractedWith, d: nil)
@@ -572,7 +572,7 @@ class API {
             receiverConvo.receiverProxyName = sender.name
             receiverConvo.icon = sender.icon
             receiverConvo.senderIsBlocking = senderBlocked
-            let receiverConvoAnyObject = receiverConvo.toAnyObject()
+            let receiverConvoAnyObject = receiverConvo.toJSON()
             self.set(receiverConvoAnyObject as AnyObject, a: Path.Convos, b: receiverConvo.senderId, c: receiverConvo.key, d: nil)
             self.set(receiverConvoAnyObject as AnyObject, a: Path.Convos, b: receiverConvo.senderProxyKey, c: receiverConvo.key, d: nil)
             self.increment(by: 1, a: Path.ProxiesInteractedWith, b: receiver.ownerId, c: Path.ProxiesInteractedWith, d: nil)
@@ -583,7 +583,7 @@ class API {
     
     func getConvo(withKey key: String, belongingToUserId user: String, completion: @escaping (_ convo: Convo) -> Void) {
         ref.child(Path.Convos).child(user).child(key).observeSingleEvent(of: .value, with: { (snapshot) in
-            guard let convo = Convo(anyObject: snapshot.value! as AnyObject) else { return }
+            guard let convo = Convo(snapshot.value! as AnyObject) else { return }
             completion(convo)
         })
     }
@@ -592,7 +592,7 @@ class API {
         ref.child(Path.Convos).child(proxy.key).observeSingleEvent(of: .value, with: { (snapshot) in
             var convos = [Convo]()
             for child in snapshot.children {
-                if let convo = Convo(anyObject: (child as! DataSnapshot).value as AnyObject) {
+                if let convo = Convo((child as! DataSnapshot).value as AnyObject) {
                     convos.append(convo)
                 }
             }
@@ -604,7 +604,7 @@ class API {
         ref.child(Path.Convos).child(user).observeSingleEvent(of: .value, with: { (snapshot) in
             var convos = [Convo]()
             for child in snapshot.children {
-                if let convo = Convo(anyObject: (child as! DataSnapshot).value as AnyObject) {
+                if let convo = Convo((child as! DataSnapshot).value as AnyObject) {
                     convos.append(convo)
                 }
             }
@@ -617,7 +617,7 @@ class API {
     func getConvos(from snapshot: DataSnapshot) -> [Convo] {
         var convos = [Convo]()
         for child in snapshot.children {
-            if let convo = Convo(anyObject: (child as! DataSnapshot).value as AnyObject),
+            if let convo = Convo((child as! DataSnapshot).value as AnyObject),
                 !convo.senderLeftConvo && !convo.senderIsBlocking {
                 convos.append(convo)
             }

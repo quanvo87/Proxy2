@@ -6,9 +6,4 @@
 //  Copyright © 2017 Quan Vo. All rights reserved.
 //
 
-class UserManager {
-    static let shared = UserManager()
-    var uid = ""
 
-    private init() {}
-}
