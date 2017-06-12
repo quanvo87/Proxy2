@@ -9,20 +9,19 @@
 import FirebaseDatabase
 
 class UnreadObserver {
-    private var ref = DatabaseReference()
-    private var handle = DatabaseHandle()
+    private var ref: DatabaseReference?
 
     init() {}
 
     func observe(_ delegate: UnreadObserverDelegate) {
-        ref = Database.database().reference().child(Path.Unread).child(UserManager.shared.uid).child(Path.Unread)
-        handle = ref.observe(.value, with: { [weak delegate = delegate] (snapshot) in
+        ref = DB.ref(Path.Unread, DataManager.shared.uid, Path.Unread)
+        ref?.observe(.value, with: { [weak delegate = delegate] (snapshot) in
             delegate?.setUnread(snapshot.value as? Int)
         })
     }
 
     deinit {
-        ref.removeObserver(withHandle: handle)
+        ref?.removeAllObservers()
     }
 }
 

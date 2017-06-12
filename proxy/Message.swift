@@ -9,7 +9,6 @@
 import JSQMessagesViewController
 
 class Message: JSQMessage {
-    
     var key = ""
     var convo = ""
     var mediaType = ""

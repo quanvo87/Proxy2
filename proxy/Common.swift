@@ -7,6 +7,18 @@
 //
 
 import FirebaseDatabase
+import FirebaseStorage
+
+enum Result {
+    case success(Any)
+    case failure(Error)
+}
+
+extension Array where Element: UITableViewCell {
+    func incrementTags() {
+        _ = self.map({ $0.tag.increment() })
+    }
+}
 
 extension UIViewController {
     func showAlert(_ title: String, message: String) {
@@ -30,7 +42,7 @@ extension DataSnapshot {
         var convos = [Convo]()
         for child in self.children {
             if  let snapshot = child as? DataSnapshot,
-                let convo = Convo(anyObject: snapshot.value as AnyObject),
+                let convo = Convo(snapshot.value as AnyObject),
                 !convo.senderLeftConvo && !convo.senderIsBlocking {
                 convos.append(convo)
             }
@@ -40,6 +52,14 @@ extension DataSnapshot {
 }
 
 extension Int {
+    mutating func increment() {
+        if self == Int.max {
+            self = 0
+        } else {
+            self += 1
+        }
+    }
+
     func toNumberLabel() -> String {
         return self == 0 ? "" : String(self)
     }
@@ -83,6 +103,20 @@ extension Double {
     }
 }
 
+extension UIColor {
+    convenience init(red: Int, green: Int, blue: Int) {
+        self.init(red: CGFloat(red) / 255.0, green: CGFloat(green) / 255.0, blue: CGFloat(blue) / 255.0, alpha: 1.0)
+    }
+
+    convenience init(hex: Int) {
+        self.init(red:(hex >> 16) & 0xff, green:(hex >> 8) & 0xff, blue:hex & 0xff)
+    }
+
+    func blue() -> UIColor {
+        return UIColor(red: 0, green: 122, blue: 255)
+    }
+}
+
 extension UIImage {
     func resize(toNewSize newSize: CGSize, isAspectRatio aspect: Bool) -> UIImage {
 
@@ -113,19 +147,5 @@ extension UIImage {
         UIGraphicsEndImageContext()
 
         return newImage!
-    }
-}
-
-extension UIColor {
-    convenience init(red: Int, green: Int, blue: Int) {
-        self.init(red: CGFloat(red) / 255.0, green: CGFloat(green) / 255.0, blue: CGFloat(blue) / 255.0, alpha: 1.0)
-    }
-
-    convenience init(hex: Int) {
-        self.init(red:(hex >> 16) & 0xff, green:(hex >> 8) & 0xff, blue:hex & 0xff)
-    }
-
-    func blue() -> UIColor {
-        return UIColor(red: 0, green: 122, blue: 255)
     }
 }

@@ -86,11 +86,12 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
         proxiesRefHandle = proxiesRef.queryOrdered(byChild: Path.Timestamp).observe(.value, with: { snapshot in
             var proxies = [Proxy]()
             for child in snapshot.children {
-                if let proxy = Proxy(anyObject: (child as! DataSnapshot).value as AnyObject) {
+                if let proxy = Proxy((child as! DataSnapshot).value as AnyObject) {
                     proxies.append(proxy)
                 }
             }
             self.proxies = proxies.reversed()
+            self.tableView.visibleCells.incrementTags()
             self.tableView.reloadData()
         })
         
@@ -196,7 +197,7 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
             index += 1
         }
     }
-    
+
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.ProxyCell, for: indexPath as IndexPath) as! ProxyCell
         let proxy = proxies[indexPath.row]
@@ -211,9 +212,12 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
         
         // Icon
         cell.iconImageView.image = nil
-        cell.iconImageView.kf.indicatorType = .activity
-        api.getURL(forIconName: proxy.icon) { (url) in
-            cell.iconImageView.kf.setImage(with: url, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
+        DBIcon.getImageForIcon(proxy.icon + ".png" as NSString, tag: cell.tag) { (image, tag, error) in
+            guard tag == cell.tag else { return }
+            guard let image = image else {
+                preconditionFailure(String(describing: error))
+            }
+            cell.iconImageView.image = image
         }
         
         // Labels
