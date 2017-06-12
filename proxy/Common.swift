@@ -42,7 +42,7 @@ extension DataSnapshot {
         var convos = [Convo]()
         for child in self.children {
             if  let snapshot = child as? DataSnapshot,
-                let convo = try? Convo(snapshot.value as AnyObject),
+                let convo = Convo(snapshot.value as AnyObject),
                 !convo.senderLeftConvo && !convo.senderIsBlocking {
                 convos.append(convo)
             }

@@ -28,7 +28,7 @@ struct Convo {
 
     init() {}
 
-    init(_ json: AnyObject) throws {
+    init?(_ json: AnyObject) {
         guard
             let key = json["key"] as? String,
             let senderId = json["senderId"] as? String,
@@ -48,7 +48,7 @@ struct Convo {
             let receiverDeletedProxy = json["receiverDeletedProxy"] as? Bool,
             let timestamp = json["timestamp"] as? Double,
             let unread = json["unread"] as? Int else {
-                throw ProxyError(.invalidJSON)
+                return nil
         }
         self.key = key
         self.senderId = senderId

@@ -57,15 +57,11 @@ struct DB {
     }
 
     static func set(_ transactions: Transactions, completion: @escaping (Success) -> Void) {
-        guard let ref = ref() else {
-            completion(false)
-            return
-        }
         for paths in transactions.keys where paths == "" {
             completion(false)
             return
         }
-        ref.updateChildValues(transactions) { (error, _) in
+        Database.database().reference().updateChildValues(transactions) { (error, _) in
             completion(error == nil)
         }
     }

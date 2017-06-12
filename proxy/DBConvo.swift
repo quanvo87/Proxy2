@@ -58,7 +58,7 @@ struct DBConvo {
 
     static func getConvo(withKey key: String, belongingToUserId user: String, completion: @escaping (Convo?) -> Void) {
         DB.get(Path.Convos, user, key) { (snapshot) in
-            completion(try? Convo(snapshot?.value as AnyObject))
+            completion(Convo(snapshot?.value as AnyObject))
         }
     }
 
