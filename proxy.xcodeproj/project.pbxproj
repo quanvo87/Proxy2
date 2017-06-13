@@ -41,9 +41,9 @@
 		590AD6571DCE61A200473245 /* BlockedUsersTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 590AD6561DCE61A200473245 /* BlockedUsersTableViewController.swift */; };
 		590AD6591DCE644100473245 /* BlockedUsersTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 590AD6581DCE644100473245 /* BlockedUsersTableViewCell.swift */; };
 		590AD65B1DCE71C300473245 /* BlockedUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 590AD65A1DCE71C300473245 /* BlockedUser.swift */; };
+		590AE9C51EEE2D6B00A95AB4 /* temp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 590AE9C41EEE2D6B00A95AB4 /* temp.swift */; };
 		592673B81DBECDA200C2FD6F /* MeTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592673B71DBECDA200C2FD6F /* MeTableViewController.swift */; };
 		593302CF1DBF35D400D26805 /* MeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 593302CE1DBF35D400D26805 /* MeTableViewCell.swift */; };
-		59392C8C1EE8D5E2008BAE40 /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59392C8B1EE8D5E2008BAE40 /* UserManager.swift */; };
 		59392C8E1EE8FA00008BAE40 /* ProxyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59392C8D1EE8FA00008BAE40 /* ProxyError.swift */; };
 		59392C901EE91C7E008BAE40 /* MessagesTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59392C8F1EE91C7E008BAE40 /* MessagesTableViewDataSource.swift */; };
 		59392C921EE91DB6008BAE40 /* ConvosObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59392C911EE91DB6008BAE40 /* ConvosObserver.swift */; };
@@ -53,8 +53,9 @@
 		59392CA51EEB426B008BAE40 /* DBConvo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59392CA41EEB426B008BAE40 /* DBConvo.swift */; };
 		59392CA71EEB4622008BAE40 /* DB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59392CA61EEB4622008BAE40 /* DB.swift */; };
 		595722351EED127600F7DD07 /* DBIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 595722341EED127600F7DD07 /* DBIcon.swift */; };
-		595722371EED12AD00F7DD07 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 595722361EED12AD00F7DD07 /* DataManager.swift */; };
+		595722371EED12AD00F7DD07 /* Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 595722361EED12AD00F7DD07 /* Shared.swift */; };
 		5958565D1EE7E58300FCA14B /* Assets in Resources */ = {isa = PBXBuildFile; fileRef = 5958565C1EE7E58300FCA14B /* Assets */; };
+		59782BF11EEF4BDE00455CEA /* DBProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59782BF01EEF4BDE00455CEA /* DBProxy.swift */; };
 		5982BC201EE6886F00544035 /* proxyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5982BC1F1EE6886F00544035 /* proxyTests.swift */; };
 		599B4D2F1DC8384900C476D5 /* SenderPickerTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599B4D2E1DC8384900C476D5 /* SenderPickerTableViewController.swift */; };
 		59C910091EE6189500ACF24A /* Login.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C910081EE6189500ACF24A /* Login.swift */; };
@@ -117,9 +118,9 @@
 		590AD6561DCE61A200473245 /* BlockedUsersTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockedUsersTableViewController.swift; sourceTree = "<group>"; };
 		590AD6581DCE644100473245 /* BlockedUsersTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockedUsersTableViewCell.swift; sourceTree = "<group>"; };
 		590AD65A1DCE71C300473245 /* BlockedUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockedUser.swift; sourceTree = "<group>"; };
+		590AE9C41EEE2D6B00A95AB4 /* temp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = temp.swift; sourceTree = "<group>"; };
 		592673B71DBECDA200C2FD6F /* MeTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeTableViewController.swift; sourceTree = "<group>"; };
 		593302CE1DBF35D400D26805 /* MeTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeTableViewCell.swift; sourceTree = "<group>"; };
-		59392C8B1EE8D5E2008BAE40 /* UserManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
 		59392C8D1EE8FA00008BAE40 /* ProxyError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyError.swift; sourceTree = "<group>"; };
 		59392C8F1EE91C7E008BAE40 /* MessagesTableViewDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesTableViewDataSource.swift; sourceTree = "<group>"; };
 		59392C911EE91DB6008BAE40 /* ConvosObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvosObserver.swift; sourceTree = "<group>"; };
@@ -129,10 +130,11 @@
 		59392CA41EEB426B008BAE40 /* DBConvo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBConvo.swift; sourceTree = "<group>"; };
 		59392CA61EEB4622008BAE40 /* DB.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DB.swift; sourceTree = "<group>"; };
 		595722341EED127600F7DD07 /* DBIcon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBIcon.swift; sourceTree = "<group>"; };
-		595722361EED12AD00F7DD07 /* DataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
+		595722361EED12AD00F7DD07 /* Shared.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shared.swift; sourceTree = "<group>"; };
 		595856571EE7DDF600FCA14B /* proxy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = proxy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		595856581EE7DDF900FCA14B /* proxyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = proxyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5958565C1EE7E58300FCA14B /* Assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Assets; path = ../Assets; sourceTree = "<group>"; };
+		59782BF01EEF4BDE00455CEA /* DBProxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBProxy.swift; sourceTree = "<group>"; };
 		5982BC1F1EE6886F00544035 /* proxyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = proxyTests.swift; sourceTree = "<group>"; };
 		5982BC211EE6886F00544035 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		599B4D2E1DC8384900C476D5 /* SenderPickerTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SenderPickerTableViewController.swift; sourceTree = "<group>"; };
@@ -166,10 +168,10 @@
 		14383B101D7380130086CA6C /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				14383B111D73802B0086CA6C /* Proxy.swift */,
+				590AD65A1DCE71C300473245 /* BlockedUser.swift */,
 				14383B161D73D42E0086CA6C /* Convo.swift */,
 				14383B181D73D8F50086CA6C /* Message.swift */,
-				590AD65A1DCE71C300473245 /* BlockedUser.swift */,
+				14383B111D73802B0086CA6C /* Proxy.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -241,14 +243,13 @@
 				1415610C1D620DB7002022BC /* API.swift */,
 				14E19A5B1D612CE80030B366 /* Common.swift */,
 				14A6F18D1D6BDA880015431E /* Constant.swift */,
-				595722361EED12AD00F7DD07 /* DataManager.swift */,
 				147B5C391D82891300D18C73 /* DefaultIcons.swift */,
 				59392CA01EE9FBC2008BAE40 /* NavigationItemManager.swift */,
 				14383B591D7B0CB60086CA6C /* NSDate+NVTimeAgo.h */,
 				14383B5A1D7B0CB60086CA6C /* NSDate+NVTimeAgo.m */,
 				59392C8D1EE8FA00008BAE40 /* ProxyError.swift */,
+				595722361EED12AD00F7DD07 /* Shared.swift */,
 				59392C971EE97B09008BAE40 /* UnreadObserver.swift */,
-				59392C8B1EE8D5E2008BAE40 /* UserManager.swift */,
 			);
 			name = Common;
 			sourceTree = "<group>";
@@ -313,6 +314,8 @@
 				59392CA61EEB4622008BAE40 /* DB.swift */,
 				59392CA41EEB426B008BAE40 /* DBConvo.swift */,
 				595722341EED127600F7DD07 /* DBIcon.swift */,
+				59782BF01EEF4BDE00455CEA /* DBProxy.swift */,
+				590AE9C41EEE2D6B00A95AB4 /* temp.swift */,
 			);
 			name = Database;
 			sourceTree = "<group>";
@@ -569,15 +572,15 @@
 			files = (
 				14383B251D7555670086CA6C /* ConvoViewController.swift in Sources */,
 				14383B171D73D42E0086CA6C /* Convo.swift in Sources */,
-				59392C8C1EE8D5E2008BAE40 /* UserManager.swift in Sources */,
 				147B5C3A1D82891300D18C73 /* DefaultIcons.swift in Sources */,
-				595722371EED12AD00F7DD07 /* DataManager.swift in Sources */,
+				595722371EED12AD00F7DD07 /* Shared.swift in Sources */,
 				14E19A5C1D612CE80030B366 /* Common.swift in Sources */,
 				1415611F1D62A8A3002022BC /* ProxyCell.swift in Sources */,
 				59C910091EE6189500ACF24A /* Login.swift in Sources */,
 				14383B5D1D7B81530086CA6C /* ConvoInfoTableViewController.swift in Sources */,
 				590AD6571DCE61A200473245 /* BlockedUsersTableViewController.swift in Sources */,
 				59F456001DC987EF003EBA69 /* ReceiverPickerDelegate.swift in Sources */,
+				590AE9C51EEE2D6B00A95AB4 /* temp.swift in Sources */,
 				59F455FE1DC85BD0003EBA69 /* ReceiverPickerViewController.swift in Sources */,
 				14383B5B1D7B0CB60086CA6C /* NSDate+NVTimeAgo.m in Sources */,
 				593302CF1DBF35D400D26805 /* MeTableViewCell.swift in Sources */,
@@ -597,6 +600,7 @@
 				140E0D091D83544C00D68F71 /* ConvoCell.swift in Sources */,
 				59392CA51EEB426B008BAE40 /* DBConvo.swift in Sources */,
 				59392CA11EE9FBC2008BAE40 /* NavigationItemManager.swift in Sources */,
+				59782BF11EEF4BDE00455CEA /* DBProxy.swift in Sources */,
 				140E0D071D82AF2F00D68F71 /* IconPickerCollectionViewController.swift in Sources */,
 				59E230351EE547DB00B59549 /* LoginVideoPlayer.swift in Sources */,
 				590AD65B1DCE71C300473245 /* BlockedUser.swift in Sources */,

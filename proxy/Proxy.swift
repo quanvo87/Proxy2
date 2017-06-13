@@ -6,6 +6,23 @@
 //  Copyright © 2016 Quan Vo. All rights reserved.
 //
 
+struct GlobalProxy {
+    var key = ""
+    var owner = ""
+
+    init(key: String, owner: String) {
+        self.key = key
+        self.owner = owner
+    }
+
+    func toJSON() -> Any {
+        return [
+            "key": key,
+            "owner": owner
+        ]
+    }
+}
+
 struct Proxy {
     var key = ""
     var name = ""
@@ -20,6 +37,7 @@ struct Proxy {
 
     init() {}
 
+    // TODO: - remove
     init(name: String, ownerId: String) {
         self.key = name.lowercased()
         self.name = name
@@ -59,6 +77,7 @@ struct Proxy {
         self.unread = unread
     }
 
+    // TODO: - might not need `toJSON`s
     func toJSON() -> Any {
         return [
             "key": key,

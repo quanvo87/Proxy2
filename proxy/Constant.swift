@@ -43,6 +43,7 @@ struct Path {
     // Shared
     static let Key = "key"
     static let Name = "name"
+    static let Names = "names"
     static let Nickname = "nickname"
     static let Icon = "icon"
     static let Message = "message"

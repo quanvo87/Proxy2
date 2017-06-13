@@ -68,7 +68,7 @@ extension Login {
 private extension Login {
     static func finish(user: User?, error: Error?, completion: (Error?) -> Void) {
         if let user = user {
-            DataManager.shared.uid = user.uid
+            Shared.shared.uid = user.uid
         }
         completion(error)
     }

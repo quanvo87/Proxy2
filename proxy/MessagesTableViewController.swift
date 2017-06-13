@@ -100,8 +100,8 @@ extension MessagesTableViewController: NavigationItemManagerDelegate {
             self.tableView.setEditing(false, animated: true)
             self.setDefaultButtons()
         }))
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        present(alert, animated: true, completion: nil)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(alert, animated: true)
     }
 
     func createNewProxy() {
@@ -109,7 +109,7 @@ extension MessagesTableViewController: NavigationItemManagerDelegate {
         API.sharedInstance.createProxy { (proxy) in
             self.navigationItem.rightBarButtonItems![1].isEnabled = true
             guard proxy != nil else {
-                self.showAlert("Cannot Exceed 50 Proxies", message: "Delete some proxies and try again!")
+                self.showAlert("Cannot Exceed 50 Proxies", message: "Delete some proxies and try again!")   // TODO: - might need accurate error
                 self.tabBarController?.selectedIndex = 1
                 return
             }

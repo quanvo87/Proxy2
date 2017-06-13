@@ -28,14 +28,14 @@ class MessagesTableViewDataSource: NSObject, UITableViewDataSource {
         cell.iconImageView.image = nil
 
         // TODO: - set the ".png" somewhere else
-        DBIcon.getImageForIcon(convo.icon + ".png" as NSString, tag: cell.tag) { (image, tag, error) in
+        DBIcon.getImageForIcon(convo.icon + ".png" as AnyObject, tag: cell.tag) { (image, tag) in
             guard tag == cell.tag else { return }
             guard let image = image else {
-                preconditionFailure(String(describing: error))
+                assertionFailure()
+                return
             }
             cell.iconImageView.image = image
         }
-
         cell.titleLabel.attributedText = API.sharedInstance.getConvoTitle(receiverNickname: convo.receiverNickname,
                                                                           receiverName: convo.receiverProxyName,
                                                                           senderNickname: convo.senderNickname,

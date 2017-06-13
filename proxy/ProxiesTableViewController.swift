@@ -212,10 +212,11 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
         
         // Icon
         cell.iconImageView.image = nil
-        DBIcon.getImageForIcon(proxy.icon + ".png" as NSString, tag: cell.tag) { (image, tag, error) in
+        DBIcon.getImageForIcon(proxy.icon + ".png" as AnyObject, tag: cell.tag) { (image, tag) in
             guard tag == cell.tag else { return }
             guard let image = image else {
-                preconditionFailure(String(describing: error))
+                assertionFailure()
+                return
             }
             cell.iconImageView.image = image
         }

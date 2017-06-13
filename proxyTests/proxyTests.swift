@@ -36,8 +36,8 @@ class proxyTests: XCTestCase {
     func test1() {
         let x = self.expectation(description: #function)
 
-        DBIcon.getIconNames { (iconNames, error) in
-            XCTAssertNil(error)
+        DBIcon.getIconNames { (iconNames) in
+            XCTAssertNotNil(iconNames)
             print(iconNames ?? "")
             x.fulfill()
         }
@@ -45,13 +45,18 @@ class proxyTests: XCTestCase {
         waitForExpectations(timeout: 5)
     }
 
-    //    func test2() {
-    //        let x = self.expectation(description: #function)
-    //
-    //
-    //
-    //        waitForExpectations(timeout: 10)
-    //    }
+    func test2() {
+        let x = self.expectation(description: #function)
+
+        DBProxy.getWords { (words) in
+            XCTAssertNotNil(words)
+            print(words?["nouns"] ?? "")
+            print(words?["adjectives"] ?? "")
+            x.fulfill()
+        }
+
+        waitForExpectations(timeout: 10)
+    }
     //
     //    func test3() {
     //        let x = self.expectation(description: #function)

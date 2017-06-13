@@ -1,4 +1,4 @@
-/*
+
  
  - function naming consistency (gotoview vs showview, etc) (try to copy apple)
  - names of storyboard elements
@@ -32,5 +32,3 @@
  sell/trade names?
  every week, lottery. 1% of proxies randomly chosen get a random level upgrade. could be any level!
  maybe as you use a proxy more, you level it up, and gain prestige there
- 
- */

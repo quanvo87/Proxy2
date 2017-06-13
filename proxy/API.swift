@@ -309,7 +309,9 @@ class API {
                 
                 // If there's only one, we've got a unique proxy name.
                 if snapshot.childrenCount == 1 {
-                    
+
+                    // CHECK IF STILL TRYING TO MAKE PROXY
+
                     // Stop trying to create a proxy.
                     self.isCreatingProxy = false
                     

@@ -16,12 +16,12 @@ class AuthObserver {
     func observe(_ delegate: AuthObserverDelegate) {
         handle = Auth.auth().addStateDidChangeListener { [weak delegate = delegate] (_, user) in
             if let user = user {
-                DataManager.shared.uid = user.uid
+                Shared.shared.uid = user.uid
                 API.sharedInstance.uid = user.uid   // TODO: - remove
                 delegate?.logIn()
                 return
             }
-            DataManager.shared.uid = ""
+            Shared.shared.uid = ""
             delegate?.logOut()
         }
     }
