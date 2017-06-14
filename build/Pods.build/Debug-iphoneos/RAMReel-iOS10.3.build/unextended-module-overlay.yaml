@@ -1,0 +1,13 @@
+{
+  'version': 0,
+  'case-sensitive': 'false',
+  'roots': [{
+    'type': 'directory',
+    'name': '/Users/quanvo/Projects/proxy/build/Debug-iphoneos/RAMReel-iOS10.3/RAMReel.framework/Modules'
+    'contents': [{
+      'type': 'file',
+      'name': 'module.modulemap',
+      'external-contents': '/Users/quanvo/Projects/proxy/build/Pods.build/Debug-iphoneos/RAMReel-iOS10.3.build/unextended-module.modulemap',
+    }]
+  }]
+}

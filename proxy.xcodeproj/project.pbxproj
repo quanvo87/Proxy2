@@ -41,8 +41,8 @@
 		590AD6571DCE61A200473245 /* BlockedUsersTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 590AD6561DCE61A200473245 /* BlockedUsersTableViewController.swift */; };
 		590AD6591DCE644100473245 /* BlockedUsersTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 590AD6581DCE644100473245 /* BlockedUsersTableViewCell.swift */; };
 		590AD65B1DCE71C300473245 /* BlockedUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 590AD65A1DCE71C300473245 /* BlockedUser.swift */; };
-		590AE9C51EEE2D6B00A95AB4 /* temp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 590AE9C41EEE2D6B00A95AB4 /* temp.swift */; };
 		592673B81DBECDA200C2FD6F /* MeTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592673B71DBECDA200C2FD6F /* MeTableViewController.swift */; };
+		5927D7FC1EF1EE1500C08769 /* DBTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5927D7FB1EF1EE1500C08769 /* DBTests.swift */; };
 		593302CF1DBF35D400D26805 /* MeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 593302CE1DBF35D400D26805 /* MeTableViewCell.swift */; };
 		59392C8E1EE8FA00008BAE40 /* ProxyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59392C8D1EE8FA00008BAE40 /* ProxyError.swift */; };
 		59392C901EE91C7E008BAE40 /* MessagesTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59392C8F1EE91C7E008BAE40 /* MessagesTableViewDataSource.swift */; };
@@ -56,7 +56,6 @@
 		595722371EED12AD00F7DD07 /* Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 595722361EED12AD00F7DD07 /* Shared.swift */; };
 		5958565D1EE7E58300FCA14B /* Assets in Resources */ = {isa = PBXBuildFile; fileRef = 5958565C1EE7E58300FCA14B /* Assets */; };
 		59782BF11EEF4BDE00455CEA /* DBProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59782BF01EEF4BDE00455CEA /* DBProxy.swift */; };
-		5982BC201EE6886F00544035 /* proxyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5982BC1F1EE6886F00544035 /* proxyTests.swift */; };
 		599B4D2F1DC8384900C476D5 /* SenderPickerTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599B4D2E1DC8384900C476D5 /* SenderPickerTableViewController.swift */; };
 		59C910091EE6189500ACF24A /* Login.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C910081EE6189500ACF24A /* Login.swift */; };
 		59E230351EE547DB00B59549 /* LoginVideoPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E230341EE547DB00B59549 /* LoginVideoPlayer.swift */; };
@@ -118,8 +117,24 @@
 		590AD6561DCE61A200473245 /* BlockedUsersTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockedUsersTableViewController.swift; sourceTree = "<group>"; };
 		590AD6581DCE644100473245 /* BlockedUsersTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockedUsersTableViewCell.swift; sourceTree = "<group>"; };
 		590AD65A1DCE71C300473245 /* BlockedUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockedUser.swift; sourceTree = "<group>"; };
-		590AE9C41EEE2D6B00A95AB4 /* temp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = temp.swift; sourceTree = "<group>"; };
 		592673B71DBECDA200C2FD6F /* MeTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeTableViewController.swift; sourceTree = "<group>"; };
+		5927D7FB1EF1EE1500C08769 /* DBTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBTests.swift; sourceTree = "<group>"; };
+		5927D7FD1EF1F3A100C08769 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = "../../Library/Developer/Xcode/DerivedData/proxy-hiqnocahmyipnsbwqwzhrrkzgucz/Build/Products/Debug-iphonesimulator/Bolts-iOS10.0/Bolts.framework"; sourceTree = "<group>"; };
+		5927D7FE1EF1F3A100C08769 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = "../../Library/Developer/Xcode/DerivedData/proxy-hiqnocahmyipnsbwqwzhrrkzgucz/Build/Products/Debug-iphonesimulator/Bolts-iOS10.3/Bolts.framework"; sourceTree = "<group>"; };
+		5927D7FF1EF1F3A100C08769 /* FacebookCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookCore.framework; path = "../../Library/Developer/Xcode/DerivedData/proxy-hiqnocahmyipnsbwqwzhrrkzgucz/Build/Products/Debug-iphonesimulator/FacebookCore-iOS10.0/FacebookCore.framework"; sourceTree = "<group>"; };
+		5927D8001EF1F3A100C08769 /* FacebookCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookCore.framework; path = "../../Library/Developer/Xcode/DerivedData/proxy-hiqnocahmyipnsbwqwzhrrkzgucz/Build/Products/Debug-iphonesimulator/FacebookCore-iOS10.3/FacebookCore.framework"; sourceTree = "<group>"; };
+		5927D8011EF1F3A100C08769 /* FacebookLogin.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookLogin.framework; path = "../../Library/Developer/Xcode/DerivedData/proxy-hiqnocahmyipnsbwqwzhrrkzgucz/Build/Products/Debug-iphonesimulator/FacebookLogin-iOS10.3/FacebookLogin.framework"; sourceTree = "<group>"; };
+		5927D8021EF1F3A100C08769 /* FacebookLogin.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookLogin.framework; path = "../../Library/Developer/Xcode/DerivedData/proxy-hiqnocahmyipnsbwqwzhrrkzgucz/Build/Products/Debug-iphonesimulator/FacebookLogin-iOS10.0/FacebookLogin.framework"; sourceTree = "<group>"; };
+		5927D8031EF1F3A100C08769 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = "../../Library/Developer/Xcode/DerivedData/proxy-hiqnocahmyipnsbwqwzhrrkzgucz/Build/Products/Debug-iphonesimulator/FBSDKCoreKit-iOS10.0/FBSDKCoreKit.framework"; sourceTree = "<group>"; };
+		5927D8041EF1F3A100C08769 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = "../../Library/Developer/Xcode/DerivedData/proxy-hiqnocahmyipnsbwqwzhrrkzgucz/Build/Products/Debug-iphonesimulator/FBSDKCoreKit-iOS10.3/FBSDKCoreKit.framework"; sourceTree = "<group>"; };
+		5927D8051EF1F3A100C08769 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = "../../Library/Developer/Xcode/DerivedData/proxy-hiqnocahmyipnsbwqwzhrrkzgucz/Build/Products/Debug-iphonesimulator/FBSDKLoginKit-iOS10.3/FBSDKLoginKit.framework"; sourceTree = "<group>"; };
+		5927D8061EF1F3A100C08769 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = "../../Library/Developer/Xcode/DerivedData/proxy-hiqnocahmyipnsbwqwzhrrkzgucz/Build/Products/Debug-iphonesimulator/FBSDKLoginKit-iOS10.0/FBSDKLoginKit.framework"; sourceTree = "<group>"; };
+		5927D8111EF1F3B500C08769 /* GoogleToolboxForMac.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleToolboxForMac.framework; path = "../../Library/Developer/Xcode/DerivedData/proxy-hiqnocahmyipnsbwqwzhrrkzgucz/Build/Products/Debug-iphonesimulator/GoogleToolboxForMac-iOS10.3/GoogleToolboxForMac.framework"; sourceTree = "<group>"; };
+		5927D8121EF1F3B500C08769 /* GoogleToolboxForMac.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleToolboxForMac.framework; path = "../../Library/Developer/Xcode/DerivedData/proxy-hiqnocahmyipnsbwqwzhrrkzgucz/Build/Products/Debug-iphonesimulator/GoogleToolboxForMac-iOS10.0/GoogleToolboxForMac.framework"; sourceTree = "<group>"; };
+		5927D8131EF1F3B500C08769 /* GTMSessionFetcher.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GTMSessionFetcher.framework; path = "../../Library/Developer/Xcode/DerivedData/proxy-hiqnocahmyipnsbwqwzhrrkzgucz/Build/Products/Debug-iphonesimulator/GTMSessionFetcher-iOS10.0/GTMSessionFetcher.framework"; sourceTree = "<group>"; };
+		5927D8141EF1F3B500C08769 /* GTMSessionFetcher.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GTMSessionFetcher.framework; path = "../../Library/Developer/Xcode/DerivedData/proxy-hiqnocahmyipnsbwqwzhrrkzgucz/Build/Products/Debug-iphonesimulator/GTMSessionFetcher-iOS10.3/GTMSessionFetcher.framework"; sourceTree = "<group>"; };
+		5927D8191EF1F3E800C08769 /* Pods_proxy.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Pods_proxy.framework; path = "../../Library/Developer/Xcode/DerivedData/proxy-hiqnocahmyipnsbwqwzhrrkzgucz/Build/Products/Debug-iphonesimulator/Pods_proxy.framework"; sourceTree = "<group>"; };
+		5927D81B1EF1F4D900C08769 /* Firebase */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Firebase; path = Pods/Firebase; sourceTree = "<group>"; };
 		593302CE1DBF35D400D26805 /* MeTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeTableViewCell.swift; sourceTree = "<group>"; };
 		59392C8D1EE8FA00008BAE40 /* ProxyError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyError.swift; sourceTree = "<group>"; };
 		59392C8F1EE91C7E008BAE40 /* MessagesTableViewDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesTableViewDataSource.swift; sourceTree = "<group>"; };
@@ -135,7 +150,6 @@
 		595856581EE7DDF900FCA14B /* proxyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = proxyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5958565C1EE7E58300FCA14B /* Assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Assets; path = ../Assets; sourceTree = "<group>"; };
 		59782BF01EEF4BDE00455CEA /* DBProxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBProxy.swift; sourceTree = "<group>"; };
-		5982BC1F1EE6886F00544035 /* proxyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = proxyTests.swift; sourceTree = "<group>"; };
 		5982BC211EE6886F00544035 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		599B4D2E1DC8384900C476D5 /* SenderPickerTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SenderPickerTableViewController.swift; sourceTree = "<group>"; };
 		59C910081EE6189500ACF24A /* Login.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Login.swift; sourceTree = "<group>"; };
@@ -315,7 +329,6 @@
 				59392CA41EEB426B008BAE40 /* DBConvo.swift */,
 				595722341EED127600F7DD07 /* DBIcon.swift */,
 				59782BF01EEF4BDE00455CEA /* DBProxy.swift */,
-				590AE9C41EEE2D6B00A95AB4 /* temp.swift */,
 			);
 			name = Database;
 			sourceTree = "<group>";
@@ -332,7 +345,7 @@
 		5982BC1E1EE6886F00544035 /* proxyTests */ = {
 			isa = PBXGroup;
 			children = (
-				5982BC1F1EE6886F00544035 /* proxyTests.swift */,
+				5927D7FB1EF1EE1500C08769 /* DBTests.swift */,
 				5982BC211EE6886F00544035 /* Info.plist */,
 			);
 			path = proxyTests;
@@ -352,6 +365,22 @@
 		F07A503573ADA0B0B8E01D98 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5927D81B1EF1F4D900C08769 /* Firebase */,
+				5927D8191EF1F3E800C08769 /* Pods_proxy.framework */,
+				5927D8111EF1F3B500C08769 /* GoogleToolboxForMac.framework */,
+				5927D8121EF1F3B500C08769 /* GoogleToolboxForMac.framework */,
+				5927D8131EF1F3B500C08769 /* GTMSessionFetcher.framework */,
+				5927D8141EF1F3B500C08769 /* GTMSessionFetcher.framework */,
+				5927D7FD1EF1F3A100C08769 /* Bolts.framework */,
+				5927D7FE1EF1F3A100C08769 /* Bolts.framework */,
+				5927D7FF1EF1F3A100C08769 /* FacebookCore.framework */,
+				5927D8001EF1F3A100C08769 /* FacebookCore.framework */,
+				5927D8011EF1F3A100C08769 /* FacebookLogin.framework */,
+				5927D8021EF1F3A100C08769 /* FacebookLogin.framework */,
+				5927D8031EF1F3A100C08769 /* FBSDKCoreKit.framework */,
+				5927D8041EF1F3A100C08769 /* FBSDKCoreKit.framework */,
+				5927D8051EF1F3A100C08769 /* FBSDKLoginKit.framework */,
+				5927D8061EF1F3A100C08769 /* FBSDKLoginKit.framework */,
 				42B14E4F2F6BB0AA66125CA8 /* Pods_proxy.framework */,
 				35ED029DA0B290CDE1473724 /* Pods_proxyTests.framework */,
 			);
@@ -580,7 +609,6 @@
 				14383B5D1D7B81530086CA6C /* ConvoInfoTableViewController.swift in Sources */,
 				590AD6571DCE61A200473245 /* BlockedUsersTableViewController.swift in Sources */,
 				59F456001DC987EF003EBA69 /* ReceiverPickerDelegate.swift in Sources */,
-				590AE9C51EEE2D6B00A95AB4 /* temp.swift in Sources */,
 				59F455FE1DC85BD0003EBA69 /* ReceiverPickerViewController.swift in Sources */,
 				14383B5B1D7B0CB60086CA6C /* NSDate+NVTimeAgo.m in Sources */,
 				593302CF1DBF35D400D26805 /* MeTableViewCell.swift in Sources */,
@@ -625,7 +653,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5982BC201EE6886F00544035 /* proxyTests.swift in Sources */,
+				5927D7FC1EF1EE1500C08769 /* DBTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

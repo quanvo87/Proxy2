@@ -1,0 +1,13 @@
+{
+  'version': 0,
+  'case-sensitive': 'false',
+  'roots': [{
+    'type': 'directory',
+    'name': '/Users/quanvo/Projects/proxy/build/Debug-iphoneos/Kingfisher-iOS10.3/Kingfisher.framework/Modules'
+    'contents': [{
+      'type': 'file',
+      'name': 'module.modulemap',
+      'external-contents': '/Users/quanvo/Projects/proxy/build/Pods.build/Debug-iphoneos/Kingfisher-iOS10.3.build/unextended-module.modulemap',
+    }]
+  }]
+}

@@ -31,7 +31,6 @@ class MessagesTableViewDataSource: NSObject, UITableViewDataSource {
         DBIcon.getImageForIcon(convo.icon + ".png" as AnyObject, tag: cell.tag) { (image, tag) in
             guard tag == cell.tag else { return }
             guard let image = image else {
-                assertionFailure()
                 return
             }
             cell.iconImageView.image = image

@@ -19,11 +19,6 @@ extension Array where Element: UITableViewCell {
     var incrementedTags: Void {
         _ = self.map { $0.tag.increment() }
     }
-
-    // TODO: - delete
-//    func incrementTags() {
-//        _ = self.map { $0.tag.increment() }
-//    }
 }
 
 extension DataSnapshot {
@@ -78,7 +73,6 @@ extension Int {
             if let string = NumberFormatter.proxyNumberFormatter.string(from: NSNumber(integerLiteral: Int(num))) {
                 return string
             }
-            assertionFailure()
             return "-"
         }
 
@@ -149,7 +143,6 @@ extension UIImage {
         if let resized = resized {
             return resized
         } else {
-            assertionFailure()
             return UIImage()
         }
     }

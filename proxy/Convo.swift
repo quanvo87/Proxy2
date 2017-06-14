@@ -48,7 +48,6 @@ struct Convo {
             let receiverDeletedProxy = json["receiverDeletedProxy"] as? Bool,
             let timestamp = json["timestamp"] as? Double,
             let unread = json["unread"] as? Int else {
-                assertionFailure()
                 return nil
         }
         self.key = key

@@ -17,8 +17,10 @@ struct DB {
     }
 
     static func path(_ children: [String]) throws -> Path {
+        guard !children.isEmpty else {
+            throw ProxyError.unknown
+        }
         for child in children where child == "" {
-            assertionFailure()
             throw ProxyError.unknown
         }
         return children.joined(separator: "/")
@@ -30,17 +32,14 @@ struct DB {
 
     static func ref(_ children: [String]) -> DatabaseReference? {
         do {
-            let path = try DB.path(children)
-            return Database.database().reference().child(path)
+            return Database.database().reference().child(try DB.path(children))
         } catch {
-            assertionFailure()
             return nil
         }
     }
 
     static func get(_ children: String..., completion: @escaping (DataSnapshot?) -> Void) {
         guard let ref = ref(children) else {
-            assertionFailure()
             completion(nil)
             return
         }
@@ -51,26 +50,22 @@ struct DB {
 
     static func set(_ value: Any, children: String..., completion: @escaping ((Success) -> Void)) {
         guard let ref = ref(children) else {
-            assertionFailure()
             completion(false)
             return
         }
         ref.setValue(value) { (error, _) in
-            assert(error == nil, String(describing: error))
             completion(error == nil)
         }
     }
 
     static func set(_ transactions: Transactions, completion: @escaping (Success) -> Void) {
         Database.database().reference().updateChildValues(transactions) { (error, _) in
-            assert(error == nil, String(describing: error))
             completion(error == nil)
         }
     }
 
     static func delete(_ children: String..., completion: @escaping (Success) -> Void) {
         guard let ref = ref(children) else {
-            assertionFailure()
             completion(false)
             return
         }
@@ -81,7 +76,6 @@ struct DB {
 
     static func increment(_ amount: Int, children: String..., completion: @escaping (Success) -> Void) {
         guard let ref = ref(children) else {
-            assertionFailure()
             completion(false)
             return
         }
@@ -94,7 +88,6 @@ struct DB {
             }
             return TransactionResult.success(withValue: currentData)
         }) { (error, _, _) in
-            assert(error == nil, String(describing: error))
             completion(error == nil)
         }
     }

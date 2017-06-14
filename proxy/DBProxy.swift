@@ -41,7 +41,6 @@ extension DBProxy {
                 let dictionary = json as? [String: Any],
                 let adjectives = dictionary["adjectives"] as? [String],
                 let nouns = dictionary["nouns"] as? [String] else {
-                    assertionFailure(String(describing: error))
                     return
             }
             Shared.shared.adjectives = adjectives
@@ -61,7 +60,6 @@ extension DBProxy {
                 let json = try? JSONSerialization.jsonObject(with: data, options: []),
                 let dictionary = json as? [String: Any],
                 let iconsNames = dictionary["iconNames"] as? [String] else {
-                    assertionFailure(String(describing: error))
                     return
             }
             Shared.shared.iconNames = iconsNames
