@@ -9,6 +9,8 @@
 import FirebaseDatabase
 import FirebaseStorage
 
+typealias Success = Bool
+
 enum Result {
     case success(Any)
     case failure(Error)

@@ -10,22 +10,44 @@ import XCTest
 @testable import proxy
 
 class proxyTests: XCTestCase {
-    func test() {
+//    func test() {
+//        let x = self.expectation(description: #function)
+//
+//        let val = Int(arc4random_uniform(UInt32.max))
+//
+//        DB.set(val, children: "a", "b") { (success) in
+//            XCTAssert(success)
+//
+//            DB.get("a", "b", completion: { (snapshot) in
+//                guard
+//                    let snapshot = snapshot,
+//                    let value = snapshot.value as? Int else {
+//                        XCTFail()
+//                        return
+//                }
+//                XCTAssertEqual(value, val)
+//                x.fulfill()
+//            })
+//        }
+//
+//        waitForExpectations(timeout: 5)
+//    }
+
+    func test1() {
         let x = self.expectation(description: #function)
 
-        let val = Int(arc4random_uniform(UInt32.max))
-
-        DB.set(val, pathNodes: "a", "b") { (success) in
-            XCTAssert(success)
+        let proxy = Proxy(name: "balls", ownerId: "me").toJSON()
+        DB.set(proxy, children: "a", "b") { (success) in
+            XCTAssertTrue(success)
 
             DB.get("a", "b", completion: { (snapshot) in
                 guard
                     let snapshot = snapshot,
-                    let value = snapshot.value as? Int else {
+                    let proxy = Proxy(snapshot.value as AnyObject) else {
                         XCTFail()
                         return
                 }
-                XCTAssertEqual(value, val)
+                print(proxy)
                 x.fulfill()
             })
         }
@@ -33,31 +55,19 @@ class proxyTests: XCTestCase {
         waitForExpectations(timeout: 5)
     }
 
-    func test1() {
-        let x = self.expectation(description: #function)
-
-        DBIcon.getIconNames { (iconNames) in
-            XCTAssertNotNil(iconNames)
-            print(iconNames ?? "")
-            x.fulfill()
-        }
-
-        waitForExpectations(timeout: 5)
-    }
-
-    func test2() {
-        let x = self.expectation(description: #function)
-
-        DBProxy.getWords { (words) in
-            XCTAssertNotNil(words)
-            print(words?["nouns"] ?? "")
-            print(words?["adjectives"] ?? "")
-            x.fulfill()
-        }
-
-        waitForExpectations(timeout: 10)
-    }
+    //    func test2() {
+    //        let x = self.expectation(description: #function)
     //
+    //        DBProxy.getWords { (words) in
+    //            XCTAssertNotNil(words)
+    //            print(words?["nouns"] ?? "")
+    //            print(words?["adjectives"] ?? "")
+    //            x.fulfill()
+    //        }
+    //
+    //        waitForExpectations(timeout: 10)
+    //    }
+
     //    func test3() {
     //        let x = self.expectation(description: #function)
     //

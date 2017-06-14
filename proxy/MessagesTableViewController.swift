@@ -50,6 +50,7 @@ extension MessagesTableViewController: AuthObserverDelegate {
         tabBarController?.tabBar.items?.setupForTabBar()
         dataSource.load(self)
         unreadObserver.observe(self)
+        DBProxy.loadProxyInfo()
     }
 
     func logOut() {

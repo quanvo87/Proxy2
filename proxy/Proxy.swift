@@ -8,17 +8,28 @@
 
 struct GlobalProxy {
     var key = ""
-    var owner = ""
+    var ownerId = ""
 
-    init(key: String, owner: String) {
+    init(key: String, ownerId: String) {
         self.key = key
-        self.owner = owner
+        self.ownerId = ownerId
+    }
+
+
+    init?(_ json: AnyObject) {
+        guard
+            let key = json["key"] as? String,
+            let ownerId = json["ownerId"] as? String else {
+                return nil
+        }
+        self.key = key
+        self.ownerId = ownerId
     }
 
     func toJSON() -> Any {
         return [
             "key": key,
-            "owner": owner
+            "owner": ownerId
         ]
     }
 }
@@ -77,7 +88,6 @@ struct Proxy {
         self.unread = unread
     }
 
-    // TODO: - might not need `toJSON`s
     func toJSON() -> Any {
         return [
             "key": key,

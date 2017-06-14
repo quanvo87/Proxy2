@@ -9,35 +9,34 @@
 import FirebaseDatabase
 
 struct DB {
-    typealias Success = Bool
     typealias Path = String
     typealias Transactions = [Path: Any]
 
-    static func path(_ nodes: String...) -> Path {
-        return path(nodes)
+    static func path(_ children: String...) -> Path {
+        return path(children)
     }
 
-    static func path(_ nodes: [String]) -> Path {
-        for node in nodes where node == "" {
+    static func path(_ children: [String]) -> Path {
+        for child in children where child == "" {
             return ""
         }
-        return nodes.joined(separator: "/")
+        return children.joined(separator: "/")
     }
 
-    static func ref(_ nodes: String...) -> DatabaseReference? {
-        return ref(nodes)
+    static func ref(_ children: String...) -> DatabaseReference? {
+        return ref(children)
     }
 
-    static func ref(_ nodes: [String]) -> DatabaseReference? {
-        let path = DB.path(nodes)
+    static func ref(_ children: [String]) -> DatabaseReference? {
+        let path = DB.path(children)
         guard path != "" else {
             return nil
         }
         return Database.database().reference().child(path)
     }
 
-    static func get(_ pathNodes: String..., completion: @escaping (DataSnapshot?) -> Void) {
-        guard let ref = ref(pathNodes) else {
+    static func get(_ children: String..., completion: @escaping (DataSnapshot?) -> Void) {
+        guard let ref = ref(children) else {
             completion(nil)
             return
         }
@@ -46,8 +45,8 @@ struct DB {
         }
     }
 
-    static func set(_ value: Any, pathNodes: String..., completion: @escaping ((Success) -> Void)) {
-        guard let ref = ref(pathNodes) else {
+    static func set(_ value: Any, children: String..., completion: @escaping ((Success) -> Void)) {
+        guard let ref = ref(children) else {
             completion(false)
             return
         }
@@ -66,8 +65,8 @@ struct DB {
         }
     }
 
-    static func delete(_ pathNodes: String..., completion: @escaping (Success) -> Void) {
-        guard let ref = ref(pathNodes) else {
+    static func delete(_ children: String..., completion: @escaping (Success) -> Void) {
+        guard let ref = ref(children) else {
             completion(false)
             return
         }
@@ -76,8 +75,8 @@ struct DB {
         }
     }
 
-    static func increment(_ amount: Int, pathNodes: String..., completion: @escaping (Success) -> Void) {
-        guard let ref = ref(pathNodes) else {
+    static func increment(_ amount: Int, children: String..., completion: @escaping (Success) -> Void) {
+        guard let ref = ref(children) else {
             completion(false)
             return
         }
@@ -92,5 +91,9 @@ struct DB {
         }) { (error, _, _) in
             completion(error == nil)
         }
+    }
+
+    static func assertionFailure(_ error: Error?) {
+        Swift.assertionFailure(String(describing: error))
     }
 }

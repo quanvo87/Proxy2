@@ -22,7 +22,5 @@ class Shared {
 
     lazy var proxyInfoLoaded = DispatchGroup()
 
-    private init() {
-        DBProxy.loadProxyInfo()
-    }
+    private init() {}
 }

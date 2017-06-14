@@ -156,7 +156,7 @@ final class FontLoader {
             let provider = CGDataProvider(data: inData as CFData)
         {
           let font = CGFont(provider)
-          CTFontManagerRegisterGraphicsFont(font, nil)
+            CTFontManagerRegisterGraphicsFont(font, nil)
           FontLoader.loadedFonts[self.name] = self
             return
         } else {
