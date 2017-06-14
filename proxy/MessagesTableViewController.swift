@@ -159,7 +159,7 @@ extension MessagesTableViewController {
 extension MessagesTableViewController: UnreadObserverDelegate {
     func setUnread(_ unread: Int?) {
         if let unread = unread {
-            self.navigationItem.title = "Messages" + unread.asUnreadLabel()
+            self.navigationItem.title = "Messages" + unread.asLabel
             self.tabBarController?.tabBar.items?.first?.badgeValue = unread == 0 ? nil : String(unread)
         } else {
             self.navigationItem.title = "Messages"

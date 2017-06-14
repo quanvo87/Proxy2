@@ -78,7 +78,7 @@ class IconPickerCollectionViewController: UICollectionViewController {
     
     override func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
         let cell = collectionView.cellForItem(at: indexPath)
-        cell?.backgroundColor = UIColor().blue()
+        cell?.backgroundColor = UIColor.blue
     }
     
     override func collectionView(_ collectionView: UICollectionView, didUnhighlightItemAt indexPath: IndexPath) {

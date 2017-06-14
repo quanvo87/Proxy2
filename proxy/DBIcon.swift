@@ -18,7 +18,7 @@ struct DBIcon {
             guard
                 error == nil,
                 let url = url else {
-                    DB.assertionFailure(error)
+                    assertionFailure(String(describing: error))
                     return
             }
             DispatchQueue.global().async {

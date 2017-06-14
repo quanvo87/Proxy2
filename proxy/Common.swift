@@ -7,7 +7,6 @@
 //
 
 import FirebaseDatabase
-import FirebaseStorage
 
 typealias Success = Bool
 
@@ -17,26 +16,14 @@ enum Result {
 }
 
 extension Array where Element: UITableViewCell {
-    func incrementTags() {
-        _ = self.map({ $0.tag.increment() })
+    var incrementedTags: Void {
+        _ = self.map { $0.tag.increment() }
     }
-}
 
-extension UIViewController {
-    func showAlert(_ title: String, message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
-        present(alert, animated: true, completion: nil)
-    }
-}
-
-extension Error {
-    var description: String {
-        if let proxyError = self as? ProxyError {
-            return proxyError.localizedDescription
-        }
-        return self.localizedDescription
-    }
+    // TODO: - delete
+//    func incrementTags() {
+//        _ = self.map { $0.tag.increment() }
+//    }
 }
 
 extension DataSnapshot {
@@ -53,6 +40,21 @@ extension DataSnapshot {
     }
 }
 
+extension Double {
+    var asTimeAgo: String {
+        return NSDate(timeIntervalSince1970: self).formattedAsTimeAgo()
+    }
+}
+
+extension Error {
+    var description: String {
+        if let proxyError = self as? ProxyError {
+            return proxyError.localizedDescription
+        }
+        return self.localizedDescription
+    }
+}
+
 extension Int {
     mutating func increment() {
         if self == Int.max {
@@ -62,27 +64,25 @@ extension Int {
         }
     }
 
-    func toNumberLabel() -> String {
+    var asLabel: String {
         return self == 0 ? "" : String(self)
     }
 
-    func asUnreadLabel() -> String {
-        return self == 0 ? "" : " (\(self))"
-    }
-
-    func formatted() -> String {
+    var shortForm: String {
         var num = Double(self)
         let sign = ((num < 0) ? "-" : "" )
 
         num = fabs(num)
 
         if num < 1000000000.0 {
-            let formatter = NumberFormatter()
-            formatter.numberStyle = .decimal
-            return formatter.string(from: NSNumber(integerLiteral: Int(num)))!
+            if let string = NumberFormatter.proxyNumberFormatter.string(from: NSNumber(integerLiteral: Int(num))) {
+                return string
+            }
+            assertionFailure()
+            return "-"
         }
 
-        let exp = Int(log10(num) / 3.0 ) // log10(1000)
+        let exp = Int(log10(num) / 3.0 )
 
         let units = ["K","M","G","T","P","E"]
 
@@ -92,16 +92,18 @@ extension Int {
     }
 }
 
+extension NumberFormatter {
+    static let proxyNumberFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        return formatter
+    }()
+}
+
 extension String {
     func makeBold(withSize size: CGFloat) -> NSMutableAttributedString {
         let boldAttr = [NSFontAttributeName: UIFont.boldSystemFont(ofSize: size)]
         return NSMutableAttributedString(string: self, attributes: boldAttr)
-    }
-}
-
-extension Double {
-    func toTimeAgo() -> String {
-        return NSDate(timeIntervalSince1970: self).formattedAsTimeAgo()
     }
 }
 
@@ -110,11 +112,7 @@ extension UIColor {
         self.init(red: CGFloat(red) / 255.0, green: CGFloat(green) / 255.0, blue: CGFloat(blue) / 255.0, alpha: 1.0)
     }
 
-    convenience init(hex: Int) {
-        self.init(red:(hex >> 16) & 0xff, green:(hex >> 8) & 0xff, blue:hex & 0xff)
-    }
-
-    func blue() -> UIColor {
+    static var blue: UIColor {
         return UIColor(red: 0, green: 122, blue: 255)
     }
 }
@@ -145,9 +143,22 @@ extension UIImage {
 
         UIGraphicsBeginImageContextWithOptions(size, false, scale)
         self.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
-        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        let resized = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
 
-        return newImage!
+        if let resized = resized {
+            return resized
+        } else {
+            assertionFailure()
+            return UIImage()
+        }
+    }
+}
+
+extension UIViewController {
+    func showAlert(_ title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        present(alert, animated: true, completion: nil)
     }
 }

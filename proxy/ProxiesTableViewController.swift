@@ -76,7 +76,7 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
         unreadRef = ref.child(Path.Unread).child(api.uid).child(Path.Unread)
         unreadRefHandle = unreadRef.observe(.value, with: { (snapshot) in
             if let unread = snapshot.value as? Int {
-                self.navigationItem.title = "Proxies \(unread.asUnreadLabel())"
+                self.navigationItem.title = "Proxies \(unread.asLabel)"
             } else {
                 self.navigationItem.title = "Proxies"
             }
@@ -91,7 +91,7 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
                 }
             }
             self.proxies = proxies.reversed()
-            self.tableView.visibleCells.incrementTags()
+            self.tableView.visibleCells.incrementedTags
             self.tableView.reloadData()
         })
         
@@ -224,8 +224,8 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
         // Labels
         cell.nameLabel.text = proxy.name
         cell.nicknameLabel.text = proxy.nickname
-        cell.convoCountLabel.text = proxy.convos.toNumberLabel()
-        cell.unreadLabel.text = proxy.unread.toNumberLabel()
+        cell.convoCountLabel.text = proxy.convos.asLabel
+        cell.unreadLabel.text = proxy.unread.asLabel
         
         return cell
     }

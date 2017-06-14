@@ -20,6 +20,7 @@ struct GlobalProxy {
         guard
             let key = json["key"] as? String,
             let ownerId = json["ownerId"] as? String else {
+                assertionFailure()
                 return nil
         }
         self.key = key
@@ -74,6 +75,7 @@ struct Proxy {
             let timestamp = json["timestamp"] as? Double,
             let convos = json["convos"] as? Int,
             let unread = json["unread"] as? Int else {
+                assertionFailure()
                 return nil
         }
         self.key = key

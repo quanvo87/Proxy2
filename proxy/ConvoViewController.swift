@@ -437,7 +437,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
         } else {
             cell.messageBubbleTopLabel.textInsets = UIEdgeInsetsMake(0, 40, 0, 0)
             cell.textView.linkTextAttributes = [
-                NSForegroundColorAttributeName: UIColor().blue(),
+                NSForegroundColorAttributeName: UIColor.blue,
                 NSUnderlineStyleAttributeName: NSUnderlineStyle.styleSingle.rawValue]
             cell.textView?.textColor = UIColor.black
         }
@@ -557,7 +557,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
         let message = messages[indexPath.item]
         if indexPath.item == readReceiptIndex && message.senderId == senderId && message.read {
             let read = "Read ".makeBold(withSize: 12)
-            let timestamp = NSAttributedString(string: message.timeRead.toTimeAgo())
+            let timestamp = NSAttributedString(string: message.timeRead.asTimeAgo)
             read.append(timestamp)
             return read
         }

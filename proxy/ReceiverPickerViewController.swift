@@ -56,7 +56,7 @@ class ReceiverPickerViewController: UIViewController, UICollectionViewDelegate {
             ramReel.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         })
         
-        selectThisReceiverButton.layer.borderColor = UIColor().blue().cgColor
+        selectThisReceiverButton.layer.borderColor = UIColor.blue.cgColor
         selectThisReceiverButton.layer.borderWidth = 1
         selectThisReceiverButton.layer.cornerRadius = 5
         

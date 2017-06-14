@@ -47,12 +47,16 @@ struct DBConvo {
             receiverConvo.senderIsBlocking = senderBlocked
             let receiverConvoJSON = receiverConvo.toJSON()
 
-            DB.set([DB.path(Path.Convos, senderConvo.senderId, senderConvo.key): senderConvoJSON,
-                    DB.path(Path.Convos, senderConvo.senderProxyKey, senderConvo.key): senderConvoJSON,
-                    DB.path(Path.Convos, receiverConvo.senderId, receiverConvo.key): receiverConvoJSON,
-                    DB.path(Path.Convos, receiverConvo.senderProxyKey, receiverConvo.key): receiverConvoJSON], completion: { (success) in
-                        completion(success == true ? senderConvo : nil)
-            })
+            do {
+                DB.set([try DB.path(Path.Convos, senderConvo.senderId, senderConvo.key): senderConvoJSON,
+                        try DB.path(Path.Convos, senderConvo.senderProxyKey, senderConvo.key): senderConvoJSON,
+                        try DB.path(Path.Convos, receiverConvo.senderId, receiverConvo.key): receiverConvoJSON,
+                        try DB.path(Path.Convos, receiverConvo.senderProxyKey, receiverConvo.key): receiverConvoJSON], completion: { (success) in
+                            completion(success == true ? senderConvo : nil)
+                })
+            } catch {
+                completion(nil)
+            }
         }
     }
 

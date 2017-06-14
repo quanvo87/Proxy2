@@ -17,10 +17,26 @@ class Shared {
     lazy var isCreatingProxy = false
 
     lazy var adjectives = [String]()
+    lazy var adjCount: UInt32 = {
+        return UInt32(Shared.shared.adjectives.count)
+    }()
+
     lazy var nouns = [String]()
+    lazy var nounCount: UInt32 = {
+        return UInt32(Shared.shared.nouns.count)
+    }()
+
     lazy var iconNames = [String]()
+    lazy var iconNameCount: UInt32 = {
+        return UInt32(Shared.shared.iconNames.count)
+    }()
 
     lazy var proxyInfoLoaded = DispatchGroup()
+    var proxyInfoIsLoaded: Bool {
+        return  Shared.shared.adjCount > 0 &&
+                Shared.shared.nounCount > 0 &&
+                Shared.shared.iconNameCount > 0
+    }
 
     private init() {}
 }
