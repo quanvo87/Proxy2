@@ -11,10 +11,8 @@ import FirebaseStorage
 struct DBIcon {
     static func getImageForIcon(_ icon: AnyObject, tag: Int, completion: @escaping (UIImage?, Int) -> Void) {
         if let image = Shared.shared.cache.object(forKey: icon) as? UIImage {
-            DispatchQueue.main.async {
-                completion(image, tag)
-                return
-            }
+            completion(image, tag)
+            return
         }
         Storage.storage().reference(forURL: URLs.Storage + "/icons").child("\(icon)").downloadURL { (url, error) in
             guard
@@ -29,10 +27,14 @@ struct DBIcon {
                         return
                 }
                 Shared.shared.cache.setObject(image, forKey: icon)
-                DispatchQueue.main.async {
-                    completion(image, tag)
-                }
+                completion(image, tag)
             }
         }
+    }
+}
+
+extension Array where Element: UITableViewCell {
+    var incrementedTags: Void {
+        _ = self.map { $0.tag.increment() }
     }
 }

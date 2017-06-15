@@ -59,6 +59,8 @@
 		5963517D1EF208AF00A4D388 /* DBProxyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5963517C1EF208AF00A4D388 /* DBProxyTests.swift */; };
 		5963517F1EF22B6800A4D388 /* CommonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5963517E1EF22B6800A4D388 /* CommonTests.swift */; };
 		59782BF11EEF4BDE00455CEA /* DBProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59782BF01EEF4BDE00455CEA /* DBProxy.swift */; };
+		5978AE781EF253740084C37D /* DBConvoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5978AE771EF253740084C37D /* DBConvoTests.swift */; };
+		5978AE7A1EF254750084C37D /* DBIconTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5978AE791EF254750084C37D /* DBIconTests.swift */; };
 		599B4D2F1DC8384900C476D5 /* SenderPickerTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599B4D2E1DC8384900C476D5 /* SenderPickerTableViewController.swift */; };
 		59C910091EE6189500ACF24A /* Login.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C910081EE6189500ACF24A /* Login.swift */; };
 		59E230351EE547DB00B59549 /* LoginVideoPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E230341EE547DB00B59549 /* LoginVideoPlayer.swift */; };
@@ -156,6 +158,8 @@
 		5963517C1EF208AF00A4D388 /* DBProxyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBProxyTests.swift; sourceTree = "<group>"; };
 		5963517E1EF22B6800A4D388 /* CommonTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonTests.swift; sourceTree = "<group>"; };
 		59782BF01EEF4BDE00455CEA /* DBProxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBProxy.swift; sourceTree = "<group>"; };
+		5978AE771EF253740084C37D /* DBConvoTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBConvoTests.swift; sourceTree = "<group>"; };
+		5978AE791EF254750084C37D /* DBIconTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBIconTests.swift; sourceTree = "<group>"; };
 		5982BC211EE6886F00544035 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		599B4D2E1DC8384900C476D5 /* SenderPickerTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SenderPickerTableViewController.swift; sourceTree = "<group>"; };
 		59C910081EE6189500ACF24A /* Login.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Login.swift; sourceTree = "<group>"; };
@@ -352,9 +356,11 @@
 			isa = PBXGroup;
 			children = (
 				5963517E1EF22B6800A4D388 /* CommonTests.swift */,
+				5978AE771EF253740084C37D /* DBConvoTests.swift */,
+				5978AE791EF254750084C37D /* DBIconTests.swift */,
+				5963517C1EF208AF00A4D388 /* DBProxyTests.swift */,
 				5963517A1EF2067B00A4D388 /* DBTest.swift */,
 				5927D7FB1EF1EE1500C08769 /* DBTests.swift */,
-				5963517C1EF208AF00A4D388 /* DBProxyTests.swift */,
 				5982BC211EE6886F00544035 /* Info.plist */,
 			);
 			path = proxyTests;
@@ -664,6 +670,8 @@
 			files = (
 				5963517F1EF22B6800A4D388 /* CommonTests.swift in Sources */,
 				5963517D1EF208AF00A4D388 /* DBProxyTests.swift in Sources */,
+				5978AE7A1EF254750084C37D /* DBIconTests.swift in Sources */,
+				5978AE781EF253740084C37D /* DBConvoTests.swift in Sources */,
 				5927D7FC1EF1EE1500C08769 /* DBTests.swift in Sources */,
 				5963517B1EF2067B00A4D388 /* DBTest.swift in Sources */,
 			);

@@ -15,26 +15,6 @@ enum Result {
     case failure(Error)
 }
 
-extension Array where Element: UITableViewCell {
-    var incrementedTags: Void {
-        _ = self.map { $0.tag.increment() }
-    }
-}
-
-extension DataSnapshot {
-    func toConvos() -> [Convo] {
-        var convos = [Convo]()
-        for child in self.children {
-            if  let snapshot = child as? DataSnapshot,
-                let convo = Convo(snapshot.value as AnyObject),
-                !convo.senderLeftConvo && !convo.senderIsBlocking {
-                convos.append(convo)
-            }
-        }
-        return convos
-    }
-}
-
 extension Double {
     var asTimeAgo: String {
         return NSDate(timeIntervalSince1970: self).formattedAsTimeAgo()

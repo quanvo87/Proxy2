@@ -11,14 +11,6 @@ import XCTest
 import FirebaseDatabase
 
 class CommonTests: XCTestCase {
-    func testCellsIncrementTags() {
-        let cells = [UITableViewCell(), UITableViewCell()]
-        cells.incrementedTags
-        for cell in cells {
-            XCTAssertEqual(cell.tag, 1)
-        }
-    }
-
     func testDoubleAsTimeAgo() {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "h:mm a"
@@ -27,35 +19,6 @@ class CommonTests: XCTestCase {
 
         XCTAssertEqual(date.timeIntervalSince1970.asTimeAgo,
                        dateFormatter.string(from: date))
-    }
-
-    func testSnapshotGetConvos() throws {
-        let x = expectation(description: #function)
-
-        var convo1 = Convo()
-        convo1.senderLeftConvo = false
-        convo1.senderIsBlocking = false
-
-        var convo2 = Convo()
-        convo2.senderLeftConvo = true
-        convo2.senderIsBlocking = true
-
-        DB.set([try DB.path("test", "a"): convo1.toJSON(),
-                try DB.path("test", "b"): convo2.toJSON()]) { (success) in
-                    XCTAssert(success)
-
-                    DB.get("test", completion: { (snapshot) in
-                        let convos = snapshot?.toConvos()
-                        XCTAssertEqual(convos?.count, 1)
-
-                        DB.delete("test", completion: { (success) in
-                            XCTAssert(success)
-                            x.fulfill()
-                        })
-                    })
-        }
-
-        waitForExpectations(timeout: 5)
     }
 
     func testErrorDescription() {

@@ -33,7 +33,9 @@ class MessagesTableViewDataSource: NSObject, UITableViewDataSource {
             guard let image = image else {
                 return
             }
-            cell.iconImageView.image = image
+            DispatchQueue.main.async {
+                cell.iconImageView.image = image
+            }
         }
         cell.titleLabel.attributedText = API.sharedInstance.getConvoTitle(receiverNickname: convo.receiverNickname,
                                                                           receiverName: convo.receiverProxyName,

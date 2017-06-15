@@ -9,12 +9,10 @@
 import FirebaseDatabase
 
 struct DBConvo {
-    // TODO: - extension?
     static func getConvoKey(senderProxyKey: String, senderOwnerId: String, receiverProxyKey: String, receiverOwnerId: String) -> String {
         return [senderProxyKey, senderOwnerId, receiverProxyKey, receiverOwnerId].sorted().joined(separator: "")
     }
 
-    // TODO: - make proxies interacted with and others a calculated var...store this in an array for each user and count that array
     static func createConvo(sender: Proxy, receiver: Proxy, convoKey: String, text: String, completion: @escaping (Convo?) -> Void) {
         DB.get(Path.Blocked, receiver.ownerId, sender.ownerId) { (snapshot) in
             guard let snapshot = snapshot else {
@@ -47,39 +45,34 @@ struct DBConvo {
             receiverConvo.senderIsBlocking = senderBlocked
             let receiverConvoJSON = receiverConvo.toJSON()
 
-            do {
-                DB.set([try DB.path(Path.Convos, senderConvo.senderId, senderConvo.key): senderConvoJSON,
-                        try DB.path(Path.Convos, senderConvo.senderProxyKey, senderConvo.key): senderConvoJSON,
-                        try DB.path(Path.Convos, receiverConvo.senderId, receiverConvo.key): receiverConvoJSON,
-                        try DB.path(Path.Convos, receiverConvo.senderProxyKey, receiverConvo.key): receiverConvoJSON], completion: { (success) in
-                            completion(success == true ? senderConvo : nil)
-                })
-            } catch {
-                completion(nil)
+            DB.set([(DB.path(Path.Convos, senderConvo.senderId, senderConvo.key), senderConvoJSON),
+                    (DB.path(Path.Convos, senderConvo.senderProxyKey, senderConvo.key), senderConvoJSON),
+                    (DB.path(Path.Convos, receiverConvo.senderId, receiverConvo.key), receiverConvoJSON),
+                    (DB.path(Path.Convos, receiverConvo.senderProxyKey, receiverConvo.key), receiverConvoJSON)]) { (success) in
+                        completion(success == true ? senderConvo : nil)
             }
         }
     }
 
-    static func getConvo(withKey key: String, belongingToUserId user: String, completion: @escaping (Convo?) -> Void) {
-        DB.get(Path.Convos, user, key) { (snapshot) in
+    static func getConvo(key: String, uid: String, completion: @escaping (Convo?) -> Void) {
+        DB.get(Path.Convos, uid, key) { (snapshot) in
             completion(Convo(snapshot?.value as AnyObject))
         }
     }
 
-    static func getConvos(for proxy: Proxy, completion: @escaping ([Convo]?) -> Void) {
+    static func getConvos(proxy: Proxy, completion: @escaping ([Convo]?) -> Void) {
         DB.get(Path.Convos, proxy.key) { (snapshot) in
             completion(snapshot?.toConvos())
         }
     }
 
-    static func getConvos(forUserId user: String, completion: @escaping ([Convo]?) -> Void) {
-        DB.get(Path.Convos, user) { (snapshot) in
+    static func getConvos(uid: String, completion: @escaping ([Convo]?) -> Void) {
+        DB.get(Path.Convos, uid) { (snapshot) in
             completion(snapshot?.toConvos())
         }
     }
 
-    // TODO: - extension?
-    static func getConvoTitle(receiverNickname: String, receiverName: String, senderNickname: String, senderName: String) -> NSAttributedString {
+    static func makeConvoTitle(receiverNickname: String, receiverName: String, senderNickname: String, senderName: String) -> NSAttributedString {
         let grayAttribute = [NSForegroundColorAttributeName: UIColor.gray]
         var first: NSMutableAttributedString
         var second: NSMutableAttributedString
@@ -98,28 +91,47 @@ struct DBConvo {
         return first
     }
 
-    // TODO: - make transaction and return error
-    //    static func setNickname(_ nickname: String, forReceiverInConvo convo: Convo, completion: @escaping (Error?) -> Void) {
-    //        DB.set(nickname, pathNodes: Path.Convos, convo.senderId, convo.key, Path.ReceiverNickname)
-    //        DB.set(nickname, pathNodes: Path.Convos, convo.senderProxyKey, convo.key, Path.ReceiverNickname)
-    //    }
-    //
-    //    static func userIsPresent(userId: String, inConvoWithKey convo: String, completion: @escaping (Bool) -> Void) {
-    //        DB.get(Path.Present, convo, userId, Path.Present) { (snapshot) in
-    //            completion(snapshot?.value as? Bool ?? false)
-    //        }
-    //    }
-    //
-    //    // TODO: - make unread a calculated var?
-    //    static func leaveConvo(_ convo: Convo) {
-    //        DB.set(true, pathNodes: Path.Convos, convo.senderId, convo.key, Path.SenderLeftConvo)
-    //        DB.set(true, pathNodes: Path.Convos, convo.senderProxyKey, convo.key, Path.SenderLeftConvo)
-    //        DB.set(true, pathNodes: Path.Convos, convo.receiverId, convo.key, Path.ReceiverLeftConvo)
-    //        DB.set(true, pathNodes: Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverLeftConvo)
-    //        DB.set(0, pathNodes: Path.Convos, convo.senderId, convo.key, Path.Unread)
-    //        DB.set(0, pathNodes: Path.Convos, convo.senderProxyKey, convo.key, Path.Unread)
-    //        DB.increment(-1, pathNodes: Path.Proxies, convo.senderId, convo.senderProxyKey, Path.Convos)
-    //        DB.increment(-convo.unread, pathNodes: Path.Unread, convo.senderId, Path.Unread)
-    //        DB.increment(-convo.unread, pathNodes: Path.Proxies, convo.senderId, convo.senderProxyKey, Path.Unread)
-    //    }
+    static func setNickname(_ nickname: String, forReceiverInConvo convo: Convo, completion: @escaping (Success) -> Void) {
+        DB.set([(DB.path(Path.Convos, convo.senderId, convo.key, Path.ReceiverNickname), nickname),
+                (DB.path(Path.Convos, convo.senderProxyKey, convo.key, Path.ReceiverNickname), nickname)]) { (success) in
+                    completion(success)
+        }
+    }
+    
+    static func userIsPresent(uid: String, inConvoWithKey convoKey: String, completion: @escaping (Bool) -> Void) {
+        DB.get(Path.Present, convoKey, uid, Path.Present) { (snapshot) in
+            completion(snapshot?.value as? Bool ?? false)
+        }
+    }
+
+    static func leaveConvo(_ convo: Convo, completion: @escaping (Success) -> Void) {
+        DB.set([(DB.path(Path.Convos, convo.senderId, convo.key, Path.SenderLeftConvo), true),
+                (DB.path(Path.Convos, convo.senderProxyKey, convo.key, Path.SenderLeftConvo), true),
+                (DB.path(Path.Convos, convo.receiverId, convo.key, Path.ReceiverLeftConvo), true),
+                (DB.path(Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverLeftConvo), true)]) { (success) in
+                    guard success else {
+                        completion(false)
+                        return
+                    }
+                    DB.increment(-1, children: Path.Proxies, convo.senderId, convo.senderProxyKey, Path.Convos)
+                    DB.increment(-convo.unread, children: Path.Unread, convo.senderId, Path.Unread)
+                    DB.increment(-convo.unread, children: Path.Proxies, convo.senderId, convo.senderProxyKey, Path.Unread)
+
+                    completion(true)
+        }
+    }
+}
+
+extension DataSnapshot {
+    func toConvos() -> [Convo] {
+        var convos = [Convo]()
+        for child in self.children {
+            if  let snapshot = child as? DataSnapshot,
+                let convo = Convo(snapshot.value as AnyObject),
+                !convo.senderLeftConvo && !convo.senderIsBlocking {
+                convos.append(convo)
+            }
+        }
+        return convos
+    }
 }

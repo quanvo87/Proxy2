@@ -217,7 +217,9 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
             guard let image = image else {
                 return
             }
-            cell.iconImageView.image = image
+            DispatchQueue.main.async {
+                cell.iconImageView.image = image
+            }
         }
         
         // Labels

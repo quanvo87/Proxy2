@@ -10,18 +10,18 @@ import FirebaseDatabase
 
 struct DB {
     typealias Path = String
-    typealias Transactions = [Path: Any]
+    typealias Transactions = [(key: Path?, value: Any)]
 
-    static func path(_ children: String...) throws  -> Path {
-        return try path(children)
+    static func path(_ children: String...) -> Path? {
+        return path(children)
     }
 
-    static func path(_ children: [String]) throws -> Path {
+    static func path(_ children: [String]) -> Path? {
         guard !children.isEmpty else {
-            throw ProxyError.unknown
+            return nil
         }
         for child in children where child == "" {
-            throw ProxyError.unknown
+            return nil
         }
         return children.joined(separator: "/")
     }
@@ -31,11 +31,10 @@ struct DB {
     }
 
     static func ref(_ children: [String]) -> DatabaseReference? {
-        do {
-            return Database.database().reference().child(try DB.path(children))
-        } catch {
-            return nil
+        if let path = DB.path(children) {
+            return Database.database().reference().child(path)
         }
+        return nil
     }
 
     static func get(_ children: String..., completion: @escaping (DataSnapshot?) -> Void) {
@@ -59,7 +58,21 @@ struct DB {
     }
 
     static func set(_ transactions: Transactions, completion: @escaping (Success) -> Void) {
-        Database.database().reference().updateChildValues(transactions) { (error, _) in
+        var validTransactions = [String: Any]()
+
+        for transaction in transactions {
+            guard let path = transaction.key else {
+                completion(false)
+                return
+            }
+            guard validTransactions[path] == nil else {
+                completion(false)
+                return
+            }
+            validTransactions[path] = transaction.value
+        }
+
+        Database.database().reference().updateChildValues(validTransactions) { (error, _) in
             completion(error == nil)
         }
     }
@@ -74,9 +87,9 @@ struct DB {
         }
     }
 
-    static func increment(_ amount: Int, children: String..., completion: @escaping (Success) -> Void) {
+    static func increment(_ amount: Int, children: String..., completion: ((Success) -> Void)? = nil) {
         guard let ref = ref(children) else {
-            completion(false)
+            completion?(false)
             return
         }
         ref.runTransactionBlock( { (currentData) -> TransactionResult in
@@ -88,7 +101,7 @@ struct DB {
             }
             return TransactionResult.success(withValue: currentData)
         }) { (error, _, _) in
-            completion(error == nil)
+            completion?(error == nil)
         }
     }
 }

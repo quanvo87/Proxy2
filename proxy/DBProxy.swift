@@ -116,17 +116,10 @@ extension DBProxy {
 
                         let userProxy = Proxy(name: name, ownerId: Shared.shared.uid, icon: getRandomIconName()).toJSON()
 
-                        do {
-                            DB.set([try DB.path(Path.Proxies, Path.Name, key): true,
-                                    try DB.path(Path.Proxies, Path.Key, key): globalProxy,
-                                    try DB.path(Path.Proxies, Shared.shared.uid, key): userProxy], completion: { (success) in
-                                        completion(success ?
-                                            Result.success(userProxy) :
-                                            Result.failure(ProxyError.unknown)
-                                        )
-                            })
-                        } catch {
-                            completion(Result.failure(ProxyError.unknown))
+                        DB.set([(DB.path(Path.Proxies, Path.Name, key), true),
+                                (DB.path(Path.Proxies, Path.Key, key), globalProxy),
+                                (DB.path(Path.Proxies, Shared.shared.uid, key), userProxy)]) { (success) in
+                                    completion(success ? Result.success(userProxy) : Result.failure(ProxyError.unknown))
                         }
                     } else {
                         createProxyHelper(completion: completion)
