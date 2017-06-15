@@ -76,7 +76,7 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
         unreadRef = ref.child(Path.Unread).child(api.uid).child(Path.Unread)
         unreadRefHandle = unreadRef.observe(.value, with: { (snapshot) in
             if let unread = snapshot.value as? Int {
-                self.navigationItem.title = "Proxies \(unread.asLabel)"
+                self.navigationItem.title = "Proxies" + unread.asLabelWithParens
             } else {
                 self.navigationItem.title = "Proxies"
             }

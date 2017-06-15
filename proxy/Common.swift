@@ -59,34 +59,27 @@ extension Int {
         }
     }
 
+    var asLabelWithParens: String {
+        return self == 0 ? "" : " (\(self))"
+    }
+
     var asLabel: String {
         return self == 0 ? "" : String(self)
     }
 
-    var shortForm: String {
+    var asStringWithCommas: String {
         var num = Double(self)
-        let sign = ((num < 0) ? "-" : "" )
 
         num = fabs(num)
 
-        if num < 1000000000.0 {
-            if let string = NumberFormatter.proxyNumberFormatter.string(from: NSNumber(integerLiteral: Int(num))) {
-                return string
-            }
-            return "-"
+        if let string = NumberFormatter.proxyNumberFormatter.string(from: NSNumber(integerLiteral: Int(num))) {
+            return string
         }
-
-        let exp = Int(log10(num) / 3.0 )
-
-        let units = ["K","M","G","T","P","E"]
-
-        let roundedNum = round(10 * num / pow(1000.0,Double(exp))) / 10
-
-        return "\(sign)\(roundedNum)\(units[exp-1])"
+        return "-"
     }
 }
 
-extension NumberFormatter {
+private extension NumberFormatter {
     static let proxyNumberFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal

@@ -11,8 +11,10 @@ import FirebaseStorage
 struct DBIcon {
     static func getImageForIcon(_ icon: AnyObject, tag: Int, completion: @escaping (UIImage?, Int) -> Void) {
         if let image = Shared.shared.cache.object(forKey: icon) as? UIImage {
-            completion(image, tag)
-            return
+            DispatchQueue.main.async {
+                completion(image, tag)
+                return
+            }
         }
         Storage.storage().reference(forURL: URLs.Storage + "/icons").child("\(icon)").downloadURL { (url, error) in
             guard

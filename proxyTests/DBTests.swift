@@ -10,16 +10,7 @@ import XCTest
 @testable import proxy
 import FirebaseDatabase
 
-class DBTests: XCTestCase {
-    override func tearDown() {
-        let x = self.expectation(description: #function)
-        DB.delete("test") { (success) in
-            XCTAssert(success)
-            x.fulfill()
-        }
-        waitForExpectations(timeout: 5)
-    }
-
+class DBTests: DBTest {
     func testPath() {
         XCTAssertNoThrow(_ = try DB.path("a"))
         XCTAssertNoThrow(_ = try DB.path("a", "b"))
@@ -46,7 +37,7 @@ class DBTests: XCTestCase {
     }
 
     func testGetSetDelete() {
-        let x = self.expectation(description: #function)
+        let x = expectation(description: #function)
 
         DB.set("a", children: "test") { (success) in
             XCTAssert(success)
@@ -59,7 +50,8 @@ class DBTests: XCTestCase {
                     XCTAssert(success)
 
                     DB.get("test", completion: { (snapshot) in
-                        XCTAssertEqual(snapshot?.value as? FirebaseDatabase.NSNull, FirebaseDatabase.NSNull())
+                        XCTAssertEqual(snapshot?.value as? FirebaseDatabase.NSNull,
+                                       FirebaseDatabase.NSNull())
                         x.fulfill()
                     })
                 })
@@ -70,7 +62,7 @@ class DBTests: XCTestCase {
     }
 
     func testIncrement() {
-        let x = self.expectation(description: #function)
+        let x = expectation(description: #function)
 
         DB.increment(1, children: "test") { (success) in
             XCTAssert(success)
@@ -85,7 +77,7 @@ class DBTests: XCTestCase {
     }
 
     func testConcurrentIncrement() {
-        let x = self.expectation(description: #function)
+        let x = expectation(description: #function)
 
         let group = DispatchGroup()
 

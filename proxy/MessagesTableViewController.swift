@@ -18,6 +18,8 @@ class MessagesTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+//        return
+
         navigationItem.title = "Messages"
         edgesForExtendedLayout = .all
         tableView.allowsMultipleSelectionDuringEditing = true
@@ -159,7 +161,7 @@ extension MessagesTableViewController {
 extension MessagesTableViewController: UnreadObserverDelegate {
     func setUnread(_ unread: Int?) {
         if let unread = unread {
-            self.navigationItem.title = "Messages" + unread.asLabel
+            self.navigationItem.title = "Messages" + unread.asLabelWithParens
             self.tabBarController?.tabBar.items?.first?.badgeValue = unread == 0 ? nil : String(unread)
         } else {
             self.navigationItem.title = "Messages"

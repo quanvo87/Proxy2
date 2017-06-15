@@ -206,7 +206,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
             cell.titleLabel.attributedText = api.getConvoTitle(receiverNickname: convo.receiverNickname, receiverName: convo.receiverProxyName, senderNickname: convo.senderNickname, senderName: convo.senderProxyName)
             cell.lastMessageLabel.text = convo.message
             cell.timestampLabel.text = convo.timestamp.asTimeAgo
-            cell.unreadLabel.text = convo.unread.asLabel
+            cell.unreadLabel.text = convo.unread.asLabelWithParens
             return cell
             
         default: break

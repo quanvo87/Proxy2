@@ -137,8 +137,8 @@ extension DBProxy {
     }
 
     private static func makeProxyName() -> String {
-        let randomAdj = Int(arc4random_uniform(Shared.shared.adjCount))
-        let randomNoun = Int(arc4random_uniform(Shared.shared.nounCount))
+        let randomAdj = Int(arc4random_uniform(UInt32(Shared.shared.adjectives.count)))
+        let randomNoun = Int(arc4random_uniform(UInt32(Shared.shared.nouns.count)))
         let adj = Shared.shared.adjectives[randomAdj].lowercased().capitalized
         let noun = Shared.shared.nouns[randomNoun].lowercased().capitalized
         let num = String(Int(arc4random_uniform(9)) + 1)
@@ -146,7 +146,7 @@ extension DBProxy {
     }
 
     private static func getRandomIconName() -> String {
-        let random = Int(arc4random_uniform(Shared.shared.iconNameCount))
+        let random = Int(arc4random_uniform(UInt32(Shared.shared.iconNames.count)))
         return Shared.shared.iconNames[random] + ".png"
     }
 

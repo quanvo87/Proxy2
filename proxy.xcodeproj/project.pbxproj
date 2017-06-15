@@ -55,6 +55,9 @@
 		595722351EED127600F7DD07 /* DBIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 595722341EED127600F7DD07 /* DBIcon.swift */; };
 		595722371EED12AD00F7DD07 /* Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 595722361EED12AD00F7DD07 /* Shared.swift */; };
 		5958565D1EE7E58300FCA14B /* Assets in Resources */ = {isa = PBXBuildFile; fileRef = 5958565C1EE7E58300FCA14B /* Assets */; };
+		5963517B1EF2067B00A4D388 /* DBTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5963517A1EF2067B00A4D388 /* DBTest.swift */; };
+		5963517D1EF208AF00A4D388 /* DBProxyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5963517C1EF208AF00A4D388 /* DBProxyTests.swift */; };
+		5963517F1EF22B6800A4D388 /* CommonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5963517E1EF22B6800A4D388 /* CommonTests.swift */; };
 		59782BF11EEF4BDE00455CEA /* DBProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59782BF01EEF4BDE00455CEA /* DBProxy.swift */; };
 		599B4D2F1DC8384900C476D5 /* SenderPickerTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599B4D2E1DC8384900C476D5 /* SenderPickerTableViewController.swift */; };
 		59C910091EE6189500ACF24A /* Login.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C910081EE6189500ACF24A /* Login.swift */; };
@@ -149,6 +152,9 @@
 		595856571EE7DDF600FCA14B /* proxy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = proxy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		595856581EE7DDF900FCA14B /* proxyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = proxyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5958565C1EE7E58300FCA14B /* Assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Assets; path = ../Assets; sourceTree = "<group>"; };
+		5963517A1EF2067B00A4D388 /* DBTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBTest.swift; sourceTree = "<group>"; };
+		5963517C1EF208AF00A4D388 /* DBProxyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBProxyTests.swift; sourceTree = "<group>"; };
+		5963517E1EF22B6800A4D388 /* CommonTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonTests.swift; sourceTree = "<group>"; };
 		59782BF01EEF4BDE00455CEA /* DBProxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBProxy.swift; sourceTree = "<group>"; };
 		5982BC211EE6886F00544035 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		599B4D2E1DC8384900C476D5 /* SenderPickerTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SenderPickerTableViewController.swift; sourceTree = "<group>"; };
@@ -345,7 +351,10 @@
 		5982BC1E1EE6886F00544035 /* proxyTests */ = {
 			isa = PBXGroup;
 			children = (
+				5963517E1EF22B6800A4D388 /* CommonTests.swift */,
+				5963517A1EF2067B00A4D388 /* DBTest.swift */,
 				5927D7FB1EF1EE1500C08769 /* DBTests.swift */,
+				5963517C1EF208AF00A4D388 /* DBProxyTests.swift */,
 				5982BC211EE6886F00544035 /* Info.plist */,
 			);
 			path = proxyTests;
@@ -653,7 +662,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5963517F1EF22B6800A4D388 /* CommonTests.swift in Sources */,
+				5963517D1EF208AF00A4D388 /* DBProxyTests.swift in Sources */,
 				5927D7FC1EF1EE1500C08769 /* DBTests.swift in Sources */,
+				5963517B1EF2067B00A4D388 /* DBTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

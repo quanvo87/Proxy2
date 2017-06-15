@@ -33,7 +33,7 @@ class MeTableViewController: UITableViewController {
                 self.messagesReceivedRef = self.ref.child(Path.MessagesReceived).child(self.api.uid).child(Path.MessagesReceived)
                 self.messagesReceivedRef.observe(.value, with: { (snapshot) in
                     if let messagesReceived = snapshot.value as? Int {
-                        self.messagesReceived = messagesReceived.shortForm
+                        self.messagesReceived = messagesReceived.asStringWithCommas
                         self.tableView.reloadData()
                     }
                 })
@@ -41,7 +41,7 @@ class MeTableViewController: UITableViewController {
                 self.messagesSentRef = self.ref.child(Path.MessagesSent).child(self.api.uid).child(Path.MessagesSent)
                 self.messagesSentRef.observe(.value, with: { (snapshot) in
                     if let messagesSent = snapshot.value as? Int {
-                        self.messagesSent = messagesSent.shortForm
+                        self.messagesSent = messagesSent.asStringWithCommas
                         self.tableView.reloadData()
                     }
                 })
@@ -49,7 +49,7 @@ class MeTableViewController: UITableViewController {
                 self.proxiesInteractedWithRef = self.ref.child(Path.ProxiesInteractedWith).child(self.api.uid).child(Path.ProxiesInteractedWith)
                 self.proxiesInteractedWithRef.observe(.value, with: { (snapshot) in
                     if let proxiesInteractedWith = snapshot.value as? Int {
-                        self.proxiesInteractedWith = proxiesInteractedWith.shortForm
+                        self.proxiesInteractedWith = proxiesInteractedWith.asStringWithCommas
                         self.tableView.reloadData()
                     }
                 })
