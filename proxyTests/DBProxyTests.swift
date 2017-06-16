@@ -9,7 +9,9 @@
 import XCTest
 @testable import proxy
 
-class DBProxyTests: DBTest {
+class DBProxyTests: XCTestCase {}
+
+extension DBProxyTests {
     func testLoadProxyInfo() {
         let x = expectation(description: #function)
 
@@ -22,9 +24,31 @@ class DBProxyTests: DBTest {
         waitForExpectations(timeout: 5)
     }
 
+    func testCreateProxy() {
+        let x = expectation(description: #function)
+
+        DBProxy.createProxy { (result) in
+            switch result {
+            case .failure(_):
+                XCTFail()
+            case .success(let proxy):
+                guard let proxy = proxy as? Proxy else {
+                    XCTFail()
+                    return
+                }
+                
+            }
+        }
+
+        waitForExpectations(timeout: 5)
+
+    }
+
     func testCancelMakingProxy() {
         Shared.shared.isCreatingProxy = true
         DBProxy.cancelCreatingProxy()
         XCTAssertFalse(Shared.shared.isCreatingProxy)
     }
+
+
 }

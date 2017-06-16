@@ -22,8 +22,8 @@ class DBConvoTests: DBTest {
         convo2.senderLeftConvo = true
         convo2.senderIsBlocking = true
 
-        DB.set([try DB.path("test", "a"): convo1.toJSON(),
-                try DB.path("test", "b"): convo2.toJSON()]) { (success) in
+        DB.set([(DB.path("test", "a"), convo1.toJSON()),
+                (DB.path("test", "b"), convo2.toJSON())]) { (success) in
                     XCTAssert(success)
 
                     DB.get("test", completion: { (snapshot) in

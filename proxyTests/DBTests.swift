@@ -12,18 +12,27 @@ import FirebaseDatabase
 
 class DBTests: DBTest {
     func testPath() {
-        XCTAssertNoThrow(_ = try DB.path("a"))
-        XCTAssertNoThrow(_ = try DB.path("a", "b"))
+        XCTAssertNotNil(DB.path("a"))
+        XCTAssertNotNil(DB.path("a", "b"))
+        XCTAssertNotNil(DB.path("/a/"))
+        XCTAssertNotNil(DB.path("//a//"))
+        XCTAssertNotNil(DB.path("/a/a/"))
     }
 
     func testBadPath() {
-        XCTAssertThrowsError(_ = try DB.path())
-        XCTAssertThrowsError(_ = try DB.path(""))
+        XCTAssertNil(DB.path())
+        XCTAssertNil(DB.path(""))
+        XCTAssertNil(DB.path("a", ""))
+        XCTAssertNil(DB.path("", "a"))
+        XCTAssertNil(DB.path("/"))
+        XCTAssertNil(DB.path("//"))
+        XCTAssertNil(DB.path("///"))
+        XCTAssertNil(DB.path("/a//a/"))
     }
 
     func testRef() {
-        XCTAssertNotNil(_ = DB.ref("a"))
-        XCTAssertNotNil(_ = DB.ref("a", "b"))
+        XCTAssertNotNil(DB.ref("a"))
+        XCTAssertNotNil(DB.ref("a", "b"))
     }
 
     func testBadRef() {

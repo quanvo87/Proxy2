@@ -54,19 +54,19 @@ struct DBConvo {
         }
     }
 
-    static func getConvo(key: String, uid: String, completion: @escaping (Convo?) -> Void) {
+    static func getConvo(withKey key: String, uid: String, completion: @escaping (Convo?) -> Void) {
         DB.get(Path.Convos, uid, key) { (snapshot) in
             completion(Convo(snapshot?.value as AnyObject))
         }
     }
 
-    static func getConvos(proxy: Proxy, completion: @escaping ([Convo]?) -> Void) {
+    static func getConvos(forProxy proxy: Proxy, completion: @escaping ([Convo]?) -> Void) {
         DB.get(Path.Convos, proxy.key) { (snapshot) in
             completion(snapshot?.toConvos())
         }
     }
 
-    static func getConvos(uid: String, completion: @escaping ([Convo]?) -> Void) {
+    static func getConvos(forUser uid: String, completion: @escaping ([Convo]?) -> Void) {
         DB.get(Path.Convos, uid) { (snapshot) in
             completion(snapshot?.toConvos())
         }

@@ -20,10 +20,14 @@ struct DB {
         guard !children.isEmpty else {
             return nil
         }
-        for child in children where child == "" {
+
+        let trimmed = children.map { $0.trimmingCharacters(in: CharacterSet(charactersIn: "/")) }
+
+        for child in trimmed where child == "" || child.contains("//") {
             return nil
         }
-        return children.joined(separator: "/")
+
+        return trimmed.joined(separator: "/")
     }
 
     static func ref(_ children: String...) -> DatabaseReference? {
