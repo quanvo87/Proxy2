@@ -31,12 +31,16 @@ extension DBProxyTests {
             switch result {
             case .failure(_):
                 XCTFail()
-            case .success(let proxy):
-                guard let proxy = proxy as? Proxy else {
+            case .success(let json):
+                guard let proxy = Proxy(json as AnyObject) else {
                     XCTFail()
                     return
                 }
-                
+                DBProxy.deleteProxy(proxy, completion: { (success) in
+                    XCTAssert(success)
+                    x.fulfill()
+                })
+//                x.fulfill()
             }
         }
 
