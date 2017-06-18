@@ -68,15 +68,15 @@ extension DBProxy {
 }
 
 extension DBProxy {
-    static func createProxy(completion: @escaping (Result) -> Void) {
+    static func createProxy(completion: @escaping (Result<Proxy, ProxyError>) -> Void) {
         loadProxyInfo { (success) in
             guard success else {
-                completion(.failure(ProxyError.unknown))
+                completion(.failure(.unknown))
                 return
             }
             DB.get(Path.Proxies, Shared.shared.uid) { (snapshot) in
                 guard snapshot?.childrenCount ?? 0 <= 50 else {
-                    completion(.failure(ProxyError.proxyLimitReached))
+                    completion(.failure(.proxyLimitReached))
                     return
                 }
                 Shared.shared.isCreatingProxy = true
@@ -85,9 +85,9 @@ extension DBProxy {
         }
     }
 
-    private static func createProxyHelper(completion: @escaping (Result) -> Void) {
+    private static func createProxyHelper(completion: @escaping (Result<Proxy, ProxyError>) -> Void) {
         guard let ref = DB.ref(Path.Proxies, Path.Key) else {
-            completion(.failure(ProxyError.unknown))
+            completion(.failure(.unknown))
             return
         }
         let autoId = ref.childByAutoId().key
@@ -95,15 +95,15 @@ extension DBProxy {
         let key = name.lowercased()
         let globalProxy = GlobalProxy(key: key, ownerId: Shared.shared.uid).toJSON()
 
-        DB.set(key, children: Path.Proxies, Path.Key, autoId) { (success) in
+        DB.set([Path.Key: key], children: Path.Proxies, Path.Key, autoId) { (success) in
             guard success else {
-                completion(.failure(ProxyError.unknown))
+                completion(.failure(.unknown))
                 return
             }
             ref.queryOrdered(byChild: Path.Key).queryEqual(toValue: key).observeSingleEvent(of: .value, with: { (snapshot) in
-                DB.delete(Path.Proxies, Path.Key, autoId, completion: { (success) in
+                DB.delete(Path.Proxies, Path.Key, autoId) { (success) in
                     guard success else {
-                        completion(.failure(ProxyError.unknown))
+                        completion(.failure(.unknown))
                         return
                     }
 
@@ -114,17 +114,17 @@ extension DBProxy {
                     if snapshot.childrenCount == 1 {
                         Shared.shared.isCreatingProxy = false
 
-                        let userProxy = Proxy(name: name, ownerId: Shared.shared.uid, icon: getRandomIconName()).toJSON()
+                        let userProxy = Proxy(name: name, ownerId: Shared.shared.uid, icon: getRandomIconName())
 
                         DB.set([(DB.path(Path.Proxies, Path.Name, key), true),
                                 (DB.path(Path.Proxies, Path.Key, key), globalProxy),
-                                (DB.path(Path.Proxies, Shared.shared.uid, key), userProxy)]) { (success) in
-                                    completion(success ? .success(userProxy) : .failure(ProxyError.unknown))
+                                (DB.path(Path.Proxies, Shared.shared.uid, key), userProxy.toJSON())]) { (success) in
+                                    completion(success ? .success(userProxy) : .failure(.unknown))
                         }
                     } else {
                         createProxyHelper(completion: completion)
                     }
-                })
+                }
             })
         }
     }
@@ -140,7 +140,7 @@ extension DBProxy {
 
     private static func getRandomIconName() -> String {
         let random = Int(arc4random_uniform(UInt32(Shared.shared.iconNames.count)))
-        return Shared.shared.iconNames[random] + ".png"
+        return Shared.shared.iconNames[random]
     }
 
     static func cancelCreatingProxy() {
@@ -149,28 +149,28 @@ extension DBProxy {
 }
 
 extension DBProxy {
-    static func getProxy(key: String, completion: @escaping (Result) -> Void) {
+    static func getProxy(key: String, completion: @escaping (Result<Proxy, ProxyError>) -> Void) {
         DB.get(Path.Proxies, Path.Key, key) { (snapshot) in
             guard let snapshot = snapshot else {
-                completion(.failure(ProxyError.proxyNotFound))
+                completion(.failure(.proxyNotFound))
                 return
             }
             guard let globalProxy = GlobalProxy(snapshot.value as AnyObject) else {
-                completion(.failure(ProxyError.unknown))
+                completion(.failure(.unknown))
                 return
             }
             getProxy(key: globalProxy.key, ownerId: globalProxy.ownerId, completion: completion)
         }
     }
 
-    static func getProxy(key: String, ownerId: String, completion: @escaping (Result) -> Void) {
+    static func getProxy(key: String, ownerId: String, completion: @escaping (Result<Proxy, ProxyError>) -> Void) {
         DB.get(Path.Proxies, ownerId, key) { (snapshot) in
             guard let snapshot = snapshot else {
-                completion(.failure(ProxyError.proxyNotFound))
+                completion(.failure(.proxyNotFound))
                 return
             }
             guard let proxy = Proxy(snapshot.value as AnyObject) else {
-                completion(.failure(ProxyError.unknown))
+                completion(.failure(.unknown))
                 return
             }
             completion(.success(proxy))
@@ -185,7 +185,7 @@ extension DBProxy {
                 completion(false)
                 return
             }
-            DBConvo.getConvos(forProxy: proxy, completion: { (convos) in
+            DBConvo.getConvos(forProxy: proxy) { (convos) in
                 guard let convos = convos else {
                     completion(false)
                     return
@@ -194,18 +194,18 @@ extension DBProxy {
                 for convo in convos {
                     group.enter()
                     DB.set([(DB.path(Path.Convos, convo.receiverId, convo.key, Path.Icon), icon),
-                            (DB.path(Path.Convos, convo.receiverProxyKey, convo.key, Path.Icon), icon)], completion: { (success) in
+                            (DB.path(Path.Convos, convo.receiverProxyKey, convo.key, Path.Icon), icon)]) { (success) in
                                 guard success else {
                                     completion(false)
                                     return
                                 }
                                 group.leave()
-                    })
+                    }
                 }
-                group.notify(queue: .main, execute: {
+                group.notify(queue: .main) {
                     completion(true)
-                })
-            })
+                }
+            }
         }
     }
 
@@ -215,7 +215,7 @@ extension DBProxy {
                 completion(false)
                 return
             }
-            DBConvo.getConvos(forProxy: proxy, completion: { (convos) in
+            DBConvo.getConvos(forProxy: proxy) { (convos) in
                 guard let convos = convos else {
                     completion(false)
                     return
@@ -224,18 +224,18 @@ extension DBProxy {
                 for convo in convos {
                     group.enter()
                     DB.set([(DB.path(Path.Convos, convo.senderId, convo.key, Path.SenderNickname), nickname),
-                            (DB.path(Path.Convos, convo.senderProxyKey, convo.key), nickname)], completion: { (success) in
+                            (DB.path(Path.Convos, convo.senderProxyKey, convo.key), nickname)]) { (success) in
                                 guard success else {
                                     completion(false)
                                     return
                                 }
                                 group.leave()
-                    })
+                    }
                 }
-                group.notify(queue: .main, execute: {
+                group.notify(queue: .main) {
                     completion(true)
-                })
-            })
+                }
+            }
         }
     }
 
@@ -250,64 +250,73 @@ extension DBProxy {
     }
 
     static func deleteProxy(_ proxy: Proxy, withConvos convos: [Convo], completion: @escaping (Success) -> Void) {
+        let deleteFinished = DispatchGroup()
+        for _ in 1...4 + convos.count {
+            deleteFinished.enter()
+        }
+
         DB.delete(Path.Proxies, Path.Name, proxy.key) { (success) in
             guard success else {
                 completion(false)
                 return
             }
+            deleteFinished.leave()
         }
         DB.delete(Path.Proxies, Path.Key, proxy.key) { (success) in
             guard success else {
                 completion(false)
                 return
             }
+            deleteFinished.leave()
         }
         DB.delete(Path.Proxies, proxy.ownerId, proxy.key) { (success) in
             guard success else {
                 completion(false)
                 return
             }
+            deleteFinished.leave()
         }
         DB.increment(-proxy.unread, children: Path.Unread, proxy.ownerId, Path.Unread) { (success) in
             guard success else {
                 completion(false)
                 return
             }
+            deleteFinished.leave()
         }
-        let convosDone = DispatchGroup()
+
         for convo in convos {
-            convosDone.enter()
-            let convoDone = DispatchGroup()
+            let deleteConvoFinished = DispatchGroup()
             for _ in 1...3 {
-                convoDone.enter()
+                deleteConvoFinished.enter()
             }
-            DB.delete(Path.Convos, convo.senderId, convo.key, completion: { (success) in
+            DB.delete(Path.Convos, convo.senderId, convo.key) { (success) in
                 guard success else {
                     completion(false)
                     return
                 }
-                convoDone.leave()
-            })
-            DB.delete(Path.Convos, convo.senderProxyKey, convo.key, completion: { (success) in
+                deleteConvoFinished.leave()
+            }
+            DB.delete(Path.Convos, convo.senderProxyKey, convo.key) { (success) in
                 guard success else {
                     completion(false)
                     return
                 }
-                convoDone.leave()
-            })
+                deleteConvoFinished.leave()
+            }
             DB.set([(DB.path(Path.Convos, convo.receiverId, convo.key, Path.ReceiverDeletedProxy), true),
-                    (DB.path(Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverDeletedProxy), true)], completion: { (success) in
+                    (DB.path(Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverDeletedProxy), true)]) { (success) in
                         guard success else {
                             completion(false)
                             return
                         }
-                        convoDone.leave()
-            })
-            convoDone.notify(queue: .main, execute: {
-                convosDone.leave()
-            })
+                        deleteConvoFinished.leave()
+            }
+            deleteConvoFinished.notify(queue: .main) {
+                deleteFinished.leave()
+            }
         }
-        convosDone.notify(queue: .main) { 
+
+        deleteFinished.notify(queue: .main) { 
             completion(true)
         }
     }

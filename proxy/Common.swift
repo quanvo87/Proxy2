@@ -10,8 +10,8 @@ import FirebaseDatabase
 
 typealias Success = Bool
 
-enum Result {
-    case success(Any)
+enum Result<T, Error> {
+    case success(T)
     case failure(Error)
 }
 

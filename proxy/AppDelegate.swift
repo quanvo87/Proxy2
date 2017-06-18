@@ -13,13 +13,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-    override init() {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
-        //        FIRDatabase.database().persistenceEnabled = true
+//        production()
+        return FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
     }
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        return FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
+    private func production() {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        if let tabBarController = storyboard.instantiateViewController(withIdentifier: Identifiers.TabBarController) as? UITabBarController {
+            window = UIWindow(frame: UIScreen.main.bounds)
+            window?.rootViewController = tabBarController
+            window?.makeKeyAndVisible()
+        }
     }
 
     func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {

@@ -8,8 +8,9 @@
 
 import XCTest
 @testable import proxy
+import FirebaseAuth
 
-class DBProxyTests: XCTestCase {}
+class DBProxyTests: DBTest {}
 
 extension DBProxyTests {
     func testLoadProxyInfo() {
@@ -32,11 +33,10 @@ extension DBProxyTests {
             case .failure(_):
                 XCTFail()
             case .success(let proxy):
-                guard let proxy = proxy as? Proxy else {
-                    XCTFail()
-                    return
-                }
-                
+                DBProxy.deleteProxy(proxy, completion: { (success) in
+                    XCTAssert(success)
+                    x.fulfill()
+                })
             }
         }
 
