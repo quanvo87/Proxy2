@@ -848,7 +848,7 @@
 		};
 		5982BC251EE6886F00544035 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 45316463CC267F4701C9ACF9 /* Pods-proxyTests.debug.xcconfig */;
+			baseConfigurationReference = A04F46FD8A0D68BCC97F95BC /* Pods-proxy.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;

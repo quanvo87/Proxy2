@@ -68,15 +68,15 @@ extension DBProxy {
 }
 
 extension DBProxy {
-    static func createProxy(completion: @escaping (Result) -> Void) {
+    static func createProxy(completion: @escaping (Result<Proxy, ProxyError>) -> Void) {
         loadProxyInfo { (success) in
             guard success else {
-                completion(.failure(ProxyError.unknown))
+                completion(.failure(.unknown))
                 return
             }
             DB.get(Path.Proxies, Shared.shared.uid) { (snapshot) in
                 guard snapshot?.childrenCount ?? 0 <= 50 else {
-                    completion(.failure(ProxyError.proxyLimitReached))
+                    completion(.failure(.proxyLimitReached))
                     return
                 }
                 Shared.shared.isCreatingProxy = true
@@ -85,9 +85,9 @@ extension DBProxy {
         }
     }
 
-    private static func createProxyHelper(completion: @escaping (Result) -> Void) {
+    private static func createProxyHelper(completion: @escaping (Result<Proxy, ProxyError>) -> Void) {
         guard let ref = DB.ref(Path.Proxies, Path.Key) else {
-            completion(.failure(ProxyError.unknown))
+            completion(.failure(.unknown))
             return
         }
         let autoId = ref.childByAutoId().key
@@ -95,15 +95,15 @@ extension DBProxy {
         let key = name.lowercased()
         let globalProxy = GlobalProxy(key: key, ownerId: Shared.shared.uid).toJSON()
 
-        DB.set(["key": key], children: Path.Proxies, Path.Key, autoId) { (success) in
+        DB.set([Path.Key: key], children: Path.Proxies, Path.Key, autoId) { (success) in
             guard success else {
-                completion(.failure(ProxyError.unknown))
+                completion(.failure(.unknown))
                 return
             }
             ref.queryOrdered(byChild: Path.Key).queryEqual(toValue: key).observeSingleEvent(of: .value, with: { (snapshot) in
                 DB.delete(Path.Proxies, Path.Key, autoId) { (success) in
                     guard success else {
-                        completion(.failure(ProxyError.unknown))
+                        completion(.failure(.unknown))
                         return
                     }
 
@@ -114,12 +114,12 @@ extension DBProxy {
                     if snapshot.childrenCount == 1 {
                         Shared.shared.isCreatingProxy = false
 
-                        let userProxy = Proxy(name: name, ownerId: Shared.shared.uid, icon: getRandomIconName()).toJSON()
+                        let userProxy = Proxy(name: name, ownerId: Shared.shared.uid, icon: getRandomIconName())
 
                         DB.set([(DB.path(Path.Proxies, Path.Name, key), true),
                                 (DB.path(Path.Proxies, Path.Key, key), globalProxy),
-                                (DB.path(Path.Proxies, Shared.shared.uid, key), userProxy)]) { (success) in
-                                    completion(success ? .success(userProxy) : .failure(ProxyError.unknown))
+                                (DB.path(Path.Proxies, Shared.shared.uid, key), userProxy.toJSON())]) { (success) in
+                                    completion(success ? .success(userProxy) : .failure(.unknown))
                         }
                     } else {
                         createProxyHelper(completion: completion)
@@ -149,28 +149,28 @@ extension DBProxy {
 }
 
 extension DBProxy {
-    static func getProxy(key: String, completion: @escaping (Result) -> Void) {
+    static func getProxy(key: String, completion: @escaping (Result<Proxy, ProxyError>) -> Void) {
         DB.get(Path.Proxies, Path.Key, key) { (snapshot) in
             guard let snapshot = snapshot else {
-                completion(.failure(ProxyError.proxyNotFound))
+                completion(.failure(.proxyNotFound))
                 return
             }
             guard let globalProxy = GlobalProxy(snapshot.value as AnyObject) else {
-                completion(.failure(ProxyError.unknown))
+                completion(.failure(.unknown))
                 return
             }
             getProxy(key: globalProxy.key, ownerId: globalProxy.ownerId, completion: completion)
         }
     }
 
-    static func getProxy(key: String, ownerId: String, completion: @escaping (Result) -> Void) {
+    static func getProxy(key: String, ownerId: String, completion: @escaping (Result<Proxy, ProxyError>) -> Void) {
         DB.get(Path.Proxies, ownerId, key) { (snapshot) in
             guard let snapshot = snapshot else {
-                completion(.failure(ProxyError.proxyNotFound))
+                completion(.failure(.proxyNotFound))
                 return
             }
             guard let proxy = Proxy(snapshot.value as AnyObject) else {
-                completion(.failure(ProxyError.unknown))
+                completion(.failure(.unknown))
                 return
             }
             completion(.success(proxy))

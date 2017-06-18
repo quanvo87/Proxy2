@@ -6,10 +6,12 @@
 //  Copyright © 2017 Quan Vo. All rights reserved.
 //
 
-import FirebaseDatabase
+import Firebase
 
 class Shared {
     static let shared = Shared()
+
+    lazy var firebase = FirebaseApp.app()
 
     lazy var cache = NSCache<AnyObject, AnyObject>()
 

@@ -18,8 +18,6 @@ class MessagesTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-//        return
-
         navigationItem.title = "Messages"
         edgesForExtendedLayout = .all
         tableView.allowsMultipleSelectionDuringEditing = true
