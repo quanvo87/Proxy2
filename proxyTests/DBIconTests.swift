@@ -10,9 +10,9 @@ import XCTest
 @testable import proxy
 import FirebaseDatabase
 
-class DBIconTests: XCTestCase {
+class DBIconTests: DBTest {
     func testGetImageForIcon() {
-        let x = expectation(description: #function)
+        x = expectation(description: #function)
 
         DBProxy.loadProxyInfo { (success) in
             XCTAssert(success)
@@ -28,7 +28,7 @@ class DBIconTests: XCTestCase {
             }
 
             group.notify(queue: DispatchQueue.main, execute: { 
-                x.fulfill()
+                self.x.fulfill()
             })
         }
 

@@ -9,6 +9,7 @@
 import XCTest
 @testable import proxy
 import FirebaseAuth
+import FirebaseDatabase
 
 class DBTest: XCTestCase {
     private let auth = Auth.auth(app: Shared.shared.firebase!)
@@ -22,22 +23,25 @@ class DBTest: XCTestCase {
     override func setUp() {
         x = expectation(description: #function)
 
-        handle = auth.addStateDidChangeListener { (auth, user) in
+        handle = auth.addStateDidChangeListener { [weak self] (auth, user) in
             if let uid = user?.uid {
                 Shared.shared.uid = uid
 
                 DB.delete("test") { (success) in
                     XCTAssert(success)
-                    self.x.fulfill()
+                    self?.x.fulfill()
                 }
             } else {
-                auth.signIn(withEmail: self.email, password: self.password) { (user, error) in
+                guard let strong = self else {
+                    return
+                }
+                auth.signIn(withEmail: strong.email, password: strong.password) { (user, error) in
                     XCTAssertNil(error)
                 }
             }
         }
 
-        waitForExpectations(timeout: 5)
+        waitForExpectations(timeout: 10)
     }
 
     override func tearDown() {
@@ -46,7 +50,7 @@ class DBTest: XCTestCase {
             XCTAssert(success)
             self.x.fulfill()
         }
-        waitForExpectations(timeout: 5)
+        waitForExpectations(timeout: 10)
     }
 
     deinit {

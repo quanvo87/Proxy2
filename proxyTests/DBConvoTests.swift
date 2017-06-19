@@ -33,6 +33,6 @@ class DBConvoTests: DBTest {
                     })
         }
         
-        waitForExpectations(timeout: 5)
+        waitForExpectations(timeout: 10)
     }
 }

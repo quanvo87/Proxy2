@@ -210,7 +210,7 @@ extension DBProxy {
     }
 
     static func setNickname(_ nickname: String, forProxy proxy: Proxy, completion: @escaping (Success) -> Void) {
-        DB.set(nickname, children: Path.Proxies, proxy.ownerId, proxy.key, Path.SenderNickname) { (success) in
+        DB.set(nickname, children: Path.Proxies, proxy.ownerId, proxy.key, Path.Nickname) { (success) in
             guard success else {
                 completion(false)
                 return
@@ -250,74 +250,72 @@ extension DBProxy {
     }
 
     static func deleteProxy(_ proxy: Proxy, withConvos convos: [Convo], completion: @escaping (Success) -> Void) {
-        let deleteFinished = DispatchGroup()
-        for _ in 1...4 + convos.count {
-            deleteFinished.enter()
-        }
+        DBProxy.getProxy(key: proxy.key, ownerId: proxy.ownerId) { (result) in
+            switch result {
+            case .failure(_):
+                completion(false)
+                return
+            case .success(let proxy):
+                var allSuccess = false
 
-        DB.delete(Path.Proxies, Path.Name, proxy.key) { (success) in
-            guard success else {
-                completion(false)
-                return
-            }
-            deleteFinished.leave()
-        }
-        DB.delete(Path.Proxies, Path.Key, proxy.key) { (success) in
-            guard success else {
-                completion(false)
-                return
-            }
-            deleteFinished.leave()
-        }
-        DB.delete(Path.Proxies, proxy.ownerId, proxy.key) { (success) in
-            guard success else {
-                completion(false)
-                return
-            }
-            deleteFinished.leave()
-        }
-        DB.increment(-proxy.unread, children: Path.Unread, proxy.ownerId, Path.Unread) { (success) in
-            guard success else {
-                completion(false)
-                return
-            }
-            deleteFinished.leave()
-        }
+                let deleteFinished = DispatchGroup()
+                for _ in 1...4 {
+                    deleteFinished.enter()
+                }
 
-        for convo in convos {
-            let deleteConvoFinished = DispatchGroup()
-            for _ in 1...3 {
-                deleteConvoFinished.enter()
-            }
-            DB.delete(Path.Convos, convo.senderId, convo.key) { (success) in
-                guard success else {
-                    completion(false)
-                    return
+                DB.delete(Path.Proxies, Path.Name, proxy.key) { (success) in
+                    allSuccess = success
+                    deleteFinished.leave()
                 }
-                deleteConvoFinished.leave()
-            }
-            DB.delete(Path.Convos, convo.senderProxyKey, convo.key) { (success) in
-                guard success else {
-                    completion(false)
-                    return
+
+                DB.delete(Path.Proxies, Path.Key, proxy.key) { (success) in
+                    allSuccess = success
+                    deleteFinished.leave()
                 }
-                deleteConvoFinished.leave()
-            }
-            DB.set([(DB.path(Path.Convos, convo.receiverId, convo.key, Path.ReceiverDeletedProxy), true),
-                    (DB.path(Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverDeletedProxy), true)]) { (success) in
-                        guard success else {
-                            completion(false)
-                            return
-                        }
+
+                DB.delete(Path.Proxies, proxy.ownerId, proxy.key) { (success) in
+                    allSuccess = success
+                    deleteFinished.leave()
+                }
+
+                DB.increment(-proxy.unread, children: Path.Unread, proxy.ownerId, Path.Unread) { (success) in
+                    allSuccess = success
+                    deleteFinished.leave()
+                }
+
+                for convo in convos {
+                    deleteFinished.enter()
+
+                    let deleteConvoFinished = DispatchGroup()
+                    for _ in 1...3 {
+                        deleteConvoFinished.enter()
+                    }
+
+                    DB.delete(Path.Convos, convo.senderId, convo.key) { (success) in
+                        allSuccess = success
                         deleteConvoFinished.leave()
-            }
-            deleteConvoFinished.notify(queue: .main) {
-                deleteFinished.leave()
-            }
-        }
+                    }
 
-        deleteFinished.notify(queue: .main) { 
-            completion(true)
+                    DB.delete(Path.Convos, convo.senderProxyKey, convo.key) { (success) in
+                        allSuccess = success
+                        deleteConvoFinished.leave()
+                    }
+
+                    DB.set([(DB.path(Path.Convos, convo.receiverId, convo.key, Path.ReceiverDeletedProxy), true),
+                            (DB.path(Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverDeletedProxy), true)]) { (success) in
+                                allSuccess = success
+                                deleteConvoFinished.leave()
+                    }
+                    
+                    deleteConvoFinished.notify(queue: .main) {
+                        deleteFinished.leave()
+                    }
+                }
+                
+                deleteFinished.notify(queue: .main) { 
+                    completion(allSuccess)
+                }
+            }
         }
     }
 }

@@ -67,7 +67,7 @@ class DBTests: DBTest {
             })
         }
 
-        waitForExpectations(timeout: 5)
+        waitForExpectations(timeout: 10)
     }
 
     func testIncrement() {
@@ -82,7 +82,7 @@ class DBTests: DBTest {
             })
         }
 
-        waitForExpectations(timeout: 5)
+        waitForExpectations(timeout: 10)
     }
 
     func testConcurrentIncrement() {
@@ -105,6 +105,6 @@ class DBTests: DBTest {
             }
         }
         
-        waitForExpectations(timeout: 5)
+        waitForExpectations(timeout: 10)
     }
 }

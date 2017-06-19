@@ -29,7 +29,7 @@ struct GlobalProxy {
     func toJSON() -> Any {
         return [
             "key": key,
-            "owner": ownerId
+            "ownerId": ownerId
         ]
     }
 }
@@ -101,5 +101,21 @@ struct Proxy {
             "convos": convos,
             "unread": unread
         ]
+    }
+}
+
+extension Proxy: Equatable {
+    static func ==(_ lhs: Proxy, _ rhs: Proxy) -> Bool {
+        return
+            lhs.key == rhs.key &&
+            lhs.name == rhs.name &&
+            lhs.ownerId == rhs.ownerId &&
+            lhs.icon == rhs.icon &&
+            lhs.nickname == rhs.nickname &&
+            lhs.message == rhs.message &&
+            lhs.created == rhs.created &&
+            lhs.timestamp == rhs.timestamp &&
+            lhs.convos == rhs.convos &&
+            lhs.unread == rhs.unread
     }
 }
