@@ -210,10 +210,10 @@ extension DBProxyTests {
                             endpointsDeleted.leave()
                         }
                         
-                        DB.get(Path.Unread, Shared.shared.uid, Path.Unread, completion: { (snapshot) in
+                        DB.get(Path.Unread, Shared.shared.uid, Path.Unread) { (snapshot) in
                             XCTAssertEqual(snapshot?.value as? Int ?? Int.max, 0)
                             endpointsDeleted.leave()
-                        })
+                        }
                         
                         endpointsDeleted.notify(queue: .main) {
                             self.x.fulfill()

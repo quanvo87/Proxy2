@@ -51,20 +51,20 @@ class DBTests: DBTest {
         DB.set("a", children: "test") { (success) in
             XCTAssert(success)
 
-            DB.get("test", completion: { (snapshot) in
+            DB.get("test") { (snapshot) in
                 XCTAssertNotNil(snapshot)
                 XCTAssertEqual(snapshot?.value as? String ?? "", "a")
 
-                DB.delete("test", completion: { (success) in
+                DB.delete("test") { (success) in
                     XCTAssert(success)
 
-                    DB.get("test", completion: { (snapshot) in
+                    DB.get("test") { (snapshot) in
                         XCTAssertEqual(snapshot?.value as? FirebaseDatabase.NSNull,
                                        FirebaseDatabase.NSNull())
                         x.fulfill()
-                    })
-                })
-            })
+                    }
+                }
+            }
         }
 
         waitForExpectations(timeout: 10)
@@ -76,10 +76,10 @@ class DBTests: DBTest {
         DB.increment(1, children: "test") { (success) in
             XCTAssert(success)
 
-            DB.get("test", completion: { (snapshot) in
+            DB.get("test") { (snapshot) in
                 XCTAssertEqual(snapshot?.value as? Int ?? 0, 1)
                 x.fulfill()
-            })
+            }
         }
 
         waitForExpectations(timeout: 10)
@@ -92,10 +92,10 @@ class DBTests: DBTest {
 
         for _ in 1...2 {
             group.enter()
-            DB.increment(1, children: "test", completion: { (success) in
+            DB.increment(1, children: "test") { (success) in
                 XCTAssert(success)
                 group.leave()
-            })
+            }
         }
 
         group.notify(queue: DispatchQueue.main) {

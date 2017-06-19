@@ -263,10 +263,13 @@
 		143F76F71D72BE7400EF305F /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				59392CA81EEB6CD7008BAE40 /* Database */,
 				1415610C1D620DB7002022BC /* API.swift */,
 				14E19A5B1D612CE80030B366 /* Common.swift */,
 				14A6F18D1D6BDA880015431E /* Constant.swift */,
+				59392CA61EEB4622008BAE40 /* DB.swift */,
+				59392CA41EEB426B008BAE40 /* DBConvo.swift */,
+				595722341EED127600F7DD07 /* DBIcon.swift */,
+				59782BF01EEF4BDE00455CEA /* DBProxy.swift */,
 				147B5C391D82891300D18C73 /* DefaultIcons.swift */,
 				59392CA01EE9FBC2008BAE40 /* NavigationItemManager.swift */,
 				14383B591D7B0CB60086CA6C /* NSDate+NVTimeAgo.h */,
@@ -330,17 +333,6 @@
 				59392C8F1EE91C7E008BAE40 /* MessagesTableViewDataSource.swift */,
 			);
 			name = "Messages Tab";
-			sourceTree = "<group>";
-		};
-		59392CA81EEB6CD7008BAE40 /* Database */ = {
-			isa = PBXGroup;
-			children = (
-				59392CA61EEB4622008BAE40 /* DB.swift */,
-				59392CA41EEB426B008BAE40 /* DBConvo.swift */,
-				595722341EED127600F7DD07 /* DBIcon.swift */,
-				59782BF01EEF4BDE00455CEA /* DBProxy.swift */,
-			);
-			name = Database;
 			sourceTree = "<group>";
 		};
 		595856591EE7DE5500FCA14B /* Products */ = {

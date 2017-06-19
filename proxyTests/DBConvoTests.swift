@@ -26,11 +26,11 @@ class DBConvoTests: DBTest {
                 (DB.path("test", "b"), convo2.toJSON())]) { (success) in
                     XCTAssert(success)
 
-                    DB.get("test", completion: { (snapshot) in
+                    DB.get("test") { (snapshot) in
                         let convos = snapshot?.toConvos()
                         XCTAssertEqual(convos?.count, 1)
                         x.fulfill()
-                    })
+                    }
         }
         
         waitForExpectations(timeout: 10)

@@ -22,14 +22,14 @@ class DBIconTests: DBTest {
             for iconName in Shared.shared.iconNames {
                 group.enter()
 
-                DBIcon.getImageForIcon(iconName as AnyObject, tag: 0, completion: { (_, _) in
+                DBIcon.getImageForIcon(iconName as AnyObject, tag: 0) { (_, _) in
                     group.leave()
-                })
+                }
             }
 
-            group.notify(queue: DispatchQueue.main, execute: { 
+            group.notify(queue: DispatchQueue.main) {
                 self.x.fulfill()
-            })
+            }
         }
 
         waitForExpectations(timeout: 20)

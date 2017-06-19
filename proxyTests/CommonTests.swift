@@ -11,6 +11,24 @@ import XCTest
 import FirebaseDatabase
 
 class CommonTests: XCTestCase {
+    func testAndEqual() {
+        var lhs: Bool
+
+        lhs = true
+        lhs &= true
+        XCTAssert(lhs)
+
+        lhs &= false
+        XCTAssertFalse(lhs)
+
+        lhs = false
+        lhs &= false
+        XCTAssertFalse(lhs)
+
+        lhs &= true
+        XCTAssertFalse(lhs)
+    }
+
     func testDoubleAsTimeAgo() {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "h:mm a"

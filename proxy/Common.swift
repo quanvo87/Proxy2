@@ -15,6 +15,12 @@ enum Result<T, Error> {
     case failure(Error)
 }
 
+extension Bool {
+    static func &=(lhs: inout Bool, rhs: Bool) {
+        lhs = lhs && rhs
+    }
+}
+
 extension Double {
     var asTimeAgo: String {
         return NSDate(timeIntervalSince1970: self).formattedAsTimeAgo()
