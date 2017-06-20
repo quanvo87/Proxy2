@@ -32,11 +32,31 @@ extension DBProxyTests {
             switch result {
             case .failure(_):
                 XCTFail()
-            case .success(let proxy):
-                DBProxy.deleteProxy(proxy) { (success) in
-                    XCTAssert(success)
-                    self.x.fulfill()
-                }
+            case .success(_):
+                XCTAssertFalse(Shared.shared.isCreatingProxy)
+                self.x.fulfill()
+            }
+        }
+
+        waitForExpectations(timeout: 10)
+    }
+
+    func testCreateProxyWithExistingName() {
+        x = expectation(description: #function)
+
+        DBProxy.createProxy(randomProxyName: "test") { (result) in
+            switch result {
+            case .failure(_):
+                XCTFail()
+            case .success(_):
+                DBProxy.createProxy(randomProxyName: "test", retry: false, completion: { (result) in
+                    switch result {
+                    case .failure(_):
+                        self.x.fulfill()
+                    case .success(_):
+                        XCTFail()
+                    }
+                })
             }
         }
 
@@ -60,15 +80,12 @@ extension DBProxyTests {
                 XCTFail()
             case .success(let newProxy):
                 DBProxy.getProxy(key: newProxy.key) { (result) in
-                    DBProxy.deleteProxy(newProxy) { (success) in
-                        XCTAssert(success)
-                        switch result {
-                        case .failure(_):
-                            XCTFail()
-                        case .success(let retrievedProxy):
-                            XCTAssert(retrievedProxy == newProxy)
-                            self.x.fulfill()
-                        }
+                    switch result {
+                    case .failure(_):
+                        XCTFail()
+                    case .success(let retrievedProxy):
+                        XCTAssert(retrievedProxy == newProxy)
+                        self.x.fulfill()
                     }
                 }
             }
@@ -86,15 +103,12 @@ extension DBProxyTests {
                 XCTFail()
             case .success(let newProxy):
                 DBProxy.getProxy(key: newProxy.key, ownerId: newProxy.ownerId) { (result) in
-                    DBProxy.deleteProxy(newProxy) { (success) in
-                        XCTAssert(success)
-                        switch result {
-                        case .failure(_):
-                            XCTFail()
-                        case .success(let retrievedProxy):
-                            XCTAssert(retrievedProxy == newProxy)
-                            self.x.fulfill()
-                        }
+                    switch result {
+                    case .failure(_):
+                        XCTFail()
+                    case .success(let retrievedProxy):
+                        XCTAssert(retrievedProxy == newProxy)
+                        self.x.fulfill()
                     }
                 }
             }
@@ -113,18 +127,16 @@ extension DBProxyTests {
             case .failure(_):
                 XCTFail()
             case .success(let proxy):
-                DBProxy.setIcon("new icon", forProxy: proxy) { (setIconSuccess) in
-                    DBProxy.getProxy(key: proxy.key, ownerId: proxy.ownerId) { (getProxyWithNewIconResult) in
-                        DBProxy.deleteProxy(proxy) { (deleteProxySuccess) in
-                            XCTAssert(setIconSuccess)
-                            XCTAssert(deleteProxySuccess)
-                            switch getProxyWithNewIconResult {
-                            case .failure(_):
-                                XCTFail()
-                            case .success(let proxyWithNewIcon):
-                                XCTAssertEqual(proxyWithNewIcon.icon, "new icon")
-                                self.x.fulfill()
-                            }
+                DBProxy.setIcon("new icon", forProxy: proxy) { (success) in
+                    XCTAssert(success)
+
+                    DBProxy.getProxy(key: proxy.key, ownerId: proxy.ownerId) { (result) in
+                        switch result {
+                        case .failure(_):
+                            XCTFail()
+                        case .success(let proxyWithNewIcon):
+                            XCTAssertEqual(proxyWithNewIcon.icon, "new icon")
+                            self.x.fulfill()
                         }
                     }
                 }
@@ -142,18 +154,16 @@ extension DBProxyTests {
             case .failure(_):
                 XCTFail()
             case .success(let proxy):
-                DBProxy.setNickname("new nickname", forProxy: proxy) { (setNicknameSuccess) in
-                    DBProxy.getProxy(key: proxy.key, ownerId: proxy.ownerId) { (getProxyWithNewNicknameResult) in
-                        DBProxy.deleteProxy(proxy) { (deleteProxySuccess) in
-                            XCTAssert(setNicknameSuccess)
-                            XCTAssert(deleteProxySuccess)
-                            switch getProxyWithNewNicknameResult {
-                            case .failure(_):
-                                XCTFail()
-                            case .success(let proxyWithNewNickname):
-                                XCTAssertEqual(proxyWithNewNickname.nickname, "new nickname")
-                                self.x.fulfill()
-                            }
+                DBProxy.setNickname("new nickname", forProxy: proxy) { (success) in
+                    XCTAssert(success)
+
+                    DBProxy.getProxy(key: proxy.key, ownerId: proxy.ownerId) { (result) in
+                        switch result {
+                        case .failure(_):
+                            XCTFail()
+                        case .success(let proxyWithNewNickname):
+                            XCTAssertEqual(proxyWithNewNickname.nickname, "new nickname")
+                            self.x.fulfill()
                         }
                     }
                 }
@@ -209,7 +219,7 @@ extension DBProxyTests {
                             XCTAssertEqual(snapshot?.value as? FirebaseDatabase.NSNull, FirebaseDatabase.NSNull())
                             endpointsDeleted.leave()
                         }
-                        
+
                         DB.get(Path.Unread, Shared.shared.uid, Path.Unread) { (snapshot) in
                             XCTAssertEqual(snapshot?.value as? Int ?? Int.max, 0)
                             endpointsDeleted.leave()
@@ -222,7 +232,7 @@ extension DBProxyTests {
                 }
             }
         }
-
+        
         waitForExpectations(timeout: 10)
     }
 }

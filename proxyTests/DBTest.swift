@@ -9,7 +9,6 @@
 import XCTest
 @testable import proxy
 import FirebaseAuth
-import FirebaseDatabase
 
 class DBTest: XCTestCase {
     private let auth = Auth.auth(app: Shared.shared.firebase!)
@@ -20,21 +19,27 @@ class DBTest: XCTestCase {
 
     var x = XCTestExpectation()
 
+    let clearDatabaseDone = DispatchGroup()
+
     override func setUp() {
         x = expectation(description: #function)
 
         handle = auth.addStateDidChangeListener { [weak self] (auth, user) in
+            guard let strong = self else {
+                return
+            }
+
             if let uid = user?.uid {
                 Shared.shared.uid = uid
 
-                DB.delete("test") { (success) in
-                    XCTAssert(success)
-                    self?.x.fulfill()
+                strong.deleteTestData()
+                strong.deleteProxies()
+
+                strong.clearDatabaseDone.notify(queue: .main) {
+                    strong.x.fulfill()
                 }
+
             } else {
-                guard let strong = self else {
-                    return
-                }
                 auth.signIn(withEmail: strong.email, password: strong.password) { (user, error) in
                     XCTAssertNil(error)
                 }
@@ -44,18 +49,46 @@ class DBTest: XCTestCase {
         waitForExpectations(timeout: 10)
     }
 
-    override func tearDown() {
-        x = expectation(description: #function)
-        DB.delete("test") { (success) in
-            XCTAssert(success)
-            self.x.fulfill()
-        }
-        waitForExpectations(timeout: 10)
-    }
-
     deinit {
         if let handle = handle {
             auth.removeStateDidChangeListener(handle)
+        }
+    }
+}
+
+private extension DBTest {
+    func deleteTestData() {
+        clearDatabaseDone.enter()
+
+        DB.delete("test") { (success) in
+            XCTAssert(success)
+            self.clearDatabaseDone.leave()
+        }
+    }
+
+    func deleteProxies() {
+        clearDatabaseDone.enter()
+
+        DB.get(Path.Proxies, Shared.shared.uid) { (snapshot) in
+            guard let proxies = snapshot?.toProxies() else {
+                self.clearDatabaseDone.leave()
+                return
+            }
+
+            let deleteProxiesDone = DispatchGroup()
+
+            for proxy in proxies {
+                deleteProxiesDone.enter()
+
+                DBProxy.deleteProxy(proxy) { (success) in
+                    XCTAssert(success)
+                    deleteProxiesDone.leave()
+                }
+            }
+
+            deleteProxiesDone.notify(queue: .main) {
+                self.clearDatabaseDone.leave()
+            }
         }
     }
 }

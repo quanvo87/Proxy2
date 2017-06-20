@@ -7,6 +7,7 @@
 //
 
 import FirebaseStorage
+import FirebaseDatabase
 
 struct DBProxy {}
 
@@ -70,68 +71,86 @@ extension DBProxy {
 }
 
 extension DBProxy {
-    static func createProxy(completion: @escaping (Result<Proxy, ProxyError>) -> Void) {
+    typealias RandomProxyName = String
+
+    static func createProxy(randomProxyName: RandomProxyName = DBProxy.randomProxyName,
+                            retry: Bool = true,
+                            completion: @escaping (Result<Proxy, ProxyError>) -> Void) {
         loadProxyInfo { (success) in
             guard success else {
                 completion(.failure(.unknown))
                 return
             }
             DB.get(Path.Proxies, Shared.shared.uid) { (snapshot) in
-                guard snapshot?.childrenCount ?? 0 <= 50 else {
+                guard snapshot?.childrenCount ?? 0 <= Settings.MaxAllowedProxies else {
                     completion(.failure(.proxyLimitReached))
                     return
                 }
                 Shared.shared.isCreatingProxy = true
-                createProxyHelper(completion: completion)
+                createProxyHelper(randomProxyName: randomProxyName,
+                                  retry: retry,
+                                  completion: completion)
             }
         }
     }
 
-    private static func createProxyHelper(completion: @escaping (Result<Proxy, ProxyError>) -> Void) {
-        guard let ref = DB.ref(Path.Proxies, Path.Key) else {
+    private static func createProxyHelper(randomProxyName: RandomProxyName = DBProxy.randomProxyName,
+                                          retry: Bool = true,
+                                          completion: @escaping (Result<Proxy, ProxyError>) -> Void) {
+        guard
+            let proxyKeysRef = DB.ref(Path.ProxyKeys) else {
+            Shared.shared.isCreatingProxy = false
             completion(.failure(.unknown))
             return
         }
-        let autoId = ref.childByAutoId().key
-        let name = makeProxyName()
+        let autoId = proxyKeysRef.childByAutoId().key
+        let name = randomProxyName
         let key = name.lowercased()
-        let globalProxy = GlobalProxy(key: key, ownerId: Shared.shared.uid).toJSON()
+        let proxyKey = [Path.Key: key]
 
-        DB.set([Path.Key: key], children: Path.Proxies, Path.Key, autoId) { (success) in
+        DB.set(proxyKey, children: Path.ProxyKeys, autoId) { (success) in
             guard success else {
+                Shared.shared.isCreatingProxy = false
                 completion(.failure(.unknown))
                 return
             }
-            ref.queryOrdered(byChild: Path.Key).queryEqual(toValue: key).observeSingleEvent(of: .value, with: { (snapshot) in
-                DB.delete(Path.Proxies, Path.Key, autoId) { (success) in
+            proxyKeysRef.queryOrdered(byChild: Path.Key).queryEqual(toValue: key).observeSingleEvent(of: .value, with: { (snapshot) in
+                DB.delete(Path.ProxyKeys, autoId) { (success) in
                     guard success else {
+                        Shared.shared.isCreatingProxy = false
                         completion(.failure(.unknown))
                         return
                     }
 
-                    if !Shared.shared.isCreatingProxy {
+                    guard Shared.shared.isCreatingProxy else {
                         return
                     }
 
                     if snapshot.childrenCount == 1 {
                         Shared.shared.isCreatingProxy = false
 
-                        let userProxy = Proxy(name: name, ownerId: Shared.shared.uid, icon: getRandomIconName())
+                        let proxyOwner = ProxyOwner(key: key, ownerId: Shared.shared.uid).toJSON()
+                        let userProxy = Proxy(name: name, ownerId: Shared.shared.uid, icon: randomIconName)
 
-                        DB.set([(DB.path(Path.Proxies, Path.Name, key), true),
-                                (DB.path(Path.Proxies, Path.Key, key), globalProxy),
+                        DB.set([(DB.path(Path.ProxyKeys, key), proxyKey),
+                                (DB.path(Path.ProxyOwners, key), proxyOwner),
                                 (DB.path(Path.Proxies, Shared.shared.uid, key), userProxy.toJSON())]) { (success) in
                                     completion(success ? .success(userProxy) : .failure(.unknown))
                         }
                     } else {
-                        createProxyHelper(completion: completion)
+                        if retry {
+                            createProxyHelper(randomProxyName: randomProxyName,
+                                              completion: completion)
+                        } else {
+                            completion(.failure(.unknown))
+                        }
                     }
                 }
             })
         }
     }
 
-    private static func makeProxyName() -> String {
+    private static var randomProxyName: String {
         let randomAdj = Int(arc4random_uniform(UInt32(Shared.shared.adjectives.count)))
         let randomNoun = Int(arc4random_uniform(UInt32(Shared.shared.nouns.count)))
         let adj = Shared.shared.adjectives[randomAdj].lowercased().capitalized
@@ -140,7 +159,7 @@ extension DBProxy {
         return adj + noun + num
     }
 
-    private static func getRandomIconName() -> String {
+    private static var randomIconName: String {
         let random = Int(arc4random_uniform(UInt32(Shared.shared.iconNames.count)))
         return Shared.shared.iconNames[random]
     }
@@ -152,19 +171,20 @@ extension DBProxy {
 
 extension DBProxy {
     static func getProxy(key: String, completion: @escaping (Result<Proxy, ProxyError>) -> Void) {
-        DB.get(Path.Proxies, Path.Key, key) { (snapshot) in
+        DB.get(Path.ProxyOwners, key) { (snapshot) in
             guard let snapshot = snapshot else {
                 completion(.failure(.proxyNotFound))
                 return
             }
-            guard let globalProxy = GlobalProxy(snapshot.value as AnyObject) else {
+            guard let proxyOwner = ProxyOwner(snapshot.value as AnyObject) else {
                 completion(.failure(.unknown))
                 return
             }
-            getProxy(key: globalProxy.key, ownerId: globalProxy.ownerId, completion: completion)
+            getProxy(key: proxyOwner.key, ownerId: proxyOwner.ownerId, completion: completion)
         }
     }
 
+    // TODO: - prob wrong
     static func getProxy(key: String, ownerId: String, completion: @escaping (Result<Proxy, ProxyError>) -> Void) {
         DB.get(Path.Proxies, ownerId, key) { (snapshot) in
             guard let snapshot = snapshot else {
@@ -288,12 +308,12 @@ extension DBProxy {
                     deleteFinished.enter()
                 }
 
-                DB.delete(Path.Proxies, Path.Name, proxy.key) { (success) in
+                DB.delete(Path.ProxyKeys, proxy.key) { (success) in
                     allSuccess &= success
                     deleteFinished.leave()
                 }
 
-                DB.delete(Path.Proxies, Path.Key, proxy.key) { (success) in
+                DB.delete(Path.ProxyOwners, proxy.key) { (success) in
                     allSuccess &= success
                     deleteFinished.leave()
                 }
@@ -343,5 +363,18 @@ extension DBProxy {
                 }
             }
         }
+    }
+}
+
+extension DataSnapshot {
+    func toProxies() -> [Proxy] {
+        var proxies = [Proxy]()
+        for child in self.children {
+            if  let snapshot = child as? DataSnapshot,
+                let proxy = Proxy(snapshot.value as AnyObject) {
+                proxies.append(proxy)
+            }
+        }
+        return proxies
     }
 }

@@ -213,9 +213,10 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
         // Icon
         cell.iconImageView.image = nil
         DBIcon.getImageForIcon(proxy.icon + ".png" as AnyObject, tag: cell.tag) { (image, tag) in
-            guard tag == cell.tag else { return }
-            guard let image = image else {
-                return
+            guard
+                tag == cell.tag,
+                let image = image else {
+                    return
             }
             DispatchQueue.main.async {
                 cell.iconImageView.image = image

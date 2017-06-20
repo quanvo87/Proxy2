@@ -88,17 +88,17 @@ class DBTests: DBTest {
     func testConcurrentIncrement() {
         let x = expectation(description: #function)
 
-        let group = DispatchGroup()
+        let incrementsDone = DispatchGroup()
 
         for _ in 1...2 {
-            group.enter()
+            incrementsDone.enter()
             DB.increment(1, children: "test") { (success) in
                 XCTAssert(success)
-                group.leave()
+                incrementsDone.leave()
             }
         }
 
-        group.notify(queue: DispatchQueue.main) {
+        incrementsDone.notify(queue: .main) {
             DB.get("test") { (snapshot) in
                 XCTAssertEqual(snapshot?.value as? Int ?? 0, 2)
                 x.fulfill()

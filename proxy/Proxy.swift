@@ -6,7 +6,7 @@
 //  Copyright © 2016 Quan Vo. All rights reserved.
 //
 
-struct GlobalProxy {
+struct ProxyOwner {
     var key = ""
     var ownerId = ""
 
@@ -41,8 +41,8 @@ struct Proxy {
     var icon = ""
     var nickname = ""
     var message = ""
-    var created = NSDate().timeIntervalSince1970
-    var timestamp = NSDate().timeIntervalSince1970
+    var created = Date().timeIntervalSince1970
+    var timestamp = Date().timeIntervalSince1970
     var convos = 0
     var unread = 0
 
@@ -113,8 +113,8 @@ extension Proxy: Equatable {
             lhs.icon == rhs.icon &&
             lhs.nickname == rhs.nickname &&
             lhs.message == rhs.message &&
-            lhs.created == rhs.created &&
-            lhs.timestamp == rhs.timestamp &&
+            lhs.created.rounded() == rhs.created.rounded() &&
+            lhs.timestamp.rounded() == rhs.timestamp.rounded() &&
             lhs.convos == rhs.convos &&
             lhs.unread == rhs.unread
     }

@@ -9,12 +9,16 @@
 struct Path {
     // Objects
     static let Proxies = "proxies"
+    static let ProxyOwners = "proxyOwners"
     static let Convos = "convos"
     static let Messages = "messages"
     static let WordBank = "wordBank"
     static let Icons = "icons"
     static let UserFiles = "userFiles"
-    
+
+    // Proxy
+    static let ProxyKeys = "proxyKeys"
+
     // User
     static let ProxyCount = "proxyCount"
     static let ProxiesInteractedWith = "proxiesInteractedWith"
@@ -56,6 +60,7 @@ struct URLs {
 }
 
 struct Settings {
+    static let MaxAllowedProxies = UInt(30)
     static let TimeBetweenTimestamps = 30.0
     static let NewProxyIndicatorDuration = 5.0
 }

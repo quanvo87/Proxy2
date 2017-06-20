@@ -8,7 +8,6 @@
 
 import XCTest
 @testable import proxy
-import FirebaseDatabase
 
 class DBIconTests: DBTest {
     func testGetImageForIcon() {
@@ -17,17 +16,18 @@ class DBIconTests: DBTest {
         DBProxy.loadProxyInfo { (success) in
             XCTAssert(success)
 
-            let group = DispatchGroup()
+            let iconImagesRetrieved = DispatchGroup()
 
             for iconName in Shared.shared.iconNames {
-                group.enter()
+                iconImagesRetrieved.enter()
 
                 DBIcon.getImageForIcon(iconName as AnyObject, tag: 0) { (_, _) in
-                    group.leave()
+                    XCTAssertNotNil(Shared.shared.cache.object(forKey: iconName as AnyObject) as? UIImage)
+                    iconImagesRetrieved.leave()
                 }
             }
 
-            group.notify(queue: DispatchQueue.main) {
+            iconImagesRetrieved.notify(queue: DispatchQueue.main) {
                 self.x.fulfill()
             }
         }

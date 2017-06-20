@@ -168,7 +168,6 @@ extension MessagesTableViewController: UnreadObserverDelegate {
     }
 }
 
-// TODO: - revisit logic, prob don't need this? just pop new message vc after pushing convo
 extension MessagesTableViewController: NewMessageViewControllerDelegate {
     func goToNewConvo(_ convo: Convo) {
         self.convo = convo

@@ -18,9 +18,9 @@ struct NavigationItemManager {
     init() {}
 
     mutating func makeButtons(_ delegate: NavigationItemManagerDelegate) {
-        newProxyButton = makeButton(delegate: delegate, selector: #selector(delegate.createNewProxy), imageName: "new-proxy.png")
-        newMessageButton = makeButton(delegate: delegate, selector: #selector(delegate.createNewMessage), imageName: "new-message.png")
-        deleteButton = makeButton(delegate: delegate, selector: #selector(delegate.toggleEditMode), imageName: "delete.png")
+        newProxyButton = makeButton(delegate: delegate, selector: #selector(delegate.createNewProxy), imageName: "new-proxy")
+        newMessageButton = makeButton(delegate: delegate, selector: #selector(delegate.createNewMessage), imageName: "new-message")
+        deleteButton = makeButton(delegate: delegate, selector: #selector(delegate.toggleEditMode), imageName: "delete")
         confirmButton = makeButton(delegate: delegate, selector: #selector(delegate.deleteSelectedItems), imageName: "confirm")
         cancelButton = makeButton(delegate: delegate, selector: #selector(delegate.toggleEditMode), imageName: "cancel")
     }
