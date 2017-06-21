@@ -11,6 +11,95 @@ import XCTest
 import FirebaseDatabase
 
 class DBConvoTests: DBTest {
+    func testGetConvoKey() {
+        var sender = Proxy()
+        sender.key = "a"
+        sender.ownerId = "b"
+
+        var receiver = Proxy()
+        receiver.key = "c"
+        receiver.ownerId = "d"
+
+        XCTAssertEqual(DBConvo.getConvoKey(senderProxy: sender, receiverProxy: receiver), "abcd")
+    }
+
+    func testCreateConvo() {
+        x = expectation(description: #function)
+
+        var sender = Proxy()
+        var receiver = Proxy()
+
+        DBProxy.createProxy { (result) in
+            switch result {
+            case .failure(_):
+                XCTFail()
+            case .success(let proxy):
+                sender = proxy
+
+                DBProxy.createProxy { (result) in
+                    switch result {
+                    case .failure(_):
+                        XCTFail()
+                    case .success(let proxy):
+                        receiver = proxy
+
+                        receiver.ownerId = "receiver"
+
+                        let convoKey = DBConvo.getConvoKey(senderProxy: sender,
+                                                           receiverProxy: receiver)
+
+                        DBConvo.createConvo(sender: sender,
+                                            receiver: receiver,
+                                            convoKey: DBConvo.getConvoKey(senderProxy: sender,
+                                                                          receiverProxy: receiver),
+                                            text: "test") { (convo) in
+                                                XCTAssertNotNil(convo)
+                                                XCTAssertEqual(convo?.key, convoKey)
+                                                XCTAssertEqual(convo?.senderId, sender.ownerId)
+                                                XCTAssertEqual(convo?.senderProxyKey, sender.key)
+                                                XCTAssertEqual(convo?.senderProxyName, sender.name)
+                                                XCTAssertEqual(convo?.receiverId, receiver.ownerId)
+                                                XCTAssertEqual(convo?.receiverProxyKey, receiver.key)
+                                                XCTAssertEqual(convo?.receiverProxyName, receiver.name)
+                                                XCTAssertEqual(convo?.icon, receiver.icon)
+                                                XCTAssertEqual(convo?.receiverIsBlocking, false)
+
+                                                let convosChecked = DispatchGroup()
+
+                                                for _ in 1...2 {
+                                                    convosChecked.enter()
+                                                }
+
+                                                DBConvo.getConvo(withKey: convoKey, uid: sender.ownerId, completion: { (senderConvo) in
+                                                    XCTAssertEqual(senderConvo, convo)
+                                                    convosChecked.leave()
+                                                })
+
+                                                DBConvo.getConvo(withKey: convoKey, uid: receiver.ownerId, completion: { (receiverConvo) in
+                                                    XCTAssertNotNil(receiverConvo)
+                                                    XCTAssertEqual(receiverConvo?.key, convoKey)
+                                                    XCTAssertEqual(receiverConvo?.senderId, receiver.ownerId)
+                                                    XCTAssertEqual(receiverConvo?.senderProxyKey, receiver.key)
+                                                    XCTAssertEqual(receiverConvo?.senderProxyName, receiver.name)
+                                                    XCTAssertEqual(receiverConvo?.receiverId, sender.ownerId)
+                                                    XCTAssertEqual(receiverConvo?.receiverProxyKey, sender.key)
+                                                    XCTAssertEqual(receiverConvo?.receiverProxyName, sender.name)
+                                                    XCTAssertEqual(receiverConvo?.icon, sender.icon)
+                                                    XCTAssertEqual(receiverConvo?.senderIsBlocking, false)
+                                                    convosChecked.leave()
+                                                })
+                                                
+                                                convosChecked.notify(queue: .main) {
+                                                    self.x.fulfill()
+                                                }
+                        }
+                    }
+                }
+            }
+        }
+        waitForExpectations(timeout: 10)
+    }
+
     func testGetConvosFromSnapshot() throws {
         let x = expectation(description: #function)
 

@@ -19,7 +19,7 @@ class DBTest: XCTestCase {
 
     var x = XCTestExpectation()
 
-    let clearDatabaseDone = DispatchGroup()
+    let setupDone = DispatchGroup()
 
     override func setUp() {
         x = expectation(description: #function)
@@ -32,10 +32,11 @@ class DBTest: XCTestCase {
             if let uid = user?.uid {
                 Shared.shared.uid = uid
 
+                strong.loadProxyInfo()
                 strong.deleteTestData()
                 strong.deleteProxies()
 
-                strong.clearDatabaseDone.notify(queue: .main) {
+                strong.setupDone.notify(queue: .main) {
                     strong.x.fulfill()
                 }
 
@@ -57,21 +58,30 @@ class DBTest: XCTestCase {
 }
 
 private extension DBTest {
+    func loadProxyInfo() {
+        setupDone.enter()
+
+        DBProxy.loadProxyInfo { (success) in
+            XCTAssert(success)
+            self.setupDone.leave()
+        }
+    }
+
     func deleteTestData() {
-        clearDatabaseDone.enter()
+        setupDone.enter()
 
         DB.delete("test") { (success) in
             XCTAssert(success)
-            self.clearDatabaseDone.leave()
+            self.setupDone.leave()
         }
     }
 
     func deleteProxies() {
-        clearDatabaseDone.enter()
+        setupDone.enter()
 
         DB.get(Path.Proxies, Shared.shared.uid) { (snapshot) in
             guard let proxies = snapshot?.toProxies() else {
-                self.clearDatabaseDone.leave()
+                self.setupDone.leave()
                 return
             }
 
@@ -87,7 +97,7 @@ private extension DBTest {
             }
 
             deleteProxiesDone.notify(queue: .main) {
-                self.clearDatabaseDone.leave()
+                self.setupDone.leave()
             }
         }
     }

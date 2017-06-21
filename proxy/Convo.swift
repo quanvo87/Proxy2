@@ -93,3 +93,25 @@ struct Convo {
         ]
     }
 }
+
+extension Convo: Equatable {
+    static func ==(_ lhs: Convo, _ rhs: Convo) -> Bool {
+        return
+            lhs.key == rhs.key &&
+            lhs.senderId == rhs.senderId &&
+            lhs.senderProxyKey == rhs.senderProxyKey &&
+            lhs.senderProxyName == rhs.senderProxyName &&
+            lhs.senderNickname == rhs.senderNickname &&
+            lhs.receiverId == rhs.receiverId &&
+            lhs.receiverProxyKey == rhs.receiverProxyKey &&
+            lhs.receiverProxyName == rhs.receiverProxyName &&
+            lhs.receiverNickname == rhs.receiverNickname &&
+            lhs.icon == rhs.icon &&
+            lhs.message == rhs.message &&
+            lhs.senderLeftConvo == rhs.senderLeftConvo &&
+            lhs.senderIsBlocking == rhs.senderIsBlocking &&
+            lhs.receiverDeletedProxy == rhs.receiverDeletedProxy &&
+            lhs.timestamp.rounded() == rhs.timestamp.rounded() &&
+            lhs.unread == rhs.unread
+    }
+}

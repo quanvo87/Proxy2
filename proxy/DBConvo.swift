@@ -9,19 +9,15 @@
 import FirebaseDatabase
 
 struct DBConvo {
-    static func getConvoKey(senderProxyKey: String, senderOwnerId: String, receiverProxyKey: String, receiverOwnerId: String) -> String {
-        return [senderProxyKey, senderOwnerId, receiverProxyKey, receiverOwnerId].sorted().joined(separator: "")
+    static func getConvoKey(senderProxy: Proxy, receiverProxy: Proxy) -> String {
+        return [senderProxy.key, senderProxy.ownerId, receiverProxy.key, receiverProxy.ownerId].sorted().joined()
     }
 
     static func createConvo(sender: Proxy, receiver: Proxy, convoKey: String, text: String, completion: @escaping (Convo?) -> Void) {
         DB.get(Path.Blocked, receiver.ownerId, sender.ownerId) { (snapshot) in
-            guard let snapshot = snapshot else {
-                completion(nil)
-                return
-            }
             var senderConvo = Convo()
             var receiverConvo = Convo()
-            let senderBlocked = snapshot.childrenCount == 1
+            let senderBlocked = snapshot?.childrenCount == 1
 
             senderConvo.key = convoKey
             senderConvo.senderId = sender.ownerId
@@ -105,19 +101,38 @@ struct DBConvo {
     }
 
     static func leaveConvo(_ convo: Convo, completion: @escaping (Success) -> Void) {
+        var allSuccess = true
+        let leaveConvoDone = DispatchGroup()
+
+        for _ in 1...4 {
+            leaveConvoDone.enter()
+        }
+
         DB.set([(DB.path(Path.Convos, convo.senderId, convo.key, Path.SenderLeftConvo), true),
                 (DB.path(Path.Convos, convo.senderProxyKey, convo.key, Path.SenderLeftConvo), true),
                 (DB.path(Path.Convos, convo.receiverId, convo.key, Path.ReceiverLeftConvo), true),
                 (DB.path(Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverLeftConvo), true)]) { (success) in
-                    guard success else {
-                        completion(false)
-                        return
-                    }
-                    DB.increment(-1, children: Path.Proxies, convo.senderId, convo.senderProxyKey, Path.Convos)
-                    DB.increment(-convo.unread, children: Path.Unread, convo.senderId, Path.Unread)
-                    DB.increment(-convo.unread, children: Path.Proxies, convo.senderId, convo.senderProxyKey, Path.Unread)
+                    allSuccess &= success
+                    leaveConvoDone.leave()
+        }
 
-                    completion(true)
+        DB.increment(-1, children: Path.Proxies, convo.senderId, convo.senderProxyKey) { (success) in
+            allSuccess &= success
+            leaveConvoDone.leave()
+        }
+
+        DB.increment(-convo.unread, children: Path.Unread, convo.senderId, Path.Unread) { (success) in
+            allSuccess &= success
+            leaveConvoDone.leave()
+        }
+
+        DB.increment(-convo.unread, children: Path.Proxies, convo.senderId, convo.senderProxyKey, Path.Unread) { (success) in
+            allSuccess &= success
+            leaveConvoDone.leave()
+        }
+
+        leaveConvoDone.notify(queue: .main) { 
+            completion(allSuccess)
         }
     }
 }

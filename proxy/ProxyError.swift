@@ -10,15 +10,13 @@ enum ProxyError: Error {
     case blankCredentials
     case facebookLoginFail
     case proxyLimitReached
-    case proxyNotFound
     case unknown
 
     var localizedDescription: String {
         switch self {
         case .blankCredentials: return "Please enter a valid email and password."
         case .facebookLoginFail: return "Please check your Facebook username and password."
-        case .proxyLimitReached: return "The maximum amount of proxies is 50. Try deleting some and try again!"
-        case .proxyNotFound: return "Could not find that proxy. The user may have deleted it."
+        case .proxyLimitReached: return "The maximum amount of proxies is \(Settings.MaxAllowedProxies). Try deleting some and try again!"
         case .unknown: return "An unknown error occurred. Please try again."
         }
     }

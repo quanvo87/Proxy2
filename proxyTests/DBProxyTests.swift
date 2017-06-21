@@ -79,16 +79,23 @@ extension DBProxyTests {
             case .failure(_):
                 XCTFail()
             case .success(let newProxy):
-                DBProxy.getProxy(key: newProxy.key) { (result) in
-                    switch result {
-                    case .failure(_):
-                        XCTFail()
-                    case .success(let retrievedProxy):
-                        XCTAssert(retrievedProxy == newProxy)
-                        self.x.fulfill()
-                    }
+                DBProxy.getProxy(key: newProxy.key) { (retrievedProxy) in
+                    XCTAssertNotNil(retrievedProxy)
+                    XCTAssertEqual(retrievedProxy, newProxy)
+                    self.x.fulfill()
                 }
             }
+        }
+
+        waitForExpectations(timeout: 10)
+    }
+
+    func testGetProxyNotFound() {
+        x = expectation(description: #function)
+
+        DBProxy.getProxy(key: "not a proxy") { (proxy) in
+            XCTAssertNil(proxy)
+            self.x.fulfill()
         }
 
         waitForExpectations(timeout: 10)
@@ -102,16 +109,23 @@ extension DBProxyTests {
             case .failure(_):
                 XCTFail()
             case .success(let newProxy):
-                DBProxy.getProxy(key: newProxy.key, ownerId: newProxy.ownerId) { (result) in
-                    switch result {
-                    case .failure(_):
-                        XCTFail()
-                    case .success(let retrievedProxy):
-                        XCTAssert(retrievedProxy == newProxy)
-                        self.x.fulfill()
-                    }
+                DBProxy.getProxy(key: newProxy.key, ownerId: newProxy.ownerId) { (retrievedProxy) in
+                    XCTAssertNotNil(retrievedProxy)
+                    XCTAssertEqual(retrievedProxy, newProxy)
+                    self.x.fulfill()
                 }
             }
+        }
+
+        waitForExpectations(timeout: 10)
+    }
+
+    func testGetProxyWithOwnerIdNotFound() {
+        x = expectation(description: #function)
+
+        DBProxy.getProxy(key: "not a proxy", ownerId: Shared.shared.uid) { (proxy) in
+            XCTAssertNil(proxy)
+            self.x.fulfill()
         }
 
         waitForExpectations(timeout: 10)
@@ -130,14 +144,10 @@ extension DBProxyTests {
                 DBProxy.setIcon("new icon", forProxy: proxy) { (success) in
                     XCTAssert(success)
 
-                    DBProxy.getProxy(key: proxy.key, ownerId: proxy.ownerId) { (result) in
-                        switch result {
-                        case .failure(_):
-                            XCTFail()
-                        case .success(let proxyWithNewIcon):
-                            XCTAssertEqual(proxyWithNewIcon.icon, "new icon")
-                            self.x.fulfill()
-                        }
+                    DBProxy.getProxy(key: proxy.key, ownerId: proxy.ownerId) { (proxyWithNewIcon) in
+                        XCTAssertNotNil(proxyWithNewIcon)
+                        XCTAssertEqual(proxyWithNewIcon?.icon, "new icon")
+                        self.x.fulfill()
                     }
                 }
             }
@@ -157,14 +167,10 @@ extension DBProxyTests {
                 DBProxy.setNickname("new nickname", forProxy: proxy) { (success) in
                     XCTAssert(success)
 
-                    DBProxy.getProxy(key: proxy.key, ownerId: proxy.ownerId) { (result) in
-                        switch result {
-                        case .failure(_):
-                            XCTFail()
-                        case .success(let proxyWithNewNickname):
-                            XCTAssertEqual(proxyWithNewNickname.nickname, "new nickname")
-                            self.x.fulfill()
-                        }
+                    DBProxy.getProxy(key: proxy.key, ownerId: proxy.ownerId) { (proxy) in
+                        XCTAssertNotNil(proxy)
+                        XCTAssertEqual(proxy?.nickname, "new nickname")
+                        self.x.fulfill()
                     }
                 }
             }
