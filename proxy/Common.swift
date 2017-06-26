@@ -75,7 +75,7 @@ private extension NumberFormatter {
 
 extension String {
     func makeBold(withSize size: CGFloat) -> NSMutableAttributedString {
-        let boldAttr = [NSFontAttributeName: UIFont.boldSystemFont(ofSize: size)]
+        let boldAttr = [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: size)]
         return NSMutableAttributedString(string: self, attributes: boldAttr)
     }
 }

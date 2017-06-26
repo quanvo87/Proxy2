@@ -161,7 +161,7 @@ class API {
     func compressVideo(fromURL url: URL, toURL outputURL: URL, handler: @escaping (_ session: AVAssetExportSession) -> Void) {
         let urlAsset = AVURLAsset(url: url, options: nil)
         if let exportSession = AVAssetExportSession(asset: urlAsset, presetName: AVAssetExportPresetMediumQuality) {
-            exportSession.outputFileType = AVFileTypeQuickTimeMovie
+            exportSession.outputFileType = AVFileType.mov
             exportSession.outputURL = outputURL
             exportSession.shouldOptimizeForNetworkUse = true
             exportSession.exportAsynchronously { () -> Void in
@@ -629,7 +629,7 @@ class API {
     
     /// Returns a Convo title.
     func getConvoTitle(receiverNickname: String, receiverName: String, senderNickname: String, senderName: String) -> NSAttributedString {
-        let grayAttribute = [NSForegroundColorAttributeName: UIColor.gray]
+        let grayAttribute = [NSAttributedStringKey.foregroundColor: UIColor.gray]
         var first: NSMutableAttributedString
         var second: NSMutableAttributedString
         let comma = ", "

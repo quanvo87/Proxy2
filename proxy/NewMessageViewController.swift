@@ -60,7 +60,7 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderPick
         NotificationCenter.default.removeObserver(self)
     }
     
-    func keyboardWillShow(_ notification: Notification) {
+    @objc func keyboardWillShow(_ notification: Notification) {
         let info = notification.userInfo!
         let keyboardFrame = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
         UIView.animate(withDuration: 0.1, animations: { () -> Void in
@@ -148,7 +148,7 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderPick
         }
     }
     
-    func cancel() {
+    @objc func cancel() {
         api.cancelCreatingProxy()
         if usingNewProxy {
             api.deleteProxy(sender!)

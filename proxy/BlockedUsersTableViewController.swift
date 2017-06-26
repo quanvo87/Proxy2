@@ -56,7 +56,7 @@ class BlockedUsersTableViewController: UITableViewController {
         blockedUsersRef.removeAllObservers()
     }
     
-    func cancel() {
+    @objc func cancel() {
         _ = navigationController?.popViewController(animated: true)
     }
 

@@ -437,8 +437,8 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
         } else {
             cell.messageBubbleTopLabel.textInsets = UIEdgeInsetsMake(0, 40, 0, 0)
             cell.textView.linkTextAttributes = [
-                NSForegroundColorAttributeName: UIColor.blue,
-                NSUnderlineStyleAttributeName: NSUnderlineStyle.styleSingle.rawValue]
+                NSAttributedStringKey.foregroundColor.rawValue: UIColor.blue,
+                NSAttributedStringKey.underlineStyle.rawValue: NSUnderlineStyle.styleSingle.rawValue]
             cell.textView?.textColor = UIColor.black
         }
         
@@ -592,7 +592,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
         }
     }
     
-    func dismissFullscreenImage(_ sender: UITapGestureRecognizer) {
+    @objc func dismissFullscreenImage(_ sender: UITapGestureRecognizer) {
         sender.view?.removeFromSuperview()
     }
     
@@ -702,7 +702,7 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
     }
     
     // MARK: - Navigation
-    func showConvoInfoTableViewController() {
+    @objc func showConvoInfoTableViewController() {
         let dest = storyboard?.instantiateViewController(withIdentifier: Identifiers.ConvoInfoTableViewController) as! ConvoInfoTableViewController
         dest.convo = convo
         navigationController?.pushViewController(dest, animated: true)

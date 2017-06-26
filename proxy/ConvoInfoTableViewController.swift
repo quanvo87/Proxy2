@@ -214,14 +214,14 @@ class ConvoInfoTableViewController: UITableViewController {
                 
             // Leave convo
             case 0:
-                cell.textLabel!.font = UIFont.systemFont(ofSize: 17, weight: UIFontWeightRegular)
+                cell.textLabel!.font = UIFont.systemFont(ofSize: 17, weight: UIFont.Weight.regular)
                 cell.textLabel?.text = "Leave conversation"
                 cell.textLabel?.textColor = UIColor.red
                 return cell
                 
             // Block user
             case 1:
-                cell.textLabel!.font = UIFont.systemFont(ofSize: 17, weight: UIFontWeightRegular)
+                cell.textLabel!.font = UIFont.systemFont(ofSize: 17, weight: UIFont.Weight.regular)
                 cell.textLabel?.text = "Block user"
                 cell.textLabel?.textColor = UIColor.red
                 return cell
@@ -275,7 +275,7 @@ class ConvoInfoTableViewController: UITableViewController {
         }
     }
     
-    func editReceiverNickname() {
+    @objc func editReceiverNickname() {
         let alert = UIAlertController(title: "Edit Receiver's Nickname", message: "Only you see this nickname.", preferredStyle: .alert)
         alert.addTextField(configurationHandler: { (textField) -> Void in
             if let receiverNickname = self.receiverNickname {
@@ -299,7 +299,7 @@ class ConvoInfoTableViewController: UITableViewController {
         present(alert, animated: true, completion: nil)
     }
     
-    func editSenderNickname() {
+    @objc func editSenderNickname() {
         let alert = UIAlertController(title: "Edit Nickname", message: "Only you see your nickname.", preferredStyle: .alert)
         alert.addTextField(configurationHandler: { (textField) -> Void in
             if let senderNickname = self.senderNickname {
@@ -323,7 +323,7 @@ class ConvoInfoTableViewController: UITableViewController {
         present(alert, animated: true, completion: nil)
     }
     
-    func goToIconPicker() {
+    @objc func goToIconPicker() {
         api.getConvos(for: senderProxy!) { (convos) in
             let dest = self.storyboard?.instantiateViewController(withIdentifier: Identifiers.IconPickerCollectionViewController) as! IconPickerCollectionViewController
             dest.proxy = self.senderProxy!

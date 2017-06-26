@@ -79,11 +79,11 @@ class ReceiverPickerViewController: UIViewController, UICollectionViewDelegate {
         NotificationCenter.default.removeObserver(self)
     }
     
-    func close() {
+    @objc func close() {
         _ = navigationController?.popViewController(animated: true)
     }
     
-    func keyboardWillShow(_ notification: Notification) {
+    @objc func keyboardWillShow(_ notification: Notification) {
         let info = notification.userInfo!
         let keyboardFrame = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
         UIView.animate(withDuration: 0.1, animations: { () -> Void in
@@ -91,7 +91,7 @@ class ReceiverPickerViewController: UIViewController, UICollectionViewDelegate {
         })
     }
     
-    func keyboardWillHide(_ notification: Notification) {
+    @objc func keyboardWillHide(_ notification: Notification) {
         bottomConstraint.constant = 5
     }
 }

@@ -14,39 +14,51 @@ class DBTest: XCTestCase {
     private let auth = Auth.auth(app: Shared.shared.firebase!)
     private var handle: AuthStateDidChangeListenerHandle?
 
+    private let uid = "YXNArkJQPXcEUFIs87tKm1nEP1K3"
     private let email = "emydadu-3857@yopmail.com"
     private let password = "+7rVajX5sYNRL[kZ"
 
     var x = XCTestExpectation()
 
-    let setupDone = DispatchGroup()
+    let testEnvSetupDone = DispatchGroup()
 
     override func setUp() {
         x = expectation(description: #function)
 
-        handle = auth.addStateDidChangeListener { [weak self] (auth, user) in
-            guard let strong = self else {
-                return
+        if Shared.shared.uid == uid {
+            clearDatabase()
+
+        } else {
+            do {
+                try auth.signOut()
+            } catch {
+                XCTFail()
             }
 
-            if let uid = user?.uid {
-                Shared.shared.uid = uid
-
-                strong.loadProxyInfo()
-                strong.deleteTestData()
-                strong.deleteProxies()
-
-                strong.setupDone.notify(queue: .main) {
-                    strong.x.fulfill()
+            handle = auth.addStateDidChangeListener { [weak self] (auth, user) in
+                guard let strong = self else {
+                    return
                 }
 
-            } else {
-                auth.signIn(withEmail: strong.email, password: strong.password) { (user, error) in
-                    XCTAssertNil(error)
+                if let uid = user?.uid {
+                    Shared.shared.uid = uid
+                    strong.loadProxyInfo()
+                    strong.clearDatabase()
+
+                } else {
+                    auth.signIn(withEmail: strong.email, password: strong.password) { (_, error) in
+                        XCTAssertNil(error)
+                    }
                 }
             }
         }
 
+        waitForExpectations(timeout: 10)
+    }
+
+    override func tearDown() {
+        x = expectation(description: #function)
+        clearDatabase()
         waitForExpectations(timeout: 10)
     }
 
@@ -59,29 +71,39 @@ class DBTest: XCTestCase {
 
 private extension DBTest {
     func loadProxyInfo() {
-        setupDone.enter()
+        testEnvSetupDone.enter()
 
         DBProxy.loadProxyInfo { (success) in
             XCTAssert(success)
-            self.setupDone.leave()
+            self.testEnvSetupDone.leave()
+        }
+    }
+
+    func clearDatabase() {
+        deleteTestData()
+        deleteProxies()
+        deleteConvos()
+
+        testEnvSetupDone.notify(queue: .main) {
+            self.x.fulfill()
         }
     }
 
     func deleteTestData() {
-        setupDone.enter()
+        testEnvSetupDone.enter()
 
         DB.delete("test") { (success) in
             XCTAssert(success)
-            self.setupDone.leave()
+            self.testEnvSetupDone.leave()
         }
     }
 
     func deleteProxies() {
-        setupDone.enter()
+        testEnvSetupDone.enter()
 
         DB.get(Path.Proxies, Shared.shared.uid) { (snapshot) in
             guard let proxies = snapshot?.toProxies() else {
-                self.setupDone.leave()
+                self.testEnvSetupDone.leave()
                 return
             }
 
@@ -97,8 +119,63 @@ private extension DBTest {
             }
 
             deleteProxiesDone.notify(queue: .main) {
-                self.setupDone.leave()
+                self.testEnvSetupDone.leave()
             }
         }
+    }
+
+    func deleteConvos() {
+        testEnvSetupDone.enter()
+
+        DBConvo.getConvos(forUser: Shared.shared.uid, filtered: false) { (convos) in
+            guard let convos = convos else {
+                self.testEnvSetupDone.leave()
+                return
+            }
+
+            let deleteConvosDone = DispatchGroup()
+
+            for convo in convos {
+                deleteConvosDone.enter()
+
+                DBConvo.deleteConvo(convo) { (success) in
+                    XCTAssert(success)
+                    deleteConvosDone.leave()
+                }
+            }
+
+            deleteConvosDone.notify(queue: .main) {
+                self.testEnvSetupDone.leave()
+            }
+        }
+    }
+}
+
+extension DBTest {
+    var proxy: Proxy {
+        var proxy = Proxy()
+        proxy.icon = UUID().uuidString
+        proxy.key = UUID().uuidString
+        proxy.message = UUID().uuidString
+        proxy.name = UUID().uuidString
+        proxy.nickname = UUID().uuidString
+        proxy.ownerId = Shared.shared.uid
+        return proxy
+    }
+
+    var convo: Convo {
+        var convo = Convo()
+        convo.icon = UUID().uuidString
+        convo.key = UUID().uuidString
+        convo.message = UUID().uuidString
+        convo.receiverId = UUID().uuidString
+        convo.receiverNickname = UUID().uuidString
+        convo.receiverProxyKey = UUID().uuidString
+        convo.receiverProxyName = UUID().uuidString
+        convo.senderId = Shared.shared.uid
+        convo.senderNickname = UUID().uuidString
+        convo.senderProxyKey = UUID().uuidString
+        convo.senderProxyName = UUID().uuidString
+        return convo
     }
 }

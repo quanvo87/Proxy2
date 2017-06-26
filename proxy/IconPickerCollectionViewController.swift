@@ -55,7 +55,7 @@ class IconPickerCollectionViewController: UICollectionViewController {
         tabBarController?.tabBar.isHidden = false
     }
     
-    func cancel() {
+    @objc func cancel() {
         _ = navigationController?.popViewController(animated: true)
     }
     

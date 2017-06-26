@@ -88,14 +88,14 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         convosRef.removeAllObservers()
     }
     
-    func showNewMessageViewController() {
+    @objc func showNewMessageViewController() {
         let dest = storyboard?.instantiateViewController(withIdentifier: Identifiers.NewMessageViewController) as! NewMessageViewController
         dest.newMessageViewControllerDelegate = self
         dest.sender = proxy
         navigationController?.pushViewController(dest, animated: true)
     }
     
-    func showDeleteProxyAlert() {
+    @objc func showDeleteProxyAlert() {
         let alert = UIAlertController(title: "Delete Proxy?", message: "You will not be able to see this proxy or its conversations again. Other users will not be notified.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { (void) in
             self.api.deleteProxy(self.proxy, with: self.convos)
@@ -105,14 +105,14 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         self.present(alert, animated: true, completion: nil)
     }
     
-    func showIconPickerViewController() {
+    @objc func showIconPickerViewController() {
         let dest = self.storyboard?.instantiateViewController(withIdentifier: Identifiers.IconPickerCollectionViewController) as! IconPickerCollectionViewController
         dest.convos = convos
         dest.proxy = proxy
         self.navigationController?.pushViewController(dest, animated: true)
     }
     
-    func showEditNicknameAlert() {
+    @objc func showEditNicknameAlert() {
         let alert = UIAlertController(title: "Edit Nickname", message: "Only you see your nickname.", preferredStyle: .alert)
         alert.addTextField(configurationHandler: { (textField) -> Void in
             textField.autocapitalizationType = .sentences

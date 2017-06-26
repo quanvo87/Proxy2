@@ -120,7 +120,7 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
         navigationItem.rightBarButtonItems = [confirmDeleteProxiesBarButton]
     }
     
-    func toggleEditMode() {
+    @objc func toggleEditMode() {
         tableView.setEditing(!tableView.isEditing, animated: true)
         if tableView.isEditing {
             setEditModeButtons()
@@ -139,7 +139,7 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
         proxiesToDelete = []
     }
     
-    func confirmDeleteProxies() {
+    @objc func confirmDeleteProxies() {
         guard !proxiesToDelete.isEmpty else {
             toggleEditMode()
             return
@@ -152,7 +152,7 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
         self.present(alert, animated: true, completion: nil)
     }
     
-    func createNewProxy() {
+    @objc func createNewProxy() {
         navigationItem.rightBarButtonItems![1].isEnabled = false
         api.createProxy { (proxy) in
             self.navigationItem.rightBarButtonItems![1].isEnabled = true
@@ -164,7 +164,7 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
         }
     }
     
-    func scrollToTop() {
+    @objc func scrollToTop() {
         self.tableView.setContentOffset(CGPoint(x: 0, y: -self.tableView.contentInset.top), animated: true)
     }
     
@@ -248,7 +248,7 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
     }
     
     // MARK: - Navigation
-    func showNewMessageViewController() {
+    @objc func showNewMessageViewController() {
         let dest = storyboard!.instantiateViewController(withIdentifier: Identifiers.NewMessageViewController) as! NewMessageViewController
         dest.newMessageViewControllerDelegate = self
         navigationController?.pushViewController(dest, animated: true)

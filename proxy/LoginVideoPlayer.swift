@@ -29,7 +29,7 @@ class LoginVideoPlayer {
         let playerLayer = AVPlayerLayer(player: player)
         playerLayer.frame = view.frame
         playerLayer.opacity = 0.95
-        playerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+        playerLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
         playerLayer.zPosition = -1
         view.layer.addSublayer(playerLayer)
 
@@ -42,7 +42,7 @@ class LoginVideoPlayer {
         NotificationCenter.default.removeObserver(self)
     }
 
-    private dynamic func loopVideo() {
+    @objc private dynamic func loopVideo() {
         player.seek(to: kCMTimeZero)
         player.play()
     }
