@@ -43,7 +43,7 @@ extension DBConvo {
             receiverConvo.senderIsBlocking = senderBlocked
             let receiverConvoJSON = receiverConvo.toJSON()
 
-            DB.set([(DB.path(Path.Convos, senderConvo.senderId, senderConvo.key), senderConvoJSON),
+            DB.set([(DB.Path(first: Path.Convos, rest: senderConvo.senderId, senderConvo.key), senderConvoJSON),
                     (DB.path(Path.Convos, senderConvo.senderProxyKey, senderConvo.key), senderConvoJSON),
                     (DB.path(Path.Convos, receiverConvo.senderId, receiverConvo.key), receiverConvoJSON),
                     (DB.path(Path.Convos, receiverConvo.senderProxyKey, receiverConvo.key), receiverConvoJSON)]) { (success) in
@@ -97,9 +97,8 @@ extension DBConvo {
             completion(allSuccess)
         }
 
-        // TODO: - WHY DOESN'T THIS FUCKING WORK?
-//        DB.set([(DB.path(Path.Convos, convo.senderId, convo.key, Path.ReceiverNickname), nickname),
-//                (DB.path(Path.Convos, convo.senderProxyKey, convo.key, Path.ReceiverNickname), nickname)]) { (success) in
+//        DB.set([(DB.path(Path.Convos, convo.senderId, convo.key, Path.ReceiverNickname), nickname as AnyObject),
+//                (DB.path(Path.Convos, convo.senderProxyKey, convo.key, Path.ReceiverNickname), nickname as AnyObject)]) { (success) in
 //                    completion(success)
 //        }
     }

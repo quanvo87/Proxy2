@@ -180,21 +180,31 @@ extension DBConvoTests {
 }
 
 extension DBConvoTests {
+    func test() {
+        let x = expectation(description: #function)
+
+        DB.set([(DB.path("test", "a"), "fuck" as AnyObject),
+                (DB.path("test", "b"), "you" as AnyObject)]) { (success) in
+                    XCTAssert(success)
+
+                    x.fulfill()
+        }
+
+        waitForExpectations(timeout: 10)
+    }
+
     func testSetNickname() {
         x = expectation(description: #function)
 
         var sender = proxy
         sender.ownerId = Shared.shared.uid
-        sender.key = "sender"
 
         var receiver = proxy
         receiver.ownerId = "test"
-        receiver.key = "receiver"
 
         let convoKey = DBConvo.getConvoKey(senderProxy: sender,
                                            receiverProxy: receiver)
 
-        print("creating convo")
         DBConvo.createConvo(sender: sender, receiver: receiver, convoKey: convoKey) { (convo) in
             guard let convo = convo else {
                 XCTFail()
@@ -203,7 +213,6 @@ extension DBConvoTests {
 
             let testNickname = "test nickname"
 
-            print("setting nickname")
             DBConvo.setNickname(testNickname, forReceiverInConvo: convo) { (success) in
                 XCTAssert(success)
 
