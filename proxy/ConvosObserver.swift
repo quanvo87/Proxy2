@@ -19,7 +19,7 @@ class ConvosObserver {
     }
 
     func observe(_ delegate: MessagesTableViewDataSource) {
-        ref = DB.ref(Path.Convos, Shared.shared.uid)
+        ref = DB.ref(DB.Path(Path.Convos, Shared.shared.uid))
         ref?.queryOrdered(byChild: Path.Timestamp).observe(.value, with: { [weak self, weak delegate = delegate] (snapshot) in
             self?.convos = snapshot.toConvos(filtered: true).reversed()
             delegate?.tableViewController?.tableView.visibleCells.incrementedTags

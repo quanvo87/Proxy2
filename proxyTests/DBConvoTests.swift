@@ -121,7 +121,7 @@ extension DBConvoTests {
         x = expectation(description: #function)
 
         let convo = self.convo
-        DB.set(convo.toJSON(), children: Path.Convos, Shared.shared.uid, convo.key) { (success) in
+        DB.set(convo.toJSON(), at: Path.Convos, Shared.shared.uid, convo.key) { (success) in
             XCTAssert(success)
 
             DBConvo.getConvo(withKey: convo.key, belongingTo: Shared.shared.uid) { (retrievedConvo) in
@@ -142,8 +142,8 @@ extension DBConvoTests {
         let convo1 = convo
         let convo2 = convo
 
-        DB.set([(DB.path(Path.Convos, proxy.key, convo1.key), convo1.toJSON()),
-                (DB.path(Path.Convos, proxy.key, convo2.key), convo2.toJSON())]) { (success) in
+        DB.set([(DB.Path(Path.Convos, proxy.key, convo1.key), convo1.toJSON()),
+                (DB.Path(Path.Convos, proxy.key, convo2.key), convo2.toJSON())]) { (success) in
                     XCTAssert(success)
 
                     DBConvo.getConvos(forProxy: proxy, filtered: false) { (convos) in
@@ -163,8 +163,8 @@ extension DBConvoTests {
         let convo1 = convo
         let convo2 = convo
 
-        DB.set([(DB.path(Path.Convos, Shared.shared.uid, convo1.key), convo1.toJSON()),
-                (DB.path(Path.Convos, Shared.shared.uid, convo2.key), convo2.toJSON())]) { (success) in
+        DB.set([(DB.Path(Path.Convos, Shared.shared.uid, convo1.key), convo1.toJSON()),
+                (DB.Path(Path.Convos, Shared.shared.uid, convo2.key), convo2.toJSON())]) { (success) in
                     XCTAssert(success)
 
                     DBConvo.getConvos(forUser: Shared.shared.uid, filtered: false) { (convos) in
@@ -180,24 +180,10 @@ extension DBConvoTests {
 }
 
 extension DBConvoTests {
-    func test() {
-        let x = expectation(description: #function)
-
-        DB.set([(DB.path("test", "a"), "fuck" as AnyObject),
-                (DB.path("test", "b"), "you" as AnyObject)]) { (success) in
-                    XCTAssert(success)
-
-                    x.fulfill()
-        }
-
-        waitForExpectations(timeout: 10)
-    }
-
     func testSetNickname() {
         x = expectation(description: #function)
 
-        var sender = proxy
-        sender.ownerId = Shared.shared.uid
+        let sender = proxy
 
         var receiver = proxy
         receiver.ownerId = "test"
@@ -313,8 +299,8 @@ extension DBConvoTests {
         convo2.senderLeftConvo = true
         convo2.senderIsBlocking = true
 
-        DB.set([(DB.path("test", "a"), convo1.toJSON()),
-                (DB.path("test", "b"), convo2.toJSON())]) { (success) in
+        DB.set([(DB.Path("test", "a"), convo1.toJSON()),
+                (DB.Path("test", "b"), convo2.toJSON())]) { (success) in
                     XCTAssert(success)
 
                     DB.get("test") { (snapshot) in

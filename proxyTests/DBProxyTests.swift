@@ -192,12 +192,12 @@ extension DBProxyTests {
                     unreadIncremented.enter()
                 }
 
-                DB.set(1, children: Path.Unread, Shared.shared.uid, Path.Unread) { (success) in
+                DB.set(1, at: Path.Unread, Shared.shared.uid, Path.Unread) { (success) in
                     XCTAssert(success)
                     unreadIncremented.leave()
                 }
 
-                DB.set(1, children: Path.Proxies, Shared.shared.uid, proxy.key, Path.Unread) { (success) in
+                DB.set(1, at: Path.Proxies, Shared.shared.uid, proxy.key, Path.Unread) { (success) in
                     XCTAssert(success)
                     unreadIncremented.leave()
                 }
