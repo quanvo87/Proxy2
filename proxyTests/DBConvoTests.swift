@@ -43,6 +43,7 @@ extension DBConvoTests {
                                     XCTFail()
                                     return
                                 }
+
                                 XCTAssertEqual(senderConvo.key, convoKey)
                                 XCTAssertEqual(senderConvo.senderId, sender.ownerId)
                                 XCTAssertEqual(senderConvo.senderProxyKey, sender.key)
@@ -180,7 +181,55 @@ extension DBConvoTests {
 
 extension DBConvoTests {
     func testSetNickname() {
+        x = expectation(description: #function)
 
+        var sender = proxy
+        sender.ownerId = Shared.shared.uid
+        sender.key = "sender"
+
+        var receiver = proxy
+        receiver.ownerId = "test"
+        receiver.key = "receiver"
+
+        let convoKey = DBConvo.getConvoKey(senderProxy: sender,
+                                           receiverProxy: receiver)
+
+        print("creating convo")
+        DBConvo.createConvo(sender: sender, receiver: receiver, convoKey: convoKey) { (convo) in
+            guard let convo = convo else {
+                XCTFail()
+                return
+            }
+
+            let testNickname = "test nickname"
+
+            print("setting nickname")
+            DBConvo.setNickname(testNickname, forReceiverInConvo: convo) { (success) in
+                XCTAssert(success)
+
+                let nicknameChecked = DispatchGroup()
+
+                for _ in 1...2 {
+                    nicknameChecked.enter()
+                }
+
+                DB.get(Path.Convos, convo.senderId, convo.key, Path.ReceiverNickname) { (snapshot) in
+                    XCTAssertEqual(snapshot?.value as? String ?? "", "test nickname")
+                    nicknameChecked.leave()
+                }
+
+                DB.get(Path.Convos, convo.senderProxyKey, convo.key, Path.ReceiverNickname) { (snapshot) in
+                    XCTAssertEqual(snapshot?.value as? String ?? "", "test nickname")
+                    nicknameChecked.leave()
+                }
+
+                nicknameChecked.notify(queue: .main) {
+                    self.x.fulfill()
+                }
+            }
+        }
+
+        waitForExpectations(timeout: 10)
     }
 }
 

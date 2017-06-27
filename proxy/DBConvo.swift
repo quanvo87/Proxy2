@@ -75,10 +75,33 @@ extension DBConvo {
 
 extension DBConvo {
     static func setNickname(_ nickname: String, forReceiverInConvo convo: Convo, completion: @escaping (Success) -> Void) {
-        DB.set([(DB.path(Path.Convos, convo.senderId, convo.key, Path.ReceiverNickname), nickname),
-                (DB.path(Path.Convos, convo.senderProxyKey, convo.key, Path.ReceiverNickname), nickname)]) { (success) in
-                    completion(success)
+        var allSuccess = true
+
+        let nicknameSet = DispatchGroup()
+
+        for _ in 1...2 {
+            nicknameSet.enter()
         }
+
+        DB.set(nickname, children: Path.Convos, convo.senderId, convo.key, Path.ReceiverNickname) { (success) in
+            allSuccess &= success
+            nicknameSet.leave()
+        }
+
+        DB.set(nickname, children: Path.Convos, convo.senderProxyKey, convo.key, Path.ReceiverNickname) { (success) in
+            allSuccess &= success
+            nicknameSet.leave()
+        }
+
+        nicknameSet.notify(queue: .main) {
+            completion(allSuccess)
+        }
+
+        // TODO: - WHY DOESN'T THIS FUCKING WORK?
+//        DB.set([(DB.path(Path.Convos, convo.senderId, convo.key, Path.ReceiverNickname), nickname),
+//                (DB.path(Path.Convos, convo.senderProxyKey, convo.key, Path.ReceiverNickname), nickname)]) { (success) in
+//                    completion(success)
+//        }
     }
 
     static func leaveConvo(_ convo: Convo, completion: @escaping (Success) -> Void) {

@@ -10,7 +10,7 @@ import FirebaseDatabase
 
 struct DB {
     typealias Path = String
-    typealias Transactions = [(key: Path?, value: Any)]
+    typealias Transaction = (key: Path?, value: Any)
 
     static func path(_ children: String...) -> Path? {
         return path(children)
@@ -61,8 +61,10 @@ struct DB {
         }
     }
 
-    static func set(_ transactions: Transactions, completion: @escaping (Success) -> Void) {
+    static func set(_ transactions: [Transaction], completion: @escaping (Success) -> Void) {
         var validTransactions = [String: Any]()
+
+        print(transactions)
 
         for transaction in transactions {
             guard let path = transaction.key else {
@@ -77,6 +79,7 @@ struct DB {
         }
 
         Database.database().reference().updateChildValues(validTransactions) { (error, _) in
+            print(String(describing: error))
             completion(error == nil)
         }
     }
