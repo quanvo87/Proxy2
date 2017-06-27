@@ -96,7 +96,7 @@ extension DBProxy {
                                           retry: Bool = true,
                                           completion: @escaping (Result<Proxy, ProxyError>) -> Void) {
         guard
-            let proxyKeysRef = DB.ref(Path.ProxyKeys) else {
+            let proxyKeysRef = DB.ref(DB.Path(Path.ProxyKeys)) else {
                 Shared.shared.isCreatingProxy = false
                 completion(.failure(.unknown))
                 return
@@ -106,7 +106,7 @@ extension DBProxy {
         let key = name.lowercased()
         let proxyKey = [Path.Key: key]
 
-        DB.set(proxyKey, children: Path.ProxyKeys, autoId) { (success) in
+        DB.set(proxyKey, at: Path.ProxyKeys, autoId) { (success) in
             guard success else {
                 Shared.shared.isCreatingProxy = false
                 completion(.failure(.unknown))
@@ -130,9 +130,9 @@ extension DBProxy {
                         let proxyOwner = ProxyOwner(key: key, ownerId: Shared.shared.uid).toJSON()
                         let userProxy = Proxy(name: name, ownerId: Shared.shared.uid, icon: randomIconName)
 
-                        DB.set([(DB.path(Path.ProxyKeys, key), proxyKey),
-                                (DB.path(Path.ProxyOwners, key), proxyOwner),
-                                (DB.path(Path.Proxies, Shared.shared.uid, key), userProxy.toJSON())]) { (success) in
+                        DB.set([(DB.Path(Path.ProxyKeys, key), proxyKey),
+                                (DB.Path(Path.ProxyOwners, key), proxyOwner),
+                                (DB.Path(Path.Proxies, Shared.shared.uid, key), userProxy.toJSON())]) { (success) in
                                     completion(success ? .success(userProxy) : .failure(.unknown))
                         }
                     } else {
@@ -208,7 +208,7 @@ extension DBProxy {
             setIconDone.enter()
         }
 
-        DB.set(icon, children: Path.Proxies, proxy.ownerId, proxy.key, Path.Icon) { (success) in
+        DB.set(icon, at: Path.Proxies, proxy.ownerId, proxy.key, Path.Icon) { (success) in
             allSuccess &= success
             setIconDone.leave()
         }
@@ -223,8 +223,8 @@ extension DBProxy {
 
             for convo in convos {
                 setIconForConvoDone.enter()
-                DB.set([(DB.path(Path.Convos, convo.receiverId, convo.key, Path.Icon), icon),
-                        (DB.path(Path.Convos, convo.receiverProxyKey, convo.key, Path.Icon), icon)]) { (success) in
+                DB.set([(DB.Path(Path.Convos, convo.receiverId, convo.key, Path.Icon), icon),
+                        (DB.Path(Path.Convos, convo.receiverProxyKey, convo.key, Path.Icon), icon)]) { (success) in
                             allSuccess &= success
                             setIconForConvoDone.leave()
                 }
@@ -248,7 +248,7 @@ extension DBProxy {
             setNicknameDone.enter()
         }
 
-        DB.set(nickname, children: Path.Proxies, proxy.ownerId, proxy.key, Path.Nickname) { (success) in
+        DB.set(nickname, at: Path.Proxies, proxy.ownerId, proxy.key, Path.Nickname) { (success) in
             allSuccess &= success
             setNicknameDone.leave()
         }
@@ -263,8 +263,8 @@ extension DBProxy {
 
             for convo in convos {
                 setNicknameForConvoDone.enter()
-                DB.set([(DB.path(Path.Convos, convo.senderId, convo.key, Path.SenderNickname), nickname),
-                        (DB.path(Path.Convos, convo.senderProxyKey, convo.key), nickname)]) { (success) in
+                DB.set([(DB.Path(Path.Convos, convo.senderId, convo.key, Path.SenderNickname), nickname),
+                        (DB.Path(Path.Convos, convo.senderProxyKey, convo.key), nickname)]) { (success) in
                             allSuccess &= success
                             setNicknameForConvoDone.leave()
                 }
@@ -320,7 +320,7 @@ extension DBProxy {
                 deleteFinished.leave()
             }
 
-            DB.increment(-proxy.unread, children: Path.Unread, proxy.ownerId, Path.Unread) { (success) in
+            DB.increment(-proxy.unread, at: Path.Unread, proxy.ownerId, Path.Unread) { (success) in
                 allSuccess &= success
                 deleteFinished.leave()
             }
@@ -344,8 +344,8 @@ extension DBProxy {
                     deleteConvoFinished.leave()
                 }
 
-                DB.set([(DB.path(Path.Convos, convo.receiverId, convo.key, Path.ReceiverDeletedProxy), true),
-                        (DB.path(Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverDeletedProxy), true)]) { (success) in
+                DB.set([(DB.Path(Path.Convos, convo.receiverId, convo.key, Path.ReceiverDeletedProxy), true),
+                        (DB.Path(Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverDeletedProxy), true)]) { (success) in
                             allSuccess &= success
                             deleteConvoFinished.leave()
                 }

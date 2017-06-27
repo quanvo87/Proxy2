@@ -12,43 +12,39 @@ import FirebaseDatabase
 
 class DBTests: DBTest {
     func testPath() {
-        XCTAssertNotNil(DB.path("a"))
-        XCTAssertNotNil(DB.path("a", "b"))
-        XCTAssertNotNil(DB.path("/a/"))
-        XCTAssertNotNil(DB.path("//a//"))
-        XCTAssertNotNil(DB.path("/a/a/"))
+        XCTAssertNotNil(DB.Path("a"))
+        XCTAssertNotNil(DB.Path("a", "b"))
+        XCTAssertNotNil(DB.Path("/a/"))
+        XCTAssertNotNil(DB.Path("//a//"))
+        XCTAssertNotNil(DB.Path("/a/a/"))
     }
 
     func testBadPath() {
-        XCTAssertNil(DB.path())
-        XCTAssertNil(DB.path(""))
-        XCTAssertNil(DB.path("a", ""))
-        XCTAssertNil(DB.path("", "a"))
-        XCTAssertNil(DB.path("/"))
-        XCTAssertNil(DB.path("//"))
-        XCTAssertNil(DB.path("///"))
-        XCTAssertNil(DB.path("/a//a/"))
+        XCTAssertNil(DB.Path(""))
+        XCTAssertNil(DB.Path("a", ""))
+        XCTAssertNil(DB.Path("", "a"))
+        XCTAssertNil(DB.Path("/"))
+        XCTAssertNil(DB.Path("//"))
+        XCTAssertNil(DB.Path("///"))
+        XCTAssertNil(DB.Path("/a//a/"))
     }
 
     func testRef() {
-        XCTAssertNotNil(DB.ref("a"))
-        XCTAssertNotNil(DB.ref("a", "b"))
+        XCTAssertNotNil(DB.ref(DB.Path("a")))
+        XCTAssertNotNil(DB.ref(DB.Path("a", "b")))
     }
 
     func testBadRef() {
         var ref: DatabaseReference?
 
-        ref = DB.ref()
-        XCTAssertNil(ref)
-
-        ref = DB.ref("")
+        ref = DB.ref(DB.Path(""))
         XCTAssertNil(ref)
     }
 
     func testGetSetDelete() {
         let x = expectation(description: #function)
 
-        DB.set("a", children: "test") { (success) in
+        DB.set("a", at: "test") { (success) in
             XCTAssert(success)
 
             DB.get("test") { (snapshot) in
@@ -73,7 +69,7 @@ class DBTests: DBTest {
     func testIncrement() {
         let x = expectation(description: #function)
 
-        DB.increment(1, children: "test") { (success) in
+        DB.increment(1, at: "test") { (success) in
             XCTAssert(success)
 
             DB.get("test") { (snapshot) in
@@ -92,7 +88,7 @@ class DBTests: DBTest {
 
         for _ in 1...2 {
             incrementsDone.enter()
-            DB.increment(1, children: "test") { (success) in
+            DB.increment(1, at: "test") { (success) in
                 XCTAssert(success)
                 incrementsDone.leave()
             }

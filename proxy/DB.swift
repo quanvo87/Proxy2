@@ -13,6 +13,10 @@ struct DB {
         let path: String
 
         init?(_ first: String, _ rest: String...) {
+            self.init(first, rest)
+        }
+
+        init?(_ first: String, _ rest: [String]) {
             var children = rest
             children.insert(first, at: 0)
 
@@ -28,32 +32,19 @@ struct DB {
 
     typealias Transaction = (key: Path?, value: Any)
 
-//    static func path(first: String, rest: String...) -> Path? {
-//        var children = rest
-//        children.insert(first, at: 0)
-//        return path(children)
-//    }
-//
-//    private static func path(_ children: [String]) -> Path? {
-//        let trimmed = children.map { $0.trimmingCharacters(in: CharacterSet(charactersIn: "/")) }
-//
-//        for child in trimmed where child == "" || child.contains("//") {
-//            return nil
-//        }
-//
-//        return trimmed.joined(separator: "/")
-//    }
-
-//    static func ref(_ children: String...) -> DatabaseReference? {
-//        return ref(children)
-//    }
-
     static func ref(_ path: Path) -> DatabaseReference {
         return Database.database().reference().child(path.path)
     }
 
-    static func get(_ path: Path?, completion: @escaping (DataSnapshot?) -> Void) {
-        guard let path = path else {
+    static func ref(_ path: Path?) -> DatabaseReference? {
+        if let path = path {
+            return ref(path)
+        }
+        return nil
+    }
+
+    static func get(_ first: String, _ rest: String..., completion: @escaping (DataSnapshot?) -> Void) {
+        guard let path = Path(first, rest) else {
             completion(nil)
             return
         }
@@ -62,9 +53,9 @@ struct DB {
         }
     }
 
-    static func set(_ value: Any, path: Path?, completion: @escaping ((Success) -> Void)) {
-        guard let path = path else {
-            completion(nil)
+    static func set(_ value: Any, at first: String, _ rest: String..., completion: @escaping ((Success) -> Void)) {
+        guard let path = Path(first, rest) else {
+            completion(false)
             return
         }
         ref(path).setValue(value) { (error, _) in
@@ -76,7 +67,7 @@ struct DB {
         var validTransactions = [String: Any]()
 
         for transaction in transactions {
-            guard let path = transaction.key else {
+            guard let path = transaction.key?.path else {
                 completion(false)
                 return
             }
@@ -92,9 +83,9 @@ struct DB {
         }
     }
 
-    static func delete(_ path: Path?, completion: @escaping (Success) -> Void) {
-        guard let path = path else {
-            completion(nil)
+    static func delete(_ first: String, _ rest: String..., completion: @escaping (Success) -> Void) {
+        guard let path = Path(first, rest) else {
+            completion(false)
             return
         }
         ref(path).removeValue { (error, _) in
@@ -102,9 +93,9 @@ struct DB {
         }
     }
 
-    static func increment(_ amount: Int, path: Path?, completion: ((Success) -> Void)? = nil) {
-        guard let path = path else {
-            completion(nil)
+    static func increment(_ amount: Int, at first: String, _ rest: String..., completion: @escaping ((Success) -> Void)) {
+        guard let path = Path(first, rest) else {
+            completion(false)
             return
         }
         ref(path).runTransactionBlock( { (currentData) -> TransactionResult in
@@ -116,7 +107,7 @@ struct DB {
             }
             return TransactionResult.success(withValue: currentData)
         }) { (error, _, _) in
-            completion?(error == nil)
+            completion(error == nil)
         }
     }
 }

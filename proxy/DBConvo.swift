@@ -43,10 +43,10 @@ extension DBConvo {
             receiverConvo.senderIsBlocking = senderBlocked
             let receiverConvoJSON = receiverConvo.toJSON()
 
-            DB.set([(DB.Path(first: Path.Convos, rest: senderConvo.senderId, senderConvo.key), senderConvoJSON),
-                    (DB.path(Path.Convos, senderConvo.senderProxyKey, senderConvo.key), senderConvoJSON),
-                    (DB.path(Path.Convos, receiverConvo.senderId, receiverConvo.key), receiverConvoJSON),
-                    (DB.path(Path.Convos, receiverConvo.senderProxyKey, receiverConvo.key), receiverConvoJSON)]) { (success) in
+            DB.set([(DB.Path(Path.Convos, senderConvo.senderId, senderConvo.key), senderConvoJSON),
+                    (DB.Path(Path.Convos, senderConvo.senderProxyKey, senderConvo.key), senderConvoJSON),
+                    (DB.Path(Path.Convos, receiverConvo.senderId, receiverConvo.key), receiverConvoJSON),
+                    (DB.Path(Path.Convos, receiverConvo.senderProxyKey, receiverConvo.key), receiverConvoJSON)]) { (success) in
                         completion(success == true ? senderConvo : nil)
             }
         }
@@ -75,32 +75,10 @@ extension DBConvo {
 
 extension DBConvo {
     static func setNickname(_ nickname: String, forReceiverInConvo convo: Convo, completion: @escaping (Success) -> Void) {
-        var allSuccess = true
-
-        let nicknameSet = DispatchGroup()
-
-        for _ in 1...2 {
-            nicknameSet.enter()
+        DB.set([(DB.Path(Path.Convos, convo.senderId, convo.key, Path.ReceiverNickname), nickname),
+                (DB.Path(Path.Convos, convo.senderProxyKey, convo.key, Path.ReceiverNickname), nickname)]) { (success) in
+                    completion(success)
         }
-
-        DB.set(nickname, children: Path.Convos, convo.senderId, convo.key, Path.ReceiverNickname) { (success) in
-            allSuccess &= success
-            nicknameSet.leave()
-        }
-
-        DB.set(nickname, children: Path.Convos, convo.senderProxyKey, convo.key, Path.ReceiverNickname) { (success) in
-            allSuccess &= success
-            nicknameSet.leave()
-        }
-
-        nicknameSet.notify(queue: .main) {
-            completion(allSuccess)
-        }
-
-//        DB.set([(DB.path(Path.Convos, convo.senderId, convo.key, Path.ReceiverNickname), nickname as AnyObject),
-//                (DB.path(Path.Convos, convo.senderProxyKey, convo.key, Path.ReceiverNickname), nickname as AnyObject)]) { (success) in
-//                    completion(success)
-//        }
     }
 
     static func leaveConvo(_ convo: Convo, completion: @escaping (Success) -> Void) {
@@ -111,25 +89,25 @@ extension DBConvo {
             leaveConvoDone.enter()
         }
 
-        DB.set([(DB.path(Path.Convos, convo.senderId, convo.key, Path.SenderLeftConvo), true),
-                (DB.path(Path.Convos, convo.senderProxyKey, convo.key, Path.SenderLeftConvo), true),
-                (DB.path(Path.Convos, convo.receiverId, convo.key, Path.ReceiverLeftConvo), true),
-                (DB.path(Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverLeftConvo), true)]) { (success) in
+        DB.set([(DB.Path(Path.Convos, convo.senderId, convo.key, Path.SenderLeftConvo), true),
+                (DB.Path(Path.Convos, convo.senderProxyKey, convo.key, Path.SenderLeftConvo), true),
+                (DB.Path(Path.Convos, convo.receiverId, convo.key, Path.ReceiverLeftConvo), true),
+                (DB.Path(Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverLeftConvo), true)]) { (success) in
                     allSuccess &= success
                     leaveConvoDone.leave()
         }
 
-        DB.increment(-1, children: Path.Proxies, convo.senderId, convo.senderProxyKey) { (success) in
+        DB.increment(-1, at: Path.Proxies, convo.senderId, convo.senderProxyKey) { (success) in
             allSuccess &= success
             leaveConvoDone.leave()
         }
 
-        DB.increment(-convo.unread, children: Path.Unread, convo.senderId, Path.Unread) { (success) in
+        DB.increment(-convo.unread, at: Path.Unread, convo.senderId, Path.Unread) { (success) in
             allSuccess &= success
             leaveConvoDone.leave()
         }
 
-        DB.increment(-convo.unread, children: Path.Proxies, convo.senderId, convo.senderProxyKey, Path.Unread) { (success) in
+        DB.increment(-convo.unread, at: Path.Proxies, convo.senderId, convo.senderProxyKey, Path.Unread) { (success) in
             allSuccess &= success
             leaveConvoDone.leave()
         }
