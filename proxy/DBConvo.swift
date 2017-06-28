@@ -15,10 +15,11 @@ extension DBConvo {
         return [senderProxy.key, senderProxy.ownerId, receiverProxy.key, receiverProxy.ownerId].sorted().joined()
     }
 
-    static func createConvo(sender: Proxy, receiver: Proxy, convoKey: String, completion: @escaping (Convo?) -> Void) {
+    static func createConvo(sender: Proxy, receiver: Proxy, completion: @escaping (Convo?) -> Void) {
         DB.get(Path.Blocked, receiver.ownerId, sender.ownerId) { (snapshot) in
             var senderConvo = Convo()
             var receiverConvo = Convo()
+            let convoKey = getConvoKey(senderProxy: sender, receiverProxy: receiver)
             let senderBlocked = snapshot?.childrenCount == 1
 
             senderConvo.key = convoKey
@@ -43,11 +44,34 @@ extension DBConvo {
             receiverConvo.senderIsBlocking = senderBlocked
             let receiverConvoJSON = receiverConvo.toJSON()
 
+            var allSuccess = true
+
+            let newConvoDataSet = DispatchGroup()
+
+            for _ in 1...3 {
+                newConvoDataSet.enter()
+            }
+
             DB.set([(DB.Path(Path.Convos, senderConvo.senderId, senderConvo.key), senderConvoJSON),
                     (DB.Path(Path.Convos, senderConvo.senderProxyKey, senderConvo.key), senderConvoJSON),
                     (DB.Path(Path.Convos, receiverConvo.senderId, receiverConvo.key), receiverConvoJSON),
                     (DB.Path(Path.Convos, receiverConvo.senderProxyKey, receiverConvo.key), receiverConvoJSON)]) { (success) in
-                        completion(success == true ? senderConvo : nil)
+                        allSuccess &= success
+                        newConvoDataSet.leave()
+            }
+
+            DB.increment(1, at: Path.UserInfo, Path.ProxiesInteractedWith, sender.ownerId, Path.ProxiesInteractedWith, completion: { (success) in
+                allSuccess &= success
+                newConvoDataSet.leave()
+            })
+
+            DB.increment(1, at: Path.UserInfo, Path.ProxiesInteractedWith, receiver.ownerId, Path.ProxiesInteractedWith, completion: { (success) in
+                allSuccess &= success
+                newConvoDataSet.leave()
+            })
+
+            newConvoDataSet.notify(queue: .main) {
+                completion(allSuccess ? senderConvo : nil)
             }
         }
     }
@@ -92,17 +116,19 @@ extension DBConvo {
         DB.set([(DB.Path(Path.Convos, convo.senderId, convo.key, Path.SenderLeftConvo), true),
                 (DB.Path(Path.Convos, convo.senderProxyKey, convo.key, Path.SenderLeftConvo), true),
                 (DB.Path(Path.Convos, convo.receiverId, convo.key, Path.ReceiverLeftConvo), true),
-                (DB.Path(Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverLeftConvo), true)]) { (success) in
+                (DB.Path(Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverLeftConvo), true),
+                (DB.Path(Path.Convos, convo.senderId, convo.key, Path.Unread), 0),
+                (DB.Path(Path.Convos, convo.senderProxyKey, convo.key, Path.Unread), 0)]) { (success) in
                     allSuccess &= success
                     leaveConvoDone.leave()
         }
 
-        DB.increment(-1, at: Path.Proxies, convo.senderId, convo.senderProxyKey) { (success) in
+        DB.increment(-1, at: Path.Proxies, convo.senderId, convo.senderProxyKey, Path.Convos) { (success) in
             allSuccess &= success
             leaveConvoDone.leave()
         }
 
-        DB.increment(-convo.unread, at: Path.Unread, convo.senderId, Path.Unread) { (success) in
+        DB.increment(-convo.unread, at: Path.UserInfo, Path.Unread, convo.senderId, Path.Unread) { (success) in
             allSuccess &= success
             leaveConvoDone.leave()
         }

@@ -21,7 +21,6 @@ extension DBProxyTests {
             XCTAssert(Shared.shared.proxyInfoIsLoaded)
             self.x.fulfill()
         }
-
         waitForExpectations(timeout: 10)
     }
 
@@ -37,7 +36,6 @@ extension DBProxyTests {
                 self.x.fulfill()
             }
         }
-
         waitForExpectations(timeout: 10)
     }
 
@@ -59,7 +57,6 @@ extension DBProxyTests {
                 })
             }
         }
-
         waitForExpectations(timeout: 10)
     }
 
@@ -86,7 +83,6 @@ extension DBProxyTests {
                 }
             }
         }
-
         waitForExpectations(timeout: 10)
     }
 
@@ -97,7 +93,6 @@ extension DBProxyTests {
             XCTAssertNil(proxy)
             self.x.fulfill()
         }
-
         waitForExpectations(timeout: 10)
     }
 
@@ -116,7 +111,6 @@ extension DBProxyTests {
                 }
             }
         }
-
         waitForExpectations(timeout: 10)
     }
 
@@ -127,7 +121,6 @@ extension DBProxyTests {
             XCTAssertNil(proxy)
             self.x.fulfill()
         }
-
         waitForExpectations(timeout: 10)
     }
 }
@@ -152,7 +145,6 @@ extension DBProxyTests {
                 }
             }
         }
-
         waitForExpectations(timeout: 10)
     }
 
@@ -175,7 +167,6 @@ extension DBProxyTests {
                 }
             }
         }
-
         waitForExpectations(timeout: 10)
     }
 
@@ -238,7 +229,6 @@ extension DBProxyTests {
                 }
             }
         }
-        
         waitForExpectations(timeout: 10)
     }
 }

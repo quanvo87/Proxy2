@@ -20,13 +20,13 @@ class DBTest: XCTestCase {
 
     var x = XCTestExpectation()
 
-    let testEnvSetupDone = DispatchGroup()
+    let setupTestEnvDone = DispatchGroup()
 
     override func setUp() {
         x = expectation(description: #function)
 
         if Shared.shared.uid == uid {
-            clearDatabase()
+            setupTestEnv()
 
         } else {
             do {
@@ -43,7 +43,7 @@ class DBTest: XCTestCase {
                 if let uid = user?.uid {
                     Shared.shared.uid = uid
                     strong.loadProxyInfo()
-                    strong.clearDatabase()
+                    strong.setupTestEnv()
 
                 } else {
                     auth.signIn(withEmail: strong.email, password: strong.password) { (_, error) in
@@ -58,7 +58,7 @@ class DBTest: XCTestCase {
 
     override func tearDown() {
         x = expectation(description: #function)
-        clearDatabase()
+        setupTestEnv()
         waitForExpectations(timeout: 10)
     }
 
@@ -71,40 +71,83 @@ class DBTest: XCTestCase {
 
 private extension DBTest {
     func loadProxyInfo() {
-        testEnvSetupDone.enter()
+        setupTestEnvDone.enter()
 
         DBProxy.loadProxyInfo { (success) in
             XCTAssert(success)
-            self.testEnvSetupDone.leave()
+            self.setupTestEnvDone.leave()
         }
     }
 
-    func clearDatabase() {
+    func setupTestEnv() {
         deleteTestData()
+        deleteUnread(Shared.shared.uid)
+        deleteUnread("test")
+        deleteProxiesInteractedWith(Shared.shared.uid)
+        deleteProxiesInteractedWith("test")
+        deleteMessagesSent(Shared.shared.uid)
+        deleteMessagesSent("test")
+        deleteMessagesReceived(Shared.shared.uid)
+        deleteMessagesReceived("test")
         deleteProxies()
         deleteConvos()
 
-        testEnvSetupDone.notify(queue: .main) {
+        setupTestEnvDone.notify(queue: .main) {
             self.x.fulfill()
         }
     }
 
     func deleteTestData() {
-        testEnvSetupDone.enter()
+        setupTestEnvDone.enter()
 
         DB.delete("test") { (success) in
             XCTAssert(success)
-            self.testEnvSetupDone.leave()
+            self.setupTestEnvDone.leave()
+        }
+    }
+
+    func deleteUnread(_ uid: String) {
+        setupTestEnvDone.enter()
+
+        DB.delete(Path.UserInfo, Path.Unread, uid, Path.Unread) { (success) in
+            XCTAssert(success)
+            self.setupTestEnvDone.leave()
+        }
+    }
+
+    func deleteProxiesInteractedWith(_ uid: String) {
+        setupTestEnvDone.enter()
+
+        DB.delete(Path.UserInfo, Path.ProxiesInteractedWith, uid, Path.ProxiesInteractedWith) { (success) in
+            XCTAssert(success)
+            self.setupTestEnvDone.leave()
+        }
+    }
+
+    func deleteMessagesSent(_ uid: String) {
+        setupTestEnvDone.enter()
+
+        DB.delete(Path.UserInfo, Path.MessagesSent, uid, Path.MessagesSent) { (success) in
+            XCTAssert(success)
+            self.setupTestEnvDone.leave()
+        }
+    }
+
+    func deleteMessagesReceived(_ uid: String) {
+        setupTestEnvDone.enter()
+
+        DB.delete(Path.UserInfo, Path.MessagesReceived, uid, Path.MessagesReceived) { (success) in
+            XCTAssert(success)
+            self.setupTestEnvDone.leave()
         }
     }
 
     func deleteProxies() {
-        testEnvSetupDone.enter()
+        setupTestEnvDone.enter()
 
         DB.get(Path.Proxies, Shared.shared.uid) { (snapshot) in
             guard let proxies = snapshot?.toProxies() else {
-                self.testEnvSetupDone.leave()
-                return
+                preconditionFailure()
             }
 
             let deleteProxiesDone = DispatchGroup()
@@ -119,18 +162,17 @@ private extension DBTest {
             }
 
             deleteProxiesDone.notify(queue: .main) {
-                self.testEnvSetupDone.leave()
+                self.setupTestEnvDone.leave()
             }
         }
     }
 
     func deleteConvos() {
-        testEnvSetupDone.enter()
+        setupTestEnvDone.enter()
 
         DBConvo.getConvos(forUser: Shared.shared.uid, filtered: false) { (convos) in
             guard let convos = convos else {
-                self.testEnvSetupDone.leave()
-                return
+                preconditionFailure()
             }
 
             let deleteConvosDone = DispatchGroup()
@@ -145,7 +187,7 @@ private extension DBTest {
             }
 
             deleteConvosDone.notify(queue: .main) {
-                self.testEnvSetupDone.leave()
+                self.setupTestEnvDone.leave()
             }
         }
     }

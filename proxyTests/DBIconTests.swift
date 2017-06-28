@@ -31,11 +31,10 @@ class DBIconTests: DBTest {
                 self.x.fulfill()
             }
         }
-
         waitForExpectations(timeout: 20)
     }
 
-    func testCellsIncrementTags() {
+    func testCellsIncrementedTags() {
         let cells = [UITableViewCell(), UITableViewCell()]
         cells.incrementedTags
         for cell in cells {
