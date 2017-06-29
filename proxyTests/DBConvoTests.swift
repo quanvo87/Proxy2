@@ -51,10 +51,10 @@ extension DBConvoTests {
             XCTAssertEqual(senderConvo.icon, receiver.icon)
             XCTAssertEqual(senderConvo.receiverIsBlocking, false)
 
-            let convosChecked = DispatchGroup()
+            let convoDataChecked = DispatchGroup()
 
             for _ in 1...4 {
-                convosChecked.enter()
+                convoDataChecked.enter()
             }
 
             DB.get(Path.Convos, senderConvo.senderId, senderConvo.key) { (snapshot) in
@@ -63,7 +63,7 @@ extension DBConvoTests {
                     return
                 }
                 XCTAssertEqual(retrievedSenderConvo, senderConvo)
-                convosChecked.leave()
+                convoDataChecked.leave()
             }
 
             DB.get(Path.Convos, senderConvo.senderProxyKey, senderConvo.key) { (snapshot) in
@@ -72,7 +72,7 @@ extension DBConvoTests {
                     return
                 }
                 XCTAssertEqual(retrievedSenderConvo, senderConvo)
-                convosChecked.leave()
+                convoDataChecked.leave()
             }
 
             var receiverConvo = Convo()
@@ -92,7 +92,7 @@ extension DBConvoTests {
                     return
                 }
                 XCTAssertEqual(retrievedReceiverConvo, receiverConvo)
-                convosChecked.leave()
+                convoDataChecked.leave()
             }
 
             DB.get(Path.Convos, receiverConvo.senderProxyKey, receiverConvo.key) { (snapshot) in
@@ -101,10 +101,10 @@ extension DBConvoTests {
                     return
                 }
                 XCTAssertEqual(retrievedReceiverConvo, receiverConvo)
-                convosChecked.leave()
+                convoDataChecked.leave()
             }
 
-            convosChecked.notify(queue: .main) {
+            convoDataChecked.notify(queue: .main) {
                 self.x.fulfill()
             }
         }
@@ -216,7 +216,77 @@ extension DBConvoTests {
     }
 
     func testLeaveConvo() {
-//        x = expectation(description: #function)
+        x = expectation(description: #function)
+
+        var sender = Proxy()
+        var receiver = Proxy()
+
+        DBProxy.createProxy { (result) in
+            switch result {
+            case .failure(_):
+                XCTFail()
+            case .success(let proxy):
+                sender = proxy
+
+                DBProxy.createProxy { (result) in
+                    switch result {
+                    case .failure(_):
+                        XCTFail()
+                    case .success(let proxy):
+                        receiver = proxy
+                        receiver.ownerId = "test"
+
+                        DBConvo.createConvo(sender: sender, receiver: receiver) { (convo) in
+                            guard var convo = convo else {
+                                XCTFail()
+                                return
+                            }
+
+                            DB.set([(DB.Path(Path.Convos, convo.senderId, convo.key, Path.SenderLeftConvo), false),
+                                    (DB.Path(Path.Convos, convo.senderProxyKey, convo.key, Path.SenderLeftConvo), false),
+                                    (DB.Path(Path.Convos, convo.receiverId, convo.key, Path.ReceiverLeftConvo), false),
+                                    (DB.Path(Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverLeftConvo), false)]) { (success) in
+                                        XCTAssert(success)
+
+                                        let unread = Int(arc4random_uniform(UInt32.max))
+                                        convo.unread = unread
+
+                                        DBConvo.leaveConvo(convo) { (success) in
+                                            XCTAssert(success)
+
+                                            let checkLeaveConvoData = DispatchGroup()
+
+                                            // TODO: - test the rest of this function
+                                            for _ in 1...3 {
+                                                checkLeaveConvoData.enter()
+                                            }
+
+                                            DB.get(Path.Proxies, convo.senderId, convo.senderProxyKey, Path.Convos) { (snapshot) in
+                                                XCTAssertEqual(snapshot?.value as? Int, -1)
+                                                checkLeaveConvoData.leave()
+                                            }
+
+                                            DB.get(Path.UserInfo, Path.Unread, convo.senderId, Path.Unread){ (snapshot) in
+                                                XCTAssertEqual(snapshot?.value as? Int, -unread)
+                                                checkLeaveConvoData.leave()
+                                            }
+
+                                            DB.get(Path.Proxies, convo.senderId, convo.senderProxyKey, Path.Unread) { (snapshot) in
+                                                XCTAssertEqual(snapshot?.value as? Int, -unread)
+                                                checkLeaveConvoData.leave()
+                                            }
+
+                                            checkLeaveConvoData.notify(queue: .main) {
+                                                self.x.fulfill()
+                                            }
+                                        }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        waitForExpectations(timeout: 10)
     }
 
     func testDeleteConvo() {

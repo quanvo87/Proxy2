@@ -320,7 +320,7 @@ extension DBProxy {
                 deleteFinished.leave()
             }
 
-            DB.increment(-proxy.unread, at: Path.Unread, proxy.ownerId, Path.Unread) { (success) in
+            DB.increment(-proxy.unread, at: Path.UserInfo, Path.Unread, proxy.ownerId, Path.Unread) { (success) in
                 allSuccess &= success
                 deleteFinished.leave()
             }

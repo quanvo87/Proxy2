@@ -31,7 +31,7 @@ class DBIconTests: DBTest {
                 self.x.fulfill()
             }
         }
-        waitForExpectations(timeout: 20)
+        waitForExpectations(timeout: 30)
     }
 
     func testCellsIncrementedTags() {

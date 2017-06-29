@@ -183,7 +183,7 @@ extension DBProxyTests {
                     unreadIncremented.enter()
                 }
 
-                DB.set(1, at: Path.Unread, Shared.shared.uid, Path.Unread) { (success) in
+                DB.set(1, at: Path.UserInfo, Path.Unread, Shared.shared.uid, Path.Unread) { (success) in
                     XCTAssert(success)
                     unreadIncremented.leave()
                 }
@@ -217,8 +217,8 @@ extension DBProxyTests {
                             endpointsDeleted.leave()
                         }
 
-                        DB.get(Path.Unread, Shared.shared.uid, Path.Unread) { (snapshot) in
-                            XCTAssertEqual(snapshot?.value as? Int ?? Int.max, 0)
+                        DB.get(Path.UserInfo, Path.Unread, Shared.shared.uid, Path.Unread) { (snapshot) in
+                            XCTAssertEqual(snapshot?.value as? Int ?? -1, 0)
                             endpointsDeleted.leave()
                         }
                         

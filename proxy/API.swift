@@ -449,6 +449,7 @@ class API {
             } else {
                 self.createConvo(sender: sender, receiver: receiver, convoKey: convoKey, text: text, completion: { (convo) in
                     self.sendMessage(text: text, mediaType: "", convo: convo, completion: { (convo, message) in
+                        // TODO: - increase both users' `proxiesInteractedWith`
                         completion(convo)
                     })
                 })
@@ -490,6 +491,9 @@ class API {
                     self.increment(by: 1, a: Path.Convos, b: convo.receiverProxyKey, c: convo.key, d: Path.Unread)
                 }
             }
+
+            // TODO: - increase convo's unread
+            // TODO: - increase user unread and proxy unread by convo's unread
             if convo.receiverLeftConvo {
                 self.set(false as AnyObject, a: Path.Convos, b: convo.senderId, c: convo.key, d: Path.ReceiverLeftConvo)
                 self.set(false as AnyObject, a: Path.Convos, b: convo.senderProxyKey, c: convo.key, d: Path.ReceiverLeftConvo)

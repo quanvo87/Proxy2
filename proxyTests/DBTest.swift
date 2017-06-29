@@ -81,8 +81,6 @@ private extension DBTest {
 
     func setupTestEnv() {
         deleteTestData()
-        deleteUnread(Shared.shared.uid)
-        deleteUnread("test")
         deleteProxiesInteractedWith(Shared.shared.uid)
         deleteProxiesInteractedWith("test")
         deleteMessagesSent(Shared.shared.uid)
@@ -93,7 +91,12 @@ private extension DBTest {
         deleteConvos()
 
         setupTestEnvDone.notify(queue: .main) {
-            self.x.fulfill()
+            self.deleteUnread(Shared.shared.uid)
+            self.deleteUnread("test")
+
+            self.setupTestEnvDone.notify(queue: .main) {
+                self.x.fulfill()
+            }
         }
     }
 
@@ -147,7 +150,8 @@ private extension DBTest {
 
         DB.get(Path.Proxies, Shared.shared.uid) { (snapshot) in
             guard let proxies = snapshot?.toProxies() else {
-                preconditionFailure()
+                XCTFail()
+                return
             }
 
             let deleteProxiesDone = DispatchGroup()
@@ -172,7 +176,8 @@ private extension DBTest {
 
         DBConvo.getConvos(forUser: Shared.shared.uid, filtered: false) { (convos) in
             guard let convos = convos else {
-                preconditionFailure()
+                XCTFail()
+                return
             }
 
             let deleteConvosDone = DispatchGroup()
