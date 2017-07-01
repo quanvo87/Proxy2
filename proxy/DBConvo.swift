@@ -44,10 +44,10 @@ extension DBConvo {
             receiverConvo.senderIsBlocking = senderIsBlocking
             let receiverConvoJSON = receiverConvo.toJSON()
 
-            DB.set([(DB.Path(Path.Convos, senderConvo.senderId, senderConvo.key), senderConvoJSON),
-                    (DB.Path(Path.Convos, senderConvo.senderProxyKey, senderConvo.key), senderConvoJSON),
-                    (DB.Path(Path.Convos, receiverConvo.senderId, receiverConvo.key), receiverConvoJSON),
-                    (DB.Path(Path.Convos, receiverConvo.senderProxyKey, receiverConvo.key), receiverConvoJSON)]) { (success) in
+            DB.set([DB.Transaction(set: senderConvoJSON, at: Path.Convos, senderConvo.senderId, senderConvo.key),
+                    DB.Transaction(set: senderConvoJSON, at: Path.Convos, senderConvo.senderProxyKey, senderConvo.key),
+                    DB.Transaction(set: receiverConvoJSON, at: Path.Convos, receiverConvo.senderId, receiverConvo.key),
+                    DB.Transaction(set: receiverConvoJSON, at: Path.Convos, receiverConvo.senderProxyKey, receiverConvo.key)]) { (success) in
                         completion(success ? senderConvo : nil)
             }
         }
@@ -76,8 +76,8 @@ extension DBConvo {
 
 extension DBConvo {
     static func setNickname(_ nickname: String, forReceiverInConvo convo: Convo, completion: @escaping (Success) -> Void) {
-        DB.set([(DB.Path(Path.Convos, convo.senderId, convo.key, Path.ReceiverNickname), nickname),
-                (DB.Path(Path.Convos, convo.senderProxyKey, convo.key, Path.ReceiverNickname), nickname)]) { (success) in
+        DB.set([DB.Transaction(set: nickname, at: Path.Convos, convo.senderId, convo.key, Path.ReceiverNickname),
+                DB.Transaction(set: nickname, at: Path.Convos, convo.senderProxyKey, convo.key, Path.ReceiverNickname)]) { (success) in
                     completion(success)
         }
     }
@@ -90,11 +90,11 @@ extension DBConvo {
             leaveConvoDone.enter()
         }
 
-        DB.set([(DB.Path(Path.Convos, convo.senderId, convo.key, Path.SenderLeftConvo), true),
-                (DB.Path(Path.Convos, convo.senderProxyKey, convo.key, Path.SenderLeftConvo), true),
-                (DB.Path(Path.Convos, convo.receiverId, convo.key, Path.ReceiverLeftConvo), true),
-                (DB.Path(Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverLeftConvo), true)]) { (success) in
-                    allSuccess &= success
+        DB.set([DB.Transaction(set: true, at: Path.Convos, convo.senderId, convo.key, Path.SenderLeftConvo),
+                DB.Transaction(set: true, at: Path.Convos, convo.senderProxyKey, convo.key, Path.SenderLeftConvo),
+                DB.Transaction(set: true, at: Path.Convos, convo.receiverId, convo.key, Path.ReceiverLeftConvo),
+                DB.Transaction(set: true, at: Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverLeftConvo)]) { (success) in
+                    allSuccess &= allSuccess
                     leaveConvoDone.leave()
         }
 
