@@ -169,6 +169,7 @@ extension DBConvo {
             second = NSMutableAttributedString(string: senderNickname, attributes: grayAttribute)
         }
         first.append(second)
+
         return first
     }
 

@@ -71,7 +71,7 @@ extension DBProxy {
 }
 
 extension DBProxy {
-    static func createProxy(randomProxyName: String = DBProxy.randomProxyName,
+    static func createProxy(randomProxyName: @escaping @autoclosure () -> String = randomProxyName,
                             retry: Bool = true,
                             completion: @escaping (Result<Proxy, ProxyError>) -> Void) {
         loadProxyInfo { (success) in
@@ -79,20 +79,21 @@ extension DBProxy {
                 completion(.failure(.unknown))
                 return
             }
+            // TODO: - is it worth to keep this as a var instead...to keep anything as a var?
             DB.get(Path.Proxies, Shared.shared.uid) { (snapshot) in
                 guard snapshot?.childrenCount ?? 0 <= Settings.MaxAllowedProxies else {
                     completion(.failure(.proxyLimitReached))
                     return
                 }
                 Shared.shared.isCreatingProxy = true
-                createProxyHelper(randomProxyName: randomProxyName,
+                createProxyHelper(randomProxyName: randomProxyName(),
                                   retry: retry,
                                   completion: completion)
             }
         }
     }
 
-    private static func createProxyHelper(randomProxyName: String = DBProxy.randomProxyName,
+    private static func createProxyHelper(randomProxyName: String,
                                           retry: Bool = true,
                                           completion: @escaping (Result<Proxy, ProxyError>) -> Void) {
         guard

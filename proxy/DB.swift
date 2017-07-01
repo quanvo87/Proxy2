@@ -30,7 +30,17 @@ struct DB {
         }
     }
 
-    typealias Transaction = (key: Path?, value: Any)
+    struct Transaction {
+        let value: Any
+        let path: Path?
+
+        init(set value: Any, at path: Path?) {
+            self.value = value
+            self.path = path
+        }
+    }
+
+//    typealias Transaction = (key: Path?, value: Any)
 
     static func ref(_ path: Path) -> DatabaseReference {
         return Database.database().reference().child(path.path)
@@ -67,7 +77,7 @@ struct DB {
         var validTransactions = [String: Any]()
 
         for transaction in transactions {
-            guard let path = transaction.key?.path else {
+            guard let path = transaction.path?.path else {
                 completion(false)
                 return
             }

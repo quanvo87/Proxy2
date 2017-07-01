@@ -42,7 +42,6 @@ class DBTest: XCTestCase {
 
                 if let uid = user?.uid {
                     Shared.shared.uid = uid
-                    strong.loadProxyInfo()
                     strong.setupTestEnv()
 
                 } else {
@@ -70,15 +69,6 @@ class DBTest: XCTestCase {
 }
 
 private extension DBTest {
-    func loadProxyInfo() {
-        setupTestEnvDone.enter()
-
-        DBProxy.loadProxyInfo { (success) in
-            XCTAssert(success)
-            self.setupTestEnvDone.leave()
-        }
-    }
-
     func setupTestEnv() {
         deleteTestData()
         deleteProxiesInteractedWith(Shared.shared.uid)

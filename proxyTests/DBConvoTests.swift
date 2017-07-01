@@ -22,7 +22,8 @@ extension DBConvoTests {
         receiver.key = "c"
         receiver.ownerId = "d"
 
-        XCTAssertEqual(DBConvo.getConvoKey(senderProxy: sender, receiverProxy: receiver), "abcd")
+        XCTAssertEqual(DBConvo.getConvoKey(senderProxy: sender, receiverProxy: receiver), 
+                       "abcd")
     }
 
     func testCreateConvo() {
@@ -248,17 +249,35 @@ extension DBConvoTests {
                                     (DB.Path(Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverLeftConvo), false)]) { (success) in
                                         XCTAssert(success)
 
-                                        let unread = Int(arc4random_uniform(UInt32.max))
-                                        convo.unread = unread
+                                        convo.unread = 1
 
                                         DBConvo.leaveConvo(convo) { (success) in
                                             XCTAssert(success)
 
                                             let checkLeaveConvoData = DispatchGroup()
 
-                                            // TODO: - test the rest of this function
-                                            for _ in 1...3 {
+                                            for _ in 1...7 {
                                                 checkLeaveConvoData.enter()
+                                            }
+
+                                            DB.get(Path.Convos, convo.senderId, convo.key, Path.SenderLeftConvo) { (snapshot) in
+                                                XCTAssertEqual(snapshot?.value as? Bool, true)
+                                                checkLeaveConvoData.leave()
+                                            }
+
+                                            DB.get(Path.Convos, convo.senderProxyKey, convo.key, Path.SenderLeftConvo) { (snapshot) in
+                                                XCTAssertEqual(snapshot?.value as? Bool, true)
+                                                checkLeaveConvoData.leave()
+                                            }
+
+                                            DB.get(Path.Convos, convo.receiverId, convo.key, Path.ReceiverLeftConvo) { (snapshot) in
+                                                XCTAssertEqual(snapshot?.value as? Bool, true)
+                                                checkLeaveConvoData.leave()
+                                            }
+
+                                            DB.get(Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverLeftConvo) { (snapshot) in
+                                                XCTAssertEqual(snapshot?.value as? Bool, true)
+                                                checkLeaveConvoData.leave()
                                             }
 
                                             DB.get(Path.Proxies, convo.senderId, convo.senderProxyKey, Path.Convos) { (snapshot) in
@@ -267,12 +286,12 @@ extension DBConvoTests {
                                             }
 
                                             DB.get(Path.UserInfo, Path.Unread, convo.senderId, Path.Unread){ (snapshot) in
-                                                XCTAssertEqual(snapshot?.value as? Int, -unread)
+                                                XCTAssertEqual(snapshot?.value as? Int, -1)
                                                 checkLeaveConvoData.leave()
                                             }
 
                                             DB.get(Path.Proxies, convo.senderId, convo.senderProxyKey, Path.Unread) { (snapshot) in
-                                                XCTAssertEqual(snapshot?.value as? Int, -unread)
+                                                XCTAssertEqual(snapshot?.value as? Int, -1)
                                                 checkLeaveConvoData.leave()
                                             }
 
@@ -337,6 +356,14 @@ extension DBConvoTests {
             }
         }
         waitForExpectations(timeout: 10)
+    }
+}
+
+extension DBConvoTests {
+    func testMakeConvoTitle() {
+        XCTAssertEqual(DBConvo.makeConvoTitle(receiverNickname: "a", receiverName: "b", senderNickname: "c", senderName: "d").string, "a, c")
+
+        XCTAssertEqual(DBConvo.makeConvoTitle(receiverNickname: "", receiverName: "a", senderNickname: "", senderName: "b").string, "a, b")
     }
 }
 
