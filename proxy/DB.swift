@@ -32,15 +32,17 @@ struct DB {
 
     struct Transaction {
         let value: Any
-        let path: Path?
+        let path: Path
 
-        init(set value: Any, at path: Path?) {
+        init?(set value: Any, at first: String, _ rest: String...) {
+            guard let path = Path(first, rest) else {
+                return nil
+            }
+
             self.value = value
             self.path = path
         }
     }
-
-//    typealias Transaction = (key: Path?, value: Any)
 
     static func ref(_ path: Path) -> DatabaseReference {
         return Database.database().reference().child(path.path)
@@ -73,19 +75,17 @@ struct DB {
         }
     }
 
-    static func set(_ transactions: [Transaction], completion: @escaping (Success) -> Void) {
+    static func set(_ transactions: [Transaction?], completion: @escaping (Success) -> Void) {
         var validTransactions = [String: Any]()
 
         for transaction in transactions {
-            guard let path = transaction.path?.path else {
-                completion(false)
-                return
+            guard
+                let transaction = transaction,
+                validTransactions[transaction.path.path] == nil else {
+                    completion(false)
+                    return
             }
-            guard validTransactions[path] == nil else {
-                completion(false)
-                return
-            }
-            validTransactions[path] = transaction.value
+            validTransactions[transaction.path.path] = transaction.value
         }
 
         Database.database().reference().updateChildValues(validTransactions) { (error, _) in

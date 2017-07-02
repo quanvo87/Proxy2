@@ -138,8 +138,8 @@ extension DBConvoTests {
         let convo1 = convo
         let convo2 = convo
 
-        DB.set([(DB.Path(Path.Convos, proxy.key, convo1.key), convo1.toJSON()),
-                (DB.Path(Path.Convos, proxy.key, convo2.key), convo2.toJSON())]) { (success) in
+        DB.set([DB.Transaction(set: convo1.toJSON(), at: Path.Convos, proxy.key, convo1.key),
+                DB.Transaction(set: convo2.toJSON(), at: Path.Convos, proxy.key, convo2.key)]) { (success) in
                     XCTAssert(success)
 
                     DBConvo.getConvos(forProxy: proxy, filtered: false) { (convos) in
@@ -158,8 +158,8 @@ extension DBConvoTests {
         let convo1 = convo
         let convo2 = convo
 
-        DB.set([(DB.Path(Path.Convos, Shared.shared.uid, convo1.key), convo1.toJSON()),
-                (DB.Path(Path.Convos, Shared.shared.uid, convo2.key), convo2.toJSON())]) { (success) in
+        DB.set([DB.Transaction(set: convo1.toJSON(), at: Path.Convos, Shared.shared.uid, convo1.key),
+                DB.Transaction(set: convo2.toJSON(), at: Path.Convos, Shared.shared.uid, convo2.key)]) { (success) in
                     XCTAssert(success)
 
                     DBConvo.getConvos(forUser: Shared.shared.uid, filtered: false) { (convos) in
@@ -243,10 +243,10 @@ extension DBConvoTests {
                                 return
                             }
 
-                            DB.set([(DB.Path(Path.Convos, convo.senderId, convo.key, Path.SenderLeftConvo), false),
-                                    (DB.Path(Path.Convos, convo.senderProxyKey, convo.key, Path.SenderLeftConvo), false),
-                                    (DB.Path(Path.Convos, convo.receiverId, convo.key, Path.ReceiverLeftConvo), false),
-                                    (DB.Path(Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverLeftConvo), false)]) { (success) in
+                            DB.set([DB.Transaction(set: false, at: Path.Convos, convo.senderId, convo.key, Path.SenderLeftConvo),
+                                    DB.Transaction(set: false, at: Path.Convos, convo.senderProxyKey, convo.key, Path.SenderLeftConvo),
+                                    DB.Transaction(set: false, at: Path.Convos, convo.receiverId, convo.key, Path.ReceiverLeftConvo),
+                                    DB.Transaction(set: false, at: Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverLeftConvo)]) { (success) in
                                         XCTAssert(success)
 
                                         convo.unread = 1
@@ -362,7 +362,6 @@ extension DBConvoTests {
 extension DBConvoTests {
     func testMakeConvoTitle() {
         XCTAssertEqual(DBConvo.makeConvoTitle(receiverNickname: "a", receiverName: "b", senderNickname: "c", senderName: "d").string, "a, c")
-
         XCTAssertEqual(DBConvo.makeConvoTitle(receiverNickname: "", receiverName: "a", senderNickname: "", senderName: "b").string, "a, b")
     }
 }
@@ -379,8 +378,8 @@ extension DBConvoTests {
         convo2.senderLeftConvo = true
         convo2.senderIsBlocking = true
 
-        DB.set([(DB.Path("test", "a"), convo1.toJSON()),
-                (DB.Path("test", "b"), convo2.toJSON())]) { (success) in
+        DB.set([DB.Transaction(set: convo1.toJSON(), at: "test", "a"),
+                DB.Transaction(set: convo2.toJSON(), at: "test", "b")]) { (success) in
                     XCTAssert(success)
 
                     DB.get("test") { (snapshot) in

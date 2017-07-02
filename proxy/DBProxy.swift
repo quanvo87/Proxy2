@@ -131,11 +131,11 @@ extension DBProxy {
                         let proxyOwner = ProxyOwner(key: key, ownerId: Shared.shared.uid).toJSON()
                         let userProxy = Proxy(name: name, ownerId: Shared.shared.uid, icon: randomIconName)
 
-                        DB.set([(DB.Path(Path.ProxyKeys, key), proxyKey),
-                                (DB.Path(Path.ProxyOwners, key), proxyOwner),
-                                (DB.Path(Path.Proxies, Shared.shared.uid, key), userProxy.toJSON())]) { (success) in
+                        DB.set([DB.Transaction(set: proxyKey, at: Path.ProxyKeys, key),
+                                DB.Transaction(set: proxyOwner, at: Path.ProxyOwners, key),
+                                DB.Transaction(set: userProxy.toJSON(), at: Path.Proxies, Shared.shared.uid, key)], completion: { (success) in
                                     completion(success ? .success(userProxy) : .failure(.unknown))
-                        }
+                        })
                     } else {
                         if retry {
                             createProxyHelper(randomProxyName: randomProxyName,
@@ -224,8 +224,8 @@ extension DBProxy {
 
             for convo in convos {
                 setIconForConvoDone.enter()
-                DB.set([(DB.Path(Path.Convos, convo.receiverId, convo.key, Path.Icon), icon),
-                        (DB.Path(Path.Convos, convo.receiverProxyKey, convo.key, Path.Icon), icon)]) { (success) in
+                DB.set([DB.Transaction(set: icon, at: Path.Convos, convo.receiverId, convo.key, Path.Icon),
+                        DB.Transaction(set: icon, at: Path.Convos, convo.receiverProxyKey, convo.key, Path.Icon)]) { (success) in
                             allSuccess &= success
                             setIconForConvoDone.leave()
                 }
@@ -264,8 +264,8 @@ extension DBProxy {
 
             for convo in convos {
                 setNicknameForConvoDone.enter()
-                DB.set([(DB.Path(Path.Convos, convo.senderId, convo.key, Path.SenderNickname), nickname),
-                        (DB.Path(Path.Convos, convo.senderProxyKey, convo.key), nickname)]) { (success) in
+                DB.set([DB.Transaction(set: nickname, at: Path.Convos, convo.senderId, convo.key, Path.SenderNickname),
+                        DB.Transaction(set: nickname, at: Path.Convos, convo.senderProxyKey, convo.key)]) { (success) in
                             allSuccess &= success
                             setNicknameForConvoDone.leave()
                 }
@@ -345,8 +345,8 @@ extension DBProxy {
                     deleteConvoFinished.leave()
                 }
 
-                DB.set([(DB.Path(Path.Convos, convo.receiverId, convo.key, Path.ReceiverDeletedProxy), true),
-                        (DB.Path(Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverDeletedProxy), true)]) { (success) in
+                DB.set([DB.Transaction(set: true, at: Path.Convos, convo.receiverId, convo.key, Path.ReceiverDeletedProxy),
+                        DB.Transaction(set: true, at: Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverDeletedProxy)]) { (success) in
                             allSuccess &= success
                             deleteConvoFinished.leave()
                 }
