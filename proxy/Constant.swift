@@ -21,6 +21,7 @@ struct Path {
 
     // User
     static let UserInfo = "userInfo"
+    static let ProxyCount = "proxyCount"
     static let ProxiesInteractedWith = "proxiesInteractedWith"
     static let MessagesSent = "messagesSent"
     static let MessagesReceived = "messagesReceived"

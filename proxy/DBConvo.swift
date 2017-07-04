@@ -103,7 +103,7 @@ extension DBConvo {
             leaveConvoDone.leave()
         }
 
-        DB.increment(-convo.unread, at: Path.UserInfo, Path.Unread, convo.senderId, Path.Unread) { (success) in
+        DB.increment(-convo.unread, at: Path.UserInfo, convo.senderId, Path.Unread) { (success) in
             allSuccess &= success
             leaveConvoDone.leave()
         }
@@ -155,24 +155,15 @@ extension DBConvo {
 extension DBConvo {
     static func makeConvoTitle(receiverNickname: String, receiverName: String, senderNickname: String, senderName: String) -> NSAttributedString {
         let grayAttribute = [NSAttributedStringKey.foregroundColor: UIColor.gray]
-        var first: NSMutableAttributedString
-        var second: NSMutableAttributedString
-        let comma = ", "
-        if receiverNickname == "" {
-            first = NSMutableAttributedString(string: receiverName + comma)
-        } else {
-            first = NSMutableAttributedString(string: receiverNickname + comma)
-        }
-        if senderNickname == "" {
-            second = NSMutableAttributedString(string: senderName, attributes: grayAttribute)
-        } else {
-            second = NSMutableAttributedString(string: senderNickname, attributes: grayAttribute)
-        }
+        let first = NSMutableAttributedString(string: (receiverNickname == "" ? receiverName : receiverNickname) + ", ")
+        let second = NSMutableAttributedString(string: senderNickname == "" ? senderName : senderNickname,
+                                               attributes: grayAttribute)
         first.append(second)
-
         return first
     }
+}
 
+extension DBConvo {
     static func userIsPresent(uid: String, inConvoWithKey convoKey: String, completion: @escaping (Bool) -> Void) {
         DB.get(Path.Present, convoKey, uid, Path.Present) { (snapshot) in
             completion(snapshot?.value as? Bool ?? false)
@@ -184,8 +175,7 @@ extension DataSnapshot {
     func toConvos(filtered: Bool) -> [Convo] {
         var convos = [Convo]()
         for child in self.children {
-            if  let snapshot = child as? DataSnapshot,
-                let convo = Convo(snapshot.value as AnyObject) {
+            if let convo = Convo((child as? DataSnapshot)?.value as AnyObject) {
                 if filtered {
                     if !convo.senderLeftConvo && !convo.senderIsBlocking {
                         convos.append(convo)

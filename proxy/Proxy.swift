@@ -6,7 +6,7 @@
 //  Copyright © 2016 Quan Vo. All rights reserved.
 //
 
-struct ProxyOwner {
+struct ProxyOwner: Equatable {
     var key = ""
     var ownerId = ""
 
@@ -31,6 +31,11 @@ struct ProxyOwner {
             "key": key,
             "ownerId": ownerId
         ]
+    }
+
+    static func ==(_ lhs: ProxyOwner, _ rhs: ProxyOwner) -> Bool {
+        return  lhs.key == rhs.key &&
+                lhs.ownerId == rhs.ownerId
     }
 }
 

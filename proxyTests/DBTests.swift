@@ -35,9 +35,7 @@ class DBTests: DBTest {
     }
 
     func testBadRef() {
-        var ref: DatabaseReference?
-
-        ref = DB.ref(DB.Path(""))
+        let ref = DB.ref(DB.Path(""))
         XCTAssertNil(ref)
     }
 
@@ -48,20 +46,19 @@ class DBTests: DBTest {
             XCTAssert(success)
 
             DB.get("test") { (snapshot) in
-                XCTAssertNotNil(snapshot)
                 XCTAssertEqual(snapshot?.value as? String ?? "", "a")
 
                 DB.delete("test") { (success) in
                     XCTAssert(success)
 
                     DB.get("test") { (snapshot) in
-                        XCTAssertEqual(snapshot?.value as? FirebaseDatabase.NSNull, FirebaseDatabase.NSNull())
+                        XCTAssertEqual(snapshot?.value as? FirebaseDatabase.NSNull,
+                                       FirebaseDatabase.NSNull())
                         x.fulfill()
                     }
                 }
             }
         }
-
         waitForExpectations(timeout: 10)
     }
 
@@ -76,7 +73,6 @@ class DBTests: DBTest {
                 x.fulfill()
             }
         }
-
         waitForExpectations(timeout: 10)
     }
 
@@ -99,7 +95,6 @@ class DBTests: DBTest {
                 x.fulfill()
             }
         }
-        
         waitForExpectations(timeout: 10)
     }
 }

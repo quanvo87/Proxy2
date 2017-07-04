@@ -18,12 +18,14 @@ struct DBIcon {
             guard
                 error == nil,
                 let url = url else {
+                    completion(nil, -1)
                     return
             }
             DispatchQueue.global().async {
                 guard
                     let data = try? Data(contentsOf: url),
                     let image = UIImage(data: data) else {
+                        completion(nil, -1)
                         return
                 }
                 Shared.shared.cache.setObject(image, forKey: icon)

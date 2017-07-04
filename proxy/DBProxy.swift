@@ -71,53 +71,58 @@ extension DBProxy {
 }
 
 extension DBProxy {
-    static func createProxy(randomProxyName: @escaping @autoclosure () -> String = randomProxyName,
-                            retry: Bool = true,
-                            completion: @escaping (Result<Proxy, ProxyError>) -> Void) {
+    typealias CreateProxyCallback = (Result<Proxy, ProxyError>) -> Void
+
+    static func createProxy(randomProxyName: String? = nil,
+                            completion: @escaping CreateProxyCallback) {
         loadProxyInfo { (success) in
             guard success else {
                 completion(.failure(.unknown))
                 return
             }
-            // TODO: - is it worth to keep this as a var instead...to keep anything as a var?
-            DB.get(Path.Proxies, Shared.shared.uid) { (snapshot) in
-                guard snapshot?.childrenCount ?? 0 <= Settings.MaxAllowedProxies else {
+            DB.get(Path.UserInfo, Shared.shared.uid, Path.ProxyCount) { (data) in
+                guard data?.value as? Int ?? 0 <= Settings.MaxAllowedProxies else {
                     completion(.failure(.proxyLimitReached))
                     return
                 }
                 Shared.shared.isCreatingProxy = true
-                createProxyHelper(randomProxyName: randomProxyName(),
-                                  retry: retry,
+                createProxyHelper(randomProxyName: randomProxyName,
                                   completion: completion)
             }
         }
     }
 
-    private static func createProxyHelper(randomProxyName: String,
-                                          retry: Bool = true,
-                                          completion: @escaping (Result<Proxy, ProxyError>) -> Void) {
-        guard
-            let proxyKeysRef = DB.ref(DB.Path(Path.ProxyKeys)) else {
-                Shared.shared.isCreatingProxy = false
-                completion(.failure(.unknown))
-                return
+    private static func createProxyHelper(randomProxyName: String? = nil,
+                                          completion: @escaping CreateProxyCallback) {
+        guard let proxyKeysRef = DB.ref(DB.Path(Path.ProxyKeys)) else {
+            createProxyFinished(result: .failure(.unknown),
+                                completion: completion)
+            return
         }
-        let autoId = proxyKeysRef.childByAutoId().key
-        let name = randomProxyName
+
+        let name: String
+
+        if let randomProxyName = randomProxyName {
+            name = randomProxyName
+        } else {
+            name = DBProxy.randomProxyName
+        }
+
         let key = name.lowercased()
         let proxyKey = [Path.Key: key]
+        let autoId = proxyKeysRef.childByAutoId().key
 
         DB.set(proxyKey, at: Path.ProxyKeys, autoId) { (success) in
             guard success else {
-                Shared.shared.isCreatingProxy = false
-                completion(.failure(.unknown))
+                createProxyFinished(result: .failure(.unknown),
+                                    completion: completion)
                 return
             }
             proxyKeysRef.queryOrdered(byChild: Path.Key).queryEqual(toValue: key).observeSingleEvent(of: .value, with: { (snapshot) in
                 DB.delete(Path.ProxyKeys, autoId) { (success) in
                     guard success else {
-                        Shared.shared.isCreatingProxy = false
-                        completion(.failure(.unknown))
+                        createProxyFinished(result: .failure(.unknown),
+                                            completion: completion)
                         return
                     }
 
@@ -126,22 +131,29 @@ extension DBProxy {
                     }
 
                     if snapshot.childrenCount == 1 {
-                        Shared.shared.isCreatingProxy = false
-
                         let proxyOwner = ProxyOwner(key: key, ownerId: Shared.shared.uid).toJSON()
                         let userProxy = Proxy(name: name, ownerId: Shared.shared.uid, icon: randomIconName)
 
                         DB.set([DB.Transaction(set: proxyKey, at: Path.ProxyKeys, key),
                                 DB.Transaction(set: proxyOwner, at: Path.ProxyOwners, key),
-                                DB.Transaction(set: userProxy.toJSON(), at: Path.Proxies, Shared.shared.uid, key)], completion: { (success) in
-                                    completion(success ? .success(userProxy) : .failure(.unknown))
-                        })
+                                DB.Transaction(set: userProxy.toJSON(), at: Path.Proxies, Shared.shared.uid, key)]) { (success) in
+                                    guard success else {
+                                        createProxyFinished(result: .failure(.unknown),
+                                                            completion: completion)
+                                        return
+                                    }
+
+                                    DB.increment(1, at: Path.UserInfo, Shared.shared.uid, Path.ProxyCount) { (success) in
+                                        createProxyFinished(result: success ? .success(userProxy) : .failure(.unknown),
+                                                            completion: completion)
+                                    }
+                        }
                     } else {
-                        if retry {
-                            createProxyHelper(randomProxyName: randomProxyName,
-                                              completion: completion)
+                        if randomProxyName == nil {
+                            createProxyHelper(completion: completion)
                         } else {
-                            completion(.failure(.unknown))
+                            createProxyFinished(result: .failure(.unknown),
+                                                completion: completion)
                         }
                     }
                 }
@@ -149,9 +161,14 @@ extension DBProxy {
         }
     }
 
+    private static func createProxyFinished(result: Result<Proxy, ProxyError>, completion: CreateProxyCallback) {
+        Shared.shared.isCreatingProxy = false
+        completion(result)
+    }
+
     private static var randomProxyName: String {
         guard Shared.shared.proxyInfoIsLoaded else {
-            return "proxy info not loaded"
+            return ""
         }
         let randomAdj = Int(arc4random_uniform(UInt32(Shared.shared.adjectives.count)))
         let randomNoun = Int(arc4random_uniform(UInt32(Shared.shared.nouns.count)))
@@ -163,7 +180,7 @@ extension DBProxy {
 
     private static var randomIconName: String {
         guard Shared.shared.proxyInfoIsLoaded else {
-            return "proxy info not loaded"
+            return ""
         }
         let random = Int(arc4random_uniform(UInt32(Shared.shared.iconNames.count)))
         return Shared.shared.iconNames[random]
@@ -177,11 +194,9 @@ extension DBProxy {
 extension DBProxy {
     static func getProxy(key: String, completion: @escaping (Proxy?) -> Void) {
         DB.get(Path.ProxyOwners, key) { (snapshot) in
-            guard
-                let snapshot = snapshot,
-                let proxyOwner = ProxyOwner(snapshot.value as AnyObject) else {
-                    completion(nil)
-                    return
+            guard let proxyOwner = ProxyOwner(snapshot?.value as AnyObject) else {
+                completion(nil)
+                return
             }
             getProxy(key: proxyOwner.key, ownerId: proxyOwner.ownerId, completion: completion)
         }
@@ -189,11 +204,9 @@ extension DBProxy {
 
     static func getProxy(key: String, ownerId: String, completion: @escaping (Proxy?) -> Void) {
         DB.get(Path.Proxies, ownerId, key) { (snapshot) in
-            guard
-                let snapshot = snapshot,
-                let proxy = Proxy(snapshot.value as AnyObject) else {
-                    completion(nil)
-                    return
+            guard let proxy = Proxy(snapshot?.value as AnyObject) else {
+                completion(nil)
+                return
             }
             completion(proxy)
         }
@@ -281,17 +294,17 @@ extension DBProxy {
         }
     }
 
-    static func deleteProxy(_ proxy: Proxy, completion: @escaping (Success) -> Void) {
-        DBConvo.getConvos(forProxy: proxy) { (convos) in
+    static func deleteProxy(_ proxy: Proxy, setReceiverValues: Bool = true, completion: @escaping (Success) -> Void) {
+        DBConvo.getConvos(forProxy: proxy, filtered: false) { (convos) in
             guard let convos = convos else {
                 completion(false)
                 return
             }
-            deleteProxy(proxy, withConvos: convos, completion: completion)
+            deleteProxy(proxy, withConvos: convos, setReceiverValues: setReceiverValues, completion: completion)
         }
     }
 
-    static func deleteProxy(_ proxy: Proxy, withConvos convos: [Convo], completion: @escaping (Success) -> Void) {
+    static func deleteProxy(_ proxy: Proxy, withConvos convos: [Convo], setReceiverValues: Bool = true, completion: @escaping (Success) -> Void) {
         DBProxy.getProxy(key: proxy.key, ownerId: proxy.ownerId) { (proxy) in
             guard let proxy = proxy else {
                 completion(false)
@@ -321,7 +334,7 @@ extension DBProxy {
                 deleteFinished.leave()
             }
 
-            DB.increment(-proxy.unread, at: Path.UserInfo, Path.Unread, proxy.ownerId, Path.Unread) { (success) in
+            DB.increment(-proxy.unread, at: Path.UserInfo, proxy.ownerId, Path.Unread) { (success) in
                 allSuccess &= success
                 deleteFinished.leave()
             }
@@ -331,7 +344,7 @@ extension DBProxy {
 
                 let deleteConvoFinished = DispatchGroup()
 
-                for _ in 1...3 {
+                for _ in 1...2 {
                     deleteConvoFinished.enter()
                 }
 
@@ -345,10 +358,14 @@ extension DBProxy {
                     deleteConvoFinished.leave()
                 }
 
-                DB.set([DB.Transaction(set: true, at: Path.Convos, convo.receiverId, convo.key, Path.ReceiverDeletedProxy),
-                        DB.Transaction(set: true, at: Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverDeletedProxy)]) { (success) in
-                            allSuccess &= success
-                            deleteConvoFinished.leave()
+                if setReceiverValues {
+                    deleteConvoFinished.enter()
+
+                    DB.set([DB.Transaction(set: true, at: Path.Convos, convo.receiverId, convo.key, Path.ReceiverDeletedProxy),
+                            DB.Transaction(set: true, at: Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverDeletedProxy)]) { (success) in
+                                allSuccess &= success
+                                deleteConvoFinished.leave()
+                    }
                 }
 
                 deleteConvoFinished.notify(queue: .main) {
@@ -357,7 +374,10 @@ extension DBProxy {
             }
 
             deleteFinished.notify(queue: .main) {
-                completion(allSuccess)
+                DB.increment(-1, at: Path.UserInfo, Shared.shared.uid, Path.ProxyCount) { (success) in
+                    allSuccess &= success
+                    completion(allSuccess)
+                }
             }
         }
     }
@@ -367,8 +387,7 @@ extension DataSnapshot {
     func toProxies() -> [Proxy] {
         var proxies = [Proxy]()
         for child in self.children {
-            if  let snapshot = child as? DataSnapshot,
-                let proxy = Proxy(snapshot.value as AnyObject) {
+            if let proxy = Proxy((child as? DataSnapshot)?.value as AnyObject) {
                 proxies.append(proxy)
             }
         }

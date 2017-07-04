@@ -71,18 +71,13 @@ class DBTest: XCTestCase {
 private extension DBTest {
     func setupTestEnv() {
         deleteTestData()
-        deleteProxiesInteractedWith(Shared.shared.uid)
-        deleteProxiesInteractedWith("test")
-        deleteMessagesSent(Shared.shared.uid)
-        deleteMessagesSent("test")
-        deleteMessagesReceived(Shared.shared.uid)
-        deleteMessagesReceived("test")
+        deletePresent()
         deleteProxies()
         deleteConvos()
 
         setupTestEnvDone.notify(queue: .main) {
-            self.deleteUnread(Shared.shared.uid)
-            self.deleteUnread("test")
+            self.deleteUserInfo(Shared.shared.uid)
+            self.deleteUserInfo("test")
 
             self.setupTestEnvDone.notify(queue: .main) {
                 self.x.fulfill()
@@ -99,37 +94,10 @@ private extension DBTest {
         }
     }
 
-    func deleteUnread(_ uid: String) {
+    func deletePresent() {
         setupTestEnvDone.enter()
 
-        DB.delete(Path.UserInfo, Path.Unread, uid, Path.Unread) { (success) in
-            XCTAssert(success)
-            self.setupTestEnvDone.leave()
-        }
-    }
-
-    func deleteProxiesInteractedWith(_ uid: String) {
-        setupTestEnvDone.enter()
-
-        DB.delete(Path.UserInfo, Path.ProxiesInteractedWith, uid, Path.ProxiesInteractedWith) { (success) in
-            XCTAssert(success)
-            self.setupTestEnvDone.leave()
-        }
-    }
-
-    func deleteMessagesSent(_ uid: String) {
-        setupTestEnvDone.enter()
-
-        DB.delete(Path.UserInfo, Path.MessagesSent, uid, Path.MessagesSent) { (success) in
-            XCTAssert(success)
-            self.setupTestEnvDone.leave()
-        }
-    }
-
-    func deleteMessagesReceived(_ uid: String) {
-        setupTestEnvDone.enter()
-
-        DB.delete(Path.UserInfo, Path.MessagesReceived, uid, Path.MessagesReceived) { (success) in
+        DB.delete(Path.Present, "test") { (success) in
             XCTAssert(success)
             self.setupTestEnvDone.leave()
         }
@@ -149,7 +117,7 @@ private extension DBTest {
             for proxy in proxies {
                 deleteProxiesDone.enter()
 
-                DBProxy.deleteProxy(proxy) { (success) in
+                DBProxy.deleteProxy(proxy, setReceiverValues: false) { (success) in
                     XCTAssert(success)
                     deleteProxiesDone.leave()
                 }
@@ -186,32 +154,43 @@ private extension DBTest {
             }
         }
     }
+
+    func deleteUserInfo(_ uid: String) {
+        setupTestEnvDone.enter()
+
+        DB.delete(Path.UserInfo, uid) { (success) in
+            XCTAssert(success)
+            self.setupTestEnvDone.leave()
+        }
+    }
 }
 
 extension DBTest {
-    var proxy: Proxy {
+    func proxy(_ ownerId: String = Shared.shared.uid) -> Proxy {
         var proxy = Proxy()
         proxy.icon = UUID().uuidString
         proxy.key = UUID().uuidString
         proxy.message = UUID().uuidString
         proxy.name = UUID().uuidString
         proxy.nickname = UUID().uuidString
-        proxy.ownerId = Shared.shared.uid
+        proxy.ownerId = ownerId
         return proxy
     }
 
-    var convo: Convo {
+    func convo(key: String = UUID().uuidString,
+               ownerId: String = Shared.shared.uid,
+               senderProxyKey: String = UUID().uuidString) -> Convo {
         var convo = Convo()
         convo.icon = UUID().uuidString
-        convo.key = UUID().uuidString
+        convo.key = key
         convo.message = UUID().uuidString
         convo.receiverId = UUID().uuidString
         convo.receiverNickname = UUID().uuidString
         convo.receiverProxyKey = UUID().uuidString
         convo.receiverProxyName = UUID().uuidString
-        convo.senderId = Shared.shared.uid
+        convo.senderId = ownerId
         convo.senderNickname = UUID().uuidString
-        convo.senderProxyKey = UUID().uuidString
+        convo.senderProxyKey = senderProxyKey
         convo.senderProxyName = UUID().uuidString
         return convo
     }

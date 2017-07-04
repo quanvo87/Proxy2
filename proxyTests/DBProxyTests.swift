@@ -29,11 +29,40 @@ extension DBProxyTests {
 
         DBProxy.createProxy { (result) in
             switch result {
-            case .failure(_):
+            case .failure:
                 XCTFail()
-            case .success(_):
+            case .success(let proxy):
                 XCTAssertFalse(Shared.shared.isCreatingProxy)
-                self.x.fulfill()
+
+                let proxyDataChecked = DispatchGroup()
+
+                for _ in 1...4 {
+                    proxyDataChecked.enter()
+                }
+
+                DB.get(Path.ProxyKeys, proxy.key) { (data) in
+                    XCTAssertEqual(data?.value as? [String: String] ?? [:], [Path.Key: proxy.key])
+                    proxyDataChecked.leave()
+                }
+
+                DB.get(Path.ProxyOwners, proxy.key) { (data) in
+                    XCTAssertEqual(ProxyOwner(data?.value as AnyObject), ProxyOwner(key: proxy.key, ownerId: Shared.shared.uid))
+                    proxyDataChecked.leave()
+                }
+
+                DB.get(Path.Proxies, Shared.shared.uid, proxy.key) { (data) in
+                    XCTAssertEqual(Proxy(data?.value as AnyObject), proxy)
+                    proxyDataChecked.leave()
+                }
+
+                DB.get(Path.UserInfo, Shared.shared.uid, Path.ProxyCount) { (data) in
+                    XCTAssertEqual(data?.value as? Int ?? 0, 1)
+                    proxyDataChecked.leave()
+                }
+
+                proxyDataChecked.notify(queue: .main) {
+                    self.x.fulfill()
+                }
             }
         }
         waitForExpectations(timeout: 10)
@@ -44,17 +73,17 @@ extension DBProxyTests {
 
         DBProxy.createProxy(randomProxyName: "test") { (result) in
             switch result {
-            case .failure(_):
+            case .failure:
                 XCTFail()
-            case .success(_):
-                DBProxy.createProxy(randomProxyName: "test", retry: false, completion: { (result) in
+            case .success:
+                DBProxy.createProxy(randomProxyName: "test") { (result) in
                     switch result {
-                    case .failure(_):
+                    case .failure:
                         self.x.fulfill()
-                    case .success(_):
+                    case .success:
                         XCTFail()
                     }
-                })
+                }
             }
         }
         waitForExpectations(timeout: 10)
@@ -73,11 +102,10 @@ extension DBProxyTests {
 
         DBProxy.createProxy { (result) in
             switch result {
-            case .failure(_):
+            case .failure:
                 XCTFail()
             case .success(let newProxy):
                 DBProxy.getProxy(key: newProxy.key) { (retrievedProxy) in
-                    XCTAssertNotNil(retrievedProxy)
                     XCTAssertEqual(retrievedProxy, newProxy)
                     self.x.fulfill()
                 }
@@ -101,11 +129,10 @@ extension DBProxyTests {
 
         DBProxy.createProxy { (result) in
             switch result {
-            case .failure(_):
+            case .failure:
                 XCTFail()
             case .success(let newProxy):
                 DBProxy.getProxy(key: newProxy.key, ownerId: newProxy.ownerId) { (retrievedProxy) in
-                    XCTAssertNotNil(retrievedProxy)
                     XCTAssertEqual(retrievedProxy, newProxy)
                     self.x.fulfill()
                 }
@@ -126,19 +153,19 @@ extension DBProxyTests {
 }
 
 extension DBProxyTests {
+    // TODO: - finish
     func testSetIcon() {
         x = expectation(description: #function)
 
         DBProxy.createProxy { (result) in
             switch result {
-            case .failure(_):
+            case .failure:
                 XCTFail()
             case .success(let proxy):
                 DBProxy.setIcon("new icon", forProxy: proxy) { (success) in
                     XCTAssert(success)
 
                     DBProxy.getProxy(key: proxy.key, ownerId: proxy.ownerId) { (proxyWithNewIcon) in
-                        XCTAssertNotNil(proxyWithNewIcon)
                         XCTAssertEqual(proxyWithNewIcon?.icon, "new icon")
                         self.x.fulfill()
                     }
@@ -148,19 +175,19 @@ extension DBProxyTests {
         waitForExpectations(timeout: 10)
     }
 
+    // TODO: - finish
     func testSetNickname() {
         x = expectation(description: #function)
 
         DBProxy.createProxy { (result) in
             switch result {
-            case .failure(_):
+            case .failure:
                 XCTFail()
             case .success(let proxy):
                 DBProxy.setNickname("new nickname", forProxy: proxy) { (success) in
                     XCTAssert(success)
 
                     DBProxy.getProxy(key: proxy.key, ownerId: proxy.ownerId) { (proxy) in
-                        XCTAssertNotNil(proxy)
                         XCTAssertEqual(proxy?.nickname, "new nickname")
                         self.x.fulfill()
                     }
@@ -170,12 +197,13 @@ extension DBProxyTests {
         waitForExpectations(timeout: 10)
     }
 
+    // TODO: - finish
     func testDeleteProxy() {
         x = expectation(description: #function)
 
         DBProxy.createProxy { (result) in
             switch result {
-            case .failure(_):
+            case .failure:
                 XCTFail()
             case .success(let proxy):
                 let unreadIncremented = DispatchGroup()
@@ -183,7 +211,7 @@ extension DBProxyTests {
                     unreadIncremented.enter()
                 }
 
-                DB.set(1, at: Path.UserInfo, Path.Unread, Shared.shared.uid, Path.Unread) { (success) in
+                DB.set(1, at: Path.UserInfo, Shared.shared.uid, Path.Unread) { (success) in
                     XCTAssert(success)
                     unreadIncremented.leave()
                 }
@@ -198,7 +226,7 @@ extension DBProxyTests {
                         XCTAssert(success)
 
                         let endpointsDeleted = DispatchGroup()
-                        for _ in 1...4 {
+                        for _ in 1...5 {
                             endpointsDeleted.enter()
                         }
 
@@ -217,8 +245,13 @@ extension DBProxyTests {
                             endpointsDeleted.leave()
                         }
 
-                        DB.get(Path.UserInfo, Path.Unread, Shared.shared.uid, Path.Unread) { (snapshot) in
+                        DB.get(Path.UserInfo, Shared.shared.uid, Path.Unread) { (snapshot) in
                             XCTAssertEqual(snapshot?.value as? Int ?? -1, 0)
+                            endpointsDeleted.leave()
+                        }
+
+                        DB.get(Path.UserInfo, Shared.shared.uid, Path.ProxyCount) { (data) in
+                            XCTAssertEqual(data?.value as? Int ?? -1, 0)
                             endpointsDeleted.leave()
                         }
                         
