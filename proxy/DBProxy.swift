@@ -211,6 +211,12 @@ extension DBProxy {
             completion(proxy)
         }
     }
+
+    static func getProxies(forUser uid: String, completion: @escaping ([Proxy]?) -> Void) {
+        DB.get(Path.Proxies, uid) { (data) in
+            completion(data?.toProxies())
+        }
+    }
 }
 
 extension DBProxy {
@@ -227,7 +233,7 @@ extension DBProxy {
             setIconDone.leave()
         }
 
-        DBConvo.getConvos(forProxy: proxy) { (convos) in
+        DBConvo.getConvos(forProxy: proxy, filtered: false) { (convos) in
             guard let convos = convos else {
                 completion(false)
                 return
@@ -267,7 +273,7 @@ extension DBProxy {
             setNicknameDone.leave()
         }
 
-        DBConvo.getConvos(forProxy: proxy) { (convos) in
+        DBConvo.getConvos(forProxy: proxy, filtered: false) { (convos) in
             guard let convos = convos else {
                 completion(false)
                 return
@@ -293,92 +299,112 @@ extension DBProxy {
             completion(allSuccess)
         }
     }
+}
 
-    static func deleteProxy(_ proxy: Proxy, setReceiverValues: Bool = true, completion: @escaping (Success) -> Void) {
+extension DBProxy {
+    static func deleteProxy(_ proxy: Proxy, completion: @escaping (Success) -> Void) {
         DBConvo.getConvos(forProxy: proxy, filtered: false) { (convos) in
             guard let convos = convos else {
                 completion(false)
                 return
             }
-            deleteProxy(proxy, withConvos: convos, setReceiverValues: setReceiverValues, completion: completion)
+            deleteProxy(proxy, withConvos: convos, completion: completion)
         }
     }
 
-    static func deleteProxy(_ proxy: Proxy, withConvos convos: [Convo], setReceiverValues: Bool = true, completion: @escaping (Success) -> Void) {
-        DBProxy.getProxy(key: proxy.key, ownerId: proxy.ownerId) { (proxy) in
-            guard let proxy = proxy else {
-                completion(false)
-                return
+    static func deleteProxy(_ proxy: Proxy, withConvos convos: [Convo], completion: @escaping (Success) -> Void) {
+        let workKey = Shared.startWorkGroup()
+
+        deleteProxyKey(proxyKey: proxy.key, workKey: workKey)
+        deleteProxyOwner(proxyKey: proxy.key, workKey: workKey)
+        deleteProxy(proxyOwnerId: proxy.ownerId, proxyKey: proxy.key, workKey: workKey)
+        deleteProxyConvos(proxyKey: proxy.key, workKey: workKey)
+        deleteUserConvos(convos: convos, workKey: workKey)
+        adjustUserUnread(proxyUnread: proxy.unread, proxyOwnerId: proxy.ownerId, workKey: workKey)
+
+        Shared.shared.workGroup[workKey]?.notify(queue: .main) {
+            decrementUserProxyCount(uid: proxy.ownerId) { (success) in
+                completion(Shared.setWorkResult(success, workKey: workKey))
+                Shared.finishWorkGroup(workKey: workKey)
             }
-            
-            var allSuccess = true
+        }
+    }
 
-            let deleteFinished = DispatchGroup()
+    private static func deleteProxyKey(proxyKey: String, workKey: String) {
+        Shared.startWork(workKey)
+        DB.delete(Path.ProxyKeys, proxyKey) { (success) in
+            Shared.finishWorkWithResult(success, workKey: workKey)
+        }
+    }
 
-            for _ in 1...4 {
-                deleteFinished.enter()
+    private static func deleteProxyOwner(proxyKey: String, workKey: String) {
+        Shared.startWork(workKey)
+        DB.delete(Path.ProxyOwners, proxyKey) { (success) in
+            Shared.finishWorkWithResult(success, workKey: workKey)
+        }
+    }
+
+    private static func deleteProxy(proxyOwnerId: String, proxyKey: String, workKey: String) {
+        Shared.startWork(workKey)
+        DB.delete(Path.Proxies, proxyOwnerId, proxyKey) { (success) in
+            Shared.finishWorkWithResult(success, workKey: workKey)
+        }
+    }
+
+    private static func deleteProxyConvos(proxyKey: String, workKey: String) {
+        Shared.startWork(workKey)
+        DB.delete(Path.Convos, proxyKey) { (success) in
+            Shared.finishWorkWithResult(success, workKey: workKey)
+        }
+    }
+
+    private static func deleteUserConvos(convos: [Convo], workKey: String) {
+        for convo in convos {
+            Shared.startWork(workKey)
+
+            let convoWorkKey = Shared.startWorkGroup()
+
+            deleteUserConvo(convoSenderId: convo.senderId, convoKey: convo.key, workKey: convoWorkKey)
+            setReceiverDeletedProxyForConvo(convoKey: convo.key,
+                                            convoReceiverId: convo.receiverId,
+                                            convoReceiverProxyKey: convo.receiverProxyKey,
+                                            workKey: convoWorkKey)
+
+            Shared.shared.workGroup[convoWorkKey]?.notify(queue: .main) {
+                Shared.finishWorkWithResult(Shared.shared.workResult[convoWorkKey] ?? false, workKey: workKey)
+                Shared.finishWorkGroup(workKey: convoWorkKey)
             }
+        }
+    }
 
-            DB.delete(Path.ProxyKeys, proxy.key) { (success) in
-                allSuccess &= success
-                deleteFinished.leave()
-            }
+    private static func deleteUserConvo(convoSenderId: String, convoKey: String, workKey: String) {
+        Shared.startWork(workKey)
+        DB.delete(Path.Convos, convoSenderId, convoKey) { (success) in
+            Shared.finishWorkWithResult(success, workKey: workKey)
+        }
+    }
 
-            DB.delete(Path.ProxyOwners, proxy.key) { (success) in
-                allSuccess &= success
-                deleteFinished.leave()
-            }
+    private static func setReceiverDeletedProxyForConvo(convoKey: String,
+                                                        convoReceiverId: String,
+                                                        convoReceiverProxyKey: String,
+                                                        workKey: String) {
+        Shared.startWork(workKey)
+        DB.set([DB.Transaction(set: true, at: Path.Convos, convoReceiverId, convoKey, Path.ReceiverDeletedProxy),
+                DB.Transaction(set: true, at: Path.Convos, convoReceiverProxyKey, convoKey, Path.ReceiverDeletedProxy)]) { (success) in
+                    Shared.finishWorkWithResult(success, workKey: workKey)
+        }
+    }
 
-            DB.delete(Path.Proxies, proxy.ownerId, proxy.key) { (success) in
-                allSuccess &= success
-                deleteFinished.leave()
-            }
+    private static func adjustUserUnread(proxyUnread: Int, proxyOwnerId: String, workKey: String) {
+        Shared.startWork(workKey)
+        DB.increment(-proxyUnread, at: Path.UserInfo, proxyOwnerId, Path.Unread) { (success) in
+            Shared.finishWorkWithResult(success, workKey: workKey)
+        }
+    }
 
-            DB.increment(-proxy.unread, at: Path.UserInfo, proxy.ownerId, Path.Unread) { (success) in
-                allSuccess &= success
-                deleteFinished.leave()
-            }
-
-            for convo in convos {
-                deleteFinished.enter()
-
-                let deleteConvoFinished = DispatchGroup()
-
-                for _ in 1...2 {
-                    deleteConvoFinished.enter()
-                }
-
-                DB.delete(Path.Convos, convo.senderId, convo.key) { (success) in
-                    allSuccess &= success
-                    deleteConvoFinished.leave()
-                }
-
-                DB.delete(Path.Convos, convo.senderProxyKey, convo.key) { (success) in
-                    allSuccess &= success
-                    deleteConvoFinished.leave()
-                }
-
-                if setReceiverValues {
-                    deleteConvoFinished.enter()
-
-                    DB.set([DB.Transaction(set: true, at: Path.Convos, convo.receiverId, convo.key, Path.ReceiverDeletedProxy),
-                            DB.Transaction(set: true, at: Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverDeletedProxy)]) { (success) in
-                                allSuccess &= success
-                                deleteConvoFinished.leave()
-                    }
-                }
-
-                deleteConvoFinished.notify(queue: .main) {
-                    deleteFinished.leave()
-                }
-            }
-
-            deleteFinished.notify(queue: .main) {
-                DB.increment(-1, at: Path.UserInfo, Shared.shared.uid, Path.ProxyCount) { (success) in
-                    allSuccess &= success
-                    completion(allSuccess)
-                }
-            }
+    private static func decrementUserProxyCount(uid: String, completion: @escaping (Success) -> Void) {
+        DB.increment(-1, at: Path.UserInfo, Shared.shared.uid, Path.ProxyCount) { (success) in
+            completion(success)
         }
     }
 }

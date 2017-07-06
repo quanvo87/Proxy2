@@ -71,26 +71,20 @@ class DBTest: XCTestCase {
 private extension DBTest {
     func setupTestEnv() {
         deleteTestData()
-        deletePresent()
-        deleteProxies()
-        deleteConvos()
+        deleteProxies(forUser: Shared.shared.uid)
+        deleteProxies(forUser: testUser)
+        deleteConvos(forUser: Shared.shared.uid)
+        deleteConvos(forUser: testUser)
+
+        deletePresent() // TODO: - move to `userInfo`
 
         setupTestEnvDone.notify(queue: .main) {
             self.deleteUserInfo(Shared.shared.uid)
-            self.deleteUserInfo("test")
+            self.deleteUserInfo(testUser)
 
             self.setupTestEnvDone.notify(queue: .main) {
                 self.x.fulfill()
             }
-        }
-    }
-
-    func deleteTestData() {
-        setupTestEnvDone.enter()
-
-        DB.delete("test") { (success) in
-            XCTAssert(success)
-            self.setupTestEnvDone.leave()
         }
     }
 
@@ -103,36 +97,45 @@ private extension DBTest {
         }
     }
 
-    func deleteProxies() {
+    func deleteTestData() {
         setupTestEnvDone.enter()
 
-        DB.get(Path.Proxies, Shared.shared.uid) { (snapshot) in
-            guard let proxies = snapshot?.toProxies() else {
+        DB.delete(test) { (success) in
+            XCTAssert(success)
+            self.setupTestEnvDone.leave()
+        }
+    }
+
+    func deleteProxies(forUser uid: String) {
+        setupTestEnvDone.enter()
+
+        DBProxy.getProxies(forUser: uid) { (proxies) in
+            guard let proxies = proxies else {
                 XCTFail()
                 return
             }
 
             let deleteProxiesDone = DispatchGroup()
-
+            
             for proxy in proxies {
                 deleteProxiesDone.enter()
-
-                DBProxy.deleteProxy(proxy, setReceiverValues: false) { (success) in
+                
+                DBProxy.deleteProxy(proxy) { (success) in
                     XCTAssert(success)
                     deleteProxiesDone.leave()
                 }
             }
-
+            
             deleteProxiesDone.notify(queue: .main) {
                 self.setupTestEnvDone.leave()
             }
         }
     }
 
-    func deleteConvos() {
+    func deleteConvos(forUser uid: String) {
         setupTestEnvDone.enter()
 
-        DBConvo.getConvos(forUser: Shared.shared.uid, filtered: false) { (convos) in
+        DBConvo.getConvos(forUser: uid, filtered: false) { (convos) in
             guard let convos = convos else {
                 XCTFail()
                 return
@@ -166,7 +169,7 @@ private extension DBTest {
 }
 
 extension DBTest {
-    func proxy(_ ownerId: String = Shared.shared.uid) -> Proxy {
+    func proxy(ownerId: String) -> Proxy {
         var proxy = Proxy()
         proxy.icon = UUID().uuidString
         proxy.key = UUID().uuidString
@@ -177,21 +180,44 @@ extension DBTest {
         return proxy
     }
 
-    func convo(key: String = UUID().uuidString,
-               ownerId: String = Shared.shared.uid,
-               senderProxyKey: String = UUID().uuidString) -> Convo {
+    func setProxy(_ proxy: Proxy, completion: @escaping (Success) -> Void) {
+        DB.set(proxy.toJSON(), at: Path.Proxies, proxy.ownerId, proxy.key) { (success) in
+            completion(success)
+        }
+    }
+}
+
+extension DBTest {
+    func convo(senderId: String,
+               senderProxyKey: String) -> Convo {
         var convo = Convo()
         convo.icon = UUID().uuidString
-        convo.key = key
+        convo.key = UUID().uuidString
         convo.message = UUID().uuidString
         convo.receiverId = UUID().uuidString
         convo.receiverNickname = UUID().uuidString
         convo.receiverProxyKey = UUID().uuidString
         convo.receiverProxyName = UUID().uuidString
-        convo.senderId = ownerId
+        convo.senderId = senderId
         convo.senderNickname = UUID().uuidString
         convo.senderProxyKey = senderProxyKey
         convo.senderProxyName = UUID().uuidString
         return convo
     }
+
+    func setConvoForUser(_ convo: Convo, completion: @escaping (Success) -> Void) {
+        DB.set(convo.toJSON(), at: Path.Convos, convo.senderId, convo.key) { (success) in
+            completion(success)
+        }
+    }
+
+    func setConvoForProxy(_ convo: Convo, completion: @escaping (Success) -> Void) {
+        DB.set(convo.toJSON(), at: Path.Convos, convo.senderProxyKey, convo.key) { (success) in
+            completion(success)
+        }
+    }
 }
+
+let test = "test"
+let testUser = "test user"
+let testProxyKey = "test proxy key"

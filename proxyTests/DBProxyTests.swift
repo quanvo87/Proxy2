@@ -79,6 +79,7 @@ extension DBProxyTests {
                 DBProxy.createProxy(randomProxyName: "test") { (result) in
                     switch result {
                     case .failure:
+                        XCTAssertFalse(Shared.shared.isCreatingProxy)
                         self.x.fulfill()
                     case .success:
                         XCTFail()
@@ -150,6 +151,23 @@ extension DBProxyTests {
         }
         waitForExpectations(timeout: 10)
     }
+
+    func testGetProxiesForUser() {
+        x = expectation(description: #function)
+
+        DBProxy.createProxy { (result) in
+            switch result {
+            case .failure:
+                XCTFail()
+            case .success(let proxy):
+                DBProxy.getProxies(forUser: Shared.shared.uid) { (proxies) in
+                    XCTAssert(proxies?.contains(proxy) ?? false)
+                    self.x.fulfill()
+                }
+            }
+        }
+        waitForExpectations(timeout: 10)
+    }
 }
 
 extension DBProxyTests {
@@ -162,12 +180,42 @@ extension DBProxyTests {
             case .failure:
                 XCTFail()
             case .success(let proxy):
-                DBProxy.setIcon("new icon", forProxy: proxy) { (success) in
+                var convo = self.convo(senderId: proxy.ownerId, senderProxyKey: proxy.key)
+                convo.receiverId = testUser
+                convo.receiverProxyKey = testProxyKey
+
+                DB.set(convo.toJSON(), at: Path.Convos, convo.senderId, convo.key) { (success) in
                     XCTAssert(success)
 
-                    DBProxy.getProxy(key: proxy.key, ownerId: proxy.ownerId) { (proxyWithNewIcon) in
-                        XCTAssertEqual(proxyWithNewIcon?.icon, "new icon")
-                        self.x.fulfill()
+                    let newIcon = "new icon"
+
+                    DBProxy.setIcon(newIcon, forProxy: proxy) { (success) in
+                        XCTAssert(success)
+
+                        let iconDataChecked = DispatchGroup()
+
+                        for _ in 1...3 {
+                            iconDataChecked.enter()
+                        }
+
+                        DBProxy.getProxy(key: proxy.key, ownerId: proxy.ownerId) { (proxyWithNewIcon) in
+                            XCTAssertEqual(proxyWithNewIcon?.icon, newIcon)
+                            iconDataChecked.leave()
+                        }
+
+                        DB.get(Path.Convos, convo.receiverId, convo.key, Path.Icon) { (data) in
+                            XCTAssertEqual(data?.value as? String ?? "", newIcon)
+                            iconDataChecked.leave()
+                        }
+
+                        DB.get(Path.Convos, convo.receiverProxyKey, convo.key, Path.Icon) { (data) in
+                            XCTAssertEqual(data?.value as? String ?? "", newIcon)
+                            iconDataChecked.leave()
+                        }
+
+                        iconDataChecked.notify(queue: .main) {
+                            self.x.fulfill()
+                        }
                     }
                 }
             }
@@ -206,22 +254,10 @@ extension DBProxyTests {
             case .failure:
                 XCTFail()
             case .success(let proxy):
-                let unreadIncremented = DispatchGroup()
-                for _ in 1...2 {
-                    unreadIncremented.enter()
-                }
-
                 DB.set(1, at: Path.UserInfo, Shared.shared.uid, Path.Unread) { (success) in
                     XCTAssert(success)
-                    unreadIncremented.leave()
-                }
-
-                DB.set(1, at: Path.Proxies, Shared.shared.uid, proxy.key, Path.Unread) { (success) in
-                    XCTAssert(success)
-                    unreadIncremented.leave()
-                }
-
-                unreadIncremented.notify(queue: .main) {
+                    var proxy = proxy
+                    proxy.unread = 1
                     DBProxy.deleteProxy(proxy) { (success) in
                         XCTAssert(success)
 
@@ -254,7 +290,7 @@ extension DBProxyTests {
                             XCTAssertEqual(data?.value as? Int ?? -1, 0)
                             endpointsDeleted.leave()
                         }
-                        
+
                         endpointsDeleted.notify(queue: .main) {
                             self.x.fulfill()
                         }
