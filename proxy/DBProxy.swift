@@ -201,6 +201,12 @@ extension DBProxy {
             completion(data?.toProxies())
         }
     }
+
+    static func getProxies(forUser uid: String, completion: @escaping ([Proxy]?) -> Void) {
+        DB.get(Path.Proxies, uid) { (data) in
+            completion(data?.toProxies())
+        }
+    }
 }
 
 extension DBProxy {

@@ -244,3 +244,7 @@ extension DBTest {
         }
     }
 }
+
+let test = "test"
+let testUser = "test user"
+let testProxyKey = "test proxy key"

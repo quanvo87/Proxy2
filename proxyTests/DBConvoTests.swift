@@ -98,8 +98,9 @@ extension DBConvoTests {
 extension DBConvoTests {
     func testGetConvo() {
         x = expectation(description: #function)
-
+      
         let convo = DBTest.convo(senderId: Shared.shared.uid, senderProxyKey: UUID().uuidString)
+
         DB.set(convo.toJSON(), at: Path.Convos, Shared.shared.uid, convo.key) { (success) in
             XCTAssert(success)
 
@@ -352,6 +353,7 @@ extension DBConvoTests {
         x = expectation(description: #function)
 
         let convo = DBTest.convo(senderId: Shared.shared.uid, senderProxyKey: UUID().uuidString)
+      
         DB.set(true, at: Path.Present, convo.key, convo.senderId, Path.Present) { (success) in
             XCTAssert(success)
 
