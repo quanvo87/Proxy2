@@ -9,6 +9,7 @@
 import XCTest
 @testable import proxy
 import FirebaseAuth
+import FirebaseDatabase
 
 class DBTest: XCTestCase {
     private let auth = Auth.auth(app: Shared.shared.firebase!)
@@ -18,9 +19,11 @@ class DBTest: XCTestCase {
     private let email = "emydadu-3857@yopmail.com"
     private let password = "+7rVajX5sYNRL[kZ"
 
-    var x = XCTestExpectation()
+    static let test = "test"
+    static let testUser = "test user"
+    static let testProxyKey = "test proxy key"
 
-    let setupTestEnvDone = DispatchGroup()
+    var x = XCTestExpectation()
 
     override func setUp() {
         x = expectation(description: #function)
@@ -70,106 +73,130 @@ class DBTest: XCTestCase {
 
 private extension DBTest {
     func setupTestEnv() {
-        deleteTestData()
-        deleteProxies(forUser: Shared.shared.uid)
-        deleteProxies(forUser: testUser)
-        deleteConvos(forUser: Shared.shared.uid)
-        deleteConvos(forUser: testUser)
-
-        deletePresent() // TODO: - move to `userInfo`
-
-        setupTestEnvDone.notify(queue: .main) {
-            self.deleteUserInfo(Shared.shared.uid)
-            self.deleteUserInfo(testUser)
-
-            self.setupTestEnvDone.notify(queue: .main) {
+        let workKey = WorkKey.makeWorkKey()
+        workKey.deleteTestData()
+        workKey.deleteProxies(forUser: Shared.shared.uid)
+        workKey.deleteProxies(forUser: DBTest.testUser)
+        workKey.deleteConvos(forUser: Shared.shared.uid)
+        workKey.deleteConvos(forUser: DBTest.testUser)
+        workKey.deletePresent() // TODO: - move to userInfo
+        workKey.notify {
+            workKey.deleteUserInfo(Shared.shared.uid)
+            workKey.deleteUserInfo(DBTest.testUser)
+            workKey.notify {
+                workKey.finishWorkGroup()
                 self.x.fulfill()
             }
         }
     }
+}
 
-    func deletePresent() {
-        setupTestEnvDone.enter()
-
-        DB.delete(Path.Present, "test") { (success) in
-            XCTAssert(success)
-            self.setupTestEnvDone.leave()
-        }
-    }
-
+extension WorkKey {
     func deleteTestData() {
-        setupTestEnvDone.enter()
-
-        DB.delete(test) { (success) in
+        startWork()
+        DB.delete(DBTest.test) { (success) in
             XCTAssert(success)
-            self.setupTestEnvDone.leave()
+            self.finishWork(withResult: success)
         }
     }
 
     func deleteProxies(forUser uid: String) {
-        setupTestEnvDone.enter()
-
+        startWork()
         DBProxy.getProxies(forUser: uid) { (proxies) in
             guard let proxies = proxies else {
                 XCTFail()
                 return
             }
-
-            let deleteProxiesDone = DispatchGroup()
-            
+            let deleteProxiesWorkKey = WorkKey.makeWorkKey()
             for proxy in proxies {
-                deleteProxiesDone.enter()
-                
-                DBProxy.deleteProxy(proxy) { (success) in
-                    XCTAssert(success)
-                    deleteProxiesDone.leave()
-                }
+                deleteProxiesWorkKey.deleteProxy(proxy)
             }
-            
-            deleteProxiesDone.notify(queue: .main) {
-                self.setupTestEnvDone.leave()
+            deleteProxiesWorkKey.notify {
+                self.finishWork(withResult: deleteProxiesWorkKey.workResult)
+                deleteProxiesWorkKey.finishWorkGroup()
             }
         }
     }
 
-    func deleteConvos(forUser uid: String) {
-        setupTestEnvDone.enter()
+    private func deleteProxy(_ proxy: Proxy) {
+        startWork()
+        DBProxy.deleteProxy(proxy) { (success) in
+            XCTAssert(success)
+            self.finishWork(withResult: success)
+        }
+    }
 
+    func deleteConvos(forUser uid: String) {
+        startWork()
         DBConvo.getConvos(forUser: uid, filtered: false) { (convos) in
             guard let convos = convos else {
                 XCTFail()
                 return
             }
-
-            let deleteConvosDone = DispatchGroup()
-
+            let deleteConvosWorkKey = WorkKey.makeWorkKey()
             for convo in convos {
-                deleteConvosDone.enter()
-
-                DBConvo.deleteConvo(convo) { (success) in
-                    XCTAssert(success)
-                    deleteConvosDone.leave()
-                }
+                deleteConvosWorkKey.deleteConvo(convo)
             }
-
-            deleteConvosDone.notify(queue: .main) {
-                self.setupTestEnvDone.leave()
+            deleteConvosWorkKey.notify {
+                self.finishWork(withResult: deleteConvosWorkKey.workResult)
+                deleteConvosWorkKey.finishWorkGroup()
             }
         }
     }
 
-    func deleteUserInfo(_ uid: String) {
-        setupTestEnvDone.enter()
+    private func deleteConvo(_ convo: Convo) {
+        startWork()
+        DBConvo.deleteConvo(convo) { (success) in
+            XCTAssert(success)
+            self.finishWork(withResult: success)
+        }
+    }
 
+    func deletePresent() {
+        startWork()
+        DB.delete(Path.Present, "test") { (success) in
+            XCTAssert(success)
+            self.finishWork(withResult: success)
+        }
+    }
+
+    func deleteUserInfo(_ uid: String) {
+        startWork()
         DB.delete(Path.UserInfo, uid) { (success) in
             XCTAssert(success)
-            self.setupTestEnvDone.leave()
+            self.finishWork(withResult: success)
         }
     }
 }
 
 extension DBTest {
-    func proxy(ownerId: String) -> Proxy {
+    func assertValue<T: Comparable>(at first: String, _ rest: String..., equals value: T,
+                                    group: DispatchGroup,
+                                    function: String = #function,
+                                    line: Int = #line) {
+        group.enter()
+        DB.get(first, rest) { (data) in
+            XCTAssertEqual(data?.value as? T, value,
+                           "\(function): line \(line)")
+            group.leave()
+        }
+    }
+
+    func assertNull(at first: String, _ rest: String..., group: DispatchGroup,
+                    function: String = #function,
+                    line: Int = #line) {
+        group.enter()
+        DB.get(first, rest) { (data) in
+            XCTAssertEqual(data?.value as? FirebaseDatabase.NSNull,
+                           FirebaseDatabase.NSNull(),
+                           "\(function): line \(line)")
+            group.leave()
+        }
+    }
+}
+
+extension DBTest {
+    static func proxy(ownerId: String) -> Proxy {
         var proxy = Proxy()
         proxy.icon = UUID().uuidString
         proxy.key = UUID().uuidString
@@ -180,7 +207,7 @@ extension DBTest {
         return proxy
     }
 
-    func setProxy(_ proxy: Proxy, completion: @escaping (Success) -> Void) {
+    static func setProxy(_ proxy: Proxy, completion: @escaping (Success) -> Void) {
         DB.set(proxy.toJSON(), at: Path.Proxies, proxy.ownerId, proxy.key) { (success) in
             completion(success)
         }
@@ -188,8 +215,8 @@ extension DBTest {
 }
 
 extension DBTest {
-    func convo(senderId: String,
-               senderProxyKey: String) -> Convo {
+    static func convo(senderId: String,
+                      senderProxyKey: String) -> Convo {
         var convo = Convo()
         convo.icon = UUID().uuidString
         convo.key = UUID().uuidString
@@ -205,13 +232,13 @@ extension DBTest {
         return convo
     }
 
-    func setConvoForUser(_ convo: Convo, completion: @escaping (Success) -> Void) {
+    static func setConvoForUser(_ convo: Convo, completion: @escaping (Success) -> Void) {
         DB.set(convo.toJSON(), at: Path.Convos, convo.senderId, convo.key) { (success) in
             completion(success)
         }
     }
 
-    func setConvoForProxy(_ convo: Convo, completion: @escaping (Success) -> Void) {
+    static func setConvoForProxy(_ convo: Convo, completion: @escaping (Success) -> Void) {
         DB.set(convo.toJSON(), at: Path.Convos, convo.senderProxyKey, convo.key) { (success) in
             completion(success)
         }

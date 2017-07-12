@@ -30,12 +30,12 @@ class DBTests: DBTest {
     }
 
     func testRef() {
-        XCTAssertNotNil(DB.ref(DB.Path("a")))
-        XCTAssertNotNil(DB.ref(DB.Path("a", "b")))
+        XCTAssertNotNil(DB.ref("a"))
+        XCTAssertNotNil(DB.ref("a", "b"))
     }
 
     func testBadRef() {
-        let ref = DB.ref(DB.Path(""))
+        let ref = DB.ref("")
         XCTAssertNil(ref)
     }
 

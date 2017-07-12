@@ -156,11 +156,11 @@ extension DBConvo {
 extension DBConvo {
     static func makeConvoTitle(receiverNickname: String, receiverName: String, senderNickname: String, senderName: String) -> NSAttributedString {
         let grayAttribute = [NSAttributedStringKey.foregroundColor: UIColor.gray]
-        let first = NSMutableAttributedString(string: (receiverNickname == "" ? receiverName : receiverNickname) + ", ")
-        let second = NSMutableAttributedString(string: senderNickname == "" ? senderName : senderNickname,
+        let receiver = NSMutableAttributedString(string: (receiverNickname == "" ? receiverName : receiverNickname) + ", ")
+        let sender = NSMutableAttributedString(string: senderNickname == "" ? senderName : senderNickname,
                                                attributes: grayAttribute)
-        first.append(second)
-        return first
+        receiver.append(sender)
+        return receiver
     }
 }
 

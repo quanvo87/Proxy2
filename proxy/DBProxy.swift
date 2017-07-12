@@ -13,59 +13,50 @@ struct DBProxy {}
 
 extension DBProxy {
     static func loadProxyInfo(completion: ((Success) -> Void)? = nil) {
-        if Shared.shared.proxyInfoIsLoaded {
+        if  !Shared.shared.adjectives.isEmpty &&
+            !Shared.shared.nouns.isEmpty &&
+            !Shared.shared.iconNames.isEmpty {
             completion?(true)
             return
         }
-        loadProxyNameWords()
-        loadIconNames()
-        Shared.shared.proxyInfoLoaded.notify(queue: .main) {
-            if  !Shared.shared.adjectives.isEmpty &&
-                !Shared.shared.nouns.isEmpty &&
-                !Shared.shared.iconNames.isEmpty {
-                Shared.shared.proxyInfoIsLoaded = true
-                completion?(true)
-                return
-            }
-            completion?(false)
+        let workKey = WorkKey()
+        workKey.loadProxyNameWords()
+        workKey.loadIconNames()
+        workKey.notify() {
+            completion?(workKey.workResult)
+            workKey.finishWorkGroup()
         }
     }
+}
 
-    private static func loadProxyNameWords() {
-        Shared.shared.proxyInfoLoaded.enter()
+private extension WorkKey {
+    func loadProxyNameWords() {
+        startWork()
         Storage.storage().reference(forURL: URLs.Storage + "/app").child("words.json").getData(maxSize: 1 * 1024 * 1024) { (data, error) in
-            defer {
-                Shared.shared.proxyInfoLoaded.leave()
-            }
-            guard
-                error == nil,
+            if  error == nil,
                 let data = data,
                 let json = try? JSONSerialization.jsonObject(with: data, options: []),
                 let dictionary = json as? [String: Any],
                 let adjectives = dictionary["adjectives"] as? [String],
-                let nouns = dictionary["nouns"] as? [String] else {
-                    return
+                let nouns = dictionary["nouns"] as? [String] {
+                Shared.shared.adjectives = adjectives
+                Shared.shared.nouns = nouns
             }
-            Shared.shared.adjectives = adjectives
-            Shared.shared.nouns = nouns
+            self.finishWork(withResult: !Shared.shared.adjectives.isEmpty && !Shared.shared.nouns.isEmpty)
         }
     }
 
-    private static func loadIconNames() {
-        Shared.shared.proxyInfoLoaded.enter()
+    func loadIconNames() {
+        startWork()
         Storage.storage().reference(forURL: URLs.Storage + "/app").child("iconNames.json").getData(maxSize: 1 * 1024 * 1024) { (data, error) in
-            defer {
-                Shared.shared.proxyInfoLoaded.leave()
-            }
-            guard
-                error == nil,
+            if  error == nil,
                 let data = data,
                 let json = try? JSONSerialization.jsonObject(with: data, options: []),
                 let dictionary = json as? [String: Any],
-                let iconsNames = dictionary["iconNames"] as? [String] else {
-                    return
+                let iconsNames = dictionary["iconNames"] as? [String]  {
+                    Shared.shared.iconNames = iconsNames
             }
-            Shared.shared.iconNames = iconsNames
+            self.finishWork(withResult: !Shared.shared.iconNames.isEmpty)
         }
     }
 }
@@ -73,37 +64,37 @@ extension DBProxy {
 extension DBProxy {
     typealias CreateProxyCallback = (Result<Proxy, ProxyError>) -> Void
 
-    static func createProxy(randomProxyName: String? = nil,
+    static func createProxy(withName specificName: String? = nil,
+                            forUser uid: String = Shared.shared.uid,
                             completion: @escaping CreateProxyCallback) {
         loadProxyInfo { (success) in
             guard success else {
                 completion(.failure(.unknown))
                 return
             }
-            DB.get(Path.UserInfo, Shared.shared.uid, Path.ProxyCount) { (data) in
+            DB.get(Path.UserInfo, uid, Path.ProxyCount) { (data) in
                 guard data?.value as? Int ?? 0 <= Settings.MaxAllowedProxies else {
                     completion(.failure(.proxyLimitReached))
                     return
                 }
                 Shared.shared.isCreatingProxy = true
-                createProxyHelper(randomProxyName: randomProxyName,
-                                  completion: completion)
+                createProxyHelper(withName: specificName, forUser: uid, completion: completion)
             }
         }
     }
 
-    private static func createProxyHelper(randomProxyName: String? = nil,
+    private static func createProxyHelper(withName specificName: String? = nil,
+                                          forUser uid: String = Shared.shared.uid, 
                                           completion: @escaping CreateProxyCallback) {
-        guard let proxyKeysRef = DB.ref(DB.Path(Path.ProxyKeys)) else {
-            createProxyFinished(result: .failure(.unknown),
-                                completion: completion)
+        guard let proxyKeysRef = DB.ref(Path.ProxyKeys) else {
+            createProxyFinished(result: .failure(.unknown), completion: completion)
             return
         }
 
         let name: String
 
-        if let randomProxyName = randomProxyName {
-            name = randomProxyName
+        if let specificName = specificName {
+            name = specificName
         } else {
             name = DBProxy.randomProxyName
         }
@@ -114,15 +105,13 @@ extension DBProxy {
 
         DB.set(proxyKey, at: Path.ProxyKeys, autoId) { (success) in
             guard success else {
-                createProxyFinished(result: .failure(.unknown),
-                                    completion: completion)
+                createProxyFinished(result: .failure(.unknown), completion: completion)
                 return
             }
             proxyKeysRef.queryOrdered(byChild: Path.Key).queryEqual(toValue: key).observeSingleEvent(of: .value, with: { (snapshot) in
                 DB.delete(Path.ProxyKeys, autoId) { (success) in
                     guard success else {
-                        createProxyFinished(result: .failure(.unknown),
-                                            completion: completion)
+                        createProxyFinished(result: .failure(.unknown), completion: completion)
                         return
                     }
 
@@ -131,29 +120,26 @@ extension DBProxy {
                     }
 
                     if snapshot.childrenCount == 1 {
-                        let proxyOwner = ProxyOwner(key: key, ownerId: Shared.shared.uid).toJSON()
-                        let userProxy = Proxy(name: name, ownerId: Shared.shared.uid, icon: randomIconName)
+                        let proxyOwner = ProxyOwner(key: key, ownerId: uid).toJSON()
+                        let userProxy = Proxy(name: name, ownerId: uid, icon: randomIconName)
 
                         DB.set([DB.Transaction(set: proxyKey, at: Path.ProxyKeys, key),
                                 DB.Transaction(set: proxyOwner, at: Path.ProxyOwners, key),
-                                DB.Transaction(set: userProxy.toJSON(), at: Path.Proxies, Shared.shared.uid, key)]) { (success) in
+                                DB.Transaction(set: userProxy.toJSON(), at: Path.Proxies, uid, key)]) { (success) in
                                     guard success else {
-                                        createProxyFinished(result: .failure(.unknown),
-                                                            completion: completion)
+                                        createProxyFinished(result: .failure(.unknown), completion: completion)
                                         return
                                     }
 
-                                    DB.increment(1, at: Path.UserInfo, Shared.shared.uid, Path.ProxyCount) { (success) in
-                                        createProxyFinished(result: success ? .success(userProxy) : .failure(.unknown),
-                                                            completion: completion)
+                                    DB.increment(1, at: Path.UserInfo, uid, Path.ProxyCount) { (success) in
+                                        createProxyFinished(result: success ? .success(userProxy) : .failure(.unknown), completion: completion)
                                     }
                         }
                     } else {
-                        if randomProxyName == nil {
-                            createProxyHelper(completion: completion)
+                        if specificName == nil {
+                            createProxyHelper(forUser: uid, completion: completion)
                         } else {
-                            createProxyFinished(result: .failure(.unknown),
-                                                completion: completion)
+                            createProxyFinished(result: .failure(.unknown), completion: completion)
                         }
                     }
                 }
@@ -167,8 +153,10 @@ extension DBProxy {
     }
 
     private static var randomProxyName: String {
-        guard Shared.shared.proxyInfoIsLoaded else {
-            return ""
+        guard
+            !Shared.shared.adjectives.isEmpty &&
+            !Shared.shared.nouns.isEmpty else {
+                return ""
         }
         let randomAdj = Int(arc4random_uniform(UInt32(Shared.shared.adjectives.count)))
         let randomNoun = Int(arc4random_uniform(UInt32(Shared.shared.nouns.count)))
@@ -179,7 +167,7 @@ extension DBProxy {
     }
 
     private static var randomIconName: String {
-        guard Shared.shared.proxyInfoIsLoaded else {
+        guard !Shared.shared.iconNames.isEmpty else {
             return ""
         }
         let random = Int(arc4random_uniform(UInt32(Shared.shared.iconNames.count)))
@@ -192,23 +180,25 @@ extension DBProxy {
 }
 
 extension DBProxy {
-    static func getProxy(key: String, completion: @escaping (Proxy?) -> Void) {
+    static func getProxy(withKey key: String, completion: @escaping (Proxy?) -> Void) {
         DB.get(Path.ProxyOwners, key) { (snapshot) in
             guard let proxyOwner = ProxyOwner(snapshot?.value as AnyObject) else {
                 completion(nil)
                 return
             }
-            getProxy(key: proxyOwner.key, ownerId: proxyOwner.ownerId, completion: completion)
+            getProxy(withKey: proxyOwner.key, belongingTo: proxyOwner.ownerId, completion: completion)
         }
     }
 
-    static func getProxy(key: String, ownerId: String, completion: @escaping (Proxy?) -> Void) {
-        DB.get(Path.Proxies, ownerId, key) { (snapshot) in
-            guard let proxy = Proxy(snapshot?.value as AnyObject) else {
-                completion(nil)
-                return
-            }
-            completion(proxy)
+    static func getProxy(withKey key: String, belongingTo uid: String, completion: @escaping (Proxy?) -> Void) {
+        DB.get(Path.Proxies, uid, key) { (snapshot) in
+            completion(Proxy(snapshot?.value as AnyObject))
+        }
+    }
+
+    static func getProxies(forUser uid: String, completion: @escaping ([Proxy]?) -> Void) {
+        DB.get(Path.Proxies, uid) { (data) in
+            completion(data?.toProxies())
         }
     }
 
@@ -221,82 +211,90 @@ extension DBProxy {
 
 extension DBProxy {
     static func setIcon(_ icon: String, forProxy proxy: Proxy, completion: @escaping (Success) -> Void) {
-        var allSuccess = true
-
-        let setIconDone = DispatchGroup()
-        for _ in 1...2 {
-            setIconDone.enter()
-        }
-
-        DB.set(icon, at: Path.Proxies, proxy.ownerId, proxy.key, Path.Icon) { (success) in
-            allSuccess &= success
-            setIconDone.leave()
-        }
-
         DBConvo.getConvos(forProxy: proxy, filtered: false) { (convos) in
             guard let convos = convos else {
                 completion(false)
                 return
             }
-
-            let setIconForConvoDone = DispatchGroup()
-
-            for convo in convos {
-                setIconForConvoDone.enter()
-                DB.set([DB.Transaction(set: icon, at: Path.Convos, convo.receiverId, convo.key, Path.Icon),
-                        DB.Transaction(set: icon, at: Path.Convos, convo.receiverProxyKey, convo.key, Path.Icon)]) { (success) in
-                            allSuccess &= success
-                            setIconForConvoDone.leave()
-                }
-            }
-
-            setIconForConvoDone.notify(queue: .main) {
-                setIconDone.leave()
-            }
-        }
-
-        setIconDone.notify(queue: .main) {
-            completion(allSuccess)
+            setIcon(icon, forProxy: proxy, withConvos: convos, completion: completion)
         }
     }
 
+    static func setIcon(_ icon: String, forProxy proxy: Proxy, withConvos convos: [Convo], completion: @escaping (Success) -> Void) {
+        let workKey = WorkKey()
+        workKey.setIcon(icon, forProxy: proxy)
+        workKey.setIcon(icon, forConvos: convos)
+        workKey.notify {
+            completion(workKey.workResult)
+            workKey.finishWorkGroup()
+        }
+    }
+}
+
+private extension WorkKey {
+    func setIcon(_ icon: String, forProxy proxy: Proxy) {
+        startWork()
+        DB.set(icon, at: Path.Proxies, proxy.ownerId, proxy.key, Path.Icon) { (success) in
+            self.finishWork(withResult: success)
+        }
+    }
+
+    func setIcon(_ icon: String, forConvos convos: [Convo]) {
+        for convo in convos {
+            setIcon(icon, forConvo: convo)
+        }
+    }
+
+    private func setIcon(_ icon: String, forConvo convo: Convo) {
+        startWork()
+        DB.set([DB.Transaction(set: icon, at: Path.Convos, convo.receiverId, convo.key, Path.Icon),
+                DB.Transaction(set: icon, at: Path.Convos, convo.receiverProxyKey, convo.key, Path.Icon)]) { (success) in
+                    self.finishWork(withResult: success)
+        }
+    }
+}
+
+extension DBProxy {
     static func setNickname(_ nickname: String, forProxy proxy: Proxy, completion: @escaping (Success) -> Void) {
-        var allSuccess = true
-
-        let setNicknameDone = DispatchGroup()
-        for _ in 1...2 {
-            setNicknameDone.enter()
-        }
-
-        DB.set(nickname, at: Path.Proxies, proxy.ownerId, proxy.key, Path.Nickname) { (success) in
-            allSuccess &= success
-            setNicknameDone.leave()
-        }
-
         DBConvo.getConvos(forProxy: proxy, filtered: false) { (convos) in
             guard let convos = convos else {
                 completion(false)
                 return
             }
-
-            let setNicknameForConvoDone = DispatchGroup()
-
-            for convo in convos {
-                setNicknameForConvoDone.enter()
-                DB.set([DB.Transaction(set: nickname, at: Path.Convos, convo.senderId, convo.key, Path.SenderNickname),
-                        DB.Transaction(set: nickname, at: Path.Convos, convo.senderProxyKey, convo.key)]) { (success) in
-                            allSuccess &= success
-                            setNicknameForConvoDone.leave()
-                }
-            }
-
-            setNicknameForConvoDone.notify(queue: .main) {
-                setNicknameDone.leave()
-            }
+            setNickname(nickname, forProxy: proxy, withConvos: convos, completion: completion)
         }
+    }
 
-        setNicknameDone.notify(queue: .main) {
-            completion(allSuccess)
+    static func setNickname(_ nickname: String, forProxy proxy: Proxy, withConvos convos: [Convo], completion: @escaping (Success) -> Void) {
+        let workKey = WorkKey()
+        workKey.setNickname(nickname, forProxy: proxy)
+        workKey.setNickname(nickname, forConvos: convos)
+        workKey.notify {
+            completion(workKey.workResult)
+            workKey.finishWorkGroup()
+        }
+    }
+}
+
+private extension WorkKey {
+    func setNickname(_ nickname: String, forProxy proxy: Proxy) {
+        startWork()
+        DB.set(nickname, at: Path.Proxies, proxy.ownerId, proxy.key, Path.Nickname) { (success) in
+            self.finishWork(withResult: success)
+        }
+    }
+
+    func setNickname(_ nickname: String, forConvos convos: [Convo]) {
+        for convo in convos {
+            setNickname(nickname, forConvo: convo)
+        }
+    }
+
+    private func setNickname(_ nickname: String, forConvo convo: Convo) {
+        startWork()
+        DB.set([DB.Transaction(set: nickname, at: Path.Convos, convo.senderId, convo.key, Path.SenderNickname),
+                DB.Transaction(set: nickname, at: Path.Convos, convo.senderProxyKey, convo.key)]) { (success) in
+                    self.finishWork(withResult: success)
         }
     }
 }
@@ -313,98 +311,90 @@ extension DBProxy {
     }
 
     static func deleteProxy(_ proxy: Proxy, withConvos convos: [Convo], completion: @escaping (Success) -> Void) {
-        let workKey = Shared.startWorkGroup()
-
-        deleteProxyKey(proxyKey: proxy.key, workKey: workKey)
-        deleteProxyOwner(proxyKey: proxy.key, workKey: workKey)
-        deleteProxy(proxyOwnerId: proxy.ownerId, proxyKey: proxy.key, workKey: workKey)
-        deleteProxyConvos(proxyKey: proxy.key, workKey: workKey)
-        deleteUserConvos(convos: convos, workKey: workKey)
-        adjustUserUnread(proxyUnread: proxy.unread, proxyOwnerId: proxy.ownerId, workKey: workKey)
-
-        Shared.shared.workGroup[workKey]?.notify(queue: .main) {
-            decrementUserProxyCount(uid: proxy.ownerId) { (success) in
-                completion(Shared.setWorkResult(success, workKey: workKey))
-                Shared.finishWorkGroup(workKey: workKey)
+        let workKey = WorkKey()
+        workKey.deleteProxyKey(forProxy: proxy)
+        workKey.deleteProxyOwner(forProxy: proxy)
+        workKey.deleteProxy(proxy)
+        workKey.deleteConvos(forProxy: proxy)
+        workKey.deleteConvosForUser(convos: convos)
+        workKey.adjustUserUnread(fromProxy: proxy)
+        workKey.notify {
+            decrementProxyCount(forUser: proxy.ownerId) { (success) in
+                completion(workKey.setWorkResult(success))
+                workKey.finishWorkGroup()
             }
         }
     }
 
-    private static func deleteProxyKey(proxyKey: String, workKey: String) {
-        Shared.startWork(workKey)
-        DB.delete(Path.ProxyKeys, proxyKey) { (success) in
-            Shared.finishWorkWithResult(success, workKey: workKey)
-        }
-    }
-
-    private static func deleteProxyOwner(proxyKey: String, workKey: String) {
-        Shared.startWork(workKey)
-        DB.delete(Path.ProxyOwners, proxyKey) { (success) in
-            Shared.finishWorkWithResult(success, workKey: workKey)
-        }
-    }
-
-    private static func deleteProxy(proxyOwnerId: String, proxyKey: String, workKey: String) {
-        Shared.startWork(workKey)
-        DB.delete(Path.Proxies, proxyOwnerId, proxyKey) { (success) in
-            Shared.finishWorkWithResult(success, workKey: workKey)
-        }
-    }
-
-    private static func deleteProxyConvos(proxyKey: String, workKey: String) {
-        Shared.startWork(workKey)
-        DB.delete(Path.Convos, proxyKey) { (success) in
-            Shared.finishWorkWithResult(success, workKey: workKey)
-        }
-    }
-
-    private static func deleteUserConvos(convos: [Convo], workKey: String) {
-        for convo in convos {
-            Shared.startWork(workKey)
-
-            let convoWorkKey = Shared.startWorkGroup()
-
-            deleteUserConvo(convoSenderId: convo.senderId, convoKey: convo.key, workKey: convoWorkKey)
-            setReceiverDeletedProxyForConvo(convoKey: convo.key,
-                                            convoReceiverId: convo.receiverId,
-                                            convoReceiverProxyKey: convo.receiverProxyKey,
-                                            workKey: convoWorkKey)
-
-            Shared.shared.workGroup[convoWorkKey]?.notify(queue: .main) {
-                Shared.finishWorkWithResult(Shared.shared.workResult[convoWorkKey] ?? false, workKey: workKey)
-                Shared.finishWorkGroup(workKey: convoWorkKey)
-            }
-        }
-    }
-
-    private static func deleteUserConvo(convoSenderId: String, convoKey: String, workKey: String) {
-        Shared.startWork(workKey)
-        DB.delete(Path.Convos, convoSenderId, convoKey) { (success) in
-            Shared.finishWorkWithResult(success, workKey: workKey)
-        }
-    }
-
-    private static func setReceiverDeletedProxyForConvo(convoKey: String,
-                                                        convoReceiverId: String,
-                                                        convoReceiverProxyKey: String,
-                                                        workKey: String) {
-        Shared.startWork(workKey)
-        DB.set([DB.Transaction(set: true, at: Path.Convos, convoReceiverId, convoKey, Path.ReceiverDeletedProxy),
-                DB.Transaction(set: true, at: Path.Convos, convoReceiverProxyKey, convoKey, Path.ReceiverDeletedProxy)]) { (success) in
-                    Shared.finishWorkWithResult(success, workKey: workKey)
-        }
-    }
-
-    private static func adjustUserUnread(proxyUnread: Int, proxyOwnerId: String, workKey: String) {
-        Shared.startWork(workKey)
-        DB.increment(-proxyUnread, at: Path.UserInfo, proxyOwnerId, Path.Unread) { (success) in
-            Shared.finishWorkWithResult(success, workKey: workKey)
-        }
-    }
-
-    private static func decrementUserProxyCount(uid: String, completion: @escaping (Success) -> Void) {
-        DB.increment(-1, at: Path.UserInfo, Shared.shared.uid, Path.ProxyCount) { (success) in
+    private static func decrementProxyCount(forUser uid: String, completion: @escaping (Success) -> Void) {
+        DB.increment(-1, at: Path.UserInfo, uid, Path.ProxyCount) { (success) in
             completion(success)
+        }
+    }
+}
+
+private extension WorkKey {
+    func deleteProxyKey(forProxy proxy: Proxy) {
+        startWork()
+        DB.delete(Path.ProxyKeys, proxy.key) { (success) in
+            self.finishWork(withResult: success)
+        }
+    }
+
+    func deleteProxyOwner(forProxy proxy: Proxy) {
+        startWork()
+        DB.delete(Path.ProxyOwners, proxy.key) { (success) in
+            self.finishWork(withResult: success)
+        }
+    }
+
+    func deleteProxy(_ proxy: Proxy) {
+        startWork()
+        DB.delete(Path.Proxies, proxy.ownerId, proxy.key) { (success) in
+            self.finishWork(withResult: success)
+        }
+    }
+
+    func deleteConvos(forProxy proxy: Proxy) {
+        startWork()
+        DB.delete(Path.Convos, proxy.key) { (success) in
+            self.finishWork(withResult: success)
+        }
+    }
+
+    func deleteConvosForUser(convos: [Convo]) {
+        for convo in convos {
+            startWork()
+
+            let convoWorkKey = WorkKey()
+            convoWorkKey.deleteConvoForUser(convo: convo)
+            convoWorkKey.setReceiverDeletedProxyForConvo(convo)
+            convoWorkKey.notify {
+                self.finishWork(withResult: convoWorkKey.workResult)
+                convoWorkKey.finishWorkGroup()
+            }
+        }
+    }
+
+    private func deleteConvoForUser(convo: Convo) {
+        startWork()
+        DB.delete(Path.Convos, convo.senderId, convo.key) { (success) in
+            self.finishWork(withResult: success)
+        }
+    }
+
+    func setReceiverDeletedProxyForConvo(_ convo: Convo) {
+        startWork()
+        DB.set([DB.Transaction(set: true, at: Path.Convos, convo.receiverId, convo.key, Path.ReceiverDeletedProxy),
+                DB.Transaction(set: true, at: Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverDeletedProxy)]) { (success) in
+                    self.finishWork(withResult: success)
+        }
+    }
+
+    func adjustUserUnread(fromProxy proxy: Proxy) {
+        startWork()
+        DB.increment(-proxy.unread, at: Path.UserInfo, proxy.ownerId, Path.Unread) { (success) in
+            self.finishWork(withResult: success)
         }
     }
 }
