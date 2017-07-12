@@ -15,6 +15,50 @@ enum Result<T, Error> {
     case failure(Error)
 }
 
+typealias WorkKey = String
+
+extension WorkKey {
+    init() {
+        let workKey = UUID().uuidString
+        Shared.shared.workGroups[workKey] = (DispatchGroup(), true)
+        self = workKey
+    }
+
+    static func makeWorkKey() -> WorkKey {
+        return WorkKey()
+    }
+
+    func finishWorkGroup() {
+        Shared.shared.workGroups.removeValue(forKey: self)
+    }
+
+    func startWork() {
+        Shared.shared.workGroups[self]?.group.enter()
+    }
+
+    func finishWork(withResult result: Success) {
+        setWorkResult(result)
+        Shared.shared.workGroups[self]?.group.leave()
+    }
+
+    @discardableResult
+    func setWorkResult(_ result: Success) -> Success {
+        let result = Shared.shared.workGroups[self]?.result ?? false && result
+        Shared.shared.workGroups[self]?.result = result
+        return result
+    }
+
+    var workResult: Success {
+        return Shared.shared.workGroups[self]?.result ?? false
+    }
+
+    func notify(completion: @escaping () -> Void) {
+        Shared.shared.workGroups[self]?.group.notify(queue: .main) {
+            completion()
+        }
+    }
+}
+
 extension Bool {
     static func &=(lhs: inout Bool, rhs: Bool) {
         lhs = lhs && rhs

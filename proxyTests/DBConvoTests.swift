@@ -14,10 +14,10 @@ class DBConvoTests: DBTest {}
 
 extension DBConvoTests {
     func testGetConvoKey() {
-        var sender = proxy("b")
+        var sender = DBTest.proxy(ownerId: "b")
         sender.key = "a"
 
-        var receiver = proxy("d")
+        var receiver = DBTest.proxy(ownerId: "d")
         receiver.key = "c"
 
         XCTAssertEqual(DBConvo.getConvoKey(senderProxy: sender,
@@ -28,8 +28,8 @@ extension DBConvoTests {
     func testCreateConvo() {
         x = expectation(description: #function)
 
-        let sender = proxy()
-        let receiver = proxy("test")
+        let sender = DBTest.proxy(ownerId: Shared.shared.uid)
+        let receiver = DBTest.proxy(ownerId: DBTest.testUser)
 
         DBConvo.createConvo(sender: sender, receiver: receiver) { (senderConvo) in
             guard let senderConvo = senderConvo else {
@@ -99,7 +99,7 @@ extension DBConvoTests {
     func testGetConvo() {
         x = expectation(description: #function)
 
-        let convo = self.convo()
+        let convo = DBTest.convo(senderId: Shared.shared.uid, senderProxyKey: UUID().uuidString)
         DB.set(convo.toJSON(), at: Path.Convos, Shared.shared.uid, convo.key) { (success) in
             XCTAssert(success)
 
@@ -119,8 +119,8 @@ extension DBConvoTests {
             case .failure(_):
                 XCTFail()
             case .success(let proxy):
-                let convo1 = self.convo(senderProxyKey: proxy.key)
-                let convo2 = self.convo(senderProxyKey: proxy.key)
+                let convo1 = DBTest.convo(senderId: Shared.shared.uid, senderProxyKey: proxy.key)
+                let convo2 = DBTest.convo(senderId: Shared.shared.uid, senderProxyKey: proxy.key)
 
                 DB.set([DB.Transaction(set: convo1.toJSON(), at: Path.Convos, proxy.key, convo1.key),
                         DB.Transaction(set: convo2.toJSON(), at: Path.Convos, proxy.key, convo2.key)]) { (success) in
@@ -141,11 +141,11 @@ extension DBConvoTests {
     func testGetConvosForUser() {
         x = expectation(description: #function)
 
-        let convo1 = convo()
-        let convo2 = convo()
+        let convo1 = DBTest.convo(senderId: Shared.shared.uid, senderProxyKey: UUID().uuidString)
+        let convo2 = DBTest.convo(senderId: Shared.shared.uid, senderProxyKey: UUID().uuidString)
 
-        DB.set([DB.Transaction(set: convo1.toJSON(), at: Path.Convos, Shared.shared.uid, convo1.key),
-                DB.Transaction(set: convo2.toJSON(), at: Path.Convos, Shared.shared.uid, convo2.key)]) { (success) in
+        DB.set([DB.Transaction(set: convo1.toJSON(), at: Path.Convos, convo1.senderId, convo1.key),
+                DB.Transaction(set: convo2.toJSON(), at: Path.Convos, convo2.senderId, convo2.key)]) { (success) in
                     XCTAssert(success)
 
                     DBConvo.getConvos(forUser: Shared.shared.uid, filtered: false) { (convos) in
@@ -163,8 +163,8 @@ extension DBConvoTests {
     func testSetNickname() {
         x = expectation(description: #function)
 
-        let sender = proxy()
-        let receiver = proxy("test")
+        let sender = DBTest.proxy(ownerId: Shared.shared.uid)
+        let receiver = DBTest.proxy(ownerId: DBTest.testUser)
 
         DBConvo.createConvo(sender: sender, receiver: receiver) { (convo) in
             guard let convo = convo else {
@@ -293,8 +293,8 @@ extension DBConvoTests {
     func testDeleteConvo() {
         x = expectation(description: #function)
 
-        let sender = proxy()
-        let receiver = proxy("test")
+        let sender = DBTest.proxy(ownerId: Shared.shared.uid)
+        let receiver = DBTest.proxy(ownerId: DBTest.testUser)
 
         DBConvo.createConvo(sender: sender, receiver: receiver) { (convo) in
             guard let convo = convo else {
@@ -351,8 +351,8 @@ extension DBConvoTests {
     func testUserIsPresent() {
         x = expectation(description: #function)
 
-        let convo = self.convo(key: "test")
-        DB.set(true, at: Path.Present, convo.key, Shared.shared.uid, Path.Present) { (success) in
+        let convo = DBTest.convo(senderId: Shared.shared.uid, senderProxyKey: UUID().uuidString)
+        DB.set(true, at: Path.Present, convo.key, convo.senderId, Path.Present) { (success) in
             XCTAssert(success)
 
             DBConvo.userIsPresent(uid: Shared.shared.uid, inConvoWithKey: convo.key) { (isPresent) in
@@ -369,19 +369,19 @@ extension DBConvoTests {
     func testGetConvosFromSnapshot() throws {
         let x = expectation(description: #function)
 
-        var convo1 = convo()
+        var convo1 = DBTest.convo(senderId: Shared.shared.uid, senderProxyKey: UUID().uuidString)
         convo1.senderLeftConvo = false
         convo1.senderIsBlocking = false
 
-        var convo2 = convo()
+        var convo2 = DBTest.convo(senderId: Shared.shared.uid, senderProxyKey: UUID().uuidString)
         convo2.senderLeftConvo = true
         convo2.senderIsBlocking = true
 
-        DB.set([DB.Transaction(set: convo1.toJSON(), at: "test", "a"),
-                DB.Transaction(set: convo2.toJSON(), at: "test", "b")]) { (success) in
+        DB.set([DB.Transaction(set: convo1.toJSON(), at: DBTest.test, "a"),
+                DB.Transaction(set: convo2.toJSON(), at: DBTest.test, "b")]) { (success) in
                     XCTAssert(success)
 
-                    DB.get("test") { (snapshot) in
+                    DB.get(DBTest.test) { (snapshot) in
                         let convos = snapshot?.toConvos(filtered: true)
                         XCTAssertEqual(convos?.count, 1)
                         XCTAssertEqual(convos?[0], convo1)

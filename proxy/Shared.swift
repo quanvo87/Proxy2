@@ -15,15 +15,14 @@ class Shared {
 
     lazy var cache = NSCache<AnyObject, AnyObject>()
 
-    lazy var uid = ""
-    lazy var isCreatingProxy = false
-
     lazy var adjectives = [String]()
     lazy var nouns = [String]()
     lazy var iconNames = [String]()
 
-    lazy var proxyInfoLoaded = DispatchGroup()
-    lazy var proxyInfoIsLoaded = false
+    lazy var workGroups = [String: (group: DispatchGroup, result: Bool)]()
+
+    lazy var uid = ""
+    lazy var isCreatingProxy = false
 
     private init() {}
 }
