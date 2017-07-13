@@ -7,11 +7,11 @@ target 'proxy' do
     pod 'Firebase/Storage'
     pod 'FacebookCore'
     pod 'FacebookLogin'
-    pod 'Kingfisher'
+#    pod 'Kingfisher'
     pod 'JSQMessagesViewController'
-    pod 'Fusuma'
-    pod 'MobilePlayer'
-    pod 'RAMReel'
+#    pod 'Fusuma'
+#    pod 'MobilePlayer'
+#    pod 'RAMReel'
 end
 
 target 'proxyTests' do
@@ -23,9 +23,9 @@ target 'proxyTests' do
     pod 'Firebase/Storage'
     pod 'FacebookCore'
     pod 'FacebookLogin'
-    pod 'Kingfisher'
+#    pod 'Kingfisher'
     pod 'JSQMessagesViewController'
-    pod 'Fusuma'
-    pod 'MobilePlayer'
-    pod 'RAMReel'
+#    pod 'Fusuma'
+#    pod 'MobilePlayer'
+#    pod 'RAMReel'
 end

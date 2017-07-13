@@ -64,9 +64,7 @@ private extension WorkKey {
 extension DBProxy {
     typealias CreateProxyCallback = (Result<Proxy, ProxyError>) -> Void
 
-    static func createProxy(withName specificName: String? = nil,
-                            forUser uid: String = Shared.shared.uid,
-                            completion: @escaping CreateProxyCallback) {
+    static func createProxy(withName specificName: String? = nil, forUser uid: String = Shared.shared.uid, completion: @escaping CreateProxyCallback) {
         loadProxyInfo { (success) in
             guard success else {
                 completion(.failure(.unknown))
@@ -83,9 +81,7 @@ extension DBProxy {
         }
     }
 
-    private static func createProxyHelper(withName specificName: String? = nil,
-                                          forUser uid: String = Shared.shared.uid, 
-                                          completion: @escaping CreateProxyCallback) {
+    private static func createProxyHelper(withName specificName: String? = nil, forUser uid: String = Shared.shared.uid, completion: @escaping CreateProxyCallback) {
         guard let proxyKeysRef = DB.ref(Path.ProxyKeys) else {
             createProxyFinished(result: .failure(.unknown), completion: completion)
             return
@@ -193,12 +189,6 @@ extension DBProxy {
     static func getProxy(withKey key: String, belongingTo uid: String, completion: @escaping (Proxy?) -> Void) {
         DB.get(Path.Proxies, uid, key) { (snapshot) in
             completion(Proxy(snapshot?.value as AnyObject))
-        }
-    }
-
-    static func getProxies(forUser uid: String, completion: @escaping ([Proxy]?) -> Void) {
-        DB.get(Path.Proxies, uid) { (data) in
-            completion(data?.toProxies())
         }
     }
 
@@ -364,26 +354,29 @@ private extension WorkKey {
 
     func deleteConvosForUser(convos: [Convo]) {
         for convo in convos {
-            startWork()
-
-            let convoWorkKey = WorkKey()
-            convoWorkKey.deleteConvoForUser(convo: convo)
-            convoWorkKey.setReceiverDeletedProxyForConvo(convo)
-            convoWorkKey.notify {
-                self.finishWork(withResult: convoWorkKey.workResult)
-                convoWorkKey.finishWorkGroup()
-            }
+            deleteConvoForUser(convo: convo)
         }
     }
 
     private func deleteConvoForUser(convo: Convo) {
+        startWork()
+        let convoWorkKey = WorkKey()
+        convoWorkKey.deleteConvoForUserHelper(convo: convo)
+        convoWorkKey.setReceiverDeletedProxyForConvo(convo)
+        convoWorkKey.notify {
+            self.finishWork(withResult: convoWorkKey.workResult)
+            convoWorkKey.finishWorkGroup()
+        }
+    }
+
+    private func deleteConvoForUserHelper(convo: Convo) {
         startWork()
         DB.delete(Path.Convos, convo.senderId, convo.key) { (success) in
             self.finishWork(withResult: success)
         }
     }
 
-    func setReceiverDeletedProxyForConvo(_ convo: Convo) {
+    private func setReceiverDeletedProxyForConvo(_ convo: Convo) {
         startWork()
         DB.set([DB.Transaction(set: true, at: Path.Convos, convo.receiverId, convo.key, Path.ReceiverDeletedProxy),
                 DB.Transaction(set: true, at: Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverDeletedProxy)]) { (success) in

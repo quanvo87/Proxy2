@@ -186,9 +186,9 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
             cell.nicknameButton.addTarget(self, action: #selector(ProxyInfoTableViewController.showEditNicknameAlert), for: .touchUpInside)
             cell.nicknameButton.setTitle(proxy.nickname == "" ? "Enter A Nickname" : proxy.nickname, for: .normal)
             cell.iconImageView.image = nil
-            cell.iconImageView.kf.indicatorType = .activity
+//            cell.iconImageView.kf.indicatorType = .activity
             api.getURL(forIconName: proxy.icon, completion: { (url) in
-                cell.iconImageView.kf.setImage(with: url, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
+//                cell.iconImageView.kf.setImage(with: url, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
             })
             cell.changeIconButton.addTarget(self, action: #selector(ProxyInfoTableViewController.showIconPickerViewController), for: .touchUpInside)
             cell.selectionStyle = .none
@@ -199,9 +199,9 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
             let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.ConvoCell, for: indexPath as IndexPath) as! ConvoCell
             let convo = convos[indexPath.row]
             cell.iconImageView.image = nil
-            cell.iconImageView.kf.indicatorType = .activity
+//            cell.iconImageView.kf.indicatorType = .activity
             api.getURL(forIconName: convo.icon) { (url) in
-                cell.iconImageView.kf.setImage(with: url, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
+//                cell.iconImageView.kf.setImage(with: url, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
             }
             cell.titleLabel.attributedText = api.getConvoTitle(receiverNickname: convo.receiverNickname, receiverName: convo.receiverProxyName, senderNickname: convo.senderNickname, senderName: convo.senderProxyName)
             cell.lastMessageLabel.text = convo.message

@@ -78,9 +78,9 @@ class SenderPickerTableViewController: UITableViewController {
         }
         
         cell.iconImageView.image = nil
-        cell.iconImageView.kf.indicatorType = .activity
+//        cell.iconImageView.kf.indicatorType = .activity
         api.getURL(forIconName: proxy.icon) { (url) in
-            cell.iconImageView.kf.setImage(with: url, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
+//            cell.iconImageView.kf.setImage(with: url, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
         }
         
         cell.nameLabel.text = proxy.name
