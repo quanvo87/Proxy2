@@ -27,6 +27,7 @@ class DBTest: XCTestCase {
 
     override func setUp() {
         x = expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
 
         if Shared.shared.uid == uid {
             setupTestEnv()
@@ -54,14 +55,12 @@ class DBTest: XCTestCase {
                 }
             }
         }
-
-        waitForExpectations(timeout: 10)
     }
 
     override func tearDown() {
         x = expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
         setupTestEnv()
-        waitForExpectations(timeout: 10)
     }
 
     deinit {
@@ -79,7 +78,6 @@ private extension DBTest {
         workKey.deleteProxies(forUser: DBTest.testUser)
         workKey.deleteConvos(forUser: Shared.shared.uid)
         workKey.deleteConvos(forUser: DBTest.testUser)
-        workKey.deletePresent() // TODO: - move to userInfo
         workKey.notify {
             workKey.deleteUserInfo(Shared.shared.uid)
             workKey.deleteUserInfo(DBTest.testUser)
@@ -152,14 +150,6 @@ extension WorkKey {
         }
     }
 
-    func deletePresent() {
-        startWork()
-        DB.delete(Path.Present, "test") { (success) in
-            XCTAssert(success)
-            self.finishWork(withResult: success)
-        }
-    }
-
     func deleteUserInfo(_ uid: String) {
         startWork()
         DB.delete(Path.UserInfo, uid) { (success) in
@@ -170,81 +160,51 @@ extension WorkKey {
 }
 
 extension DBTest {
-    func assertValue<T: Comparable>(at first: String, _ rest: String..., equals value: T,
-                                    group: DispatchGroup,
-                                    function: String = #function,
-                                    line: Int = #line) {
-        group.enter()
-        DB.get(first, rest) { (data) in
-            XCTAssertEqual(data?.value as? T, value,
-                           "\(function): line \(line)")
-            group.leave()
+    static func makeProxy(withName name: String? = nil, forUser uid: String = Shared.shared.uid, completion: @escaping (Proxy) -> Void) {
+        DBProxy.makeProxy(withName: name, forUser: uid) { (result) in
+            switch result {
+            case .failure: XCTFail()
+            case .success(let proxy):
+                completion(proxy)
+            }
         }
     }
 
-    func assertNull(at first: String, _ rest: String..., group: DispatchGroup,
-                    function: String = #function,
-                    line: Int = #line) {
-        group.enter()
-        DB.get(first, rest) { (data) in
-            XCTAssertEqual(data?.value as? FirebaseDatabase.NSNull,
-                           FirebaseDatabase.NSNull(),
-                           "\(function): line \(line)")
-            group.leave()
+    static func makeConvo(completion: @escaping (_ convo: Convo, _ sender: Proxy, _ receiver: Proxy) -> Void) {
+        var sender = Proxy()
+        var receiver = Proxy()
+
+        let proxiesCreated = DispatchGroup()
+        for _ in 1...2 {
+            proxiesCreated.enter()
         }
-    }
-}
 
-extension DBTest {
-    static func proxy(ownerId: String) -> Proxy {
-        var proxy = Proxy()
-        proxy.icon = UUID().uuidString
-        proxy.key = UUID().uuidString
-        proxy.message = UUID().uuidString
-        proxy.name = UUID().uuidString
-        proxy.nickname = UUID().uuidString
-        proxy.ownerId = ownerId
-        return proxy
-    }
-
-    static func setProxy(_ proxy: Proxy, completion: @escaping (Success) -> Void) {
-        DB.set(proxy.toJSON(), at: Path.Proxies, proxy.ownerId, proxy.key) { (success) in
-            completion(success)
+        DBProxy.makeProxy(forUser: Shared.shared.uid) { (result) in
+            switch result {
+            case .failure: XCTFail()
+            case .success(let proxy):
+                sender = proxy
+                proxiesCreated.leave()
+            }
         }
-    }
-}
 
-extension DBTest {
-    static func convo(senderId: String,
-                      senderProxyKey: String) -> Convo {
-        var convo = Convo()
-        convo.icon = UUID().uuidString
-        convo.key = UUID().uuidString
-        convo.message = UUID().uuidString
-        convo.receiverId = UUID().uuidString
-        convo.receiverNickname = UUID().uuidString
-        convo.receiverProxyKey = UUID().uuidString
-        convo.receiverProxyName = UUID().uuidString
-        convo.senderId = senderId
-        convo.senderNickname = UUID().uuidString
-        convo.senderProxyKey = senderProxyKey
-        convo.senderProxyName = UUID().uuidString
-        return convo
-    }
-
-    static func setConvoForUser(_ convo: Convo, completion: @escaping (Success) -> Void) {
-        DB.set(convo.toJSON(), at: Path.Convos, convo.senderId, convo.key) { (success) in
-            completion(success)
+        DBProxy.makeProxy(forUser: testUser) { (result) in
+            switch result {
+            case .failure: XCTFail()
+            case .success(let proxy):
+                receiver = proxy
+                proxiesCreated.leave()
+            }
         }
-    }
 
-    static func setConvoForProxy(_ convo: Convo, completion: @escaping (Success) -> Void) {
-        DB.set(convo.toJSON(), at: Path.Convos, convo.senderProxyKey, convo.key) { (success) in
-            completion(success)
+        proxiesCreated.notify(queue: .main) {
+            DBConvo.makeConvo(sender: sender, receiver: receiver) { (convo) in
+                guard let convo = convo else {
+                    XCTFail()
+                    return
+                }
+                completion(convo, sender, receiver)
+            }
         }
     }
 }
-
-let test = "test"
-let testUser = "test user"
-let testProxyKey = "test proxy key"

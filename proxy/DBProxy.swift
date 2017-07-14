@@ -64,7 +64,7 @@ private extension WorkKey {
 extension DBProxy {
     typealias CreateProxyCallback = (Result<Proxy, ProxyError>) -> Void
 
-    static func createProxy(withName specificName: String? = nil, forUser uid: String = Shared.shared.uid, completion: @escaping CreateProxyCallback) {
+    static func makeProxy(withName specificName: String? = nil, forUser uid: String = Shared.shared.uid, completion: @escaping CreateProxyCallback) {
         loadProxyInfo { (success) in
             guard success else {
                 completion(.failure(.unknown))
@@ -76,12 +76,12 @@ extension DBProxy {
                     return
                 }
                 Shared.shared.isCreatingProxy = true
-                createProxyHelper(withName: specificName, forUser: uid, completion: completion)
+                makeProxyHelper(withName: specificName, forUser: uid, completion: completion)
             }
         }
     }
 
-    private static func createProxyHelper(withName specificName: String? = nil, forUser uid: String = Shared.shared.uid, completion: @escaping CreateProxyCallback) {
+    private static func makeProxyHelper(withName specificName: String? = nil, forUser uid: String = Shared.shared.uid, completion: @escaping CreateProxyCallback) {
         guard let proxyKeysRef = DB.ref(Path.ProxyKeys) else {
             createProxyFinished(result: .failure(.unknown), completion: completion)
             return
@@ -133,7 +133,7 @@ extension DBProxy {
                         }
                     } else {
                         if specificName == nil {
-                            createProxyHelper(forUser: uid, completion: completion)
+                            makeProxyHelper(forUser: uid, completion: completion)
                         } else {
                             createProxyFinished(result: .failure(.unknown), completion: completion)
                         }
@@ -283,7 +283,7 @@ private extension WorkKey {
     private func setNickname(_ nickname: String, forConvo convo: Convo) {
         startWork()
         DB.set([DB.Transaction(set: nickname, at: Path.Convos, convo.senderId, convo.key, Path.SenderNickname),
-                DB.Transaction(set: nickname, at: Path.Convos, convo.senderProxyKey, convo.key)]) { (success) in
+                DB.Transaction(set: nickname, at: Path.Convos, convo.senderProxyKey, convo.key, Path.SenderNickname)]) { (success) in
                     self.finishWork(withResult: success)
         }
     }

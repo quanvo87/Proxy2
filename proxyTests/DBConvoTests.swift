@@ -14,55 +14,46 @@ class DBConvoTests: DBTest {}
 
 extension DBConvoTests {
     func testGetConvoKey() {
-        var sender = DBTest.proxy(ownerId: "b")
+        var sender = Proxy()
         sender.key = "a"
+        sender.ownerId = "b"
 
-        var receiver = DBTest.proxy(ownerId: "d")
+        var receiver = Proxy()
         receiver.key = "c"
+        receiver.ownerId = "d"
 
-        XCTAssertEqual(DBConvo.getConvoKey(senderProxy: sender,
-                                           receiverProxy: receiver),
-                       "abcd")
+        XCTAssertEqual(DBConvo.getConvoKey(senderProxy: sender, receiverProxy: receiver), "abcd")
     }
 
     func testCreateConvo() {
         x = expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
 
-        let sender = DBTest.proxy(ownerId: Shared.shared.uid)
-        let receiver = DBTest.proxy(ownerId: DBTest.testUser)
+        DBTest.makeConvo { (convo, sender, receiver) in
+            let convoKey = DBConvo.getConvoKey(senderProxy: sender, receiverProxy: receiver)
 
-        DBConvo.createConvo(sender: sender, receiver: receiver) { (senderConvo) in
-            guard let senderConvo = senderConvo else {
-                XCTFail()
-                return
-            }
-
-            let convoKey = DBConvo.getConvoKey(senderProxy: sender,
-                                               receiverProxy: receiver)
-
-            XCTAssertEqual(senderConvo.key, convoKey)
-            XCTAssertEqual(senderConvo.senderId, sender.ownerId)
-            XCTAssertEqual(senderConvo.senderProxyKey, sender.key)
-            XCTAssertEqual(senderConvo.senderProxyName, sender.name)
-            XCTAssertEqual(senderConvo.receiverId, receiver.ownerId)
-            XCTAssertEqual(senderConvo.receiverProxyKey, receiver.key)
-            XCTAssertEqual(senderConvo.receiverProxyName, receiver.name)
-            XCTAssertEqual(senderConvo.icon, receiver.icon)
-            XCTAssertEqual(senderConvo.receiverIsBlocking, false)
+            XCTAssertEqual(convo.key, convoKey)
+            XCTAssertEqual(convo.senderId, sender.ownerId)
+            XCTAssertEqual(convo.senderProxyKey, sender.key)
+            XCTAssertEqual(convo.senderProxyName, sender.name)
+            XCTAssertEqual(convo.receiverId, receiver.ownerId)
+            XCTAssertEqual(convo.receiverProxyKey, receiver.key)
+            XCTAssertEqual(convo.receiverProxyName, receiver.name)
+            XCTAssertEqual(convo.icon, receiver.icon)
+            XCTAssertEqual(convo.receiverIsBlocking, false)
 
             let convoDataChecked = DispatchGroup()
-
             for _ in 1...4 {
                 convoDataChecked.enter()
             }
 
-            DB.get(Path.Convos, senderConvo.senderId, senderConvo.key) { (snapshot) in
-                XCTAssertEqual(Convo(snapshot?.value as AnyObject), senderConvo)
+            DB.get(Path.Convos, convo.senderId, convo.key) { (snapshot) in
+                XCTAssertEqual(Convo(snapshot?.value as AnyObject), convo)
                 convoDataChecked.leave()
             }
 
-            DB.get(Path.Convos, senderConvo.senderProxyKey, senderConvo.key) { (snapshot) in
-                XCTAssertEqual(Convo(snapshot?.value as AnyObject), senderConvo)
+            DB.get(Path.Convos, convo.senderProxyKey, convo.key) { (snapshot) in
+                XCTAssertEqual(Convo(snapshot?.value as AnyObject), convo)
                 convoDataChecked.leave()
             }
 
@@ -77,8 +68,8 @@ extension DBConvoTests {
             receiverConvo.icon = sender.icon
             receiverConvo.senderIsBlocking = false
 
-            DB.get(Path.Convos, receiverConvo.senderId, receiverConvo.key) { (snapshot) in
-                XCTAssertEqual(Convo(snapshot?.value as AnyObject), receiverConvo)
+            DB.get(Path.Convos, receiverConvo.senderId, receiverConvo.key) { (data) in
+                XCTAssertEqual(Convo(data?.value as AnyObject), receiverConvo)
                 convoDataChecked.leave()
             }
 
@@ -91,106 +82,75 @@ extension DBConvoTests {
                 self.x.fulfill()
             }
         }
-        waitForExpectations(timeout: 10)
     }
 }
 
 extension DBConvoTests {
     func testGetConvo() {
         x = expectation(description: #function)
-      
-        let convo = DBTest.convo(senderId: Shared.shared.uid, senderProxyKey: UUID().uuidString)
+        defer { waitForExpectations(timeout: 10) }
 
-        DB.set(convo.toJSON(), at: Path.Convos, Shared.shared.uid, convo.key) { (success) in
-            XCTAssert(success)
-
+        DBTest.makeConvo { (convo, _, _) in
             DBConvo.getConvo(withKey: convo.key, belongingTo: Shared.shared.uid) { (retrievedConvo) in
                 XCTAssertEqual(retrievedConvo, convo)
                 self.x.fulfill()
             }
         }
-        waitForExpectations(timeout: 10)
     }
 
     func testGetConvosForProxy() {
         x = expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
 
-        DBProxy.createProxy { (result) in
-            switch result {
-            case .failure(_):
-                XCTFail()
-            case .success(let proxy):
-                let convo1 = DBTest.convo(senderId: Shared.shared.uid, senderProxyKey: proxy.key)
-                let convo2 = DBTest.convo(senderId: Shared.shared.uid, senderProxyKey: proxy.key)
-
-                DB.set([DB.Transaction(set: convo1.toJSON(), at: Path.Convos, proxy.key, convo1.key),
-                        DB.Transaction(set: convo2.toJSON(), at: Path.Convos, proxy.key, convo2.key)]) { (success) in
-                            XCTAssert(success)
-
-                            DBConvo.getConvos(forProxy: proxy, filtered: false) { (convos) in
-                                XCTAssertEqual(convos?.count, 2)
-                                XCTAssert(convos?.contains(convo1) ?? false)
-                                XCTAssert(convos?.contains(convo2) ?? false)
-                                self.x.fulfill()
-                            }
+        DBTest.makeConvo { (convo, sender, _) in
+            DBConvo.getConvos(forProxy: sender, filtered: false) { (convos) in
+                if convos?.count == 1 {
+                    XCTAssertEqual(convos?[0], convo)
+                    self.x.fulfill()
+                } else {
+                    XCTFail()
                 }
             }
         }
-        waitForExpectations(timeout: 10)
     }
 
     func testGetConvosForUser() {
         x = expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
 
-        let convo1 = DBTest.convo(senderId: Shared.shared.uid, senderProxyKey: UUID().uuidString)
-        let convo2 = DBTest.convo(senderId: Shared.shared.uid, senderProxyKey: UUID().uuidString)
-
-        DB.set([DB.Transaction(set: convo1.toJSON(), at: Path.Convos, convo1.senderId, convo1.key),
-                DB.Transaction(set: convo2.toJSON(), at: Path.Convos, convo2.senderId, convo2.key)]) { (success) in
-                    XCTAssert(success)
-
-                    DBConvo.getConvos(forUser: Shared.shared.uid, filtered: false) { (convos) in
-                        XCTAssertEqual(convos?.count, 2)
-                        XCTAssert(convos?.contains(convo1) ?? false)
-                        XCTAssert(convos?.contains(convo2) ?? false)
-                        self.x.fulfill()
-                    }
+        DBTest.makeConvo { (convo, _, _) in
+            DBConvo.getConvos(forUser: Shared.shared.uid, filtered: false) { (convos) in
+                XCTAssertEqual(convos?.count, 1)
+                XCTAssertEqual(convos?[0], convo)
+                self.x.fulfill()
+            }
         }
-        waitForExpectations(timeout: 10)
     }
 }
 
 extension DBConvoTests {
     func testSetNickname() {
         x = expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
 
-        let sender = DBTest.proxy(ownerId: Shared.shared.uid)
-        let receiver = DBTest.proxy(ownerId: DBTest.testUser)
-
-        DBConvo.createConvo(sender: sender, receiver: receiver) { (convo) in
-            guard let convo = convo else {
-                XCTFail()
-                return
-            }
-
+        DBTest.makeConvo { (convo, _, _) in
             let testNickname = "test nickname"
 
             DBConvo.setNickname(testNickname, forReceiverInConvo: convo) { (success) in
                 XCTAssert(success)
 
                 let nicknameChecked = DispatchGroup()
-
                 for _ in 1...2 {
                     nicknameChecked.enter()
                 }
 
                 DB.get(Path.Convos, convo.senderId, convo.key, Path.ReceiverNickname) { (snapshot) in
-                    XCTAssertEqual(snapshot?.value as? String ?? "", "test nickname")
+                    XCTAssertEqual(snapshot?.value as? String ?? "", testNickname)
                     nicknameChecked.leave()
                 }
 
                 DB.get(Path.Convos, convo.senderProxyKey, convo.key, Path.ReceiverNickname) { (snapshot) in
-                    XCTAssertEqual(snapshot?.value as? String ?? "", "test nickname")
+                    XCTAssertEqual(snapshot?.value as? String ?? "", testNickname)
                     nicknameChecked.leave()
                 }
 
@@ -199,116 +159,85 @@ extension DBConvoTests {
                 }
             }
         }
-        waitForExpectations(timeout: 10)
     }
 
     func testLeaveConvo() {
         x = expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
 
-        DBProxy.createProxy { (result) in
-            switch result {
-            case .failure(_):
-                XCTFail()
+        DBTest.makeConvo { (convo, _, _) in
+            var convo = convo
+            DB.set([DB.Transaction(set: false, at: Path.Convos, convo.senderId, convo.key, Path.SenderLeftConvo),
+                    DB.Transaction(set: false, at: Path.Convos, convo.senderProxyKey, convo.key, Path.SenderLeftConvo),
+                    DB.Transaction(set: false, at: Path.Convos, convo.receiverId, convo.key, Path.ReceiverLeftConvo),
+                    DB.Transaction(set: false, at: Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverLeftConvo)]) { (success) in
+                        XCTAssert(success)
 
-            case .success(let sender):
-                DBProxy.createProxy { (result) in
-                    switch result {
-                    case .failure(_):
-                        XCTFail()
+                        convo.unread = 1
 
-                    case .success(let proxy):
-                        var receiver = proxy
-                        receiver.ownerId = "test"
+                        DBConvo.leaveConvo(convo) { (success) in
+                            XCTAssert(success)
 
-                        DBConvo.createConvo(sender: sender, receiver: receiver) { (convo) in
-                            guard var convo = convo else {
-                                XCTFail()
-                                return
+                            let checkLeaveConvoData = DispatchGroup()
+                            for _ in 1...7 {
+                                checkLeaveConvoData.enter()
                             }
 
-                            DB.set([DB.Transaction(set: false, at: Path.Convos, convo.senderId, convo.key, Path.SenderLeftConvo),
-                                    DB.Transaction(set: false, at: Path.Convos, convo.senderProxyKey, convo.key, Path.SenderLeftConvo),
-                                    DB.Transaction(set: false, at: Path.Convos, convo.receiverId, convo.key, Path.ReceiverLeftConvo),
-                                    DB.Transaction(set: false, at: Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverLeftConvo)]) { (success) in
-                                        XCTAssert(success)
+                            DB.get(Path.Convos, convo.senderId, convo.key, Path.SenderLeftConvo) { (snapshot) in
+                                XCTAssertEqual(snapshot?.value as? Bool, true)
+                                checkLeaveConvoData.leave()
+                            }
 
-                                        convo.unread = 1
+                            DB.get(Path.Convos, convo.senderProxyKey, convo.key, Path.SenderLeftConvo) { (snapshot) in
+                                XCTAssertEqual(snapshot?.value as? Bool, true)
+                                checkLeaveConvoData.leave()
+                            }
 
-                                        DBConvo.leaveConvo(convo) { (success) in
-                                            XCTAssert(success)
+                            DB.get(Path.Convos, convo.receiverId, convo.key, Path.ReceiverLeftConvo) { (snapshot) in
+                                XCTAssertEqual(snapshot?.value as? Bool, true)
+                                checkLeaveConvoData.leave()
+                            }
 
-                                            let checkLeaveConvoData = DispatchGroup()
+                            DB.get(Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverLeftConvo) { (snapshot) in
+                                XCTAssertEqual(snapshot?.value as? Bool, true)
+                                checkLeaveConvoData.leave()
+                            }
 
-                                            for _ in 1...7 {
-                                                checkLeaveConvoData.enter()
-                                            }
+                            DB.get(Path.Proxies, convo.senderId, convo.senderProxyKey, Path.Convos) { (snapshot) in
+                                XCTAssertEqual(snapshot?.value as? Int, -1)
+                                checkLeaveConvoData.leave()
+                            }
 
-                                            DB.get(Path.Convos, convo.senderId, convo.key, Path.SenderLeftConvo) { (snapshot) in
-                                                XCTAssertEqual(snapshot?.value as? Bool, true)
-                                                checkLeaveConvoData.leave()
-                                            }
+                            DB.get(Path.UserInfo, convo.senderId, Path.Unread){ (snapshot) in
+                                XCTAssertEqual(snapshot?.value as? Int, -1)
+                                checkLeaveConvoData.leave()
+                            }
 
-                                            DB.get(Path.Convos, convo.senderProxyKey, convo.key, Path.SenderLeftConvo) { (snapshot) in
-                                                XCTAssertEqual(snapshot?.value as? Bool, true)
-                                                checkLeaveConvoData.leave()
-                                            }
+                            DB.get(Path.Proxies, convo.senderId, convo.senderProxyKey, Path.Unread) { (snapshot) in
+                                XCTAssertEqual(snapshot?.value as? Int, -1)
+                                checkLeaveConvoData.leave()
+                            }
 
-                                            DB.get(Path.Convos, convo.receiverId, convo.key, Path.ReceiverLeftConvo) { (snapshot) in
-                                                XCTAssertEqual(snapshot?.value as? Bool, true)
-                                                checkLeaveConvoData.leave()
-                                            }
-
-                                            DB.get(Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverLeftConvo) { (snapshot) in
-                                                XCTAssertEqual(snapshot?.value as? Bool, true)
-                                                checkLeaveConvoData.leave()
-                                            }
-
-                                            DB.get(Path.Proxies, convo.senderId, convo.senderProxyKey, Path.Convos) { (snapshot) in
-                                                XCTAssertEqual(snapshot?.value as? Int, -1)
-                                                checkLeaveConvoData.leave()
-                                            }
-
-                                            DB.get(Path.UserInfo, convo.senderId, Path.Unread){ (snapshot) in
-                                                XCTAssertEqual(snapshot?.value as? Int, -1)
-                                                checkLeaveConvoData.leave()
-                                            }
-
-                                            DB.get(Path.Proxies, convo.senderId, convo.senderProxyKey, Path.Unread) { (snapshot) in
-                                                XCTAssertEqual(snapshot?.value as? Int, -1)
-                                                checkLeaveConvoData.leave()
-                                            }
-
-                                            checkLeaveConvoData.notify(queue: .main) {
-                                                self.x.fulfill()
-                                            }
-                                        }
+                            checkLeaveConvoData.notify(queue: .main) {
+                                self.x.fulfill()
                             }
                         }
-                    }
-                }
             }
         }
-        waitForExpectations(timeout: 10)
     }
+}
 
+extension DBConvoTests {
     func testDeleteConvo() {
         x = expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
 
-        let sender = DBTest.proxy(ownerId: Shared.shared.uid)
-        let receiver = DBTest.proxy(ownerId: DBTest.testUser)
-
-        DBConvo.createConvo(sender: sender, receiver: receiver) { (convo) in
-            guard let convo = convo else {
-                XCTFail()
-                return
-            }
-
+        DBTest.makeConvo { (convo, _, _) in
             DBConvo.deleteConvo(convo) { (success) in
                 XCTAssert(success)
-
+                
                 let convosDeleted = DispatchGroup()
-
-                for _ in 1...4 {
+                for _ in 1...2 {
                     convosDeleted.enter()
                 }
 
@@ -322,22 +251,11 @@ extension DBConvoTests {
                     convosDeleted.leave()
                 }
 
-                DB.get(Path.Convos, convo.receiverId, convo.key) { (snapshot) in
-                    XCTAssertEqual(snapshot?.value as? FirebaseDatabase.NSNull, FirebaseDatabase.NSNull())
-                    convosDeleted.leave()
-                }
-
-                DB.get(Path.Convos, convo.receiverProxyKey, convo.key) { (snapshot) in
-                    XCTAssertEqual(snapshot?.value as? FirebaseDatabase.NSNull, FirebaseDatabase.NSNull())
-                    convosDeleted.leave()
-                }
-
                 convosDeleted.notify(queue: .main) {
                     self.x.fulfill()
                 }
             }
         }
-        waitForExpectations(timeout: 10)
     }
 }
 
@@ -351,45 +269,33 @@ extension DBConvoTests {
 extension DBConvoTests {
     func testUserIsPresent() {
         x = expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
 
-        let convo = DBTest.convo(senderId: Shared.shared.uid, senderProxyKey: UUID().uuidString)
-      
-        DB.set(true, at: Path.Present, convo.key, convo.senderId, Path.Present) { (success) in
-            XCTAssert(success)
+        DBTest.makeConvo { (convo, _, _) in
+            DB.set(true, at: Path.UserInfo, convo.senderId, Path.Present, convo.key, Path.Present) { (success) in
+                XCTAssert(success)
 
-            DBConvo.userIsPresent(uid: Shared.shared.uid, inConvoWithKey: convo.key) { (isPresent) in
-                XCTAssert(isPresent)
-                self.x.fulfill()
+                DBConvo.userIsPresent(user: Shared.shared.uid, inConvoWithKey: convo.key) { (isPresent) in
+                    XCTAssert(isPresent)
+                    self.x.fulfill()
+                }
             }
         }
-
-        waitForExpectations(timeout: 10)
     }
 }
 
 extension DBConvoTests {
     func testGetConvosFromSnapshot() throws {
         let x = expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
 
-        var convo1 = DBTest.convo(senderId: Shared.shared.uid, senderProxyKey: UUID().uuidString)
-        convo1.senderLeftConvo = false
-        convo1.senderIsBlocking = false
-
-        var convo2 = DBTest.convo(senderId: Shared.shared.uid, senderProxyKey: UUID().uuidString)
-        convo2.senderLeftConvo = true
-        convo2.senderIsBlocking = true
-
-        DB.set([DB.Transaction(set: convo1.toJSON(), at: DBTest.test, "a"),
-                DB.Transaction(set: convo2.toJSON(), at: DBTest.test, "b")]) { (success) in
-                    XCTAssert(success)
-
-                    DB.get(DBTest.test) { (snapshot) in
-                        let convos = snapshot?.toConvos(filtered: true)
-                        XCTAssertEqual(convos?.count, 1)
-                        XCTAssertEqual(convos?[0], convo1)
-                        x.fulfill()
-                    }
+        DBTest.makeConvo { (convo, _, _) in
+            DB.get(Path.Convos, convo.senderId) { (data) in
+                let convos = data?.toConvos(filtered: false)
+                XCTAssertEqual(convos?.count, 1)
+                XCTAssertEqual(convos?[0], convo)
+                x.fulfill()
+            }
         }
-        waitForExpectations(timeout: 10)
     }
 }

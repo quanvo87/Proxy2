@@ -15,7 +15,7 @@ extension DBConvo {
         return [senderProxy.key, senderProxy.ownerId, receiverProxy.key, receiverProxy.ownerId].sorted().joined()
     }
 
-    static func createConvo(sender: Proxy, receiver: Proxy, completion: @escaping (Convo?) -> Void) {
+    static func makeConvo(sender: Proxy, receiver: Proxy, completion: @escaping (Convo?) -> Void) {
         DB.get(Path.Blocked, receiver.ownerId, sender.ownerId) { (snapshot) in
             var senderConvo = Convo()
             var receiverConvo = Convo()
@@ -169,9 +169,9 @@ extension DBConvo {
 }
 
 extension DBConvo {
-    static func userIsPresent(uid: String, inConvoWithKey convoKey: String, completion: @escaping (Bool) -> Void) {
-        DB.get(Path.Present, convoKey, uid, Path.Present) { (snapshot) in
-            completion(snapshot?.value as? Bool ?? false)
+    static func userIsPresent(user uid: String, inConvoWithKey convoKey: String, completion: @escaping (Bool) -> Void) {
+        DB.get(Path.UserInfo, uid, Path.Present, convoKey, Path.Present) { (data) in
+            completion(data?.value as? Bool ?? false)
         }
     }
 }

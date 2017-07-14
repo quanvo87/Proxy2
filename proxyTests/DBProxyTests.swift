@@ -10,11 +10,10 @@ import XCTest
 @testable import proxy
 import FirebaseDatabase
 
-class DBProxyTests: DBTest {}
-
-extension DBProxyTests {
+class DBProxyTests: DBTest {
     func testLoadProxyInfo() {
         x = expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
 
         DBProxy.loadProxyInfo { (success) in
             XCTAssert(success)
@@ -23,73 +22,83 @@ extension DBProxyTests {
             XCTAssertFalse(Shared.shared.iconNames.isEmpty)
             self.x.fulfill()
         }
-        waitForExpectations(timeout: 10)
     }
 
     func testCreateProxy() {
         x = expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
 
-        DBProxy.createProxy(forUser: Shared.shared.uid) { (result) in
-            switch result {
-            case .failure:
-                XCTFail()
-            case .success(let proxy):
-                XCTAssertFalse(Shared.shared.isCreatingProxy)
+        DBTest.makeProxy { (proxy) in
+            XCTAssertFalse(Shared.shared.isCreatingProxy)
 
-                let proxyDataChecked = DispatchGroup()
+            let proxyDataChecked = DispatchGroup()
 
-                for _ in 1...4 {
-                    proxyDataChecked.enter()
-                }
+            for _ in 1...4 {
+                proxyDataChecked.enter()
+            }
 
-                DB.get(Path.ProxyKeys, proxy.key) { (data) in
-                    XCTAssertEqual(data?.value as? [String: String] ?? [:], [Path.Key: proxy.key])
-                    proxyDataChecked.leave()
-                }
+            DB.get(Path.ProxyKeys, proxy.key) { (data) in
+                XCTAssertEqual(data?.value as? [String: String] ?? [:], [Path.Key: proxy.key])
+                proxyDataChecked.leave()
+            }
 
-                DB.get(Path.ProxyOwners, proxy.key) { (data) in
-                    XCTAssertEqual(ProxyOwner(data?.value as AnyObject), ProxyOwner(key: proxy.key, ownerId: Shared.shared.uid))
-                    proxyDataChecked.leave()
-                }
+            DB.get(Path.ProxyOwners, proxy.key) { (data) in
+                XCTAssertEqual(ProxyOwner(data?.value as AnyObject), ProxyOwner(key: proxy.key, ownerId: Shared.shared.uid))
+                proxyDataChecked.leave()
+            }
 
-                DB.get(Path.Proxies, Shared.shared.uid, proxy.key) { (data) in
-                    XCTAssertEqual(Proxy(data?.value as AnyObject), proxy)
-                    proxyDataChecked.leave()
-                }
+            DB.get(Path.Proxies, Shared.shared.uid, proxy.key) { (data) in
+                XCTAssertEqual(Proxy(data?.value as AnyObject), proxy)
+                proxyDataChecked.leave()
+            }
 
-                DB.get(Path.UserInfo, Shared.shared.uid, Path.ProxyCount) { (data) in
-                    XCTAssertEqual(data?.value as? Int ?? 0, 1)
-                    proxyDataChecked.leave()
-                }
+            DB.get(Path.UserInfo, Shared.shared.uid, Path.ProxyCount) { (data) in
+                XCTAssertEqual(data?.value as? Int ?? 0, 1)
+                proxyDataChecked.leave()
+            }
 
-                proxyDataChecked.notify(queue: .main) {
+            proxyDataChecked.notify(queue: .main) {
+                self.x.fulfill()
+            }
+        }
+    }
+
+    func testCreatProxyAtProxyLimit() {
+        x = expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
+
+        DB.set(50, at: Path.UserInfo, Shared.shared.uid, Path.ProxyCount) { (success) in
+            XCTAssert(success)
+
+            DBProxy.makeProxy { (result) in
+                switch result {
+                case .success: XCTFail()
+                case .failure(let error):
+                    XCTAssertEqual(error, ProxyError(.proxyLimitReached))
                     self.x.fulfill()
                 }
             }
         }
-        waitForExpectations(timeout: 10)
     }
 
     func testCreateProxyWithExistingName() {
         x = expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
 
-        DBProxy.createProxy(withName: "test") { (result) in
+        DBProxy.makeProxy(withName: "test") { (result) in
             switch result {
-            case .failure:
-                XCTFail()
+            case .failure: XCTFail()
             case .success:
-                DBProxy.createProxy(withName: "test") { (result) in
+                DBProxy.makeProxy(withName: "test") { (result) in
                     switch result {
+                    case .success: XCTFail()
                     case .failure:
                         XCTAssertFalse(Shared.shared.isCreatingProxy)
                         self.x.fulfill()
-                    case .success:
-                        XCTFail()
                     }
                 }
             }
         }
-        waitForExpectations(timeout: 10)
     }
 
     func testCancelMakingProxy() {
@@ -97,203 +106,203 @@ extension DBProxyTests {
         DBProxy.cancelCreatingProxy()
         XCTAssertFalse(Shared.shared.isCreatingProxy)
     }
-}
 
-extension DBProxyTests {
     func testGetProxy() {
         x = expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
 
-        DBProxy.createProxy { (result) in
-            switch result {
-            case .failure:
-                XCTFail()
-            case .success(let newProxy):
-                DBProxy.getProxy(withKey: newProxy.key) { (retrievedProxy) in
-                    XCTAssertEqual(retrievedProxy, newProxy)
-                    self.x.fulfill()
-                }
+        DBTest.makeProxy { (proxy) in
+            DBProxy.getProxy(withKey: proxy.key) { (retrievedProxy) in
+                XCTAssertEqual(retrievedProxy, proxy)
+                self.x.fulfill()
             }
         }
-        waitForExpectations(timeout: 10)
     }
 
     func testGetProxyNotFound() {
         x = expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
 
-        DBProxy.getProxy(withKey: "not a proxy") { (proxy) in
+        DBProxy.getProxy(withKey: "invalid key") { (proxy) in
             XCTAssertNil(proxy)
             self.x.fulfill()
         }
-        waitForExpectations(timeout: 10)
     }
 
     func testGetProxyWithOwnerId() {
         x = expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
 
-        DBProxy.createProxy { (result) in
-            switch result {
-            case .failure:
-                XCTFail()
-            case .success(let newProxy):
-                DBProxy.getProxy(withKey: newProxy.key, belongingTo: newProxy.ownerId) { (retrievedProxy) in
-                    XCTAssertEqual(retrievedProxy, newProxy)
-                    self.x.fulfill()
-                }
+        DBTest.makeProxy { (proxy) in
+            DBProxy.getProxy(withKey: proxy.key, belongingTo: proxy.ownerId) { (retrievedProxy) in
+                XCTAssertEqual(retrievedProxy, proxy)
+                self.x.fulfill()
             }
         }
-        waitForExpectations(timeout: 10)
     }
 
     func testGetProxyWithOwnerIdNotFound() {
         x = expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
 
-        DBProxy.getProxy(withKey: "not a proxy", belongingTo: Shared.shared.uid) { (proxy) in
+        DBProxy.getProxy(withKey: "invalid key", belongingTo: Shared.shared.uid) { (proxy) in
             XCTAssertNil(proxy)
             self.x.fulfill()
         }
-        waitForExpectations(timeout: 10)
     }
 
     func testGetProxiesForUser() {
         x = expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
 
-        DBProxy.createProxy { (result) in
-            switch result {
-            case .failure:
-                XCTFail()
-            case .success(let proxy):
-                DBProxy.getProxies(forUser: Shared.shared.uid) { (proxies) in
-                    XCTAssert(proxies?.contains(proxy) ?? false)
+        DBTest.makeProxy { (proxy) in
+            DBProxy.getProxies(forUser: proxy.ownerId) { (proxies) in
+                XCTAssertEqual(proxies?.count, 1)
+                XCTAssertEqual(proxies?[0], proxy)
+                self.x.fulfill()
+            }
+        }
+    }
+
+    func testSetIcon() {
+        x = expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
+
+        DBTest.makeConvo { (convo, proxy, _) in
+            let newIcon = "new icon"
+
+            DBProxy.setIcon(newIcon, forProxy: proxy) { (success) in
+                XCTAssert(success)
+
+                let setIconChecked = DispatchGroup()
+                for _ in 1...3 {
+                    setIconChecked.enter()
+                }
+
+                DB.get(Path.Proxies, proxy.ownerId, proxy.key, Path.Icon) { (data) in
+                    XCTAssertEqual(data?.value as? String, newIcon)
+                    setIconChecked.leave()
+                }
+
+                DB.get(Path.Convos, convo.receiverId, convo.key, Path.Icon) { (data) in
+                    XCTAssertEqual(data?.value as? String, newIcon)
+                    setIconChecked.leave()
+                }
+
+                DB.get(Path.Convos, convo.receiverProxyKey, convo.key, Path.Icon) { (data) in
+                    XCTAssertEqual(data?.value as? String, newIcon)
+                    setIconChecked.leave()
+                }
+
+                setIconChecked.notify(queue: .main) {
                     self.x.fulfill()
                 }
             }
         }
-        waitForExpectations(timeout: 10)
     }
-}
 
-extension DBProxyTests {
-    // TODO: - finish
-//    func testSetIcon() {
-//        x = expectation(description: #function)
-//
-//        DBProxy.createProxy { (result) in
-//            switch result {
-//            case .failure:
-//                XCTFail()
-//            case .success(let proxy):
-//                var convo = DBTest.convo(senderId: proxy.ownerId, senderProxyKey: proxy.key)
-//                convo.receiverId = testUser
-//                convo.receiverProxyKey = testProxyKey
-//
-//                DB.set(convo.toJSON(), at: Path.Convos, convo.senderId, convo.key) { (success) in
-//                    XCTAssert(success)
-//
-//                    let newIcon = "new icon"
-//
-//                    DBProxy.setIcon(newIcon, forProxy: proxy) { (success) in
-//                        XCTAssert(success)
-//
-//                        let iconDataChecked = DispatchGroup()
-//
-//                        for _ in 1...3 {
-//                            iconDataChecked.enter()
-//                        }
-//
-//                        DBProxy.getProxy(key: proxy.key, ownerId: proxy.ownerId) { (proxyWithNewIcon) in
-//                            XCTAssertEqual(proxyWithNewIcon?.icon, newIcon)
-//                            iconDataChecked.leave()
-//                        }
-//
-//                        DB.get(Path.Convos, convo.receiverId, convo.key, Path.Icon) { (data) in
-//                            XCTAssertEqual(data?.value as? String ?? "", newIcon)
-//                            iconDataChecked.leave()
-//                        }
-//
-//                        DB.get(Path.Convos, convo.receiverProxyKey, convo.key, Path.Icon) { (data) in
-//                            XCTAssertEqual(data?.value as? String ?? "", newIcon)
-//                            iconDataChecked.leave()
-//                        }
-//
-//                        iconDataChecked.notify(queue: .main) {
-//                            self.x.fulfill()
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        waitForExpectations(timeout: 10)
-//    }
-
-    // TODO: - finish
     func testSetNickname() {
         x = expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
 
-        DBProxy.createProxy { (result) in
-            switch result {
-            case .failure:
-                XCTFail()
-            case .success(let proxy):
-                DBProxy.setNickname("new nickname", forProxy: proxy) { (success) in
-                    XCTAssert(success)
+        DBTest.makeConvo { (convo, proxy, _) in
+            let nickname = "nickname"
 
-                    DBProxy.getProxy(withKey: proxy.key, belongingTo: proxy.ownerId) { (proxy) in
-                        XCTAssertEqual(proxy?.nickname, "new nickname")
-                        self.x.fulfill()
-                    }
+            DBProxy.setNickname(nickname, forProxy: proxy) { (success) in
+                XCTAssert(success)
+
+                let setNicknameChecked = DispatchGroup()
+                for _ in 1...3 {
+                    setNicknameChecked.enter()
+                }
+
+                DB.get(Path.Proxies, proxy.ownerId, proxy.key, Path.Nickname) { (data) in
+                    XCTAssertEqual(data?.value as? String, nickname)
+                    setNicknameChecked.leave()
+                }
+
+                DB.get(Path.Convos, convo.senderId, convo.key, Path.SenderNickname) { (data) in
+                    XCTAssertEqual(data?.value as? String, nickname)
+                    setNicknameChecked.leave()
+                }
+
+                DB.get(Path.Convos, convo.senderProxyKey, convo.key, Path.SenderNickname) { (data) in
+                    XCTAssertEqual(data?.value as? String, nickname)
+                    setNicknameChecked.leave()
+                }
+
+                setNicknameChecked.notify(queue: .main) {
+                    self.x.fulfill()
                 }
             }
         }
-        waitForExpectations(timeout: 10)
     }
-}
 
-extension DBProxyTests {
-    // TODO: - finish
     func testDeleteProxy() {
         x = expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
 
-        DBProxy.createProxy { (result) in
-            switch result {
-            case .failure: XCTFail()
-            case .success(let proxy):
-                let proxySetup = DispatchGroup()
+        DBTest.makeConvo { (convo, proxy, _) in
+            var proxy = proxy
+            proxy.unread = 1
 
-                for _ in 1...2 {
-                    proxySetup.enter()
+            DBProxy.deleteProxy(proxy) { (success) in
+                XCTAssert(success)
+
+                let deleteProxyChecked = DispatchGroup()
+                for _ in 1...9 {
+                    deleteProxyChecked.enter()
                 }
 
-                let convo = DBTest.convo(senderId: proxy.ownerId, senderProxyKey: proxy.key)
-                DBTest.setConvoForProxy(convo) { (success) in
-                    XCTAssert(success)
-                    proxySetup.leave()
+                DB.get(Path.ProxyKeys, proxy.key) { (data) in
+                    XCTAssertEqual(data?.value as? FirebaseDatabase.NSNull, FirebaseDatabase.NSNull())
+                    deleteProxyChecked.leave()
                 }
 
-                DB.set(1, at: Path.UserInfo, Shared.shared.uid, Path.Unread) { (success) in
-                    XCTAssert(success)
-                    proxySetup.leave()
+                DB.get(Path.ProxyOwners, proxy.key) { (data) in
+                    XCTAssertEqual(data?.value as? FirebaseDatabase.NSNull, FirebaseDatabase.NSNull())
+                    deleteProxyChecked.leave()
                 }
 
-                var proxy = proxy
-                proxy.unread = 1
+                DB.get(Path.Proxies, proxy.ownerId, proxy.key) { (data) in
+                    XCTAssertEqual(data?.value as? FirebaseDatabase.NSNull, FirebaseDatabase.NSNull())
+                    deleteProxyChecked.leave()
+                }
 
-                DBProxy.deleteProxy(proxy) { (success) in
-                    XCTAssert(success)
+                DB.get(Path.Convos, proxy.key) { (data) in
+                    XCTAssertEqual(data?.value as? FirebaseDatabase.NSNull, FirebaseDatabase.NSNull())
+                    deleteProxyChecked.leave()
+                }
 
-                    let dataChecked = DispatchGroup()
+                DB.get(Path.Convos, convo.senderId, convo.key) { (data) in
+                    XCTAssertEqual(data?.value as? FirebaseDatabase.NSNull, FirebaseDatabase.NSNull())
+                    deleteProxyChecked.leave()
+                }
 
-                    self.assertNull(at: Path.Proxies, Shared.shared.uid, proxy.key, group: dataChecked)
-                    self.assertNull(at: Path.Proxies, Path.Key, proxy.key, group: dataChecked)
-                    self.assertNull(at: Path.Proxies, Path.Name, proxy.key, group: dataChecked)
-                    self.assertValue(at: Path.UserInfo, Shared.shared.uid, Path.Unread, equals: 0, group: dataChecked)
-                    self.assertValue(at: Path.UserInfo, Shared.shared.uid, Path.ProxyCount, equals: 0, group: dataChecked)
+                DB.get(Path.Convos, convo.receiverId, convo.key, Path.ReceiverDeletedProxy) { (data) in
+                    XCTAssertEqual(data?.value as? Bool, true)
+                    deleteProxyChecked.leave()
+                }
 
-                    dataChecked.notify(queue: .main) {
-                        self.x.fulfill()
-                    }
+                DB.get(Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverDeletedProxy) { (data) in
+                    XCTAssertEqual(data?.value as? Bool, true)
+                    deleteProxyChecked.leave()
+                }
+
+                DB.get(Path.UserInfo, proxy.ownerId, Path.Unread) { (data) in
+                    XCTAssertEqual(data?.value as? Int, -1)
+                    deleteProxyChecked.leave()
+                }
+
+                DB.get(Path.UserInfo, proxy.ownerId, Path.ProxyCount) { (data) in
+                    XCTAssertEqual(data?.value as? Int, 0)
+                    deleteProxyChecked.leave()
+                }
+
+                deleteProxyChecked.notify(queue: .main) {
+                    self.x.fulfill()
                 }
             }
         }
-        waitForExpectations(timeout: 10)
     }
 }
