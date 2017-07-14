@@ -190,8 +190,8 @@ class ConvoInfoTableViewController: UITableViewController {
             cell.nicknameButton.setTitle(receiverNickname == "" ? "Enter A Nickname" : receiverNickname, for: .normal)
             cell.nicknameButton.addTarget(self, action: #selector(ConvoInfoTableViewController.editReceiverNickname), for: .touchUpInside)
             cell.iconImageView.image = nil
-            cell.iconImageView.kf.indicatorType = .activity
-            cell.iconImageView.kf.setImage(with: receiverIconURL, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
+//            cell.iconImageView.kf.indicatorType = .activity
+//            cell.iconImageView.kf.setImage(with: receiverIconURL, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
             cell.selectionStyle = .none
             return cell
             
@@ -202,8 +202,8 @@ class ConvoInfoTableViewController: UITableViewController {
             cell.nicknameButton.setTitle(senderNickname == "" ? "Enter A Nickname" : senderNickname, for: .normal)
             cell.nicknameButton.addTarget(self, action: #selector(ConvoInfoTableViewController.editSenderNickname), for: .touchUpInside)
             cell.iconImageView.image = nil
-            cell.iconImageView.kf.indicatorType = .activity
-            cell.iconImageView.kf.setImage(with: senderIconURL, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
+//            cell.iconImageView.kf.indicatorType = .activity
+//            cell.iconImageView.kf.setImage(with: senderIconURL, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
             cell.changeIconButton.addTarget(self, action: #selector(ConvoInfoTableViewController.goToIconPicker), for: .touchUpInside)
             cell.accessoryType = .disclosureIndicator
             return cell

@@ -10,7 +10,7 @@ import AVFoundation
 import FirebaseAuth
 import FirebaseDatabase
 import FirebaseStorage
-import JSQMessagesViewController
+//import JSQMessagesViewController
 
 class API {
     static let sharedInstance = API()
@@ -84,17 +84,17 @@ class API {
     
     /// Returns the UIImage for `url`.
     func getUIImage(from url: URL, completion: @escaping (_ image: UIImage) -> Void) {
-        KingfisherManager.shared.cache.retrieveImage(forKey: url.absoluteString, options: nil) { (image, cachType) in
-            if let image = image {
-                completion(image)
-            } else {
-                KingfisherManager.shared.downloader.downloadImage(with: url, options: nil, progressBlock: nil, completionHandler: { (image, error, imageURL, data) in
-                    guard error == nil, let image = image else { return }
-                    completion(image)
-                    KingfisherManager.shared.cache.store(image, original: nil, forKey: url.absoluteString, toDisk: true, completionHandler: nil)
-                })
-            }
-        }
+//        KingfisherManager.shared.cache.retrieveImage(forKey: url.absoluteString, options: nil) { (image, cachType) in
+//            if let image = image {
+//                completion(image)
+//            } else {
+//                KingfisherManager.shared.downloader.downloadImage(with: url, options: nil, progressBlock: nil, completionHandler: { (image, error, imageURL, data) in
+//                    guard error == nil, let image = image else { return }
+//                    completion(image)
+//                    KingfisherManager.shared.cache.store(image, original: nil, forKey: url.absoluteString, toDisk: true, completionHandler: nil)
+//                })
+//            }
+//        }
     }
     
     /// Returns the UIImage for `icon`.
@@ -135,7 +135,7 @@ class API {
         storageRef.child(Path.UserFiles).child(uid + String(Date().timeIntervalSince1970)).putData(data, metadata: nil) { (metadata, error) in
             guard error == nil, let url = metadata?.downloadURL() else { return }
             completion(url)
-            KingfisherManager.shared.cache.store(image, forKey: url.absoluteString, toDisk: true, completionHandler: nil)
+//            KingfisherManager.shared.cache.store(image, forKey: url.absoluteString, toDisk: true, completionHandler: nil)
         }
     }
     

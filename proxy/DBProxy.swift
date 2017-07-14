@@ -64,9 +64,7 @@ private extension WorkKey {
 extension DBProxy {
     typealias CreateProxyCallback = (Result<Proxy, ProxyError>) -> Void
 
-    static func createProxy(withName specificName: String? = nil,
-                            forUser uid: String = Shared.shared.uid,
-                            completion: @escaping CreateProxyCallback) {
+    static func makeProxy(withName specificName: String? = nil, forUser uid: String = Shared.shared.uid, completion: @escaping CreateProxyCallback) {
         loadProxyInfo { (success) in
             guard success else {
                 completion(.failure(.unknown))
@@ -78,14 +76,12 @@ extension DBProxy {
                     return
                 }
                 Shared.shared.isCreatingProxy = true
-                createProxyHelper(withName: specificName, forUser: uid, completion: completion)
+                makeProxyHelper(withName: specificName, forUser: uid, completion: completion)
             }
         }
     }
 
-    private static func createProxyHelper(withName specificName: String? = nil,
-                                          forUser uid: String = Shared.shared.uid, 
-                                          completion: @escaping CreateProxyCallback) {
+    private static func makeProxyHelper(withName specificName: String? = nil, forUser uid: String = Shared.shared.uid, completion: @escaping CreateProxyCallback) {
         guard let proxyKeysRef = DB.ref(Path.ProxyKeys) else {
             createProxyFinished(result: .failure(.unknown), completion: completion)
             return
@@ -137,7 +133,7 @@ extension DBProxy {
                         }
                     } else {
                         if specificName == nil {
-                            createProxyHelper(forUser: uid, completion: completion)
+                            makeProxyHelper(forUser: uid, completion: completion)
                         } else {
                             createProxyFinished(result: .failure(.unknown), completion: completion)
                         }
@@ -193,12 +189,6 @@ extension DBProxy {
     static func getProxy(withKey key: String, belongingTo uid: String, completion: @escaping (Proxy?) -> Void) {
         DB.get(Path.Proxies, uid, key) { (snapshot) in
             completion(Proxy(snapshot?.value as AnyObject))
-        }
-    }
-
-    static func getProxies(forUser uid: String, completion: @escaping ([Proxy]?) -> Void) {
-        DB.get(Path.Proxies, uid) { (data) in
-            completion(data?.toProxies())
         }
     }
 
@@ -293,7 +283,7 @@ private extension WorkKey {
     private func setNickname(_ nickname: String, forConvo convo: Convo) {
         startWork()
         DB.set([DB.Transaction(set: nickname, at: Path.Convos, convo.senderId, convo.key, Path.SenderNickname),
-                DB.Transaction(set: nickname, at: Path.Convos, convo.senderProxyKey, convo.key)]) { (success) in
+                DB.Transaction(set: nickname, at: Path.Convos, convo.senderProxyKey, convo.key, Path.SenderNickname)]) { (success) in
                     self.finishWork(withResult: success)
         }
     }
@@ -364,26 +354,29 @@ private extension WorkKey {
 
     func deleteConvosForUser(convos: [Convo]) {
         for convo in convos {
-            startWork()
-
-            let convoWorkKey = WorkKey()
-            convoWorkKey.deleteConvoForUser(convo: convo)
-            convoWorkKey.setReceiverDeletedProxyForConvo(convo)
-            convoWorkKey.notify {
-                self.finishWork(withResult: convoWorkKey.workResult)
-                convoWorkKey.finishWorkGroup()
-            }
+            deleteConvoForUser(convo: convo)
         }
     }
 
     private func deleteConvoForUser(convo: Convo) {
+        startWork()
+        let convoWorkKey = WorkKey()
+        convoWorkKey.deleteConvoForUserHelper(convo: convo)
+        convoWorkKey.setReceiverDeletedProxyForConvo(convo)
+        convoWorkKey.notify {
+            self.finishWork(withResult: convoWorkKey.workResult)
+            convoWorkKey.finishWorkGroup()
+        }
+    }
+
+    private func deleteConvoForUserHelper(convo: Convo) {
         startWork()
         DB.delete(Path.Convos, convo.senderId, convo.key) { (success) in
             self.finishWork(withResult: success)
         }
     }
 
-    func setReceiverDeletedProxyForConvo(_ convo: Convo) {
+    private func setReceiverDeletedProxyForConvo(_ convo: Convo) {
         startWork()
         DB.set([DB.Transaction(set: true, at: Path.Convos, convo.receiverId, convo.key, Path.ReceiverDeletedProxy),
                 DB.Transaction(set: true, at: Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverDeletedProxy)]) { (success) in

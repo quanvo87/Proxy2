@@ -8,10 +8,11 @@
 
 import FirebaseDatabase
 import JSQMessagesViewController
-import Fusuma
-import MobilePlayer
+//import Fusuma
+//import MobilePlayer
 
-class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
+//class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
+class ConvoViewController: JSQMessagesViewController {
     
     let api = API.sharedInstance
     let ref = Database.database().reference()
@@ -574,9 +575,9 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
         let message = messages[indexPath.item]
         if message.mediaType == "video" {
             guard let url = (message.media as! JSQVideoMediaItem).fileURL, url.absoluteString != "" else { return }
-            let playerVC = MobilePlayerViewController(contentURL: url)
-            playerVC.activityItems = [url]
-            presentMoviePlayerViewControllerAnimated(playerVC)
+//            let playerVC = MobilePlayerViewController(contentURL: url)
+//            playerVC.activityItems = [url]
+//            presentMoviePlayerViewControllerAnimated(playerVC)
             return
         }
         if message.mediaType == "image" {
@@ -611,10 +612,10 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
         self.inputToolbar.contentView!.textView!.resignFirstResponder()
         let alert = UIAlertController(title: "Send:", message: nil, preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Photo 📸 / Video 🎥", style: .default, handler: { action in
-            let fusuma = FusumaViewController()
-            fusuma.delegate = self
-            fusuma.hasVideo = true
-            self.present(fusuma, animated: true, completion: nil)
+//            let fusuma = FusumaViewController()
+//            fusuma.delegate = self
+//            fusuma.hasVideo = true
+//            self.present(fusuma, animated: true, completion: nil)
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         self.present(alert, animated: true, completion: nil)
@@ -692,8 +693,8 @@ class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
         })
     }
     
-    public func fusumaImageSelected(_ image: UIImage, source: FusumaMode) {}
-    
+//    public func fusumaImageSelected(_ image: UIImage, source: FusumaMode) {}
+
     // MARK: - Text view
     // Keep track of when user is typing.
     override func textViewDidChange(_ textView: UITextView) {

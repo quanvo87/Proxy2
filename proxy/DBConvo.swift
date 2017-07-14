@@ -15,7 +15,7 @@ extension DBConvo {
         return [senderProxy.key, senderProxy.ownerId, receiverProxy.key, receiverProxy.ownerId].sorted().joined()
     }
 
-    static func createConvo(sender: Proxy, receiver: Proxy, completion: @escaping (Convo?) -> Void) {
+    static func makeConvo(sender: Proxy, receiver: Proxy, completion: @escaping (Convo?) -> Void) {
         DB.get(Path.Blocked, receiver.ownerId, sender.ownerId) { (snapshot) in
             var senderConvo = Convo()
             var receiverConvo = Convo()
@@ -81,74 +81,79 @@ extension DBConvo {
                     completion(success)
         }
     }
+}
 
+extension DBConvo {
     static func leaveConvo(_ convo: Convo, completion: @escaping (Success) -> Void) {
-        var allSuccess = true
-        let leaveConvoDone = DispatchGroup()
-
-        for _ in 1...4 {
-            leaveConvoDone.enter()
+        let workKey = WorkKey()
+        workKey.setLeftConvo(forConvo: convo)
+        workKey.decrementConvoCountForSenderProxyOfConvo(convo)
+        workKey.decrementUnreadForSender(byUnreadOfConvo: convo)
+        workKey.decrementUnreadForSenderProxy(byUneadOfConvo: convo)
+        workKey.notify {
+            completion(workKey.workResult)
+            workKey.finishWorkGroup()
         }
+    }
+}
 
+private extension WorkKey {
+    func setLeftConvo(forConvo convo: Convo) {
+        startWork()
         DB.set([DB.Transaction(set: true, at: Path.Convos, convo.senderId, convo.key, Path.SenderLeftConvo),
                 DB.Transaction(set: true, at: Path.Convos, convo.senderProxyKey, convo.key, Path.SenderLeftConvo),
                 DB.Transaction(set: true, at: Path.Convos, convo.receiverId, convo.key, Path.ReceiverLeftConvo),
                 DB.Transaction(set: true, at: Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverLeftConvo)]) { (success) in
-                    allSuccess &= allSuccess
-                    leaveConvoDone.leave()
-        }
-
-        DB.increment(-1, at: Path.Proxies, convo.senderId, convo.senderProxyKey, Path.Convos) { (success) in
-            allSuccess &= success
-            leaveConvoDone.leave()
-        }
-
-        DB.increment(-convo.unread, at: Path.UserInfo, convo.senderId, Path.Unread) { (success) in
-            allSuccess &= success
-            leaveConvoDone.leave()
-        }
-
-        DB.increment(-convo.unread, at: Path.Proxies, convo.senderId, convo.senderProxyKey, Path.Unread) { (success) in
-            allSuccess &= success
-            leaveConvoDone.leave()
-        }
-
-        leaveConvoDone.notify(queue: .main) {
-            completion(allSuccess)
+                    self.finishWork(withResult: success)
         }
     }
 
-    // TODO: - only need to delete sender's copies
+    func decrementConvoCountForSenderProxyOfConvo(_ convo: Convo) {
+        startWork()
+        DB.increment(-1, at: Path.Proxies, convo.senderId, convo.senderProxyKey, Path.Convos) { (success) in
+            self.finishWork(withResult: success)
+        }
+    }
+
+    func decrementUnreadForSender(byUnreadOfConvo convo: Convo) {
+        startWork()
+        DB.increment(-convo.unread, at: Path.UserInfo, convo.senderId, Path.Unread) { (success) in
+            self.finishWork(withResult: success)
+        }
+    }
+
+    func decrementUnreadForSenderProxy(byUneadOfConvo convo: Convo) {
+        startWork()
+        DB.increment(-convo.unread, at: Path.Proxies, convo.senderId, convo.senderProxyKey, Path.Unread) { (success) in
+            self.finishWork(withResult: success)
+        }
+    }
+}
+
+extension DBConvo {
     static func deleteConvo(_ convo: Convo, completion: @escaping (Success) -> Void) {
-        var allSuccess = true
-
-        let deleteConvoDone = DispatchGroup()
-        for _ in 1...4 {
-            deleteConvoDone.enter()
+        let workKey = WorkKey()
+        workKey.deleteConvoForUser(convo)
+        workKey.deleteConvoForProxy(convo)
+        workKey.notify {
+            completion(workKey.workResult)
+            workKey.finishWorkGroup()
         }
+    }
+}
 
+private extension WorkKey {
+    func deleteConvoForUser(_ convo: Convo) {
+        startWork()
         DB.delete(Path.Convos, convo.senderId, convo.key) { (success) in
-            allSuccess &= success
-            deleteConvoDone.leave()
+            self.finishWork(withResult: success)
         }
+    }
 
+    func deleteConvoForProxy(_ convo: Convo) {
+        startWork()
         DB.delete(Path.Convos, convo.senderProxyKey, convo.key) { (success) in
-            allSuccess &= success
-            deleteConvoDone.leave()
-        }
-
-        DB.delete(Path.Convos, convo.receiverId, convo.key) { (success) in
-            allSuccess &= success
-            deleteConvoDone.leave()
-        }
-
-        DB.delete(Path.Convos, convo.receiverProxyKey, convo.key) { (success) in
-            allSuccess &= success
-            deleteConvoDone.leave()
-        }
-
-        deleteConvoDone.notify(queue: .main) {
-            completion(allSuccess)
+            self.finishWork(withResult: success)
         }
     }
 }
@@ -157,17 +162,16 @@ extension DBConvo {
     static func makeConvoTitle(receiverNickname: String, receiverName: String, senderNickname: String, senderName: String) -> NSAttributedString {
         let grayAttribute = [NSAttributedStringKey.foregroundColor: UIColor.gray]
         let receiver = NSMutableAttributedString(string: (receiverNickname == "" ? receiverName : receiverNickname) + ", ")
-        let sender = NSMutableAttributedString(string: senderNickname == "" ? senderName : senderNickname,
-                                               attributes: grayAttribute)
+        let sender = NSMutableAttributedString(string: senderNickname == "" ? senderName : senderNickname, attributes: grayAttribute)
         receiver.append(sender)
         return receiver
     }
 }
 
 extension DBConvo {
-    static func userIsPresent(uid: String, inConvoWithKey convoKey: String, completion: @escaping (Bool) -> Void) {
-        DB.get(Path.Present, convoKey, uid, Path.Present) { (snapshot) in
-            completion(snapshot?.value as? Bool ?? false)
+    static func userIsPresent(user uid: String, inConvoWithKey convoKey: String, completion: @escaping (Bool) -> Void) {
+        DB.get(Path.UserInfo, uid, Path.Present, convoKey, Path.Present) { (data) in
+            completion(data?.value as? Bool ?? false)
         }
     }
 }

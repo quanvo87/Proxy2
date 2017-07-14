@@ -7,7 +7,7 @@
 //
 
 import FirebaseDatabase
-import RAMReel
+//import RAMReel
 
 class ReceiverPickerViewController: UIViewController, UICollectionViewDelegate {
     
@@ -39,21 +39,21 @@ class ReceiverPickerViewController: UIViewController, UICollectionViewDelegate {
                     proxies.append(proxy.key.lowercased())
                 }
             }
-            let dataSource = SimplePrefixQueryDataSource(proxies)
-            var ramReel: RAMReel<RAMCell, RAMTextField, SimplePrefixQueryDataSource>!
-            ramReel = RAMReel(frame: self.view.bounds, dataSource: dataSource, placeholder: "Tap to begin typing…") {
-                guard $0 != "" else { return }
-                self.api.getProxy(withKey: $0, completion: { (proxy) in
-                    guard let proxy = proxy else {
-                        self.showAlert("Receiver Not Found", message: "Highlight the receiver then tap 'Select This Receiver'.")
-                        return
-                    }
-                    self.receiverPickerDelegate.setReceiver(to: proxy)
-                    self.close()
-                })
-            }
-            self.view.addSubview(ramReel.view)
-            ramReel.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+//            let dataSource = SimplePrefixQueryDataSource(proxies)
+//            var ramReel: RAMReel<RAMCell, RAMTextField, SimplePrefixQueryDataSource>!
+//            ramReel = RAMReel(frame: self.view.bounds, dataSource: dataSource, placeholder: "Tap to begin typing…") {
+//                guard $0 != "" else { return }
+//                self.api.getProxy(withKey: $0, completion: { (proxy) in
+//                    guard let proxy = proxy else {
+//                        self.showAlert("Receiver Not Found", message: "Highlight the receiver then tap 'Select This Receiver'.")
+//                        return
+//                    }
+//                    self.receiverPickerDelegate.setReceiver(to: proxy)
+//                    self.close()
+//                })
+//            }
+//            self.view.addSubview(ramReel.view)
+//            ramReel.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         })
         
         selectThisReceiverButton.layer.borderColor = UIColor.blue.cgColor

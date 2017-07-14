@@ -46,7 +46,6 @@ PODS:
     - FirebaseAnalytics (~> 4.0)
     - FirebaseCore (~> 4.0)
     - GTMSessionFetcher/Core (~> 1.1)
-  - Fusuma (1.0.3)
   - GoogleToolboxForMac/DebugUtils (2.1.1):
     - GoogleToolboxForMac/Defines (= 2.1.1)
   - GoogleToolboxForMac/Defines (2.1.1)
@@ -61,9 +60,6 @@ PODS:
   - JSQMessagesViewController (7.3.4):
     - JSQSystemSoundPlayer (~> 2.0.1)
   - JSQSystemSoundPlayer (2.0.1)
-  - Kingfisher (3.10.1)
-  - MobilePlayer (1.2.0)
-  - RAMReel (2.1.0)
 
 DEPENDENCIES:
   - FacebookCore
@@ -72,11 +68,7 @@ DEPENDENCIES:
   - Firebase/Database
   - Firebase/Storage
   - FirebaseAuth
-  - Fusuma
   - JSQMessagesViewController
-  - Kingfisher
-  - MobilePlayer
-  - RAMReel
 
 SPEC CHECKSUMS:
   Bolts: 8a7995239dbe724f9cba2248b766d48b7ebdd322
@@ -91,15 +83,11 @@ SPEC CHECKSUMS:
   FirebaseDatabase: d829b3a8c3e2ac7a16773c5df226966b0805dfc2
   FirebaseInstanceID: 9fbf536668f4d3f0880e7438456dabd1376e294b
   FirebaseStorage: 8110a1ed2034c8fbfd83890d2acc9cdbbd99afec
-  Fusuma: 60ed1dd51a3b3610960219df9862c83f03304ce1
   GoogleToolboxForMac: 8e329f1b599f2512c6b10676d45736bcc2cbbeb0
   GTMSessionFetcher: 30d874b96d0d76028f61fbd122801e3f030d47db
   JSQMessagesViewController: 39fed975e3c9f8eba7292071e29eeb541d105e66
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
-  Kingfisher: 33a1b82140fcb14a9fc13f78dfde2a03ff8de8cb
-  MobilePlayer: '069b13482499f14c25b6ce53f63a91e17975b073'
-  RAMReel: 73bcef3d46a8b924ffef1b11e73a9671a6e2b88b
 
-PODFILE CHECKSUM: 006bf1d8921c0a424e03db905c3ec6159909aaab
+PODFILE CHECKSUM: 6b438cf0fc827b6ba8f557e07c5165151bd02507
 
 COCOAPODS: 1.2.1
