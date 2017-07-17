@@ -12,6 +12,7 @@ import XCTest
 class DBIconTests: DBTest {
     func testGetImageForIcon() {
         x = expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
 
         DBProxy.loadProxyInfo { (success) in
             XCTAssert(success)
@@ -21,8 +22,8 @@ class DBIconTests: DBTest {
             for iconName in Shared.shared.iconNames {
                 iconImagesRetrieved.enter()
 
-                DBIcon.getImageForIcon(iconName as AnyObject, tag: 0) { (_, _) in
-                    XCTAssertNotNil(Shared.shared.cache.object(forKey: iconName as AnyObject) as? UIImage)
+                DBIcon.getImageForIcon(iconName as AnyObject, tag: 0) { (image, _) in
+                    XCTAssertEqual(image, Shared.shared.cache.object(forKey: iconName as AnyObject) as? UIImage)
                     iconImagesRetrieved.leave()
                 }
             }
@@ -31,7 +32,6 @@ class DBIconTests: DBTest {
                 self.x.fulfill()
             }
         }
-        waitForExpectations(timeout: 30)
     }
 
     func testCellsIncrementedTags() {

@@ -55,8 +55,8 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         super.viewDidAppear(true)
         
         if convo != nil {
-            ref.child(Path.Convos).child(convo!.senderId).child(convo!.key).child(Path.SenderLeftConvo).observeSingleEvent(of: .value, with: { (snapshot) in
-                if let deleted = snapshot.value as? Bool, deleted {
+            ref.child(Path.Convos).child(convo!.senderId).child(convo!.key).child(Path.SenderLeftConvo).observeSingleEvent(of: .value, with: { (data) in
+                if let deleted = data.value as? Bool, deleted {
                     _ = self.navigationController?.popViewController(animated: true)
                 }
             })
@@ -69,15 +69,15 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
             self.navigationController!.pushViewController(dest, animated: true)
         }
         
-        proxyRefHandle = proxyRef.observe(.value, with: { (snapshot) in
-            guard let proxy = Proxy(snapshot.value! as AnyObject) else { return }
+        proxyRefHandle = proxyRef.observe(.value, with: { (data) in
+            guard let proxy = Proxy(data.value! as AnyObject) else { return }
             self.proxy = proxy
             self.navigationItem.title = proxy.unread.asLabelWithParens
             self.tableView.reloadData()
         })
         
-        convosRefHandle = convosRef.queryOrdered(byChild: Path.Timestamp).observe(.value, with: { (snapshot) in
-            self.convos = self.api.getConvos(from: snapshot)
+        convosRefHandle = convosRef.queryOrdered(byChild: Path.Timestamp).observe(.value, with: { (data) in
+            self.convos = self.api.getConvos(from: data)
             self.tableView.reloadData()
         })
     }

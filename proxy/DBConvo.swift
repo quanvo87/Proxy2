@@ -16,12 +16,11 @@ extension DBConvo {
     }
 
     static func makeConvo(sender: Proxy, receiver: Proxy, completion: @escaping (Convo?) -> Void) {
-        DB.get(Path.Blocked, receiver.ownerId, sender.ownerId) { (snapshot) in
-            var senderConvo = Convo()
-            var receiverConvo = Convo()
+        DB.get(Path.Blocked, receiver.ownerId, sender.ownerId) { (data) in
+            let senderIsBlocking = data?.childrenCount == 1
             let convoKey = getConvoKey(senderProxy: sender, receiverProxy: receiver)
-            let senderIsBlocking = snapshot?.childrenCount == 1
 
+            var senderConvo = Convo()
             senderConvo.key = convoKey
             senderConvo.senderId = sender.ownerId
             senderConvo.senderProxyKey = sender.key
@@ -31,8 +30,8 @@ extension DBConvo {
             senderConvo.receiverProxyName = receiver.name
             senderConvo.icon = receiver.icon
             senderConvo.receiverIsBlocking = senderIsBlocking
-            let senderConvoJSON = senderConvo.toJSON()
 
+            var receiverConvo = Convo()
             receiverConvo.key = convoKey
             receiverConvo.senderId = receiver.ownerId
             receiverConvo.senderProxyKey = receiver.key
@@ -42,34 +41,54 @@ extension DBConvo {
             receiverConvo.receiverProxyName = sender.name
             receiverConvo.icon = sender.icon
             receiverConvo.senderIsBlocking = senderIsBlocking
-            let receiverConvoJSON = receiverConvo.toJSON()
 
-            DB.set([DB.Transaction(set: senderConvoJSON, at: Path.Convos, senderConvo.senderId, senderConvo.key),
-                    DB.Transaction(set: senderConvoJSON, at: Path.Convos, senderConvo.senderProxyKey, senderConvo.key),
-                    DB.Transaction(set: receiverConvoJSON, at: Path.Convos, receiverConvo.senderId, receiverConvo.key),
-                    DB.Transaction(set: receiverConvoJSON, at: Path.Convos, receiverConvo.senderProxyKey, receiverConvo.key)]) { (success) in
-                        completion(success ? senderConvo : nil)
+            let workKey = WorkKey()
+            workKey.setConvos(senderConvo: senderConvo, receiverConvo: receiverConvo)
+            workKey.incrementConvoCountForProxy(sender)
+            workKey.incrementConvoCountForProxy(receiver)
+            workKey.notify {
+                completion(workKey.workResult ? senderConvo : nil)
+                workKey.finishWorkGroup()
             }
+        }
+    }
+}
+
+private extension WorkKey {
+    func setConvos(senderConvo: Convo, receiverConvo: Convo) {
+        startWork()
+        DB.set([DB.Transaction(set: senderConvo.toJSON(), at: Path.Convos, senderConvo.senderId, senderConvo.key),
+                DB.Transaction(set: senderConvo.toJSON(), at: Path.Convos, senderConvo.senderProxyKey, senderConvo.key),
+                DB.Transaction(set: receiverConvo.toJSON(), at: Path.Convos, receiverConvo.senderId, receiverConvo.key),
+                DB.Transaction(set: receiverConvo.toJSON(), at: Path.Convos, receiverConvo.senderProxyKey, receiverConvo.key)]) { (success) in
+                    self.finishWork(withResult: success)
+        }
+    }
+
+    func incrementConvoCountForProxy(_ proxy: Proxy) {
+        startWork()
+        DB.increment(1, at: Path.Proxies, proxy.ownerId, proxy.key, Path.Convos) { (success) in
+            self.finishWork(withResult: success)
         }
     }
 }
 
 extension DBConvo {
     static func getConvo(withKey key: String, belongingTo uid: String, completion: @escaping (Convo?) -> Void) {
-        DB.get(Path.Convos, uid, key) { (snapshot) in
-            completion(Convo(snapshot?.value as AnyObject))
+        DB.get(Path.Convos, uid, key) { (data) in
+            completion(Convo(data?.value as AnyObject))
         }
     }
 
     static func getConvos(forProxy proxy: Proxy, filtered: Bool, completion: @escaping ([Convo]?) -> Void) {
-        DB.get(Path.Convos, proxy.key) { (snapshot) in
-            completion(snapshot?.toConvos(filtered: filtered))
+        DB.get(Path.Convos, proxy.key) { (data) in
+            completion(data?.toConvos(filtered: filtered))
         }
     }
 
     static func getConvos(forUser uid: String, filtered: Bool, completion: @escaping ([Convo]?) -> Void) {
-        DB.get(Path.Convos, uid) { (snapshot) in
-            completion(snapshot?.toConvos(filtered: filtered))
+        DB.get(Path.Convos, uid) { (data) in
+            completion(data?.toConvos(filtered: filtered))
         }
     }
 }
@@ -135,6 +154,7 @@ extension DBConvo {
         let workKey = WorkKey()
         workKey.deleteConvoForUser(convo)
         workKey.deleteConvoForProxy(convo)
+        workKey.decrementConvoCountForSenderProxyInConvo(convo)
         workKey.notify {
             completion(workKey.workResult)
             workKey.finishWorkGroup()
@@ -153,6 +173,14 @@ private extension WorkKey {
     func deleteConvoForProxy(_ convo: Convo) {
         startWork()
         DB.delete(Path.Convos, convo.senderProxyKey, convo.key) { (success) in
+            self.finishWork(withResult: success)
+        }
+    }
+
+    func decrementConvoCountForSenderProxyInConvo(_ convo: Convo) {
+        startWork()
+        DB.increment(-1, at: Path.Proxies, convo.senderId, convo.senderProxyKey, Path.Convos) { (success) in
+            print(success)
             self.finishWork(withResult: success)
         }
     }

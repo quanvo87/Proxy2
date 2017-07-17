@@ -32,7 +32,6 @@ class DBProxyTests: DBTest {
             XCTAssertFalse(Shared.shared.isCreatingProxy)
 
             let proxyDataChecked = DispatchGroup()
-
             for _ in 1...4 {
                 proxyDataChecked.enter()
             }
@@ -72,10 +71,10 @@ class DBProxyTests: DBTest {
 
             DBProxy.makeProxy { (result) in
                 switch result {
-                case .success: XCTFail()
                 case .failure(let error):
                     XCTAssertEqual(error, ProxyError(.proxyLimitReached))
                     self.x.fulfill()
+                case .success: XCTFail()
                 }
             }
         }
@@ -91,10 +90,10 @@ class DBProxyTests: DBTest {
             case .success:
                 DBProxy.makeProxy(withName: "test") { (result) in
                     switch result {
-                    case .success: XCTFail()
                     case .failure:
                         XCTAssertFalse(Shared.shared.isCreatingProxy)
                         self.x.fulfill()
+                    case .success: XCTFail()
                     }
                 }
             }

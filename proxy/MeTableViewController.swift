@@ -31,24 +31,24 @@ class MeTableViewController: UITableViewController {
                 self.navigationItem.title = user.displayName
 
                 self.messagesReceivedRef = self.ref.child(Path.MessagesReceived).child(self.api.uid).child(Path.MessagesReceived)
-                self.messagesReceivedRef.observe(.value, with: { (snapshot) in
-                    if let messagesReceived = snapshot.value as? Int {
+                self.messagesReceivedRef.observe(.value, with: { (data) in
+                    if let messagesReceived = data.value as? Int {
                         self.messagesReceived = messagesReceived.asStringWithCommas
                         self.tableView.reloadData()
                     }
                 })
 
                 self.messagesSentRef = self.ref.child(Path.MessagesSent).child(self.api.uid).child(Path.MessagesSent)
-                self.messagesSentRef.observe(.value, with: { (snapshot) in
-                    if let messagesSent = snapshot.value as? Int {
+                self.messagesSentRef.observe(.value, with: { (data) in
+                    if let messagesSent = data.value as? Int {
                         self.messagesSent = messagesSent.asStringWithCommas
                         self.tableView.reloadData()
                     }
                 })
 
                 self.proxiesInteractedWithRef = self.ref.child(Path.ProxiesInteractedWith).child(self.api.uid).child(Path.ProxiesInteractedWith)
-                self.proxiesInteractedWithRef.observe(.value, with: { (snapshot) in
-                    if let proxiesInteractedWith = snapshot.value as? Int {
+                self.proxiesInteractedWithRef.observe(.value, with: { (data) in
+                    if let proxiesInteractedWith = data.value as? Int {
                         self.proxiesInteractedWith = proxiesInteractedWith.asStringWithCommas
                         self.tableView.reloadData()
                     }

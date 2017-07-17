@@ -160,24 +160,24 @@ class ConvoViewController: JSQMessagesViewController {
     }
     
     func checkLeftConvo() {
-        ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderLeftConvo).observeSingleEvent(of: .value, with: { (snapshot) in
-            if let leftConvo = snapshot.value as? Bool, leftConvo {
+        ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderLeftConvo).observeSingleEvent(of: .value, with: { (data) in
+            if let leftConvo = data.value as? Bool, leftConvo {
                 self.close()
             }
         })
     }
     
     func checkDeletedProxy() {
-        ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderDeletedProxy).observeSingleEvent(of: .value, with: { (snapshot) in
-            if let deletedProxy = snapshot.value as? Bool, deletedProxy {
+        ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderDeletedProxy).observeSingleEvent(of: .value, with: { (data) in
+            if let deletedProxy = data.value as? Bool, deletedProxy {
                 self.close()
             }
         })
     }
     
     func checkIsBlocking() {
-        ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderIsBlocking).observeSingleEvent(of: .value, with: { (snapshot) in
-            if let isBlocking = snapshot.value as? Bool, isBlocking {
+        ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderIsBlocking).observeSingleEvent(of: .value, with: { (data) in
+            if let isBlocking = data.value as? Bool, isBlocking {
                 self.close()
             }
         })
@@ -197,8 +197,8 @@ class ConvoViewController: JSQMessagesViewController {
     
     // Observe and load messages.
     func observeMessages() {
-        messagesRefHandle = messagesRef.queryOrdered(byChild: Path.Timestamp).observe(.childAdded, with: { (snapshot) in
-            guard let message = Message(anyObject: snapshot.value! as AnyObject) else { return }
+        messagesRefHandle = messagesRef.queryOrdered(byChild: Path.Timestamp).observe(.childAdded, with: { (data) in
+            guard let message = Message(anyObject: data.value! as AnyObject) else { return }
             switch message.mediaType {
                 
             case "imagePlaceholder":
@@ -213,10 +213,10 @@ class ConvoViewController: JSQMessagesViewController {
                 // Once this happens, the message's `mediaURL` will be updated.
                 var messageRefHandle = DatabaseHandle()
                 let messageRef = self.ref.child(Path.Messages).child(message.convo).child(message.key).child(Path.MediaURL)
-                messageRefHandle = messageRef.observe(.value, with: { (snapshot) in
+                messageRefHandle = messageRef.observe(.value, with: { (data) in
                     
                     // Get `mediaURL`.
-                    guard let url = URL(string: snapshot.value as! String), url.absoluteString != "" else { return }
+                    guard let url = URL(string: data.value as! String), url.absoluteString != "" else { return }
                     
                     // Get the image from `mediaURL`.
                     self.api.getUIImage(from: url, completion: { (image) in
@@ -263,10 +263,10 @@ class ConvoViewController: JSQMessagesViewController {
                 // Once this happens, the message's `mediaURL` will be updated.
                 var messageRefHandle = DatabaseHandle()
                 let messageRef = self.ref.child(Path.Messages).child(message.convo).child(message.key).child(Path.MediaURL)
-                messageRefHandle = messageRef.observe(.value, with: { (snapshot) in
+                messageRefHandle = messageRef.observe(.value, with: { (data) in
                     
                     // Get `mediaURL`.
-                    guard let mediaURLString = snapshot.value as? String, mediaURLString != "" else { return }
+                    guard let mediaURLString = data.value as? String, mediaURLString != "" else { return }
                     
                     // Load cell with url to local file.
                     (_message.media as! JSQVideoMediaItem).appliesMediaViewMaskAsOutgoing = message.senderId == self.senderId
@@ -322,9 +322,9 @@ class ConvoViewController: JSQMessagesViewController {
     
     // Observe most recent message to see if it's an outgoing message that's been read.
     func observeLastMessage() {
-        lastMessageRefHandle = messagesRef.queryOrdered(byChild: Path.Timestamp).queryLimited(toLast: 1).observe(.value, with: { (snapshot) in
-            guard snapshot.hasChildren() else { return }
-            guard let message = Message(anyObject: (snapshot.children.nextObject()! as! DataSnapshot).value as AnyObject) else { return }
+        lastMessageRefHandle = messagesRef.queryOrdered(byChild: Path.Timestamp).queryLimited(toLast: 1).observe(.value, with: { (data) in
+            guard data.hasChildren() else { return }
+            guard let message = Message(anyObject: (data.children.nextObject()! as! DataSnapshot).value as AnyObject) else { return }
             if message.senderId == self.senderId && message.read {
                 let message_ = self.messages[self.readReceiptIndex]
                 if !message_.read {
@@ -349,8 +349,8 @@ class ConvoViewController: JSQMessagesViewController {
     
     // Observe when sender changes his/her icon to update all cells that are displaying it.
     func observeSenderIcon() {
-        senderIconRefHandle = senderIconRef.observe(.value, with: { (snapshot) in
-            if let icon = snapshot.value as? String {
+        senderIconRefHandle = senderIconRef.observe(.value, with: { (data) in
+            if let icon = data.value as? String {
                 self.api.getUIImage(forIconName: icon, completion: { (image) in
                     self.icons[self.convo.senderId] = JSQMessagesAvatarImage(placeholder: image)
                     self.collectionView.reloadData()
@@ -361,8 +361,8 @@ class ConvoViewController: JSQMessagesViewController {
     
     // Observe when receiver changes his/her icon to update all cells that are displaying it.
     func observeReceiverIcon() {
-        receiverIconRefHandle = receiverIconRef.observe(.value, with: { (snapshot) in
-            if let icon = snapshot.value as? String {
+        receiverIconRefHandle = receiverIconRef.observe(.value, with: { (data) in
+            if let icon = data.value as? String {
                 self.api.getUIImage(forIconName: icon, completion: { (image) in
                     self.icons[self.convo.receiverId] = JSQMessagesAvatarImage(placeholder: image)
                     self.collectionView.reloadData()
@@ -373,8 +373,8 @@ class ConvoViewController: JSQMessagesViewController {
     
     // Observe when sender changes their nickname and update all cells that are displaying it.
     func observeSenderNickname() {
-        senderNicknameRefHandle = senderNicknameRef.observe(.value, with: { (snapshot) in
-            if let nickname = snapshot.value as? String {
+        senderNicknameRefHandle = senderNicknameRef.observe(.value, with: { (data) in
+            if let nickname = data.value as? String {
                 self.names[self.convo.senderId] = nickname == "" ? self.convo.senderProxyName : nickname
                 self.collectionView.reloadData()
             }
@@ -384,8 +384,8 @@ class ConvoViewController: JSQMessagesViewController {
     // Observe when sender changes receiver's nickname for this convo and update all cells that are displaying it.
     // Also update navigation bar title.
     func observeReceiverNickname() {
-        receiverNicknameRefHandle = receiverNicknameRef.observe(.value, with: { (snapshot) in
-            if let nickname = snapshot.value as? String {
+        receiverNicknameRefHandle = receiverNicknameRef.observe(.value, with: { (data) in
+            if let nickname = data.value as? String {
                 self.names[self.convo.receiverId] = nickname == "" ? self.convo.receiverProxyName : nickname
                 self.setTitle()
                 self.collectionView.reloadData()
@@ -400,11 +400,11 @@ class ConvoViewController: JSQMessagesViewController {
         userIsTypingRef.onDisconnectRemoveValue()
         
         // Show typing indicator when other user is typing.
-        membersAreTypingRefHandle = membersAreTypingRef.observe(.value, with: { (snapshot) in
-            if snapshot.childrenCount == 1 && self.userIsTyping {
+        membersAreTypingRefHandle = membersAreTypingRef.observe(.value, with: { (data) in
+            if data.childrenCount == 1 && self.userIsTyping {
                 return
             }
-            self.showTypingIndicator = snapshot.childrenCount > 0
+            self.showTypingIndicator = data.childrenCount > 0
             self.scrollToBottom(animated: true)
         })
     }
