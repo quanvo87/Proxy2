@@ -36,8 +36,8 @@ class IconPickerCollectionViewController: UICollectionViewController {
             scrollView.delaysContentTouches = false
         }
         
-        ref.child(Path.Icons).child(api.uid).queryOrdered(byChild: Path.Name).observeSingleEvent(of: .value, with: { (snapshot) in
-            for child in snapshot.children {
+        ref.child(Path.Icons).child(api.uid).queryOrdered(byChild: Path.Name).observeSingleEvent(of: .value, with: { (data) in
+            for child in data.children {
                 self.icons.append(((child as! DataSnapshot).value as AnyObject)[Path.Name] as! String)
             }
             self.collectionView?.reloadData()

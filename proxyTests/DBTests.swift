@@ -45,14 +45,14 @@ class DBTests: DBTest {
         DB.set("a", at: "test") { (success) in
             XCTAssert(success)
 
-            DB.get("test") { (snapshot) in
-                XCTAssertEqual(snapshot?.value as? String ?? "", "a")
+            DB.get("test") { (data) in
+                XCTAssertEqual(data?.value as? String ?? "", "a")
 
                 DB.delete("test") { (success) in
                     XCTAssert(success)
 
-                    DB.get("test") { (snapshot) in
-                        XCTAssertEqual(snapshot?.value as? FirebaseDatabase.NSNull,
+                    DB.get("test") { (data) in
+                        XCTAssertEqual(data?.value as? FirebaseDatabase.NSNull,
                                        FirebaseDatabase.NSNull())
                         x.fulfill()
                     }
@@ -68,8 +68,8 @@ class DBTests: DBTest {
         DB.increment(1, at: "test") { (success) in
             XCTAssert(success)
 
-            DB.get("test") { (snapshot) in
-                XCTAssertEqual(snapshot?.value as? Int ?? 0, 1)
+            DB.get("test") { (data) in
+                XCTAssertEqual(data?.value as? Int ?? 0, 1)
                 x.fulfill()
             }
         }
@@ -90,8 +90,8 @@ class DBTests: DBTest {
         }
 
         incrementsDone.notify(queue: .main) {
-            DB.get("test") { (snapshot) in
-                XCTAssertEqual(snapshot?.value as? Int ?? 0, 2)
+            DB.get("test") { (data) in
+                XCTAssertEqual(data?.value as? Int ?? 0, 2)
                 x.fulfill()
             }
         }

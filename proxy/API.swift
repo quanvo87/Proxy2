@@ -180,8 +180,8 @@ class API {
     
     func loadIcons() {
         dispatch_group.enter()
-        ref.child(Path.Icons).child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
-            for child in snapshot.children {
+        ref.child(Path.Icons).child(uid).observeSingleEvent(of: .value, with: { (data) in
+            for child in data.children {
                 self.icons.append(((child as! DataSnapshot).value as AnyObject)[Path.Name] as! String)
             }
             self.dispatch_group.leave()
@@ -260,8 +260,8 @@ class API {
             completion(nil)
             return
         }
-        ref.child(Path.Proxies).child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
-            guard snapshot.childrenCount <= 50 else {
+        ref.child(Path.Proxies).child(uid).observeSingleEvent(of: .value, with: { (data) in
+            guard data.childrenCount <= 50 else {
                 completion(nil)
                 return
             }
@@ -284,8 +284,8 @@ class API {
     /// Load proxyNameGenerator.
     func loadProxyNameGenerator() {
         dispatch_group.enter()
-        ref.child(Path.WordBank).observeSingleEvent(of: .value, with: { (snapshot) in
-            let words = snapshot.value as AnyObject
+        ref.child(Path.WordBank).observeSingleEvent(of: .value, with: { (data) in
+            let words = data.value as AnyObject
             let adjs = words["adjectives"]
             let nouns = words["nouns"]
             self.proxyNameGenerator.adjs = adjs as! [String]
@@ -305,10 +305,10 @@ class API {
         ref.child(Path.Proxies).child(autoId).setValue(proxy.toJSON()) { (error, proxyRef) in
             
             // Get all global proxies with this name.
-            self.ref.child(Path.Proxies).queryOrdered(byChild: Path.Key).queryEqual(toValue: key).observeSingleEvent(of: .value, with: { (snapshot) in
+            self.ref.child(Path.Proxies).queryOrdered(byChild: Path.Key).queryEqual(toValue: key).observeSingleEvent(of: .value, with: { (data) in
                 
                 // If there's only one, we've got a unique proxy name.
-                if snapshot.childrenCount == 1 {
+                if data.childrenCount == 1 {
 
                     // CHECK IF STILL TRYING TO MAKE PROXY
 
@@ -352,8 +352,8 @@ class API {
     
     /// Returns the Proxy with `key`.
     func getProxy(withKey key: String, completion: @escaping (_ proxy: Proxy?) -> Void) {
-        ref.child(Path.Proxies).child(key).observeSingleEvent(of: .value, with: { (snapshot) in
-            guard let proxy = Proxy(snapshot.value! as AnyObject) else {
+        ref.child(Path.Proxies).child(key).observeSingleEvent(of: .value, with: { (data) in
+            guard let proxy = Proxy(data.value! as AnyObject) else {
                 completion(nil)
                 return
             }
@@ -365,8 +365,8 @@ class API {
     
     /// Returns the Proxy with `key` belonging to `user`.
     func getProxy(withKey key: String, belongingToUserId user: String, completion: @escaping (_ proxy: Proxy) -> Void) {
-        ref.child(Path.Proxies).child(user).child(key).observeSingleEvent(of: .value, with: { (snapshot) in
-            guard let proxy = Proxy(snapshot.value! as AnyObject) else { return }
+        ref.child(Path.Proxies).child(user).child(key).observeSingleEvent(of: .value, with: { (data) in
+            guard let proxy = Proxy(data.value! as AnyObject) else { return }
             completion(proxy)
         })
     }
@@ -437,10 +437,10 @@ class API {
         let convoKey = createConvoKey(senderProxyKey: sender.key, senderOwnerId: sender.ownerId, receiverProxyKey: receiver.key, receiverOwnerId: receiver.ownerId)
         
         // Check if convo exists
-        ref.child(Path.Convos).child(sender.ownerId).queryEqual(toValue: convoKey).observeSingleEvent(of: .value, with: { (snapshot) in
+        ref.child(Path.Convos).child(sender.ownerId).queryEqual(toValue: convoKey).observeSingleEvent(of: .value, with: { (data) in
             
             // Convo exists, use it to send the message
-            if snapshot.childrenCount == 1, let convo = Convo(snapshot.value! as AnyObject) {
+            if data.childrenCount == 1, let convo = Convo(data.value! as AnyObject) {
                 self.sendMessage(text: text, mediaType: "", convo: convo, completion: { (convo, message) in
                     completion(convo)
                 })
@@ -548,10 +548,10 @@ class API {
     func createConvo(sender: Proxy, receiver: Proxy, convoKey: String, text: String, completion: @escaping (_ convo: Convo) -> Void) {
         
         // Check if sender is in receiver's blocked list
-        ref.child(Path.Blocked).child(receiver.ownerId).child(sender.ownerId).observeSingleEvent(of: .value, with: { (snapshot) in
+        ref.child(Path.Blocked).child(receiver.ownerId).child(sender.ownerId).observeSingleEvent(of: .value, with: { (data) in
             var senderConvo = Convo()
             var receiverConvo = Convo()
-            let senderBlocked = snapshot.childrenCount == 1
+            let senderBlocked = data.childrenCount == 1
             
             // Set up sender side
             senderConvo.key = convoKey
@@ -588,16 +588,16 @@ class API {
     }
     
     func getConvo(withKey key: String, belongingToUserId user: String, completion: @escaping (_ convo: Convo) -> Void) {
-        ref.child(Path.Convos).child(user).child(key).observeSingleEvent(of: .value, with: { (snapshot) in
-            guard let convo = Convo(snapshot.value! as AnyObject) else { return }
+        ref.child(Path.Convos).child(user).child(key).observeSingleEvent(of: .value, with: { (data) in
+            guard let convo = Convo(data.value! as AnyObject) else { return }
             completion(convo)
         })
     }
     
     func getConvos(for proxy: Proxy, completion: @escaping (_ convos: [Convo]) -> Void) {
-        ref.child(Path.Convos).child(proxy.key).observeSingleEvent(of: .value, with: { (snapshot) in
+        ref.child(Path.Convos).child(proxy.key).observeSingleEvent(of: .value, with: { (data) in
             var convos = [Convo]()
-            for child in snapshot.children {
+            for child in data.children {
                 if let convo = Convo((child as! DataSnapshot).value as AnyObject) {
                     convos.append(convo)
                 }
@@ -607,9 +607,9 @@ class API {
     }
     
     func getConvos(forUserId user: String, completion: @escaping (_ convos: [Convo]) -> Void) {
-        ref.child(Path.Convos).child(user).observeSingleEvent(of: .value, with: { (snapshot) in
+        ref.child(Path.Convos).child(user).observeSingleEvent(of: .value, with: { (data) in
             var convos = [Convo]()
-            for child in snapshot.children {
+            for child in data.children {
                 if let convo = Convo((child as! DataSnapshot).value as AnyObject) {
                     convos.append(convo)
                 }
@@ -618,11 +618,11 @@ class API {
         })
     }
     
-    /// Returns an array of Convo's from `snapshot`.
+    /// Returns an array of Convo's from `data`.
     /// Filters out Convo's that should not be shown.
-    func getConvos(from snapshot: DataSnapshot) -> [Convo] {
+    func getConvos(from data: DataSnapshot) -> [Convo] {
         var convos = [Convo]()
-        for child in snapshot.children {
+        for child in data.children {
             if let convo = Convo((child as! DataSnapshot).value as AnyObject),
                 !convo.senderLeftConvo && !convo.senderIsBlocking {
                 convos.append(convo)
@@ -660,8 +660,8 @@ class API {
     
     /// Returns a Bool indicating whether or not `user` is currently in `convo`.
     func userIsPresent(userId: String, inConvoWithKey convo: String, completion: @escaping (_ userIsPresent: Bool) -> Void) {
-        ref.child(Path.Present).child(convo).child(userId).child(Path.Present).observeSingleEvent(of: .value, with: { (snapshot) in
-            completion(snapshot.value as? Bool ?? false)
+        ref.child(Path.Present).child(convo).child(userId).child(Path.Present).observeSingleEvent(of: .value, with: { (data) in
+            completion(data.value as? Bool ?? false)
         })
     }
     

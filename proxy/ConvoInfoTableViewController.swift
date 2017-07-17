@@ -55,49 +55,49 @@ class ConvoInfoTableViewController: UITableViewController {
         super.viewDidAppear(true)
         
         // Check if convo info should be closed
-        api.ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderLeftConvo).observeSingleEvent(of: .value, with: { (snapshot) in
-            if let leftConvo = snapshot.value as? Bool, leftConvo {
+        api.ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderLeftConvo).observeSingleEvent(of: .value, with: { (data) in
+            if let leftConvo = data.value as? Bool, leftConvo {
                 self.close()
             }
         })
         
-        api.ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderDeletedProxy).observeSingleEvent(of: .value, with: { (snapshot) in
-            if let deletedProxy = snapshot.value as? Bool, deletedProxy {
+        api.ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderDeletedProxy).observeSingleEvent(of: .value, with: { (data) in
+            if let deletedProxy = data.value as? Bool, deletedProxy {
                 self.close()
             }
         })
         
-        api.ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderIsBlocking).observeSingleEvent(of: .value, with: { (snapshot) in
-            if let isBlocking = snapshot.value as? Bool, isBlocking {
+        api.ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderIsBlocking).observeSingleEvent(of: .value, with: { (data) in
+            if let isBlocking = data.value as? Bool, isBlocking {
                 self.close()
             }
         })
         
         // Observe database values
-        receiverIconRefHandle = receiverIconRef.observe(.value, with: { (snapshot) in
-            guard let icon = snapshot.value as? String, icon != "" else { return }
+        receiverIconRefHandle = receiverIconRef.observe(.value, with: { (data) in
+            guard let icon = data.value as? String, icon != "" else { return }
             self.api.getURL(forIconName: icon) { (url) in
                 self.receiverIconURL = url
                 self.tableView.reloadData()
             }
         })
         
-        receiverNicknameRefHandle = receiverNicknameRef.observe(.value, with: { (snapshot) in
-            guard let receiverNickname = snapshot.value as? String else { return }
+        receiverNicknameRefHandle = receiverNicknameRef.observe(.value, with: { (data) in
+            guard let receiverNickname = data.value as? String else { return }
             self.receiverNickname = receiverNickname
             self.tableView.reloadData()
         })
         
-        senderIconRefHandle = senderIconRef.observe(.value, with: { (snapshot) in
-            guard let icon = snapshot.value as? String, icon != "" else { return }
+        senderIconRefHandle = senderIconRef.observe(.value, with: { (data) in
+            guard let icon = data.value as? String, icon != "" else { return }
             self.api.getURL(forIconName: icon) { (url) in
                 self.senderIconURL = url
                 self.tableView.reloadData()
             }
         })
         
-        senderNicknameRefHandle = senderNicknameRef.observe(.value, with: { (snapshot) in
-            guard let senderNickname = snapshot.value as? String else { return }
+        senderNicknameRefHandle = senderNicknameRef.observe(.value, with: { (data) in
+            guard let senderNickname = data.value as? String else { return }
             self.senderNickname = senderNickname
             self.tableView.reloadData()
         })

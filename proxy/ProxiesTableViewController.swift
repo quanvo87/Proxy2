@@ -74,8 +74,8 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
         tableView.separatorStyle = .none
         
         unreadRef = ref.child(Path.Unread).child(api.uid).child(Path.Unread)
-        unreadRefHandle = unreadRef.observe(.value, with: { (snapshot) in
-            if let unread = snapshot.value as? Int {
+        unreadRefHandle = unreadRef.observe(.value, with: { (data) in
+            if let unread = data.value as? Int {
                 self.navigationItem.title = "Proxies" + unread.asLabelWithParens
             } else {
                 self.navigationItem.title = "Proxies"
@@ -83,9 +83,9 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
         })
         
         proxiesRef = ref.child(Path.Proxies).child(api.uid)
-        proxiesRefHandle = proxiesRef.queryOrdered(byChild: Path.Timestamp).observe(.value, with: { snapshot in
+        proxiesRefHandle = proxiesRef.queryOrdered(byChild: Path.Timestamp).observe(.value, with: { data in
             var proxies = [Proxy]()
-            for child in snapshot.children {
+            for child in data.children {
                 if let proxy = Proxy((child as! DataSnapshot).value as AnyObject) {
                     proxies.append(proxy)
                 }

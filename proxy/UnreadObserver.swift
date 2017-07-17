@@ -15,8 +15,8 @@ class UnreadObserver {
 
     func observe(_ delegate: UnreadObserverDelegate) {
         ref = DB.ref(Path.Unread, Shared.shared.uid, Path.Unread)
-        ref?.observe(.value) { [weak delegate = delegate] (snapshot) in
-            delegate?.setUnread(snapshot.value as? Int)
+        ref?.observe(.value) { [weak delegate = delegate] (data) in
+            delegate?.setUnread(data.value as? Int)
         }
     }
 

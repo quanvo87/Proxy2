@@ -21,7 +21,6 @@ class DBTest: XCTestCase {
 
     static let test = "test"
     static let testUser = "test user"
-    static let testProxyKey = "test proxy key"
 
     var x = XCTestExpectation()
 
@@ -76,8 +75,8 @@ private extension DBTest {
         workKey.deleteTestData()
         workKey.deleteProxies(forUser: Shared.shared.uid)
         workKey.deleteProxies(forUser: DBTest.testUser)
-        workKey.deleteConvos(forUser: Shared.shared.uid)
-        workKey.deleteConvos(forUser: DBTest.testUser)
+//        workKey.deleteConvos(forUser: Shared.shared.uid)
+//        workKey.deleteConvos(forUser: DBTest.testUser)
         workKey.notify {
             workKey.deleteUserInfo(Shared.shared.uid)
             workKey.deleteUserInfo(DBTest.testUser)

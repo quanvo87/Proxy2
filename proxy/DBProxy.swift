@@ -53,8 +53,8 @@ private extension WorkKey {
                 let data = data,
                 let json = try? JSONSerialization.jsonObject(with: data, options: []),
                 let dictionary = json as? [String: Any],
-                let iconsNames = dictionary["iconNames"] as? [String]  {
-                    Shared.shared.iconNames = iconsNames
+                let iconsNames = dictionary["iconNames"] as? [String] {
+                Shared.shared.iconNames = iconsNames
             }
             self.finishWork(withResult: !Shared.shared.iconNames.isEmpty)
         }
@@ -104,7 +104,7 @@ extension DBProxy {
                 createProxyFinished(result: .failure(.unknown), completion: completion)
                 return
             }
-            proxyKeysRef.queryOrdered(byChild: Path.Key).queryEqual(toValue: key).observeSingleEvent(of: .value, with: { (snapshot) in
+            proxyKeysRef.queryOrdered(byChild: Path.Key).queryEqual(toValue: key).observeSingleEvent(of: .value, with: { (data) in
                 DB.delete(Path.ProxyKeys, autoId) { (success) in
                     guard success else {
                         createProxyFinished(result: .failure(.unknown), completion: completion)
@@ -115,7 +115,7 @@ extension DBProxy {
                         return
                     }
 
-                    if snapshot.childrenCount == 1 {
+                    if data.childrenCount == 1 {
                         let proxyOwner = ProxyOwner(key: key, ownerId: uid).toJSON()
                         let userProxy = Proxy(name: name, ownerId: uid, icon: randomIconName)
 
@@ -149,10 +149,8 @@ extension DBProxy {
     }
 
     private static var randomProxyName: String {
-        guard
-            !Shared.shared.adjectives.isEmpty &&
-            !Shared.shared.nouns.isEmpty else {
-                return ""
+        guard !Shared.shared.adjectives.isEmpty && !Shared.shared.nouns.isEmpty else {
+            return ""
         }
         let randomAdj = Int(arc4random_uniform(UInt32(Shared.shared.adjectives.count)))
         let randomNoun = Int(arc4random_uniform(UInt32(Shared.shared.nouns.count)))
@@ -177,8 +175,8 @@ extension DBProxy {
 
 extension DBProxy {
     static func getProxy(withKey key: String, completion: @escaping (Proxy?) -> Void) {
-        DB.get(Path.ProxyOwners, key) { (snapshot) in
-            guard let proxyOwner = ProxyOwner(snapshot?.value as AnyObject) else {
+        DB.get(Path.ProxyOwners, key) { (data) in
+            guard let proxyOwner = ProxyOwner(data?.value as AnyObject) else {
                 completion(nil)
                 return
             }
@@ -187,8 +185,8 @@ extension DBProxy {
     }
 
     static func getProxy(withKey key: String, belongingTo uid: String, completion: @escaping (Proxy?) -> Void) {
-        DB.get(Path.Proxies, uid, key) { (snapshot) in
-            completion(Proxy(snapshot?.value as AnyObject))
+        DB.get(Path.Proxies, uid, key) { (data) in
+            completion(Proxy(data?.value as AnyObject))
         }
     }
 
@@ -308,17 +306,10 @@ extension DBProxy {
         workKey.deleteConvos(forProxy: proxy)
         workKey.deleteConvosForUser(convos: convos)
         workKey.adjustUserUnread(fromProxy: proxy)
+        workKey.decrementProxyCountForOwnerOfProxy(proxy)
         workKey.notify {
-            decrementProxyCount(forUser: proxy.ownerId) { (success) in
-                completion(workKey.setWorkResult(success))
-                workKey.finishWorkGroup()
-            }
-        }
-    }
-
-    private static func decrementProxyCount(forUser uid: String, completion: @escaping (Success) -> Void) {
-        DB.increment(-1, at: Path.UserInfo, uid, Path.ProxyCount) { (success) in
-            completion(success)
+            completion(workKey.workResult)
+            workKey.finishWorkGroup()
         }
     }
 }
@@ -387,6 +378,13 @@ private extension WorkKey {
     func adjustUserUnread(fromProxy proxy: Proxy) {
         startWork()
         DB.increment(-proxy.unread, at: Path.UserInfo, proxy.ownerId, Path.Unread) { (success) in
+            self.finishWork(withResult: success)
+        }
+    }
+
+    func decrementProxyCountForOwnerOfProxy(_ proxy: Proxy) {
+        startWork()
+        DB.increment(-1, at: Path.UserInfo, proxy.ownerId, Path.ProxyCount) { (success) in
             self.finishWork(withResult: success)
         }
     }

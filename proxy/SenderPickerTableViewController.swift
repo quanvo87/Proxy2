@@ -28,8 +28,8 @@ class SenderPickerTableViewController: UITableViewController {
         tableView.rowHeight = 60
         tableView.separatorStyle = .none
         
-        api.ref.child(Path.Proxies).child(api.uid).queryOrdered(byChild: Path.Timestamp).observeSingleEvent(of: .value, with: { snapshot in
-            for child in snapshot.children {
+        api.ref.child(Path.Proxies).child(api.uid).queryOrdered(byChild: Path.Timestamp).observeSingleEvent(of: .value, with: { data in
+            for child in data.children {
                 if let proxy = Proxy((child as! DataSnapshot).value as AnyObject) {
                     self.proxies.append(proxy)
                 }

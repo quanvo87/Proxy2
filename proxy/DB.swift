@@ -33,7 +33,10 @@ struct DB {
     private static let ref = Database.database().reference()
 
     static func ref(_ first: String, _ rest: String...) -> DatabaseReference? {
-        return ref(first, rest)
+        if let path = Path(first, rest) {
+            return ref.child(path.path)
+        }
+        return nil
     }
 
     static func ref(_ first: String, _ rest: [String]) -> DatabaseReference? {
@@ -60,16 +63,12 @@ struct DB {
 
 extension DB {
     static func get(_ first: String, _ rest: String..., completion: @escaping (DataSnapshot?) -> Void) {
-        get(first, rest, completion: completion)
-    }
-
-    static func get(_ first: String, _ rest: [String], completion: @escaping (DataSnapshot?) -> Void) {
         guard let ref = ref(first, rest) else {
             completion(nil)
             return
         }
-        ref.observeSingleEvent(of: .value) { (snapshot) in
-            completion(snapshot)
+        ref.observeSingleEvent(of: .value) { (data) in
+            completion(data)
         }
     }
 
