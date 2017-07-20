@@ -75,8 +75,6 @@ private extension DBTest {
         workKey.deleteTestData()
         workKey.deleteProxies(forUser: Shared.shared.uid)
         workKey.deleteProxies(forUser: DBTest.testUser)
-//        workKey.deleteConvos(forUser: Shared.shared.uid)
-//        workKey.deleteConvos(forUser: DBTest.testUser)
         workKey.notify {
             workKey.deleteUserInfo(Shared.shared.uid)
             workKey.deleteUserInfo(DBTest.testUser)
@@ -88,7 +86,7 @@ private extension DBTest {
     }
 }
 
-extension WorkKey {
+private extension WorkKey {
     func deleteTestData() {
         startWork()
         DB.delete(DBTest.test) { (success) in
@@ -115,35 +113,9 @@ extension WorkKey {
         }
     }
 
-    private func deleteProxy(_ proxy: Proxy) {
+    func deleteProxy(_ proxy: Proxy) {
         startWork()
         DBProxy.deleteProxy(proxy) { (success) in
-            XCTAssert(success)
-            self.finishWork(withResult: success)
-        }
-    }
-
-    func deleteConvos(forUser uid: String) {
-        startWork()
-        DBConvo.getConvos(forUser: uid, filtered: false) { (convos) in
-            guard let convos = convos else {
-                XCTFail()
-                return
-            }
-            let deleteConvosWorkKey = WorkKey.makeWorkKey()
-            for convo in convos {
-                deleteConvosWorkKey.deleteConvo(convo)
-            }
-            deleteConvosWorkKey.notify {
-                self.finishWork(withResult: deleteConvosWorkKey.workResult)
-                deleteConvosWorkKey.finishWorkGroup()
-            }
-        }
-    }
-
-    private func deleteConvo(_ convo: Convo) {
-        startWork()
-        DBConvo.deleteConvo(convo) { (success) in
             XCTAssert(success)
             self.finishWork(withResult: success)
         }
