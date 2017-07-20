@@ -180,7 +180,6 @@ private extension WorkKey {
     func decrementConvoCountForSenderProxyInConvo(_ convo: Convo) {
         startWork()
         DB.increment(-1, at: Path.Proxies, convo.senderId, convo.senderProxyKey, Path.Convos) { (success) in
-            print(success)
             self.finishWork(withResult: success)
         }
     }
