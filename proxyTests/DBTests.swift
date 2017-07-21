@@ -52,8 +52,7 @@ class DBTests: DBTest {
                     XCTAssert(success)
 
                     DB.get("test") { (data) in
-                        XCTAssertEqual(data?.value as? FirebaseDatabase.NSNull,
-                                       FirebaseDatabase.NSNull())
+                        XCTAssertEqual(data?.value as? FirebaseDatabase.NSNull, FirebaseDatabase.NSNull())
                         x.fulfill()
                     }
                 }

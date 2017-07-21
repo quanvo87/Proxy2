@@ -40,26 +40,6 @@ class DBConvoTests: DBTest {
             XCTAssertEqual(convo.icon, receiver.icon)
             XCTAssertEqual(convo.receiverIsBlocking, false)
 
-            let convoDataChecked = DispatchGroup()
-            for _ in 1...6 {
-                convoDataChecked.enter()
-            }
-
-            DB.get(Path.Convos, convo.senderId, convo.key) { (data) in
-                XCTAssertEqual(Convo(data?.value as AnyObject), convo)
-                convoDataChecked.leave()
-            }
-
-            DB.get(Path.Convos, convo.senderProxyKey, convo.key) { (data) in
-                XCTAssertEqual(Convo(data?.value as AnyObject), convo)
-                convoDataChecked.leave()
-            }
-
-            DB.get(Path.Proxies, convo.senderId, convo.senderProxyKey, Path.Convos) { (data) in
-                XCTAssertEqual(data?.value as? Int, 1)
-                convoDataChecked.leave()
-            }
-
             var receiverConvo = Convo()
             receiverConvo.key = convoKey
             receiverConvo.senderId = receiver.ownerId
@@ -71,27 +51,48 @@ class DBConvoTests: DBTest {
             receiverConvo.icon = sender.icon
             receiverConvo.senderIsBlocking = false
 
-            DB.get(Path.Convos, receiverConvo.senderId, receiverConvo.key) { (data) in
-                XCTAssertEqual(Convo(data?.value as AnyObject), receiverConvo)
-                convoDataChecked.leave()
-            }
-
-            DB.get(Path.Convos, receiverConvo.senderProxyKey, receiverConvo.key) { (data) in
-                XCTAssertEqual(Convo(data?.value as AnyObject), receiverConvo)
-                convoDataChecked.leave()
-            }
-
-            DB.get(Path.Proxies, convo.receiverId, convo.receiverProxyKey, Path.Convos) { (data) in
-                XCTAssertEqual(data?.value as? Int, 1)
-                convoDataChecked.leave()
-            }
-
-            convoDataChecked.notify(queue: .main) {
+            let workKey = WorkKey.makeWorkKey()
+            workKey.checkUserConvo(convo)
+            workKey.checkUserConvo(receiverConvo)
+            workKey.checkProxyConvo(convo)
+            workKey.checkProxyConvo(receiverConvo)
+            workKey.checkProxyConvoCount(convo)
+            workKey.checkProxyConvoCount(receiverConvo)
+            workKey.notify {
+                workKey.finishWorkGroup()
                 self.x.fulfill()
             }
         }
     }
+}
 
+private extension WorkKey {
+    func checkUserConvo(_ convo: Convo) {
+        startWork()
+        DB.get(Path.Convos, convo.senderId, convo.key) { (data) in
+            XCTAssertEqual(Convo(data?.value as AnyObject), convo)
+            self.finishWork(withResult: true)
+        }
+    }
+
+    func checkProxyConvo(_ convo: Convo) {
+        startWork()
+        DB.get(Path.Convos, convo.senderProxyKey, convo.key) { (data) in
+            XCTAssertEqual(Convo(data?.value as AnyObject), convo)
+            self.finishWork(withResult: true)
+        }
+    }
+
+    func checkProxyConvoCount(_ convo: Convo) {
+        startWork()
+        DB.get(Path.Proxies, convo.senderId, convo.senderProxyKey, Path.Convos) { (data) in
+            XCTAssertEqual(data?.value as? Int, 1)
+            self.finishWork(withResult: true)
+        }
+    }
+}
+
+extension DBConvoTests {
     func testGetConvo() {
         x = expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
@@ -129,7 +130,9 @@ class DBConvoTests: DBTest {
             }
         }
     }
+}
 
+extension DBConvoTests {
     func testSetNickname() {
         x = expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
@@ -140,28 +143,37 @@ class DBConvoTests: DBTest {
             DBConvo.setNickname(testNickname, forReceiverInConvo: convo) { (success) in
                 XCTAssert(success)
 
-                let nicknameChecked = DispatchGroup()
-                for _ in 1...2 {
-                    nicknameChecked.enter()
-                }
-
-                DB.get(Path.Convos, convo.senderId, convo.key, Path.ReceiverNickname) { (data) in
-                    XCTAssertEqual(data?.value as? String, testNickname)
-                    nicknameChecked.leave()
-                }
-
-                DB.get(Path.Convos, convo.senderProxyKey, convo.key, Path.ReceiverNickname) { (data) in
-                    XCTAssertEqual(data?.value as? String, testNickname)
-                    nicknameChecked.leave()
-                }
-
-                nicknameChecked.notify(queue: .main) {
+                let workKey = WorkKey.makeWorkKey()
+                workKey.checkNicknameForReceiverInUserConvo(convo: convo, nickname: testNickname)
+                workKey.checkNicknameForReceiverInProxyConvo(convo: convo, nickname: testNickname)
+                workKey.notify {
+                    workKey.finishWorkGroup()
                     self.x.fulfill()
                 }
             }
         }
     }
+}
 
+private extension WorkKey {
+    func checkNicknameForReceiverInUserConvo(convo: Convo, nickname: String) {
+        startWork()
+        DB.get(Path.Convos, convo.senderId, convo.key, Path.ReceiverNickname) { (data) in
+            XCTAssertEqual(data?.value as? String, nickname)
+            self.finishWork(withResult: true)
+        }
+    }
+
+    func checkNicknameForReceiverInProxyConvo(convo: Convo, nickname: String) {
+        startWork()
+        DB.get(Path.Convos, convo.senderProxyKey, convo.key, Path.ReceiverNickname) { (data) in
+            XCTAssertEqual(data?.value as? String, nickname)
+            self.finishWork(withResult: true)
+        }
+    }
+}
+
+extension DBConvoTests {
     func testLeaveConvo() {
         x = expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
@@ -179,54 +191,75 @@ class DBConvoTests: DBTest {
                         DBConvo.leaveConvo(convo) { (success) in
                             XCTAssert(success)
 
-                            let checkLeaveConvoData = DispatchGroup()
-                            for _ in 1...7 {
-                                checkLeaveConvoData.enter()
-                            }
-
-                            DB.get(Path.Convos, convo.senderId, convo.key, Path.SenderLeftConvo) { (data) in
-                                XCTAssertEqual(data?.value as? Bool, true)
-                                checkLeaveConvoData.leave()
-                            }
-
-                            DB.get(Path.Convos, convo.senderProxyKey, convo.key, Path.SenderLeftConvo) { (data) in
-                                XCTAssertEqual(data?.value as? Bool, true)
-                                checkLeaveConvoData.leave()
-                            }
-
-                            DB.get(Path.Convos, convo.receiverId, convo.key, Path.ReceiverLeftConvo) { (data) in
-                                XCTAssertEqual(data?.value as? Bool, true)
-                                checkLeaveConvoData.leave()
-                            }
-
-                            DB.get(Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverLeftConvo) { (data) in
-                                XCTAssertEqual(data?.value as? Bool, true)
-                                checkLeaveConvoData.leave()
-                            }
-
-                            DB.get(Path.Proxies, convo.senderId, convo.senderProxyKey, Path.Convos) { (data) in
-                                XCTAssertEqual(data?.value as? Int, 0)
-                                checkLeaveConvoData.leave()
-                            }
-
-                            DB.get(Path.UserInfo, convo.senderId, Path.Unread){ (data) in
-                                XCTAssertEqual(data?.value as? Int, -1)
-                                checkLeaveConvoData.leave()
-                            }
-
-                            DB.get(Path.Proxies, convo.senderId, convo.senderProxyKey, Path.Unread) { (data) in
-                                XCTAssertEqual(data?.value as? Int, -1)
-                                checkLeaveConvoData.leave()
-                            }
-
-                            checkLeaveConvoData.notify(queue: .main) {
+                            let workKey = WorkKey.makeWorkKey()
+                            workKey.checkSenderLeftConvoInUserConvo(convo)
+                            workKey.checkSenderLeftConvoInProxyConvo(convo)
+                            workKey.checkReceiverLeftConvoInUserConvo(convo)
+                            workKey.checkReceiverLeftConvoInProxyConvo(convo)
+                            workKey.checkConvoCountForProxy(convo: convo)
+                            workKey.checkUnreadForUser(convo: convo)
+                            workKey.checkUnreadForProxy(convo: convo)
+                            workKey.notify {
+                                workKey.finishWorkGroup()
                                 self.x.fulfill()
                             }
                         }
             }
         }
     }
+}
 
+private extension WorkKey {
+    func checkSenderLeftConvoInUserConvo(_ convo: Convo) {
+        startWork()
+        DB.get(Path.Convos, convo.senderId, convo.key, Path.SenderLeftConvo) { (data) in
+            XCTAssertEqual(data?.value as? Bool, true)
+            self.finishWork(withResult: true)
+        }
+    }
+
+    func checkSenderLeftConvoInProxyConvo(_ convo: Convo) {
+        startWork()
+        DB.get(Path.Convos, convo.senderProxyKey, convo.key, Path.SenderLeftConvo) { (data) in
+            XCTAssertEqual(data?.value as? Bool, true)
+            self.finishWork(withResult: true)
+        }
+    }
+
+    func checkReceiverLeftConvoInUserConvo(_ convo: Convo) {
+        startWork()
+        DB.get(Path.Convos, convo.receiverId, convo.key, Path.ReceiverLeftConvo) { (data) in
+            XCTAssertEqual(data?.value as? Bool, true)
+            self.finishWork(withResult: true)
+        }
+    }
+
+    func checkReceiverLeftConvoInProxyConvo(_ convo: Convo) {
+        startWork()
+        DB.get(Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverLeftConvo) { (data) in
+            XCTAssertEqual(data?.value as? Bool, true)
+            self.finishWork(withResult: true)
+        }
+    }
+
+    func checkUnreadForUser(convo: Convo) {
+        startWork()
+        DB.get(Path.UserInfo, convo.senderId, Path.Unread){ (data) in
+            XCTAssertEqual(data?.value as? Int, -1)
+            self.finishWork(withResult: true)
+        }
+    }
+
+    func checkUnreadForProxy(convo: Convo) {
+        startWork()
+        DB.get(Path.Proxies, convo.senderId, convo.senderProxyKey, Path.Unread) { (data) in
+            XCTAssertEqual(data?.value as? Int, -1)
+            self.finishWork(withResult: true)
+        }
+    }
+}
+
+extension DBConvoTests {
     func testDeleteConvo() {
         x = expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
@@ -235,33 +268,38 @@ class DBConvoTests: DBTest {
             DBConvo.deleteConvo(convo) { (success) in
                 XCTAssert(success)
                 
-                let convosDeleted = DispatchGroup()
-                for _ in 1...3 {
-                    convosDeleted.enter()
-                }
-
-                DB.get(Path.Convos, convo.senderId, convo.key) { (data) in
-                    XCTAssertEqual(data?.value as? FirebaseDatabase.NSNull, FirebaseDatabase.NSNull())
-                    convosDeleted.leave()
-                }
-
-                DB.get(Path.Convos, convo.senderProxyKey, convo.key) { (data) in
-                    XCTAssertEqual(data?.value as? FirebaseDatabase.NSNull, FirebaseDatabase.NSNull())
-                    convosDeleted.leave()
-                }
-
-                DB.get(Path.Proxies, convo.senderId, convo.senderProxyKey, Path.Convos) { (data) in
-                    XCTAssertEqual(data?.value as? Int, 0)
-                    convosDeleted.leave()
-                }
-
-                convosDeleted.notify(queue: .main) {
+                let workKey = WorkKey.makeWorkKey()
+                workKey.checkUserConvoDeleted(convo)
+                workKey.checkProxyConvoDeleted(convo)
+                workKey.checkConvoCountForProxy(convo: convo)
+                workKey.notify {
+                    workKey.finishWorkGroup()
                     self.x.fulfill()
                 }
             }
         }
     }
+}
 
+extension WorkKey {
+    func checkUserConvoDeleted(_ convo: Convo) {
+        startWork()
+        DB.get(Path.Convos, convo.senderId, convo.key) { (data) in
+            XCTAssertEqual(data?.value as? FirebaseDatabase.NSNull, FirebaseDatabase.NSNull())
+            self.finishWork(withResult: true)
+        }
+    }
+
+    func checkProxyConvoDeleted(_ convo: Convo) {
+        startWork()
+        DB.get(Path.Convos, convo.senderProxyKey, convo.key) { (data) in
+            XCTAssertEqual(data?.value as? FirebaseDatabase.NSNull, FirebaseDatabase.NSNull())
+            self.finishWork(withResult: true)
+        }
+    }
+}
+
+extension DBConvoTests {
     func testMakeConvoTitle() {
         XCTAssertEqual(DBConvo.makeConvoTitle(receiverNickname: "a", receiverName: "b", senderNickname: "c", senderName: "d").string, "a, c")
         XCTAssertEqual(DBConvo.makeConvoTitle(receiverNickname: "", receiverName: "a", senderNickname: "", senderName: "b").string, "a, b")
@@ -294,6 +332,16 @@ class DBConvoTests: DBTest {
                 XCTAssertEqual(convos?[0], convo)
                 x.fulfill()
             }
+        }
+    }
+}
+
+private extension WorkKey {
+    func checkConvoCountForProxy(convo: Convo) {
+        startWork()
+        DB.get(Path.Proxies, convo.senderId, convo.senderProxyKey, Path.Convos) { (data) in
+            XCTAssertEqual(data?.value as? Int, 0)
+            self.finishWork(withResult: true)
         }
     }
 }
