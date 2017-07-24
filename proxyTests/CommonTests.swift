@@ -35,14 +35,12 @@ class CommonTests: XCTestCase {
 
         let date = Date()
 
-        XCTAssertEqual(date.timeIntervalSince1970.asTimeAgo,
-                       dateFormatter.string(from: date))
+        XCTAssertEqual(date.timeIntervalSince1970.asTimeAgo, dateFormatter.string(from: date))
     }
 
     func testErrorDescription() {
         let error = ProxyError.blankCredentials
-        XCTAssertEqual(error.description,
-                       "Please enter a valid email and password.")
+        XCTAssertEqual(error.description, "Please enter a valid email and password.")
     }
 
     func testIntIncrement() {

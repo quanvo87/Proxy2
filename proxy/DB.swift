@@ -72,6 +72,7 @@ extension DB {
         }
     }
 
+
     static func set(_ value: Any, at first: String, _ rest: String..., completion: @escaping ((Success) -> Void)) {
         guard let ref = ref(first, rest) else {
             completion(false)
