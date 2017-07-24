@@ -44,7 +44,7 @@ class DBProxyTests: DBTest {
     }
 }
 
-extension WorkKey {
+private extension WorkKey {
     func checkProxyKey(proxy: Proxy) {
         startWork()
         DB.get(Path.ProxyKeys, proxy.key) { (data) in
@@ -203,7 +203,7 @@ extension DBProxyTests {
     }
 }
 
-extension WorkKey {
+private extension WorkKey {
     func checkProxyIcon(proxy: Proxy, icon: String) {
         startWork()
         DB.get(Path.Proxies, proxy.ownerId, proxy.key, Path.Icon) { (data) in
@@ -253,7 +253,7 @@ extension DBProxyTests {
     }
 }
 
-extension WorkKey {
+private extension WorkKey {
     func checkProxyNickname(proxy: Proxy, nickname: String) {
         startWork()
         DB.get(Path.Proxies, proxy.ownerId, proxy.key, Path.Nickname) { (data) in
@@ -310,7 +310,7 @@ extension DBProxyTests {
     }
 }
 
-extension WorkKey {
+private extension WorkKey {
     func checkProxyKeyDeleted(proxy: Proxy) {
         startWork()
         DB.get(Path.ProxyKeys, proxy.key) { (data) in

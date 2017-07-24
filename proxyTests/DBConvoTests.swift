@@ -194,8 +194,8 @@ extension DBConvoTests {
                             let workKey = WorkKey.makeWorkKey()
                             workKey.checkSenderLeftConvoInUserConvo(convo)
                             workKey.checkSenderLeftConvoInProxyConvo(convo)
-                            workKey.checkReceiverLeftConvoInUserConvo(convo)
-                            workKey.checkReceiverLeftConvoInProxyConvo(convo)
+                            workKey.checkReceiverLeftConvoInReceiverUserConvo(convo)
+                            workKey.checkReceiverLeftConvoInReceiverProxyConvo(convo)
                             workKey.checkConvoCountForProxy(convo: convo)
                             workKey.checkUnreadForUser(convo: convo)
                             workKey.checkUnreadForProxy(convo: convo)
@@ -226,7 +226,7 @@ private extension WorkKey {
         }
     }
 
-    func checkReceiverLeftConvoInUserConvo(_ convo: Convo) {
+    func checkReceiverLeftConvoInReceiverUserConvo(_ convo: Convo) {
         startWork()
         DB.get(Path.Convos, convo.receiverId, convo.key, Path.ReceiverLeftConvo) { (data) in
             XCTAssertEqual(data?.value as? Bool, true)
@@ -234,7 +234,7 @@ private extension WorkKey {
         }
     }
 
-    func checkReceiverLeftConvoInProxyConvo(_ convo: Convo) {
+    func checkReceiverLeftConvoInReceiverProxyConvo(_ convo: Convo) {
         startWork()
         DB.get(Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverLeftConvo) { (data) in
             XCTAssertEqual(data?.value as? Bool, true)
