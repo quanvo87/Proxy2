@@ -28,6 +28,8 @@ class DBTest: XCTestCase {
         x = expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
+        XCTAssert(Shared.shared.asyncWorkGroups.isEmpty)
+
         if Shared.shared.uid == uid {
             setupTestEnv()
 
@@ -59,6 +61,8 @@ class DBTest: XCTestCase {
     override func tearDown() {
         x = expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
+
+        XCTAssert(Shared.shared.asyncWorkGroups.isEmpty)
         setupTestEnv()
     }
 
@@ -71,7 +75,7 @@ class DBTest: XCTestCase {
 
 private extension DBTest {
     func setupTestEnv() {
-        let workKey = WorkKey.makeWorkKey()
+        let workKey = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
         workKey.deleteTestData()
         workKey.deleteProxies(forUser: Shared.shared.uid)
         workKey.deleteProxies(forUser: DBTest.testUser)
@@ -86,7 +90,7 @@ private extension DBTest {
     }
 }
 
-private extension WorkKey {
+private extension AsyncWorkGroupKey {
     func deleteTestData() {
         startWork()
         DB.delete(DBTest.test) { (success) in
@@ -102,7 +106,7 @@ private extension WorkKey {
                 XCTFail()
                 return
             }
-            let deleteProxiesWorkKey = WorkKey.makeWorkKey()
+            let deleteProxiesWorkKey = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
             for proxy in proxies {
                 deleteProxiesWorkKey.deleteProxy(proxy)
             }
@@ -169,7 +173,7 @@ extension DBTest {
         }
 
         proxiesCreated.notify(queue: .main) {
-            DBConvo.makeConvo(sender: sender, receiver: receiver) { (convo) in
+            DBConvo.makeConvo(senderProxy: sender, receiverProxy: receiver) { (convo) in
                 guard let convo = convo else {
                     XCTFail()
                     return

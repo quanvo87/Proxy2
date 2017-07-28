@@ -31,7 +31,7 @@ class DBProxyTests: DBTest {
         DBTest.makeProxy { (proxy) in
             XCTAssertFalse(Shared.shared.isCreatingProxy)
 
-            let workKey = WorkKey.makeWorkKey()
+            let workKey = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
             workKey.checkProxyKey(proxy: proxy)
             workKey.checkProxyOwner(proxy: proxy)
             workKey.checkProxy(proxy)
@@ -44,7 +44,7 @@ class DBProxyTests: DBTest {
     }
 }
 
-private extension WorkKey {
+private extension AsyncWorkGroupKey {
     func checkProxyKey(proxy: Proxy) {
         startWork()
         DB.get(Path.ProxyKeys, proxy.key) { (data) in
@@ -190,7 +190,7 @@ extension DBProxyTests {
             DBProxy.setIcon(icon, forProxy: proxy) { (success) in
                 XCTAssert(success)
 
-                let workKey = WorkKey.makeWorkKey()
+                let workKey = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
                 workKey.checkProxyIcon(proxy: proxy, icon: icon)
                 workKey.checkUserConvoIcon(convo: convo, icon: icon)
                 workKey.checkProxyConvoIcon(convo: convo, icon: icon)
@@ -203,7 +203,7 @@ extension DBProxyTests {
     }
 }
 
-private extension WorkKey {
+private extension AsyncWorkGroupKey {
     func checkProxyIcon(proxy: Proxy, icon: String) {
         startWork()
         DB.get(Path.Proxies, proxy.ownerId, proxy.key, Path.Icon) { (data) in
@@ -240,7 +240,7 @@ extension DBProxyTests {
             DBProxy.setNickname(nickname, forProxy: proxy) { (success) in
                 XCTAssert(success)
 
-                let workKey = WorkKey.makeWorkKey()
+                let workKey = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
                 workKey.checkProxyNickname(proxy: proxy, nickname: nickname)
                 workKey.checkUserConvoNickname(convo: convo, nickname: nickname)
                 workKey.checkProxyConvoNickname(convo: convo, nickname: nickname)
@@ -253,7 +253,7 @@ extension DBProxyTests {
     }
 }
 
-private extension WorkKey {
+private extension AsyncWorkGroupKey {
     func checkProxyNickname(proxy: Proxy, nickname: String) {
         startWork()
         DB.get(Path.Proxies, proxy.ownerId, proxy.key, Path.Nickname) { (data) in
@@ -291,7 +291,7 @@ extension DBProxyTests {
             DBProxy.deleteProxy(proxy) { (success) in
                 XCTAssert(success)
 
-                let workKey = WorkKey.makeWorkKey()
+                let workKey = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
                 workKey.checkProxyKeyDeleted(proxy: proxy)
                 workKey.checkProxyOwnerDeleted(proxy: proxy)
                 workKey.checkProxyDeleted(proxy: proxy)
@@ -310,7 +310,7 @@ extension DBProxyTests {
     }
 }
 
-private extension WorkKey {
+private extension AsyncWorkGroupKey {
     func checkProxyKeyDeleted(proxy: Proxy) {
         startWork()
         DB.get(Path.ProxyKeys, proxy.key) { (data) in

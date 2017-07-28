@@ -12,7 +12,7 @@ import XCTest
 class DBIconTests: DBTest {
     func testGetImageForIcon() {
         x = expectation(description: #function)
-        defer { waitForExpectations(timeout: 10) }
+        defer { waitForExpectations(timeout: 30) }
 
         DBProxy.loadProxyInfo { (success) in
             XCTAssert(success)

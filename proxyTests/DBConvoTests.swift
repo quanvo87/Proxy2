@@ -20,7 +20,7 @@ class DBConvoTests: DBTest {
         receiver.key = "c"
         receiver.ownerId = "d"
 
-        XCTAssertEqual(DBConvo.getConvoKey(senderProxy: sender, receiverProxy: receiver), "abcd")
+        XCTAssertEqual(DBConvo.makeConvoKey(senderProxy: sender, receiverProxy: receiver), "abcd")
     }
 
     func testMakeConvo() {
@@ -28,7 +28,7 @@ class DBConvoTests: DBTest {
         defer { waitForExpectations(timeout: 10) }
 
         DBTest.makeConvo { (convo, sender, receiver) in
-            let convoKey = DBConvo.getConvoKey(senderProxy: sender, receiverProxy: receiver)
+            let convoKey = DBConvo.makeConvoKey(senderProxy: sender, receiverProxy: receiver)
 
             XCTAssertEqual(convo.key, convoKey)
             XCTAssertEqual(convo.senderId, sender.ownerId)
@@ -51,7 +51,7 @@ class DBConvoTests: DBTest {
             receiverConvo.icon = sender.icon
             receiverConvo.senderIsBlocking = false
 
-            let workKey = WorkKey.makeWorkKey()
+            let workKey = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
             workKey.checkUserConvo(convo)
             workKey.checkUserConvo(receiverConvo)
             workKey.checkProxyConvo(convo)
@@ -66,7 +66,7 @@ class DBConvoTests: DBTest {
     }
 }
 
-private extension WorkKey {
+private extension AsyncWorkGroupKey {
     func checkUserConvo(_ convo: Convo) {
         startWork()
         DB.get(Path.Convos, convo.senderId, convo.key) { (data) in
@@ -143,7 +143,7 @@ extension DBConvoTests {
             DBConvo.setNickname(testNickname, forReceiverInConvo: convo) { (success) in
                 XCTAssert(success)
 
-                let workKey = WorkKey.makeWorkKey()
+                let workKey = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
                 workKey.checkNicknameForReceiverInUserConvo(convo: convo, nickname: testNickname)
                 workKey.checkNicknameForReceiverInProxyConvo(convo: convo, nickname: testNickname)
                 workKey.notify {
@@ -155,7 +155,7 @@ extension DBConvoTests {
     }
 }
 
-private extension WorkKey {
+private extension AsyncWorkGroupKey {
     func checkNicknameForReceiverInUserConvo(convo: Convo, nickname: String) {
         startWork()
         DB.get(Path.Convos, convo.senderId, convo.key, Path.ReceiverNickname) { (data) in
@@ -191,7 +191,7 @@ extension DBConvoTests {
                         DBConvo.leaveConvo(convo) { (success) in
                             XCTAssert(success)
 
-                            let workKey = WorkKey.makeWorkKey()
+                            let workKey = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
                             workKey.checkSenderLeftConvoInUserConvo(convo)
                             workKey.checkSenderLeftConvoInProxyConvo(convo)
                             workKey.checkReceiverLeftConvoInReceiverUserConvo(convo)
@@ -209,7 +209,7 @@ extension DBConvoTests {
     }
 }
 
-private extension WorkKey {
+private extension AsyncWorkGroupKey {
     func checkSenderLeftConvoInUserConvo(_ convo: Convo) {
         startWork()
         DB.get(Path.Convos, convo.senderId, convo.key, Path.SenderLeftConvo) { (data) in
@@ -268,7 +268,7 @@ extension DBConvoTests {
             DBConvo.deleteConvo(convo) { (success) in
                 XCTAssert(success)
                 
-                let workKey = WorkKey.makeWorkKey()
+                let workKey = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
                 workKey.checkUserConvoDeleted(convo)
                 workKey.checkProxyConvoDeleted(convo)
                 workKey.checkConvoCountForProxy(convo: convo)
@@ -281,7 +281,7 @@ extension DBConvoTests {
     }
 }
 
-extension WorkKey {
+extension AsyncWorkGroupKey {
     func checkUserConvoDeleted(_ convo: Convo) {
         startWork()
         DB.get(Path.Convos, convo.senderId, convo.key) { (data) in
@@ -336,7 +336,7 @@ extension DBConvoTests {
     }
 }
 
-private extension WorkKey {
+private extension AsyncWorkGroupKey {
     func checkConvoCountForProxy(convo: Convo) {
         startWork()
         DB.get(Path.Proxies, convo.senderId, convo.senderProxyKey, Path.Convos) { (data) in

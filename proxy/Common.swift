@@ -15,45 +15,45 @@ enum Result<T, Error> {
     case failure(Error)
 }
 
-typealias WorkKey = String
+typealias AsyncWorkGroupKey = String
 
-extension WorkKey {
+extension AsyncWorkGroupKey {
     init() {
-        let workKey = UUID().uuidString
-        Shared.shared.workGroups[workKey] = (DispatchGroup(), true)
-        self = workKey
+        let awgKey = UUID().uuidString
+        Shared.shared.asyncWorkGroups[awgKey] = (DispatchGroup(), true)
+        self = awgKey
     }
 
-    static func makeWorkKey() -> WorkKey {
-        return WorkKey()
+    static func makeAsyncWorkGroupKey() -> AsyncWorkGroupKey {
+        return AsyncWorkGroupKey()
     }
 
     func finishWorkGroup() {
-        Shared.shared.workGroups.removeValue(forKey: self)
+        Shared.shared.asyncWorkGroups.removeValue(forKey: self)
     }
 
     func startWork() {
-        Shared.shared.workGroups[self]?.group.enter()
+        Shared.shared.asyncWorkGroups[self]?.group.enter()
     }
 
     func finishWork(withResult result: Success) {
         setWorkResult(result)
-        Shared.shared.workGroups[self]?.group.leave()
+        Shared.shared.asyncWorkGroups[self]?.group.leave()
     }
 
     @discardableResult
     func setWorkResult(_ result: Success) -> Success {
-        let result = Shared.shared.workGroups[self]?.result ?? false && result
-        Shared.shared.workGroups[self]?.result = result
+        let result = Shared.shared.asyncWorkGroups[self]?.result ?? false && result
+        Shared.shared.asyncWorkGroups[self]?.result = result
         return result
     }
 
     var workResult: Success {
-        return Shared.shared.workGroups[self]?.result ?? false
+        return Shared.shared.asyncWorkGroups[self]?.result ?? false
     }
 
     func notify(completion: @escaping () -> Void) {
-        Shared.shared.workGroups[self]?.group.notify(queue: .main) {
+        Shared.shared.asyncWorkGroups[self]?.group.notify(queue: .main) {
             completion()
         }
     }

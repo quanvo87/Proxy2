@@ -19,7 +19,7 @@ class Shared {
     lazy var nouns = [String]()
     lazy var iconNames = [String]()
 
-    lazy var workGroups = [String: (group: DispatchGroup, result: Bool)]()
+    lazy var asyncWorkGroups = [String: (group: DispatchGroup, result: Bool)]()
 
     lazy var uid = ""
     lazy var isCreatingProxy = false
