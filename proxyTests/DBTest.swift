@@ -6,10 +6,10 @@
 //  Copyright © 2017 Quan Vo. All rights reserved.
 //
 
-import XCTest
-@testable import proxy
 import FirebaseAuth
 import FirebaseDatabase
+import XCTest
+@testable import proxy
 
 class DBTest: XCTestCase {
     private let auth = Auth.auth(app: Shared.shared.firebase!)
@@ -76,12 +76,12 @@ class DBTest: XCTestCase {
 private extension DBTest {
     func setupTestEnv() {
         let workKey = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-        workKey.deleteTestData()
-        workKey.deleteProxies(forUser: Shared.shared.uid)
         workKey.deleteProxies(forUser: DBTest.testUser)
+        workKey.deleteProxies(forUser: Shared.shared.uid)
+        workKey.deleteTestData()
         workKey.notify {
-            workKey.deleteUserInfo(Shared.shared.uid)
             workKey.deleteUserInfo(DBTest.testUser)
+            workKey.deleteUserInfo(Shared.shared.uid)
             workKey.notify {
                 workKey.finishWorkGroup()
                 self.x.fulfill()
@@ -90,15 +90,7 @@ private extension DBTest {
     }
 }
 
-private extension AsyncWorkGroupKey {
-    func deleteTestData() {
-        startWork()
-        DB.delete(DBTest.test) { (success) in
-            XCTAssert(success)
-            self.finishWork(withResult: success)
-        }
-    }
-
+extension AsyncWorkGroupKey {
     func deleteProxies(forUser uid: String) {
         startWork()
         DBProxy.getProxies(forUser: uid) { (proxies) in
@@ -106,20 +98,24 @@ private extension AsyncWorkGroupKey {
                 XCTFail()
                 return
             }
-            let deleteProxiesWorkKey = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
             for proxy in proxies {
-                deleteProxiesWorkKey.deleteProxy(proxy)
+                self.deleteProxy(proxy)
             }
-            deleteProxiesWorkKey.notify {
-                self.finishWork(withResult: deleteProxiesWorkKey.workResult)
-                deleteProxiesWorkKey.finishWorkGroup()
-            }
+            self.finishWork(withResult: true)
         }
     }
 
     func deleteProxy(_ proxy: Proxy) {
         startWork()
         DBProxy.deleteProxy(proxy) { (success) in
+            XCTAssert(success)
+            self.finishWork(withResult: success)
+        }
+    }
+
+    func deleteTestData() {
+        startWork()
+        DB.delete(DBTest.test) { (success) in
             XCTAssert(success)
             self.finishWork(withResult: success)
         }
@@ -135,16 +131,6 @@ private extension AsyncWorkGroupKey {
 }
 
 extension DBTest {
-    static func makeProxy(withName name: String? = nil, forUser uid: String = Shared.shared.uid, completion: @escaping (Proxy) -> Void) {
-        DBProxy.makeProxy(withName: name, forUser: uid) { (result) in
-            switch result {
-            case .failure: XCTFail()
-            case .success(let proxy):
-                completion(proxy)
-            }
-        }
-    }
-
     static func makeConvo(completion: @escaping (_ convo: Convo, _ sender: Proxy, _ receiver: Proxy) -> Void) {
         var sender = Proxy()
         var receiver = Proxy()
@@ -179,6 +165,16 @@ extension DBTest {
                     return
                 }
                 completion(convo, sender, receiver)
+            }
+        }
+    }
+
+    static func makeProxy(withName name: String? = nil, forUser uid: String = Shared.shared.uid, completion: @escaping (Proxy) -> Void) {
+        DBProxy.makeProxy(withName: name, forUser: uid) { (result) in
+            switch result {
+            case .failure: XCTFail()
+            case .success(let proxy):
+                completion(proxy)
             }
         }
     }

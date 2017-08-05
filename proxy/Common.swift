@@ -15,50 +15,6 @@ enum Result<T, Error> {
     case failure(Error)
 }
 
-typealias AsyncWorkGroupKey = String
-
-extension AsyncWorkGroupKey {
-    init() {
-        let awgKey = UUID().uuidString
-        Shared.shared.asyncWorkGroups[awgKey] = (DispatchGroup(), true)
-        self = awgKey
-    }
-
-    static func makeAsyncWorkGroupKey() -> AsyncWorkGroupKey {
-        return AsyncWorkGroupKey()
-    }
-
-    func finishWorkGroup() {
-        Shared.shared.asyncWorkGroups.removeValue(forKey: self)
-    }
-
-    func startWork() {
-        Shared.shared.asyncWorkGroups[self]?.group.enter()
-    }
-
-    func finishWork(withResult result: Success) {
-        setWorkResult(result)
-        Shared.shared.asyncWorkGroups[self]?.group.leave()
-    }
-
-    @discardableResult
-    func setWorkResult(_ result: Success) -> Success {
-        let result = Shared.shared.asyncWorkGroups[self]?.result ?? false && result
-        Shared.shared.asyncWorkGroups[self]?.result = result
-        return result
-    }
-
-    var workResult: Success {
-        return Shared.shared.asyncWorkGroups[self]?.result ?? false
-    }
-
-    func notify(completion: @escaping () -> Void) {
-        Shared.shared.asyncWorkGroups[self]?.group.notify(queue: .main) {
-            completion()
-        }
-    }
-}
-
 extension Bool {
     static func &=(lhs: inout Bool, rhs: Bool) {
         lhs = lhs && rhs
