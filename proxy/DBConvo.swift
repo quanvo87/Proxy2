@@ -43,10 +43,10 @@ struct DBConvo {
         workKey.decrementConvoCount(forSenderProxyOfConvo: convo)
         workKey.decrementUnread(forSenderOfConvo: convo)
         workKey.decrementUnread(forSenderProxyOfConvo: convo)
-        workKey.setReceiverLeftConvo(forReceiverProxyConvo: convo)
-        workKey.setReceiverLeftConvo(forReceiverUserConvo: convo)
-        workKey.setSenderLeftConvo(forSenderProxyConvo: convo)
-        workKey.setSenderLeftConvo(forSenderUserConvo: convo)
+        workKey.setReceiverLeftConvo(forReceiverInConvo: convo)
+        workKey.setReceiverLeftConvo(forReceiverProxyInConvo: convo)
+        workKey.setSenderLeftConvo(forSenderInConvo: convo)
+        workKey.setSenderLeftConvo(forSenderProxyInConvo: convo)
         workKey.notify {
             completion(workKey.workResult)
             workKey.finishWorkGroup()
@@ -185,16 +185,16 @@ extension AsyncWorkGroupKey {
         }
     }
 
-    func setNickname(_ nickname: String, forReceiverInUserConvo convo: Convo) {
+    func setNickname(_ nickname: String, forReceiverInProxyConvo convo: Convo) {
         startWork()
-        DB.set(nickname, at: Path.Convos, convo.senderId, convo.key, Path.ReceiverNickname) { (success) in
+        DB.set(nickname, at: Path.Convos, convo.senderProxyKey, convo.key, Path.ReceiverNickname) { (success) in
             self.finishWork(withResult: success)
         }
     }
 
-    func setNickname(_ nickname: String, forReceiverInProxyConvo convo: Convo) {
+    func setNickname(_ nickname: String, forReceiverInUserConvo convo: Convo) {
         startWork()
-        DB.set(nickname, at: Path.Convos, convo.senderProxyKey, convo.key, Path.ReceiverNickname) { (success) in
+        DB.set(nickname, at: Path.Convos, convo.senderId, convo.key, Path.ReceiverNickname) { (success) in
             self.finishWork(withResult: success)
         }
     }
@@ -213,28 +213,28 @@ extension AsyncWorkGroupKey {
         }
     }
 
-    func setReceiverLeftConvo(forReceiverProxyConvo convo: Convo) {
+    func setReceiverLeftConvo(forReceiverProxyInConvo convo: Convo) {
         startWork()
         DB.set(true, at: Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverLeftConvo) { (success) in
             self.finishWork(withResult: success)
         }
     }
 
-    func setReceiverLeftConvo(forReceiverUserConvo convo: Convo) {
+    func setReceiverLeftConvo(forReceiverInConvo convo: Convo) {
         startWork()
         DB.set(true, at: Path.Convos, convo.receiverId, convo.key, Path.ReceiverLeftConvo) { (success) in
             self.finishWork(withResult: success)
         }
     }
 
-    func setSenderLeftConvo(forSenderProxyConvo convo: Convo) {
+    func setSenderLeftConvo(forSenderProxyInConvo convo: Convo) {
         startWork()
         DB.set(true, at: Path.Convos, convo.senderProxyKey, convo.key, Path.SenderLeftConvo) { (success) in
             self.finishWork(withResult: success)
         }
     }
 
-    func setSenderLeftConvo(forSenderUserConvo convo: Convo) {
+    func setSenderLeftConvo(forSenderInConvo convo: Convo) {
         startWork()
         DB.set(true, at: Path.Convos, convo.senderId, convo.key, Path.SenderLeftConvo) { (success) in
             self.finishWork(withResult: success)

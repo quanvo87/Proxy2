@@ -320,7 +320,7 @@ class API {
                     self.set(proxy.toJSON() as AnyObject, a: Path.Proxies, b: key, c: nil, d: nil)
                     
                     // Create the user's copy of the proxy with a random icon.
-                    let proxy = Proxy(name: name, ownerId: self.uid, icon: self.getRandomIcon())
+                    let proxy = Proxy(icon: self.getRandomIcon(), name: name, ownerId: self.uid)
                     
                     // Save the user's proxy.
                     self.set(proxy.toJSON() as AnyObject, a: Path.Proxies, b: self.uid, c: key, d: nil)

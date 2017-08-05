@@ -157,7 +157,7 @@ struct DBProxy {
                     }
 
                     if data.childrenCount == 1 {
-                        let proxy = Proxy(name: name, ownerId: uid, icon: randomIconName)
+                        let proxy = Proxy(icon: randomIconName, name: name, ownerId: uid)
                         let proxyOwner = ProxyOwner(key: key, ownerId: uid)
 
                         let workKey = AsyncWorkGroupKey()
@@ -271,16 +271,16 @@ extension AsyncWorkGroupKey {
         }
     }
 
-    func deleteUserConvosForProxy(userConvos convos: [Convo]) {
-        for convo in convos {
-            deleteUserConvo(convo)
-        }
-    }
-
     func deleteProxyOwner(forProxy proxy: Proxy) {
         startWork()
         DB.delete(Path.ProxyOwners, proxy.key) { (success) in
             self.finishWork(withResult: success)
+        }
+    }
+
+    func deleteUserConvosForProxy(userConvos convos: [Convo]) {
+        for convo in convos {
+            deleteUserConvo(convo)
         }
     }
 
@@ -400,8 +400,14 @@ extension AsyncWorkGroupKey {
 
     func setReceiverDeletedProxy(forReceiverInConvos convos: [Convo]) {
         for convo in convos {
-            setReceiverDeletedProxy(forReceiverInProxyConvo: convo)
-            setReceiverDeletedProxy(forReceiverInUserConvo: convo)
+            startWork()
+            DB.get(Path.Convos, convo.receiverId, convo.key) { (data) in
+                if data?.value as? FirebaseDatabase.NSNull == nil {
+                    self.setReceiverDeletedProxy(forReceiverInProxyConvo: convo)
+                    self.setReceiverDeletedProxy(forReceiverInUserConvo: convo)
+                }
+                self.finishWork(withResult: true)
+            }
         }
     }
 
