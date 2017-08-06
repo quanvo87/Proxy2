@@ -1,24 +1,8 @@
-//
-//  Extensions.swift
-//  proxy
-//
-//  Created by Quan Vo on 8/14/16.
-//  Copyright © 2016 Quan Vo. All rights reserved.
-//
-
-import FirebaseDatabase
-
 typealias Success = Bool
 
 enum Result<T, Error> {
     case success(T)
     case failure(Error)
-}
-
-extension Bool {
-    static func &=(lhs: inout Bool, rhs: Bool) {
-        lhs = lhs && rhs
-    }
 }
 
 extension Double {
@@ -27,37 +11,18 @@ extension Double {
     }
 }
 
-extension Error {
-    var description: String {
-        if let proxyError = self as? ProxyError {
-            return proxyError.localizedDescription
-        }
-        return self.localizedDescription
-    }
-}
-
 extension Int {
-    mutating func increment() {
-        if self == Int.max {
-            self = 0
-        } else {
-            self += 1
-        }
+    var asLabel: String {
+        return self == 0 ? "" : String(self)
     }
 
     var asLabelWithParens: String {
         return self == 0 ? "" : " (\(self))"
     }
 
-    var asLabel: String {
-        return self == 0 ? "" : String(self)
-    }
-
     var asStringWithCommas: String {
         var num = Double(self)
-
         num = fabs(num)
-
         if let string = NumberFormatter.proxyNumberFormatter.string(from: NSNumber(integerLiteral: Int(num))) {
             return string
         }
@@ -92,10 +57,8 @@ extension UIColor {
 
 extension UIImage {
     func resize(toNewSize newSize: CGSize, isAspectRatio aspect: Bool) -> UIImage {
-
         let originalRatio = self.size.width / self.size.height
         let newRatio = newSize.width / newSize.height
-
         var size = CGSize(width: 0, height: 0)
 
         if aspect {

@@ -7,6 +7,7 @@
 //
 
 // TODO: - get words from firebase storage
+// TODO: - delete
 struct ProxyNameGenerator {
     
     let numRange: UInt32 = 9

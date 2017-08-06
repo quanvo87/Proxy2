@@ -1,11 +1,3 @@
-//
-//  ProxyError.swift
-//  proxy
-//
-//  Created by Quan Vo on 6/7/17.
-//  Copyright © 2017 Quan Vo. All rights reserved.
-//
-
 enum ProxyError: Error {
     case blankCredentials
     case facebookLoginFail
@@ -23,5 +15,14 @@ enum ProxyError: Error {
 
     init(_ error: ProxyError) {
         self = error
+    }
+}
+
+extension Error {
+    var description: String {
+        if let proxyError = self as? ProxyError {
+            return proxyError.localizedDescription
+        }
+        return self.localizedDescription
     }
 }

@@ -1,6 +1,6 @@
+import FirebaseDatabase
 import XCTest
 @testable import proxy
-import FirebaseDatabase
 
 class DBProxyTests: DBTest {
     func testCancelMakingProxy() {
