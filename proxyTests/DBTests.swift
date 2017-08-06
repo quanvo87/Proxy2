@@ -1,44 +1,8 @@
-//
-//  DBTests.swift
-//  proxy
-//
-//  Created by Quan Vo on 6/14/17.
-//  Copyright © 2017 Quan Vo. All rights reserved.
-//
-
+import FirebaseDatabase
 import XCTest
 @testable import proxy
-import FirebaseDatabase
 
 class DBTests: DBTest {
-    func testPath() {
-        XCTAssertNotNil(DB.Path("a"))
-        XCTAssertNotNil(DB.Path("a", "b"))
-        XCTAssertNotNil(DB.Path("/a/"))
-        XCTAssertNotNil(DB.Path("//a//"))
-        XCTAssertNotNil(DB.Path("/a/a/"))
-    }
-
-    func testBadPath() {
-        XCTAssertNil(DB.Path(""))
-        XCTAssertNil(DB.Path("a", ""))
-        XCTAssertNil(DB.Path("", "a"))
-        XCTAssertNil(DB.Path("/"))
-        XCTAssertNil(DB.Path("//"))
-        XCTAssertNil(DB.Path("///"))
-        XCTAssertNil(DB.Path("/a//a/"))
-    }
-
-    func testRef() {
-        XCTAssertNotNil(DB.ref("a"))
-        XCTAssertNotNil(DB.ref("a", "b"))
-    }
-
-    func testBadRef() {
-        let ref = DB.ref("")
-        XCTAssertNil(ref)
-    }
-
     func testGetSetDelete() {
         let x = expectation(description: #function)
 
@@ -75,7 +39,7 @@ class DBTests: DBTest {
         waitForExpectations(timeout: 10)
     }
 
-    func testConcurrentIncrement() {
+    func testIncrementConcurrent() {
         let x = expectation(description: #function)
 
         let incrementsDone = DispatchGroup()
@@ -95,5 +59,33 @@ class DBTests: DBTest {
             }
         }
         waitForExpectations(timeout: 10)
+    }
+
+    func testPath() {
+        XCTAssertNotNil(DB.Path("a"))
+        XCTAssertNotNil(DB.Path("a", "b"))
+        XCTAssertNotNil(DB.Path("/a/"))
+        XCTAssertNotNil(DB.Path("//a//"))
+        XCTAssertNotNil(DB.Path("/a/a/"))
+    }
+
+    func testPathFail() {
+        XCTAssertNil(DB.Path(""))
+        XCTAssertNil(DB.Path("a", ""))
+        XCTAssertNil(DB.Path("", "a"))
+        XCTAssertNil(DB.Path("/"))
+        XCTAssertNil(DB.Path("//"))
+        XCTAssertNil(DB.Path("///"))
+        XCTAssertNil(DB.Path("/a//a/"))
+    }
+
+    func testRef() {
+        XCTAssertNotNil(DB.ref("a"))
+        XCTAssertNotNil(DB.ref("a", "b"))
+    }
+
+    func testRefFail() {
+        let ref = DB.ref("")
+        XCTAssertNil(ref)
     }
 }

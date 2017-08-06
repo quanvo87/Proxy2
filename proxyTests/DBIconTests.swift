@@ -1,11 +1,3 @@
-//
-//  DBIconTests.swift
-//  proxy
-//
-//  Created by Quan Vo on 6/15/17.
-//  Copyright © 2017 Quan Vo. All rights reserved.
-//
-
 import XCTest
 @testable import proxy
 
@@ -31,14 +23,6 @@ class DBIconTests: DBTest {
             iconImagesRetrieved.notify(queue: DispatchQueue.main) {
                 self.x.fulfill()
             }
-        }
-    }
-
-    func testCellsIncrementedTags() {
-        let cells = [UITableViewCell(), UITableViewCell()]
-        cells.incrementedTags
-        for cell in cells {
-            XCTAssertEqual(cell.tag, 1)
         }
     }
 }

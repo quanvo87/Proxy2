@@ -1,34 +1,8 @@
-//
-//  CommonTests.swift
-//  proxy
-//
-//  Created by Quan Vo on 6/14/17.
-//  Copyright © 2017 Quan Vo. All rights reserved.
-//
-
+import FirebaseDatabase
 import XCTest
 @testable import proxy
-import FirebaseDatabase
 
 class CommonTests: XCTestCase {
-    func testAndEqual() {
-        var lhs: Bool
-
-        lhs = true
-        lhs &= true
-        XCTAssert(lhs)
-
-        lhs &= false
-        XCTAssertFalse(lhs)
-
-        lhs = false
-        lhs &= false
-        XCTAssertFalse(lhs)
-
-        lhs &= true
-        XCTAssertFalse(lhs)
-    }
-
     func testDoubleAsTimeAgo() {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "h:mm a"
@@ -43,24 +17,14 @@ class CommonTests: XCTestCase {
         XCTAssertEqual(error.description, "Please enter a valid email and password.")
     }
 
-    func testIntIncrement() {
-        var i = 0
-        i.increment()
-        XCTAssertEqual(i, 1)
-
-        i = Int.max
-        i.increment()
-        XCTAssertEqual(i, 0)
-    }
-
-    func testIntAsLabelWithParens() {
-        XCTAssertEqual(0.asLabelWithParens, "")
-        XCTAssertEqual(1.asLabelWithParens, " (1)")
-    }
-
     func testIntAsLabel() {
         XCTAssertEqual(0.asLabel, "")
         XCTAssertEqual(1.asLabel, "1")
+    }
+    
+    func testIntAsLabelWithParens() {
+        XCTAssertEqual(0.asLabelWithParens, "")
+        XCTAssertEqual(1.asLabelWithParens, " (1)")
     }
 
     func testShortForm() {

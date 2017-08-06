@@ -1,11 +1,3 @@
-//
-//  DBIcon.swift
-//  proxy
-//
-//  Created by Quan Vo on 6/11/17.
-//  Copyright © 2017 Quan Vo. All rights reserved.
-//
-
 import FirebaseStorage
 
 struct DBIcon {
@@ -37,6 +29,6 @@ struct DBIcon {
 
 extension Array where Element: UITableViewCell {
     var incrementedTags: Void {
-        _ = self.map { $0.tag.increment() }
+        _ = self.map { $0.tag += 1 }
     }
 }

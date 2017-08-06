@@ -1,11 +1,3 @@
-//
-//  DBProxy.swift
-//  proxy
-//
-//  Created by Quan Vo on 6/12/17.
-//  Copyright © 2017 Quan Vo. All rights reserved.
-//
-
 import FirebaseDatabase
 import FirebaseStorage
 

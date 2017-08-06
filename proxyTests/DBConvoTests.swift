@@ -1,11 +1,3 @@
-//
-//  DBConvo.swift
-//  proxy
-//
-//  Created by Quan Vo on 6/15/17.
-//  Copyright © 2017 Quan Vo. All rights reserved.
-//
-
 import FirebaseDatabase
 import XCTest
 @testable import proxy
