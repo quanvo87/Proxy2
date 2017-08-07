@@ -326,7 +326,7 @@ extension AsyncWorkGroupKey {
     func checkReceiverDeletedProxy(forProxyConvo convo: Convo) {
         startWork()
         DB.get(Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverDeletedProxy) { (data) in
-            XCTAssertEqual(data?.value as? Bool, true)
+            XCTAssert(data?.value as? Bool ?? false)
             self.finishWork(withResult: true)
         }
     }
@@ -334,7 +334,7 @@ extension AsyncWorkGroupKey {
     func checkReceiverDeletedProxy(forUserConvo convo: Convo) {
         startWork()
         DB.get(Path.Convos, convo.receiverId, convo.key, Path.ReceiverDeletedProxy) { (data) in
-            XCTAssertEqual(data?.value as? Bool, true)
+            XCTAssert(data?.value as? Bool ?? false)
             self.finishWork(withResult: true)
         }
     }
