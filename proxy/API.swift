@@ -208,12 +208,12 @@ class API {
                 if _convo.receiverId == convo.receiverId {
                     
                     // Set senderIsBlocking to true for sender's versions
-                    self.set(true as AnyObject, a: Path.Convos, b: _convo.senderId, c: _convo.key, d: Path.SenderIsBlocking)
-                    self.set(true as AnyObject, a: Path.Convos, b: _convo.senderProxyKey, c: _convo.key, d: Path.SenderIsBlocking)
+                    self.set(true as AnyObject, a: Path.Convos, b: _convo.senderId, c: _convo.key, d: Path.ReceiverIsBlocked)
+                    self.set(true as AnyObject, a: Path.Convos, b: _convo.senderProxyKey, c: _convo.key, d: Path.ReceiverIsBlocked)
                     
                     // Set receiverIsBlocking to true for receiver's versions
-                    self.set(true as AnyObject, a: Path.Convos, b: _convo.receiverId, c: _convo.key, d: Path.ReceiverIsBlocking)
-                    self.set(true as AnyObject, a: Path.Convos, b: _convo.receiverProxyKey, c: _convo.key, d: Path.ReceiverIsBlocking)
+                    self.set(true as AnyObject, a: Path.Convos, b: _convo.receiverId, c: _convo.key, d: Path.SenderIsBlocked)
+                    self.set(true as AnyObject, a: Path.Convos, b: _convo.receiverProxyKey, c: _convo.key, d: Path.SenderIsBlocked)
                     
                     // Decrement unreads by convo's unread
                     self.increment(by: -_convo.unread, a: Path.Unread, b: _convo.senderId, c: Path.Unread, d: nil)
@@ -230,11 +230,11 @@ class API {
             for convo in convos {
                 if convo.receiverId == blockedUser {
                     
-                    self.set(false as AnyObject, a: Path.Convos, b: convo.senderId, c: convo.key, d: Path.SenderIsBlocking)
-                    self.set(false as AnyObject, a: Path.Convos, b: convo.senderProxyKey, c: convo.key, d: Path.SenderIsBlocking)
+                    self.set(false as AnyObject, a: Path.Convos, b: convo.senderId, c: convo.key, d: Path.ReceiverIsBlocked)
+                    self.set(false as AnyObject, a: Path.Convos, b: convo.senderProxyKey, c: convo.key, d: Path.ReceiverIsBlocked)
                     
-                    self.set(false as AnyObject, a: Path.Convos, b: convo.receiverId, c: convo.key, d: Path.ReceiverIsBlocking)
-                    self.set(false as AnyObject, a: Path.Convos, b: convo.receiverProxyKey, c: convo.key, d: Path.ReceiverIsBlocking)
+                    self.set(false as AnyObject, a: Path.Convos, b: convo.receiverId, c: convo.key, d: Path.SenderIsBlocked)
+                    self.set(false as AnyObject, a: Path.Convos, b: convo.receiverProxyKey, c: convo.key, d: Path.SenderIsBlocked)
                     
                     self.increment(by: convo.unread, a: Path.Unread, b: convo.senderId, c: Path.Unread, d: nil)
                     self.increment(by: convo.unread, a: Path.Proxies, b: convo.senderId, c: convo.senderProxyKey, d: Path.Unread)
@@ -476,7 +476,7 @@ class API {
             self.increment(by: 1, a: Path.MessagesSent, b: convo.senderId, c: Path.MessagesSent, d: nil)
             
             // Receiver updates
-            if !convo.receiverDeletedProxy && !convo.receiverIsBlocking {
+            if !convo.receiverDeletedProxy && !convo.senderIsBlocked {
                 self.set(text as AnyObject, a: Path.Proxies, b: convo.receiverId, c: convo.receiverProxyKey, d: Path.Message)
                 self.set(timestamp as AnyObject, a: Path.Proxies, b: convo.receiverId, c: convo.receiverProxyKey, d: Path.Timestamp)
                 if receiverIsPresent {
@@ -562,7 +562,7 @@ class API {
             senderConvo.receiverProxyKey = receiver.key
             senderConvo.receiverProxyName = receiver.name
             senderConvo.icon = receiver.icon
-            senderConvo.receiverIsBlocking = senderBlocked
+            senderConvo.senderIsBlocked = senderBlocked
             let senderConvoAnyObject = senderConvo.toJSON()
             self.set(senderConvoAnyObject as AnyObject, a: Path.Convos, b: senderConvo.senderId, c: senderConvo.key, d: nil)
             self.set(senderConvoAnyObject as AnyObject, a: Path.Convos, b: senderConvo.senderProxyKey, c: senderConvo.key, d: nil)
@@ -577,7 +577,7 @@ class API {
             receiverConvo.receiverProxyKey = sender.key
             receiverConvo.receiverProxyName = sender.name
             receiverConvo.icon = sender.icon
-            receiverConvo.senderIsBlocking = senderBlocked
+            receiverConvo.receiverIsBlocked = senderBlocked
             let receiverConvoAnyObject = receiverConvo.toJSON()
             self.set(receiverConvoAnyObject as AnyObject, a: Path.Convos, b: receiverConvo.senderId, c: receiverConvo.key, d: nil)
             self.set(receiverConvoAnyObject as AnyObject, a: Path.Convos, b: receiverConvo.senderProxyKey, c: receiverConvo.key, d: nil)
@@ -624,7 +624,7 @@ class API {
         var convos = [Convo]()
         for child in data.children {
             if let convo = Convo((child as! DataSnapshot).value as AnyObject),
-                !convo.senderLeftConvo && !convo.senderIsBlocking {
+                !convo.senderLeftConvo && !convo.receiverIsBlocked {
                 convos.append(convo)
             }
         }

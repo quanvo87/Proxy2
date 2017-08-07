@@ -22,15 +22,15 @@ struct Path {
     static let Typing = "typing"
     
     // Convo
+    static let ReceiverDeletedProxy = "receiverDeletedProxy"
+    static let ReceiverIsBlocked = "receiverIsBlocked"
+    static let ReceiverLeftConvo = "receiverLeftConvo"
+    static let ReceiverNickname = "receiverNickname"
+    static let SenderDeletedProxy = "senderDeletedProxy"
+    static let SenderIsBlocked = "senderIsBlocked"
     static let SenderNickname = "senderNickname"
     static let SenderLeftConvo = "senderLeftConvo"
-    static let SenderDeletedProxy = "senderDeletedProxy"
-    static let SenderIsBlocking = "senderIsBlocking"
-    static let ReceiverNickname = "receiverNickname"
-    static let ReceiverLeftConvo = "receiverLeftConvo"
-    static let ReceiverDeletedProxy = "receiverDeletedProxy"
-    static let ReceiverIsBlocking = "receiverIsBlocking"
-    
+
     // Message
     static let Read = "read"
     static let TimeRead = "timeRead"

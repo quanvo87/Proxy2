@@ -176,7 +176,7 @@ class ConvoViewController: JSQMessagesViewController {
     }
     
     func checkIsBlocking() {
-        ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderIsBlocking).observeSingleEvent(of: .value, with: { (data) in
+        ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.ReceiverIsBlocked).observeSingleEvent(of: .value, with: { (data) in
             if let isBlocking = data.value as? Bool, isBlocking {
                 self.close()
             }

@@ -46,8 +46,8 @@ struct DBConvo {
     }
 
     static func makeConvo(senderProxy: Proxy, receiverProxy: Proxy, completion: @escaping (Convo?) -> Void) {
-        DB.get(Path.UserInfo, receiverProxy.ownerId, Path.Blocked, senderProxy.ownerId, Path.Blocked) { (data) in
-            let senderIsBlocking = data?.childrenCount == 1
+        DB.get(Path.UserInfo, receiverProxy.ownerId, Path.Blocked, senderProxy.ownerId) { (data) in
+            let senderIsBlocked = data?.value as? Bool ?? false
             let convoKey = makeConvoKey(senderProxy: senderProxy, receiverProxy: receiverProxy)
 
             var senderConvo = Convo()
@@ -59,7 +59,7 @@ struct DBConvo {
             senderConvo.receiverProxyKey = receiverProxy.key
             senderConvo.receiverProxyName = receiverProxy.name
             senderConvo.icon = receiverProxy.icon
-            senderConvo.receiverIsBlocking = senderIsBlocking
+            senderConvo.senderIsBlocked = senderIsBlocked
 
             var receiverConvo = Convo()
             receiverConvo.key = convoKey
@@ -70,7 +70,7 @@ struct DBConvo {
             receiverConvo.receiverProxyKey = senderProxy.key
             receiverConvo.receiverProxyName = senderProxy.name
             receiverConvo.icon = senderProxy.icon
-            receiverConvo.senderIsBlocking = senderIsBlocking
+            receiverConvo.receiverIsBlocked = senderIsBlocked
 
             let workKey = AsyncWorkGroupKey()
             workKey.incrementConvoCount(forProxy: senderProxy)
@@ -122,7 +122,7 @@ extension DataSnapshot {
         for child in self.children {
             if let convo = Convo((child as? DataSnapshot)?.value as AnyObject) {
                 if filtered {
-                    if !convo.senderLeftConvo && !convo.senderIsBlocking {
+                    if !convo.senderLeftConvo && !convo.receiverIsBlocked {
                         convos.append(convo)
                     }
                 } else {

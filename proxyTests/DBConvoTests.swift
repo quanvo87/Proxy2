@@ -94,10 +94,10 @@ class DBConvoTests: DBTest {
 
                             let workKey = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
                             workKey.checkConvoCount(forSenderProxyOfConvo: convo, equals: 0)
-                            workKey.checkReceiverLeftConvo(inReceiverProxyConvoOfConvo: convo)
-                            workKey.checkReceiverLeftConvo(inReceiverUserConvoOfConvo: convo)
-                            workKey.checkSenderLeftConvo(inSenderProxyConvoOfConvo: convo)
-                            workKey.checkSenderLeftConvo(inSenderUserConvoOfConvo: convo)
+                            workKey.checkReceiverLeftConvo(forReceiverProxyConvoOfConvo: convo)
+                            workKey.checkReceiverLeftConvo(forReceiverUserConvoOfConvo: convo)
+                            workKey.checkSenderLeftConvo(forSenderProxyConvoOfConvo: convo)
+                            workKey.checkSenderLeftConvo(forSenderUserConvoOfConvo: convo)
                             workKey.checkUnread(forSenderOfConvo: convo)
                             workKey.checkUnread(forSenderProxyOfConvo: convo)
                             workKey.notify {
@@ -119,10 +119,10 @@ class DBConvoTests: DBTest {
             XCTAssertEqual(convo.icon, receiver.icon)
             XCTAssertEqual(convo.key, convoKey)
             XCTAssertEqual(convo.receiverId, receiver.ownerId)
-            XCTAssertEqual(convo.receiverIsBlocking, false)
             XCTAssertEqual(convo.receiverProxyKey, receiver.key)
             XCTAssertEqual(convo.receiverProxyName, receiver.name)
             XCTAssertEqual(convo.senderId, sender.ownerId)
+            XCTAssertEqual(convo.senderIsBlocked, false)
             XCTAssertEqual(convo.senderProxyKey, sender.key)
             XCTAssertEqual(convo.senderProxyName, sender.name)
 
@@ -130,23 +130,44 @@ class DBConvoTests: DBTest {
             receiverConvo.icon = sender.icon
             receiverConvo.key = convoKey
             receiverConvo.receiverId = sender.ownerId
+            receiverConvo.receiverIsBlocked = false
             receiverConvo.receiverProxyKey = sender.key
             receiverConvo.receiverProxyName = sender.name
             receiverConvo.senderId = receiver.ownerId
-            receiverConvo.senderIsBlocking = false
             receiverConvo.senderProxyKey = receiver.key
             receiverConvo.senderProxyName = receiver.name
 
             let workKey = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-            workKey.checkProxyConvoCreated(convo)
-            workKey.checkProxyConvoCreated(receiverConvo)
             workKey.checkConvoCount(forSenderProxyOfConvo: convo, equals: 1)
             workKey.checkConvoCount(forSenderProxyOfConvo: receiverConvo, equals: 1)
+            workKey.checkProxyConvoCreated(convo)
+            workKey.checkProxyConvoCreated(receiverConvo)
             workKey.checkUserConvoCreated(convo)
             workKey.checkUserConvoCreated(receiverConvo)
             workKey.notify {
                 workKey.finishWorkGroup()
                 self.x.fulfill()
+            }
+        }
+    }
+
+    func testMakeConvoWhileSenderIsBlocked() {
+        x = expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
+
+        DB.set(true, at: Path.UserInfo, DBTest.testUser, Path.Blocked, Shared.shared.uid) { (success) in
+            XCTAssert(success)
+
+            DBTest.makeConvo { (convo, _, _) in
+                let workKey = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
+                workKey.checkReceiverIsBlocked(forReceiverProxyConvoOfConvo: convo)
+                workKey.checkReceiverIsBlocked(forReceiverUserConvoOfConvo: convo)
+                workKey.checkSenderIsBlocked(forSenderProxyConvoOfConvo: convo)
+                workKey.checkSenderIsBlocked(forSenderUserConvoOfConvo: convo)
+                workKey.notify {
+                    workKey.finishWorkGroup()
+                    self.x.fulfill()
+                }
             }
         }
     }
@@ -179,8 +200,8 @@ class DBConvoTests: DBTest {
                 XCTAssert(success)
 
                 let workKey = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-                workKey.checkReceiverNickname(inProxyConvo: convo, equals: testNickname)
-                workKey.checkReceiverNickname(inUserConvo: convo, equals: testNickname)
+                workKey.checkReceiverNickname(forProxyConvo: convo, equals: testNickname)
+                workKey.checkReceiverNickname(forUserConvo: convo, equals: testNickname)
                 workKey.notify {
                     workKey.finishWorkGroup()
                     self.x.fulfill()
@@ -215,7 +236,7 @@ extension AsyncWorkGroupKey {
         }
     }
 
-    func checkReceiverNickname(inProxyConvo convo: Convo, equals nickname: String) {
+    func checkReceiverNickname(forProxyConvo convo: Convo, equals nickname: String) {
         startWork()
         DB.get(Path.Convos, convo.senderProxyKey, convo.key, Path.ReceiverNickname) { (data) in
             XCTAssertEqual(data?.value as? String, nickname)
@@ -223,7 +244,7 @@ extension AsyncWorkGroupKey {
         }
     }
 
-    func checkReceiverNickname(inUserConvo convo: Convo, equals nickname: String) {
+    func checkReceiverNickname(forUserConvo convo: Convo, equals nickname: String) {
         startWork()
         DB.get(Path.Convos, convo.senderId, convo.key, Path.ReceiverNickname) { (data) in
             XCTAssertEqual(data?.value as? String, nickname)
@@ -247,34 +268,66 @@ extension AsyncWorkGroupKey {
         }
     }
 
-    func checkReceiverLeftConvo(inReceiverProxyConvoOfConvo convo: Convo) {
+    func checkReceiverIsBlocked(forReceiverProxyConvoOfConvo convo: Convo) {
+        startWork()
+        DB.get(Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverIsBlocked) { (data) in
+            XCTAssert(data?.value as? Bool ?? false)
+            self.finishWork(withResult: true)
+        }
+    }
+
+    func checkReceiverIsBlocked(forReceiverUserConvoOfConvo convo: Convo) {
+        startWork()
+        DB.get(Path.Convos, convo.receiverId, convo.key, Path.ReceiverIsBlocked) { (data) in
+            XCTAssert(data?.value as? Bool ?? false)
+            self.finishWork(withResult: true)
+        }
+    }
+
+    func checkReceiverLeftConvo(forReceiverProxyConvoOfConvo convo: Convo) {
         startWork()
         DB.get(Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverLeftConvo) { (data) in
-            XCTAssertEqual(data?.value as? Bool, true)
+            XCTAssert(data?.value as? Bool ?? false)
             self.finishWork(withResult: true)
         }
     }
 
-    func checkReceiverLeftConvo(inReceiverUserConvoOfConvo convo: Convo) {
+    func checkReceiverLeftConvo(forReceiverUserConvoOfConvo convo: Convo) {
         startWork()
         DB.get(Path.Convos, convo.receiverId, convo.key, Path.ReceiverLeftConvo) { (data) in
-            XCTAssertEqual(data?.value as? Bool, true)
+            XCTAssert(data?.value as? Bool ?? false)
             self.finishWork(withResult: true)
         }
     }
 
-    func checkSenderLeftConvo(inSenderProxyConvoOfConvo convo: Convo) {
+    func checkSenderIsBlocked(forSenderProxyConvoOfConvo convo: Convo) {
+        startWork()
+        DB.get(Path.Convos, convo.senderProxyKey, convo.key, Path.SenderIsBlocked) { (data) in
+            XCTAssert(data?.value as? Bool ?? false)
+            self.finishWork(withResult: true)
+        }
+    }
+
+    func checkSenderIsBlocked(forSenderUserConvoOfConvo convo: Convo) {
+        startWork()
+        DB.get(Path.Convos, convo.senderId, convo.key, Path.SenderIsBlocked) { (data) in
+            XCTAssert(data?.value as? Bool ?? false)
+            self.finishWork(withResult: true)
+        }
+    }
+
+    func checkSenderLeftConvo(forSenderProxyConvoOfConvo convo: Convo) {
         startWork()
         DB.get(Path.Convos, convo.senderProxyKey, convo.key, Path.SenderLeftConvo) { (data) in
-            XCTAssertEqual(data?.value as? Bool, true)
+            XCTAssert(data?.value as? Bool ?? false)
             self.finishWork(withResult: true)
         }
     }
 
-    func checkSenderLeftConvo(inSenderUserConvoOfConvo convo: Convo) {
+    func checkSenderLeftConvo(forSenderUserConvoOfConvo convo: Convo) {
         startWork()
         DB.get(Path.Convos, convo.senderId, convo.key, Path.SenderLeftConvo) { (data) in
-            XCTAssertEqual(data?.value as? Bool, true)
+            XCTAssert(data?.value as? Bool ?? false)
             self.finishWork(withResult: true)
         }
     }
