@@ -22,6 +22,10 @@ class Shared {
 typealias AsyncWorkGroupKey = String
 
 extension AsyncWorkGroupKey {
+    var workResult: Success {
+        return Shared.shared.asyncWorkGroups[self]?.result ?? false
+    }
+
     init() {
         let workKey = UUID().uuidString
         Shared.shared.asyncWorkGroups[workKey] = (DispatchGroup(), true)
@@ -32,17 +36,19 @@ extension AsyncWorkGroupKey {
         return AsyncWorkGroupKey()
     }
 
+    func finishWork(withResult result: Success) {
+        setWorkResult(result)
+        Shared.shared.asyncWorkGroups[self]?.group.leave()
+    }
+
     func finishWorkGroup() {
         Shared.shared.asyncWorkGroups.removeValue(forKey: self)
     }
 
-    func startWork() {
-        Shared.shared.asyncWorkGroups[self]?.group.enter()
-    }
-
-    func finishWork(withResult result: Success) {
-        setWorkResult(result)
-        Shared.shared.asyncWorkGroups[self]?.group.leave()
+    func notify(completion: @escaping () -> Void) {
+        Shared.shared.asyncWorkGroups[self]?.group.notify(queue: .main) {
+            completion()
+        }
     }
 
     @discardableResult
@@ -52,13 +58,7 @@ extension AsyncWorkGroupKey {
         return result
     }
 
-    var workResult: Success {
-        return Shared.shared.asyncWorkGroups[self]?.result ?? false
-    }
-
-    func notify(completion: @escaping () -> Void) {
-        Shared.shared.asyncWorkGroups[self]?.group.notify(queue: .main) {
-            completion()
-        }
+    func startWork() {
+        Shared.shared.asyncWorkGroups[self]?.group.enter()
     }
 }
