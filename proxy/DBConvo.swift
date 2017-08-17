@@ -98,11 +98,10 @@ struct DBConvo {
         return receiver
     }
 
-
-    static func setNickname(_ nickname: String, forReceiverInConvo convo: Convo, completion: @escaping (Success) -> Void) {
+    static func setNickname(to nickname: String, forReceiverInConvo convo: Convo, completion: @escaping (Success) -> Void) {
         let workKey = AsyncWorkGroupKey()
-        workKey.setNickname(nickname, forReceiverInUserConvo: convo)
-        workKey.setNickname(nickname, forReceiverInProxyConvo: convo)
+        workKey.setNickname(to: nickname, forReceiverInUserConvo: convo)
+        workKey.setNickname(to: nickname, forReceiverInProxyConvo: convo)
         workKey.notify {
             completion(workKey.workResult)
             workKey.finishWorkGroup()
@@ -177,14 +176,14 @@ extension AsyncWorkGroupKey {
         }
     }
 
-    func setNickname(_ nickname: String, forReceiverInProxyConvo convo: Convo) {
+    func setNickname(to nickname: String, forReceiverInProxyConvo convo: Convo) {
         startWork()
         DB.set(nickname, at: Path.Convos, convo.senderProxyKey, convo.key, Path.ReceiverNickname) { (success) in
             self.finishWork(withResult: success)
         }
     }
 
-    func setNickname(_ nickname: String, forReceiverInUserConvo convo: Convo) {
+    func setNickname(to nickname: String, forReceiverInUserConvo convo: Convo) {
         startWork()
         DB.set(nickname, at: Path.Convos, convo.senderId, convo.key, Path.ReceiverNickname) { (success) in
             self.finishWork(withResult: success)

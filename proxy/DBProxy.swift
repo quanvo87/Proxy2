@@ -46,7 +46,7 @@ struct DBProxy {
         workKey.deleteProxyKey(forProxy: proxy)
         workKey.deleteProxyOwner(forProxy: proxy)
         workKey.deleteProxyConvos(forProxy: proxy)
-        workKey.deleteUserConvosForProxy(userConvos: convos)
+        workKey.deleteUserConvos(convos)
         workKey.setReceiverDeletedProxy(forReceiverInConvos: convos)
         workKey.notify {
             completion(workKey.workResult)
@@ -155,7 +155,7 @@ struct DBProxy {
                         let workKey = AsyncWorkGroupKey()
                         workKey.incrementProxyCount(forUser: uid)
                         workKey.setProxy(proxy)
-                        workKey.setProxyKey(proxyKey, key: key)
+                        workKey.setProxyKey(proxyKey, withKey: key)
                         workKey.setProxyOwner(proxyOwner)
                         workKey.notify {
                             makeProxyDone(result: workKey.workResult ? .success(proxy) : .failure(.unknown), completion: completion)
@@ -174,40 +174,40 @@ struct DBProxy {
         }
     }
 
-    static func setIcon(_ icon: String, forProxy proxy: Proxy, completion: @escaping (Success) -> Void) {
+    static func setIcon(to icon: String, forProxy proxy: Proxy, completion: @escaping (Success) -> Void) {
         DBConvo.getConvos(forProxy: proxy, filtered: false) { (convos) in
             guard let convos = convos else {
                 completion(false)
                 return
             }
-            setIcon(icon, forProxy: proxy, withConvos: convos, completion: completion)
+            setIcon(to: icon, forProxy: proxy, withConvos: convos, completion: completion)
         }
     }
 
-    static func setIcon(_ icon: String, forProxy proxy: Proxy, withConvos convos: [Convo], completion: @escaping (Success) -> Void) {
+    static func setIcon(to icon: String, forProxy proxy: Proxy, withConvos convos: [Convo], completion: @escaping (Success) -> Void) {
         let workKey = AsyncWorkGroupKey()
-        workKey.setIcon(icon, forProxy: proxy)
-        workKey.setIcon(icon, forReceiverInConvos: convos)
+        workKey.setIcon(to: icon, forProxy: proxy)
+        workKey.setIcon(to: icon, forReceiverInConvos: convos)
         workKey.notify {
             completion(workKey.workResult)
             workKey.finishWorkGroup()
         }
     }
 
-    static func setNickname(_ nickname: String, forProxy proxy: Proxy, completion: @escaping (Success) -> Void) {
+    static func setNickname(to nickname: String, forProxy proxy: Proxy, completion: @escaping (Success) -> Void) {
         DBConvo.getConvos(forProxy: proxy, filtered: false) { (convos) in
             guard let convos = convos else {
                 completion(false)
                 return
             }
-            setNickname(nickname, forProxy: proxy, withConvos: convos, completion: completion)
+            setNickname(to: nickname, forProxy: proxy, withConvos: convos, completion: completion)
         }
     }
 
-    static func setNickname(_ nickname: String, forProxy proxy: Proxy, withConvos convos: [Convo], completion: @escaping (Success) -> Void) {
+    static func setNickname(to nickname: String, forProxy proxy: Proxy, withConvos convos: [Convo], completion: @escaping (Success) -> Void) {
         let workKey = AsyncWorkGroupKey()
-        workKey.setNickname(nickname, forProxy: proxy)
-        workKey.setNickname(nickname, forSenderInConvos: convos)
+        workKey.setNickname(to: nickname, forProxy: proxy)
+        workKey.setNickname(to: nickname, forSenderInConvos: convos)
         workKey.notify {
             completion(workKey.workResult)
             workKey.finishWorkGroup()
@@ -270,7 +270,7 @@ extension AsyncWorkGroupKey {
         }
     }
 
-    func deleteUserConvosForProxy(userConvos convos: [Convo]) {
+    func deleteUserConvos(_ convos: [Convo]) {
         for convo in convos {
             deleteUserConvo(convo)
         }
@@ -313,56 +313,56 @@ extension AsyncWorkGroupKey {
         }
     }
 
-    func setIcon(_ icon: String, forProxy proxy: Proxy) {
+    func setIcon(to icon: String, forProxy proxy: Proxy) {
         startWork()
         DB.set(icon, at: Path.Proxies, proxy.ownerId, proxy.key, Path.Icon) { (success) in
             self.finishWork(withResult: success)
         }
     }
 
-    func setIcon(_ icon: String, forReceiverInConvos convos: [Convo]) {
+    func setIcon(to icon: String, forReceiverInConvos convos: [Convo]) {
         for convo in convos {
-            setIcon(icon, forReceiverInProxyConvo: convo)
-            setIcon(icon, forReceiverInUserConvo: convo)
+            setIcon(to: icon, forReceiverInProxyConvo: convo)
+            setIcon(to: icon, forReceiverInUserConvo: convo)
         }
     }
 
-    func setIcon(_ icon: String, forReceiverInProxyConvo convo: Convo) {
+    func setIcon(to icon: String, forReceiverInProxyConvo convo: Convo) {
         startWork()
         DB.set(icon, at: Path.Convos, convo.receiverProxyKey, convo.key, Path.Icon) { (success) in
             self.finishWork(withResult: success)
         }
     }
 
-    func setIcon(_ icon: String, forReceiverInUserConvo convo: Convo) {
+    func setIcon(to icon: String, forReceiverInUserConvo convo: Convo) {
         startWork()
         DB.set(icon, at: Path.Convos, convo.receiverId, convo.key, Path.Icon) { (success) in
             self.finishWork(withResult: success)
         }
     }
 
-    func setNickname(_ nickname: String, forProxy proxy: Proxy) {
+    func setNickname(to nickname: String, forProxy proxy: Proxy) {
         startWork()
         DB.set(nickname, at: Path.Proxies, proxy.ownerId, proxy.key, Path.Nickname) { (success) in
             self.finishWork(withResult: success)
         }
     }
 
-    func setNickname(_ nickname: String, forSenderInConvos convos: [Convo]) {
+    func setNickname(to nickname: String, forSenderInConvos convos: [Convo]) {
         for convo in convos {
-            setNickname(nickname, forSenderInProxyConvo: convo)
-            setNickname(nickname, forSenderInUserConvo: convo)
+            setNickname(to: nickname, forSenderInProxyConvo: convo)
+            setNickname(to: nickname, forSenderInUserConvo: convo)
         }
     }
 
-    func setNickname(_ nickname: String, forSenderInProxyConvo convo: Convo) {
+    func setNickname(to nickname: String, forSenderInProxyConvo convo: Convo) {
         startWork()
         DB.set(nickname, at: Path.Convos, convo.senderProxyKey, convo.key, Path.SenderNickname) { (success) in
             self.finishWork(withResult: success)
         }
     }
 
-    func setNickname(_ nickname: String, forSenderInUserConvo convo: Convo) {
+    func setNickname(to nickname: String, forSenderInUserConvo convo: Convo) {
         startWork()
         DB.set(nickname, at: Path.Convos, convo.senderId, convo.key, Path.SenderNickname) { (success) in
             self.finishWork(withResult: success)
@@ -376,7 +376,7 @@ extension AsyncWorkGroupKey {
         }
     }
 
-    func setProxyKey(_ proxyKey: [String: String], key: String) {
+    func setProxyKey(_ proxyKey: [String: String], withKey key: String) {
         startWork()
         DB.set(proxyKey, at: Path.ProxyKeys, key) { (success) in
             self.finishWork(withResult: success)

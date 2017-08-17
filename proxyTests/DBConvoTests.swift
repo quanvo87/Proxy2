@@ -12,7 +12,7 @@ class DBConvoTests: DBTest {
                 XCTAssert(success)
 
                 let workKey = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-                workKey.checkConvoCount(forSenderProxyOfConvo: convo, equals: 0)
+                workKey.checkConvoCount(equals: 0, forSenderProxyOfConvo: convo)
                 workKey.checkProxyConvoDeleted(convo)
                 workKey.checkUserConvoDeleted(convo)
                 workKey.notify {
@@ -93,7 +93,7 @@ class DBConvoTests: DBTest {
                             XCTAssert(success)
 
                             let workKey = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-                            workKey.checkConvoCount(forSenderProxyOfConvo: convo, equals: 0)
+                            workKey.checkConvoCount(equals: 0, forSenderProxyOfConvo: convo)
                             workKey.checkReceiverLeftConvo(forReceiverProxyConvoOfConvo: convo)
                             workKey.checkReceiverLeftConvo(forReceiverUserConvoOfConvo: convo)
                             workKey.checkSenderLeftConvo(forSenderProxyConvoOfConvo: convo)
@@ -138,8 +138,8 @@ class DBConvoTests: DBTest {
             receiverConvo.senderProxyName = receiver.name
 
             let workKey = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-            workKey.checkConvoCount(forSenderProxyOfConvo: convo, equals: 1)
-            workKey.checkConvoCount(forSenderProxyOfConvo: receiverConvo, equals: 1)
+            workKey.checkConvoCount(equals: 1, forSenderProxyOfConvo: convo)
+            workKey.checkConvoCount(equals: 1, forSenderProxyOfConvo: receiverConvo)
             workKey.checkProxyConvoCreated(convo)
             workKey.checkProxyConvoCreated(receiverConvo)
             workKey.checkUserConvoCreated(convo)
@@ -196,12 +196,12 @@ class DBConvoTests: DBTest {
         DBTest.makeConvo { (convo, _, _) in
             let testNickname = "test nickname"
 
-            DBConvo.setNickname(testNickname, forReceiverInConvo: convo) { (success) in
+            DBConvo.setNickname(to: testNickname, forReceiverInConvo: convo) { (success) in
                 XCTAssert(success)
 
                 let workKey = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-                workKey.checkReceiverNickname(forProxyConvo: convo, equals: testNickname)
-                workKey.checkReceiverNickname(forUserConvo: convo, equals: testNickname)
+                workKey.checkReceiverNickname(equals: testNickname, forProxyConvo: convo)
+                workKey.checkReceiverNickname(equals: testNickname, forUserConvo: convo)
                 workKey.notify {
                     workKey.finishWorkGroup()
                     self.x.fulfill()
@@ -228,7 +228,7 @@ class DBConvoTests: DBTest {
 }
 
 extension AsyncWorkGroupKey {
-    func checkConvoCount(forSenderProxyOfConvo convo: Convo, equals convoCount: Int) {
+    func checkConvoCount(equals convoCount: Int, forSenderProxyOfConvo convo: Convo) {
         startWork()
         DB.get(Path.Proxies, convo.senderId, convo.senderProxyKey, Path.Convos) { (data) in
             XCTAssertEqual(data?.value as? Int, convoCount)
@@ -236,7 +236,7 @@ extension AsyncWorkGroupKey {
         }
     }
 
-    func checkReceiverNickname(forProxyConvo convo: Convo, equals nickname: String) {
+    func checkReceiverNickname(equals nickname: String, forProxyConvo convo: Convo) {
         startWork()
         DB.get(Path.Convos, convo.senderProxyKey, convo.key, Path.ReceiverNickname) { (data) in
             XCTAssertEqual(data?.value as? String, nickname)
@@ -244,7 +244,7 @@ extension AsyncWorkGroupKey {
         }
     }
 
-    func checkReceiverNickname(forUserConvo convo: Convo, equals nickname: String) {
+    func checkReceiverNickname(equals nickname: String, forUserConvo convo: Convo) {
         startWork()
         DB.get(Path.Convos, convo.senderId, convo.key, Path.ReceiverNickname) { (data) in
             XCTAssertEqual(data?.value as? String, nickname)
