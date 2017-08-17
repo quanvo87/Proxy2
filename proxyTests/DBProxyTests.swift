@@ -17,7 +17,7 @@ class DBProxyTests: DBTest {
             XCTAssertFalse(Shared.shared.isCreatingProxy)
 
             let workKey = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-            workKey.checkProxyCount(forOwnerOfProxy: proxy, equals: 1)
+            workKey.checkProxyCount(equals: 1, forOwnerOfProxy: proxy)
             workKey.checkProxyCreated(proxy)
             workKey.checkProxyKeyCreated(forProxy: proxy)
             workKey.checkProxyOwnerCreated(forProxy: proxy)
@@ -79,13 +79,13 @@ class DBProxyTests: DBTest {
 
                 let workKey = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
                 workKey.checkConvosDeleted(forProxy: proxy)
-                workKey.checkProxyCount(forOwnerOfProxy: proxy, equals: 0)
+                workKey.checkProxyCount(equals: 0, forOwnerOfProxy: proxy)
                 workKey.checkProxyDeleted(proxy)
                 workKey.checkProxyKeyDeleted(forProxy: proxy)
                 workKey.checkProxyOwnerDeleted(forProxy: proxy)
                 workKey.checkReceiverDeletedProxy(forProxyConvo: convo)
                 workKey.checkReceiverDeletedProxy(forUserConvo: convo)
-                workKey.checkUnread(forOwnerOfProxy: proxy, equals: -1)
+                workKey.checkUnread(equals: -1, forOwnerOfProxy: proxy)
                 workKey.checkUserConvoDeleted(convo)
                 workKey.notify {
                     workKey.finishWorkGroup()
@@ -172,13 +172,13 @@ class DBProxyTests: DBTest {
         DBTest.makeConvo { (convo, proxy, _) in
             let icon = "new icon"
 
-            DBProxy.setIcon(icon, forProxy: proxy) { (success) in
+            DBProxy.setIcon(to: icon, forProxy: proxy) { (success) in
                 XCTAssert(success)
 
                 let workKey = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-                workKey.checkIcon(forProxy: proxy, equals: icon)
-                workKey.checkIcon(forProxyConvo: convo, equals: icon)
-                workKey.checkIcon(forUserConvo: convo, equals: icon)
+                workKey.checkIcon(equals: icon, forProxy: proxy)
+                workKey.checkIcon(equals: icon, forProxyConvo: convo)
+                workKey.checkIcon(equals: icon, forUserConvo: convo)
                 workKey.notify {
                     workKey.finishWorkGroup()
                     self.x.fulfill()
@@ -194,13 +194,13 @@ class DBProxyTests: DBTest {
         DBTest.makeConvo { (convo, proxy, _) in
             let nickname = "nickname"
 
-            DBProxy.setNickname(nickname, forProxy: proxy) { (success) in
+            DBProxy.setNickname(to: nickname, forProxy: proxy) { (success) in
                 XCTAssert(success)
 
                 let workKey = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-                workKey.checkNickname(forProxy: proxy, equals: nickname)
-                workKey.checkNickname(forProxyConvo: convo, equals: nickname)
-                workKey.checkNickname(forUserConvo: convo, equals: nickname)
+                workKey.checkNickname(equals: nickname, forProxy: proxy)
+                workKey.checkNickname(equals: nickname, forProxyConvo: convo)
+                workKey.checkNickname(equals: nickname, forUserConvo: convo)
                 workKey.notify {
                     workKey.finishWorkGroup()
                     self.x.fulfill()
@@ -219,7 +219,7 @@ extension AsyncWorkGroupKey {
         }
     }
 
-    func checkIcon(forProxy proxy: Proxy, equals icon: String) {
+    func checkIcon(equals icon: String, forProxy proxy: Proxy) {
         startWork()
         DB.get(Path.Proxies, proxy.ownerId, proxy.key, Path.Icon) { (data) in
             XCTAssertEqual(data?.value as? String, icon)
@@ -227,7 +227,7 @@ extension AsyncWorkGroupKey {
         }
     }
 
-    func checkIcon(forProxyConvo convo: Convo, equals icon: String) {
+    func checkIcon(equals icon: String, forProxyConvo convo: Convo) {
         startWork()
         DB.get(Path.Convos, convo.receiverProxyKey, convo.key, Path.Icon) { (data) in
             XCTAssertEqual(data?.value as? String, icon)
@@ -235,7 +235,7 @@ extension AsyncWorkGroupKey {
         }
     }
 
-    func checkIcon(forUserConvo convo: Convo, equals icon: String) {
+    func checkIcon(equals icon: String, forUserConvo convo: Convo) {
         startWork()
         DB.get(Path.Convos, convo.receiverId, convo.key, Path.Icon) { (data) in
             XCTAssertEqual(data?.value as? String, icon)
@@ -243,7 +243,7 @@ extension AsyncWorkGroupKey {
         }
     }
 
-    func checkNickname(forProxy proxy: Proxy, equals nickname: String) {
+    func checkNickname(equals nickname: String, forProxy proxy: Proxy) {
         startWork()
         DB.get(Path.Proxies, proxy.ownerId, proxy.key, Path.Nickname) { (data) in
             XCTAssertEqual(data?.value as? String, nickname)
@@ -251,7 +251,7 @@ extension AsyncWorkGroupKey {
         }
     }
 
-    func checkNickname(forProxyConvo convo: Convo, equals nickname: String) {
+    func checkNickname(equals nickname: String, forProxyConvo convo: Convo) {
         startWork()
         DB.get(Path.Convos, convo.senderProxyKey, convo.key, Path.SenderNickname) { (data) in
             XCTAssertEqual(data?.value as? String, nickname)
@@ -259,7 +259,7 @@ extension AsyncWorkGroupKey {
         }
     }
 
-    func checkNickname(forUserConvo convo: Convo, equals nickname: String) {
+    func checkNickname(equals nickname: String, forUserConvo convo: Convo) {
         startWork()
         DB.get(Path.Convos, convo.senderId, convo.key, Path.SenderNickname) { (data) in
             XCTAssertEqual(data?.value as? String, nickname)
@@ -267,7 +267,7 @@ extension AsyncWorkGroupKey {
         }
     }
 
-    func checkProxyCount(forOwnerOfProxy proxy: Proxy, equals proxyCount: Int) {
+    func checkProxyCount(equals proxyCount: Int, forOwnerOfProxy proxy: Proxy) {
         startWork()
         DB.get(Path.UserInfo, proxy.ownerId, Path.ProxyCount) { (data) in
             XCTAssertEqual(data?.value as? Int, proxyCount)
@@ -339,7 +339,7 @@ extension AsyncWorkGroupKey {
         }
     }
 
-    func checkUnread(forOwnerOfProxy proxy: Proxy, equals unread: Int) {
+    func checkUnread(equals unread: Int, forOwnerOfProxy proxy: Proxy) {
         startWork()
         DB.get(Path.UserInfo, proxy.ownerId, Path.Unread) { (data) in
             XCTAssertEqual(data?.value as? Int, unread)
