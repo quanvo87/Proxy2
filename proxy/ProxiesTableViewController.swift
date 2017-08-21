@@ -204,7 +204,7 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
         
         // 'New' image
         cell.newImageView.isHidden = true
-        let secondsAgo = -Date(timeIntervalSince1970: proxy.created).timeIntervalSinceNow
+        let secondsAgo = -Date(timeIntervalSince1970: proxy.dateCreated).timeIntervalSinceNow
         if secondsAgo < 60 * Settings.NewProxyIndicatorDuration {
             cell.newImageView.isHidden = false
         }

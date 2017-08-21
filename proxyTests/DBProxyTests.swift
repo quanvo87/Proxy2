@@ -9,63 +9,6 @@ class DBProxyTests: DBTest {
         XCTAssertFalse(Shared.shared.isCreatingProxy)
     }
 
-    func testCreateProxy() {
-        x = expectation(description: #function)
-        defer { waitForExpectations(timeout: 10) }
-
-        DBTest.makeProxy { (proxy) in
-            XCTAssertFalse(Shared.shared.isCreatingProxy)
-
-            let workKey = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-            workKey.checkProxyCount(equals: 1, forOwnerOfProxy: proxy)
-            workKey.checkProxyCreated(proxy)
-            workKey.checkProxyKeyCreated(forProxy: proxy)
-            workKey.checkProxyOwnerCreated(forProxy: proxy)
-            workKey.notify {
-                workKey.finishWorkGroup()
-                self.x.fulfill()
-            }
-        }
-    }
-
-    func testCreateProxyAtProxyLimit() {
-        x = expectation(description: #function)
-        defer { waitForExpectations(timeout: 10) }
-
-        DB.set(50, at: Path.UserInfo, Shared.shared.uid, Path.ProxyCount) { (success) in
-            XCTAssert(success)
-
-            DBProxy.makeProxy { (result) in
-                switch result {
-                case .failure(let error):
-                    XCTAssertEqual(error, ProxyError(.proxyLimitReached))
-                    self.x.fulfill()
-                case .success: XCTFail()
-                }
-            }
-        }
-    }
-
-    func testCreateProxyWithExistingName() {
-        x = expectation(description: #function)
-        defer { waitForExpectations(timeout: 10) }
-
-        DBProxy.makeProxy(withName: "test") { (result) in
-            switch result {
-            case .failure: XCTFail()
-            case .success:
-                DBProxy.makeProxy(withName: "test") { (result) in
-                    switch result {
-                    case .failure:
-                        XCTAssertFalse(Shared.shared.isCreatingProxy)
-                        self.x.fulfill()
-                    case .success: XCTFail()
-                    }
-                }
-            }
-        }
-    }
-
     func testDeleteProxy() {
         x = expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
@@ -77,18 +20,18 @@ class DBProxyTests: DBTest {
             DBProxy.deleteProxy(proxy) { (success) in
                 XCTAssert(success)
 
-                let workKey = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-                workKey.checkConvosDeleted(forProxy: proxy)
-                workKey.checkProxyCount(equals: 0, forOwnerOfProxy: proxy)
-                workKey.checkProxyDeleted(proxy)
-                workKey.checkProxyKeyDeleted(forProxy: proxy)
-                workKey.checkProxyOwnerDeleted(forProxy: proxy)
-                workKey.checkReceiverDeletedProxy(forProxyConvo: convo)
-                workKey.checkReceiverDeletedProxy(forUserConvo: convo)
-                workKey.checkUnread(equals: -1, forOwnerOfProxy: proxy)
-                workKey.checkUserConvoDeleted(convo)
-                workKey.notify {
-                    workKey.finishWorkGroup()
+                let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
+                key.checkConvosDeleted(forProxy: proxy)
+                key.checkProxyCount(equals: 0, forOwnerOfProxy: proxy)
+                key.checkProxyDeleted(proxy)
+                key.checkProxyKeyDeleted(forProxy: proxy)
+                key.checkProxyOwnerDeleted(forProxy: proxy)
+                key.checkReceiverDeletedProxy(forProxyConvo: convo)
+                key.checkReceiverDeletedProxy(forUserConvo: convo)
+                key.checkUnread(equals: -1, forUser: proxy.ownerId)
+                key.checkUserConvoDeleted(convo)
+                key.notify {
+                    key.finishWorkGroup()
                     self.x.fulfill()
                 }
             }
@@ -165,6 +108,63 @@ class DBProxyTests: DBTest {
         }
     }
 
+    func testMakeProxy() {
+        x = expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
+
+        DBTest.makeProxy { (proxy) in
+            XCTAssertFalse(Shared.shared.isCreatingProxy)
+
+            let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
+            key.checkProxyCount(equals: 1, forOwnerOfProxy: proxy)
+            key.checkProxyCreated(proxy)
+            key.checkProxyKeyCreated(forProxy: proxy)
+            key.checkProxyOwnerCreated(forProxy: proxy)
+            key.notify {
+                key.finishWorkGroup()
+                self.x.fulfill()
+            }
+        }
+    }
+
+    func testMakeProxyAtProxyLimit() {
+        x = expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
+
+        DB.set(50, at: Path.UserInfo, Shared.shared.uid, Path.ProxyCount) { (success) in
+            XCTAssert(success)
+
+            DBProxy.makeProxy { (result) in
+                switch result {
+                case .failure(let error):
+                    XCTAssertEqual(error, ProxyError(.proxyLimitReached))
+                    self.x.fulfill()
+                case .success: XCTFail()
+                }
+            }
+        }
+    }
+
+    func testMakeProxyWithExistingName() {
+        x = expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
+
+        DBProxy.makeProxy(withName: "test") { (result) in
+            switch result {
+            case .failure: XCTFail()
+            case .success:
+                DBProxy.makeProxy(withName: "test") { (result) in
+                    switch result {
+                    case .failure:
+                        XCTAssertFalse(Shared.shared.isCreatingProxy)
+                        self.x.fulfill()
+                    case .success: XCTFail()
+                    }
+                }
+            }
+        }
+    }
+
     func testSetIcon() {
         x = expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
@@ -175,12 +175,12 @@ class DBProxyTests: DBTest {
             DBProxy.setIcon(to: icon, forProxy: proxy) { (success) in
                 XCTAssert(success)
 
-                let workKey = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-                workKey.checkIcon(equals: icon, forProxy: proxy)
-                workKey.checkIcon(equals: icon, forProxyConvo: convo)
-                workKey.checkIcon(equals: icon, forUserConvo: convo)
-                workKey.notify {
-                    workKey.finishWorkGroup()
+                let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
+                key.checkIcon(equals: icon, forProxy: proxy)
+                key.checkIcon(equals: icon, forProxyConvo: convo)
+                key.checkIcon(equals: icon, forUserConvo: convo)
+                key.notify {
+                    key.finishWorkGroup()
                     self.x.fulfill()
                 }
             }
@@ -197,12 +197,12 @@ class DBProxyTests: DBTest {
             DBProxy.setNickname(to: nickname, forProxy: proxy) { (success) in
                 XCTAssert(success)
 
-                let workKey = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-                workKey.checkNickname(equals: nickname, forProxy: proxy)
-                workKey.checkNickname(equals: nickname, forProxyConvo: convo)
-                workKey.checkNickname(equals: nickname, forUserConvo: convo)
-                workKey.notify {
-                    workKey.finishWorkGroup()
+                let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
+                key.checkNickname(equals: nickname, forProxy: proxy)
+                key.checkNickname(equals: nickname, forProxyConvo: convo)
+                key.checkNickname(equals: nickname, forUserConvo: convo)
+                key.notify {
+                    key.finishWorkGroup()
                     self.x.fulfill()
                 }
             }
@@ -335,14 +335,6 @@ extension AsyncWorkGroupKey {
         startWork()
         DB.get(Path.Convos, convo.receiverId, convo.key, Path.ReceiverDeletedProxy) { (data) in
             XCTAssert(data?.value as? Bool ?? false)
-            self.finishWork(withResult: true)
-        }
-    }
-
-    func checkUnread(equals unread: Int, forOwnerOfProxy proxy: Proxy) {
-        startWork()
-        DB.get(Path.UserInfo, proxy.ownerId, Path.Unread) { (data) in
-            XCTAssertEqual(data?.value as? Int, unread)
             self.finishWork(withResult: true)
         }
     }

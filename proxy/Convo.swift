@@ -5,13 +5,13 @@ struct Convo {
     var receiverDeletedProxy = false
     var receiverId = ""
     var receiverIsBlocked = false
-    var receiverLeftConvo = true
+    var receiverLeftConvo = false
     var receiverNickname = ""
     var receiverProxyKey = ""
     var receiverProxyName = ""
     var senderId = ""
     var senderIsBlocked = false
-    var senderLeftConvo = true
+    var senderLeftConvo = false
     var senderNickname = ""
     var senderProxyKey = ""
     var senderProxyName = ""
@@ -20,26 +20,26 @@ struct Convo {
 
     init() {}
 
-    init?(_ json: AnyObject) {
+    init?(_ dictionary: AnyObject) {
         guard
-            let icon = json["icon"] as? String,
-            let key = json["key"] as? String,
-            let message = json["message"] as? String,
-            let receiverDeletedProxy = json["receiverDeletedProxy"] as? Bool,
-            let receiverId = json["receiverId"] as? String,
-            let receiverIsBlocked = json["receiverIsBlocked"] as? Bool,
-            let receiverLeftConvo = json["receiverLeftConvo"] as? Bool,
-            let receiverNickname = json["receiverNickname"] as? String,
-            let receiverProxyKey = json["receiverProxyKey"] as? String,
-            let receiverProxyName = json["receiverProxyName"] as? String,
-            let senderId = json["senderId"] as? String,
-            let senderIsBlocked = json["senderIsBlocked"] as? Bool,
-            let senderLeftConvo = json["senderLeftConvo"] as? Bool,
-            let senderNickname = json["senderNickname"] as? String,
-            let senderProxyKey = json["senderProxyKey"] as? String,
-            let senderProxyName = json["senderProxyName"] as? String,
-            let timestamp = json["timestamp"] as? Double,
-            let unread = json["unread"] as? Int else {
+            let icon = dictionary["icon"] as? String,
+            let key = dictionary["key"] as? String,
+            let message = dictionary["message"] as? String,
+            let receiverDeletedProxy = dictionary["receiverDeletedProxy"] as? Bool,
+            let receiverId = dictionary["receiverId"] as? String,
+            let receiverIsBlocked = dictionary["receiverIsBlocked"] as? Bool,
+            let receiverLeftConvo = dictionary["receiverLeftConvo"] as? Bool,
+            let receiverNickname = dictionary["receiverNickname"] as? String,
+            let receiverProxyKey = dictionary["receiverProxyKey"] as? String,
+            let receiverProxyName = dictionary["receiverProxyName"] as? String,
+            let senderId = dictionary["senderId"] as? String,
+            let senderIsBlocked = dictionary["senderIsBlocked"] as? Bool,
+            let senderLeftConvo = dictionary["senderLeftConvo"] as? Bool,
+            let senderNickname = dictionary["senderNickname"] as? String,
+            let senderProxyKey = dictionary["senderProxyKey"] as? String,
+            let senderProxyName = dictionary["senderProxyName"] as? String,
+            let timestamp = dictionary["timestamp"] as? Double,
+            let unread = dictionary["unread"] as? Int else {
                 return nil
         }
         self.icon = icon
@@ -107,4 +107,52 @@ extension Convo: Equatable {
             lhs.timestamp.rounded() == rhs.timestamp.rounded() &&
             lhs.unread == rhs.unread
     }
+}
+
+enum SettableConvoProperty {
+    case icon(String)
+    case key(String)
+    case message(String)
+    case receiverDeletedProxy(Bool)
+    case receiverId(String)
+    case receiverIsBlocked(Bool)
+    case receiverLeftConvo(Bool)
+    case receiverNickname(String)
+    case receiverProxyKey(String)
+    case receiverProxyName(String)
+    case senderId(String)
+    case senderIsBlocked(Bool)
+    case senderLeftConvo(Bool)
+    case senderNickname(String)
+    case senderProxyKey(String)
+    case senderProxyName(String)
+    case timestamp(Double)
+    case unread(Int)
+
+    var properties: (name: String, newValue: Any) {
+        switch self {
+        case .icon(let newValue): return ("icon", newValue)
+        case .key(let newValue): return ("key", newValue)
+        case .message(let newValue): return ("message", newValue)
+        case .receiverDeletedProxy(let newValue): return ("receiverDeletedProxy", newValue)
+        case .receiverId(let newValue): return ("receiverId", newValue)
+        case .receiverIsBlocked(let newValue): return ("receiverIsBlocked", newValue)
+        case .receiverLeftConvo(let newValue): return ("receiverLeftConvo", newValue)
+        case .receiverNickname(let newValue): return ("receiverNickname", newValue)
+        case .receiverProxyKey(let newValue): return ("receiverProxyKey", newValue)
+        case .receiverProxyName(let newValue): return ("receiverProxyName", newValue)
+        case .senderId(let newValue): return ("senderId", newValue)
+        case .senderIsBlocked(let newValue): return ("senderIsBlocked", newValue)
+        case .senderLeftConvo(let newValue): return ("senderLeftConvo", newValue)
+        case .senderNickname(let newValue): return ("senderNickname", newValue)
+        case .senderProxyKey(let newValue): return ("senderProxyKey", newValue)
+        case .senderProxyName(let newValue): return ("senderProxyName", newValue)
+        case .timestamp(let newValue): return ("timestamp", newValue)
+        case .unread(let newValue): return ("unread", newValue)
+        }
+    }
+}
+
+enum IncrementableConvoProperty: String {
+    case unread
 }

@@ -2,13 +2,16 @@ import FirebaseDatabase
 
 struct DBConvo {
     static func deleteConvo(_ convo: Convo, completion: @escaping (Success) -> Void) {
-        let workKey = AsyncWorkGroupKey()
-        workKey.decrementConvoCount(forSenderProxyOfConvo: convo)
-        workKey.deleteProxyConvo(convo)
-        workKey.deleteUserConvo(convo)
-        workKey.notify {
-            completion(workKey.workResult)
-            workKey.finishWorkGroup()
+        let key = AsyncWorkGroupKey()
+
+        key.deleteProxyConvo(convo)
+        key.deleteUserConvo(convo)
+
+        key.increment(by: -1, forProperty: .convos, forSenderProxyInConvo: convo)
+
+        key.notify {
+            completion(key.workResult)
+            key.finishWorkGroup()
         }
     }
 
@@ -31,17 +34,17 @@ struct DBConvo {
     }
 
     static func leaveConvo(_ convo: Convo, completion: @escaping (Success) -> Void) {
-        let workKey = AsyncWorkGroupKey()
-        workKey.decrementConvoCount(forSenderProxyOfConvo: convo)
-        workKey.decrementUnread(forSenderOfConvo: convo)
-        workKey.decrementUnread(forSenderProxyOfConvo: convo)
-        workKey.setReceiverLeftConvo(forReceiverInConvo: convo)
-        workKey.setReceiverLeftConvo(forReceiverProxyInConvo: convo)
-        workKey.setSenderLeftConvo(forSenderInConvo: convo)
-        workKey.setSenderLeftConvo(forSenderProxyInConvo: convo)
-        workKey.notify {
-            completion(workKey.workResult)
-            workKey.finishWorkGroup()
+        let key = AsyncWorkGroupKey()
+        key.incrementUnread(by: -convo.unread, forUser: convo.senderId)
+
+        key.set(.receiverLeftConvo(true), forConvo: convo, asSender: false)
+        key.set(.senderLeftConvo(true), forConvo: convo, asSender: true)
+        key.increment(by: -1, forProperty: .convos, forSenderProxyInConvo: convo)
+        key.increment(by: -convo.unread, forProperty: .unread, forSenderProxyInConvo: convo)
+
+        key.notify {
+            completion(key.workResult)
+            key.finishWorkGroup()
         }
     }
 
@@ -72,16 +75,20 @@ struct DBConvo {
             receiverConvo.icon = senderProxy.icon
             receiverConvo.receiverIsBlocked = senderIsBlocked
 
-            let workKey = AsyncWorkGroupKey()
-            workKey.incrementConvoCount(forProxy: senderProxy)
-            workKey.incrementConvoCount(forProxy: receiverProxy)
-            workKey.setProxyConvo(senderConvo)
-            workKey.setProxyConvo(receiverConvo)
-            workKey.setUserConvo(receiverConvo)
-            workKey.setUserConvo(senderConvo)
-            workKey.notify {
-                completion(workKey.workResult ? senderConvo : nil)
-                workKey.finishWorkGroup()
+            let key = AsyncWorkGroupKey()
+            key.incrementProxiesInteractedWith(forUser: senderProxy.ownerId)
+            key.incrementProxiesInteractedWith(forUser: receiverProxy.ownerId)
+            key.setProxyConvo(senderConvo)
+            key.setProxyConvo(receiverConvo)
+            key.setUserConvo(receiverConvo)
+            key.setUserConvo(senderConvo)
+
+            key.increment(by: 1, forProperty: .convos, forProxy: senderProxy)
+            key.increment(by: 1, forProperty: .convos, forProxy: receiverProxy)
+
+            key.notify {
+                completion(key.workResult ? senderConvo : nil)
+                key.finishWorkGroup()
             }
         }
     }
@@ -99,12 +106,11 @@ struct DBConvo {
     }
 
     static func setNickname(to nickname: String, forReceiverInConvo convo: Convo, completion: @escaping (Success) -> Void) {
-        let workKey = AsyncWorkGroupKey()
-        workKey.setNickname(to: nickname, forReceiverInUserConvo: convo)
-        workKey.setNickname(to: nickname, forReceiverInProxyConvo: convo)
-        workKey.notify {
-            completion(workKey.workResult)
-            workKey.finishWorkGroup()
+        let key = AsyncWorkGroupKey()
+        key.set(.receiverNickname(nickname), forConvo: convo, asSender: true)
+        key.notify {
+            completion(key.workResult)
+            key.finishWorkGroup()
         }
     }
 
@@ -134,27 +140,6 @@ extension DataSnapshot {
 }
 
 extension AsyncWorkGroupKey {
-    func decrementConvoCount(forSenderProxyOfConvo convo: Convo) {
-        startWork()
-        DB.increment(-1, at: Path.Proxies, convo.senderId, convo.senderProxyKey, Path.Convos) { (success) in
-            self.finishWork(withResult: success)
-        }
-    }
-
-    func decrementUnread(forSenderOfConvo convo: Convo) {
-        startWork()
-        DB.increment(-convo.unread, at: Path.UserInfo, convo.senderId, Path.Unread) { (success) in
-            self.finishWork(withResult: success)
-        }
-    }
-
-    func decrementUnread(forSenderProxyOfConvo convo: Convo) {
-        startWork()
-        DB.increment(-convo.unread, at: Path.Proxies, convo.senderId, convo.senderProxyKey, Path.Unread) { (success) in
-            self.finishWork(withResult: success)
-        }
-    }
-
     func deleteProxyConvo(_ convo: Convo) {
         startWork()
         DB.delete(Path.Convos, convo.senderProxyKey, convo.key) { (success) in
@@ -169,25 +154,15 @@ extension AsyncWorkGroupKey {
         }
     }
 
-    func incrementConvoCount(forProxy proxy: Proxy) {
+    func incrementProxiesInteractedWith(forUser uid: String) {
         startWork()
-        DB.increment(1, at: Path.Proxies, proxy.ownerId, proxy.key, Path.Convos) { (success) in
+        DB.increment(by: 1, at: Path.UserInfo, uid, Path.ProxiesInteractedWith) { (success) in
             self.finishWork(withResult: success)
         }
     }
 
-    func setNickname(to nickname: String, forReceiverInProxyConvo convo: Convo) {
-        startWork()
-        DB.set(nickname, at: Path.Convos, convo.senderProxyKey, convo.key, Path.ReceiverNickname) { (success) in
-            self.finishWork(withResult: success)
-        }
-    }
-
-    func setNickname(to nickname: String, forReceiverInUserConvo convo: Convo) {
-        startWork()
-        DB.set(nickname, at: Path.Convos, convo.senderId, convo.key, Path.ReceiverNickname) { (success) in
-            self.finishWork(withResult: success)
-        }
+    func incrementUnread(by amount: Int, forUser uid: String) {
+        increment(by: amount, at: Path.UserInfo, uid, Path.Unread)
     }
 
     func setProxyConvo(_ convo: Convo) {
@@ -200,34 +175,6 @@ extension AsyncWorkGroupKey {
     func setUserConvo(_ convo: Convo) {
         startWork()
         DB.set(convo.toJSON(), at: Path.Convos, convo.senderId, convo.key) { (success) in
-            self.finishWork(withResult: success)
-        }
-    }
-
-    func setReceiverLeftConvo(forReceiverProxyInConvo convo: Convo) {
-        startWork()
-        DB.set(true, at: Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverLeftConvo) { (success) in
-            self.finishWork(withResult: success)
-        }
-    }
-
-    func setReceiverLeftConvo(forReceiverInConvo convo: Convo) {
-        startWork()
-        DB.set(true, at: Path.Convos, convo.receiverId, convo.key, Path.ReceiverLeftConvo) { (success) in
-            self.finishWork(withResult: success)
-        }
-    }
-
-    func setSenderLeftConvo(forSenderProxyInConvo convo: Convo) {
-        startWork()
-        DB.set(true, at: Path.Convos, convo.senderProxyKey, convo.key, Path.SenderLeftConvo) { (success) in
-            self.finishWork(withResult: success)
-        }
-    }
-
-    func setSenderLeftConvo(forSenderInConvo convo: Convo) {
-        startWork()
-        DB.set(true, at: Path.Convos, convo.senderId, convo.key, Path.SenderLeftConvo) { (success) in
             self.finishWork(withResult: success)
         }
     }

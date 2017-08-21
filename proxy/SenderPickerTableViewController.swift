@@ -71,7 +71,7 @@ class SenderPickerTableViewController: UITableViewController {
         let proxy = proxies[indexPath.row]
         
         cell.newImageView.isHidden = true
-        let secondsAgo = -Date(timeIntervalSince1970: proxy.created).timeIntervalSinceNow
+        let secondsAgo = -Date(timeIntervalSince1970: proxy.dateCreated).timeIntervalSinceNow
         if secondsAgo < 60 * Settings.NewProxyIndicatorDuration {
             cell.newImageView.isHidden = false
             cell.contentView.bringSubview(toFront: cell.newImageView)

@@ -302,7 +302,7 @@ class API {
         let name = proxyNameGenerator.generateProxyName()
         let key = name.lowercased()
         let proxy = Proxy(name: name, ownerId: self.uid)
-        ref.child(Path.Proxies).child(autoId).setValue(proxy.toJSON()) { (error, proxyRef) in
+        ref.child(Path.Proxies).child(autoId).setValue(proxy.toDictionary()) { (error, proxyRef) in
             
             // Get all global proxies with this name.
             self.ref.child(Path.Proxies).queryOrdered(byChild: Path.Key).queryEqual(toValue: key).observeSingleEvent(of: .value, with: { (data) in
@@ -317,13 +317,13 @@ class API {
                     
                     // Re-save the global proxy by name instead of the Firebase key.
                     self.delete(a: Path.Proxies, b: autoId, c: nil, d: nil)
-                    self.set(proxy.toJSON() as AnyObject, a: Path.Proxies, b: key, c: nil, d: nil)
+                    self.set(proxy.toDictionary() as AnyObject, a: Path.Proxies, b: key, c: nil, d: nil)
                     
                     // Create the user's copy of the proxy with a random icon.
                     let proxy = Proxy(icon: self.getRandomIcon(), name: name, ownerId: self.uid)
                     
                     // Save the user's proxy.
-                    self.set(proxy.toJSON() as AnyObject, a: Path.Proxies, b: self.uid, c: key, d: nil)
+                    self.set(proxy.toDictionary() as AnyObject, a: Path.Proxies, b: self.uid, c: key, d: nil)
                     
                     completion(proxy)
                     
@@ -449,7 +449,6 @@ class API {
             } else {
                 self.createConvo(sender: sender, receiver: receiver, convoKey: convoKey, text: text, completion: { (convo) in
                     self.sendMessage(text: text, mediaType: "", convo: convo, completion: { (convo, message) in
-                        // TODO: - increase both users' `proxiesInteractedWith`
                         completion(convo)
                     })
                 })
@@ -492,8 +491,6 @@ class API {
                 }
             }
 
-            // TODO: - increase convo's unread
-            // TODO: - increase user unread and proxy unread by convo's unread
             if convo.receiverLeftConvo {
                 self.set(false as AnyObject, a: Path.Convos, b: convo.senderId, c: convo.key, d: Path.ReceiverLeftConvo)
                 self.set(false as AnyObject, a: Path.Convos, b: convo.senderProxyKey, c: convo.key, d: Path.ReceiverLeftConvo)
@@ -504,12 +501,12 @@ class API {
             self.increment(by: 1, a: Path.MessagesReceived, b: convo.receiverId, c: Path.MessagesReceived, d: nil)
             
             // Write message
-            let messageKey = self.ref.child(Path.Messages).child(convo.key).childByAutoId().key
-            let timeRead = receiverIsPresent ? timestamp : 0.0
-            let message = Message(key: messageKey, convo: convo.key, mediaType: mediaType, read: receiverIsPresent, timeRead: timeRead, senderId: convo.senderId, date: timestamp, text: text)
-            self.set(message.toAnyObject() as AnyObject, a: Path.Messages, b: convo.key, c: messageKey, d: nil)
-            
-            completion(convo, message)
+//            let messageKey = self.ref.child(Path.Messages).child(convo.key).childByAutoId().key
+//            let timeRead = receiverIsPresent ? timestamp : 0.0
+//            let message = Message(convo: convo.key, timeRead: timeRead, key: messageKey, mediaType: mediaType, date: timestamp, read: receiverIsPresent, senderId: convo.senderId, text: text)
+//            self.set(message.toDictionary() as AnyObject, a: Path.Messages, b: convo.key, c: messageKey, d: nil)
+
+//            completion(convo, message)
         }
     }
     
@@ -524,19 +521,19 @@ class API {
     /// Sets `message`'s `read` & `timeRead`.
     /// Decrements unread's for `user`.
     func setRead(for message: Message, forProxyKey proxy: String, belongingToUserId user: String) {
-        let ref = getRef(a: Path.Messages, b: message.convo, c: message.key, d: nil)
+        let ref = getRef(a: Path.Messages, b: message.parentConvo, c: message.key, d: nil)
         let update = [Path.TimeRead: Date().timeIntervalSince1970, Path.Read: true] as [String : Any]
         ref!.updateChildValues(update as [AnyHashable: Any])
         increment(by: -1, a: Path.Unread, b: user, c: Path.Unread, d: nil)
         increment(by: -1, a: Path.Proxies, b: user, c: proxy, d: Path.Unread)
-        increment(by: -1, a: Path.Convos, b: user, c: message.convo, d: Path.Unread)
-        increment(by: -1, a: Path.Convos, b: proxy, c: message.convo, d: Path.Unread)
+        increment(by: -1, a: Path.Convos, b: user, c: message.parentConvo, d: Path.Unread)
+        increment(by: -1, a: Path.Convos, b: proxy, c: message.parentConvo, d: Path.Unread)
     }
     
     /// Sets `message`'s `mediaType` and `mediaURL`.
     func setMedia(for message: Message, mediaType: String, mediaURL: String) {
-        set(mediaType as AnyObject, a: Path.Messages, b: message.convo, c: message.key, d: Path.MediaType)
-        set(mediaURL as AnyObject, a: Path.Messages, b: message.convo, c: message.key, d: Path.MediaURL)
+        set(mediaType as AnyObject, a: Path.Messages, b: message.parentConvo, c: message.key, d: Path.MediaType)
+        set(mediaURL as AnyObject, a: Path.Messages, b: message.parentConvo, c: message.key, d: Path.MediaURL)
     }
     
     // MARK: - Conversation (Convo)

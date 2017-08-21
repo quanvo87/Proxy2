@@ -2,43 +2,43 @@ import XCTest
 @testable import proxy
 
 class AsyncWorkGroupKeyTests: XCTestCase {
-    var workKey: AsyncWorkGroupKey!
+    var key: AsyncWorkGroupKey!
 
     override func setUp() {
-        workKey = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
+        key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
     }
 
     override func tearDown() {
-        workKey.finishWorkGroup()
+        key.finishWorkGroup()
     }
 
     func testWorkResult() {
-        XCTAssert(workKey.workResult)
+        XCTAssert(key.workResult)
     }
 
     func testMake() {
-        let workKey = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-        XCTAssertGreaterThan(workKey.count, 0)
-        XCTAssertNotNil(Shared.shared.asyncWorkGroups[workKey])
-        workKey.finishWorkGroup()
+        let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
+        XCTAssertGreaterThan(key.count, 0)
+        XCTAssertNotNil(Shared.shared.asyncWorkGroups[key])
+        key.finishWorkGroup()
     }
 
     func testFinishWork() {
-        workKey.startWork()
-        workKey.finishWork(withResult: false)
-        XCTAssertFalse(Shared.shared.asyncWorkGroups[workKey]?.result ?? true)
+        key.startWork()
+        key.finishWork(withResult: false)
+        XCTAssertFalse(Shared.shared.asyncWorkGroups[key]?.result ?? true)
     }
 
     func testFinishWorkGroup() {
-        let workKey = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-        workKey.startWork()
-        workKey.finishWork(withResult: true)
-        workKey.finishWorkGroup()
-        XCTAssertNil(Shared.shared.asyncWorkGroups[workKey])
+        let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
+        key.startWork()
+        key.finishWork(withResult: true)
+        key.finishWorkGroup()
+        XCTAssertNil(Shared.shared.asyncWorkGroups[key])
     }
 
     func testSetWorkResult() {
-        workKey.setWorkResult(false)
-        XCTAssertFalse(Shared.shared.asyncWorkGroups[workKey]?.result ?? true)
+        key.setWorkResult(false)
+        XCTAssertFalse(Shared.shared.asyncWorkGroups[key]?.result ?? true)
     }
 }

@@ -28,7 +28,7 @@ class DBTests: DBTest {
     func testIncrement() {
         let x = expectation(description: #function)
 
-        DB.increment(1, at: "test") { (success) in
+        DB.increment(by: 1, at: "test") { (success) in
             XCTAssert(success)
 
             DB.get("test") { (data) in
@@ -46,7 +46,7 @@ class DBTests: DBTest {
 
         for _ in 1...2 {
             incrementsDone.enter()
-            DB.increment(1, at: "test") { (success) in
+            DB.increment(by: 1, at: "test") { (success) in
                 XCTAssert(success)
                 incrementsDone.leave()
             }

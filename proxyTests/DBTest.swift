@@ -67,15 +67,15 @@ class DBTest: XCTestCase {
 
 private extension DBTest {
     func setupTestEnv() {
-        let workKey = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-        workKey.deleteProxies(forUser: DBTest.testUser)
-        workKey.deleteProxies(forUser: Shared.shared.uid)
-        workKey.deleteTestData()
-        workKey.notify {
-            workKey.deleteUserInfo(DBTest.testUser)
-            workKey.deleteUserInfo(Shared.shared.uid)
-            workKey.notify {
-                workKey.finishWorkGroup()
+        let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
+        key.deleteProxies(forUser: DBTest.testUser)
+        key.deleteProxies(forUser: Shared.shared.uid)
+        key.deleteTestData()
+        key.notify {
+            key.deleteUserInfo(DBTest.testUser)
+            key.deleteUserInfo(Shared.shared.uid)
+            key.notify {
+                key.finishWorkGroup()
                 self.x.fulfill()
             }
         }

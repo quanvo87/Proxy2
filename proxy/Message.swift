@@ -1,94 +1,92 @@
 import JSQMessagesViewController
 
 class Message: JSQMessage {
+    var dateRead = 0.0
     var key = ""
-    var convo = ""
     var mediaType = ""
     var mediaURL = ""
+    var parentConvo = ""
     var read = false
-    var timeRead = 0.0
-    
-    init(key: String, convo: String, mediaType: String, read: Bool, timeRead: Double, senderId: String, date: Double, text: String) {
+
+    init(dateCreated: Double, dateRead: Double, key: String, mediaType: String, parentConvo: String, read: Bool, senderId: String, text: String) {
+        self.dateRead = dateRead
         self.key = key
-        self.convo = convo
         self.mediaType = mediaType
+        self.parentConvo = parentConvo
         self.read = read
-        self.timeRead = timeRead
-        super.init(senderId: senderId, senderDisplayName: "", date: Date(timeIntervalSince1970: date), text: text)
+        super.init(senderId: senderId, senderDisplayName: "", date: Date(timeIntervalSince1970: dateCreated), text: text)
     }
     
-    init(key: String, convo: String, mediaType: String, mediaURL: String, read: Bool, timeRead: Double, senderId: String, date: Double, text: String, media: JSQMessageMediaData) {
+    init(dateCreated: Double, dateRead: Double, key: String, mediaData: JSQMessageMediaData, mediaType: String, mediaURL: String, parentConvo: String, read: Bool, senderId: String, text: String) {
+        self.dateRead = dateRead
         self.key = key
-        self.convo = convo
         self.mediaType = mediaType
         self.mediaURL = mediaURL
+        self.parentConvo = parentConvo
         self.read = read
-        self.timeRead = timeRead
-        super.init(senderId: senderId, senderDisplayName: "", date: Date(timeIntervalSince1970: date), media: media)
+        super.init(senderId: senderId, senderDisplayName: "", date: Date(timeIntervalSince1970: dateCreated), media: mediaData)
     }
     
-    init?(anyObject: AnyObject) {
-        if
-            let key = anyObject["key"] as? String,
-            let convo = anyObject["convo"] as? String,
-            let mediaType = anyObject["mediaType"] as? String,
-            let mediaURL = anyObject["mediaURL"] as? String,
-            let read = anyObject["read"] as? Bool,
-            let timeRead = anyObject["timeRead"] as? Double,
-            let senderId = anyObject["senderId"] as? String,
-            let senderDisplayName = anyObject["senderDisplayName"] as? String,
-            let date = anyObject["date"] as? Double,
-            let text = anyObject["text"] as? String {
-            self.key = key
-            self.convo = convo
-            self.mediaType = mediaType
-            self.mediaURL = mediaURL
-            self.read = read
-            self.timeRead = timeRead
-            super.init(senderId: senderId, senderDisplayName: senderDisplayName, date: Date(timeIntervalSince1970: date), text: text)
-        } else {
-            return nil
+    init?(_ dictionary: AnyObject) {
+        guard
+            let dateCreated = dictionary["dateCreated"] as? Double,
+            let dateRead = dictionary["dateRead"] as? Double,
+            let key = dictionary["key"] as? String,
+            let mediaType = dictionary["mediaType"] as? String,
+            let mediaURL = dictionary["mediaURL"] as? String,
+            let parentConvo = dictionary["parentConvo"] as? String,
+            let read = dictionary["read"] as? Bool,
+            let senderDisplayName = dictionary["senderDisplayName"] as? String,
+            let senderId = dictionary["senderId"] as? String,
+            let text = dictionary["text"] as? String else {
+                return nil
         }
+        self.dateRead = dateRead
+        self.key = key
+        self.mediaType = mediaType
+        self.mediaURL = mediaURL
+        self.parentConvo = parentConvo
+        self.read = read
+        super.init(senderId: senderId, senderDisplayName: senderDisplayName, date: Date(timeIntervalSince1970: dateCreated), text: text)
     }
     
-    init?(anyObject: AnyObject, media: JSQMessageMediaData) {
-        if
-            let key = anyObject["key"] as? String,
-            let convo = anyObject["convo"] as? String,
-            let mediaType = anyObject["mediaType"] as? String,
-            let mediaURL = anyObject["mediaURL"] as? String,
-            let read = anyObject["read"] as? Bool,
-            let timeRead = anyObject["timeRead"] as? Double,
-            let senderId = anyObject["senderId"] as? String,
-            let senderDisplayName = anyObject["senderDisplayName"] as? String,
-            let date = anyObject["date"] as? Double {
-            self.key = key
-            self.convo = convo
-            self.mediaType = mediaType
-            self.mediaURL = mediaURL
-            self.read = read
-            self.timeRead = timeRead
-            super.init(senderId: senderId, senderDisplayName: senderDisplayName, date: Date(timeIntervalSince1970: date), media: media)
-        } else {
-            return nil
+    init?(dictionary: AnyObject, media: JSQMessageMediaData) {
+        guard
+            let dateCreated = dictionary["dateCreated"] as? Double,
+            let dateRead = dictionary["dateRead"] as? Double,
+            let key = dictionary["key"] as? String,
+            let mediaType = dictionary["mediaType"] as? String,
+            let mediaURL = dictionary["mediaURL"] as? String,
+            let parentConvo = dictionary["parentConvo"] as? String,
+            let read = dictionary["read"] as? Bool,
+            let senderDisplayName = dictionary["senderDisplayName"] as? String,
+            let senderId = dictionary["senderId"] as? String else {
+                return nil
         }
+        self.dateRead = dateRead
+        self.key = key
+        self.mediaType = mediaType
+        self.mediaURL = mediaURL
+        self.parentConvo = parentConvo
+        self.read = read
+        super.init(senderId: senderId, senderDisplayName: senderDisplayName, date: Date(timeIntervalSince1970: dateCreated), media: media)
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func toAnyObject() -> Any {
+    func toDictionary() -> Any {
         return [
+            "dateCreated": date.timeIntervalSince1970,
+            "dateRead": dateRead,
             "key": key,
-            "convo": convo,
             "mediaType": mediaType,
             "mediaURL": mediaURL,
+            "parentConvo": parentConvo,
             "read": read,
-            "timeRead": timeRead,
-            "senderId": senderId,
             "senderDisplayName": senderDisplayName,
-            "date": date.timeIntervalSince1970,
+            "senderId": senderId,
             "text": text
         ]
     }

@@ -1,39 +1,6 @@
-struct ProxyOwner: Equatable {
-    var key = ""
-    var ownerId = ""
-
-    init(key: String, ownerId: String) {
-        self.key = key
-        self.ownerId = ownerId
-    }
-
-    init?(_ json: AnyObject) {
-        guard
-            let key = json["key"] as? String,
-            let ownerId = json["ownerId"] as? String else {
-                return nil
-        }
-        self.key = key
-        self.ownerId = ownerId
-    }
-
-    func toJSON() -> Any {
-        return [
-            "key": key,
-            "ownerId": ownerId
-        ]
-    }
-
-    static func ==(_ lhs: ProxyOwner, _ rhs: ProxyOwner) -> Bool {
-        return
-            lhs.key == rhs.key &&
-            lhs.ownerId == rhs.ownerId
-    }
-}
-
 struct Proxy {
     var convos = 0
-    var created = Date().timeIntervalSince1970
+    var dateCreated = Date().timeIntervalSince1970
     var icon = ""
     var key = ""
     var message = ""
@@ -59,22 +26,22 @@ struct Proxy {
         self.ownerId = ownerId
     }
 
-    init?(_ json: AnyObject) {
+    init?(_ dictionary: AnyObject) {
         guard
-            let convos = json["convos"] as? Int,
-            let created = json["created"] as? Double,
-            let icon = json["icon"] as? String,
-            let key = json["key"] as? String,
-            let message = json["message"] as? String,
-            let name = json["name"] as? String,
-            let nickname = json["nickname"] as? String,
-            let ownerId = json["ownerId"] as? String,
-            let timestamp = json["timestamp"] as? Double,
-            let unread = json["unread"] as? Int else {
+            let convos = dictionary["convos"] as? Int,
+            let dateCreated = dictionary["dateCreated"] as? Double,
+            let icon = dictionary["icon"] as? String,
+            let key = dictionary["key"] as? String,
+            let message = dictionary["message"] as? String,
+            let name = dictionary["name"] as? String,
+            let nickname = dictionary["nickname"] as? String,
+            let ownerId = dictionary["ownerId"] as? String,
+            let timestamp = dictionary["timestamp"] as? Double,
+            let unread = dictionary["unread"] as? Int else {
                 return nil
         }
         self.convos = convos
-        self.created = created
+        self.dateCreated = dateCreated
         self.icon = icon
         self.key = key
         self.message = message
@@ -85,10 +52,10 @@ struct Proxy {
         self.unread = unread
     }
 
-    func toJSON() -> Any {
+    func toDictionary() -> Any {
         return [
             "convos": convos,
-            "created": created,
+            "dateCreated": dateCreated,
             "icon": icon,
             "key": key,
             "message": message,
@@ -105,7 +72,7 @@ extension Proxy: Equatable {
     static func ==(_ lhs: Proxy, _ rhs: Proxy) -> Bool {
         return
             lhs.convos == rhs.convos &&
-            lhs.created.rounded() == rhs.created.rounded() &&
+            lhs.dateCreated.rounded() == rhs.dateCreated.rounded() &&
             lhs.icon == rhs.icon &&
             lhs.key == rhs.key &&
             lhs.message == rhs.message &&
@@ -114,5 +81,71 @@ extension Proxy: Equatable {
             lhs.ownerId == rhs.ownerId &&
             lhs.timestamp.rounded() == rhs.timestamp.rounded() &&
             lhs.unread == rhs.unread
+    }
+}
+
+enum SettableProxyProperty {
+    case convos(Int)
+    case dateCreated(Double)
+    case icon(String)
+    case key(String)
+    case message(String)
+    case name(String)
+    case nickname(String)
+    case ownerId(String)
+    case timestamp(Double)
+    case unread(Int)
+
+    var properties: (name: String, newValue: Any) {
+        switch self {
+        case .convos(let newValue): return ("convos", newValue)
+        case .dateCreated(let newValue): return ("dateCreated", newValue)
+        case .icon(let newValue): return ("icon", newValue)
+        case .key(let newValue): return ("key", newValue)
+        case .message(let newValue): return ("message", newValue)
+        case .name(let newValue): return ("name", newValue)
+        case .nickname(let newValue): return ("nickname", newValue)
+        case .ownerId(let newValue): return ("ownerId", newValue)
+        case .timestamp(let newValue): return ("timestamp", newValue)
+        case .unread(let newValue): return ("unread", newValue)
+        }
+    }
+}
+
+enum IncrementableProxyProperty: String {
+    case convos
+    case unread
+}
+
+struct ProxyOwner: Equatable {
+    var key = ""
+    var ownerId = ""
+
+    init(key: String, ownerId: String) {
+        self.key = key
+        self.ownerId = ownerId
+    }
+
+    init?(_ dictionary: AnyObject) {
+        guard
+            let key = dictionary["key"] as? String,
+            let ownerId = dictionary["ownerId"] as? String else {
+                return nil
+        }
+        self.key = key
+        self.ownerId = ownerId
+    }
+
+    func toDictionary() -> Any {
+        return [
+            "key": key,
+            "ownerId": ownerId
+        ]
+    }
+
+    static func ==(_ lhs: ProxyOwner, _ rhs: ProxyOwner) -> Bool {
+        return
+            lhs.key == rhs.key &&
+                lhs.ownerId == rhs.ownerId
     }
 }

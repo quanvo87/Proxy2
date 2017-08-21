@@ -198,21 +198,22 @@ class ConvoViewController: JSQMessagesViewController {
     // Observe and load messages.
     func observeMessages() {
         messagesRefHandle = messagesRef.queryOrdered(byChild: Path.Timestamp).observe(.childAdded, with: { (data) in
-            guard let message = Message(anyObject: data.value! as AnyObject) else { return }
+            guard let message = Message(data.value! as AnyObject) else { return }
             switch message.mediaType {
                 
             case "imagePlaceholder":
                 
                 // Send message with placeholder.
                 let media = JSQPhotoMediaItem()
-                let _message = Message(key: message.key, convo: message.convo, mediaType: message.mediaType, mediaURL: message.mediaURL, read: message.read, timeRead: message.timeRead, senderId: message.senderId, date: message.date.timeIntervalSince1970, text: message.text, media: media)
+
+                let _message = Message(dateCreated: message.date.timeIntervalSince1970, dateRead: message.dateRead, key: message.key, mediaData: media, mediaType: message.mediaType, mediaURL: message.mediaURL, parentConvo: message.parentConvo, read: message.read, senderId: message.senderId, text: message.text)
                 self.messages.append(_message)
                 self.finishReceivingMessage()
                 
                 // Wait for the message's content to be loaded to storage.
                 // Once this happens, the message's `mediaURL` will be updated.
                 var messageRefHandle = DatabaseHandle()
-                let messageRef = self.ref.child(Path.Messages).child(message.convo).child(message.key).child(Path.MediaURL)
+                let messageRef = self.ref.child(Path.Messages).child(message.parentConvo).child(message.key).child(Path.MediaURL)
                 messageRefHandle = messageRef.observe(.value, with: { (data) in
                     
                     // Get `mediaURL`.
@@ -236,7 +237,7 @@ class ConvoViewController: JSQMessagesViewController {
                 
                 // Create message with placeholder.
                 let media = JSQPhotoMediaItem()
-                let _message = Message(key: message.key, convo: message.convo, mediaType: message.mediaType, mediaURL: message.mediaURL, read: message.read, timeRead: message.timeRead, senderId: message.senderId, date: message.date.timeIntervalSince1970, text: message.text, media: media)
+                let _message = Message(dateCreated: message.date.timeIntervalSince1970, dateRead: message.dateRead, key: message.key, mediaData: media, mediaType: message.mediaType, mediaURL: message.mediaURL, parentConvo: message.parentConvo, read: message.read, senderId: message.senderId, text: message.text)
                 self.messages.append(_message)
                 self.finishReceivingMessage()
                 
@@ -255,14 +256,14 @@ class ConvoViewController: JSQMessagesViewController {
                 
                 // Create message with placeholder.
                 let media = JSQVideoMediaItem()
-                let _message = Message(key: message.key, convo: message.convo, mediaType: "video", mediaURL: message.mediaURL, read: message.read, timeRead: message.timeRead, senderId: message.senderId, date: message.date.timeIntervalSince1970, text: message.text, media: media)
+                let _message = Message(dateCreated: message.date.timeIntervalSince1970, dateRead: message.dateRead, key: message.key, mediaData: media, mediaType: "video", mediaURL: message.mediaURL, parentConvo: message.parentConvo, read: message.read, senderId: message.senderId, text: message.text)
                 self.messages.append(_message)
                 self.finishReceivingMessage()
                 
                 // Wait for the message's content to be loaded to storage.
                 // Once this happens, the message's `mediaURL` will be updated.
                 var messageRefHandle = DatabaseHandle()
-                let messageRef = self.ref.child(Path.Messages).child(message.convo).child(message.key).child(Path.MediaURL)
+                let messageRef = self.ref.child(Path.Messages).child(message.parentConvo).child(message.key).child(Path.MediaURL)
                 messageRefHandle = messageRef.observe(.value, with: { (data) in
                     
                     // Get `mediaURL`.
@@ -288,7 +289,7 @@ class ConvoViewController: JSQMessagesViewController {
                 media?.appliesMediaViewMaskAsOutgoing = message.senderId == self.senderId
                 
                 // Attach JSQVideoMediaItem.
-                let _message = Message(key: message.key, convo: message.convo, mediaType: message.mediaType, mediaURL: message.mediaURL, read: message.read, timeRead: message.timeRead, senderId: message.senderId, date: message.date.timeIntervalSince1970, text: message.text, media: media!)
+                let _message = Message(dateCreated: message.date.timeIntervalSince1970, dateRead: message.dateRead, key: message.key, mediaData: media!, mediaType: message.mediaType, mediaURL: message.mediaURL, parentConvo: message.parentConvo, read: message.read, senderId: message.senderId, text: message.text)
                 
                 // Send message.
                 self.messages.append(_message)
@@ -324,15 +325,14 @@ class ConvoViewController: JSQMessagesViewController {
     func observeLastMessage() {
         lastMessageRefHandle = messagesRef.queryOrdered(byChild: Path.Timestamp).queryLimited(toLast: 1).observe(.value, with: { (data) in
             guard data.hasChildren() else { return }
-            guard let message = Message(anyObject: (data.children.nextObject()! as! DataSnapshot).value as AnyObject) else { return }
+            guard let message = Message((data.children.nextObject()! as! DataSnapshot).value as AnyObject) else { return }
             if message.senderId == self.senderId && message.read {
                 let message_ = self.messages[self.readReceiptIndex]
                 if !message_.read {
                     message_.read = message.read
-                    message_.timeRead = message.timeRead
+                    message_.dateRead = message.dateRead
                     self.messages[self.readReceiptIndex] = message_
                     self.collectionView.reloadData()
-//                    self.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: self.readReceiptIndex, inSection: 0)])
                     self.scrollToBottom(animated: true)
                 }
             }
@@ -558,7 +558,7 @@ class ConvoViewController: JSQMessagesViewController {
         let message = messages[indexPath.item]
         if indexPath.item == readReceiptIndex && message.senderId == senderId && message.read {
             let read = "Read ".makeBold(withSize: 12)
-            let timestamp = NSAttributedString(string: message.timeRead.asTimeAgo)
+            let timestamp = NSAttributedString(string: message.dateRead.asTimeAgo)
             read.append(timestamp)
             return read
         }

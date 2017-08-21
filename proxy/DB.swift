@@ -22,6 +22,20 @@ struct DB {
         }
     }
 
+    struct Transaction {
+        let value: Any
+        let path: Path
+
+        init?(set value: Any, at first: String, _ rest: String...) {
+            guard let path = Path(first, rest) else {
+                return nil
+            }
+
+            self.value = value
+            self.path = path
+        }
+    }
+
     private static let ref = Database.database().reference()
 
     static func ref(_ first: String, _ rest: String...) -> DatabaseReference? {
@@ -37,20 +51,6 @@ struct DB {
         }
         return nil
     }
-
-    struct Transaction {
-        let value: Any
-        let path: Path
-
-        init?(set value: Any, at first: String, _ rest: String...) {
-            guard let path = Path(first, rest) else {
-                return nil
-            }
-
-            self.value = value
-            self.path = path
-        }
-    }
 }
 
 extension DB {
@@ -64,8 +64,11 @@ extension DB {
         }
     }
 
-
     static func set(_ value: Any, at first: String, _ rest: String..., completion: @escaping ((Success) -> Void)) {
+        set(value, at: first, rest, completion: completion)
+    }
+
+    static func set(_ value: Any, at first: String, _ rest: [String], completion: @escaping ((Success) -> Void)) {
         guard let ref = ref(first, rest) else {
             completion(false)
             return
@@ -103,7 +106,11 @@ extension DB {
         }
     }
 
-    static func increment(_ amount: Int, at first: String, _ rest: String..., completion: @escaping ((Success) -> Void)) {
+    static func increment(by amount: Int, at first: String, _ rest: String..., completion: @escaping ((Success) -> Void)) {
+        increment(by: amount, at: first, rest, completion: completion)
+    }
+
+    static func increment(by amount: Int, at first: String, _ rest: [String], completion: @escaping ((Success) -> Void)) {
         guard let ref = ref(first, rest) else {
             completion(false)
             return
