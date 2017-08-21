@@ -560,7 +560,7 @@ class API {
             senderConvo.receiverProxyName = receiver.name
             senderConvo.icon = receiver.icon
             senderConvo.senderIsBlocked = senderBlocked
-            let senderConvoAnyObject = senderConvo.toJSON()
+            let senderConvoAnyObject = senderConvo.toDictionary()
             self.set(senderConvoAnyObject as AnyObject, a: Path.Convos, b: senderConvo.senderId, c: senderConvo.key, d: nil)
             self.set(senderConvoAnyObject as AnyObject, a: Path.Convos, b: senderConvo.senderProxyKey, c: senderConvo.key, d: nil)
             self.increment(by: 1, a: Path.ProxiesInteractedWith, b: sender.ownerId, c: Path.ProxiesInteractedWith, d: nil)
@@ -575,7 +575,7 @@ class API {
             receiverConvo.receiverProxyName = sender.name
             receiverConvo.icon = sender.icon
             receiverConvo.receiverIsBlocked = senderBlocked
-            let receiverConvoAnyObject = receiverConvo.toJSON()
+            let receiverConvoAnyObject = receiverConvo.toDictionary()
             self.set(receiverConvoAnyObject as AnyObject, a: Path.Convos, b: receiverConvo.senderId, c: receiverConvo.key, d: nil)
             self.set(receiverConvoAnyObject as AnyObject, a: Path.Convos, b: receiverConvo.senderProxyKey, c: receiverConvo.key, d: nil)
             self.increment(by: 1, a: Path.ProxiesInteractedWith, b: receiver.ownerId, c: Path.ProxiesInteractedWith, d: nil)

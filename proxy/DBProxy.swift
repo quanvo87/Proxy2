@@ -40,14 +40,13 @@ struct DBProxy {
 
     static func deleteProxy(_ proxy: Proxy, withConvos convos: [Convo], completion: @escaping (Success) -> Void) {
         let key = AsyncWorkGroupKey()
-        key.decrementProxyCount(forOwnerOfProxy: proxy)
-        key.decrementUnread(forOwnerOfProxy: proxy)
-        key.deleteProxy(proxy)
-        key.deleteProxyKey(forProxy: proxy)
-        key.deleteProxyOwner(forProxy: proxy)
-        key.deleteProxyConvos(forProxy: proxy)
-        key.deleteUserConvos(convos)
-        key.setReceiverDeletedProxy(forReceiverInConvos: convos)
+        key.delete(at: Path.Proxies, proxy.ownerId, proxy.key)
+        key.delete(at: Path.ProxyKeys, proxy.key)
+        key.delete(at: Path.ProxyOwners, proxy.key)
+        key.deleteConvos(convos)
+        key.increment(by: -1, forProperty: .proxyCount, forUser: proxy.ownerId)
+        key.increment(by: -1, forProperty: .unread, forUser: proxy.ownerId)
+        key.setReceiverDeletedProxy(to: true, forReceiverInConvos: convos)
         key.notify {
             completion(key.workResult)
             key.finishWorkGroup()
@@ -153,10 +152,10 @@ struct DBProxy {
                         let proxyOwner = ProxyOwner(key: proxyKey, ownerId: uid)
 
                         let key = AsyncWorkGroupKey()
-                        key.incrementProxyCount(forUser: uid)
-                        key.setProxy(proxy)
-                        key.setProxyKey(proxyKeyDictionary, withKey: proxyKey)
-                        key.setProxyOwner(proxyOwner)
+                        key.increment(by: 1, forProperty: .proxyCount, forUser: uid)
+                        key.set(proxy.toDictionary(), at: Path.Proxies, proxy.ownerId, proxy.key)
+                        key.set(proxyKeyDictionary, at: Path.ProxyKeys, proxy.key)
+                        key.set(proxyOwner.toDictionary(), at: Path.ProxyOwners, proxy.key)
                         key.notify {
                             makeProxyDone(result: key.workResult ? .success(proxy) : .failure(.unknown), completion: completion)
                             key.finishWorkGroup()
@@ -186,13 +185,8 @@ struct DBProxy {
 
     static func setIcon(to icon: String, forProxy proxy: Proxy, withConvos convos: [Convo], completion: @escaping (Success) -> Void) {
         let key = AsyncWorkGroupKey()
-
         key.set(.icon(icon), forProxy: proxy)
-
-        for convo in convos {
-            key.set(.icon(icon), forConvo: convo, asSender: false)
-        }
-
+        key.setIcon(to: icon, forConvos: convos)
         key.notify {
             completion(key.workResult)
             key.finishWorkGroup()
@@ -211,13 +205,8 @@ struct DBProxy {
 
     static func setNickname(to nickname: String, forProxy proxy: Proxy, withConvos convos: [Convo], completion: @escaping (Success) -> Void) {
         let key = AsyncWorkGroupKey()
-
         key.set(.nickname(nickname), forProxy: proxy)
-
-        for convo in convos {
-            key.set(.senderNickname(nickname), forConvo: convo, asSender: true)
-        }
-
+        key.setNickname(to: nickname, forConvos: convos)
         key.notify {
             completion(key.workResult)
             key.finishWorkGroup()
@@ -238,58 +227,9 @@ extension DataSnapshot {
 }
 
 extension AsyncWorkGroupKey {
-    func decrementProxyCount(forOwnerOfProxy proxy: Proxy) {
-        startWork()
-        DB.increment(by: -1, at: Path.UserInfo, proxy.ownerId, Path.ProxyCount) { (success) in
-            self.finishWork(withResult: success)
-        }
-    }
-
-    func decrementUnread(forOwnerOfProxy proxy: Proxy) {
-        startWork()
-        DB.increment(by: -proxy.unread, at: Path.UserInfo, proxy.ownerId, Path.Unread) { (success) in
-            self.finishWork(withResult: success)
-        }
-    }
-
-    func deleteProxy(_ proxy: Proxy) {
-        startWork()
-        DB.delete(Path.Proxies, proxy.ownerId, proxy.key) { (success) in
-            self.finishWork(withResult: success)
-        }
-    }
-
-    func deleteProxyConvos(forProxy proxy: Proxy) {
-        startWork()
-        DB.delete(Path.Convos, proxy.key) { (success) in
-            self.finishWork(withResult: success)
-        }
-    }
-
-    func deleteProxyKey(forProxy proxy: Proxy) {
-        startWork()
-        DB.delete(Path.ProxyKeys, proxy.key) { (success) in
-            self.finishWork(withResult: success)
-        }
-    }
-
-    func deleteProxyOwner(forProxy proxy: Proxy) {
-        startWork()
-        DB.delete(Path.ProxyOwners, proxy.key) { (success) in
-            self.finishWork(withResult: success)
-        }
-    }
-
-    func deleteUserConvos(_ convos: [Convo]) {
+    func deleteConvos(_ convos: [Convo]) {
         for convo in convos {
-            deleteUserConvo(convo)
-        }
-    }
-
-    func incrementProxyCount(forUser uid: String) {
-        startWork()
-        DB.increment(by: 1, at: Path.UserInfo, uid, Path.ProxyCount) { (success) in
-            self.finishWork(withResult: success)
+            self.delete(convo, asSender: true)
         }
     }
 
@@ -323,33 +263,24 @@ extension AsyncWorkGroupKey {
         }
     }
 
-    func setProxy(_ proxy: Proxy) {
-        startWork()
-        DB.set(proxy.toDictionary(), at: Path.Proxies, proxy.ownerId, proxy.key) { (success) in
-            self.finishWork(withResult: success)
+    func setIcon(to icon: String, forConvos convos: [Convo]) {
+        for convo in convos {
+            self.set(.icon(icon), forConvo: convo, asSender: false)
         }
     }
 
-    func setProxyKey(_ proxyKey: [String: String], withKey key: String) {
-        startWork()
-        DB.set(proxyKey, at: Path.ProxyKeys, key) { (success) in
-            self.finishWork(withResult: success)
+    func setNickname(to nickname: String, forConvos convos: [Convo]) {
+        for convo in convos {
+            self.set(.senderNickname(nickname), forConvo: convo, asSender: true)
         }
     }
 
-    func setProxyOwner(_ proxyOwner: ProxyOwner) {
-        startWork()
-        DB.set(proxyOwner.toDictionary(), at: Path.ProxyOwners, proxyOwner.key) { (success) in
-            self.finishWork(withResult: success)
-        }
-    }
-
-    func setReceiverDeletedProxy(forReceiverInConvos convos: [Convo]) {
+    func setReceiverDeletedProxy(to value: Bool, forReceiverInConvos convos: [Convo]) {
         for convo in convos {
             startWork()
-            DB.get(Path.Convos, convo.receiverId, convo.key) { (data) in
-                if data?.value as? FirebaseDatabase.NSNull == nil {
-                    self.set(.receiverDeletedProxy(true), forConvo: convo, asSender: false)
+            DBConvo.getConvo(withKey: convo.key, belongingTo: convo.receiverId) { (convo) in
+                if let convo = convo {
+                    self.set(.receiverDeletedProxy(value), forConvo: convo, asSender: true)
                 }
                 self.finishWork(withResult: true)
             }
