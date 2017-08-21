@@ -31,29 +31,28 @@ struct DBMessage {
             let currentTime = Date().timeIntervalSince1970
 
             // Sender updates
-            key.incrementMessagesSent(forUser: senderConvo.senderId)
-
+            key.increment(by: 1, forProperty: .messagesSent, forUser: senderConvo.senderId)
             key.set(.message("You: \(text)"), forConvo: senderConvo, asSender: true)
-            key.set(.message("You: \(text)"), forSenderProxyInConvo: senderConvo)
+            key.set(.message("You: \(text)"), forProxyInConvo: senderConvo, asSender: true)
             key.set(.timestamp(currentTime), forConvo: senderConvo, asSender: true)
-            key.set(.timestamp(currentTime), forSenderProxyInConvo: senderConvo)
+            key.set(.timestamp(currentTime), forProxyInConvo: senderConvo, asSender: true)
 
             if senderConvo.senderLeftConvo {
-                key.increment(by: 1, forProperty: .convos, forSenderProxyInConvo: senderConvo)
+                key.increment(by: 1, forProperty: .convos, forProxyInConvo: senderConvo, asSender: true)
                 key.set(.receiverLeftConvo(false), forConvo: senderConvo, asSender: false)
                 key.set(.senderLeftConvo(false), forConvo: senderConvo, asSender: true)
             }
 
             // Receiver updates
-            key.incrementMessagesReceived(forUser: senderConvo.receiverId)
+            key.increment(by: 1, forProperty: .messagesReceived, forUser: senderConvo.receiverId)
 
             if !senderConvo.receiverDeletedProxy && !senderConvo.senderIsBlocked {
-                key.set(.message(text), forReceiverProxyInConvo: senderConvo)
-                key.set(.timestamp(currentTime), forReceiverProxyInConvo: senderConvo)
+                key.set(.message(text), forProxyInConvo: senderConvo, asSender: false)
+                key.set(.timestamp(currentTime), forProxyInConvo: senderConvo, asSender: false)
 
                 if !receiverIsPresent {
-                    key.incrementUnread(forReceiverOfConvo: senderConvo)
-                    key.increment(by: 1, forProperty: .unread, forReceiverProxyInConvo: senderConvo)
+                    key.increment(by: 1, forProperty: .unread, forProxyInConvo: senderConvo, asSender: false)
+                    key.increment(by: 1, forProperty: .unread, forUser: senderConvo.receiverId)
                 }
             }
 
@@ -67,7 +66,7 @@ struct DBMessage {
             }
 
             if senderConvo.receiverLeftConvo {
-                key.increment(by: 1, forProperty: .convos, forReceiverProxyInConvo: senderConvo)
+                key.increment(by: 1, forProperty: .convos, forProxyInConvo: senderConvo, asSender: false)
                 key.set(.receiverLeftConvo(false), forConvo: senderConvo, asSender: true)
                 key.set(.senderLeftConvo(false), forConvo: senderConvo, asSender: false)
             }
@@ -83,7 +82,7 @@ struct DBMessage {
                                   read: receiverIsPresent,
                                   senderId: senderConvo.senderId,
                                   text: text)
-            key.setMessage(message)
+            key.set(message.toDictionary(), at: Path.Messages, message.parentConvo, message.key)
 
             key.notify {
                 if key.workResult {
@@ -101,23 +100,5 @@ struct DBMessage {
                 key.finishWorkGroup()
             }
         }
-    }
-}
-
-extension AsyncWorkGroupKey {
-    func incrementMessagesReceived(by amount: Int = 1, forUser uid: String) {
-        increment(by: amount, at: Path.UserInfo, uid, Path.MessagesReceived)
-    }
-
-    func incrementMessagesSent(by amount: Int = 1, forUser uid: String) {
-        increment(by: amount, at: Path.UserInfo, uid, Path.MessagesSent)
-    }
-
-    func incrementUnread(by amount: Int = 1, forReceiverOfConvo convo: Convo) {
-        increment(by: amount, at: Path.UserInfo, convo.receiverId, Path.Unread)
-    }
-
-    func setMessage(_ message: Message) {
-        set(message.toDictionary(), at: Path.Messages, message.parentConvo, message.key)
     }
 }

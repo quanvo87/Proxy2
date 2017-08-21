@@ -43,9 +43,9 @@ extension AsyncWorkGroupKey {
 }
 
 extension AsyncWorkGroupKey {
-    func set(_ value: Any, at first: String, _ rest: String...) {
+    func delete(at first: String, _ rest: String...) {
         startWork()
-        DB.set(value, at: first, rest) { (success) in
+        DB.delete(first, rest) { (success) in
             self.finishWork(withResult: success)
         }
     }
@@ -56,23 +56,43 @@ extension AsyncWorkGroupKey {
             self.finishWork(withResult: success)
         }
     }
+
+    func set(_ value: Any, at first: String, _ rest: String...) {
+        startWork()
+        DB.set(value, at: first, rest) { (success) in
+            self.finishWork(withResult: success)
+        }
+    }
+
+    static func getOwnerIdAndProxyKey(fromConvo convo: Convo, asSender: Bool) -> (ownerId: String, proxyKey: String) {
+        return (asSender ? convo.senderId : convo.receiverId,
+                asSender ? convo.senderProxyKey : convo.receiverProxyKey)
+    }
 }
 
 extension AsyncWorkGroupKey {
-    func increment(by amount: Int, forProperty property: IncrementableConvoProperty, forConvo convo: Convo, asSender: Bool) {
-        let ownderId = asSender ? convo.senderId : convo.receiverId
-        let proxyKey = asSender ? convo.senderProxyKey : convo.receiverProxyKey
+    func delete(_ convo: Convo, asSender: Bool) {
+        let (ownerId, proxyKey) = AsyncWorkGroupKey.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
+        delete(at: Path.Convos, ownerId, convo.key)
+        delete(at: Path.Convos, proxyKey, convo.key)
+    }
 
-        increment(by: amount, at: Path.Convos, ownderId, convo.key, property.rawValue)
+    func increment(by amount: Int, forProperty property: IncrementableConvoProperty, forConvo convo: Convo, asSender: Bool) {
+        let (ownerId, proxyKey) = AsyncWorkGroupKey.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
+        increment(by: amount, at: Path.Convos, ownerId, convo.key, property.rawValue)
         increment(by: amount, at: Path.Convos, proxyKey, convo.key, property.rawValue)
     }
 
     func set(_ property: SettableConvoProperty, forConvo convo: Convo, asSender: Bool) {
-        let ownderId = asSender ? convo.senderId : convo.receiverId
-        let proxyKey = asSender ? convo.senderProxyKey : convo.receiverProxyKey
-
-        set(property.properties.newValue, at: Path.Convos, ownderId, convo.key, property.properties.name)
+        let (ownerId, proxyKey) = AsyncWorkGroupKey.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
+        set(property.properties.newValue, at: Path.Convos, ownerId, convo.key, property.properties.name)
         set(property.properties.newValue, at: Path.Convos, proxyKey, convo.key, property.properties.name)
+    }
+
+    func set(_ convo: Convo, asSender: Bool) {
+        let (ownerId, proxyKey) = AsyncWorkGroupKey.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
+        set(convo.toDictionary(), at: Path.Convos, ownerId, convo.key)
+        set(convo.toDictionary(), at: Path.Convos, proxyKey, convo.key)
     }
 }
 
@@ -81,12 +101,9 @@ extension AsyncWorkGroupKey {
         increment(by: amount, forProperty: property, proxyOwner: proxy.ownerId, proxyKey: proxy.key)
     }
 
-    func increment(by amount: Int, forProperty property: IncrementableProxyProperty, forReceiverProxyInConvo convo: Convo) {
-        increment(by: amount, forProperty: property, proxyOwner: convo.receiverId, proxyKey: convo.receiverProxyKey)
-    }
-
-    func increment(by amount: Int, forProperty property: IncrementableProxyProperty, forSenderProxyInConvo convo: Convo) {
-        increment(by: amount, forProperty: property, proxyOwner: convo.senderId, proxyKey: convo.senderProxyKey)
+    func increment(by amount: Int, forProperty property: IncrementableProxyProperty, forProxyInConvo convo: Convo, asSender: Bool) {
+        let (ownerId, proxyKey) = AsyncWorkGroupKey.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
+        increment(by: amount, forProperty: property, proxyOwner: ownerId, proxyKey: proxyKey)
     }
 
     func increment(by amount: Int, forProperty property: IncrementableProxyProperty, proxyOwner: String, proxyKey: String) {
@@ -97,15 +114,26 @@ extension AsyncWorkGroupKey {
         self.set(property, proxyOwner: proxy.ownerId, proxyKey: proxy.key)
     }
 
-    func set(_ property: SettableProxyProperty, forReceiverProxyInConvo convo: Convo) {
-        self.set(property, proxyOwner: convo.receiverId, proxyKey: convo.receiverProxyKey)
-    }
-
-    func set(_ property: SettableProxyProperty, forSenderProxyInConvo convo: Convo) {
-        self.set(property, proxyOwner: convo.senderId, proxyKey: convo.senderProxyKey)
+    func set(_ property: SettableProxyProperty, forProxyInConvo convo: Convo, asSender: Bool) {
+        let (ownerId, proxyKey) = AsyncWorkGroupKey.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
+        set(property, proxyOwner: ownerId, proxyKey: proxyKey)
     }
 
     func set(_ property: SettableProxyProperty, proxyOwner: String, proxyKey: String) {
         set(property.properties.newValue, at: Path.Proxies, proxyOwner, proxyKey, property.properties.name)
+    }
+}
+
+enum IncrementableUserProperty: String {
+    case messagesReceived
+    case messagesSent
+    case proxiesInteractedWith
+    case proxyCount
+    case unread
+}
+
+extension AsyncWorkGroupKey {
+    func increment(by amount: Int, forProperty property: IncrementableUserProperty, forUser uid: String) {
+        increment(by: amount, at: Path.UserInfo, uid, property.rawValue)
     }
 }

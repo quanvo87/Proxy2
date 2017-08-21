@@ -97,6 +97,10 @@ extension DB {
     }
 
     static func delete(_ first: String, _ rest: String..., completion: @escaping (Success) -> Void) {
+        delete(first, rest, completion: completion)
+    }
+
+    static func delete(_ first: String, _ rest: [String], completion: @escaping (Success) -> Void) {
         guard let ref = ref(first, rest) else {
             completion(false)
             return

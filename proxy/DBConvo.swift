@@ -3,12 +3,8 @@ import FirebaseDatabase
 struct DBConvo {
     static func deleteConvo(_ convo: Convo, completion: @escaping (Success) -> Void) {
         let key = AsyncWorkGroupKey()
-
-        key.deleteProxyConvo(convo)
-        key.deleteUserConvo(convo)
-
-        key.increment(by: -1, forProperty: .convos, forSenderProxyInConvo: convo)
-
+        key.delete(convo, asSender: true)
+        key.increment(by: -1, forProperty: .convos, forProxyInConvo: convo, asSender: true)
         key.notify {
             completion(key.workResult)
             key.finishWorkGroup()
@@ -35,13 +31,11 @@ struct DBConvo {
 
     static func leaveConvo(_ convo: Convo, completion: @escaping (Success) -> Void) {
         let key = AsyncWorkGroupKey()
-        key.incrementUnread(by: -convo.unread, forUser: convo.senderId)
-
+        key.increment(by: -1, forProperty: .convos, forProxyInConvo: convo, asSender: true)
+        key.increment(by: -convo.unread, forProperty: .unread, forProxyInConvo: convo, asSender: true)
+        key.increment(by: -convo.unread, forProperty: .unread, forUser: convo.senderId)
         key.set(.receiverLeftConvo(true), forConvo: convo, asSender: false)
         key.set(.senderLeftConvo(true), forConvo: convo, asSender: true)
-        key.increment(by: -1, forProperty: .convos, forSenderProxyInConvo: convo)
-        key.increment(by: -convo.unread, forProperty: .unread, forSenderProxyInConvo: convo)
-
         key.notify {
             completion(key.workResult)
             key.finishWorkGroup()
@@ -76,16 +70,12 @@ struct DBConvo {
             receiverConvo.receiverIsBlocked = senderIsBlocked
 
             let key = AsyncWorkGroupKey()
-            key.incrementProxiesInteractedWith(forUser: senderProxy.ownerId)
-            key.incrementProxiesInteractedWith(forUser: receiverProxy.ownerId)
-            key.setProxyConvo(senderConvo)
-            key.setProxyConvo(receiverConvo)
-            key.setUserConvo(receiverConvo)
-            key.setUserConvo(senderConvo)
-
             key.increment(by: 1, forProperty: .convos, forProxy: senderProxy)
             key.increment(by: 1, forProperty: .convos, forProxy: receiverProxy)
-
+            key.increment(by: 1, forProperty: .proxiesInteractedWith, forUser: senderProxy.ownerId)
+            key.increment(by: 1, forProperty: .proxiesInteractedWith, forUser: receiverProxy.ownerId)
+            key.set(receiverConvo, asSender: true)
+            key.set(senderConvo, asSender: true)
             key.notify {
                 completion(key.workResult ? senderConvo : nil)
                 key.finishWorkGroup()
@@ -136,46 +126,5 @@ extension DataSnapshot {
             }
         }
         return convos
-    }
-}
-
-extension AsyncWorkGroupKey {
-    func deleteProxyConvo(_ convo: Convo) {
-        startWork()
-        DB.delete(Path.Convos, convo.senderProxyKey, convo.key) { (success) in
-            self.finishWork(withResult: success)
-        }
-    }
-
-    func deleteUserConvo(_ convo: Convo) {
-        startWork()
-        DB.delete(Path.Convos, convo.senderId, convo.key) { (success) in
-            self.finishWork(withResult: success)
-        }
-    }
-
-    func incrementProxiesInteractedWith(forUser uid: String) {
-        startWork()
-        DB.increment(by: 1, at: Path.UserInfo, uid, Path.ProxiesInteractedWith) { (success) in
-            self.finishWork(withResult: success)
-        }
-    }
-
-    func incrementUnread(by amount: Int, forUser uid: String) {
-        increment(by: amount, at: Path.UserInfo, uid, Path.Unread)
-    }
-
-    func setProxyConvo(_ convo: Convo) {
-        startWork()
-        DB.set(convo.toJSON(), at: Path.Convos, convo.senderProxyKey, convo.key) { (success) in
-            self.finishWork(withResult: success)
-        }
-    }
-
-    func setUserConvo(_ convo: Convo) {
-        startWork()
-        DB.set(convo.toJSON(), at: Path.Convos, convo.senderId, convo.key) { (success) in
-            self.finishWork(withResult: success)
-        }
     }
 }

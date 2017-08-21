@@ -62,7 +62,7 @@ struct Convo {
         self.unread = unread
     }
 
-    func toJSON() -> Any {
+    func toDictionary() -> Any {
         return [
             "icon": icon,
             "key": key,
