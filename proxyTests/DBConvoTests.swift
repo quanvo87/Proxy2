@@ -4,7 +4,7 @@ import XCTest
 
 class DBConvoTests: DBTest {
     func testDeleteConvo() {
-        x = expectation(description: #function)
+        let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
         DBTest.makeConvo { (convo, _, _) in
@@ -16,52 +16,52 @@ class DBConvoTests: DBTest {
                 key.checkConvoDeleted(convo, asSender: true)
                 key.notify {
                     key.finishWorkGroup()
-                    self.x.fulfill()
+                   expectation.fulfill()
                 }
             }
         }
     }
 
     func testGetConvo() {
-        x = expectation(description: #function)
+        let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
         DBTest.makeConvo { (convo, _, _) in
             DBConvo.getConvo(withKey: convo.key, belongingTo: Shared.shared.uid) { (retrievedConvo) in
                 XCTAssertEqual(retrievedConvo, convo)
-                self.x.fulfill()
+               expectation.fulfill()
             }
         }
     }
 
     func testGetConvosForProxy() {
-        x = expectation(description: #function)
+        let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
         DBTest.makeConvo { (convo, sender, _) in
             DBConvo.getConvos(forProxy: sender, filtered: false) { (convos) in
                 XCTAssertEqual(convos?.count, 1)
                 XCTAssertEqual(convos?[0], convo)
-                self.x.fulfill()
+               expectation.fulfill()
             }
         }
     }
 
     func testGetConvosForUser() {
-        x = expectation(description: #function)
+        let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
         DBTest.makeConvo { (convo, _, _) in
             DBConvo.getConvos(forUser: Shared.shared.uid, filtered: false) { (convos) in
                 XCTAssertEqual(convos?.count, 1)
                 XCTAssertEqual(convos?[0], convo)
-                self.x.fulfill()
+               expectation.fulfill()
             }
         }
     }
 
     func testGetConvosFromSnapshot() {
-        let x = expectation(description: #function)
+        let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
         DBTest.makeConvo { (convo, _, _) in
@@ -69,13 +69,13 @@ class DBConvoTests: DBTest {
                 let convos = data?.toConvos(filtered: false)
                 XCTAssertEqual(convos?.count, 1)
                 XCTAssertEqual(convos?[0], convo)
-                x.fulfill()
+               expectation.fulfill()
             }
         }
     }
 
     func testLeaveConvo() {
-        x = expectation(description: #function)
+        let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
         DBTest.makeConvo { (convo, sender, _) in
@@ -93,14 +93,14 @@ class DBConvoTests: DBTest {
                 key.check(.unread, equals: -convo.unread, forUser: convo.senderId)
                 key.notify {
                     key.finishWorkGroup()
-                    self.x.fulfill()
+                   expectation.fulfill()
                 }
             }
         }
     }
 
     func testMakeConvo() {
-        x = expectation(description: #function)
+        let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
         DBTest.makeConvo { (senderConvo, sender, receiver) in
@@ -136,13 +136,13 @@ class DBConvoTests: DBTest {
             key.check(.proxiesInteractedWith, equals: 1, forUser: sender.ownerId)
             key.notify {
                 key.finishWorkGroup()
-                self.x.fulfill()
+               expectation.fulfill()
             }
         }
     }
 
     func testMakeConvoWhileSenderIsBlocked() {
-        x = expectation(description: #function)
+        let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
         DB.set(true, at: Path.UserInfo, DBTest.testUser, Path.Blocked, Shared.shared.uid) { (success) in
@@ -154,7 +154,7 @@ class DBConvoTests: DBTest {
                 key.check(.senderIsBlocked(true), forConvo: convo, asSender: true)
                 key.notify {
                     key.finishWorkGroup()
-                    self.x.fulfill()
+                   expectation.fulfill()
                 }
             }
         }
@@ -177,8 +177,8 @@ class DBConvoTests: DBTest {
         XCTAssertEqual(DBConvo.makeConvoTitle(receiverNickname: "", receiverName: "a", senderNickname: "", senderName: "b").string, "a, b")
     }
 
-    func testSetNickname() {
-        x = expectation(description: #function)
+    func testSetReceiverNickname() {
+        let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
         DBTest.makeConvo { (convo, _, _) in
@@ -191,14 +191,14 @@ class DBConvoTests: DBTest {
                 key.check(.receiverNickname(testNickname), forConvo: convo, asSender: true)
                 key.notify {
                     key.finishWorkGroup()
-                    self.x.fulfill()
+                   expectation.fulfill()
                 }
             }
         }
     }
 
     func testUserIsPresent() {
-        x = expectation(description: #function)
+        let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
         DBTest.makeConvo { (convo, _, _) in
@@ -207,7 +207,7 @@ class DBConvoTests: DBTest {
 
                 DBConvo.userIsPresent(user: Shared.shared.uid, inConvoWithKey: convo.key) { (isPresent) in
                     XCTAssert(isPresent)
-                    self.x.fulfill()
+                   expectation.fulfill()
                 }
             }
         }
@@ -217,8 +217,8 @@ class DBConvoTests: DBTest {
 extension AsyncWorkGroupKey {
     func checkConvoDeleted(_ convo: Convo, asSender: Bool) {
         let (ownerId, proxyKey) = AsyncWorkGroupKey.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
-        checkDeleted(at: Path.Convos, rest: ownerId, convo.key)
-        checkDeleted(at: Path.Convos, rest: proxyKey, convo.key)
+        checkDeleted(at: Path.Convos, ownerId, convo.key)
+        checkDeleted(at: Path.Convos, proxyKey, convo.key)
     }
 
     func checkConvoCreated(_ convo: Convo, asSender: Bool) {

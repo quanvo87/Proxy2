@@ -3,7 +3,7 @@ import XCTest
 
 class DBIconTests: DBTest {
     func testGetImageForIcon() {
-        x = expectation(description: #function)
+        let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 30) }
 
         DBProxy.loadProxyInfo { (success) in
@@ -21,7 +21,7 @@ class DBIconTests: DBTest {
             }
 
             iconImagesRetrieved.notify(queue: DispatchQueue.main) {
-                self.x.fulfill()
+                expectation.fulfill()
             }
         }
     }
