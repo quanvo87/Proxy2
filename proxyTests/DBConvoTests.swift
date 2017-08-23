@@ -16,7 +16,7 @@ class DBConvoTests: DBTest {
                 key.checkConvoDeleted(convo, asSender: true)
                 key.notify {
                     key.finishWorkGroup()
-                   expectation.fulfill()
+                    expectation.fulfill()
                 }
             }
         }
@@ -29,7 +29,7 @@ class DBConvoTests: DBTest {
         DBTest.makeConvo { (convo, _, _) in
             DBConvo.getConvo(withKey: convo.key, belongingTo: Shared.shared.uid) { (retrievedConvo) in
                 XCTAssertEqual(retrievedConvo, convo)
-               expectation.fulfill()
+                expectation.fulfill()
             }
         }
     }
@@ -42,7 +42,7 @@ class DBConvoTests: DBTest {
             DBConvo.getConvos(forProxy: sender, filtered: false) { (convos) in
                 XCTAssertEqual(convos?.count, 1)
                 XCTAssertEqual(convos?[0], convo)
-               expectation.fulfill()
+                expectation.fulfill()
             }
         }
     }
@@ -55,7 +55,7 @@ class DBConvoTests: DBTest {
             DBConvo.getConvos(forUser: Shared.shared.uid, filtered: false) { (convos) in
                 XCTAssertEqual(convos?.count, 1)
                 XCTAssertEqual(convos?[0], convo)
-               expectation.fulfill()
+                expectation.fulfill()
             }
         }
     }
@@ -69,7 +69,7 @@ class DBConvoTests: DBTest {
                 let convos = data?.toConvos(filtered: false)
                 XCTAssertEqual(convos?.count, 1)
                 XCTAssertEqual(convos?[0], convo)
-               expectation.fulfill()
+                expectation.fulfill()
             }
         }
     }
@@ -93,7 +93,7 @@ class DBConvoTests: DBTest {
                 key.check(.unread, equals: -convo.unread, forUser: convo.senderId)
                 key.notify {
                     key.finishWorkGroup()
-                   expectation.fulfill()
+                    expectation.fulfill()
                 }
             }
         }
@@ -136,7 +136,7 @@ class DBConvoTests: DBTest {
             key.check(.proxiesInteractedWith, equals: 1, forUser: sender.ownerId)
             key.notify {
                 key.finishWorkGroup()
-               expectation.fulfill()
+                expectation.fulfill()
             }
         }
     }
@@ -154,7 +154,7 @@ class DBConvoTests: DBTest {
                 key.check(.senderIsBlocked(true), forConvo: convo, asSender: true)
                 key.notify {
                     key.finishWorkGroup()
-                   expectation.fulfill()
+                    expectation.fulfill()
                 }
             }
         }
@@ -191,7 +191,7 @@ class DBConvoTests: DBTest {
                 key.check(.receiverNickname(testNickname), forConvo: convo, asSender: true)
                 key.notify {
                     key.finishWorkGroup()
-                   expectation.fulfill()
+                    expectation.fulfill()
                 }
             }
         }
@@ -207,7 +207,7 @@ class DBConvoTests: DBTest {
 
                 DBConvo.userIsPresent(user: Shared.shared.uid, inConvoWithKey: convo.key) { (isPresent) in
                     XCTAssert(isPresent)
-                   expectation.fulfill()
+                    expectation.fulfill()
                 }
             }
         }

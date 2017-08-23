@@ -121,7 +121,7 @@ extension AsyncWorkGroupKey {
             }
             self.finishWork()
         }
-        
+
         startWork()
         DB.get(Path.Convos, proxyKey, convo.key, property.properties.name) { (data) in
             switch property.properties.value {
