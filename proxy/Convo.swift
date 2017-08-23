@@ -109,6 +109,10 @@ extension Convo: Equatable {
     }
 }
 
+enum IncrementableConvoProperty: String {
+    case unread
+}
+
 enum SettableConvoProperty {
     case icon(String)
     case key(String)
@@ -129,30 +133,26 @@ enum SettableConvoProperty {
     case timestamp(Double)
     case unread(Int)
 
-    var properties: (name: String, newValue: Any) {
+    var properties: (name: String, value: Any) {
         switch self {
-        case .icon(let newValue): return ("icon", newValue)
-        case .key(let newValue): return ("key", newValue)
-        case .message(let newValue): return ("message", newValue)
-        case .receiverDeletedProxy(let newValue): return ("receiverDeletedProxy", newValue)
-        case .receiverId(let newValue): return ("receiverId", newValue)
-        case .receiverIsBlocked(let newValue): return ("receiverIsBlocked", newValue)
-        case .receiverLeftConvo(let newValue): return ("receiverLeftConvo", newValue)
-        case .receiverNickname(let newValue): return ("receiverNickname", newValue)
-        case .receiverProxyKey(let newValue): return ("receiverProxyKey", newValue)
-        case .receiverProxyName(let newValue): return ("receiverProxyName", newValue)
-        case .senderId(let newValue): return ("senderId", newValue)
-        case .senderIsBlocked(let newValue): return ("senderIsBlocked", newValue)
-        case .senderLeftConvo(let newValue): return ("senderLeftConvo", newValue)
-        case .senderNickname(let newValue): return ("senderNickname", newValue)
-        case .senderProxyKey(let newValue): return ("senderProxyKey", newValue)
-        case .senderProxyName(let newValue): return ("senderProxyName", newValue)
-        case .timestamp(let newValue): return ("timestamp", newValue)
-        case .unread(let newValue): return ("unread", newValue)
+        case .icon(let value): return ("icon", value)
+        case .key(let value): return ("key", value)
+        case .message(let value): return ("message", value)
+        case .receiverDeletedProxy(let value): return ("receiverDeletedProxy", value)
+        case .receiverId(let value): return ("receiverId", value)
+        case .receiverIsBlocked(let value): return ("receiverIsBlocked", value)
+        case .receiverLeftConvo(let value): return ("receiverLeftConvo", value)
+        case .receiverNickname(let value): return ("receiverNickname", value)
+        case .receiverProxyKey(let value): return ("receiverProxyKey", value)
+        case .receiverProxyName(let value): return ("receiverProxyName", value)
+        case .senderId(let value): return ("senderId", value)
+        case .senderIsBlocked(let value): return ("senderIsBlocked", value)
+        case .senderLeftConvo(let value): return ("senderLeftConvo", value)
+        case .senderNickname(let value): return ("senderNickname", value)
+        case .senderProxyKey(let value): return ("senderProxyKey", value)
+        case .senderProxyName(let value): return ("senderProxyName", value)
+        case .timestamp(let value): return ("timestamp", value)
+        case .unread(let value): return ("unread", value)
         }
     }
-}
-
-enum IncrementableConvoProperty: String {
-    case unread
 }

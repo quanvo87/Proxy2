@@ -15,21 +15,18 @@ class DBProxyTests: DBTest {
 
         DBTest.makeConvo { (convo, proxy, _) in
             var proxy = proxy
-            proxy.unread = 1
+            proxy.unread = 2
 
             DBProxy.deleteProxy(proxy) { (success) in
                 XCTAssert(success)
-
                 let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-                key.checkConvosDeleted(forProxy: proxy)
-                key.checkProxyCount(equals: 0, forOwnerOfProxy: proxy)
-                key.checkProxyDeleted(proxy)
-                key.checkProxyKeyDeleted(forProxy: proxy)
-                key.checkProxyOwnerDeleted(forProxy: proxy)
-                key.checkReceiverDeletedProxy(forProxyConvo: convo)
-                key.checkReceiverDeletedProxy(forUserConvo: convo)
-                key.checkUnread(equals: -1, forUser: proxy.ownerId)
-                key.checkUserConvoDeleted(convo)
+                key.check(.receiverDeletedProxy(true), forConvo: convo, asSender: false)
+                key.check(.proxyCount, equals: 0, forUser: proxy.ownerId)
+                key.check(.unread, equals: -proxy.unread, forUser: proxy.ownerId)
+                key.checkConvoDeleted(convo, asSender: true)
+                key.checkDeleted(at: Path.Proxies, rest: proxy.ownerId, proxy.key)
+                key.checkDeleted(at: Path.ProxyKeys, rest: proxy.key)
+                key.checkDeleted(at: Path.ProxyOwners, rest: proxy.key)
                 key.notify {
                     key.finishWorkGroup()
                     self.x.fulfill()
@@ -116,7 +113,7 @@ class DBProxyTests: DBTest {
             XCTAssertFalse(Shared.shared.isCreatingProxy)
 
             let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-            key.checkProxyCount(equals: 1, forOwnerOfProxy: proxy)
+            key.check(.proxyCount, equals: 1, forUser: proxy.ownerId)
             key.checkProxyCreated(proxy)
             key.checkProxyKeyCreated(forProxy: proxy)
             key.checkProxyOwnerCreated(forProxy: proxy)
@@ -139,7 +136,8 @@ class DBProxyTests: DBTest {
                 case .failure(let error):
                     XCTAssertEqual(error, ProxyError(.proxyLimitReached))
                     self.x.fulfill()
-                case .success: XCTFail()
+                case .success:
+                    XCTFail()
                 }
             }
         }
@@ -158,7 +156,8 @@ class DBProxyTests: DBTest {
                     case .failure:
                         XCTAssertFalse(Shared.shared.isCreatingProxy)
                         self.x.fulfill()
-                    case .success: XCTFail()
+                    case .success:
+                        XCTFail()
                     }
                 }
             }
@@ -170,15 +169,14 @@ class DBProxyTests: DBTest {
         defer { waitForExpectations(timeout: 10) }
 
         DBTest.makeConvo { (convo, proxy, _) in
-            let icon = "new icon"
+            let newIcon = "new icon"
 
-            DBProxy.setIcon(to: icon, forProxy: proxy) { (success) in
+            DBProxy.setIcon(to: newIcon, forProxy: proxy) { (success) in
                 XCTAssert(success)
 
                 let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-                key.checkIcon(equals: icon, forProxy: proxy)
-                key.checkIcon(equals: icon, forProxyConvo: convo)
-                key.checkIcon(equals: icon, forUserConvo: convo)
+                key.check(.icon(newIcon), forConvo: convo, asSender: false)
+                key.check(.icon(newIcon), forProxy: proxy)
                 key.notify {
                     key.finishWorkGroup()
                     self.x.fulfill()
@@ -191,16 +189,15 @@ class DBProxyTests: DBTest {
         x = expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        DBTest.makeConvo { (convo, proxy, _) in
-            let nickname = "nickname"
+        DBTest.makeConvo { (convo, sender, _) in
+            let newNickname = "new nickname"
 
-            DBProxy.setNickname(to: nickname, forProxy: proxy) { (success) in
+            DBProxy.setNickname(to: newNickname, forProxy: sender) { (success) in
                 XCTAssert(success)
 
                 let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-                key.checkNickname(equals: nickname, forProxy: proxy)
-                key.checkNickname(equals: nickname, forProxyConvo: convo)
-                key.checkNickname(equals: nickname, forUserConvo: convo)
+                key.check(.senderNickname(newNickname), forConvo: convo, asSender: true)
+                key.check(.nickname(newNickname), forProxy: sender)
                 key.notify {
                     key.finishWorkGroup()
                     self.x.fulfill()
@@ -211,83 +208,11 @@ class DBProxyTests: DBTest {
 }
 
 extension AsyncWorkGroupKey {
-    func checkConvosDeleted(forProxy proxy: Proxy) {
-        startWork()
-        DB.get(Path.Convos, proxy.key) { (data) in
-            XCTAssertEqual(data?.value as? FirebaseDatabase.NSNull, FirebaseDatabase.NSNull())
-            self.finishWork(withResult: true)
-        }
-    }
-
-    func checkIcon(equals icon: String, forProxy proxy: Proxy) {
-        startWork()
-        DB.get(Path.Proxies, proxy.ownerId, proxy.key, Path.Icon) { (data) in
-            XCTAssertEqual(data?.value as? String, icon)
-            self.finishWork(withResult: true)
-        }
-    }
-
-    func checkIcon(equals icon: String, forProxyConvo convo: Convo) {
-        startWork()
-        DB.get(Path.Convos, convo.receiverProxyKey, convo.key, Path.Icon) { (data) in
-            XCTAssertEqual(data?.value as? String, icon)
-            self.finishWork(withResult: true)
-        }
-    }
-
-    func checkIcon(equals icon: String, forUserConvo convo: Convo) {
-        startWork()
-        DB.get(Path.Convos, convo.receiverId, convo.key, Path.Icon) { (data) in
-            XCTAssertEqual(data?.value as? String, icon)
-            self.finishWork(withResult: true)
-        }
-    }
-
-    func checkNickname(equals nickname: String, forProxy proxy: Proxy) {
-        startWork()
-        DB.get(Path.Proxies, proxy.ownerId, proxy.key, Path.Nickname) { (data) in
-            XCTAssertEqual(data?.value as? String, nickname)
-            self.finishWork(withResult: true)
-        }
-    }
-
-    func checkNickname(equals nickname: String, forProxyConvo convo: Convo) {
-        startWork()
-        DB.get(Path.Convos, convo.senderProxyKey, convo.key, Path.SenderNickname) { (data) in
-            XCTAssertEqual(data?.value as? String, nickname)
-            self.finishWork(withResult: true)
-        }
-    }
-
-    func checkNickname(equals nickname: String, forUserConvo convo: Convo) {
-        startWork()
-        DB.get(Path.Convos, convo.senderId, convo.key, Path.SenderNickname) { (data) in
-            XCTAssertEqual(data?.value as? String, nickname)
-            self.finishWork(withResult: true)
-        }
-    }
-
-    func checkProxyCount(equals proxyCount: Int, forOwnerOfProxy proxy: Proxy) {
-        startWork()
-        DB.get(Path.UserInfo, proxy.ownerId, Path.ProxyCount) { (data) in
-            XCTAssertEqual(data?.value as? Int, proxyCount)
-            self.finishWork(withResult: true)
-        }
-    }
-
     func checkProxyCreated(_ proxy: Proxy) {
         startWork()
         DB.get(Path.Proxies, Shared.shared.uid, proxy.key) { (data) in
             XCTAssertEqual(Proxy(data?.value as AnyObject), proxy)
-            self.finishWork(withResult: true)
-        }
-    }
-
-    func checkProxyDeleted(_ proxy: Proxy) {
-        startWork()
-        DB.get(Path.Proxies, proxy.ownerId, proxy.key) { (data) in
-            XCTAssertEqual(data?.value as? FirebaseDatabase.NSNull, FirebaseDatabase.NSNull())
-            self.finishWork(withResult: true)
+            self.finishWork()
         }
     }
 
@@ -295,15 +220,7 @@ extension AsyncWorkGroupKey {
         startWork()
         DB.get(Path.ProxyKeys, proxy.key) { (data) in
             XCTAssertEqual(data?.value as? [String: String] ?? [:], [Path.Key: proxy.key])
-            self.finishWork(withResult: true)
-        }
-    }
-
-    func checkProxyKeyDeleted(forProxy proxy: Proxy) {
-        startWork()
-        DB.get(Path.ProxyKeys, proxy.key) { (data) in
-            XCTAssertEqual(data?.value as? FirebaseDatabase.NSNull, FirebaseDatabase.NSNull())
-            self.finishWork(withResult: true)
+            self.finishWork()
         }
     }
 
@@ -311,31 +228,7 @@ extension AsyncWorkGroupKey {
         startWork()
         DB.get(Path.ProxyOwners, proxy.key) { (data) in
             XCTAssertEqual(ProxyOwner(data?.value as AnyObject), ProxyOwner(key: proxy.key, ownerId: Shared.shared.uid))
-            self.finishWork(withResult: true)
-        }
-    }
-
-    func checkProxyOwnerDeleted(forProxy proxy: Proxy) {
-        startWork()
-        DB.get(Path.ProxyOwners, proxy.key) { (data) in
-            XCTAssertEqual(data?.value as? FirebaseDatabase.NSNull, FirebaseDatabase.NSNull())
-            self.finishWork(withResult: true)
-        }
-    }
-
-    func checkReceiverDeletedProxy(forProxyConvo convo: Convo) {
-        startWork()
-        DB.get(Path.Convos, convo.receiverProxyKey, convo.key, Path.ReceiverDeletedProxy) { (data) in
-            XCTAssert(data?.value as? Bool ?? false)
-            self.finishWork(withResult: true)
-        }
-    }
-
-    func checkReceiverDeletedProxy(forUserConvo convo: Convo) {
-        startWork()
-        DB.get(Path.Convos, convo.receiverId, convo.key, Path.ReceiverDeletedProxy) { (data) in
-            XCTAssert(data?.value as? Bool ?? false)
-            self.finishWork(withResult: true)
+            self.finishWork()
         }
     }
 }

@@ -85,8 +85,8 @@ extension AsyncWorkGroupKey {
 
     func set(_ property: SettableConvoProperty, forConvo convo: Convo, asSender: Bool) {
         let (ownerId, proxyKey) = AsyncWorkGroupKey.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
-        set(property.properties.newValue, at: Path.Convos, ownerId, convo.key, property.properties.name)
-        set(property.properties.newValue, at: Path.Convos, proxyKey, convo.key, property.properties.name)
+        set(property.properties.value, at: Path.Convos, ownerId, convo.key, property.properties.name)
+        set(property.properties.value, at: Path.Convos, proxyKey, convo.key, property.properties.name)
     }
 
     func set(_ convo: Convo, asSender: Bool) {
@@ -120,7 +120,7 @@ extension AsyncWorkGroupKey {
     }
 
     func set(_ property: SettableProxyProperty, proxyOwner: String, proxyKey: String) {
-        set(property.properties.newValue, at: Path.Proxies, proxyOwner, proxyKey, property.properties.name)
+        set(property.properties.value, at: Path.Proxies, proxyOwner, proxyKey, property.properties.name)
     }
 }
 

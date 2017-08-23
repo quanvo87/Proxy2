@@ -95,7 +95,7 @@ struct DBConvo {
         return receiver
     }
 
-    static func setNickname(to nickname: String, forReceiverInConvo convo: Convo, completion: @escaping (Success) -> Void) {
+    static func setReceiverNickname(to nickname: String, forConvo convo: Convo, completion: @escaping (Success) -> Void) {
         let key = AsyncWorkGroupKey()
         key.set(.receiverNickname(nickname), forConvo: convo, asSender: true)
         key.notify {

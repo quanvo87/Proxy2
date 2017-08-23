@@ -54,13 +54,53 @@ struct DB {
 }
 
 extension DB {
+    static func delete(_ first: String, _ rest: String..., completion: @escaping (Success) -> Void) {
+        delete(first, rest, completion: completion)
+    }
+
+    static func delete(_ first: String, _ rest: [String], completion: @escaping (Success) -> Void) {
+        guard let ref = ref(first, rest) else {
+            completion(false)
+            return
+        }
+        ref.removeValue { (error, _) in
+            completion(error == nil)
+        }
+    }
+
     static func get(_ first: String, _ rest: String..., completion: @escaping (DataSnapshot?) -> Void) {
+        get(first, rest, completion: completion)
+    }
+
+    static func get(_ first: String, _ rest: [String], completion: @escaping (DataSnapshot?) -> Void) {
         guard let ref = ref(first, rest) else {
             completion(nil)
             return
         }
         ref.observeSingleEvent(of: .value) { (data) in
             completion(data)
+        }
+    }
+
+    static func increment(by amount: Int, at first: String, _ rest: String..., completion: @escaping ((Success) -> Void)) {
+        increment(by: amount, at: first, rest, completion: completion)
+    }
+
+    static func increment(by amount: Int, at first: String, _ rest: [String], completion: @escaping ((Success) -> Void)) {
+        guard let ref = ref(first, rest) else {
+            completion(false)
+            return
+        }
+        ref.runTransactionBlock( { (currentData) -> TransactionResult in
+            if let value = currentData.value {
+                var newValue = value as? Int ?? 0
+                newValue += amount
+                currentData.value = newValue
+                return TransactionResult.success(withValue: currentData)
+            }
+            return TransactionResult.success(withValue: currentData)
+        }) { (error, _, _) in
+            completion(error == nil)
         }
     }
 
@@ -92,42 +132,6 @@ extension DB {
         }
 
         ref.updateChildValues(validTransactions) { (error, _) in
-            completion(error == nil)
-        }
-    }
-
-    static func delete(_ first: String, _ rest: String..., completion: @escaping (Success) -> Void) {
-        delete(first, rest, completion: completion)
-    }
-
-    static func delete(_ first: String, _ rest: [String], completion: @escaping (Success) -> Void) {
-        guard let ref = ref(first, rest) else {
-            completion(false)
-            return
-        }
-        ref.removeValue { (error, _) in
-            completion(error == nil)
-        }
-    }
-
-    static func increment(by amount: Int, at first: String, _ rest: String..., completion: @escaping ((Success) -> Void)) {
-        increment(by: amount, at: first, rest, completion: completion)
-    }
-
-    static func increment(by amount: Int, at first: String, _ rest: [String], completion: @escaping ((Success) -> Void)) {
-        guard let ref = ref(first, rest) else {
-            completion(false)
-            return
-        }
-        ref.runTransactionBlock( { (currentData) -> TransactionResult in
-            if let value = currentData.value {
-                var newValue = value as? Int ?? 0
-                newValue += amount
-                currentData.value = newValue
-                return TransactionResult.success(withValue: currentData)
-            }
-            return TransactionResult.success(withValue: currentData)
-        }) { (error, _, _) in
             completion(error == nil)
         }
     }

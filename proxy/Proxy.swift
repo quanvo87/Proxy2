@@ -84,6 +84,11 @@ extension Proxy: Equatable {
     }
 }
 
+enum IncrementableProxyProperty: String {
+    case convos
+    case unread
+}
+
 enum SettableProxyProperty {
     case convos(Int)
     case dateCreated(Double)
@@ -96,25 +101,20 @@ enum SettableProxyProperty {
     case timestamp(Double)
     case unread(Int)
 
-    var properties: (name: String, newValue: Any) {
+    var properties: (name: String, value: Any) {
         switch self {
-        case .convos(let newValue): return ("convos", newValue)
-        case .dateCreated(let newValue): return ("dateCreated", newValue)
-        case .icon(let newValue): return ("icon", newValue)
-        case .key(let newValue): return ("key", newValue)
-        case .message(let newValue): return ("message", newValue)
-        case .name(let newValue): return ("name", newValue)
-        case .nickname(let newValue): return ("nickname", newValue)
-        case .ownerId(let newValue): return ("ownerId", newValue)
-        case .timestamp(let newValue): return ("timestamp", newValue)
-        case .unread(let newValue): return ("unread", newValue)
+        case .convos(let value): return ("convos", value)
+        case .dateCreated(let value): return ("dateCreated", value)
+        case .icon(let value): return ("icon", value)
+        case .key(let value): return ("key", value)
+        case .message(let value): return ("message", value)
+        case .name(let value): return ("name", value)
+        case .nickname(let value): return ("nickname", value)
+        case .ownerId(let value): return ("ownerId", value)
+        case .timestamp(let value): return ("timestamp", value)
+        case .unread(let value): return ("unread", value)
         }
     }
-}
-
-enum IncrementableProxyProperty: String {
-    case convos
-    case unread
 }
 
 struct ProxyOwner: Equatable {
