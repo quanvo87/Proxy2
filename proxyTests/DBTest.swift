@@ -87,6 +87,22 @@ extension DBTest {
 }
 
 extension AsyncWorkGroupKey {
+    static func checkEquals(_ data: DataSnapshot?, _ any: Any, function: String, line: Int) {
+        let errorMessage = AsyncWorkGroupKey.makeErrorMessage(function: function, line: line)
+        switch any {
+        case let value as Bool:
+            XCTAssertEqual(data?.value as? Bool, value, errorMessage)
+        case let value as Double:
+            XCTAssertEqual(data?.value as? Double, value, errorMessage)
+        case let value as Int:
+            XCTAssertEqual(data?.value as? Int, value, errorMessage)
+        case let value as String:
+            XCTAssertEqual(data?.value as? String, value, errorMessage)
+        default:
+            XCTFail(errorMessage)
+        }
+    }
+
     static func makeErrorMessage(function: String, line: Int) -> String {
         return "Function: \(function), Line: \(line)."
     }
@@ -103,39 +119,15 @@ extension AsyncWorkGroupKey {
 extension AsyncWorkGroupKey {
     func check(_ property: SettableConvoProperty, forConvo convo: Convo, asSender: Bool, function: String = #function, line: Int = #line) {
         let (ownerId, proxyKey) = AsyncWorkGroupKey.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
-        let errorMessage = AsyncWorkGroupKey.makeErrorMessage(function: function, line: line)
-        
         startWork()
         DB.get(Path.Convos, ownerId, convo.key, property.properties.name) { (data) in
-            switch property.properties.value {
-            case let value as Bool:
-                XCTAssertEqual(data?.value as? Bool, value, errorMessage)
-            case let value as Double:
-                XCTAssertEqual(data?.value as? Double, value, errorMessage)
-            case let value as Int:
-                XCTAssertEqual(data?.value as? Int, value, errorMessage)
-            case let value as String:
-                XCTAssertEqual(data?.value as? String, value, errorMessage)
-            default:
-                XCTFail(errorMessage)
-            }
+            AsyncWorkGroupKey.checkEquals(data, property.properties.value, function: function, line: line)
             self.finishWork()
         }
 
         startWork()
         DB.get(Path.Convos, proxyKey, convo.key, property.properties.name) { (data) in
-            switch property.properties.value {
-            case let value as Bool:
-                XCTAssertEqual(data?.value as? Bool, value, errorMessage)
-            case let value as Double:
-                XCTAssertEqual(data?.value as? Double, value, errorMessage)
-            case let value as Int:
-                XCTAssertEqual(data?.value as? Int, value, errorMessage)
-            case let value as String:
-                XCTAssertEqual(data?.value as? String, value, errorMessage)
-            default:
-                XCTFail(errorMessage)
-            }
+            AsyncWorkGroupKey.checkEquals(data, property.properties.value, function: function, line: line)
             self.finishWork()
         }
     }
@@ -152,22 +144,9 @@ extension AsyncWorkGroupKey {
     }
     
     func check(_ property: SettableProxyProperty, ownerId: String, proxyKey: String, function: String = #function, line: Int = #line) {
-        let errorMessage = AsyncWorkGroupKey.makeErrorMessage(function: function, line: line)
-        
         startWork()
         DB.get(Path.Proxies, ownerId, proxyKey, property.properties.name) { (data) in
-            switch property.properties.value {
-            case let value as Bool:
-                XCTAssertEqual(data?.value as? Bool, value, errorMessage)
-            case let value as Double:
-                XCTAssertEqual(data?.value as? Double, value, errorMessage)
-            case let value as Int:
-                XCTAssertEqual(data?.value as? Int, value, errorMessage)
-            case let value as String:
-                XCTAssertEqual(data?.value as? String, value, errorMessage)
-            default:
-                XCTFail(errorMessage)
-            }
+            AsyncWorkGroupKey.checkEquals(data, property.properties.value, function: function, line: line)
             self.finishWork()
         }
     }
@@ -177,7 +156,7 @@ extension AsyncWorkGroupKey {
     func check(_ property: IncrementableUserProperty, equals value: Int, forUser uid: String, function: String = #function, line: Int = #line) {
         startWork()
         DB.get(Path.UserInfo, uid, property.rawValue) { (data) in
-            XCTAssertEqual(data?.value as? Int, value, AsyncWorkGroupKey.makeErrorMessage(function: function, line: line))
+            AsyncWorkGroupKey.checkEquals(data, value, function: function, line: line)
             self.finishWork()
         }
     }
