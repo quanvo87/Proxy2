@@ -8,8 +8,8 @@ struct DBMessage {
             if let senderConvo = senderConvo {
                 sendMessage(text: text, mediaType: "", senderConvo: senderConvo, completion: completion)
             } else {
-                DBConvo.makeConvo(senderProxy: senderProxy, receiverProxy: receiverProxy) { (senderConvo) in
-                    guard let senderConvo = senderConvo else {
+                DBConvo.makeConvo(senderProxy: senderProxy, receiverProxy: receiverProxy) { (convo) in
+                    guard let senderConvo = convo else {
                         completion(nil)
                         return
                     }
