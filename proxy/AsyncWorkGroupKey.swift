@@ -79,8 +79,12 @@ extension AsyncWorkGroupKey {
 
     func increment(by amount: Int, forProperty property: IncrementableConvoProperty, forConvo convo: Convo, asSender: Bool) {
         let (ownerId, proxyKey) = AsyncWorkGroupKey.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
-        increment(by: amount, at: Child.Convos, ownerId, convo.key, property.rawValue)
-        increment(by: amount, at: Child.Convos, proxyKey, convo.key, property.rawValue)
+        increment(by: amount, forProperty: property, ownerId: ownerId, proxyKey: proxyKey, convoKey: convo.key)
+    }
+
+    func increment(by amount: Int, forProperty property: IncrementableConvoProperty, ownerId: String, proxyKey: String, convoKey: String) {
+        increment(by: amount, at: Child.Convos, ownerId, convoKey, property.rawValue)
+        increment(by: amount, at: Child.Convos, proxyKey, convoKey, property.rawValue)
     }
 
     func set(_ property: SettableConvoProperty, forConvo convo: Convo, asSender: Bool) {
@@ -93,6 +97,12 @@ extension AsyncWorkGroupKey {
         let (ownerId, proxyKey) = AsyncWorkGroupKey.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
         set(convo.toDictionary(), at: Child.Convos, ownerId, convo.key)
         set(convo.toDictionary(), at: Child.Convos, proxyKey, convo.key)
+    }
+}
+
+extension AsyncWorkGroupKey {
+    func set(_ property: SettableMessageProperty, forMessage message: Message) {
+        set(property.properties.value, at: Child.Messages, message.parentConvo, message.key, property.properties.name)
     }
 }
 

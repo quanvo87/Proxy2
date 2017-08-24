@@ -206,7 +206,7 @@ class ConvoViewController: JSQMessagesViewController {
                 // Send message with placeholder.
                 let media = JSQPhotoMediaItem()
 
-                let _message = Message(dateCreated: message.date.timeIntervalSince1970, dateRead: message.dateRead, key: message.key, mediaData: media, mediaType: message.mediaType, mediaURL: message.mediaURL, parentConvo: message.parentConvo, read: message.read, senderId: message.senderId, text: message.text)
+                let _message = Message(dateCreated: message.date.timeIntervalSince1970, dateRead: message.dateRead, key: message.key, mediaData: media, mediaType: message.mediaType, mediaURL: message.mediaURL, parentConvo: message.parentConvo, read: message.read, senderId: message.senderId, senderProxyKey: message.senderProxyKey, text: message.text)
                 self.messages.append(_message)
                 self.finishReceivingMessage()
                 
@@ -237,7 +237,7 @@ class ConvoViewController: JSQMessagesViewController {
                 
                 // Create message with placeholder.
                 let media = JSQPhotoMediaItem()
-                let _message = Message(dateCreated: message.date.timeIntervalSince1970, dateRead: message.dateRead, key: message.key, mediaData: media, mediaType: message.mediaType, mediaURL: message.mediaURL, parentConvo: message.parentConvo, read: message.read, senderId: message.senderId, text: message.text)
+                let _message = Message(dateCreated: message.date.timeIntervalSince1970, dateRead: message.dateRead, key: message.key, mediaData: media, mediaType: message.mediaType, mediaURL: message.mediaURL, parentConvo: message.parentConvo, read: message.read, senderId: message.senderId, senderProxyKey: message.senderProxyKey, text: message.text)
                 self.messages.append(_message)
                 self.finishReceivingMessage()
                 
@@ -256,7 +256,7 @@ class ConvoViewController: JSQMessagesViewController {
                 
                 // Create message with placeholder.
                 let media = JSQVideoMediaItem()
-                let _message = Message(dateCreated: message.date.timeIntervalSince1970, dateRead: message.dateRead, key: message.key, mediaData: media, mediaType: "video", mediaURL: message.mediaURL, parentConvo: message.parentConvo, read: message.read, senderId: message.senderId, text: message.text)
+                let _message = Message(dateCreated: message.date.timeIntervalSince1970, dateRead: message.dateRead, key: message.key, mediaData: media, mediaType: "video", mediaURL: message.mediaURL, parentConvo: message.parentConvo, read: message.read, senderId: message.senderId, senderProxyKey: message.senderProxyKey, text: message.text)
                 self.messages.append(_message)
                 self.finishReceivingMessage()
                 
@@ -289,7 +289,7 @@ class ConvoViewController: JSQMessagesViewController {
                 media?.appliesMediaViewMaskAsOutgoing = message.senderId == self.senderId
                 
                 // Attach JSQVideoMediaItem.
-                let _message = Message(dateCreated: message.date.timeIntervalSince1970, dateRead: message.dateRead, key: message.key, mediaData: media!, mediaType: message.mediaType, mediaURL: message.mediaURL, parentConvo: message.parentConvo, read: message.read, senderId: message.senderId, text: message.text)
+                let _message = Message(dateCreated: message.date.timeIntervalSince1970, dateRead: message.dateRead, key: message.key, mediaData: media!, mediaType: message.mediaType, mediaURL: message.mediaURL, parentConvo: message.parentConvo, read: message.read, senderId: message.senderId, senderProxyKey: message.senderProxyKey, text: message.text)
                 
                 // Send message.
                 self.messages.append(_message)

@@ -7,23 +7,26 @@ class Message: JSQMessage {
     var mediaURL = ""
     var parentConvo = ""
     var read = false
+    var senderProxyKey = ""
 
-    init(dateCreated: Double, dateRead: Double, key: String, mediaType: String, parentConvo: String, read: Bool, senderId: String, text: String) {
+    init(dateCreated: Double, dateRead: Double, key: String, mediaType: String, parentConvo: String, read: Bool, senderId: String, senderProxyKey: String, text: String) {
         self.dateRead = dateRead
         self.key = key
         self.mediaType = mediaType
         self.parentConvo = parentConvo
         self.read = read
+        self.senderProxyKey = senderProxyKey
         super.init(senderId: senderId, senderDisplayName: "", date: Date(timeIntervalSince1970: dateCreated), text: text)
     }
     
-    init(dateCreated: Double, dateRead: Double, key: String, mediaData: JSQMessageMediaData, mediaType: String, mediaURL: String, parentConvo: String, read: Bool, senderId: String, text: String) {
+    init(dateCreated: Double, dateRead: Double, key: String, mediaData: JSQMessageMediaData, mediaType: String, mediaURL: String, parentConvo: String, read: Bool, senderId: String, senderProxyKey: String, text: String) {
         self.dateRead = dateRead
         self.key = key
         self.mediaType = mediaType
         self.mediaURL = mediaURL
         self.parentConvo = parentConvo
         self.read = read
+        self.senderProxyKey = senderProxyKey
         super.init(senderId: senderId, senderDisplayName: "", date: Date(timeIntervalSince1970: dateCreated), media: mediaData)
     }
     
@@ -38,6 +41,7 @@ class Message: JSQMessage {
             let read = dictionary["read"] as? Bool,
             let senderDisplayName = dictionary["senderDisplayName"] as? String,
             let senderId = dictionary["senderId"] as? String,
+            let senderProxyKey = dictionary["senderProxyKey"] as? String,
             let text = dictionary["text"] as? String else {
                 return nil
         }
@@ -47,6 +51,7 @@ class Message: JSQMessage {
         self.mediaURL = mediaURL
         self.parentConvo = parentConvo
         self.read = read
+        self.senderProxyKey = senderProxyKey
         super.init(senderId: senderId, senderDisplayName: senderDisplayName, date: Date(timeIntervalSince1970: dateCreated), text: text)
     }
     
@@ -60,7 +65,8 @@ class Message: JSQMessage {
             let parentConvo = dictionary["parentConvo"] as? String,
             let read = dictionary["read"] as? Bool,
             let senderDisplayName = dictionary["senderDisplayName"] as? String,
-            let senderId = dictionary["senderId"] as? String else {
+            let senderId = dictionary["senderId"] as? String,
+            let senderProxyKey = dictionary["senderProxyKey"] as? String else {
                 return nil
         }
         self.dateRead = dateRead
@@ -69,6 +75,7 @@ class Message: JSQMessage {
         self.mediaURL = mediaURL
         self.parentConvo = parentConvo
         self.read = read
+        self.senderProxyKey = senderProxyKey
         super.init(senderId: senderId, senderDisplayName: senderDisplayName, date: Date(timeIntervalSince1970: dateCreated), media: media)
     }
 
@@ -87,7 +94,24 @@ class Message: JSQMessage {
             "read": read,
             "senderDisplayName": senderDisplayName,
             "senderId": senderId,
+            "senderProxyKey": senderProxyKey,
             "text": text
         ]
+    }
+}
+
+enum SettableMessageProperty {
+    case dateRead(Double)
+    case mediaType(String)
+    case mediaURL(String)
+    case read(Bool)
+
+    var properties: (name: String, value: Any) {
+        switch self {
+        case .dateRead(let value): return ("dateRead", value)
+        case .mediaType(let value): return ("mediaType", value)
+        case .mediaURL(let value): return ("mediaURL", value)
+        case .read(let value): return ("read", value)
+        }
     }
 }
