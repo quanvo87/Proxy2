@@ -1,6 +1,6 @@
 struct Convo {
     var key = ""
-    var message = ""
+    var lastMessage = ""
     var receiverDeletedProxy = false
     var receiverIcon = ""
     var receiverId = ""
@@ -23,7 +23,7 @@ struct Convo {
     init?(_ dictionary: AnyObject) {
         guard
             let key = dictionary["key"] as? String,
-            let message = dictionary["message"] as? String,
+            let lastMessage = dictionary["lastMessage"] as? String,
             let receiverDeletedProxy = dictionary["receiverDeletedProxy"] as? Bool,
             let receiverIcon = dictionary["receiverIcon"] as? String,
             let receiverId = dictionary["receiverId"] as? String,
@@ -43,7 +43,7 @@ struct Convo {
                 return nil
         }
         self.key = key
-        self.message = message
+        self.lastMessage = lastMessage
         self.receiverDeletedProxy = receiverDeletedProxy
         self.receiverIcon = receiverIcon
         self.receiverId = receiverId
@@ -65,7 +65,7 @@ struct Convo {
     func toDictionary() -> Any {
         return [
             "key": key,
-            "message": message,
+            "lastMessage": lastMessage,
             "receiverDeletedProxy": receiverDeletedProxy,
             "receiverIcon": receiverIcon,
             "receiverId": receiverId,
@@ -90,7 +90,7 @@ extension Convo: Equatable {
     static func ==(_ lhs: Convo, _ rhs: Convo) -> Bool {
         return
             lhs.key == rhs.key &&
-            lhs.message == rhs.message &&
+            lhs.lastMessage == rhs.lastMessage &&
             lhs.receiverDeletedProxy == rhs.receiverDeletedProxy &&
             lhs.receiverIcon == rhs.receiverIcon &&
             lhs.receiverId == rhs.receiverId &&
@@ -115,7 +115,7 @@ enum IncrementableConvoProperty: String {
 
 enum SettableConvoProperty {
     case key(String)
-    case message(String)
+    case lastMessage(String)
     case receiverDeletedProxy(Bool)
     case receiverIcon(String)
     case receiverId(String)
@@ -136,7 +136,7 @@ enum SettableConvoProperty {
     var properties: (name: String, value: Any) {
         switch self {
         case .key(let value): return ("key", value)
-        case .message(let value): return ("message", value)
+        case .lastMessage(let value): return ("lastMessage", value)
         case .receiverDeletedProxy(let value): return ("receiverDeletedProxy", value)
         case .receiverIcon(let value): return ("receiverIcon", value)
         case .receiverId(let value): return ("receiverId", value)

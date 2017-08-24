@@ -35,21 +35,21 @@ class DBMessageTests: DBTest {
                     let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
                     
                     // Check sender updates
-                    key.check(.message(DBMessageTests.senderText), forConvo: convo, asSender: true)
+                    key.check(.lastMessage(DBMessageTests.senderText), forConvo: convo, asSender: true)
                     key.check(.timestamp(convo.timestamp), forConvo: convo, asSender: true)
                     
-                    key.check(.message(DBMessageTests.senderText), forProxy: sender)
+                    key.check(.lastMessage(DBMessageTests.senderText), forProxy: sender)
                     key.check(.timestamp(convo.timestamp), forProxy: sender)
                     
                     key.check(.messagesSent, equals: 1, forUser: sender.ownerId)
                     
                     // Check receiver updates
-                    key.check(.message(DBMessageTests.text), forConvo: convo, asSender: false)
+                    key.check(.lastMessage(DBMessageTests.text), forConvo: convo, asSender: false)
                     key.check(.timestamp(convo.timestamp), forConvo: convo, asSender: false)
                     key.check(.unread(1), forConvo: convo, asSender: false)
                     
                     key.check(.timestamp(convo.timestamp), forProxy: receiver)
-                    key.check(.message(DBMessageTests.text), forProxy: receiver)
+                    key.check(.lastMessage(DBMessageTests.text), forProxy: receiver)
                     key.check(.unread(1), forProxy: receiver)
                     
                     key.check(.messagesReceived, equals: 1, forUser: convo.receiverId)

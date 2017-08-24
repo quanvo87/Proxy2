@@ -141,7 +141,7 @@ class DBConvoTests: DBTest {
         }
     }
 
-    func testMakeConvoWhileSenderIsBlocked() {
+    func testMakeConvo_WhileSenderIsBlocked() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 

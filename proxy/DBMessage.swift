@@ -32,8 +32,8 @@ struct DBMessage {
 
             // Sender updates
             key.increment(by: 1, forProperty: .messagesSent, forUser: senderConvo.senderId)
-            key.set(.message("You: \(text)"), forConvo: senderConvo, asSender: true)
-            key.set(.message("You: \(text)"), forProxyInConvo: senderConvo, asSender: true)
+            key.set(.lastMessage("You: \(text)"), forConvo: senderConvo, asSender: true)
+            key.set(.lastMessage("You: \(text)"), forProxyInConvo: senderConvo, asSender: true)
             key.set(.timestamp(currentTime), forConvo: senderConvo, asSender: true)
             key.set(.timestamp(currentTime), forProxyInConvo: senderConvo, asSender: true)
 
@@ -47,7 +47,7 @@ struct DBMessage {
             key.increment(by: 1, forProperty: .messagesReceived, forUser: senderConvo.receiverId)
 
             if !senderConvo.receiverDeletedProxy && !senderConvo.senderIsBlocked {
-                key.set(.message(text), forProxyInConvo: senderConvo, asSender: false)
+                key.set(.lastMessage(text), forProxyInConvo: senderConvo, asSender: false)
                 key.set(.timestamp(currentTime), forProxyInConvo: senderConvo, asSender: false)
 
                 if !receiverIsPresent {
@@ -57,7 +57,7 @@ struct DBMessage {
             }
 
             if !senderConvo.receiverDeletedProxy {
-                key.set(.message(text), forConvo: senderConvo, asSender: false)
+                key.set(.lastMessage(text), forConvo: senderConvo, asSender: false)
                 key.set(.timestamp(currentTime), forConvo: senderConvo, asSender: false)
 
                 if !receiverIsPresent {

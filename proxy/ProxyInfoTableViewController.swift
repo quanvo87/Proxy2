@@ -204,7 +204,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
 //                cell.iconImageView.kf.setImage(with: url, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
             }
             cell.titleLabel.attributedText = api.getConvoTitle(receiverNickname: convo.receiverNickname, receiverName: convo.receiverProxyName, senderNickname: convo.senderNickname, senderName: convo.senderProxyName)
-            cell.lastMessageLabel.text = convo.message
+            cell.lastMessageLabel.text = convo.lastMessage
             cell.timestampLabel.text = convo.timestamp.asTimeAgo
             cell.unreadLabel.text = convo.unread.asLabel
             return cell

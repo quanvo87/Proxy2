@@ -3,7 +3,7 @@ struct Proxy {
     var dateCreated = Date().timeIntervalSince1970
     var icon = ""
     var key = ""
-    var message = ""
+    var lastMessage = ""
     var name = ""
     var nickname = ""
     var ownerId = ""
@@ -32,7 +32,7 @@ struct Proxy {
             let dateCreated = dictionary["dateCreated"] as? Double,
             let icon = dictionary["icon"] as? String,
             let key = dictionary["key"] as? String,
-            let message = dictionary["message"] as? String,
+            let lastMessage = dictionary["lastMessage"] as? String,
             let name = dictionary["name"] as? String,
             let nickname = dictionary["nickname"] as? String,
             let ownerId = dictionary["ownerId"] as? String,
@@ -44,7 +44,7 @@ struct Proxy {
         self.dateCreated = dateCreated
         self.icon = icon
         self.key = key
-        self.message = message
+        self.lastMessage = lastMessage
         self.name = name
         self.nickname = nickname
         self.ownerId = ownerId
@@ -58,7 +58,7 @@ struct Proxy {
             "dateCreated": dateCreated,
             "icon": icon,
             "key": key,
-            "message": message,
+            "lastMessage": lastMessage,
             "name": name,
             "nickname": nickname,
             "ownerId": ownerId,
@@ -75,7 +75,7 @@ extension Proxy: Equatable {
             lhs.dateCreated.rounded() == rhs.dateCreated.rounded() &&
             lhs.icon == rhs.icon &&
             lhs.key == rhs.key &&
-            lhs.message == rhs.message &&
+            lhs.lastMessage == rhs.lastMessage &&
             lhs.name == rhs.name &&
             lhs.nickname == rhs.nickname &&
             lhs.ownerId == rhs.ownerId &&
@@ -94,7 +94,7 @@ enum SettableProxyProperty {
     case dateCreated(Double)
     case icon(String)
     case key(String)
-    case message(String)
+    case lastMessage(String)
     case name(String)
     case nickname(String)
     case ownerId(String)
@@ -107,7 +107,7 @@ enum SettableProxyProperty {
         case .dateCreated(let value): return ("dateCreated", value)
         case .icon(let value): return ("icon", value)
         case .key(let value): return ("key", value)
-        case .message(let value): return ("message", value)
+        case .lastMessage(let value): return ("lastMessage", value)
         case .name(let value): return ("name", value)
         case .nickname(let value): return ("nickname", value)
         case .ownerId(let value): return ("ownerId", value)
@@ -146,6 +146,6 @@ struct ProxyOwner: Equatable {
     static func ==(_ lhs: ProxyOwner, _ rhs: ProxyOwner) -> Bool {
         return
             lhs.key == rhs.key &&
-                lhs.ownerId == rhs.ownerId
+            lhs.ownerId == rhs.ownerId
     }
 }

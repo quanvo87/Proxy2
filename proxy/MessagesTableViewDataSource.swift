@@ -42,7 +42,7 @@ class MessagesTableViewDataSource: NSObject, UITableViewDataSource {
                                                                           receiverName: convo.receiverProxyName,
                                                                           senderNickname: convo.senderNickname,
                                                                           senderName: convo.senderProxyName)
-        cell.lastMessageLabel.text = convo.message
+        cell.lastMessageLabel.text = convo.lastMessage
         cell.timestampLabel.text = convo.timestamp.asTimeAgo
         cell.unreadLabel.text = convo.unread.asLabel
         
