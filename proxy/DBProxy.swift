@@ -45,7 +45,7 @@ struct DBProxy {
         key.delete(at: Path.ProxyOwners, proxy.key)
         key.deleteConvos(convos)
         key.increment(by: -1, forProperty: .proxyCount, forUser: proxy.ownerId)
-        key.increment(by: -proxy.unread, forProperty: .unread, forUser: proxy.ownerId)
+        key.increment(by: -proxy.unreadCount, forProperty: .unreadCount, forUser: proxy.ownerId)
         key.setReceiverDeletedProxy(to: true, forReceiverInConvos: convos)
         key.notify {
             completion(key.workResult)
@@ -186,7 +186,7 @@ struct DBProxy {
     static func setIcon(to icon: String, forProxy proxy: Proxy, withConvos convos: [Convo], completion: @escaping (Success) -> Void) {
         let key = AsyncWorkGroupKey()
         key.set(.icon(icon), forProxy: proxy)
-        key.setIcon(to: icon, forConvos: convos)
+        key.setReceiverIcon(to: icon, forConvos: convos)
         key.notify {
             completion(key.workResult)
             key.finishWorkGroup()
@@ -263,9 +263,9 @@ extension AsyncWorkGroupKey {
         }
     }
 
-    func setIcon(to icon: String, forConvos convos: [Convo]) {
+    func setReceiverIcon(to icon: String, forConvos convos: [Convo]) {
         for convo in convos {
-            self.set(.icon(icon), forConvo: convo, asSender: false)
+            self.set(.receiverIcon(icon), forConvo: convo, asSender: false)
         }
     }
 

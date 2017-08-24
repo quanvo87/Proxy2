@@ -1,14 +1,14 @@
 struct Proxy {
-    var convos = 0
+    var convoCount = 0
     var dateCreated = Date().timeIntervalSince1970
     var icon = ""
     var key = ""
-    var message = ""
+    var lastMessage = ""
     var name = ""
     var nickname = ""
     var ownerId = ""
     var timestamp = Date().timeIntervalSince1970
-    var unread = 0
+    var unreadCount = 0
 
     init() {}
 
@@ -28,42 +28,42 @@ struct Proxy {
 
     init?(_ dictionary: AnyObject) {
         guard
-            let convos = dictionary["convos"] as? Int,
+            let convoCount = dictionary["convoCount"] as? Int,
             let dateCreated = dictionary["dateCreated"] as? Double,
             let icon = dictionary["icon"] as? String,
             let key = dictionary["key"] as? String,
-            let message = dictionary["message"] as? String,
+            let lastMessage = dictionary["lastMessage"] as? String,
             let name = dictionary["name"] as? String,
             let nickname = dictionary["nickname"] as? String,
             let ownerId = dictionary["ownerId"] as? String,
             let timestamp = dictionary["timestamp"] as? Double,
-            let unread = dictionary["unread"] as? Int else {
+            let unreadCount = dictionary["unreadCount"] as? Int else {
                 return nil
         }
-        self.convos = convos
+        self.convoCount = convoCount
         self.dateCreated = dateCreated
         self.icon = icon
         self.key = key
-        self.message = message
+        self.lastMessage = lastMessage
         self.name = name
         self.nickname = nickname
         self.ownerId = ownerId
         self.timestamp = timestamp
-        self.unread = unread
+        self.unreadCount = unreadCount
     }
 
     func toDictionary() -> Any {
         return [
-            "convos": convos,
+            "convoCount": convoCount,
             "dateCreated": dateCreated,
             "icon": icon,
             "key": key,
-            "message": message,
+            "lastMessage": lastMessage,
             "name": name,
             "nickname": nickname,
             "ownerId": ownerId,
             "timestamp": timestamp,
-            "unread": unread
+            "unreadCount": unreadCount
         ]
     }
 }
@@ -71,48 +71,48 @@ struct Proxy {
 extension Proxy: Equatable {
     static func ==(_ lhs: Proxy, _ rhs: Proxy) -> Bool {
         return
-            lhs.convos == rhs.convos &&
+            lhs.convoCount == rhs.convoCount &&
             lhs.dateCreated.rounded() == rhs.dateCreated.rounded() &&
             lhs.icon == rhs.icon &&
             lhs.key == rhs.key &&
-            lhs.message == rhs.message &&
+            lhs.lastMessage == rhs.lastMessage &&
             lhs.name == rhs.name &&
             lhs.nickname == rhs.nickname &&
             lhs.ownerId == rhs.ownerId &&
             lhs.timestamp.rounded() == rhs.timestamp.rounded() &&
-            lhs.unread == rhs.unread
+            lhs.unreadCount == rhs.unreadCount
     }
 }
 
 enum IncrementableProxyProperty: String {
-    case convos
-    case unread
+    case convoCount
+    case unreadCount
 }
 
 enum SettableProxyProperty {
-    case convos(Int)
+    case convoCount(Int)
     case dateCreated(Double)
     case icon(String)
     case key(String)
-    case message(String)
+    case lastMessage(String)
     case name(String)
     case nickname(String)
     case ownerId(String)
     case timestamp(Double)
-    case unread(Int)
+    case unreadCount(Int)
 
     var properties: (name: String, value: Any) {
         switch self {
-        case .convos(let value): return ("convos", value)
+        case .convoCount(let value): return ("convoCount", value)
         case .dateCreated(let value): return ("dateCreated", value)
         case .icon(let value): return ("icon", value)
         case .key(let value): return ("key", value)
-        case .message(let value): return ("message", value)
+        case .lastMessage(let value): return ("lastMessage", value)
         case .name(let value): return ("name", value)
         case .nickname(let value): return ("nickname", value)
         case .ownerId(let value): return ("ownerId", value)
         case .timestamp(let value): return ("timestamp", value)
-        case .unread(let value): return ("unread", value)
+        case .unreadCount(let value): return ("unreadCount", value)
         }
     }
 }
@@ -146,6 +146,6 @@ struct ProxyOwner: Equatable {
     static func ==(_ lhs: ProxyOwner, _ rhs: ProxyOwner) -> Bool {
         return
             lhs.key == rhs.key &&
-                lhs.ownerId == rhs.ownerId
+            lhs.ownerId == rhs.ownerId
     }
 }

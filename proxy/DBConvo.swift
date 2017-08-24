@@ -4,7 +4,7 @@ struct DBConvo {
     static func deleteConvo(_ convo: Convo, completion: @escaping (Success) -> Void) {
         let key = AsyncWorkGroupKey()
         key.delete(convo, asSender: true)
-        key.increment(by: -1, forProperty: .convos, forProxyInConvo: convo, asSender: true)
+        key.increment(by: -1, forProperty: .convoCount, forProxyInConvo: convo, asSender: true)
         key.notify {
             completion(key.workResult)
             key.finishWorkGroup()
@@ -31,9 +31,9 @@ struct DBConvo {
 
     static func leaveConvo(_ convo: Convo, completion: @escaping (Success) -> Void) {
         let key = AsyncWorkGroupKey()
-        key.increment(by: -1, forProperty: .convos, forProxyInConvo: convo, asSender: true)
-        key.increment(by: -convo.unread, forProperty: .unread, forProxyInConvo: convo, asSender: true)
-        key.increment(by: -convo.unread, forProperty: .unread, forUser: convo.senderId)
+        key.increment(by: -1, forProperty: .convoCount, forProxyInConvo: convo, asSender: true)
+        key.increment(by: -convo.unreadCount, forProperty: .unreadCount, forProxyInConvo: convo, asSender: true)
+        key.increment(by: -convo.unreadCount, forProperty: .unreadCount, forUser: convo.senderId)
         key.set(.receiverLeftConvo(true), forConvo: convo, asSender: false)
         key.set(.senderLeftConvo(true), forConvo: convo, asSender: true)
         key.notify {
@@ -55,7 +55,7 @@ struct DBConvo {
             senderConvo.receiverId = receiverProxy.ownerId
             senderConvo.receiverProxyKey = receiverProxy.key
             senderConvo.receiverProxyName = receiverProxy.name
-            senderConvo.icon = receiverProxy.icon
+            senderConvo.receiverIcon = receiverProxy.icon
             senderConvo.senderIsBlocked = senderIsBlocked
 
             var receiverConvo = Convo()
@@ -66,12 +66,12 @@ struct DBConvo {
             receiverConvo.receiverId = senderProxy.ownerId
             receiverConvo.receiverProxyKey = senderProxy.key
             receiverConvo.receiverProxyName = senderProxy.name
-            receiverConvo.icon = senderProxy.icon
+            receiverConvo.receiverIcon = senderProxy.icon
             receiverConvo.receiverIsBlocked = senderIsBlocked
 
             let key = AsyncWorkGroupKey()
-            key.increment(by: 1, forProperty: .convos, forProxy: senderProxy)
-            key.increment(by: 1, forProperty: .convos, forProxy: receiverProxy)
+            key.increment(by: 1, forProperty: .convoCount, forProxy: senderProxy)
+            key.increment(by: 1, forProperty: .convoCount, forProxy: receiverProxy)
             key.increment(by: 1, forProperty: .proxiesInteractedWith, forUser: senderProxy.ownerId)
             key.increment(by: 1, forProperty: .proxiesInteractedWith, forUser: receiverProxy.ownerId)
             key.set(receiverConvo, asSender: true)

@@ -12,7 +12,7 @@ class DBConvoTests: DBTest {
                 XCTAssert(success)
 
                 let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-                key.check(.convos(0), forProxyInConvo: convo, asSender: true)
+                key.check(.convoCount(0), forProxyInConvo: convo, asSender: true)
                 key.checkConvoDeleted(convo, asSender: true)
                 key.notify {
                     key.finishWorkGroup()
@@ -80,7 +80,7 @@ class DBConvoTests: DBTest {
 
         DBTest.makeConvo { (convo, sender, _) in
             var convo = convo
-            convo.unread = 2
+            convo.unreadCount = 2
 
             DBConvo.leaveConvo(convo) { (success) in
                 XCTAssert(success)
@@ -88,9 +88,9 @@ class DBConvoTests: DBTest {
                 let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
                 key.check(.receiverLeftConvo(true), forConvo: convo, asSender: false)
                 key.check(.senderLeftConvo(true), forConvo: convo, asSender: true)
-                key.check(.convos(0), forProxy: sender)
-                key.check(.unread(-convo.unread), forProxy: sender)
-                key.check(.unread, equals: -convo.unread, forUser: convo.senderId)
+                key.check(.convoCount(0), forProxy: sender)
+                key.check(.unreadCount(-convo.unreadCount), forProxy: sender)
+                key.check(.unreadCount, equals: -convo.unreadCount, forUser: convo.senderId)
                 key.notify {
                     key.finishWorkGroup()
                     expectation.fulfill()
@@ -106,7 +106,7 @@ class DBConvoTests: DBTest {
         DBTest.makeConvo { (senderConvo, sender, receiver) in
             let convoKey = DBConvo.makeConvoKey(senderProxy: sender, receiverProxy: receiver)
 
-            XCTAssertEqual(senderConvo.icon, receiver.icon)
+            XCTAssertEqual(senderConvo.receiverIcon, receiver.icon)
             XCTAssertEqual(senderConvo.key, convoKey)
             XCTAssertEqual(senderConvo.receiverId, receiver.ownerId)
             XCTAssertEqual(senderConvo.receiverProxyKey, receiver.key)
@@ -117,7 +117,7 @@ class DBConvoTests: DBTest {
             XCTAssertEqual(senderConvo.senderProxyName, sender.name)
 
             var receiverConvo = Convo()
-            receiverConvo.icon = sender.icon
+            receiverConvo.receiverIcon = sender.icon
             receiverConvo.key = convoKey
             receiverConvo.receiverId = sender.ownerId
             receiverConvo.receiverIsBlocked = false
@@ -130,8 +130,8 @@ class DBConvoTests: DBTest {
             let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
             key.checkConvoCreated(receiverConvo, asSender: true)
             key.checkConvoCreated(senderConvo, asSender: true)
-            key.check(.convos(1), forProxy: receiver)
-            key.check(.convos(1), forProxy: sender)
+            key.check(.convoCount(1), forProxy: receiver)
+            key.check(.convoCount(1), forProxy: sender)
             key.check(.proxiesInteractedWith, equals: 1, forUser: receiver.ownerId)
             key.check(.proxiesInteractedWith, equals: 1, forUser: sender.ownerId)
             key.notify {
@@ -141,7 +141,7 @@ class DBConvoTests: DBTest {
         }
     }
 
-    func testMakeConvoWhileSenderIsBlocked() {
+    func testMakeConvo_WhileSenderIsBlocked() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 

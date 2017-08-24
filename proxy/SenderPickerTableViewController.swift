@@ -85,8 +85,8 @@ class SenderPickerTableViewController: UITableViewController {
         
         cell.nameLabel.text = proxy.name
         cell.nicknameLabel.text = proxy.nickname
-        cell.convoCountLabel.text = proxy.convos.asLabel
-        cell.unreadLabel.text = proxy.unread.asLabel
+        cell.convoCountLabel.text = proxy.convoCount.asLabel
+        cell.unreadLabel.text = proxy.unreadCount.asLabel
         cell.accessoryType = .none
         
         return cell

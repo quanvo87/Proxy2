@@ -197,7 +197,7 @@ class API {
     func blockReceiver(in convo: Convo) {
         
         // Add receiver to sender's blocked list
-        let blockedUser = BlockedUser(id: convo.receiverId, icon: convo.icon, name: convo.receiverProxyKey, nickname: convo.receiverNickname)
+        let blockedUser = BlockedUser(id: convo.receiverId, icon: convo.receiverIcon, name: convo.receiverProxyKey, nickname: convo.receiverNickname)
         set(blockedUser.toAnyObject() as AnyObject, a: Path.Blocked, b: uid, c: convo.receiverId, d: nil)
         
         // Loop through sender's convos
@@ -216,8 +216,8 @@ class API {
                     self.set(true as AnyObject, a: Path.Convos, b: _convo.receiverProxyKey, c: _convo.key, d: Path.SenderIsBlocked)
                     
                     // Decrement unreads by convo's unread
-                    self.increment(by: -_convo.unread, a: Path.Unread, b: _convo.senderId, c: Path.Unread, d: nil)
-                    self.increment(by: -_convo.unread, a: Path.Proxies, b: _convo.senderId, c: _convo.senderProxyKey, d: Path.Unread)
+                    self.increment(by: -_convo.unreadCount, a: Path.Unread, b: _convo.senderId, c: Path.Unread, d: nil)
+                    self.increment(by: -_convo.unreadCount, a: Path.Proxies, b: _convo.senderId, c: _convo.senderProxyKey, d: Path.Unread)
                 }
             }
         }
@@ -236,8 +236,8 @@ class API {
                     self.set(false as AnyObject, a: Path.Convos, b: convo.receiverId, c: convo.key, d: Path.SenderIsBlocked)
                     self.set(false as AnyObject, a: Path.Convos, b: convo.receiverProxyKey, c: convo.key, d: Path.SenderIsBlocked)
                     
-                    self.increment(by: convo.unread, a: Path.Unread, b: convo.senderId, c: Path.Unread, d: nil)
-                    self.increment(by: convo.unread, a: Path.Proxies, b: convo.senderId, c: convo.senderProxyKey, d: Path.Unread)
+                    self.increment(by: convo.unreadCount, a: Path.Unread, b: convo.senderId, c: Path.Unread, d: nil)
+                    self.increment(by: convo.unreadCount, a: Path.Proxies, b: convo.senderId, c: convo.senderProxyKey, d: Path.Unread)
                 }
             }
         }
@@ -416,7 +416,7 @@ class API {
         delete(a: Path.Proxies, b: uid, c: proxy.key, d: nil)
         
         // Decrement user's unread by the proxy's unread
-        increment(by: -proxy.unread, a: Path.Unread, b: proxy.ownerId, c: Path.Unread, d: nil)
+        increment(by: -proxy.unreadCount, a: Path.Unread, b: proxy.ownerId, c: Path.Unread, d: nil)
         
         // Loop through the proxy's convos
         for convo in convos {
@@ -558,7 +558,7 @@ class API {
             senderConvo.receiverId = receiver.ownerId
             senderConvo.receiverProxyKey = receiver.key
             senderConvo.receiverProxyName = receiver.name
-            senderConvo.icon = receiver.icon
+            senderConvo.receiverIcon = receiver.icon
             senderConvo.senderIsBlocked = senderBlocked
             let senderConvoAnyObject = senderConvo.toDictionary()
             self.set(senderConvoAnyObject as AnyObject, a: Path.Convos, b: senderConvo.senderId, c: senderConvo.key, d: nil)
@@ -573,7 +573,7 @@ class API {
             receiverConvo.receiverId = sender.ownerId
             receiverConvo.receiverProxyKey = sender.key
             receiverConvo.receiverProxyName = sender.name
-            receiverConvo.icon = sender.icon
+            receiverConvo.receiverIcon = sender.icon
             receiverConvo.receiverIsBlocked = senderBlocked
             let receiverConvoAnyObject = receiverConvo.toDictionary()
             self.set(receiverConvoAnyObject as AnyObject, a: Path.Convos, b: receiverConvo.senderId, c: receiverConvo.key, d: nil)
@@ -671,7 +671,7 @@ class API {
         set(0 as AnyObject, a: Path.Convos, b: convo.senderId, c: convo.key, d: Path.Unread)
         set(0 as AnyObject, a: Path.Convos, b: convo.senderProxyKey, c: convo.key, d: Path.Unread)
         increment(by: -1, a: Path.Proxies, b: convo.senderId, c: convo.senderProxyKey, d: Path.Convos)
-        increment(by: -convo.unread, a: Path.Unread, b: convo.senderId, c: Path.Unread, d: nil)
-        increment(by: -convo.unread, a: Path.Proxies, b: convo.senderId, c: convo.senderProxyKey, d: Path.Unread)
+        increment(by: -convo.unreadCount, a: Path.Unread, b: convo.senderId, c: Path.Unread, d: nil)
+        increment(by: -convo.unreadCount, a: Path.Proxies, b: convo.senderId, c: convo.senderProxyKey, d: Path.Unread)
     }
 }

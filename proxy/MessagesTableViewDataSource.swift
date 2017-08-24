@@ -28,7 +28,7 @@ class MessagesTableViewDataSource: NSObject, UITableViewDataSource {
         cell.iconImageView.image = nil
 
         // TODO: - set the ".png" somewhere else
-        DBIcon.getImageForIcon(convo.icon + ".png" as AnyObject, tag: cell.tag) { (image, tag) in
+        DBIcon.getImageForIcon(convo.receiverIcon + ".png" as AnyObject, tag: cell.tag) { (image, tag) in
             guard
                 tag == cell.tag,
                 let image = image else {
@@ -42,9 +42,9 @@ class MessagesTableViewDataSource: NSObject, UITableViewDataSource {
                                                                           receiverName: convo.receiverProxyName,
                                                                           senderNickname: convo.senderNickname,
                                                                           senderName: convo.senderProxyName)
-        cell.lastMessageLabel.text = convo.message
+        cell.lastMessageLabel.text = convo.lastMessage
         cell.timestampLabel.text = convo.timestamp.asTimeAgo
-        cell.unreadLabel.text = convo.unread.asLabel
+        cell.unreadLabel.text = convo.unreadCount.asLabel
         
         return cell
     }

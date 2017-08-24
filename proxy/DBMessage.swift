@@ -32,13 +32,13 @@ struct DBMessage {
 
             // Sender updates
             key.increment(by: 1, forProperty: .messagesSent, forUser: senderConvo.senderId)
-            key.set(.message("You: \(text)"), forConvo: senderConvo, asSender: true)
-            key.set(.message("You: \(text)"), forProxyInConvo: senderConvo, asSender: true)
+            key.set(.lastMessage("You: \(text)"), forConvo: senderConvo, asSender: true)
+            key.set(.lastMessage("You: \(text)"), forProxyInConvo: senderConvo, asSender: true)
             key.set(.timestamp(currentTime), forConvo: senderConvo, asSender: true)
             key.set(.timestamp(currentTime), forProxyInConvo: senderConvo, asSender: true)
 
             if senderConvo.senderLeftConvo {
-                key.increment(by: 1, forProperty: .convos, forProxyInConvo: senderConvo, asSender: true)
+                key.increment(by: 1, forProperty: .convoCount, forProxyInConvo: senderConvo, asSender: true)
                 key.set(.receiverLeftConvo(false), forConvo: senderConvo, asSender: false)
                 key.set(.senderLeftConvo(false), forConvo: senderConvo, asSender: true)
             }
@@ -47,26 +47,26 @@ struct DBMessage {
             key.increment(by: 1, forProperty: .messagesReceived, forUser: senderConvo.receiverId)
 
             if !senderConvo.receiverDeletedProxy && !senderConvo.senderIsBlocked {
-                key.set(.message(text), forProxyInConvo: senderConvo, asSender: false)
+                key.set(.lastMessage(text), forProxyInConvo: senderConvo, asSender: false)
                 key.set(.timestamp(currentTime), forProxyInConvo: senderConvo, asSender: false)
 
                 if !receiverIsPresent {
-                    key.increment(by: 1, forProperty: .unread, forProxyInConvo: senderConvo, asSender: false)
-                    key.increment(by: 1, forProperty: .unread, forUser: senderConvo.receiverId)
+                    key.increment(by: 1, forProperty: .unreadCount, forProxyInConvo: senderConvo, asSender: false)
+                    key.increment(by: 1, forProperty: .unreadCount, forUser: senderConvo.receiverId)
                 }
             }
 
             if !senderConvo.receiverDeletedProxy {
-                key.set(.message(text), forConvo: senderConvo, asSender: false)
+                key.set(.lastMessage(text), forConvo: senderConvo, asSender: false)
                 key.set(.timestamp(currentTime), forConvo: senderConvo, asSender: false)
 
                 if !receiverIsPresent {
-                    key.increment(by: 1, forProperty: .unread, forConvo: senderConvo, asSender: false)
+                    key.increment(by: 1, forProperty: .unreadCount, forConvo: senderConvo, asSender: false)
                 }
             }
 
             if senderConvo.receiverLeftConvo {
-                key.increment(by: 1, forProperty: .convos, forProxyInConvo: senderConvo, asSender: false)
+                key.increment(by: 1, forProperty: .convoCount, forProxyInConvo: senderConvo, asSender: false)
                 key.set(.receiverLeftConvo(false), forConvo: senderConvo, asSender: true)
                 key.set(.senderLeftConvo(false), forConvo: senderConvo, asSender: false)
             }
