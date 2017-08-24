@@ -5,21 +5,6 @@ class DBMessageTests: DBTest {
     private static let text = "🤤"
     private static let senderText = "You: \(text)"
     
-    //    private static func sendMessage(completion: @escaping (_ senderProxy: Proxy, _ receiverProxy: Proxy, _ senderConvo: Convo, _ message: Message) -> Void) {
-    //        DBTest.makeProxy { (senderProxy) in
-    //            DBTest.makeProxy(forUser: DBTest.testUser) { (receiverProxy) in
-    //                DBMessage.sendMessage(from: senderProxy, to: receiverProxy, withText: text) { (result) in
-    //                    guard let result = result else {
-    //                        XCTFail()
-    //                        return
-    //                    }
-    //
-    //                    completion(senderProxy, receiverProxy, result.convo, result.message)
-    //                }
-    //            }
-    //        }
-    //    }
-    
     func testSendMessage() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
@@ -66,25 +51,52 @@ class DBMessageTests: DBTest {
             }
         }
     }
-    
-    func test() {
+
+    func testSendMessageWhileReceiverLeftConvo() {
+        let expectation = self.expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
+
+        DBTest.makeConvo { (senderConvo, sender, receiver) in
+            DBConvo.leaveConvo(senderConvo) { (success) in
+                XCTAssert(success)
+
+                DBMessage.sendMessage(from: receiver, to: sender, withText: DBMessageTests.text) { (result) in
+                    guard let (convo, _) = result else {
+                        XCTFail()
+                        return
+                    }
+
+                    let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
+                    key.check(.receiverLeftConvo(false), forConvo: convo, asSender: true)
+                    key.check(.senderLeftConvo(false), forConvo: convo, asSender: false)
+                    key.check(.convoCount(1), forProxy: sender)
+                    key.notify {
+                        key.finishWorkGroup()
+                        expectation.fulfill()
+                    }
+                }
+            }
+        }
+    }
+
+    func testSendMessageWhileSenderLeftConvo() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
         
-        DBTest.makeConvo { (senderConvo, senderProxy, receiverProxy) in
+        DBTest.makeConvo { (senderConvo, sender, receiver) in
             DBConvo.leaveConvo(senderConvo) { (success) in
                 XCTAssert(success)
                 
-                DBMessage.sendMessage(from: senderProxy, to: receiverProxy, withText: DBMessageTests.text) { (result) in
-                    guard let (_, _) = result else {
+                DBMessage.sendMessage(from: sender, to: receiver, withText: DBMessageTests.text) { (result) in
+                    guard let (convo, _) = result else {
                         XCTFail()
                         return
                     }
                     
                     let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-                    
-                    key.check(.convoCount(1), forProxy: senderProxy)
-                    
+                    key.check(.receiverLeftConvo(false), forConvo: convo, asSender: false)
+                    key.check(.senderLeftConvo(false), forConvo: convo, asSender: true)
+                    key.check(.convoCount(1), forProxy: sender)
                     key.notify {
                         key.finishWorkGroup()
                         expectation.fulfill()
