@@ -15,14 +15,14 @@ class DBProxyTests: DBTest {
         
         DBTest.makeConvo { (convo, proxy, _) in
             var proxy = proxy
-            proxy.unread = 2
+            proxy.unreadCount = 2
             
             DBProxy.deleteProxy(proxy) { (success) in
                 XCTAssert(success)
                 let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
                 key.check(.receiverDeletedProxy(true), forConvo: convo, asSender: false)
                 key.check(.proxyCount, equals: 0, forUser: proxy.ownerId)
-                key.check(.unread, equals: -proxy.unread, forUser: proxy.ownerId)
+                key.check(.unreadCount, equals: -proxy.unreadCount, forUser: proxy.ownerId)
                 key.checkConvoDeleted(convo, asSender: true)
                 key.checkDeleted(at: Path.Proxies, proxy.ownerId, proxy.key)
                 key.checkDeleted(at: Path.ProxyKeys, proxy.key)

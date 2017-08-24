@@ -45,7 +45,7 @@ struct DBProxy {
         key.delete(at: Path.ProxyOwners, proxy.key)
         key.deleteConvos(convos)
         key.increment(by: -1, forProperty: .proxyCount, forUser: proxy.ownerId)
-        key.increment(by: -proxy.unread, forProperty: .unread, forUser: proxy.ownerId)
+        key.increment(by: -proxy.unreadCount, forProperty: .unreadCount, forUser: proxy.ownerId)
         key.setReceiverDeletedProxy(to: true, forReceiverInConvos: convos)
         key.notify {
             completion(key.workResult)

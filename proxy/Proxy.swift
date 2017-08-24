@@ -8,7 +8,7 @@ struct Proxy {
     var nickname = ""
     var ownerId = ""
     var timestamp = Date().timeIntervalSince1970
-    var unread = 0
+    var unreadCount = 0
 
     init() {}
 
@@ -37,7 +37,7 @@ struct Proxy {
             let nickname = dictionary["nickname"] as? String,
             let ownerId = dictionary["ownerId"] as? String,
             let timestamp = dictionary["timestamp"] as? Double,
-            let unread = dictionary["unread"] as? Int else {
+            let unreadCount = dictionary["unreadCount"] as? Int else {
                 return nil
         }
         self.convos = convos
@@ -49,7 +49,7 @@ struct Proxy {
         self.nickname = nickname
         self.ownerId = ownerId
         self.timestamp = timestamp
-        self.unread = unread
+        self.unreadCount = unreadCount
     }
 
     func toDictionary() -> Any {
@@ -63,7 +63,7 @@ struct Proxy {
             "nickname": nickname,
             "ownerId": ownerId,
             "timestamp": timestamp,
-            "unread": unread
+            "unreadCount": unreadCount
         ]
     }
 }
@@ -80,13 +80,13 @@ extension Proxy: Equatable {
             lhs.nickname == rhs.nickname &&
             lhs.ownerId == rhs.ownerId &&
             lhs.timestamp.rounded() == rhs.timestamp.rounded() &&
-            lhs.unread == rhs.unread
+            lhs.unreadCount == rhs.unreadCount
     }
 }
 
 enum IncrementableProxyProperty: String {
     case convos
-    case unread
+    case unreadCount
 }
 
 enum SettableProxyProperty {
@@ -99,7 +99,7 @@ enum SettableProxyProperty {
     case nickname(String)
     case ownerId(String)
     case timestamp(Double)
-    case unread(Int)
+    case unreadCount(Int)
 
     var properties: (name: String, value: Any) {
         switch self {
@@ -112,7 +112,7 @@ enum SettableProxyProperty {
         case .nickname(let value): return ("nickname", value)
         case .ownerId(let value): return ("ownerId", value)
         case .timestamp(let value): return ("timestamp", value)
-        case .unread(let value): return ("unread", value)
+        case .unreadCount(let value): return ("unreadCount", value)
         }
     }
 }

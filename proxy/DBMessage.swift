@@ -51,8 +51,8 @@ struct DBMessage {
                 key.set(.timestamp(currentTime), forProxyInConvo: senderConvo, asSender: false)
 
                 if !receiverIsPresent {
-                    key.increment(by: 1, forProperty: .unread, forProxyInConvo: senderConvo, asSender: false)
-                    key.increment(by: 1, forProperty: .unread, forUser: senderConvo.receiverId)
+                    key.increment(by: 1, forProperty: .unreadCount, forProxyInConvo: senderConvo, asSender: false)
+                    key.increment(by: 1, forProperty: .unreadCount, forUser: senderConvo.receiverId)
                 }
             }
 
@@ -61,7 +61,7 @@ struct DBMessage {
                 key.set(.timestamp(currentTime), forConvo: senderConvo, asSender: false)
 
                 if !receiverIsPresent {
-                    key.increment(by: 1, forProperty: .unread, forConvo: senderConvo, asSender: false)
+                    key.increment(by: 1, forProperty: .unreadCount, forConvo: senderConvo, asSender: false)
                 }
             }
 

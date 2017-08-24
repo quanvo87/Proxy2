@@ -46,14 +46,14 @@ class DBMessageTests: DBTest {
                     // Check receiver updates
                     key.check(.lastMessage(DBMessageTests.text), forConvo: convo, asSender: false)
                     key.check(.timestamp(convo.timestamp), forConvo: convo, asSender: false)
-                    key.check(.unread(1), forConvo: convo, asSender: false)
+                    key.check(.unreadCount(1), forConvo: convo, asSender: false)
                     
                     key.check(.timestamp(convo.timestamp), forProxy: receiver)
                     key.check(.lastMessage(DBMessageTests.text), forProxy: receiver)
-                    key.check(.unread(1), forProxy: receiver)
+                    key.check(.unreadCount(1), forProxy: receiver)
                     
                     key.check(.messagesReceived, equals: 1, forUser: convo.receiverId)
-                    key.check(.unread, equals: 1, forUser: convo.receiverId)
+                    key.check(.unreadCount, equals: 1, forUser: convo.receiverId)
                     
                     // Check message updates
                     key.checkMessageCreated(message)

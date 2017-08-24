@@ -16,7 +16,7 @@ struct Convo {
     var senderProxyKey = ""
     var senderProxyName = ""
     var timestamp = 0.0
-    var unread = 0
+    var unreadCount = 0
 
     init() {}
 
@@ -39,7 +39,7 @@ struct Convo {
             let senderProxyKey = dictionary["senderProxyKey"] as? String,
             let senderProxyName = dictionary["senderProxyName"] as? String,
             let timestamp = dictionary["timestamp"] as? Double,
-            let unread = dictionary["unread"] as? Int else {
+            let unreadCount = dictionary["unreadCount"] as? Int else {
                 return nil
         }
         self.key = key
@@ -59,7 +59,7 @@ struct Convo {
         self.senderProxyKey = senderProxyKey
         self.senderProxyName = senderProxyName
         self.timestamp = timestamp
-        self.unread = unread
+        self.unreadCount = unreadCount
     }
 
     func toDictionary() -> Any {
@@ -81,7 +81,7 @@ struct Convo {
             "senderProxyKey": senderProxyKey,
             "senderProxyName": senderProxyName,
             "timestamp": timestamp,
-            "unread": unread
+            "unreadCount": unreadCount
         ]
     }
 }
@@ -105,12 +105,12 @@ extension Convo: Equatable {
             lhs.senderProxyKey == rhs.senderProxyKey &&
             lhs.senderProxyName == rhs.senderProxyName &&
             lhs.timestamp.rounded() == rhs.timestamp.rounded() &&
-            lhs.unread == rhs.unread
+            lhs.unreadCount == rhs.unreadCount
     }
 }
 
 enum IncrementableConvoProperty: String {
-    case unread
+    case unreadCount
 }
 
 enum SettableConvoProperty {
@@ -131,7 +131,7 @@ enum SettableConvoProperty {
     case senderProxyKey(String)
     case senderProxyName(String)
     case timestamp(Double)
-    case unread(Int)
+    case unreadCount(Int)
 
     var properties: (name: String, value: Any) {
         switch self {
@@ -152,7 +152,7 @@ enum SettableConvoProperty {
         case .senderProxyKey(let value): return ("senderProxyKey", value)
         case .senderProxyName(let value): return ("senderProxyName", value)
         case .timestamp(let value): return ("timestamp", value)
-        case .unread(let value): return ("unread", value)
+        case .unreadCount(let value): return ("unreadCount", value)
         }
     }
 }

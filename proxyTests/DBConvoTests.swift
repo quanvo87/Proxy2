@@ -80,7 +80,7 @@ class DBConvoTests: DBTest {
 
         DBTest.makeConvo { (convo, sender, _) in
             var convo = convo
-            convo.unread = 2
+            convo.unreadCount = 2
 
             DBConvo.leaveConvo(convo) { (success) in
                 XCTAssert(success)
@@ -89,8 +89,8 @@ class DBConvoTests: DBTest {
                 key.check(.receiverLeftConvo(true), forConvo: convo, asSender: false)
                 key.check(.senderLeftConvo(true), forConvo: convo, asSender: true)
                 key.check(.convos(0), forProxy: sender)
-                key.check(.unread(-convo.unread), forProxy: sender)
-                key.check(.unread, equals: -convo.unread, forUser: convo.senderId)
+                key.check(.unreadCount(-convo.unreadCount), forProxy: sender)
+                key.check(.unreadCount, equals: -convo.unreadCount, forUser: convo.senderId)
                 key.notify {
                     key.finishWorkGroup()
                     expectation.fulfill()

@@ -72,7 +72,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         proxyRefHandle = proxyRef.observe(.value, with: { (data) in
             guard let proxy = Proxy(data.value! as AnyObject) else { return }
             self.proxy = proxy
-            self.navigationItem.title = proxy.unread.asLabelWithParens
+            self.navigationItem.title = proxy.unreadCount.asLabelWithParens
             self.tableView.reloadData()
         })
         
@@ -206,7 +206,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
             cell.titleLabel.attributedText = api.getConvoTitle(receiverNickname: convo.receiverNickname, receiverName: convo.receiverProxyName, senderNickname: convo.senderNickname, senderName: convo.senderProxyName)
             cell.lastMessageLabel.text = convo.lastMessage
             cell.timestampLabel.text = convo.timestamp.asTimeAgo
-            cell.unreadLabel.text = convo.unread.asLabel
+            cell.unreadLabel.text = convo.unreadCount.asLabel
             return cell
             
         default: break

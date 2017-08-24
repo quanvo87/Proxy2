@@ -32,8 +32,8 @@ struct DBConvo {
     static func leaveConvo(_ convo: Convo, completion: @escaping (Success) -> Void) {
         let key = AsyncWorkGroupKey()
         key.increment(by: -1, forProperty: .convos, forProxyInConvo: convo, asSender: true)
-        key.increment(by: -convo.unread, forProperty: .unread, forProxyInConvo: convo, asSender: true)
-        key.increment(by: -convo.unread, forProperty: .unread, forUser: convo.senderId)
+        key.increment(by: -convo.unreadCount, forProperty: .unreadCount, forProxyInConvo: convo, asSender: true)
+        key.increment(by: -convo.unreadCount, forProperty: .unreadCount, forUser: convo.senderId)
         key.set(.receiverLeftConvo(true), forConvo: convo, asSender: false)
         key.set(.senderLeftConvo(true), forConvo: convo, asSender: true)
         key.notify {
