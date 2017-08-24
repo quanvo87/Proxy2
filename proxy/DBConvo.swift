@@ -55,7 +55,7 @@ struct DBConvo {
             senderConvo.receiverId = receiverProxy.ownerId
             senderConvo.receiverProxyKey = receiverProxy.key
             senderConvo.receiverProxyName = receiverProxy.name
-            senderConvo.icon = receiverProxy.icon
+            senderConvo.receiverIcon = receiverProxy.icon
             senderConvo.senderIsBlocked = senderIsBlocked
 
             var receiverConvo = Convo()
@@ -66,7 +66,7 @@ struct DBConvo {
             receiverConvo.receiverId = senderProxy.ownerId
             receiverConvo.receiverProxyKey = senderProxy.key
             receiverConvo.receiverProxyName = senderProxy.name
-            receiverConvo.icon = senderProxy.icon
+            receiverConvo.receiverIcon = senderProxy.icon
             receiverConvo.receiverIsBlocked = senderIsBlocked
 
             let key = AsyncWorkGroupKey()

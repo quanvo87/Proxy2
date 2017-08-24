@@ -200,7 +200,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
             let convo = convos[indexPath.row]
             cell.iconImageView.image = nil
 //            cell.iconImageView.kf.indicatorType = .activity
-            api.getURL(forIconName: convo.icon) { (url) in
+            api.getURL(forIconName: convo.receiverIcon) { (url) in
 //                cell.iconImageView.kf.setImage(with: url, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
             }
             cell.titleLabel.attributedText = api.getConvoTitle(receiverNickname: convo.receiverNickname, receiverName: convo.receiverProxyName, senderNickname: convo.senderNickname, senderName: convo.senderProxyName)

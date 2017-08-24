@@ -1,8 +1,8 @@
 struct Convo {
-    var icon = ""
     var key = ""
     var message = ""
     var receiverDeletedProxy = false
+    var receiverIcon = ""
     var receiverId = ""
     var receiverIsBlocked = false
     var receiverLeftConvo = false
@@ -22,10 +22,10 @@ struct Convo {
 
     init?(_ dictionary: AnyObject) {
         guard
-            let icon = dictionary["icon"] as? String,
             let key = dictionary["key"] as? String,
             let message = dictionary["message"] as? String,
             let receiverDeletedProxy = dictionary["receiverDeletedProxy"] as? Bool,
+            let receiverIcon = dictionary["receiverIcon"] as? String,
             let receiverId = dictionary["receiverId"] as? String,
             let receiverIsBlocked = dictionary["receiverIsBlocked"] as? Bool,
             let receiverLeftConvo = dictionary["receiverLeftConvo"] as? Bool,
@@ -42,10 +42,10 @@ struct Convo {
             let unread = dictionary["unread"] as? Int else {
                 return nil
         }
-        self.icon = icon
         self.key = key
         self.message = message
         self.receiverDeletedProxy = receiverDeletedProxy
+        self.receiverIcon = receiverIcon
         self.receiverId = receiverId
         self.receiverIsBlocked = receiverIsBlocked
         self.receiverLeftConvo = receiverLeftConvo
@@ -64,10 +64,10 @@ struct Convo {
 
     func toDictionary() -> Any {
         return [
-            "icon": icon,
             "key": key,
             "message": message,
             "receiverDeletedProxy": receiverDeletedProxy,
+            "receiverIcon": receiverIcon,
             "receiverId": receiverId,
             "receiverIsBlocked": receiverIsBlocked,
             "receiverLeftConvo": receiverLeftConvo,
@@ -89,10 +89,10 @@ struct Convo {
 extension Convo: Equatable {
     static func ==(_ lhs: Convo, _ rhs: Convo) -> Bool {
         return
-            lhs.icon == rhs.icon &&
             lhs.key == rhs.key &&
             lhs.message == rhs.message &&
             lhs.receiverDeletedProxy == rhs.receiverDeletedProxy &&
+            lhs.receiverIcon == rhs.receiverIcon &&
             lhs.receiverId == rhs.receiverId &&
             lhs.receiverIsBlocked == rhs.receiverIsBlocked &&
             lhs.receiverNickname == rhs.receiverNickname &&
@@ -114,10 +114,10 @@ enum IncrementableConvoProperty: String {
 }
 
 enum SettableConvoProperty {
-    case icon(String)
     case key(String)
     case message(String)
     case receiverDeletedProxy(Bool)
+    case receiverIcon(String)
     case receiverId(String)
     case receiverIsBlocked(Bool)
     case receiverLeftConvo(Bool)
@@ -135,10 +135,10 @@ enum SettableConvoProperty {
 
     var properties: (name: String, value: Any) {
         switch self {
-        case .icon(let value): return ("icon", value)
         case .key(let value): return ("key", value)
         case .message(let value): return ("message", value)
         case .receiverDeletedProxy(let value): return ("receiverDeletedProxy", value)
+        case .receiverIcon(let value): return ("receiverIcon", value)
         case .receiverId(let value): return ("receiverId", value)
         case .receiverIsBlocked(let value): return ("receiverIsBlocked", value)
         case .receiverLeftConvo(let value): return ("receiverLeftConvo", value)

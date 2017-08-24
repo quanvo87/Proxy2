@@ -197,7 +197,7 @@ class API {
     func blockReceiver(in convo: Convo) {
         
         // Add receiver to sender's blocked list
-        let blockedUser = BlockedUser(id: convo.receiverId, icon: convo.icon, name: convo.receiverProxyKey, nickname: convo.receiverNickname)
+        let blockedUser = BlockedUser(id: convo.receiverId, icon: convo.receiverIcon, name: convo.receiverProxyKey, nickname: convo.receiverNickname)
         set(blockedUser.toAnyObject() as AnyObject, a: Path.Blocked, b: uid, c: convo.receiverId, d: nil)
         
         // Loop through sender's convos
@@ -558,7 +558,7 @@ class API {
             senderConvo.receiverId = receiver.ownerId
             senderConvo.receiverProxyKey = receiver.key
             senderConvo.receiverProxyName = receiver.name
-            senderConvo.icon = receiver.icon
+            senderConvo.receiverIcon = receiver.icon
             senderConvo.senderIsBlocked = senderBlocked
             let senderConvoAnyObject = senderConvo.toDictionary()
             self.set(senderConvoAnyObject as AnyObject, a: Path.Convos, b: senderConvo.senderId, c: senderConvo.key, d: nil)
@@ -573,7 +573,7 @@ class API {
             receiverConvo.receiverId = sender.ownerId
             receiverConvo.receiverProxyKey = sender.key
             receiverConvo.receiverProxyName = sender.name
-            receiverConvo.icon = sender.icon
+            receiverConvo.receiverIcon = sender.icon
             receiverConvo.receiverIsBlocked = senderBlocked
             let receiverConvoAnyObject = receiverConvo.toDictionary()
             self.set(receiverConvoAnyObject as AnyObject, a: Path.Convos, b: receiverConvo.senderId, c: receiverConvo.key, d: nil)

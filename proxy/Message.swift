@@ -3,7 +3,7 @@ import JSQMessagesViewController
 class Message: JSQMessage {
     var dateRead = 0.0
     var key = ""
-    var mediaType = ""
+    var mediaType = ""  // TODO: make enum?
     var mediaURL = ""
     var parentConvo = ""
     var read = false

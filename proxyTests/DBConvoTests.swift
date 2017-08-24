@@ -106,7 +106,7 @@ class DBConvoTests: DBTest {
         DBTest.makeConvo { (senderConvo, sender, receiver) in
             let convoKey = DBConvo.makeConvoKey(senderProxy: sender, receiverProxy: receiver)
 
-            XCTAssertEqual(senderConvo.icon, receiver.icon)
+            XCTAssertEqual(senderConvo.receiverIcon, receiver.icon)
             XCTAssertEqual(senderConvo.key, convoKey)
             XCTAssertEqual(senderConvo.receiverId, receiver.ownerId)
             XCTAssertEqual(senderConvo.receiverProxyKey, receiver.key)
@@ -117,7 +117,7 @@ class DBConvoTests: DBTest {
             XCTAssertEqual(senderConvo.senderProxyName, sender.name)
 
             var receiverConvo = Convo()
-            receiverConvo.icon = sender.icon
+            receiverConvo.receiverIcon = sender.icon
             receiverConvo.key = convoKey
             receiverConvo.receiverId = sender.ownerId
             receiverConvo.receiverIsBlocked = false

@@ -175,7 +175,7 @@ class DBProxyTests: DBTest {
                 XCTAssert(success)
                 
                 let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-                key.check(.icon(newIcon), forConvo: convo, asSender: false)
+                key.check(.receiverIcon(newIcon), forConvo: convo, asSender: false)
                 key.check(.icon(newIcon), forProxy: proxy)
                 key.notify {
                     key.finishWorkGroup()
