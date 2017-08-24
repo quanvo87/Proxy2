@@ -1,5 +1,5 @@
 struct Proxy {
-    var convos = 0
+    var convoCount = 0
     var dateCreated = Date().timeIntervalSince1970
     var icon = ""
     var key = ""
@@ -28,7 +28,7 @@ struct Proxy {
 
     init?(_ dictionary: AnyObject) {
         guard
-            let convos = dictionary["convos"] as? Int,
+            let convoCount = dictionary["convoCount"] as? Int,
             let dateCreated = dictionary["dateCreated"] as? Double,
             let icon = dictionary["icon"] as? String,
             let key = dictionary["key"] as? String,
@@ -40,7 +40,7 @@ struct Proxy {
             let unreadCount = dictionary["unreadCount"] as? Int else {
                 return nil
         }
-        self.convos = convos
+        self.convoCount = convoCount
         self.dateCreated = dateCreated
         self.icon = icon
         self.key = key
@@ -54,7 +54,7 @@ struct Proxy {
 
     func toDictionary() -> Any {
         return [
-            "convos": convos,
+            "convoCount": convoCount,
             "dateCreated": dateCreated,
             "icon": icon,
             "key": key,
@@ -71,7 +71,7 @@ struct Proxy {
 extension Proxy: Equatable {
     static func ==(_ lhs: Proxy, _ rhs: Proxy) -> Bool {
         return
-            lhs.convos == rhs.convos &&
+            lhs.convoCount == rhs.convoCount &&
             lhs.dateCreated.rounded() == rhs.dateCreated.rounded() &&
             lhs.icon == rhs.icon &&
             lhs.key == rhs.key &&
@@ -85,12 +85,12 @@ extension Proxy: Equatable {
 }
 
 enum IncrementableProxyProperty: String {
-    case convos
+    case convoCount
     case unreadCount
 }
 
 enum SettableProxyProperty {
-    case convos(Int)
+    case convoCount(Int)
     case dateCreated(Double)
     case icon(String)
     case key(String)
@@ -103,7 +103,7 @@ enum SettableProxyProperty {
 
     var properties: (name: String, value: Any) {
         switch self {
-        case .convos(let value): return ("convos", value)
+        case .convoCount(let value): return ("convoCount", value)
         case .dateCreated(let value): return ("dateCreated", value)
         case .icon(let value): return ("icon", value)
         case .key(let value): return ("key", value)

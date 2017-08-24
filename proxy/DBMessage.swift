@@ -38,7 +38,7 @@ struct DBMessage {
             key.set(.timestamp(currentTime), forProxyInConvo: senderConvo, asSender: true)
 
             if senderConvo.senderLeftConvo {
-                key.increment(by: 1, forProperty: .convos, forProxyInConvo: senderConvo, asSender: true)
+                key.increment(by: 1, forProperty: .convoCount, forProxyInConvo: senderConvo, asSender: true)
                 key.set(.receiverLeftConvo(false), forConvo: senderConvo, asSender: false)
                 key.set(.senderLeftConvo(false), forConvo: senderConvo, asSender: true)
             }
@@ -66,7 +66,7 @@ struct DBMessage {
             }
 
             if senderConvo.receiverLeftConvo {
-                key.increment(by: 1, forProperty: .convos, forProxyInConvo: senderConvo, asSender: false)
+                key.increment(by: 1, forProperty: .convoCount, forProxyInConvo: senderConvo, asSender: false)
                 key.set(.receiverLeftConvo(false), forConvo: senderConvo, asSender: true)
                 key.set(.senderLeftConvo(false), forConvo: senderConvo, asSender: false)
             }

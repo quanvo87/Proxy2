@@ -12,7 +12,7 @@ class DBConvoTests: DBTest {
                 XCTAssert(success)
 
                 let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-                key.check(.convos(0), forProxyInConvo: convo, asSender: true)
+                key.check(.convoCount(0), forProxyInConvo: convo, asSender: true)
                 key.checkConvoDeleted(convo, asSender: true)
                 key.notify {
                     key.finishWorkGroup()
@@ -88,7 +88,7 @@ class DBConvoTests: DBTest {
                 let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
                 key.check(.receiverLeftConvo(true), forConvo: convo, asSender: false)
                 key.check(.senderLeftConvo(true), forConvo: convo, asSender: true)
-                key.check(.convos(0), forProxy: sender)
+                key.check(.convoCount(0), forProxy: sender)
                 key.check(.unreadCount(-convo.unreadCount), forProxy: sender)
                 key.check(.unreadCount, equals: -convo.unreadCount, forUser: convo.senderId)
                 key.notify {
@@ -130,8 +130,8 @@ class DBConvoTests: DBTest {
             let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
             key.checkConvoCreated(receiverConvo, asSender: true)
             key.checkConvoCreated(senderConvo, asSender: true)
-            key.check(.convos(1), forProxy: receiver)
-            key.check(.convos(1), forProxy: sender)
+            key.check(.convoCount(1), forProxy: receiver)
+            key.check(.convoCount(1), forProxy: sender)
             key.check(.proxiesInteractedWith, equals: 1, forUser: receiver.ownerId)
             key.check(.proxiesInteractedWith, equals: 1, forUser: sender.ownerId)
             key.notify {

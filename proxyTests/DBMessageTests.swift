@@ -83,7 +83,7 @@ class DBMessageTests: DBTest {
                     
                     let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
                     
-                    key.check(.convos(1), forProxy: senderProxy)
+                    key.check(.convoCount(1), forProxy: senderProxy)
                     
                     key.notify {
                         key.finishWorkGroup()

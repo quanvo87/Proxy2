@@ -4,7 +4,7 @@ struct DBConvo {
     static func deleteConvo(_ convo: Convo, completion: @escaping (Success) -> Void) {
         let key = AsyncWorkGroupKey()
         key.delete(convo, asSender: true)
-        key.increment(by: -1, forProperty: .convos, forProxyInConvo: convo, asSender: true)
+        key.increment(by: -1, forProperty: .convoCount, forProxyInConvo: convo, asSender: true)
         key.notify {
             completion(key.workResult)
             key.finishWorkGroup()
@@ -31,7 +31,7 @@ struct DBConvo {
 
     static func leaveConvo(_ convo: Convo, completion: @escaping (Success) -> Void) {
         let key = AsyncWorkGroupKey()
-        key.increment(by: -1, forProperty: .convos, forProxyInConvo: convo, asSender: true)
+        key.increment(by: -1, forProperty: .convoCount, forProxyInConvo: convo, asSender: true)
         key.increment(by: -convo.unreadCount, forProperty: .unreadCount, forProxyInConvo: convo, asSender: true)
         key.increment(by: -convo.unreadCount, forProperty: .unreadCount, forUser: convo.senderId)
         key.set(.receiverLeftConvo(true), forConvo: convo, asSender: false)
@@ -70,8 +70,8 @@ struct DBConvo {
             receiverConvo.receiverIsBlocked = senderIsBlocked
 
             let key = AsyncWorkGroupKey()
-            key.increment(by: 1, forProperty: .convos, forProxy: senderProxy)
-            key.increment(by: 1, forProperty: .convos, forProxy: receiverProxy)
+            key.increment(by: 1, forProperty: .convoCount, forProxy: senderProxy)
+            key.increment(by: 1, forProperty: .convoCount, forProxy: receiverProxy)
             key.increment(by: 1, forProperty: .proxiesInteractedWith, forUser: senderProxy.ownerId)
             key.increment(by: 1, forProperty: .proxiesInteractedWith, forUser: receiverProxy.ownerId)
             key.set(receiverConvo, asSender: true)
