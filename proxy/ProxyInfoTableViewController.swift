@@ -47,15 +47,15 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         tableView.delaysContentTouches = false
         tableView.separatorStyle = .none
         
-        proxyRef = ref.child(Path.Proxies).child(proxy.ownerId).child(proxy.key)
-        convosRef = ref.child(Path.Convos).child(proxy.key)
+        proxyRef = ref.child(Child.Proxies).child(proxy.ownerId).child(proxy.key)
+        convosRef = ref.child(Child.Convos).child(proxy.key)
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
         
         if convo != nil {
-            ref.child(Path.Convos).child(convo!.senderId).child(convo!.key).child(Path.SenderLeftConvo).observeSingleEvent(of: .value, with: { (data) in
+            ref.child(Child.Convos).child(convo!.senderId).child(convo!.key).child(Child.SenderLeftConvo).observeSingleEvent(of: .value, with: { (data) in
                 if let deleted = data.value as? Bool, deleted {
                     _ = self.navigationController?.popViewController(animated: true)
                 }
@@ -76,7 +76,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
             self.tableView.reloadData()
         })
         
-        convosRefHandle = convosRef.queryOrdered(byChild: Path.Timestamp).observe(.value, with: { (data) in
+        convosRefHandle = convosRef.queryOrdered(byChild: Child.Timestamp).observe(.value, with: { (data) in
             self.convos = self.api.getConvos(from: data)
             self.tableView.reloadData()
         })

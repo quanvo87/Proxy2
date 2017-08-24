@@ -60,32 +60,22 @@ class DBTests: DBTest {
         }
         waitForExpectations(timeout: 10)
     }
-    
-    func testPath() {
-        XCTAssertNotNil(DB.Path("a"))
-        XCTAssertNotNil(DB.Path("a", "b"))
-        XCTAssertNotNil(DB.Path("/a/"))
-        XCTAssertNotNil(DB.Path("//a//"))
-        XCTAssertNotNil(DB.Path("/a/a/"))
+
+    func testMakeDatabaseReference() {
+        XCTAssertNotNil(DB.makeDatabaseReference("a"))
+        XCTAssertNotNil(DB.makeDatabaseReference("a", "b"))
+        XCTAssertNotNil(DB.makeDatabaseReference("/a/"))
+        XCTAssertNotNil(DB.makeDatabaseReference("//a//"))
+        XCTAssertNotNil(DB.makeDatabaseReference("/a/a/"))
     }
     
-    func testPathFail() {
-        XCTAssertNil(DB.Path(""))
-        XCTAssertNil(DB.Path("a", ""))
-        XCTAssertNil(DB.Path("", "a"))
-        XCTAssertNil(DB.Path("/"))
-        XCTAssertNil(DB.Path("//"))
-        XCTAssertNil(DB.Path("///"))
-        XCTAssertNil(DB.Path("/a//a/"))
-    }
-    
-    func testRef() {
-        XCTAssertNotNil(DB.ref("a"))
-        XCTAssertNotNil(DB.ref("a", "b"))
-    }
-    
-    func testRefFail() {
-        let ref = DB.ref("")
-        XCTAssertNil(ref)
+    func testMakeDatabaseReferenceFail() {
+        XCTAssertNil(DB.makeDatabaseReference(""))
+        XCTAssertNil(DB.makeDatabaseReference("a", ""))
+        XCTAssertNil(DB.makeDatabaseReference("", "a"))
+        XCTAssertNil(DB.makeDatabaseReference("/"))
+        XCTAssertNil(DB.makeDatabaseReference("//"))
+        XCTAssertNil(DB.makeDatabaseReference("///"))
+        XCTAssertNil(DB.makeDatabaseReference("/a//a/"))
     }
 }

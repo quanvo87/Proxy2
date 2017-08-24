@@ -28,8 +28,8 @@ class BlockedUsersTableViewController: UITableViewController {
         
         tableView.rowHeight = 60
         
-        blockedUsersRef = ref.child(Path.Blocked).child(api.uid)
-        blockedUsersRef.queryOrdered(byChild: Path.Created).observe(.value, with: { (data) in
+        blockedUsersRef = ref.child(Child.Blocked).child(api.uid)
+        blockedUsersRef.queryOrdered(byChild: Child.Created).observe(.value, with: { (data) in
             var blockedUsers = [BlockedUser]()
             for child in data.children {
                 if let blockedUser = BlockedUser(anyObject: (child as! DataSnapshot).value as AnyObject) {

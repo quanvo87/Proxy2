@@ -24,9 +24,9 @@ class DBProxyTests: DBTest {
                 key.check(.proxyCount, equals: 0, forUser: proxy.ownerId)
                 key.check(.unreadCount, equals: -proxy.unreadCount, forUser: proxy.ownerId)
                 key.checkConvoDeleted(convo, asSender: true)
-                key.checkDeleted(at: Path.Proxies, proxy.ownerId, proxy.key)
-                key.checkDeleted(at: Path.ProxyKeys, proxy.key)
-                key.checkDeleted(at: Path.ProxyOwners, proxy.key)
+                key.checkDeleted(at: Child.Proxies, proxy.ownerId, proxy.key)
+                key.checkDeleted(at: Child.ProxyKeys, proxy.key)
+                key.checkDeleted(at: Child.ProxyOwners, proxy.key)
                 key.notify {
                     key.finishWorkGroup()
                     expectation.fulfill()
@@ -128,7 +128,7 @@ class DBProxyTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
         
-        DB.set(50, at: Path.UserInfo, Shared.shared.uid, Path.ProxyCount) { (success) in
+        DB.set(50, at: Child.UserInfo, Shared.shared.uid, Child.ProxyCount) { (success) in
             XCTAssert(success)
             
             DBProxy.makeProxy { (result) in
@@ -210,7 +210,7 @@ class DBProxyTests: DBTest {
 extension AsyncWorkGroupKey {
     func checkProxyCreated(_ proxy: Proxy) {
         startWork()
-        DB.get(Path.Proxies, Shared.shared.uid, proxy.key) { (data) in
+        DB.get(Child.Proxies, Shared.shared.uid, proxy.key) { (data) in
             XCTAssertEqual(Proxy(data?.value as AnyObject), proxy)
             self.finishWork()
         }
@@ -218,15 +218,15 @@ extension AsyncWorkGroupKey {
     
     func checkProxyKeyCreated(forProxy proxy: Proxy) {
         startWork()
-        DB.get(Path.ProxyKeys, proxy.key) { (data) in
-            XCTAssertEqual(data?.value as? [String: String] ?? [:], [Path.Key: proxy.key])
+        DB.get(Child.ProxyKeys, proxy.key) { (data) in
+            XCTAssertEqual(data?.value as? [String: String] ?? [:], [Child.Key: proxy.key])
             self.finishWork()
         }
     }
     
     func checkProxyOwnerCreated(forProxy proxy: Proxy) {
         startWork()
-        DB.get(Path.ProxyOwners, proxy.key) { (data) in
+        DB.get(Child.ProxyOwners, proxy.key) { (data) in
             XCTAssertEqual(ProxyOwner(data?.value as AnyObject), ProxyOwner(key: proxy.key, ownerId: Shared.shared.uid))
             self.finishWork()
         }

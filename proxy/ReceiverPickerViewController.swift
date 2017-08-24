@@ -28,7 +28,7 @@ class ReceiverPickerViewController: UIViewController, UICollectionViewDelegate {
         cancelButton.setImage(UIImage(named: "cancel"), for: UIControlState.normal)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: cancelButton)
         
-        api.ref.child(Path.Proxies).queryOrdered(byChild: Path.Key).observeSingleEvent(of: .value, with: { data in
+        api.ref.child(Child.Proxies).queryOrdered(byChild: Child.Key).observeSingleEvent(of: .value, with: { data in
             guard data.hasChildren() else { return }
             let dict = data.children.nextObject() as AnyObject
             var proxies = [String]()

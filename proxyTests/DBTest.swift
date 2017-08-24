@@ -120,13 +120,13 @@ extension AsyncWorkGroupKey {
     func check(_ property: SettableConvoProperty, forConvo convo: Convo, asSender: Bool, function: String = #function, line: Int = #line) {
         let (ownerId, proxyKey) = AsyncWorkGroupKey.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
         startWork()
-        DB.get(Path.Convos, ownerId, convo.key, property.properties.name) { (data) in
+        DB.get(Child.Convos, ownerId, convo.key, property.properties.name) { (data) in
             AsyncWorkGroupKey.checkEquals(data, property.properties.value, function: function, line: line)
             self.finishWork()
         }
 
         startWork()
-        DB.get(Path.Convos, proxyKey, convo.key, property.properties.name) { (data) in
+        DB.get(Child.Convos, proxyKey, convo.key, property.properties.name) { (data) in
             AsyncWorkGroupKey.checkEquals(data, property.properties.value, function: function, line: line)
             self.finishWork()
         }
@@ -145,7 +145,7 @@ extension AsyncWorkGroupKey {
     
     func check(_ property: SettableProxyProperty, ownerId: String, proxyKey: String, function: String = #function, line: Int = #line) {
         startWork()
-        DB.get(Path.Proxies, ownerId, proxyKey, property.properties.name) { (data) in
+        DB.get(Child.Proxies, ownerId, proxyKey, property.properties.name) { (data) in
             AsyncWorkGroupKey.checkEquals(data, property.properties.value, function: function, line: line)
             self.finishWork()
         }
@@ -155,7 +155,7 @@ extension AsyncWorkGroupKey {
 extension AsyncWorkGroupKey {
     func check(_ property: IncrementableUserProperty, equals value: Int, forUser uid: String, function: String = #function, line: Int = #line) {
         startWork()
-        DB.get(Path.UserInfo, uid, property.rawValue) { (data) in
+        DB.get(Child.UserInfo, uid, property.rawValue) { (data) in
             AsyncWorkGroupKey.checkEquals(data, value, function: function, line: line)
             self.finishWork()
         }

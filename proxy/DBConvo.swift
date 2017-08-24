@@ -12,19 +12,19 @@ struct DBConvo {
     }
 
     static func getConvo(withKey key: String, belongingTo uid: String, completion: @escaping (Convo?) -> Void) {
-        DB.get(Path.Convos, uid, key) { (data) in
+        DB.get(Child.Convos, uid, key) { (data) in
             completion(Convo(data?.value as AnyObject))
         }
     }
 
     static func getConvos(forProxy proxy: Proxy, filtered: Bool, completion: @escaping ([Convo]?) -> Void) {
-        DB.get(Path.Convos, proxy.key) { (data) in
+        DB.get(Child.Convos, proxy.key) { (data) in
             completion(data?.toConvos(filtered: filtered))
         }
     }
 
     static func getConvos(forUser uid: String, filtered: Bool, completion: @escaping ([Convo]?) -> Void) {
-        DB.get(Path.Convos, uid) { (data) in
+        DB.get(Child.Convos, uid) { (data) in
             completion(data?.toConvos(filtered: filtered))
         }
     }
@@ -43,7 +43,7 @@ struct DBConvo {
     }
 
     static func makeConvo(senderProxy: Proxy, receiverProxy: Proxy, completion: @escaping (Convo?) -> Void) {
-        DB.get(Path.UserInfo, receiverProxy.ownerId, Path.Blocked, senderProxy.ownerId) { (data) in
+        DB.get(Child.UserInfo, receiverProxy.ownerId, Child.Blocked, senderProxy.ownerId) { (data) in
             let senderIsBlocked = data?.value as? Bool ?? false
             let convoKey = makeConvoKey(senderProxy: senderProxy, receiverProxy: receiverProxy)
 
@@ -105,7 +105,7 @@ struct DBConvo {
     }
 
     static func userIsPresent(user uid: String, inConvoWithKey convoKey: String, completion: @escaping (Bool) -> Void) {
-        DB.get(Path.UserInfo, uid, Path.Present, convoKey, Path.Present) { (data) in
+        DB.get(Child.UserInfo, uid, Child.Present, convoKey, Child.Present) { (data) in
             completion(data?.value as? Bool ?? false)
         }
     }

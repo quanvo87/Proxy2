@@ -40,9 +40,9 @@ struct DBProxy {
 
     static func deleteProxy(_ proxy: Proxy, withConvos convos: [Convo], completion: @escaping (Success) -> Void) {
         let key = AsyncWorkGroupKey()
-        key.delete(at: Path.Proxies, proxy.ownerId, proxy.key)
-        key.delete(at: Path.ProxyKeys, proxy.key)
-        key.delete(at: Path.ProxyOwners, proxy.key)
+        key.delete(at: Child.Proxies, proxy.ownerId, proxy.key)
+        key.delete(at: Child.ProxyKeys, proxy.key)
+        key.delete(at: Child.ProxyOwners, proxy.key)
         key.deleteConvos(convos)
         key.increment(by: -1, forProperty: .proxyCount, forUser: proxy.ownerId)
         key.increment(by: -proxy.unreadCount, forProperty: .unreadCount, forUser: proxy.ownerId)
@@ -54,13 +54,13 @@ struct DBProxy {
     }
 
     static func getProxies(forUser uid: String, completion: @escaping ([Proxy]?) -> Void) {
-        DB.get(Path.Proxies, uid) { (data) in
+        DB.get(Child.Proxies, uid) { (data) in
             completion(data?.toProxies())
         }
     }
 
     static func getProxy(withKey key: String, completion: @escaping (Proxy?) -> Void) {
-        DB.get(Path.ProxyOwners, key) { (data) in
+        DB.get(Child.ProxyOwners, key) { (data) in
             guard let proxyOwner = ProxyOwner(data?.value as AnyObject) else {
                 completion(nil)
                 return
@@ -70,7 +70,7 @@ struct DBProxy {
     }
 
     static func getProxy(withKey key: String, belongingTo uid: String, completion: @escaping (Proxy?) -> Void) {
-        DB.get(Path.Proxies, uid, key) { (data) in
+        DB.get(Child.Proxies, uid, key) { (data) in
             completion(Proxy(data?.value as AnyObject))
         }
     }
@@ -97,7 +97,7 @@ struct DBProxy {
                 completion(.failure(.unknown))
                 return
             }
-            DB.get(Path.UserInfo, uid, Path.ProxyCount) { (data) in
+            DB.get(Child.UserInfo, uid, Child.ProxyCount) { (data) in
                 guard data?.value as? Int ?? 0 <= Settings.MaxAllowedProxies else {
                     completion(.failure(.proxyLimitReached))
                     return
@@ -114,7 +114,7 @@ struct DBProxy {
     }
 
     private static func makeProxyHelper(withName specificName: String? = nil, forUser uid: String = Shared.shared.uid, completion: @escaping CreateProxyCallback) {
-        guard let proxyKeysRef = DB.ref(Path.ProxyKeys) else {
+        guard let proxyKeysRef = DB.makeDatabaseReference(Child.ProxyKeys) else {
             makeProxyDone(result: .failure(.unknown), completion: completion)
             return
         }
@@ -128,16 +128,16 @@ struct DBProxy {
         }
 
         let proxyKey = name.lowercased()
-        let proxyKeyDictionary = [Path.Key: proxyKey]
+        let proxyKeyDictionary = [Child.Key: proxyKey]
         let autoId = proxyKeysRef.childByAutoId().key
 
-        DB.set(proxyKeyDictionary, at: Path.ProxyKeys, autoId) { (success) in
+        DB.set(proxyKeyDictionary, at: Child.ProxyKeys, autoId) { (success) in
             guard success else {
                 makeProxyDone(result: .failure(.unknown), completion: completion)
                 return
             }
-            proxyKeysRef.queryOrdered(byChild: Path.Key).queryEqual(toValue: proxyKey).observeSingleEvent(of: .value, with: { (data) in
-                DB.delete(Path.ProxyKeys, autoId) { (success) in
+            proxyKeysRef.queryOrdered(byChild: Child.Key).queryEqual(toValue: proxyKey).observeSingleEvent(of: .value, with: { (data) in
+                DB.delete(Child.ProxyKeys, autoId) { (success) in
                     guard success else {
                         makeProxyDone(result: .failure(.unknown), completion: completion)
                         return
@@ -153,9 +153,9 @@ struct DBProxy {
 
                         let key = AsyncWorkGroupKey()
                         key.increment(by: 1, forProperty: .proxyCount, forUser: uid)
-                        key.set(proxy.toDictionary(), at: Path.Proxies, proxy.ownerId, proxy.key)
-                        key.set(proxyKeyDictionary, at: Path.ProxyKeys, proxy.key)
-                        key.set(proxyOwner.toDictionary(), at: Path.ProxyOwners, proxy.key)
+                        key.set(proxy.toDictionary(), at: Child.Proxies, proxy.ownerId, proxy.key)
+                        key.set(proxyKeyDictionary, at: Child.ProxyKeys, proxy.key)
+                        key.set(proxyOwner.toDictionary(), at: Child.ProxyOwners, proxy.key)
                         key.notify {
                             makeProxyDone(result: key.workResult ? .success(proxy) : .failure(.unknown), completion: completion)
                             key.finishWorkGroup()

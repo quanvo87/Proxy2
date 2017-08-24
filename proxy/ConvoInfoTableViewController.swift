@@ -45,29 +45,29 @@ class ConvoInfoTableViewController: UITableViewController {
             self.senderProxy = proxy
         }
         
-        receiverIconRef = api.ref.child(Path.Proxies).child(convo.receiverId).child(convo.receiverProxyKey).child(Path.Icon)
-        receiverNicknameRef = api.ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.ReceiverNickname)
-        senderIconRef = api.ref.child(Path.Proxies).child(convo.senderId).child(convo.senderProxyKey).child(Path.Icon)
-        senderNicknameRef = api.ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderNickname)
+        receiverIconRef = api.ref.child(Child.Proxies).child(convo.receiverId).child(convo.receiverProxyKey).child(Child.Icon)
+        receiverNicknameRef = api.ref.child(Child.Convos).child(convo.senderId).child(convo.key).child(Child.ReceiverNickname)
+        senderIconRef = api.ref.child(Child.Proxies).child(convo.senderId).child(convo.senderProxyKey).child(Child.Icon)
+        senderNicknameRef = api.ref.child(Child.Convos).child(convo.senderId).child(convo.key).child(Child.SenderNickname)
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
         
         // Check if convo info should be closed
-        api.ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderLeftConvo).observeSingleEvent(of: .value, with: { (data) in
+        api.ref.child(Child.Convos).child(convo.senderId).child(convo.key).child(Child.SenderLeftConvo).observeSingleEvent(of: .value, with: { (data) in
             if let leftConvo = data.value as? Bool, leftConvo {
                 self.close()
             }
         })
         
-        api.ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.SenderDeletedProxy).observeSingleEvent(of: .value, with: { (data) in
+        api.ref.child(Child.Convos).child(convo.senderId).child(convo.key).child(Child.SenderDeletedProxy).observeSingleEvent(of: .value, with: { (data) in
             if let deletedProxy = data.value as? Bool, deletedProxy {
                 self.close()
             }
         })
         
-        api.ref.child(Path.Convos).child(convo.senderId).child(convo.key).child(Path.ReceiverIsBlocked).observeSingleEvent(of: .value, with: { (data) in
+        api.ref.child(Child.Convos).child(convo.senderId).child(convo.key).child(Child.ReceiverIsBlocked).observeSingleEvent(of: .value, with: { (data) in
             if let isBlocking = data.value as? Bool, isBlocking {
                 self.close()
             }
