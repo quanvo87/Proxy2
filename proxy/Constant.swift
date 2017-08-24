@@ -1,4 +1,4 @@
-struct Path {
+struct Child {
     // Objects
     static let Proxies = "proxies"
     static let ProxyOwners = "proxyOwners"

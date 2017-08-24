@@ -19,9 +19,8 @@ struct DBMessage {
         }
     }
 
-    // TODO: - make mediaType an enum
     private static func sendMessage(text: String, mediaType: String, senderConvo: Convo, completion: @escaping (SendMessageCallback) -> Void) {
-        guard let ref = DB.ref(Path.Messages, senderConvo.key) else {
+        guard let ref = DB.makeDatabaseReference(Child.Messages, senderConvo.key) else {
             completion(nil)
             return
         }
@@ -31,16 +30,16 @@ struct DBMessage {
             let currentTime = Date().timeIntervalSince1970
 
             // Sender updates
-            key.increment(by: 1, forProperty: .messagesSent, forUser: senderConvo.senderId)
             key.set(.lastMessage("You: \(text)"), forConvo: senderConvo, asSender: true)
-            key.set(.lastMessage("You: \(text)"), forProxyInConvo: senderConvo, asSender: true)
             key.set(.timestamp(currentTime), forConvo: senderConvo, asSender: true)
+            key.set(.lastMessage("You: \(text)"), forProxyInConvo: senderConvo, asSender: true)
             key.set(.timestamp(currentTime), forProxyInConvo: senderConvo, asSender: true)
+            key.increment(by: 1, forProperty: .messagesSent, forUser: senderConvo.senderId)
 
             if senderConvo.senderLeftConvo {
-                key.increment(by: 1, forProperty: .convoCount, forProxyInConvo: senderConvo, asSender: true)
                 key.set(.receiverLeftConvo(false), forConvo: senderConvo, asSender: false)
                 key.set(.senderLeftConvo(false), forConvo: senderConvo, asSender: true)
+                key.increment(by: 1, forProperty: .convoCount, forProxyInConvo: senderConvo, asSender: true)
             }
 
             // Receiver updates
@@ -66,9 +65,9 @@ struct DBMessage {
             }
 
             if senderConvo.receiverLeftConvo {
-                key.increment(by: 1, forProperty: .convoCount, forProxyInConvo: senderConvo, asSender: false)
                 key.set(.receiverLeftConvo(false), forConvo: senderConvo, asSender: true)
                 key.set(.senderLeftConvo(false), forConvo: senderConvo, asSender: false)
+                key.increment(by: 1, forProperty: .convoCount, forProxyInConvo: senderConvo, asSender: false)
             }
 
             // Write message
@@ -82,22 +81,25 @@ struct DBMessage {
                                   read: receiverIsPresent,
                                   senderId: senderConvo.senderId,
                                   text: text)
-            key.set(message.toDictionary(), at: Path.Messages, message.parentConvo, message.key)
+            key.set(message.toDictionary(), at: Child.Messages, message.parentConvo, message.key)
 
             key.notify {
-                if key.workResult {
-                    DBConvo.getConvo(withKey: senderConvo.key, belongingTo: senderConvo.senderId) { (convo) in
-                        if let convo = convo {
-                            completion((convo, message))
-                        } else {
-                            completion(nil)
-                        }
-                    }
-                } else {
-                    completion(nil)
+                defer {
+                    key.finishWorkGroup()
                 }
 
-                key.finishWorkGroup()
+                guard key.workResult else {
+                    completion(nil)
+                    return
+                }
+
+                DBConvo.getConvo(withKey: senderConvo.key, belongingTo: senderConvo.senderId) { (convo) in
+                    guard let convo = convo else {
+                        completion(nil)
+                        return
+                    }
+                    completion((convo, message))
+                }
             }
         }
     }

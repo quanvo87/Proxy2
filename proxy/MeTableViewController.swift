@@ -30,7 +30,7 @@ class MeTableViewController: UITableViewController {
             if let user = user {
                 self.navigationItem.title = user.displayName
 
-                self.messagesReceivedRef = self.ref.child(Path.MessagesReceived).child(self.api.uid).child(Path.MessagesReceived)
+                self.messagesReceivedRef = self.ref.child(Child.MessagesReceived).child(self.api.uid).child(Child.MessagesReceived)
                 self.messagesReceivedRef.observe(.value, with: { (data) in
                     if let messagesReceived = data.value as? Int {
                         self.messagesReceived = messagesReceived.asStringWithCommas
@@ -38,7 +38,7 @@ class MeTableViewController: UITableViewController {
                     }
                 })
 
-                self.messagesSentRef = self.ref.child(Path.MessagesSent).child(self.api.uid).child(Path.MessagesSent)
+                self.messagesSentRef = self.ref.child(Child.MessagesSent).child(self.api.uid).child(Child.MessagesSent)
                 self.messagesSentRef.observe(.value, with: { (data) in
                     if let messagesSent = data.value as? Int {
                         self.messagesSent = messagesSent.asStringWithCommas
@@ -46,7 +46,7 @@ class MeTableViewController: UITableViewController {
                     }
                 })
 
-                self.proxiesInteractedWithRef = self.ref.child(Path.ProxiesInteractedWith).child(self.api.uid).child(Path.ProxiesInteractedWith)
+                self.proxiesInteractedWithRef = self.ref.child(Child.ProxiesInteractedWith).child(self.api.uid).child(Child.ProxiesInteractedWith)
                 self.proxiesInteractedWithRef.observe(.value, with: { (data) in
                     if let proxiesInteractedWith = data.value as? Int {
                         self.proxiesInteractedWith = proxiesInteractedWith.asStringWithCommas

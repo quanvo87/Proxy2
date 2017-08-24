@@ -65,7 +65,7 @@ class DBConvoTests: DBTest {
         defer { waitForExpectations(timeout: 10) }
 
         DBTest.makeConvo { (convo, _, _) in
-            DB.get(Path.Convos, convo.senderId) { (data) in
+            DB.get(Child.Convos, convo.senderId) { (data) in
                 let convos = data?.toConvos(filtered: false)
                 XCTAssertEqual(convos?.count, 1)
                 XCTAssertEqual(convos?[0], convo)
@@ -145,7 +145,7 @@ class DBConvoTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        DB.set(true, at: Path.UserInfo, DBTest.testUser, Path.Blocked, Shared.shared.uid) { (success) in
+        DB.set(true, at: Child.UserInfo, DBTest.testUser, Child.Blocked, Shared.shared.uid) { (success) in
             XCTAssert(success)
 
             DBTest.makeConvo { (convo, _, _) in
@@ -202,7 +202,7 @@ class DBConvoTests: DBTest {
         defer { waitForExpectations(timeout: 10) }
 
         DBTest.makeConvo { (convo, _, _) in
-            DB.set(true, at: Path.UserInfo, convo.senderId, Path.Present, convo.key, Path.Present) { (success) in
+            DB.set(true, at: Child.UserInfo, convo.senderId, Child.Present, convo.key, Child.Present) { (success) in
                 XCTAssert(success)
 
                 DBConvo.userIsPresent(user: Shared.shared.uid, inConvoWithKey: convo.key) { (isPresent) in
@@ -217,21 +217,21 @@ class DBConvoTests: DBTest {
 extension AsyncWorkGroupKey {
     func checkConvoDeleted(_ convo: Convo, asSender: Bool) {
         let (ownerId, proxyKey) = AsyncWorkGroupKey.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
-        checkDeleted(at: Path.Convos, ownerId, convo.key)
-        checkDeleted(at: Path.Convos, proxyKey, convo.key)
+        checkDeleted(at: Child.Convos, ownerId, convo.key)
+        checkDeleted(at: Child.Convos, proxyKey, convo.key)
     }
 
     func checkConvoCreated(_ convo: Convo, asSender: Bool) {
         let (ownerId, proxyKey) = AsyncWorkGroupKey.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
 
         startWork()
-        DB.get(Path.Convos, ownerId, convo.key) { (data) in
+        DB.get(Child.Convos, ownerId, convo.key) { (data) in
             XCTAssertEqual(Convo(data?.value as AnyObject), convo)
             self.finishWork()
         }
 
         startWork()
-        DB.get(Path.Convos, proxyKey, convo.key) { (data) in
+        DB.get(Child.Convos, proxyKey, convo.key) { (data) in
             XCTAssertEqual(Convo(data?.value as AnyObject), convo)
             self.finishWork()
         }

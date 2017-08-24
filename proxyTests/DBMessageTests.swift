@@ -40,7 +40,7 @@ class DBMessageTests: DBTest {
                     
                     key.check(.lastMessage(DBMessageTests.senderText), forProxy: sender)
                     key.check(.timestamp(convo.timestamp), forProxy: sender)
-                    
+
                     key.check(.messagesSent, equals: 1, forUser: sender.ownerId)
                     
                     // Check receiver updates
@@ -98,7 +98,7 @@ class DBMessageTests: DBTest {
 extension AsyncWorkGroupKey {
     func checkMessageCreated(_ message: Message) {
         startWork()
-        DB.get(Path.Messages, message.parentConvo, message.key) { (data) in
+        DB.get(Child.Messages, message.parentConvo, message.key) { (data) in
             XCTAssertEqual(Message(data?.value as AnyObject), message)
             self.finishWork()
         }
