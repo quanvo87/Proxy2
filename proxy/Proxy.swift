@@ -91,26 +91,18 @@ enum IncrementableProxyProperty: String {
 
 enum SettableProxyProperty {
     case convoCount(Int)
-    case dateCreated(Double)
     case icon(String)
-    case key(String)
     case lastMessage(String)
-    case name(String)
     case nickname(String)
-    case ownerId(String)
     case timestamp(Double)
     case unreadCount(Int)
 
     var properties: (name: String, value: Any) {
         switch self {
         case .convoCount(let value): return ("convoCount", value)
-        case .dateCreated(let value): return ("dateCreated", value)
         case .icon(let value): return ("icon", value)
-        case .key(let value): return ("key", value)
         case .lastMessage(let value): return ("lastMessage", value)
-        case .name(let value): return ("name", value)
         case .nickname(let value): return ("nickname", value)
-        case .ownerId(let value): return ("ownerId", value)
         case .timestamp(let value): return ("timestamp", value)
         case .unreadCount(let value): return ("unreadCount", value)
         }

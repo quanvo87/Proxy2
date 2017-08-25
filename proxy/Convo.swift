@@ -114,43 +114,29 @@ enum IncrementableConvoProperty: String {
 }
 
 enum SettableConvoProperty {
-    case key(String)
     case lastMessage(String)
     case receiverDeletedProxy(Bool)
     case receiverIcon(String)
-    case receiverId(String)
     case receiverIsBlocked(Bool)
     case receiverLeftConvo(Bool)
     case receiverNickname(String)
-    case receiverProxyKey(String)
-    case receiverProxyName(String)
-    case senderId(String)
     case senderIsBlocked(Bool)
     case senderLeftConvo(Bool)
     case senderNickname(String)
-    case senderProxyKey(String)
-    case senderProxyName(String)
     case timestamp(Double)
     case unreadCount(Int)
 
     var properties: (name: String, value: Any) {
         switch self {
-        case .key(let value): return ("key", value)
         case .lastMessage(let value): return ("lastMessage", value)
         case .receiverDeletedProxy(let value): return ("receiverDeletedProxy", value)
         case .receiverIcon(let value): return ("receiverIcon", value)
-        case .receiverId(let value): return ("receiverId", value)
         case .receiverIsBlocked(let value): return ("receiverIsBlocked", value)
         case .receiverLeftConvo(let value): return ("receiverLeftConvo", value)
         case .receiverNickname(let value): return ("receiverNickname", value)
-        case .receiverProxyKey(let value): return ("receiverProxyKey", value)
-        case .receiverProxyName(let value): return ("receiverProxyName", value)
-        case .senderId(let value): return ("senderId", value)
         case .senderIsBlocked(let value): return ("senderIsBlocked", value)
         case .senderLeftConvo(let value): return ("senderLeftConvo", value)
         case .senderNickname(let value): return ("senderNickname", value)
-        case .senderProxyKey(let value): return ("senderProxyKey", value)
-        case .senderProxyName(let value): return ("senderProxyName", value)
         case .timestamp(let value): return ("timestamp", value)
         case .unreadCount(let value): return ("unreadCount", value)
         }
