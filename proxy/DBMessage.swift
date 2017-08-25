@@ -1,5 +1,5 @@
 struct DBMessage {
-    typealias SendMessageCallback = (convo: Convo, message: Message)?
+    typealias SendMessageCallback = (message: Message, convo: Convo)?
 
     static func sendMessage(from senderProxy: Proxy, to receiverProxy: Proxy, withText text: String, completion: @escaping (SendMessageCallback) -> Void) {
         let convoKey = DBConvo.makeConvoKey(senderProxy: senderProxy, receiverProxy: receiverProxy)
@@ -79,8 +79,9 @@ struct DBMessage {
                                   mediaType: mediaType,
                                   parentConvo: senderConvo.key,
                                   read: receiverIsPresent,
+                                  receiverId: senderConvo.receiverId,
+                                  receiverProxyKey: senderConvo.receiverProxyKey,
                                   senderId: senderConvo.senderId,
-                                  senderProxyKey: senderConvo.senderProxyKey,
                                   text: text)
             key.set(message.toDictionary(), at: Child.Messages, message.parentConvo, message.key)
 
@@ -99,18 +100,28 @@ struct DBMessage {
                         completion(nil)
                         return
                     }
-                    completion((convo, message))
+                    completion((message, convo))
                 }
             }
         }
     }
 
-    static func setRead(forMessage message: Message, completion: @escaping (Success) -> Void) {
+    static func setMedia(for message: Message, mediaType: String, mediaURL: String, completion: @escaping (Success) -> Void) {
         let key = AsyncWorkGroupKey()
-        key.increment(by: -1, forProperty: .unreadCount, ownerId: message.senderId, proxyKey: message.senderProxyKey, convoKey: message.parentConvo)
-        key.increment(by: -1, forProperty: .unreadCount, proxyOwner: message.senderId, proxyKey: message.senderProxyKey)
-        key.increment(by: -1, forProperty: .unreadCount, forUser: message.senderId)
-        key.set(.dateRead(Date().timeIntervalSince1970), forMessage: message)
+        key.set(.mediaType(mediaType), forMessage: message)
+        key.set(.mediaURL(mediaURL), forMessage: message)
+        key.notify {
+            completion(key.workResult)
+            key.finishWorkGroup()
+        }
+    }
+
+    static func setRead(forMessage message: Message, atDate date: Double = Date().timeIntervalSince1970, completion: @escaping (Success) -> Void) {
+        let key = AsyncWorkGroupKey()
+        key.increment(by: -1, forProperty: .unreadCount, forConvoWithKey: message.parentConvo, ownerId: message.receiverId, proxyKey: message.receiverProxyKey)
+        key.increment(by: -1, forProperty: .unreadCount, forProxyWithKey: message.receiverProxyKey, ownerId: message.receiverId)
+        key.increment(by: -1, forProperty: .unreadCount, forUser: message.receiverId)
+        key.set(.dateRead(date), forMessage: message)
         key.set(.read(true), forMessage: message)
         key.notify {
             completion(key.workResult)

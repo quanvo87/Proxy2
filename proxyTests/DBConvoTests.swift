@@ -90,7 +90,7 @@ class DBConvoTests: DBTest {
                 key.check(.senderLeftConvo(true), forConvo: convo, asSender: true)
                 key.check(.convoCount(0), forProxy: sender)
                 key.check(.unreadCount(-convo.unreadCount), forProxy: sender)
-                key.check(.unreadCount, equals: -convo.unreadCount, forUser: convo.senderId)
+                key.check(.unreadCount, -convo.unreadCount, forUser: convo.senderId)
                 key.notify {
                     key.finishWorkGroup()
                     expectation.fulfill()
@@ -128,12 +128,12 @@ class DBConvoTests: DBTest {
             receiverConvo.senderProxyName = receiver.name
 
             let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-            key.checkConvoCreated(receiverConvo, asSender: true)
-            key.checkConvoCreated(senderConvo, asSender: true)
             key.check(.convoCount(1), forProxy: receiver)
             key.check(.convoCount(1), forProxy: sender)
-            key.check(.proxiesInteractedWith, equals: 1, forUser: receiver.ownerId)
-            key.check(.proxiesInteractedWith, equals: 1, forUser: sender.ownerId)
+            key.check(.proxiesInteractedWith, 1, forUser: receiver.ownerId)
+            key.check(.proxiesInteractedWith, 1, forUser: sender.ownerId)
+            key.checkConvoCreated(receiverConvo, asSender: true)
+            key.checkConvoCreated(senderConvo, asSender: true)
             key.notify {
                 key.finishWorkGroup()
                 expectation.fulfill()

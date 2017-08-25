@@ -21,8 +21,8 @@ class DBProxyTests: DBTest {
                 XCTAssert(success)
                 let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
                 key.check(.receiverDeletedProxy(true), forConvo: convo, asSender: false)
-                key.check(.proxyCount, equals: 0, forUser: proxy.ownerId)
-                key.check(.unreadCount, equals: -proxy.unreadCount, forUser: proxy.ownerId)
+                key.check(.proxyCount, 0, forUser: proxy.ownerId)
+                key.check(.unreadCount, -proxy.unreadCount, forUser: proxy.ownerId)
                 key.checkConvoDeleted(convo, asSender: true)
                 key.checkDeleted(at: Child.Proxies, proxy.ownerId, proxy.key)
                 key.checkDeleted(at: Child.ProxyKeys, proxy.key)
@@ -113,7 +113,7 @@ class DBProxyTests: DBTest {
             XCTAssertFalse(Shared.shared.isCreatingProxy)
             
             let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-            key.check(.proxyCount, equals: 1, forUser: proxy.ownerId)
+            key.check(.proxyCount, 1, forUser: proxy.ownerId)
             key.checkProxyCreated(proxy)
             key.checkProxyKeyCreated(forProxy: proxy)
             key.checkProxyOwnerCreated(forProxy: proxy)
@@ -175,8 +175,8 @@ class DBProxyTests: DBTest {
                 XCTAssert(success)
                 
                 let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-                key.check(.receiverIcon(newIcon), forConvo: convo, asSender: false)
                 key.check(.icon(newIcon), forProxy: proxy)
+                key.check(.receiverIcon(newIcon), forConvo: convo, asSender: false)
                 key.notify {
                     key.finishWorkGroup()
                     expectation.fulfill()
@@ -196,8 +196,8 @@ class DBProxyTests: DBTest {
                 XCTAssert(success)
                 
                 let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-                key.check(.senderNickname(newNickname), forConvo: convo, asSender: true)
                 key.check(.nickname(newNickname), forProxy: sender)
+                key.check(.senderNickname(newNickname), forConvo: convo, asSender: true)
                 key.notify {
                     key.finishWorkGroup()
                     expectation.fulfill()

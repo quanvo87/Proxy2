@@ -49,31 +49,31 @@ struct DBConvo {
 
             var senderConvo = Convo()
             senderConvo.key = convoKey
-            senderConvo.senderId = senderProxy.ownerId
-            senderConvo.senderProxyKey = senderProxy.key
-            senderConvo.senderProxyName = senderProxy.name
+            senderConvo.receiverIcon = receiverProxy.icon
             senderConvo.receiverId = receiverProxy.ownerId
             senderConvo.receiverProxyKey = receiverProxy.key
             senderConvo.receiverProxyName = receiverProxy.name
-            senderConvo.receiverIcon = receiverProxy.icon
+            senderConvo.senderId = senderProxy.ownerId
+            senderConvo.senderProxyKey = senderProxy.key
+            senderConvo.senderProxyName = senderProxy.name
             senderConvo.senderIsBlocked = senderIsBlocked
 
             var receiverConvo = Convo()
             receiverConvo.key = convoKey
-            receiverConvo.senderId = receiverProxy.ownerId
-            receiverConvo.senderProxyKey = receiverProxy.key
-            receiverConvo.senderProxyName = receiverProxy.name
+            receiverConvo.receiverIcon = senderProxy.icon
             receiverConvo.receiverId = senderProxy.ownerId
             receiverConvo.receiverProxyKey = senderProxy.key
             receiverConvo.receiverProxyName = senderProxy.name
-            receiverConvo.receiverIcon = senderProxy.icon
             receiverConvo.receiverIsBlocked = senderIsBlocked
+            receiverConvo.senderId = receiverProxy.ownerId
+            receiverConvo.senderProxyKey = receiverProxy.key
+            receiverConvo.senderProxyName = receiverProxy.name
 
             let key = AsyncWorkGroupKey()
-            key.increment(by: 1, forProperty: .convoCount, forProxy: senderProxy)
             key.increment(by: 1, forProperty: .convoCount, forProxy: receiverProxy)
-            key.increment(by: 1, forProperty: .proxiesInteractedWith, forUser: senderProxy.ownerId)
+            key.increment(by: 1, forProperty: .convoCount, forProxy: senderProxy)
             key.increment(by: 1, forProperty: .proxiesInteractedWith, forUser: receiverProxy.ownerId)
+            key.increment(by: 1, forProperty: .proxiesInteractedWith, forUser: senderProxy.ownerId)
             key.set(receiverConvo, asSender: true)
             key.set(senderConvo, asSender: true)
             key.notify {
