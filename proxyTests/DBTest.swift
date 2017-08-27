@@ -18,10 +18,8 @@ class DBTest: XCTestCase {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
         
-        DBTest.clearWorkGroups()
-        
         if Shared.shared.uid == uid {
-            DBTest.clearDB {
+            DBTest.clearData {
                 expectation.fulfill()
             }
             
@@ -46,11 +44,20 @@ class DBTest: XCTestCase {
     override func tearDown() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
-        
-        DBTest.clearWorkGroups()
-        DBTest.clearDB {
+
+        DBTest.clearData {
             expectation.fulfill()
         }
+    }
+
+    private static func clearData(completion: @escaping () -> Void) {
+        clearCache()
+        clearWorkGroups()
+        clearDB(completion: completion)
+    }
+
+    private static func clearCache() {
+        Shared.shared.cache.removeAllObjects()
     }
 
     private static func clearWorkGroups() {
@@ -130,7 +137,7 @@ extension AsyncWorkGroupKey {
     func checkDeleted(at first: String, _ rest: String...) {
         startWork()
         DB.get(first, rest) { (data) in
-            XCTAssertEqual(data?.value as? FirebaseDatabase.NSNull, FirebaseDatabase.NSNull())
+            XCTAssertFalse(data?.exists() ?? true)
             self.finishWork()
         }
     }

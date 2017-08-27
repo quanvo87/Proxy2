@@ -220,17 +220,17 @@ class ConvoViewController: JSQMessagesViewController {
                     guard let url = URL(string: data.value as! String), url.absoluteString != "" else { return }
                     
                     // Get the image from `mediaURL`.
-                    self.api.getUIImage(from: url, completion: { (image) in
-                        
-                        // Load the image to the cell.
-                        (_message.media as! JSQPhotoMediaItem).image = image
-                        
-                        // Reload the collection view.
-                        self.collectionView.reloadData()
-                        
-                        // Remove database observer for this message.
-                        messageRef.removeObserver(withHandle: messageRefHandle)
-                    })
+//                    self.api.getUIImage(from: url, completion: { (image) in
+//                        
+//                        // Load the image to the cell.
+//                        (_message.media as! JSQPhotoMediaItem).image = image
+//                        
+//                        // Reload the collection view.
+//                        self.collectionView.reloadData()
+//                        
+//                        // Remove database observer for this message.
+//                        messageRef.removeObserver(withHandle: messageRefHandle)
+//                    })
                 })
                 
             case "image":
@@ -243,14 +243,14 @@ class ConvoViewController: JSQMessagesViewController {
                 
                 // Get the image from `mediaURL`.
                 guard let url = URL(string: message.mediaURL) else { return }
-                self.api.getUIImage(from: url, completion: { (image) in
-                    
-                    // Load the image to the cell.
-                    (_message.media as! JSQPhotoMediaItem).image = image
-                    
-                    // Reload the collection view.
-                    self.collectionView.reloadData()
-                })
+//                self.api.getUIImage(from: url, completion: { (image) in
+//                    
+//                    // Load the image to the cell.
+//                    (_message.media as! JSQPhotoMediaItem).image = image
+//                    
+//                    // Reload the collection view.
+//                    self.collectionView.reloadData()
+//                })
                 
             case "videoPlaceholder":
                 
@@ -351,10 +351,10 @@ class ConvoViewController: JSQMessagesViewController {
     func observeSenderIcon() {
         senderIconRefHandle = senderIconRef.observe(.value, with: { (data) in
             if let icon = data.value as? String {
-                self.api.getUIImage(forIconName: icon, completion: { (image) in
-                    self.icons[self.convo.senderId] = JSQMessagesAvatarImage(placeholder: image)
-                    self.collectionView.reloadData()
-                })
+//                self.api.getUIImage(forIconName: icon, completion: { (image) in
+//                    self.icons[self.convo.senderId] = JSQMessagesAvatarImage(placeholder: image)
+//                    self.collectionView.reloadData()
+//                })
             }
         })
     }
@@ -363,10 +363,10 @@ class ConvoViewController: JSQMessagesViewController {
     func observeReceiverIcon() {
         receiverIconRefHandle = receiverIconRef.observe(.value, with: { (data) in
             if let icon = data.value as? String {
-                self.api.getUIImage(forIconName: icon, completion: { (image) in
-                    self.icons[self.convo.receiverId] = JSQMessagesAvatarImage(placeholder: image)
-                    self.collectionView.reloadData()
-                })
+//                self.api.getUIImage(forIconName: icon, completion: { (image) in
+//                    self.icons[self.convo.receiverId] = JSQMessagesAvatarImage(placeholder: image)
+//                    self.collectionView.reloadData()
+//                })
             }
         })
     }

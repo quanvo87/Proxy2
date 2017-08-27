@@ -67,8 +67,8 @@ class IconPickerCollectionViewController: UICollectionViewController {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifiers.IconPickerCell, for: indexPath as IndexPath) as! IconPickerCell
         let icon = icons[indexPath.row]
         cell.iconImageView.image = nil
-        api.getURL(forIconName: icon) { (url) in
-        }
+//        api.getURL(forIconName: icon) { (url) in
+//        }
 //        cell.iconNameLabel.text = icon.substring(to: icon.index(icon.endIndex, offsetBy: -3))
         cell.layer.cornerRadius = 5
         return cell

@@ -1,7 +1,7 @@
 struct DBMessage {
-    typealias SendMessageCallback = (message: Message, convo: Convo)?
+    typealias SendMessageCallback = ((message: Message, convo: Convo)?) -> Void
 
-    static func sendMessage(from senderProxy: Proxy, to receiverProxy: Proxy, withText text: String, completion: @escaping (SendMessageCallback) -> Void) {
+    static func sendMessage(from senderProxy: Proxy, to receiverProxy: Proxy, withText text: String, completion: @escaping SendMessageCallback) {
         let convoKey = DBConvo.makeConvoKey(senderProxy: senderProxy, receiverProxy: receiverProxy)
 
         DBConvo.getConvo(withKey: convoKey, belongingTo: senderProxy.ownerId) { (senderConvo) in
@@ -19,7 +19,7 @@ struct DBMessage {
         }
     }
 
-    private static func sendMessage(text: String, mediaType: String, senderConvo: Convo, completion: @escaping (SendMessageCallback) -> Void) {
+    private static func sendMessage(text: String, mediaType: String, senderConvo: Convo, completion: @escaping SendMessageCallback) {
         guard let ref = DB.makeDatabaseReference(Child.Messages, senderConvo.key) else {
             completion(nil)
             return

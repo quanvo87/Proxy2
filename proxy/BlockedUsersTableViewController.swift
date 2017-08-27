@@ -78,10 +78,10 @@ class BlockedUsersTableViewController: UITableViewController {
         
         cell.iconImageView.image = nil
 //        cell.iconImageView.kf.indicatorType = .activity
-        api.getURL(forIconName: blockedUser.icon) { (url) in
+//        api.getURL(forIconName: blockedUser.icon) { (url) in
 //            cell.iconImageView.kf.setImage(with: url, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
-        }
-        
+//        }
+
         cell.nameLabel.text = blockedUser.name
         cell.nicknameLabel.text = blockedUser.nickname
         

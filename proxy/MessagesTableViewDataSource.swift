@@ -28,10 +28,10 @@ class MessagesTableViewDataSource: NSObject, UITableViewDataSource {
         cell.iconImageView.image = nil
 
         // TODO: - set the ".png" somewhere else
-        DBIcon.getImageForIcon(convo.receiverIcon + ".png" as AnyObject, tag: cell.tag) { (image, tag) in
+        DBStorage.getImageForIcon(convo.receiverIcon + ".png" as AnyObject, tag: cell.tag) { (result) in
             guard
-                tag == cell.tag,
-                let image = image else {
+                let (image, tag) = result,
+                tag == cell.tag else {
                     return
             }
             DispatchQueue.main.async {

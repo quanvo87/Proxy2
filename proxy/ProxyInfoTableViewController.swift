@@ -187,9 +187,9 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
             cell.nicknameButton.setTitle(proxy.nickname == "" ? "Enter A Nickname" : proxy.nickname, for: .normal)
             cell.iconImageView.image = nil
 //            cell.iconImageView.kf.indicatorType = .activity
-            api.getURL(forIconName: proxy.icon, completion: { (url) in
-//                cell.iconImageView.kf.setImage(with: url, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
-            })
+//            api.getURL(forIconName: proxy.icon, completion: { (url) in
+////                cell.iconImageView.kf.setImage(with: url, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
+//            })
             cell.changeIconButton.addTarget(self, action: #selector(ProxyInfoTableViewController.showIconPickerViewController), for: .touchUpInside)
             cell.selectionStyle = .none
             return cell
@@ -200,9 +200,9 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
             let convo = convos[indexPath.row]
             cell.iconImageView.image = nil
 //            cell.iconImageView.kf.indicatorType = .activity
-            api.getURL(forIconName: convo.receiverIcon) { (url) in
-//                cell.iconImageView.kf.setImage(with: url, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
-            }
+//            api.getURL(forIconName: convo.receiverIcon) { (url) in
+////                cell.iconImageView.kf.setImage(with: url, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
+//            }
             cell.titleLabel.attributedText = api.getConvoTitle(receiverNickname: convo.receiverNickname, receiverName: convo.receiverProxyName, senderNickname: convo.senderNickname, senderName: convo.senderProxyName)
             cell.lastMessageLabel.text = convo.lastMessage
             cell.timestampLabel.text = convo.timestamp.asTimeAgo
