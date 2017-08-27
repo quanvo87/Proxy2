@@ -83,7 +83,7 @@ class API {
     }
     
     /// Returns the UIImage for `url`.
-    func getUIImage(from url: URL, completion: @escaping (_ image: UIImage) -> Void) {
+//    func getUIImage(from url: URL, completion: @escaping (_ image: UIImage) -> Void) {
 //        KingfisherManager.shared.cache.retrieveImage(forKey: url.absoluteString, options: nil) { (image, cachType) in
 //            if let image = image {
 //                completion(image)
@@ -95,38 +95,38 @@ class API {
 //                })
 //            }
 //        }
-    }
-    
+//    }
+
     /// Returns the UIImage for `icon`.
-    func getUIImage(forIconName icon: String, completion: @escaping (_ image: UIImage) -> Void) {
-        
-        // Get url for icon in storage.
-        getURL(forIconName: icon, completion: { (url) in
-            
-            // Get image from url.
-            self.getUIImage(from: url, completion: { (image) in
-                completion(image)
-            })
-        })
-    }
+//    func getUIImage(forIconName icon: String, completion: @escaping (_ image: UIImage) -> Void) {
+//        
+//        // Get url for icon in storage.
+//        getURL(forIconName: icon, completion: { (url) in
+//            
+//            // Get image from url.
+//            self.getUIImage(from: url, completion: { (image) in
+//                completion(image)
+//            })
+//        })
+//    }
     
     /// Returns the URL for `icon`.
-    func getURL(forIconName icon: String, completion: @escaping (_ url: URL) -> Void) {
-        
-        // Check cache first.
-        if let url = iconURLCache[icon] {
-            completion(url)
-            
-            // Else get url from storage.
-        } else {
-            storageRef.child(Child.Icons).child("\(icon).png").downloadURL { (url, error) -> Void in
-                if error == nil, let url = url {
-                    self.iconURLCache[icon] = url
-                    completion(url)
-                }
-            }
-        }
-    }
+//    func getURL(forIconName icon: String, completion: @escaping (_ url: URL) -> Void) {
+//        
+//        // Check cache first.
+//        if let url = iconURLCache[icon] {
+//            completion(url)
+//            
+//            // Else get url from storage.
+//        } else {
+//            storageRef.child(Child.Icons).child("\(icon).png").downloadURL { (url, error) -> Void in
+//                if error == nil, let url = url {
+//                    self.iconURLCache[icon] = url
+//                    completion(url)
+//                }
+//            }
+//        }
+//    }
     
     /// Uploads compressed version of `image` to storage.
     /// Returns NSURL to the image in storage.

@@ -91,7 +91,7 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
                 }
             }
             self.proxies = proxies.reversed()
-            self.tableView.visibleCells.incrementedTags
+            self.tableView.visibleCells.incrementTags()
             self.tableView.reloadData()
         })
         
@@ -212,10 +212,10 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
         
         // Icon
         cell.iconImageView.image = nil
-        DBIcon.getImageForIcon(proxy.icon + ".png" as AnyObject, tag: cell.tag) { (image, tag) in
+        DBStorage.getImageForIcon(proxy.icon + ".png" as AnyObject, tag: cell.tag) { (result) in
             guard
-                tag == cell.tag,
-                let image = image else {
+                let (image, tag) = result,
+                tag == cell.tag else {
                     return
             }
             DispatchQueue.main.async {

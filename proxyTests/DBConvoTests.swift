@@ -60,20 +60,6 @@ class DBConvoTests: DBTest {
         }
     }
 
-    func testGetConvosFromSnapshot() {
-        let expectation = self.expectation(description: #function)
-        defer { waitForExpectations(timeout: 10) }
-
-        DBTest.makeConvo { (convo, _, _) in
-            DB.get(Child.Convos, convo.senderId) { (data) in
-                let convos = data?.toConvos(filtered: false)
-                XCTAssertEqual(convos?.count, 1)
-                XCTAssertEqual(convos?[0], convo)
-                expectation.fulfill()
-            }
-        }
-    }
-
     func testLeaveConvo() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
@@ -209,6 +195,22 @@ class DBConvoTests: DBTest {
                     XCTAssert(isPresent)
                     expectation.fulfill()
                 }
+            }
+        }
+    }
+}
+
+extension DBConvoTests {
+    func testGetConvosFromSnapshot() {
+        let expectation = self.expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
+
+        DBTest.makeConvo { (convo, _, _) in
+            DB.get(Child.Convos, convo.senderId) { (data) in
+                let convos = data?.toConvos(filtered: false)
+                XCTAssertEqual(convos?.count, 1)
+                XCTAssertEqual(convos?[0], convo)
+                expectation.fulfill()
             }
         }
     }

@@ -76,10 +76,10 @@ class ConvoInfoTableViewController: UITableViewController {
         // Observe database values
         receiverIconRefHandle = receiverIconRef.observe(.value, with: { (data) in
             guard let icon = data.value as? String, icon != "" else { return }
-            self.api.getURL(forIconName: icon) { (url) in
-                self.receiverIconURL = url
-                self.tableView.reloadData()
-            }
+//            self.api.getURL(forIconName: icon) { (url) in
+//                self.receiverIconURL = url
+//                self.tableView.reloadData()
+//            }
         })
         
         receiverNicknameRefHandle = receiverNicknameRef.observe(.value, with: { (data) in
@@ -90,10 +90,10 @@ class ConvoInfoTableViewController: UITableViewController {
         
         senderIconRefHandle = senderIconRef.observe(.value, with: { (data) in
             guard let icon = data.value as? String, icon != "" else { return }
-            self.api.getURL(forIconName: icon) { (url) in
-                self.senderIconURL = url
-                self.tableView.reloadData()
-            }
+//            self.api.getURL(forIconName: icon) { (url) in
+//                self.senderIconURL = url
+//                self.tableView.reloadData()
+//            }
         })
         
         senderNicknameRefHandle = senderNicknameRef.observe(.value, with: { (data) in
