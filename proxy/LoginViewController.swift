@@ -1,37 +1,29 @@
-//
-//  LoginViewController.swift
-//  proxy
-//
-//  Created by Quan Vo on 8/14/16.
-//  Copyright © 2016 Quan Vo. All rights reserved.
-//
-
-// TODO: - add phone number sign up, maybe remove email sign up?
+// TODO: Add phone number sign up
 class LoginViewController: UIViewController {
-    @IBOutlet weak var emailTextField: UITextField!
-    @IBOutlet weak var passwordTextField: UITextField!
+    @IBOutlet weak var facebookButton: UIButton!
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var signUpButton: UIButton!
-    @IBOutlet weak var facebookButton: UIButton!
+    @IBOutlet weak var emailTextField: UITextField!
+    @IBOutlet weak var passwordTextField: UITextField!
 
-    lazy var videoPlayer = LoginVideoPlayer()
+    private var player = LoginVideoPlayer()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        videoPlayer.play(self.view)
+        player.play(self.view)
 
         emailTextField.clearButtonMode = .whileEditing
         passwordTextField.clearButtonMode = .whileEditing
         passwordTextField.isSecureTextEntry = true
 
-        signUpButton.setupForLogin()
-        loginButton.setupForLogin()
         facebookButton.setupForLogin()
+        loginButton.setupForLogin()
+        signUpButton.setupForLogin()
     }
 
     @IBAction func login(_ sender: AnyObject) {
-        Login.emailLogin(email: emailTextField.text?.lowercased(), password: passwordTextField.text) { (error) in
+        ProxyLoginManager.emailLogin(email: emailTextField.text?.lowercased(), password: passwordTextField.text) { (error) in
             if let error = error {
                 self.showAlert("Error Logging In", message: error.description)
                 return
@@ -41,7 +33,7 @@ class LoginViewController: UIViewController {
     }
 
     @IBAction func signUp(_ sender: AnyObject) {
-        Login.emailSignUp(email: emailTextField.text?.lowercased(), password: passwordTextField.text) { (error) in
+        ProxyLoginManager.emailSignUp(email: emailTextField.text?.lowercased(), password: passwordTextField.text) { (error) in
             if let error = error {
                 self.showAlert("Error Signing Up", message: error.description)
                 return
@@ -51,7 +43,7 @@ class LoginViewController: UIViewController {
     }
 
     @IBAction func loginWithFacebook(_ sender: AnyObject) {
-        Login.facebookLogin(viewController: self) { (error) in
+        ProxyLoginManager.facebookLogin(viewController: self) { (error) in
             if let error = error {
                 self.showAlert("Error Logging In With Facebook", message: error.description)
                 return
@@ -62,8 +54,7 @@ class LoginViewController: UIViewController {
 
     func goToHomeScreen() {
         if  let tabBarController = storyboard?.instantiateViewController(withIdentifier: Identifiers.TabBarController) as? UITabBarController,
-            let appDelegate = UIApplication.shared.delegate as? AppDelegate
-        {
+            let appDelegate = UIApplication.shared.delegate as? AppDelegate {
             appDelegate.window?.rootViewController = tabBarController
         }
     }

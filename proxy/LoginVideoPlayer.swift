@@ -1,24 +1,15 @@
-//
-//  LoginVideoPlayer.swift
-//  proxy
-//
-//  Created by Quan Vo on 6/5/17.
-//  Copyright © 2017 Quan Vo. All rights reserved.
-//
-
 import AVFoundation
 
-// TODO: - load static image and then pull high quality vid from storage?
 class LoginVideoPlayer {
-    private lazy var player = AVPlayer()
+    private var player = AVPlayer()
 
     init() {}
 
     func play(_ view: UIView) {
         let videos = ["arabiangulf", "beachpalm", "dragontailzipline", "hawaiiancoast"]
-        let rand = Int(arc4random_uniform(UInt32(videos.count)))
+        let random = Int(arc4random_uniform(UInt32(videos.count)))
 
-        guard let path = Bundle.main.path(forResource: "Assets/Splash Videos/\(videos[rand])", ofType: "mp4") else {
+        guard let path = Bundle.main.path(forResource: "Assets/Splash Videos/\(videos[random])", ofType: "mp4") else {
             return
         }
 
@@ -26,12 +17,12 @@ class LoginVideoPlayer {
         player = AVPlayer(url: url)
         player.isMuted = true
         
-        let playerLayer = AVPlayerLayer(player: player)
-        playerLayer.frame = view.frame
-        playerLayer.opacity = 0.95
-        playerLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
-        playerLayer.zPosition = -1
-        view.layer.addSublayer(playerLayer)
+        let layer = AVPlayerLayer(player: player)
+        layer.frame = view.frame
+        layer.opacity = 0.95
+        layer.videoGravity = AVLayerVideoGravity.resizeAspectFill
+        layer.zPosition = -1
+        view.layer.addSublayer(layer)
 
         player.play()
 

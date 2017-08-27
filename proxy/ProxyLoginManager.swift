@@ -1,17 +1,9 @@
-//
-//  Login.swift
-//  proxy
-//
-//  Created by Quan Vo on 6/5/17.
-//  Copyright © 2017 Quan Vo. All rights reserved.
-//
-
 import FirebaseAuth
 import FacebookLogin
 
-struct Login {}
+struct ProxyLoginManager {}
 
-extension Login {
+extension ProxyLoginManager {
     static func emailLogin(email: String?, password: String?, completion: @escaping (Error?) -> Void) {
         guard
             let email = email, email != "",
@@ -42,11 +34,11 @@ extension Login {
             changeRequest.displayName = email
             changeRequest.commitChanges()
         }
-        finish(user: user, error: error, completion: completion)
+        finishLogin(user: user, error: error, completion: completion)
     }
 }
 
-extension Login {
+extension ProxyLoginManager {
     static func facebookLogin(viewController: UIViewController, completion: @escaping (Error?) -> Void) {
         let loginManager = LoginManager()
         loginManager.logIn([.publicProfile], viewController: viewController) { (loginResult) in
@@ -54,7 +46,7 @@ extension Login {
             case .success:
                 let credential = FacebookAuthProvider.credential(withAccessToken: FBSDKAccessToken.current().tokenString)
                 Auth.auth().signIn(with: credential) { (user, error) in
-                    finish(user: user, error: error, completion: completion)
+                    finishLogin(user: user, error: error, completion: completion)
                 }
             case .failed(let error):
                 completion(error)
@@ -65,8 +57,8 @@ extension Login {
     }
 }
 
-private extension Login {
-    static func finish(user: User?, error: Error?, completion: (Error?) -> Void) {
+private extension ProxyLoginManager {
+    static func finishLogin(user: User?, error: Error?, completion: (Error?) -> Void) {
         if let user = user {
             Shared.shared.uid = user.uid
         }
