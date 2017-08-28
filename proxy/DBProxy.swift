@@ -1,5 +1,4 @@
 import FirebaseDatabase
-import FirebaseStorage
 
 struct DBProxy {
     typealias CreateProxyCallback = (Result<Proxy, ProxyError>) -> Void
@@ -75,24 +74,8 @@ struct DBProxy {
         }
     }
 
-    static func loadProxyInfo(completion: ((Success) -> Void)? = nil) {
-        if  !Shared.shared.adjectives.isEmpty &&
-            !Shared.shared.nouns.isEmpty &&
-            !Shared.shared.iconNames.isEmpty {
-            completion?(true)
-            return
-        }
-        let workKey = AsyncWorkGroupKey()
-        workKey.loadIconNames()
-        workKey.loadProxyNameWords()
-        workKey.notify() {
-            completion?(workKey.workResult)
-            workKey.finishWorkGroup()
-        }
-    }
-
     static func makeProxy(withName specificName: String? = nil, forUser uid: String = Shared.shared.uid, completion: @escaping CreateProxyCallback) {
-        loadProxyInfo { (success) in
+        DBStorage.loadProxyInfo { (success) in
             guard success else {
                 completion(.failure(.unknown))
                 return
@@ -114,7 +97,7 @@ struct DBProxy {
     }
 
     private static func makeProxyHelper(withName specificName: String? = nil, forUser uid: String = Shared.shared.uid, completion: @escaping CreateProxyCallback) {
-        guard let proxyKeysRef = DB.makeDatabaseReference(Child.ProxyKeys) else {
+        guard let proxyKeysRef = DB.makeReference(Child.ProxyKeys) else {
             makeProxyDone(result: .failure(.unknown), completion: completion)
             return
         }
@@ -230,36 +213,6 @@ extension AsyncWorkGroupKey {
     func deleteConvos(_ convos: [Convo]) {
         for convo in convos {
             self.delete(convo, asSender: true)
-        }
-    }
-
-    func loadIconNames() {
-        startWork()
-        Storage.storage().reference(forURL: URLs.Storage + "/app").child("iconNames.json").getData(maxSize: 1 * 1024 * 1024) { (data, error) in
-            if  error == nil,
-                let data = data,
-                let json = try? JSONSerialization.jsonObject(with: data),
-                let dictionary = json as? [String: Any],
-                let iconsNames = dictionary["iconNames"] as? [String] {
-                Shared.shared.iconNames = iconsNames
-            }
-            self.finishWork(withResult: !Shared.shared.iconNames.isEmpty)
-        }
-    }
-
-    func loadProxyNameWords() {
-        startWork()
-        Storage.storage().reference(forURL: URLs.Storage + "/app").child("words.json").getData(maxSize: 1 * 1024 * 1024) { (data, error) in
-            if  error == nil,
-                let data = data,
-                let json = try? JSONSerialization.jsonObject(with: data),
-                let dictionary = json as? [String: Any],
-                let adjectives = dictionary["adjectives"] as? [String],
-                let nouns = dictionary["nouns"] as? [String] {
-                Shared.shared.adjectives = adjectives
-                Shared.shared.nouns = nouns
-            }
-            self.finishWork(withResult: !Shared.shared.adjectives.isEmpty && !Shared.shared.nouns.isEmpty)
         }
     }
 

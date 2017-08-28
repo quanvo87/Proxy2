@@ -3,29 +3,12 @@ import FirebaseDatabase
 struct DB {
     private static let ref = Database.database().reference()
 
-    private static func makePath(_ first: String, _ rest: String...) -> String? {
-        return makePath(first, rest)
+    static func makeReference(_ first: String, _ rest: String...) -> DatabaseReference? {
+        return makeReference(first, rest)
     }
 
-    private static func makePath(_ first: String, _ rest: [String]) -> String? {
-        var children = rest
-        children.insert(first, at: 0)
-
-        let trimmed = children.map { $0.trimmingCharacters(in: CharacterSet(charactersIn: "/")) }
-
-        for child in trimmed where child == "" || child.contains("//") {
-            return nil
-        }
-
-        return trimmed.joined(separator: "/")
-    }
-
-    static func makeDatabaseReference(_ first: String, _ rest: String...) -> DatabaseReference? {
-        return makeDatabaseReference(first, rest)
-    }
-
-    static func makeDatabaseReference(_ first: String, _ rest: [String]) -> DatabaseReference? {
-        guard let path = makePath(first, rest) else {
+    static func makeReference(_ first: String, _ rest: [String]) -> DatabaseReference? {
+        guard let path = String.makePath(first, rest) else {
             return nil
         }
         return ref.child(path)
@@ -38,7 +21,7 @@ extension DB {
     }
 
     static func delete(_ first: String, _ rest: [String], completion: @escaping (Success) -> Void) {
-        guard let ref = makeDatabaseReference(first, rest) else {
+        guard let ref = makeReference(first, rest) else {
             completion(false)
             return
         }
@@ -52,7 +35,7 @@ extension DB {
     }
 
     static func get(_ first: String, _ rest: [String], completion: @escaping (DataSnapshot?) -> Void) {
-        guard let ref = makeDatabaseReference(first, rest) else {
+        guard let ref = makeReference(first, rest) else {
             completion(nil)
             return
         }
@@ -66,7 +49,7 @@ extension DB {
     }
 
     static func increment(by amount: Int, at first: String, _ rest: [String], completion: @escaping ((Success) -> Void)) {
-        guard let ref = makeDatabaseReference(first, rest) else {
+        guard let ref = makeReference(first, rest) else {
             completion(false)
             return
         }
@@ -88,7 +71,7 @@ extension DB {
     }
 
     static func set(_ value: Any, at first: String, _ rest: [String], completion: @escaping ((Success) -> Void)) {
-        guard let ref = makeDatabaseReference(first, rest) else {
+        guard let ref = makeReference(first, rest) else {
             completion(false)
             return
         }

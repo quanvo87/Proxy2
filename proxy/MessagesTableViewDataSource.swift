@@ -1,14 +1,6 @@
-//
-//  MessagesTableViewDataSource.swift
-//  proxy
-//
-//  Created by Quan Vo on 6/8/17.
-//  Copyright © 2017 Quan Vo. All rights reserved.
-//
-
 class MessagesTableViewDataSource: NSObject, UITableViewDataSource {
     weak var tableViewController: MessagesTableViewController?
-    lazy var convosObserver = ConvosObserver()
+    var convosObserver = ConvosObserver()
 
     override init() {}
 
@@ -22,13 +14,22 @@ class MessagesTableViewDataSource: NSObject, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.ConvoCell, for: indexPath as IndexPath) as! ConvoCell
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.ConvoCell, for: indexPath as IndexPath) as? ConvoCell else {
+            return UITableViewCell()
+        }
+
         let convo = convosObserver.convos[indexPath.row]
 
         cell.iconImageView.image = nil
+        cell.lastMessageLabel.text = convo.lastMessage
+        cell.timestampLabel.text = convo.timestamp.asTimeAgo
+        cell.titleLabel.attributedText = DBConvo.makeConvoTitle(receiverNickname: convo.receiverNickname,
+                                                                receiverProxyName: convo.receiverProxyName,
+                                                                senderNickname: convo.senderNickname,
+                                                                senderProxyName: convo.senderProxyName)
+        cell.unreadLabel.text = convo.unreadCount.asLabel
 
-        // TODO: - set the ".png" somewhere else
-        DBStorage.getImageForIcon(convo.receiverIcon + ".png" as AnyObject, tag: cell.tag) { (result) in
+        DBStorage.getImageForIcon(convo.receiverIcon, tag: cell.tag) { (result) in
             guard
                 let (image, tag) = result,
                 tag == cell.tag else {
@@ -38,13 +39,6 @@ class MessagesTableViewDataSource: NSObject, UITableViewDataSource {
                 cell.iconImageView.image = image
             }
         }
-        cell.titleLabel.attributedText = API.sharedInstance.getConvoTitle(receiverNickname: convo.receiverNickname,
-                                                                          receiverName: convo.receiverProxyName,
-                                                                          senderNickname: convo.senderNickname,
-                                                                          senderName: convo.senderProxyName)
-        cell.lastMessageLabel.text = convo.lastMessage
-        cell.timestampLabel.text = convo.timestamp.asTimeAgo
-        cell.unreadLabel.text = convo.unreadCount.asLabel
         
         return cell
     }

@@ -17,9 +17,9 @@ class DBTest: XCTestCase {
     override func setUp() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
-        
+
         if Shared.shared.uid == uid {
-            DBTest.clearData {
+            DBTest.clearDB {
                 expectation.fulfill()
             }
             
@@ -44,16 +44,11 @@ class DBTest: XCTestCase {
     override func tearDown() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
-
-        DBTest.clearData {
+        DBTest.clearCache()
+        DBTest.clearWorkGroups()
+        DBTest.clearDB {
             expectation.fulfill()
         }
-    }
-
-    private static func clearData(completion: @escaping () -> Void) {
-        clearCache()
-        clearWorkGroups()
-        clearDB(completion: completion)
     }
 
     private static func clearCache() {
@@ -77,7 +72,7 @@ extension DBTest {
     static func makeConvo(completion: @escaping (_ convo: Convo, _ sender: Proxy, _ receiver: Proxy) -> Void) {
         makeProxy { (senderProxy) in
             makeProxy(forUser: testUser) { (receiverProxy) in
-                DBConvo.makeConvo(senderProxy: senderProxy, receiverProxy: receiverProxy) { (convo) in
+                DBConvo.makeConvo(sender: senderProxy, receiver: receiverProxy) { (convo) in
                     guard let convo = convo else {
                         XCTFail()
                         return

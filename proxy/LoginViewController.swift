@@ -53,7 +53,7 @@ class LoginViewController: UIViewController {
     }
 
     func goToHomeScreen() {
-        if  let tabBarController = storyboard?.instantiateViewController(withIdentifier: Identifiers.TabBarController) as? UITabBarController,
+        if  let tabBarController = storyboard?.instantiateViewController(withIdentifier: Identifier.TabBarController) as? UITabBarController,
             let appDelegate = UIApplication.shared.delegate as? AppDelegate {
             appDelegate.window?.rootViewController = tabBarController
         }

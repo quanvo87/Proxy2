@@ -63,7 +63,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         }
         
         if shouldShowNewConvo {
-            let dest = self.storyboard!.instantiateViewController(withIdentifier: Identifiers.ConvoViewController) as! ConvoViewController
+            let dest = self.storyboard!.instantiateViewController(withIdentifier: Identifier.ConvoViewController) as! ConvoViewController
             dest.convo = convo!
             shouldShowNewConvo = false
             self.navigationController!.pushViewController(dest, animated: true)
@@ -89,7 +89,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     }
     
     @objc func showNewMessageViewController() {
-        let dest = storyboard?.instantiateViewController(withIdentifier: Identifiers.NewMessageViewController) as! NewMessageViewController
+        let dest = storyboard?.instantiateViewController(withIdentifier: Identifier.NewMessageViewController) as! NewMessageViewController
         dest.newMessageViewControllerDelegate = self
         dest.sender = proxy
         navigationController?.pushViewController(dest, animated: true)
@@ -106,7 +106,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     }
     
     @objc func showIconPickerViewController() {
-        let dest = self.storyboard?.instantiateViewController(withIdentifier: Identifiers.IconPickerCollectionViewController) as! IconPickerCollectionViewController
+        let dest = self.storyboard?.instantiateViewController(withIdentifier: Identifier.IconPickerCollectionViewController) as! IconPickerCollectionViewController
         dest.convos = convos
         dest.proxy = proxy
         self.navigationController?.pushViewController(dest, animated: true)
@@ -170,7 +170,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 1 {
-            let dest = self.storyboard?.instantiateViewController(withIdentifier: Identifiers.ConvoViewController) as! ConvoViewController
+            let dest = self.storyboard?.instantiateViewController(withIdentifier: Identifier.ConvoViewController) as! ConvoViewController
             dest.convo = convos[tableView.indexPathForSelectedRow!.row]
             navigationController?.pushViewController(dest, animated: true)
         }
@@ -181,7 +181,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
         
         // Proxy info
         case 0:
-            let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.SenderProxyInfoCell, for: indexPath as IndexPath) as! SenderProxyInfoCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.SenderProxyInfoCell, for: indexPath as IndexPath) as! SenderProxyInfoCell
             cell.nameLabel.text = proxy.name
             cell.nicknameButton.addTarget(self, action: #selector(ProxyInfoTableViewController.showEditNicknameAlert), for: .touchUpInside)
             cell.nicknameButton.setTitle(proxy.nickname == "" ? "Enter A Nickname" : proxy.nickname, for: .normal)
@@ -196,7 +196,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
             
         // This proxy's convos
         case 1:
-            let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.ConvoCell, for: indexPath as IndexPath) as! ConvoCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.ConvoCell, for: indexPath as IndexPath) as! ConvoCell
             let convo = convos[indexPath.row]
             cell.iconImageView.image = nil
 //            cell.iconImageView.kf.indicatorType = .activity
@@ -215,7 +215,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     }
     
     // MARK: - Select proxy view controller delegate
-    func goToNewConvo(_ convo: Convo) {
+    func setupForNewConvo(_ convo: Convo) {
         self.convo = convo
         shouldShowNewConvo = true
     }

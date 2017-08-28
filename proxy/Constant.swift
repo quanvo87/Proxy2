@@ -1,4 +1,6 @@
 struct Child {
+    static let app = "app"
+
     // Objects
     static let Proxies = "proxies"
     static let ProxyOwners = "proxyOwners"
@@ -58,7 +60,7 @@ struct Settings {
     static let NewProxyIndicatorDuration = 5.0
 }
 
-struct Identifiers {
+struct Identifier {
     static let TabBarController = "Tab Bar Controller"
     static let LoginViewController = "Login View Controller"
     

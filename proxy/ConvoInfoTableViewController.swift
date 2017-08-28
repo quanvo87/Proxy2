@@ -39,7 +39,7 @@ class ConvoInfoTableViewController: UITableViewController {
             scrollView.delaysContentTouches = false
         }
         tableView.delaysContentTouches = false
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: Identifiers.Cell)
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: Identifier.Cell)
         
         api.getProxy(withKey: convo.senderProxyKey, belongingToUserId: convo.senderId) { (proxy) in
             self.senderProxy = proxy
@@ -185,7 +185,7 @@ class ConvoInfoTableViewController: UITableViewController {
             
         // Receiver proxy info
         case 0:
-            let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.ReceiverProxyInfoCell, for: indexPath as IndexPath) as! ReceiverProxyInfoCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.ReceiverProxyInfoCell, for: indexPath as IndexPath) as! ReceiverProxyInfoCell
             cell.nameLabel.text = convo.receiverProxyName
             cell.nicknameButton.setTitle(receiverNickname == "" ? "Enter A Nickname" : receiverNickname, for: .normal)
             cell.nicknameButton.addTarget(self, action: #selector(ConvoInfoTableViewController.editReceiverNickname), for: .touchUpInside)
@@ -197,7 +197,7 @@ class ConvoInfoTableViewController: UITableViewController {
             
         // Sender proxy info
         case 1:
-            let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.SenderProxyInfoCell, for: indexPath as IndexPath) as! SenderProxyInfoCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.SenderProxyInfoCell, for: indexPath as IndexPath) as! SenderProxyInfoCell
             cell.nameLabel.text = convo.senderProxyName
             cell.nicknameButton.setTitle(senderNickname == "" ? "Enter A Nickname" : senderNickname, for: .normal)
             cell.nicknameButton.addTarget(self, action: #selector(ConvoInfoTableViewController.editSenderNickname), for: .touchUpInside)
@@ -209,7 +209,7 @@ class ConvoInfoTableViewController: UITableViewController {
             return cell
             
         case 2:
-            let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.Cell, for: indexPath as IndexPath)
+            let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.Cell, for: indexPath as IndexPath)
             switch indexPath.row {
                 
             // Leave convo
@@ -240,7 +240,7 @@ class ConvoInfoTableViewController: UITableViewController {
         // Go to sender proxy info
         case 1:
             if let senderProxy = senderProxy {
-                let dest = self.storyboard!.instantiateViewController(withIdentifier: Identifiers.ProxyInfoTableViewController) as! ProxyInfoTableViewController
+                let dest = self.storyboard!.instantiateViewController(withIdentifier: Identifier.ProxyInfoTableViewController) as! ProxyInfoTableViewController
                 dest.proxy = senderProxy
                 self.navigationController!.pushViewController(dest, animated: true)
             }
@@ -325,7 +325,7 @@ class ConvoInfoTableViewController: UITableViewController {
     
     @objc func goToIconPicker() {
         api.getConvos(for: senderProxy!) { (convos) in
-            let dest = self.storyboard?.instantiateViewController(withIdentifier: Identifiers.IconPickerCollectionViewController) as! IconPickerCollectionViewController
+            let dest = self.storyboard?.instantiateViewController(withIdentifier: Identifier.IconPickerCollectionViewController) as! IconPickerCollectionViewController
             dest.proxy = self.senderProxy!
             dest.convos = convos
             self.navigationController?.pushViewController(dest, animated: true)

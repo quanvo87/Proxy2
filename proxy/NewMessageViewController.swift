@@ -1,11 +1,3 @@
-//
-//  NewMessageViewController.swift
-//  proxy
-//
-//  Created by Quan Vo on 8/25/16.
-//  Copyright © 2016 Quan Vo. All rights reserved.
-//
-
 import FirebaseDatabase
 
 class NewMessageViewController: UIViewController, UITextViewDelegate, SenderPickerDelegate, ReceiverPickerDelegate {
@@ -99,7 +91,7 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderPick
     }
     
     @IBAction func showSelectSenderTableViewController() {
-        let dest = self.storyboard?.instantiateViewController(withIdentifier: Identifiers.SenderPickerTableViewController) as! SenderPickerTableViewController
+        let dest = self.storyboard?.instantiateViewController(withIdentifier: Identifier.SenderPickerTableViewController) as! SenderPickerTableViewController
         dest.senderPickerDelegate = self
         navigationController?.pushViewController(dest, animated: true)
     }
@@ -131,7 +123,7 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderPick
     }
     
     @IBAction func showSelectReceiverViewController() {
-        let dest = self.storyboard?.instantiateViewController(withIdentifier: Identifiers.ReceiverPickerViewController) as! ReceiverPickerViewController
+        let dest = self.storyboard?.instantiateViewController(withIdentifier: Identifier.ReceiverPickerViewController) as! ReceiverPickerViewController
         dest.receiverPickerDelegate = self
         navigationController?.pushViewController(dest, animated: true)
     }
@@ -143,7 +135,7 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderPick
     @IBAction func tapSendButton() {
         disableButtons()
         api.sendMessage(sender: sender!, receiver: receiver!, text: messageTextView.text) { (convo) in
-            self.newMessageViewControllerDelegate.goToNewConvo(convo)
+            self.newMessageViewControllerDelegate.setupForNewConvo(convo)
             _ = self.navigationController?.popViewController(animated: true)
         }
     }
@@ -172,4 +164,8 @@ class NewMessageViewController: UIViewController, UITextViewDelegate, SenderPick
         receiver = proxy
         setSelectReceiverButtonTitle()
     }
+}
+
+protocol NewMessageViewControllerDelegate {
+    func setupForNewConvo(_ convo: Convo)
 }

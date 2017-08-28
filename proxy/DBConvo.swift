@@ -42,38 +42,38 @@ struct DBConvo {
         }
     }
 
-    static func makeConvo(senderProxy: Proxy, receiverProxy: Proxy, completion: @escaping (Convo?) -> Void) {
-        DB.get(Child.UserInfo, receiverProxy.ownerId, Child.Blocked, senderProxy.ownerId) { (data) in
+    static func makeConvo(sender: Proxy, receiver: Proxy, completion: @escaping (Convo?) -> Void) {
+        DB.get(Child.UserInfo, receiver.ownerId, Child.Blocked, sender.ownerId) { (data) in
             let senderIsBlocked = data?.value as? Bool ?? false
-            let convoKey = makeConvoKey(senderProxy: senderProxy, receiverProxy: receiverProxy)
+            let convoKey = makeConvoKey(senderProxy: sender, receiverProxy: receiver)
 
             var senderConvo = Convo()
             senderConvo.key = convoKey
-            senderConvo.receiverIcon = receiverProxy.icon
-            senderConvo.receiverId = receiverProxy.ownerId
-            senderConvo.receiverProxyKey = receiverProxy.key
-            senderConvo.receiverProxyName = receiverProxy.name
-            senderConvo.senderId = senderProxy.ownerId
-            senderConvo.senderProxyKey = senderProxy.key
-            senderConvo.senderProxyName = senderProxy.name
+            senderConvo.receiverIcon = receiver.icon
+            senderConvo.receiverId = receiver.ownerId
+            senderConvo.receiverProxyKey = receiver.key
+            senderConvo.receiverProxyName = receiver.name
+            senderConvo.senderId = sender.ownerId
+            senderConvo.senderProxyKey = sender.key
+            senderConvo.senderProxyName = sender.name
             senderConvo.senderIsBlocked = senderIsBlocked
 
             var receiverConvo = Convo()
             receiverConvo.key = convoKey
-            receiverConvo.receiverIcon = senderProxy.icon
-            receiverConvo.receiverId = senderProxy.ownerId
-            receiverConvo.receiverProxyKey = senderProxy.key
-            receiverConvo.receiverProxyName = senderProxy.name
+            receiverConvo.receiverIcon = sender.icon
+            receiverConvo.receiverId = sender.ownerId
+            receiverConvo.receiverProxyKey = sender.key
+            receiverConvo.receiverProxyName = sender.name
             receiverConvo.receiverIsBlocked = senderIsBlocked
-            receiverConvo.senderId = receiverProxy.ownerId
-            receiverConvo.senderProxyKey = receiverProxy.key
-            receiverConvo.senderProxyName = receiverProxy.name
+            receiverConvo.senderId = receiver.ownerId
+            receiverConvo.senderProxyKey = receiver.key
+            receiverConvo.senderProxyName = receiver.name
 
             let key = AsyncWorkGroupKey()
-            key.increment(by: 1, forProperty: .convoCount, forProxy: receiverProxy)
-            key.increment(by: 1, forProperty: .convoCount, forProxy: senderProxy)
-            key.increment(by: 1, forProperty: .proxiesInteractedWith, forUser: receiverProxy.ownerId)
-            key.increment(by: 1, forProperty: .proxiesInteractedWith, forUser: senderProxy.ownerId)
+            key.increment(by: 1, forProperty: .convoCount, forProxy: receiver)
+            key.increment(by: 1, forProperty: .convoCount, forProxy: sender)
+            key.increment(by: 1, forProperty: .proxiesInteractedWith, forUser: receiver.ownerId)
+            key.increment(by: 1, forProperty: .proxiesInteractedWith, forUser: sender.ownerId)
             key.set(receiverConvo, asSender: true)
             key.set(senderConvo, asSender: true)
             key.notify {
@@ -87,10 +87,10 @@ struct DBConvo {
         return [senderProxy.key, senderProxy.ownerId, receiverProxy.key, receiverProxy.ownerId].sorted().joined()
     }
 
-    static func makeConvoTitle(receiverNickname: String, receiverName: String, senderNickname: String, senderName: String) -> NSAttributedString {
+    static func makeConvoTitle(receiverNickname: String, receiverProxyName: String, senderNickname: String, senderProxyName: String) -> NSAttributedString {
         let grayAttribute = [NSAttributedStringKey.foregroundColor: UIColor.gray]
-        let receiver = NSMutableAttributedString(string: (receiverNickname == "" ? receiverName : receiverNickname) + ", ")
-        let sender = NSMutableAttributedString(string: senderNickname == "" ? senderName : senderNickname, attributes: grayAttribute)
+        let receiver = NSMutableAttributedString(string: (receiverNickname == "" ? receiverProxyName : receiverNickname) + ", ")
+        let sender = NSMutableAttributedString(string: senderNickname == "" ? senderProxyName : senderNickname, attributes: grayAttribute)
         receiver.append(sender)
         return receiver
     }

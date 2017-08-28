@@ -8,7 +8,7 @@ struct DBMessage {
             if let senderConvo = senderConvo {
                 sendMessage(text: text, mediaType: "", senderConvo: senderConvo, completion: completion)
             } else {
-                DBConvo.makeConvo(senderProxy: senderProxy, receiverProxy: receiverProxy) { (convo) in
+                DBConvo.makeConvo(sender: senderProxy, receiver: receiverProxy) { (convo) in
                     guard let senderConvo = convo else {
                         completion(nil)
                         return
@@ -20,7 +20,7 @@ struct DBMessage {
     }
 
     private static func sendMessage(text: String, mediaType: String, senderConvo: Convo, completion: @escaping SendMessageCallback) {
-        guard let ref = DB.makeDatabaseReference(Child.Messages, senderConvo.key) else {
+        guard let ref = DB.makeReference(Child.Messages, senderConvo.key) else {
             completion(nil)
             return
         }

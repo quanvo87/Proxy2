@@ -92,19 +92,6 @@ class DBProxyTests: DBTest {
         }
     }
     
-    func testLoadProxyInfo() {
-        let expectation = self.expectation(description: #function)
-        defer { waitForExpectations(timeout: 10) }
-        
-        DBProxy.loadProxyInfo { (success) in
-            XCTAssert(success)
-            XCTAssertFalse(Shared.shared.adjectives.isEmpty)
-            XCTAssertFalse(Shared.shared.nouns.isEmpty)
-            XCTAssertFalse(Shared.shared.iconNames.isEmpty)
-            expectation.fulfill()
-        }
-    }
-    
     func testMakeProxy() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }

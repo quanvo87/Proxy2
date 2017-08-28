@@ -704,7 +704,7 @@ class ConvoViewController: JSQMessagesViewController {
     
     // MARK: - Navigation
     @objc func showConvoInfoTableViewController() {
-        let dest = storyboard?.instantiateViewController(withIdentifier: Identifiers.ConvoInfoTableViewController) as! ConvoInfoTableViewController
+        let dest = storyboard?.instantiateViewController(withIdentifier: Identifier.ConvoInfoTableViewController) as! ConvoInfoTableViewController
         dest.convo = convo
         navigationController?.pushViewController(dest, animated: true)
     }

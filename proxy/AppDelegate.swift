@@ -15,13 +15,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
-//        production()
+        production()
         return FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
     }
 
     private func production() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        if let tabBarController = storyboard.instantiateViewController(withIdentifier: Identifiers.TabBarController) as? UITabBarController {
+        if let tabBarController = storyboard.instantiateViewController(withIdentifier: Identifier.TabBarController) as? UITabBarController {
             window = UIWindow(frame: UIScreen.main.bounds)
             window?.rootViewController = tabBarController
             window?.makeKeyAndVisible()

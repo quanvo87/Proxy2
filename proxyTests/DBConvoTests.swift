@@ -159,8 +159,8 @@ class DBConvoTests: DBTest {
     }
 
     func testMakeConvoTitle() {
-        XCTAssertEqual(DBConvo.makeConvoTitle(receiverNickname: "a", receiverName: "b", senderNickname: "c", senderName: "d").string, "a, c")
-        XCTAssertEqual(DBConvo.makeConvoTitle(receiverNickname: "", receiverName: "a", senderNickname: "", senderName: "b").string, "a, b")
+        XCTAssertEqual(DBConvo.makeConvoTitle(receiverNickname: "a", receiverProxyName: "b", senderNickname: "c", senderProxyName: "d").string, "a, c")
+        XCTAssertEqual(DBConvo.makeConvoTitle(receiverNickname: "", receiverProxyName: "a", senderNickname: "", senderProxyName: "b").string, "a, b")
     }
 
     func testSetReceiverNickname() {

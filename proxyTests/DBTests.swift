@@ -62,20 +62,20 @@ class DBTests: DBTest {
     }
 
     func testMakeDatabaseReference() {
-        XCTAssertNotNil(DB.makeDatabaseReference("a"))
-        XCTAssertNotNil(DB.makeDatabaseReference("a", "b"))
-        XCTAssertNotNil(DB.makeDatabaseReference("/a/"))
-        XCTAssertNotNil(DB.makeDatabaseReference("//a//"))
-        XCTAssertNotNil(DB.makeDatabaseReference("/a/a/"))
+        XCTAssertNotNil(DB.makeReference("a"))
+        XCTAssertNotNil(DB.makeReference("a", "b"))
+        XCTAssertNotNil(DB.makeReference("/a/"))
+        XCTAssertNotNil(DB.makeReference("//a//"))
+        XCTAssertNotNil(DB.makeReference("/a/a/"))
     }
     
     func testMakeDatabaseReferenceFail() {
-        XCTAssertNil(DB.makeDatabaseReference(""))
-        XCTAssertNil(DB.makeDatabaseReference("a", ""))
-        XCTAssertNil(DB.makeDatabaseReference("", "a"))
-        XCTAssertNil(DB.makeDatabaseReference("/"))
-        XCTAssertNil(DB.makeDatabaseReference("//"))
-        XCTAssertNil(DB.makeDatabaseReference("///"))
-        XCTAssertNil(DB.makeDatabaseReference("/a//a/"))
+        XCTAssertNil(DB.makeReference(""))
+        XCTAssertNil(DB.makeReference("a", ""))
+        XCTAssertNil(DB.makeReference("", "a"))
+        XCTAssertNil(DB.makeReference("/"))
+        XCTAssertNil(DB.makeReference("//"))
+        XCTAssertNil(DB.makeReference("///"))
+        XCTAssertNil(DB.makeReference("/a//a/"))
     }
 }

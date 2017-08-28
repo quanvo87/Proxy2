@@ -6,7 +6,7 @@ class DBStorageTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 30) }
         
-        DBProxy.loadProxyInfo { (success) in
+        DBStorage.loadProxyInfo { (success) in
             XCTAssert(success)
             
             let iconImagesRetrieved = DispatchGroup()
@@ -14,7 +14,7 @@ class DBStorageTests: DBTest {
             for iconName in Shared.shared.iconNames {
                 iconImagesRetrieved.enter()
                 
-                DBStorage.getImageForIcon(iconName as AnyObject, tag: 0) { (result) in
+                DBStorage.getImageForIcon(iconName, tag: 0) { (result) in
                     XCTAssertEqual(result?.image, Shared.shared.cache.object(forKey: iconName as AnyObject) as? UIImage)
                     iconImagesRetrieved.leave()
                 }
@@ -26,6 +26,19 @@ class DBStorageTests: DBTest {
         }
     }
 
+    func testLoadProxyInfo() {
+        let expectation = self.expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
+
+        DBStorage.loadProxyInfo { (success) in
+            XCTAssert(success)
+            XCTAssertFalse(Shared.shared.adjectives.isEmpty)
+            XCTAssertFalse(Shared.shared.nouns.isEmpty)
+            XCTAssertFalse(Shared.shared.iconNames.isEmpty)
+            expectation.fulfill()
+        }
+    }
+    
     func testUploadImage() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }

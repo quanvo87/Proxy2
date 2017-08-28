@@ -67,7 +67,7 @@ class SenderPickerTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.ProxyCell, for: indexPath as IndexPath) as! ProxyCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.ProxyCell, for: indexPath as IndexPath) as! ProxyCell
         let proxy = proxies[indexPath.row]
         
         cell.newImageView.isHidden = true

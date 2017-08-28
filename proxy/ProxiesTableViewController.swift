@@ -199,7 +199,7 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.ProxyCell, for: indexPath as IndexPath) as! ProxyCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.ProxyCell, for: indexPath as IndexPath) as! ProxyCell
         let proxy = proxies[indexPath.row]
         
         // 'New' image
@@ -212,7 +212,7 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
         
         // Icon
         cell.iconImageView.image = nil
-        DBStorage.getImageForIcon(proxy.icon + ".png" as AnyObject, tag: cell.tag) { (result) in
+        DBStorage.getImageForIcon(proxy.icon, tag: cell.tag) { (result) in
             guard
                 let (image, tag) = result,
                 tag == cell.tag else {
@@ -233,14 +233,14 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
     }
     
     // MARK: - Select proxy view controller delegate
-    func goToNewConvo(_ convo: Convo) {
+    func setupForNewConvo(_ convo: Convo) {
         self.convo = convo
         shouldShowNewConvo = true
     }
     
     func showNewConvo() {
         if shouldShowNewConvo {
-            let dest = self.storyboard!.instantiateViewController(withIdentifier: Identifiers.ConvoViewController) as! ConvoViewController
+            let dest = self.storyboard!.instantiateViewController(withIdentifier: Identifier.ConvoViewController) as! ConvoViewController
             dest.convo = convo
             shouldShowNewConvo = false
             self.navigationController!.pushViewController(dest, animated: true)
@@ -249,13 +249,13 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
     
     // MARK: - Navigation
     @objc func showNewMessageViewController() {
-        let dest = storyboard!.instantiateViewController(withIdentifier: Identifiers.NewMessageViewController) as! NewMessageViewController
+        let dest = storyboard!.instantiateViewController(withIdentifier: Identifier.NewMessageViewController) as! NewMessageViewController
         dest.newMessageViewControllerDelegate = self
         navigationController?.pushViewController(dest, animated: true)
     }
     
     func showProxyInfoTableViewController(_ proxy: Proxy) {
-        let dest = storyboard?.instantiateViewController(withIdentifier: Identifiers.ProxyInfoTableViewController) as! ProxyInfoTableViewController
+        let dest = storyboard?.instantiateViewController(withIdentifier: Identifier.ProxyInfoTableViewController) as! ProxyInfoTableViewController
         dest.proxy = proxy
         navigationController?.pushViewController(dest, animated: true)
     }
