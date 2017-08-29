@@ -5,6 +5,13 @@ enum Result<T, Error> {
     case failure(Error)
 }
 
+// https://stackoverflow.com/questions/25329186/safe-bounds-checked-array-lookup-in-swift-through-optional-bindings
+extension Collection {
+    subscript(safe index: Index) -> Element? {
+        return indices.contains(index) ? self[index] : nil
+    }
+}
+
 extension Double {
     var asTimeAgo: String {
         return NSDate(timeIntervalSince1970: self).formattedAsTimeAgo()

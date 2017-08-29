@@ -3,26 +3,6 @@ import FirebaseDatabase
 struct DBProxy {
     typealias CreateProxyCallback = (Result<Proxy, ProxyError>) -> Void
 
-    private static var randomIconName: String {
-        guard !Shared.shared.iconNames.isEmpty else {
-            return ""
-        }
-        let random = Int(arc4random_uniform(UInt32(Shared.shared.iconNames.count)))
-        return Shared.shared.iconNames[random]
-    }
-
-    private static var randomProxyName: String {
-        guard !Shared.shared.adjectives.isEmpty && !Shared.shared.nouns.isEmpty else {
-            return ""
-        }
-        let randomAdj = Int(arc4random_uniform(UInt32(Shared.shared.adjectives.count)))
-        let randomNoun = Int(arc4random_uniform(UInt32(Shared.shared.nouns.count)))
-        let adj = Shared.shared.adjectives[randomAdj].lowercased().capitalized
-        let noun = Shared.shared.nouns[randomNoun].lowercased().capitalized
-        let num = String(Int(arc4random_uniform(9)) + 1)
-        return adj + noun + num
-    }
-
     static func cancelCreatingProxy() {
         Shared.shared.isCreatingProxy = false
     }
@@ -75,19 +55,13 @@ struct DBProxy {
     }
 
     static func makeProxy(withName specificName: String? = nil, forUser uid: String = Shared.shared.uid, completion: @escaping CreateProxyCallback) {
-        DBStorage.loadProxyInfo { (success) in
-            guard success else {
-                completion(.failure(.unknown))
+        DB.get(Child.UserInfo, uid, Child.ProxyCount) { (data) in
+            guard data?.value as? Int ?? 0 <= Settings.MaxAllowedProxies else {
+                completion(.failure(.proxyLimitReached))
                 return
             }
-            DB.get(Child.UserInfo, uid, Child.ProxyCount) { (data) in
-                guard data?.value as? Int ?? 0 <= Settings.MaxAllowedProxies else {
-                    completion(.failure(.proxyLimitReached))
-                    return
-                }
-                Shared.shared.isCreatingProxy = true
-                makeProxyHelper(withName: specificName, forUser: uid, completion: completion)
-            }
+            Shared.shared.isCreatingProxy = true
+            makeProxyHelper(withName: specificName, forUser: uid, completion: completion)
         }
     }
 
@@ -102,57 +76,90 @@ struct DBProxy {
             return
         }
 
-        let name: String
-
-        if let specificName = specificName {
-            name = specificName
-        } else {
-            name = DBProxy.randomProxyName
-        }
-
-        let proxyKey = name.lowercased()
-        let proxyKeyDictionary = [Child.Key: proxyKey]
-        let autoId = proxyKeysRef.childByAutoId().key
-
-        DB.set(proxyKeyDictionary, at: Child.ProxyKeys, autoId) { (success) in
-            guard success else {
+        makeProxyMakeRandomProxyProperties { (randomProperties) in
+            guard let (randomName, randomIcon) = randomProperties else {
                 makeProxyDone(result: .failure(.unknown), completion: completion)
                 return
             }
-            proxyKeysRef.queryOrdered(byChild: Child.Key).queryEqual(toValue: proxyKey).observeSingleEvent(of: .value, with: { (data) in
-                DB.delete(Child.ProxyKeys, autoId) { (success) in
-                    guard success else {
-                        makeProxyDone(result: .failure(.unknown), completion: completion)
-                        return
-                    }
 
-                    guard Shared.shared.isCreatingProxy else {
-                        return
-                    }
+            let name: String
 
-                    if data.childrenCount == 1 {
-                        let proxy = Proxy(icon: randomIconName, name: name, ownerId: uid)
-                        let proxyOwner = ProxyOwner(key: proxyKey, ownerId: uid)
+            if let specificName = specificName {
+                name = specificName
+            } else {
+                name = randomName
+            }
 
-                        let key = AsyncWorkGroupKey()
-                        key.increment(by: 1, forProperty: .proxyCount, forUser: uid)
-                        key.set(proxy.toDictionary(), at: Child.Proxies, proxy.ownerId, proxy.key)
-                        key.set(proxyKeyDictionary, at: Child.ProxyKeys, proxy.key)
-                        key.set(proxyOwner.toDictionary(), at: Child.ProxyOwners, proxy.key)
-                        key.notify {
-                            makeProxyDone(result: key.workResult ? .success(proxy) : .failure(.unknown), completion: completion)
-                            key.finishWorkGroup()
-                        }
+            let proxyKey = name.lowercased()
+            let proxyKeyDictionary = [Child.Key: proxyKey]
+            let autoId = proxyKeysRef.childByAutoId().key
 
-                    } else {
-                        if specificName == nil {
-                            makeProxyHelper(forUser: uid, completion: completion)
-                        } else {
-                            makeProxyDone(result: .failure(.unknown), completion: completion)
-                        }
-                    }
+            DB.set(proxyKeyDictionary, at: Child.ProxyKeys, autoId) { (success) in
+                guard success else {
+                    makeProxyDone(result: .failure(.unknown), completion: completion)
+                    return
                 }
-            })
+
+                proxyKeysRef.queryOrdered(byChild: Child.Key).queryEqual(toValue: proxyKey).observeSingleEvent(of: .value, with: { (data) in
+                    DB.delete(Child.ProxyKeys, autoId) { (success) in
+                        guard success else {
+                            makeProxyDone(result: .failure(.unknown), completion: completion)
+                            return
+                        }
+
+                        guard Shared.shared.isCreatingProxy else {
+                            return
+                        }
+
+                        if data.childrenCount == 1 {
+                            let proxy = Proxy(icon: randomIcon, name: name, ownerId: uid)
+                            let proxyOwner = ProxyOwner(key: proxyKey, ownerId: uid)
+
+                            let key = AsyncWorkGroupKey()
+                            key.increment(by: 1, forProperty: .proxyCount, forUser: uid)
+                            key.set(proxy.toDictionary(), at: Child.Proxies, proxy.ownerId, proxy.key)
+                            key.set(proxyKeyDictionary, at: Child.ProxyKeys, proxy.key)
+                            key.set(proxyOwner.toDictionary(), at: Child.ProxyOwners, proxy.key)
+                            key.notify {
+                                makeProxyDone(result: key.workResult ? .success(proxy) : .failure(.unknown), completion: completion)
+                                key.finishWorkGroup()
+                            }
+
+                        } else {
+                            if specificName == nil {
+                                makeProxyHelper(forUser: uid, completion: completion)
+                            } else {
+                                makeProxyDone(result: .failure(.unknown), completion: completion)
+                            }
+                        }
+                    }
+                })
+            }
+        }
+    }
+
+    private static func makeProxyMakeRandomProxyProperties(completion: @escaping ((name: String, icon: String)?) -> Void) {
+        DBStorage.loadProxyInfo { (success) in
+            guard success else {
+                completion(nil)
+                return
+            }
+
+            var random: Int
+
+            random = Int(arc4random_uniform(UInt32(Shared.shared.adjectives.count)))
+            let adj = Shared.shared.adjectives[random].lowercased().capitalized
+
+            random = Int(arc4random_uniform(UInt32(Shared.shared.nouns.count)))
+            let noun = Shared.shared.nouns[random].lowercased().capitalized
+
+            random = Int(arc4random_uniform(9)) + 1
+            let name = adj + noun + String(random)
+
+            random = Int(arc4random_uniform(UInt32(Shared.shared.iconNames.count)))
+            let icon = Shared.shared.iconNames[random]
+
+            completion((name, icon))
         }
     }
 

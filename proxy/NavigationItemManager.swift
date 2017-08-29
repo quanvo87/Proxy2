@@ -19,9 +19,9 @@ struct NavigationItemManager {
 
     private func makeButton(delegate: NavigationItemManagerDelegate, selector: Selector, imageName: String) -> UIBarButtonItem {
         let button = UIButton(type: .custom)
-        button.addTarget(delegate, action: selector, for: UIControlEvents.touchUpInside)
+        button.addTarget(delegate, action: selector, for: .touchUpInside)
         button.frame = CGRect(x: 0, y: 0, width: 25, height: 25)
-        button.setImage(UIImage(named: imageName), for: UIControlState.normal)
+        button.setImage(UIImage(named: imageName), for: .normal)
         return UIBarButtonItem(customView: button)
     }
 }

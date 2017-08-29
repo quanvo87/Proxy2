@@ -1,18 +1,18 @@
 import FirebaseDatabase
 
-class ConvosObserver {
-    private var ref = DB.makeReference(Child.Convos, Shared.shared.uid)
-    private var convos = [Convo]()
+class ProxiesObserver {
+    private var ref = DB.makeReference(Child.Proxies, Shared.shared.uid)
+    private var proxies = [Proxy]()
 
     init() {}
 
-    func getConvos() -> [Convo] {
-        return convos
+    func getProxies() -> [Proxy] {
+        return proxies
     }
 
-    func observeConvos(_ tableView: UITableView) {
+    func observeProxies(_ tableView: UITableView) {
         ref?.queryOrdered(byChild: Child.Timestamp).observe(.value, with: { [weak self] (data) in
-            self?.convos = data.toConvos(filtered: true).reversed()
+            self?.proxies = data.toProxies().reversed()
             tableView.visibleCells.incrementTags()
             tableView.reloadData()
         })

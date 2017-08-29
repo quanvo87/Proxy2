@@ -1,16 +1,16 @@
 class MessagesTableViewDataSource: NSObject, UITableViewDataSource {
-    weak var tableViewController: MessagesTableViewController?
+    var tableView: UITableView?
     var convosObserver = ConvosObserver()
 
     override init() {}
 
-    func load(_ tableViewController: MessagesTableViewController) {
-        self.tableViewController = tableViewController
-        convosObserver.observe(self)
+    func load(_ tableView: UITableView) {
+        self.tableView = tableView
+        convosObserver.observeConvos(tableView)
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return convosObserver.convos.count
+        return convosObserver.getConvos().count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -18,7 +18,7 @@ class MessagesTableViewDataSource: NSObject, UITableViewDataSource {
             return UITableViewCell()
         }
 
-        let convo = convosObserver.convos[indexPath.row]
+        let convo = convosObserver.getConvos()[indexPath.row]
 
         cell.iconImageView.image = nil
         cell.lastMessageLabel.text = convo.lastMessage

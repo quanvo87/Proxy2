@@ -15,12 +15,12 @@ class ReceiverPickerViewController: UIViewController, UICollectionViewDelegate {
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     
     let api = API.sharedInstance
-    var receiverPickerDelegate: ReceiverPickerDelegate!
+    var delegate: ReceiverPickerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationItem.title = "Select Receiver"
+        navigationItem.title = "Pick A Receiver"
         
         let cancelButton = UIButton(type: .custom)
         cancelButton.addTarget(self, action: #selector(ReceiverPickerViewController.close), for: UIControlEvents.touchUpInside)
@@ -94,4 +94,8 @@ class ReceiverPickerViewController: UIViewController, UICollectionViewDelegate {
     @objc func keyboardWillHide(_ notification: Notification) {
         bottomConstraint.constant = 5
     }
+}
+
+protocol ReceiverPickerDelegate {
+    func setReceiver(to proxy: Proxy)
 }

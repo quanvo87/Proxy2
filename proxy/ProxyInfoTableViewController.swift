@@ -8,7 +8,7 @@
 
 import FirebaseDatabase
 
-class ProxyInfoTableViewController: UITableViewController, NewMessageViewControllerDelegate {
+class ProxyInfoTableViewController: UITableViewController, MakeNewMessageViewControllerDelegate {
     
     let api = API.sharedInstance
     let ref = Database.database().reference()
@@ -89,8 +89,8 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     }
     
     @objc func showNewMessageViewController() {
-        let dest = storyboard?.instantiateViewController(withIdentifier: Identifier.NewMessageViewController) as! NewMessageViewController
-        dest.newMessageViewControllerDelegate = self
+        let dest = storyboard?.instantiateViewController(withIdentifier: Identifier.NewMessageViewController) as! MakeNewMessageViewController
+        dest.delegate = self
         dest.sender = proxy
         navigationController?.pushViewController(dest, animated: true)
     }
@@ -215,7 +215,7 @@ class ProxyInfoTableViewController: UITableViewController, NewMessageViewControl
     }
     
     // MARK: - Select proxy view controller delegate
-    func setupForNewConvo(_ convo: Convo) {
+    func prepareToShowNewConvo(_ convo: Convo) {
         self.convo = convo
         shouldShowNewConvo = true
     }

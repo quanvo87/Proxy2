@@ -1,13 +1,4 @@
-//
-//  ProxyNameGenerator.swift
-//  proxy
-//
-//  Created by Quan Vo on 8/23/16.
-//  Copyright © 2016 Quan Vo. All rights reserved.
-//
-
-// TODO: - get words from firebase storage
-// TODO: - delete
+// TODO: Delete this shit
 struct ProxyNameGenerator {
     
     let numRange: UInt32 = 9

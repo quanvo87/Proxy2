@@ -2,7 +2,7 @@ class MessagesTableViewController: UITableViewController {
     let authObserver = AuthObserver()
     let dataSource = MessagesTableViewDataSource()
     var navigationItemManager = NavigationItemManager()
-    let unreadObserver = UnreadObserver()
+    let unreadObserver = UnreadCountObserver()
 
     var convo: Convo?
     var shouldGoToNewConvo = false
@@ -29,15 +29,17 @@ class MessagesTableViewController: UITableViewController {
             let convoVC = storyboard?.instantiateViewController(withIdentifier: Identifier.ConvoViewController) as? ConvoViewController,
             let navigationController = navigationController
         {
-            shouldGoToNewConvo = false
-            self.convo = nil
             convoVC.convo = convo
+            self.convo = nil
+            shouldGoToNewConvo = false
             navigationController.pushViewController(convoVC, animated: true)
         }
     }
+}
 
+extension MessagesTableViewController {
     var convos: [Convo] {
-        return dataSource.convosObserver.convos
+        return dataSource.convosObserver.getConvos()
     }
 
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -45,7 +47,9 @@ class MessagesTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let convo = convos[indexPath.row]
+        guard let convo = convos[safe: indexPath.row] else {
+            return
+        }
         if tableView.isEditing {
             navigationItemManager.itemsToDelete.append(convo)
         } else {
@@ -58,8 +62,10 @@ class MessagesTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        let convo = convos[indexPath.row]
-        if let index = convos.index(where: { $0.key == convo.key }) {
+        guard let convo = convos[safe: indexPath.row] else {
+            return
+        }
+        if let index = convos.index(where: { $0 == convo }) {
             navigationItemManager.itemsToDelete.remove(at: index)
         }
     }
@@ -67,20 +73,27 @@ class MessagesTableViewController: UITableViewController {
 
 extension MessagesTableViewController: AuthObserverDelegate {
     func logIn() {
-        dataSource.load(self)
+        dataSource.load(tableView)
         DBStorage.loadProxyInfo()
         navigationItemManager.makeButtons(self)
         setDefaultButtons()
         tabBarController?.tabBar.items?.setupForTabBar()
-        unreadObserver.observe(self)
+        unreadObserver.observeUnreadCount(self)
     }
 
     func logOut() {
         if  let loginVC = self.storyboard?.instantiateViewController(withIdentifier: Identifier.LoginViewController) as? LoginViewController,
             let appDelegate = UIApplication.shared.delegate as? AppDelegate
-        {
+       {
             appDelegate.window?.rootViewController = loginVC
         }
+    }
+}
+
+extension MessagesTableViewController: MakeNewMessageViewControllerDelegate {
+    func prepareToShowNewConvo(_ convo: Convo) {
+        self.convo = convo
+        shouldGoToNewConvo = true
     }
 }
 
@@ -113,23 +126,13 @@ extension MessagesTableViewController: NavigationItemManagerDelegate {
         }
         let alert = UIAlertController(title: "Leave Conversations?", message: "This will hide them until you receive another message in them.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Leave", style: .destructive) { _ in
-            let key = AsyncWorkGroupKey()
             var index = 0
             for item in self.navigationItemManager.itemsToDelete {
                 if let convo = item as? Convo {
-                    key.startWork()
-                    DBConvo.leaveConvo(convo) { (success) in
-                        key.finishWork(withResult: success)
-                    }
+                    DBConvo.leaveConvo(convo) { _ in }
                 }
                 self.navigationItemManager.itemsToDelete.remove(at: index)
                 index += 1
-            }
-            key.notify {
-                if !key.workResult {
-                    self.showAlert("Error Leaving Convos", message: "There was an error leaving some of your convos.")
-                }
-                key.finishWorkGroup()
             }
             self.tableView.setEditing(false, animated: true)
             self.setDefaultButtons()
@@ -141,39 +144,33 @@ extension MessagesTableViewController: NavigationItemManagerDelegate {
     func createNewProxy() {
         navigationItem.rightBarButtonItems?[1].isEnabled = false
         DBProxy.makeProxy { (result) in
+            self.navigationItem.rightBarButtonItems?[1].isEnabled = true
             switch result {
             case .failure(let error):
                 self.showAlert("Error Creating Proxy", message: error.description)
             case .success:
-                NotificationCenter.default.post(name: Notification.Name(rawValue: Notifications.CreatedNewProxyFromHomeTab), object: nil)
+                NotificationCenter.default.post(name: Notification.Name(rawValue: Notifications.MadeNewProxyFromHomeTab), object: nil)
                 self.tabBarController?.selectedIndex = 1
             }
         }
     }
 
     func createNewMessage() {
-        if let dest = self.storyboard?.instantiateViewController(withIdentifier: Identifier.NewMessageViewController) as? NewMessageViewController {
-            dest.newMessageViewControllerDelegate = self
-            navigationController?.pushViewController(dest, animated: true)
+        if let makeNewMessageVC = self.storyboard?.instantiateViewController(withIdentifier: Identifier.NewMessageViewController) as? MakeNewMessageViewController {
+            makeNewMessageVC.delegate = self
+            navigationController?.pushViewController(makeNewMessageVC, animated: true)
         }
     }
 }
 
-extension MessagesTableViewController: NewMessageViewControllerDelegate {
-    func setupForNewConvo(_ convo: Convo) {
-        self.convo = convo
-        shouldGoToNewConvo = true
-    }
-}
-
 extension MessagesTableViewController: UnreadObserverDelegate {
-    func setUnread(_ unread: Int?) {
-        if let unread = unread {
-            self.navigationItem.title = "Messages" + unread.asLabelWithParens
-            self.tabBarController?.tabBar.items?.first?.badgeValue = unread == 0 ? nil : String(unread)
+    func setUnreadCount(to unreadCount: Int?) {
+        if let unreadCount = unreadCount {
+            navigationItem.title = "Messages" + unreadCount.asLabelWithParens
+            tabBarController?.tabBar.items?.first?.badgeValue = unreadCount == 0 ? nil : String(unreadCount)
         } else {
-            self.navigationItem.title = "Messages"
-            self.tabBarController?.tabBar.items?.first?.badgeValue = nil
+            navigationItem.title = "Messages"
+            tabBarController?.tabBar.items?.first?.badgeValue = nil
         }
     }
 }

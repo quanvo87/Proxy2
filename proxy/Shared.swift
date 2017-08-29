@@ -3,18 +3,21 @@ import Firebase
 class Shared {
     static let shared = Shared()
 
-    lazy var firebase = FirebaseApp.app()
+    var firebase = FirebaseApp.app()
 
-    lazy var cache = NSCache<AnyObject, AnyObject>()
+    var cache = NSCache<AnyObject, AnyObject>()
 
-    lazy var adjectives = [String]()
-    lazy var nouns = [String]()
-    lazy var iconNames = [String]()
+    var adjectives = [String]()
+    var nouns = [String]()
+    var iconNames = [String]()
+    var proxyInfoIsLoaded: Bool {
+        return !adjectives.isEmpty && !nouns.isEmpty && !iconNames.isEmpty
+    }
 
-    lazy var asyncWorkGroups = [AsyncWorkGroupKey: (group: DispatchGroup, result: Bool)]()
+    var asyncWorkGroups = [AsyncWorkGroupKey: (group: DispatchGroup, result: Bool)]()
 
-    lazy var uid = ""
-    lazy var isCreatingProxy = false
+    var uid = ""
+    var isCreatingProxy = false
 
     private init() {}
 }

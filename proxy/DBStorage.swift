@@ -50,9 +50,7 @@ extension DBStorage {
     }
 
     static func loadProxyInfo(completion: ((Success) -> Void)? = nil) {
-        if  !Shared.shared.adjectives.isEmpty &&
-            !Shared.shared.nouns.isEmpty &&
-            !Shared.shared.iconNames.isEmpty {
+        if  Shared.shared.proxyInfoIsLoaded {
             completion?(true)
             return
         }
@@ -90,7 +88,7 @@ extension DBStorage {
             switch session.status {
             case .completed:
                 ref.child(Child.UserFiles).child(key).putFile(from: compressedVideoURL, metadata: nil) { (metadata, _) in
-                    // cache?
+                    // TODO: Cache
                     completion(metadata?.downloadURL())
                     return
                 }

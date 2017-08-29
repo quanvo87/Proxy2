@@ -10,7 +10,7 @@ import FirebaseAuth
 import FirebaseDatabase
 import FirebaseStorage
 
-class ProxiesTableViewController: UITableViewController, NewMessageViewControllerDelegate {
+class ProxiesTableViewController: UITableViewController, MakeNewMessageViewControllerDelegate {
     
     let api = API.sharedInstance
     let ref = Database.database().reference()
@@ -95,7 +95,7 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
             self.tableView.reloadData()
         })
         
-        NotificationCenter.default.addObserver(self, selector: #selector(ProxiesTableViewController.scrollToTop), name: NSNotification.Name(rawValue: Notifications.CreatedNewProxyFromHomeTab), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ProxiesTableViewController.scrollToTop), name: NSNotification.Name(rawValue: Notifications.MadeNewProxyFromHomeTab), object: nil)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -233,7 +233,7 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
     }
     
     // MARK: - Select proxy view controller delegate
-    func setupForNewConvo(_ convo: Convo) {
+    func prepareToShowNewConvo(_ convo: Convo) {
         self.convo = convo
         shouldShowNewConvo = true
     }
@@ -249,8 +249,8 @@ class ProxiesTableViewController: UITableViewController, NewMessageViewControlle
     
     // MARK: - Navigation
     @objc func showNewMessageViewController() {
-        let dest = storyboard!.instantiateViewController(withIdentifier: Identifier.NewMessageViewController) as! NewMessageViewController
-        dest.newMessageViewControllerDelegate = self
+        let dest = storyboard!.instantiateViewController(withIdentifier: Identifier.NewMessageViewController) as! MakeNewMessageViewController
+        dest.delegate = self
         navigationController?.pushViewController(dest, animated: true)
     }
     

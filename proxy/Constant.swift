@@ -88,5 +88,5 @@ struct Identifier {
 }
 
 struct Notifications {
-    static let CreatedNewProxyFromHomeTab = "Created New Proxy From Home Tab"
+    static let MadeNewProxyFromHomeTab = "Created New Proxy From Home Tab"
 }
