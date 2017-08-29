@@ -47,7 +47,7 @@ struct Child {
     static let Message = "message"
     static let Created = "created"
     static let Timestamp = "timestamp"
-    static let Unread = "unread"
+    static let unreadCount = "unreadCount"
 }
 
 struct URLs {
@@ -88,5 +88,11 @@ struct Identifier {
 }
 
 struct Notifications {
-    static let MadeNewProxyFromHomeTab = "Created New Proxy From Home Tab"
+    static let madeNewProxyFromHomeTab = "madeNewProxyFromHomeTab"
+}
+
+struct UISettings {
+    static let navBarButtonCGDouble = 30.0
+    static let navBarButtonCGRect = CGRect(x: 0, y: 0, width: UISettings.navBarButtonCGDouble, height: UISettings.navBarButtonCGDouble)
+    static let navBarButtonCGSize = CGSize(width: UISettings.navBarButtonCGDouble, height: UISettings.navBarButtonCGDouble)
 }

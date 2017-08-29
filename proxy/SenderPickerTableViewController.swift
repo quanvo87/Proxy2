@@ -9,8 +9,8 @@ class SenderPickerTableViewController: UITableViewController {
 
         let cancelButton = UIButton(type: .custom)
         cancelButton.addTarget(self, action: #selector(SenderPickerTableViewController.cancelPickingSender), for: .touchUpInside)
-        cancelButton.frame = CGRect(x: 0, y: 0, width: 25, height: 25)
-        cancelButton.setImage(UIImage(named: "cancel"), for: .normal)
+        cancelButton.frame = UISettings.navBarButtonCGRect
+        cancelButton.setImage(UIImage(named: "cancel")?.resize(toNewSize: UISettings.navBarButtonCGSize, isAspectRatio: true), for: .normal)
 
         dataSource = ProxiesTableViewDataSource(tableView)
         

@@ -1,7 +1,7 @@
 import FirebaseDatabase
 
 class UnreadCountObserver {
-    private var ref = DB.makeReference(Child.Unread, Shared.shared.uid, Child.Unread)
+    private var ref = DB.makeReference(Child.unreadCount, Shared.shared.uid, Child.unreadCount)
 
     init() {}
 

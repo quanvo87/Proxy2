@@ -12,11 +12,11 @@ class ProxiesTableViewDataSource: NSObject, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.ProxyCell, for: indexPath as IndexPath) as? ProxyCell else {
-            return UITableViewCell()
+        guard
+            let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.ProxyCell, for: indexPath as IndexPath) as? ProxyCell,
+            let proxy = proxiesObserver.getProxies()[safe: indexPath.row] else {
+                return UITableViewCell()
         }
-
-        let proxy = proxiesObserver.getProxies()[indexPath.row]
 
         cell.accessoryType = .none
         cell.convoCountLabel.text = proxy.convoCount.asLabel
@@ -37,8 +37,7 @@ class ProxiesTableViewDataSource: NSObject, UITableViewDataSource {
             }
         }
 
-        let secondsAgo = -Date(timeIntervalSince1970: proxy.dateCreated).timeIntervalSinceNow
-        if secondsAgo < 60 * Settings.NewProxyIndicatorDuration {
+        if proxy.dateCreated.isRecentDate {
             cell.contentView.bringSubview(toFront: cell.newImageView)
             cell.newImageView.isHidden = false
         }

@@ -2,7 +2,7 @@ class MessagesTableViewController: UITableViewController {
     let authObserver = AuthObserver()
     let dataSource = MessagesTableViewDataSource()
     var navigationItemManager = NavigationItemManager()
-    let unreadObserver = UnreadCountObserver()
+    let unreadCountObserver = UnreadCountObserver()
 
     var convo: Convo?
     var shouldGoToNewConvo = false
@@ -27,8 +27,7 @@ class MessagesTableViewController: UITableViewController {
         if  shouldGoToNewConvo,
             let convo = convo,
             let convoVC = storyboard?.instantiateViewController(withIdentifier: Identifier.ConvoViewController) as? ConvoViewController,
-            let navigationController = navigationController
-        {
+            let navigationController = navigationController {
             convoVC.convo = convo
             self.convo = nil
             shouldGoToNewConvo = false
@@ -78,13 +77,12 @@ extension MessagesTableViewController: AuthObserverDelegate {
         navigationItemManager.makeButtons(self)
         setDefaultButtons()
         tabBarController?.tabBar.items?.setupForTabBar()
-        unreadObserver.observeUnreadCount(self)
+        unreadCountObserver.observeUnreadCount(self)
     }
 
     func logOut() {
         if  let loginVC = self.storyboard?.instantiateViewController(withIdentifier: Identifier.LoginViewController) as? LoginViewController,
-            let appDelegate = UIApplication.shared.delegate as? AppDelegate
-       {
+            let appDelegate = UIApplication.shared.delegate as? AppDelegate {
             appDelegate.window?.rootViewController = loginVC
         }
     }
@@ -141,24 +139,30 @@ extension MessagesTableViewController: NavigationItemManagerDelegate {
         present(alert, animated: true)
     }
 
-    func createNewProxy() {
-        navigationItem.rightBarButtonItems?[1].isEnabled = false
+    func makeNewProxy() {
+        toggleRightBarButtonItem(atIndex: 1)
         DBProxy.makeProxy { (result) in
-            self.navigationItem.rightBarButtonItems?[1].isEnabled = true
+            self.toggleRightBarButtonItem(atIndex: 1)
             switch result {
             case .failure(let error):
                 self.showAlert("Error Creating Proxy", message: error.description)
             case .success:
-                NotificationCenter.default.post(name: Notification.Name(rawValue: Notifications.MadeNewProxyFromHomeTab), object: nil)
+                NotificationCenter.default.post(name: Notification.Name(rawValue: Notifications.madeNewProxyFromHomeTab), object: nil)
                 self.tabBarController?.selectedIndex = 1
             }
         }
     }
 
-    func createNewMessage() {
+    func goToMakeNewMessageVC() {
         if let makeNewMessageVC = self.storyboard?.instantiateViewController(withIdentifier: Identifier.NewMessageViewController) as? MakeNewMessageViewController {
             makeNewMessageVC.delegate = self
             navigationController?.pushViewController(makeNewMessageVC, animated: true)
+        }
+    }
+
+    func toggleRightBarButtonItem(atIndex index: Int) {
+        if let item = navigationItem.rightBarButtonItems?[safe: index] {
+            item.isEnabled = !item.isEnabled
         }
     }
 }
@@ -177,9 +181,8 @@ extension MessagesTableViewController: UnreadObserverDelegate {
 
 private extension Array where Element: UITabBarItem {
     func setupForTabBar() {
-        let size = CGSize(width: 30, height: 30)
-        self[0].image = UIImage(named: "messages-tab")?.resize(toNewSize: size, isAspectRatio: true)
-        self[1].image = UIImage(named: "proxies-tab")?.resize(toNewSize: size, isAspectRatio: true)
-        self[2].image = UIImage(named: "me-tab")?.resize(toNewSize: size, isAspectRatio: true)
+        self[0].image = UIImage(named: "messages-tab")?.resize(toNewSize: UISettings.navBarButtonCGSize, isAspectRatio: true)
+        self[1].image = UIImage(named: "proxies-tab")?.resize(toNewSize: UISettings.navBarButtonCGSize, isAspectRatio: true)
+        self[2].image = UIImage(named: "me-tab")?.resize(toNewSize: UISettings.navBarButtonCGSize, isAspectRatio: true)
     }
 }

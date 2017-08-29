@@ -11,13 +11,13 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate {
     var delegate: MakeNewMessageViewControllerDelegate?
     var receiver: Proxy? {
         didSet {
-            pickReceiverButton.setTitle(receiver?.name, for: .normal)
+            pickReceiverButton.setTitle(receiver?.name ?? "Pick A Receiver", for: .normal)
             enableButtons()
         }
     }
     var sender: Proxy? {
         didSet {
-            pickSenderButton.setTitle(sender?.name, for: .normal)
+            pickSenderButton.setTitle(sender?.name ?? "Pick A Sender", for: .normal)
             enableButtons()
         }
     }
@@ -28,8 +28,8 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate {
 
         let cancelButton = UIButton(type: .custom)
         cancelButton.addTarget(self, action: #selector(MakeNewMessageViewController.cancelMakingNewMessage), for: .touchUpInside)
-        cancelButton.frame = CGRect(x: 0, y: 0, width: 25, height: 25)
-        cancelButton.setImage(UIImage(named: "cancel"), for: .normal)
+        cancelButton.frame = UISettings.navBarButtonCGRect
+        cancelButton.setImage(UIImage(named: "cancel")?.resize(toNewSize: UISettings.navBarButtonCGSize, isAspectRatio: true), for: .normal)
 
         messageTextView.becomeFirstResponder()
         messageTextView.delegate = self
@@ -53,21 +53,21 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate {
 }
 
 extension MakeNewMessageViewController {
-    @IBAction func goToReceiverPickerViewController() {
+    @IBAction func goToReceiverPickerVC() {
         if let receiverPickerVC = storyboard?.instantiateViewController(withIdentifier: Identifier.ReceiverPickerViewController) as? ReceiverPickerViewController {
             receiverPickerVC.delegate = self
             navigationController?.pushViewController(receiverPickerVC, animated: true)
         }
     }
 
-    @IBAction func goToSenderPickerTableViewController() {
+    @IBAction func goToSenderPickerVC() {
         if let senderPickerVC = self.storyboard?.instantiateViewController(withIdentifier: Identifier.SenderPickerTableViewController) as? SenderPickerTableViewController {
             senderPickerVC.delegate = self
             navigationController?.pushViewController(senderPickerVC, animated: true)
         }
     }
 
-    @IBAction func tapMakeNewProxyButton() {
+    @IBAction func makeNewProxy() {
         disableButtons()
         if let sender = sender, senderIsNewProxy {
             DBProxy.deleteProxy(sender) { (success) in
@@ -76,14 +76,14 @@ extension MakeNewMessageViewController {
                     return
                 }
                 self.senderIsNewProxy = false
-                self.makeNewProxy()
+                self.makeNewProxyHelper()
             }
         } else {
-            makeNewProxy()
+            makeNewProxyHelper()
         }
     }
 
-    @IBAction func tapSendMessageButton() {
+    @IBAction func sendMessage() {
         disableButtons()
         guard let sender = sender, let receiver = receiver else {
             enableButtons()
@@ -131,15 +131,15 @@ extension MakeNewMessageViewController {
         sendMessageButton.isEnabled = sender != nil && receiver != nil && messageTextView.text != ""
     }
 
-    func makeNewProxy() {
+    func makeNewProxyHelper() {
         DBProxy.makeProxy { (result) in
             switch result {
             case .failure(let error):
                 self.showAlert("Error Making New Proxy", message: error.description)
                 self.enableButtons()
             case .success(let newProxy):
-                self.senderIsNewProxy = true
                 self.sender = newProxy
+                self.senderIsNewProxy = true
             }
         }
     }
@@ -172,8 +172,8 @@ extension MakeNewMessageViewController: SenderPickerDelegate {
     func setSender(to proxy: Proxy) {
         if let sender = sender, senderIsNewProxy {
             DBProxy.deleteProxy(sender) { _ in }
-            senderIsNewProxy = false
             self.sender = proxy
+            senderIsNewProxy = false
         } else {
             sender = proxy
         }

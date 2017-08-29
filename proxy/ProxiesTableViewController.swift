@@ -73,7 +73,7 @@ class ProxiesTableViewController: UITableViewController, MakeNewMessageViewContr
         tableView.rowHeight = 60
         tableView.separatorStyle = .none
         
-        unreadRef = ref.child(Child.Unread).child(api.uid).child(Child.Unread)
+        unreadRef = ref.child(Child.unreadCount).child(api.uid).child(Child.unreadCount)
         unreadRefHandle = unreadRef.observe(.value, with: { (data) in
             if let unread = data.value as? Int {
                 self.navigationItem.title = "Proxies" + unread.asLabelWithParens
@@ -95,7 +95,7 @@ class ProxiesTableViewController: UITableViewController, MakeNewMessageViewContr
             self.tableView.reloadData()
         })
         
-        NotificationCenter.default.addObserver(self, selector: #selector(ProxiesTableViewController.scrollToTop), name: NSNotification.Name(rawValue: Notifications.MadeNewProxyFromHomeTab), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ProxiesTableViewController.scrollToTop), name: NSNotification.Name(rawValue: Notifications.madeNewProxyFromHomeTab), object: nil)
     }
     
     override func viewDidAppear(_ animated: Bool) {
