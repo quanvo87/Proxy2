@@ -57,7 +57,7 @@ struct URLs {
 struct Settings {
     static let MaxAllowedProxies = UInt(30)
     static let TimeBetweenTimestamps = 30.0
-    static let NewProxyIndicatorDuration = 5.0
+    static let newProxyDuration: Double = 60 * 5
 }
 
 struct Identifier {

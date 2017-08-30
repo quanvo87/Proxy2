@@ -73,11 +73,10 @@ extension MessagesTableViewController {
 extension MessagesTableViewController: AuthObserverDelegate {
     func logIn() {
         dataSource.load(tableView)
-        DBStorage.loadProxyInfo()
         navigationItemManager.makeButtons(self)
         setDefaultButtons()
         tabBarController?.tabBar.items?.setupForTabBar()
-        unreadCountObserver.observeUnreadCount(self)
+        unreadCountObserver.observe(self)
     }
 
     func logOut() {

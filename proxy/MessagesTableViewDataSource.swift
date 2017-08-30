@@ -6,7 +6,7 @@ class MessagesTableViewDataSource: NSObject, UITableViewDataSource {
 
     func load(_ tableView: UITableView) {
         self.tableView = tableView
-        convosObserver.observeConvos(tableView)
+        convosObserver.observe(tableView)
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -29,11 +29,9 @@ class MessagesTableViewDataSource: NSObject, UITableViewDataSource {
                                                                 senderProxyName: convo.senderProxyName)
         cell.unreadLabel.text = convo.unreadCount.asLabel
 
-        DBStorage.getImageForIcon(convo.receiverIcon, tag: cell.tag) { (result) in
-            guard
-                let (image, tag) = result,
-                tag == cell.tag else {
-                    return
+        DBProxy.getImageForIcon(convo.receiverIcon, tag: cell.tag) { (result) in
+            guard let (image, tag) = result, tag == cell.tag else {
+                return
             }
             DispatchQueue.main.async {
                 cell.iconImageView.image = image

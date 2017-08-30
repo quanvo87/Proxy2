@@ -91,7 +91,14 @@ class DBProxyTests: DBTest {
             expectation.fulfill()
         }
     }
-    
+
+    func testIcons() {
+        XCTAssertEqual(Shared.shared.proxyIconNames.count, 101)
+        for icon in Shared.shared.proxyIconNames {
+            XCTAssertNotNil(UIImage(named: "Assets/Proxy Icons/\(icon)", in: Bundle(for: type(of: self)), compatibleWith: nil))
+        }
+    }
+
     func testMakeProxy() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
