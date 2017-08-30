@@ -65,7 +65,7 @@ class IconPickerCollectionViewController: UICollectionViewController {
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifier.IconPickerCell, for: indexPath as IndexPath) as! IconPickerCell
-        let icon = icons[indexPath.row]
+//        let icon = icons[indexPath.row]
         cell.iconImageView.image = nil
 //        api.getURL(forIconName: icon) { (url) in
 //        }

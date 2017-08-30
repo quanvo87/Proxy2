@@ -9,17 +9,21 @@ struct NavigationItemManager {
 
     init() {}
 
-    mutating func makeButtons(_ delegate: NavigationItemManagerDelegate) {
-        cancelButton = makeButton(delegate: delegate, selector: #selector(delegate.toggleEditMode), imageName: "cancel")
-        confirmButton = makeButton(delegate: delegate, selector: #selector(delegate.deleteSelectedItems), imageName: "confirm")
-        deleteButton = makeButton(delegate: delegate, selector: #selector(delegate.toggleEditMode), imageName: "delete")
-        newMessageButton = makeButton(delegate: delegate, selector: #selector(delegate.goToMakeNewMessageVC), imageName: "new-message")
-        newProxyButton = makeButton(delegate: delegate, selector: #selector(delegate.makeNewProxy), imageName: "new-proxy")
+    static func makeCancelButton(target: Any?, selector: Selector) -> UIBarButtonItem {
+        return makeButton(target: target, selector: selector, imageName: "Assets/App Icons/Cancel")
     }
 
-    private func makeButton(delegate: NavigationItemManagerDelegate, selector: Selector, imageName: String) -> UIBarButtonItem {
+    mutating func makeButtons(_ delegate: NavigationItemManagerDelegate) {
+        cancelButton = NavigationItemManager.makeButton(target: delegate, selector: #selector(delegate.toggleEditMode), imageName: "Assets/App Icons/Cancel")
+        confirmButton = NavigationItemManager.makeButton(target: delegate, selector: #selector(delegate.deleteSelectedItems), imageName: "Assets/App Icons/Confirm")
+        deleteButton = NavigationItemManager.makeButton(target: delegate, selector: #selector(delegate.toggleEditMode), imageName: "Assets/App Icons/Delete")
+        newMessageButton = NavigationItemManager.makeButton(target: delegate, selector: #selector(delegate.goToMakeNewMessageVC), imageName: "Assets/App Icons/New Message")
+        newProxyButton = NavigationItemManager.makeButton(target: delegate, selector: #selector(delegate.makeNewProxy), imageName: "Assets/App Icons/Create New Proxy")
+    }
+
+    private static func makeButton(target: Any?, selector: Selector, imageName: String) -> UIBarButtonItem {
         let button = UIButton(type: .custom)
-        button.addTarget(delegate, action: selector, for: .touchUpInside)
+        button.addTarget(target, action: selector, for: .touchUpInside)
         button.frame = UISettings.navBarButtonCGRect
         button.setImage(UIImage(named: imageName)?.resize(toNewSize: UISettings.navBarButtonCGSize, isAspectRatio: true), for: .normal)
         return UIBarButtonItem(customView: button)

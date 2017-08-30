@@ -34,6 +34,28 @@ class DBProxyTests: DBTest {
             }
         }
     }
+
+    func testGetImageForIcon() {
+        XCTAssertEqual(Shared.shared.proxyIconNames.count, 101)
+
+        let expectation = self.expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
+
+        let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
+
+        for icon in Shared.shared.proxyIconNames {
+            key.startWork()
+            DBProxy.getImageForIcon(icon, tag: 0) { (result) in
+                XCTAssertNotNil(result)
+                key.finishWork()
+            }
+        }
+
+        key.notify {
+            key.finishWorkGroup()
+            expectation.fulfill()
+        }
+    }
     
     func testGetProxiesForUser() {
         let expectation = self.expectation(description: #function)
@@ -92,19 +114,13 @@ class DBProxyTests: DBTest {
         }
     }
 
-    func testIcons() {
-        XCTAssertEqual(Shared.shared.proxyIconNames.count, 101)
-        for icon in Shared.shared.proxyIconNames {
-            XCTAssertNotNil(UIImage(named: "Assets/Proxy Icons/\(icon)", in: Bundle(for: type(of: self)), compatibleWith: nil))
-        }
-    }
-
     func testMakeProxy() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
         
         DBTest.makeProxy { (proxy) in
             XCTAssertFalse(Shared.shared.isCreatingProxy)
+            XCTAssertNotEqual(proxy.icon, "")
             
             let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
             key.check(.proxyCount, 1, forUser: proxy.ownerId)

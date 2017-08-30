@@ -5,6 +5,12 @@ enum Result<T, Error> {
     case failure(Error)
 }
 
+extension Array where Element: UITableViewCell {
+    func incrementTags() {
+        _ = self.map { $0.tag += 1 }
+    }
+}
+
 // https://stackoverflow.com/questions/25329186/safe-bounds-checked-array-lookup-in-swift-through-optional-bindings
 extension Collection {
     subscript(safe index: Index) -> Element? {
@@ -122,7 +128,7 @@ extension UIImage {
 extension UIViewController {
     func showAlert(_ title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
     }
 }

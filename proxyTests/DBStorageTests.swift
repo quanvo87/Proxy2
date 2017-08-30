@@ -42,11 +42,3 @@ class DBStorageTests: DBTest {
         }.resume()
     }
 }
-
-extension DBStorageTests {
-    func testIncrementTags() {
-        let cells = [UITableViewCell()]
-        cells.incrementTags()
-        XCTAssertEqual(cells[0].tag, 1)
-    }
-}

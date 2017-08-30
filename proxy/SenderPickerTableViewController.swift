@@ -7,30 +7,13 @@ class SenderPickerTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let cancelButton = UIButton(type: .custom)
-        cancelButton.addTarget(self, action: #selector(SenderPickerTableViewController.cancelPickingSender), for: .touchUpInside)
-        cancelButton.frame = UISettings.navBarButtonCGRect
-        cancelButton.setImage(UIImage(named: "cancel")?.resize(toNewSize: UISettings.navBarButtonCGSize, isAspectRatio: true), for: .normal)
-
         dataSource = ProxiesTableViewDataSource(tableView)
-        
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: cancelButton)
+
         navigationItem.title = "Pick A Sender"
 
         tableView.dataSource = dataSource
         tableView.rowHeight = 60
         tableView.separatorStyle = .none
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(true)
-        navigationItem.hidesBackButton = true
-        tabBarController?.tabBar.isHidden = true
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(true)
-        tabBarController?.tabBar.isHidden = false
     }
 }
 
@@ -44,12 +27,6 @@ extension SenderPickerTableViewController {
             return
         }
         delegate?.setSender(to: proxy)
-        _ = navigationController?.popViewController(animated: true)
-    }
-}
-
-extension SenderPickerTableViewController {
-    @objc func cancelPickingSender() {
         _ = navigationController?.popViewController(animated: true)
     }
 }

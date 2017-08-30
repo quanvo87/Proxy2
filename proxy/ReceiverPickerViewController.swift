@@ -1,16 +1,7 @@
-//
-//  ReceiverPickerViewController.swift
-//  proxy
-//
-//  Created by Quan Vo on 11/1/16.
-//  Copyright © 2016 Quan Vo. All rights reserved.
-//
-
 import FirebaseDatabase
 //import RAMReel
 
 class ReceiverPickerViewController: UIViewController, UICollectionViewDelegate {
-    
     @IBOutlet weak var selectThisReceiverButton: UIButton!
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     
@@ -21,12 +12,6 @@ class ReceiverPickerViewController: UIViewController, UICollectionViewDelegate {
         super.viewDidLoad()
         
         navigationItem.title = "Pick A Receiver"
-        
-        let cancelButton = UIButton(type: .custom)
-        cancelButton.addTarget(self, action: #selector(ReceiverPickerViewController.close), for: UIControlEvents.touchUpInside)
-        cancelButton.frame = CGRect(x: 0, y: 0, width: 25, height: 25)
-        cancelButton.setImage(UIImage(named: "cancel"), for: UIControlState.normal)
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: cancelButton)
         
         api.ref.child(Child.Proxies).queryOrdered(byChild: Child.Key).observeSingleEvent(of: .value, with: { data in
             guard data.hasChildren() else { return }
@@ -64,23 +49,8 @@ class ReceiverPickerViewController: UIViewController, UICollectionViewDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(ReceiverPickerViewController.keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: self.view.window)
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(true)
-        navigationItem.hidesBackButton = true
-        tabBarController?.tabBar.isHidden = true
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(true)
-        tabBarController?.tabBar.isHidden = false
-    }
-    
     deinit {
         NotificationCenter.default.removeObserver(self)
-    }
-    
-    @objc func close() {
-        _ = navigationController?.popViewController(animated: true)
     }
     
     @objc func keyboardWillShow(_ notification: Notification) {

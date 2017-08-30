@@ -16,6 +16,12 @@ class CommonTests: XCTestCase {
         let error = ProxyError.blankCredentials
         XCTAssertEqual(error.description, "Please enter a valid email and password.")
     }
+
+    func testIncrementTags() {
+        let cells = [UITableViewCell()]
+        cells.incrementTags()
+        XCTAssertEqual(cells[0].tag, 1)
+    }
     
     func testIntAsLabel() {
         XCTAssertEqual(0.asLabel, "")

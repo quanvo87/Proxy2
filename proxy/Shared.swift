@@ -6,6 +6,7 @@ class Shared {
     var asyncWorkGroups = [AsyncWorkGroupKey: (group: DispatchGroup, result: Bool)]()
     let cache = NSCache<AnyObject, AnyObject>()
     let firebase = FirebaseApp.app()
+    let queue = DispatchQueue(label: "proxyQueue")
 
     var uid = ""
     var isCreatingProxy = false

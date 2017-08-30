@@ -26,31 +26,15 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let cancelButton = UIButton(type: .custom)
-        cancelButton.addTarget(self, action: #selector(MakeNewMessageViewController.cancelMakingNewMessage), for: .touchUpInside)
-        cancelButton.frame = UISettings.navBarButtonCGRect
-        cancelButton.setImage(UIImage(named: "cancel")?.resize(toNewSize: UISettings.navBarButtonCGSize, isAspectRatio: true), for: .normal)
-
         messageTextView.becomeFirstResponder()
         messageTextView.delegate = self
 
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: cancelButton)
+        navigationItem.rightBarButtonItem = NavigationItemManager.makeCancelButton(target: self, selector: #selector(MakeNewMessageViewController.cancelMakingNewMessage))
         navigationItem.title = "New Message"
 
         NotificationCenter.default.addObserver(self, selector: #selector(MakeNewMessageViewController.keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: view.window)
 
         sendMessageButton.isEnabled = false
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(true)
-        navigationItem.hidesBackButton = true
-        tabBarController?.tabBar.isHidden = true
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(true)
-        tabBarController?.tabBar.isHidden = false
     }
 
     deinit {
@@ -112,10 +96,10 @@ extension MakeNewMessageViewController {
         DBProxy.cancelCreatingProxy()
         if let sender = sender, senderIsNewProxy {
             DBProxy.deleteProxy(sender) { _ in
-                _ = self.navigationController?.popViewController(animated: true)
+                self.dismiss(animated: true)
             }
         } else {
-            _ = navigationController?.popViewController(animated: true)
+            dismiss(animated: true)
         }
     }
 

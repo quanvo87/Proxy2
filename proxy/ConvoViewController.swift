@@ -212,26 +212,26 @@ class ConvoViewController: JSQMessagesViewController {
                 
                 // Wait for the message's content to be loaded to storage.
                 // Once this happens, the message's `mediaURL` will be updated.
-                var messageRefHandle = DatabaseHandle()
-                let messageRef = self.ref.child(Child.Messages).child(message.parentConvo).child(message.key).child(Child.MediaURL)
-                messageRefHandle = messageRef.observe(.value, with: { (data) in
-                    
-                    // Get `mediaURL`.
-                    guard let url = URL(string: data.value as! String), url.absoluteString != "" else { return }
-                    
-                    // Get the image from `mediaURL`.
-//                    self.api.getUIImage(from: url, completion: { (image) in
-//                        
-//                        // Load the image to the cell.
-//                        (_message.media as! JSQPhotoMediaItem).image = image
-//                        
-//                        // Reload the collection view.
-//                        self.collectionView.reloadData()
-//                        
-//                        // Remove database observer for this message.
-//                        messageRef.removeObserver(withHandle: messageRefHandle)
-//                    })
-                })
+//                var messageRefHandle = DatabaseHandle()
+//                let messageRef = self.ref.child(Child.Messages).child(message.parentConvo).child(message.key).child(Child.MediaURL)
+//                messageRefHandle = messageRef.observe(.value, with: { (data) in
+//                    
+//                    // Get `mediaURL`.
+//                    guard let url = URL(string: data.value as! String), url.absoluteString != "" else { return }
+//                    
+//                    // Get the image from `mediaURL`.
+////                    self.api.getUIImage(from: url, completion: { (image) in
+////                        
+////                        // Load the image to the cell.
+////                        (_message.media as! JSQPhotoMediaItem).image = image
+////                        
+////                        // Reload the collection view.
+////                        self.collectionView.reloadData()
+////                        
+////                        // Remove database observer for this message.
+////                        messageRef.removeObserver(withHandle: messageRefHandle)
+////                    })
+//                })
                 
             case "image":
                 
@@ -242,7 +242,7 @@ class ConvoViewController: JSQMessagesViewController {
                 self.finishReceivingMessage()
                 
                 // Get the image from `mediaURL`.
-                guard let url = URL(string: message.mediaURL) else { return }
+                guard URL(string: message.mediaURL) != nil else { return }
 //                self.api.getUIImage(from: url, completion: { (image) in
 //                    
 //                    // Load the image to the cell.
@@ -350,7 +350,7 @@ class ConvoViewController: JSQMessagesViewController {
     // Observe when sender changes his/her icon to update all cells that are displaying it.
     func observeSenderIcon() {
         senderIconRefHandle = senderIconRef.observe(.value, with: { (data) in
-            if let icon = data.value as? String {
+            if (data.value as? String) != nil {
 //                self.api.getUIImage(forIconName: icon, completion: { (image) in
 //                    self.icons[self.convo.senderId] = JSQMessagesAvatarImage(placeholder: image)
 //                    self.collectionView.reloadData()
@@ -362,7 +362,7 @@ class ConvoViewController: JSQMessagesViewController {
     // Observe when receiver changes his/her icon to update all cells that are displaying it.
     func observeReceiverIcon() {
         receiverIconRefHandle = receiverIconRef.observe(.value, with: { (data) in
-            if let icon = data.value as? String {
+            if (data.value as? String) != nil {
 //                self.api.getUIImage(forIconName: icon, completion: { (image) in
 //                    self.icons[self.convo.receiverId] = JSQMessagesAvatarImage(placeholder: image)
 //                    self.collectionView.reloadData()

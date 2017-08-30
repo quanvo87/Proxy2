@@ -16,6 +16,6 @@ class UnreadCountObserver {
     }
 }
 
-protocol UnreadObserverDelegate: class {
+protocol UnreadObserverDelegate {
     func setUnreadCount(to unreadCount: Int?)
 }

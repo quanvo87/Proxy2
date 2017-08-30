@@ -77,9 +77,3 @@ extension DBStorage {
         }
     }
 }
-
-extension Array where Element: UITableViewCell {
-    func incrementTags() {
-        _ = self.map { $0.tag += 1 }
-    }
-}

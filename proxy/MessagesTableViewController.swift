@@ -26,12 +26,11 @@ class MessagesTableViewController: UITableViewController {
         super.viewDidAppear(true)
         if  shouldGoToNewConvo,
             let convo = convo,
-            let convoVC = storyboard?.instantiateViewController(withIdentifier: Identifier.ConvoViewController) as? ConvoViewController,
-            let navigationController = navigationController {
+            let convoVC = storyboard?.instantiateViewController(withIdentifier: Identifier.ConvoViewController) as? ConvoViewController {
             convoVC.convo = convo
             self.convo = nil
             shouldGoToNewConvo = false
-            navigationController.pushViewController(convoVC, animated: true)
+            navigationController?.pushViewController(convoVC, animated: true)
         }
     }
 }
@@ -155,7 +154,8 @@ extension MessagesTableViewController: NavigationItemManagerDelegate {
     func goToMakeNewMessageVC() {
         if let makeNewMessageVC = self.storyboard?.instantiateViewController(withIdentifier: Identifier.NewMessageViewController) as? MakeNewMessageViewController {
             makeNewMessageVC.delegate = self
-            navigationController?.pushViewController(makeNewMessageVC, animated: true)
+            let navigationController = UINavigationController(rootViewController: makeNewMessageVC)
+            present(navigationController, animated: true)
         }
     }
 
@@ -180,8 +180,8 @@ extension MessagesTableViewController: UnreadObserverDelegate {
 
 private extension Array where Element: UITabBarItem {
     func setupForTabBar() {
-        self[0].image = UIImage(named: "messages-tab")?.resize(toNewSize: UISettings.navBarButtonCGSize, isAspectRatio: true)
-        self[1].image = UIImage(named: "proxies-tab")?.resize(toNewSize: UISettings.navBarButtonCGSize, isAspectRatio: true)
-        self[2].image = UIImage(named: "me-tab")?.resize(toNewSize: UISettings.navBarButtonCGSize, isAspectRatio: true)
+        self[0].image = UIImage(named: "Assets/App Icons/Messages")?.resize(toNewSize: UISettings.navBarButtonCGSize, isAspectRatio: true)
+        self[1].image = UIImage(named: "Assets/App Icons/Proxy")?.resize(toNewSize: UISettings.navBarButtonCGSize, isAspectRatio: true)
+        self[2].image = UIImage(named: "Assets/App Icons/Me")?.resize(toNewSize: UISettings.navBarButtonCGSize, isAspectRatio: true)
     }
 }
