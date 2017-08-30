@@ -10,7 +10,7 @@ class ProxiesObserver {
         return proxies
     }
 
-    func observeProxies(_ tableView: UITableView) {
+    func observe(_ tableView: UITableView) {
         ref?.queryOrdered(byChild: Child.Timestamp).observe(.value, with: { [weak self] (data) in
             self?.proxies = data.toProxies().reversed()
             tableView.visibleCells.incrementTags()

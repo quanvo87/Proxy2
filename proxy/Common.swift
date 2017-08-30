@@ -17,9 +17,9 @@ extension Double {
         return NSDate(timeIntervalSince1970: self).formattedAsTimeAgo()
     }
 
-    var isRecentDate: Bool {
+    var isNewProxyDate: Bool {
         let secondsAgo = -Date(timeIntervalSince1970: self).timeIntervalSinceNow
-        return secondsAgo < 60 * Settings.NewProxyIndicatorDuration
+        return secondsAgo < Settings.newProxyDuration
     }
 }
 

@@ -10,7 +10,7 @@ class ConvosObserver {
         return convos
     }
 
-    func observeConvos(_ tableView: UITableView) {
+    func observe(_ tableView: UITableView) {
         ref?.queryOrdered(byChild: Child.Timestamp).observe(.value, with: { [weak self] (data) in
             self?.convos = data.toConvos(filtered: true).reversed()
             tableView.visibleCells.incrementTags()

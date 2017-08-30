@@ -45,8 +45,14 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         navigationItem.hidesBackButton = true
+        tabBarController?.tabBar.isHidden = true
     }
-    
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(true)
+        tabBarController?.tabBar.isHidden = false
+    }
+
     deinit {
         NotificationCenter.default.removeObserver(self)
     }

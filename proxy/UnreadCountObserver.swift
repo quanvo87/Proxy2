@@ -5,7 +5,7 @@ class UnreadCountObserver {
 
     init() {}
 
-    func observeUnreadCount(_ delegate: UnreadObserverDelegate) {
+    func observe(_ delegate: UnreadObserverDelegate) {
         ref?.observe(.value) { (data) in
             delegate.setUnreadCount(to: data.value as? Int)
         }

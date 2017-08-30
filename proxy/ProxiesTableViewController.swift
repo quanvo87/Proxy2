@@ -203,16 +203,12 @@ class ProxiesTableViewController: UITableViewController, MakeNewMessageViewContr
         let proxy = proxies[indexPath.row]
         
         // 'New' image
-        cell.newImageView.isHidden = true
-        let secondsAgo = -Date(timeIntervalSince1970: proxy.dateCreated).timeIntervalSinceNow
-        if secondsAgo < 60 * Settings.NewProxyIndicatorDuration {
-            cell.newImageView.isHidden = false
-        }
-        cell.contentView.bringSubview(toFront: cell.newImageView)
+//        cell.newImageView.isHidden = true
+//        cell.contentView.bringSubview(toFront: cell.newImageView)
         
         // Icon
         cell.iconImageView.image = nil
-        DBStorage.getImageForIcon(proxy.icon, tag: cell.tag) { (result) in
+        DBProxy.getImageForIcon(proxy.icon, tag: cell.tag) { (result) in
             guard
                 let (image, tag) = result,
                 tag == cell.tag else {

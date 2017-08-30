@@ -2,43 +2,6 @@ import XCTest
 @testable import proxy
 
 class DBStorageTests: DBTest {
-    func testGetImageForIcon() {
-        let expectation = self.expectation(description: #function)
-        defer { waitForExpectations(timeout: 30) }
-        
-        DBStorage.loadProxyInfo { (success) in
-            XCTAssert(success)
-            
-            let iconImagesRetrieved = DispatchGroup()
-            
-            for iconName in Shared.shared.iconNames {
-                iconImagesRetrieved.enter()
-                
-                DBStorage.getImageForIcon(iconName, tag: 0) { (result) in
-                    XCTAssertEqual(result?.image, Shared.shared.cache.object(forKey: iconName as AnyObject) as? UIImage)
-                    iconImagesRetrieved.leave()
-                }
-            }
-            
-            iconImagesRetrieved.notify(queue: DispatchQueue.main) {
-                expectation.fulfill()
-            }
-        }
-    }
-
-    func testLoadProxyInfo() {
-        let expectation = self.expectation(description: #function)
-        defer { waitForExpectations(timeout: 10) }
-
-        DBStorage.loadProxyInfo { (success) in
-            XCTAssert(success)
-            XCTAssertFalse(Shared.shared.adjectives.isEmpty)
-            XCTAssertFalse(Shared.shared.nouns.isEmpty)
-            XCTAssertFalse(Shared.shared.iconNames.isEmpty)
-            expectation.fulfill()
-        }
-    }
-    
     func testUploadImage() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }

@@ -18,7 +18,7 @@ class API {
     var uid = ""
     let ref = Database.database().reference()
     let storageRef = Storage.storage().reference(forURL: URLs.Storage)
-    var proxyNameGenerator = ProxyNameGenerator()
+//    var proxyNameGenerator = ProxyNameGenerator()
     var icons = [String]()
     var iconURLCache = [String: URL]()
     let dispatch_group = DispatchGroup()
@@ -174,8 +174,8 @@ class API {
     
     /// Gives a user access to the default icons.
     func setDefaultIcons(forUserId user: String) {
-        let defaultIcons = DefaultIcons(id: user).defaultIcons
-        ref.updateChildValues(defaultIcons as! [AnyHashable: Any])
+//        let defaultIcons = DefaultIcons(id: user).defaultIcons
+//        ref.updateChildValues(defaultIcons as! [AnyHashable: Any])
     }
     
     func loadIcons() {
@@ -288,8 +288,8 @@ class API {
             let words = data.value as AnyObject
             let adjs = words["adjectives"]
             let nouns = words["nouns"]
-            self.proxyNameGenerator.adjs = adjs as! [String]
-            self.proxyNameGenerator.nouns = nouns as! [String]
+//            self.proxyNameGenerator.adjs = adjs as! [String]
+//            self.proxyNameGenerator.nouns = nouns as! [String]
             self.dispatch_group.leave()
         })
     }
@@ -299,7 +299,7 @@ class API {
         
         // Create a global proxy and save it.
         let autoId = ref.child(Child.Proxies).childByAutoId().key
-        let name = proxyNameGenerator.generateProxyName()
+        let name = "a"
         let key = name.lowercased()
         let proxy = Proxy(name: name, ownerId: self.uid)
         ref.child(Child.Proxies).child(autoId).setValue(proxy.toDictionary()) { (error, proxyRef) in

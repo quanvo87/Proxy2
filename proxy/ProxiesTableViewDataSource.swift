@@ -4,7 +4,7 @@ class ProxiesTableViewDataSource: NSObject, UITableViewDataSource {
 
     init(_ tableview: UITableView) {
         self.tableview = tableview
-        proxiesObserver.observeProxies(tableview)
+        proxiesObserver.observe(tableview)
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -26,18 +26,16 @@ class ProxiesTableViewDataSource: NSObject, UITableViewDataSource {
         cell.nicknameLabel.text = proxy.nickname
         cell.unreadLabel.text = proxy.unreadCount.asLabel
 
-        DBStorage.getImageForIcon(proxy.icon, tag: cell.tag) { (result) in
-            guard
-                let (image, tag) = result,
-                tag == cell.tag else {
-                    return
+        DBProxy.getImageForIcon(proxy.icon, tag: cell.tag) { (result) in
+            guard let (image, tag) = result, tag == cell.tag else {
+                return
             }
             DispatchQueue.main.async {
                 cell.iconImageView.image = image
             }
         }
 
-        if proxy.dateCreated.isRecentDate {
+        if proxy.dateCreated.isNewProxyDate {
             cell.contentView.bringSubview(toFront: cell.newImageView)
             cell.newImageView.isHidden = false
         }
