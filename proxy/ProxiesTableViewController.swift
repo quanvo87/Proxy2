@@ -1,248 +1,161 @@
-import FirebaseDatabase
-
 class ProxiesTableViewController: UITableViewController, MakeNewMessageViewControllerDelegate {
-    
-    let api = API.sharedInstance
-    let ref = Database.database().reference()
-    
-    var newMessageBarButton = UIBarButtonItem()
-    var newProxyBarButton = UIBarButtonItem()
-    var deleteProxiesBarButton = UIBarButtonItem()
-    var confirmDeleteProxiesBarButton = UIBarButtonItem()
-    var cancelDeleteProxiesBarButton = UIBarButtonItem()
-    
-    var unreadRef = DatabaseReference()
-    var unreadRefHandle = DatabaseHandle()
-    
-    var proxiesRef = DatabaseReference()
-    var proxiesRefHandle = DatabaseHandle()
-    var proxies = [Proxy]()
-    var proxiesToDelete = [Proxy]()
-    
-    var convo = Convo()
-    var shouldShowNewConvo = false
-    
+    var buttonManager = ButtonManager()
+    let dataSource = ProxiesTableViewDataSource()
+    let unreadCountObserver = UnreadCountObserver()
+
+    var newConvo: Convo?
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
+        buttonManager.makeButtons(self)
+
+        dataSource.load(tableView)
+
         navigationItem.title = "Proxies"
-        
-        let newMessageButton = UIButton(type: .custom)
-        newMessageButton.addTarget(self, action: #selector(ProxiesTableViewController.showNewMessageViewController), for: UIControlEvents.touchUpInside)
-        newMessageButton.frame = CGRect(x: 0, y: 0, width: 25, height: 25)
-        newMessageButton.setImage(UIImage(named: "new-message.png"), for: UIControlState.normal)
-        newMessageBarButton = UIBarButtonItem(customView: newMessageButton)
-        
-        let newProxyButton = UIButton(type: .custom)
-        newProxyButton.addTarget(self, action: #selector(ProxiesTableViewController.createNewProxy), for: UIControlEvents.touchUpInside)
-        newProxyButton.frame = CGRect(x: 0, y: 0, width: 25, height: 25)
-        newProxyButton.setImage(UIImage(named: "new-proxy.png"), for: UIControlState.normal)
-        newProxyBarButton = UIBarButtonItem(customView: newProxyButton)
-        
-        let deleteProxiesButton = UIButton(type: .custom)
-        deleteProxiesButton.addTarget(self, action: #selector(ProxiesTableViewController.toggleEditMode), for: UIControlEvents.touchUpInside)
-        deleteProxiesButton.frame = CGRect(x: 0, y: 0, width: 25, height: 25)
-        deleteProxiesButton.setImage(UIImage(named: "delete.png"), for: UIControlState.normal)
-        deleteProxiesBarButton = UIBarButtonItem(customView: deleteProxiesButton)
-        
-        let confirmDeleteProxiesButton = UIButton(type: .custom)
-        confirmDeleteProxiesButton.addTarget(self, action: #selector(ProxiesTableViewController.confirmDeleteProxies), for: UIControlEvents.touchUpInside)
-        confirmDeleteProxiesButton.frame = CGRect(x: 0, y: 0, width: 25, height: 25)
-        confirmDeleteProxiesButton.setImage(UIImage(named: "confirm"), for: UIControlState.normal)
-        confirmDeleteProxiesBarButton = UIBarButtonItem(customView: confirmDeleteProxiesButton)
-        
-        let cancelDeleteProxiesButton = UIButton(type: .custom)
-        cancelDeleteProxiesButton.addTarget(self, action: #selector(ProxiesTableViewController.toggleEditMode), for: UIControlEvents.touchUpInside)
-        cancelDeleteProxiesButton.frame = CGRect(x: 0, y: 0, width: 25, height: 25)
-        cancelDeleteProxiesButton.setImage(UIImage(named: "cancel"), for: UIControlState.normal)
-        cancelDeleteProxiesBarButton = UIBarButtonItem(customView: cancelDeleteProxiesButton)
-        
+
         setDefaultButtons()
         
         tableView.allowsMultipleSelectionDuringEditing = true
+        tableView.dataSource = dataSource
         tableView.rowHeight = 60
         tableView.separatorStyle = .none
-        
-        unreadRef = ref.child(Child.unreadCount).child(api.uid).child(Child.unreadCount)
-        unreadRefHandle = unreadRef.observe(.value, with: { (data) in
-            if let unread = data.value as? Int {
-                self.navigationItem.title = "Proxies" + unread.asLabelWithParens
-            } else {
-                self.navigationItem.title = "Proxies"
-            }
-        })
-        
-        proxiesRef = ref.child(Child.Proxies).child(api.uid)
-        proxiesRefHandle = proxiesRef.queryOrdered(byChild: Child.Timestamp).observe(.value, with: { data in
-            var proxies = [Proxy]()
-            for child in data.children {
-                if let proxy = Proxy((child as! DataSnapshot).value as AnyObject) {
-                    proxies.append(proxy)
-                }
-            }
-            self.proxies = proxies.reversed()
-            self.tableView.visibleCells.incrementTags()
-            self.tableView.reloadData()
-        })
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(ProxiesTableViewController.scrollToTop), name: NSNotification.Name(rawValue: Notifications.madeNewProxyFromHomeTab), object: nil)
+
+        unreadCountObserver.observe(self)
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
-        showNewConvo()
-        tableView.reloadData()
+        goToNewConvo()
+        scrollToTop()
     }
-    
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-        unreadRef.removeObserver(withHandle: unreadRefHandle)
-        proxiesRef.removeObserver(withHandle: proxiesRefHandle)
+
+    func goToNewConvo() {
+        if  let newConvo = newConvo,
+            let convoVC = storyboard?.instantiateViewController(withIdentifier: Identifier.ConvoViewController) as? ConvoViewController {
+            convoVC.convo = newConvo
+            self.newConvo = nil
+            navigationController?.pushViewController(convoVC, animated: true)
+        }
     }
-    
+
+    func scrollToTop() {
+        if tableView.numberOfRows(inSection: 0) > 0 {
+            tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
+        }
+    }
+}
+
+extension ProxiesTableViewController {
+    var proxies: [Proxy] {
+        return dataSource.proxiesObserver.getProxies()
+    }
+
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return CGFloat.leastNormalMagnitude
+    }
+
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let proxy = proxies[safe: indexPath.row] else {
+            return
+        }
+        if tableView.isEditing {
+            buttonManager.itemsToDelete.append(proxy)
+        } else {
+            tableView.deselectRow(at: indexPath, animated: true)
+            goToProxyInfoVC(proxy)
+        }
+    }
+
+    override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        guard let proxy = proxies[safe: indexPath.row] else {
+            return
+        }
+        if let index = proxies.index(where: { $0 == proxy }) {
+            buttonManager.itemsToDelete.remove(at: index)
+        }
+    }
+
+    func goToProxyInfoVC(_ proxy: Proxy) {
+        if let proxyInfoVC = storyboard?.instantiateViewController(withIdentifier: Identifier.ProxyInfoTableViewController) as? ProxyInfoTableViewController {
+            proxyInfoVC.proxy = proxy
+            navigationController?.pushViewController(proxyInfoVC, animated: true)
+        }
+    }
+}
+
+extension ProxiesTableViewController: ButtonManagerDelegate {
+    func deleteSelectedItems() {
+        if buttonManager.itemsToDelete.isEmpty {
+            toggleEditMode()
+            return
+        }
+        let alert = UIAlertController(title: "Delete Proxies?", message: "You will not be able to view their conversations anymore.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
+            var index = 0
+            for item in self.buttonManager.itemsToDelete {
+                if let proxy = item as? Proxy {
+                    DBProxy.deleteProxy(proxy) { _ in }
+                }
+                self.buttonManager.itemsToDelete.remove(at: index)
+                index += 1
+            }
+            self.tableView.setEditing(false, animated: true)
+            self.setDefaultButtons()
+        })
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(alert, animated: true)
+    }
+
+    func goToMakeNewMessageVC() {
+        if let makeNewMessageVC = self.storyboard?.instantiateViewController(withIdentifier: Identifier.NewMessageViewController) as? MakeNewMessageViewController {
+            makeNewMessageVC.delegate = self
+            let navigationController = UINavigationController(rootViewController: makeNewMessageVC)
+            present(navigationController, animated: true)
+        }
+    }
+
+    func makeNewProxy() {
+        navigationItem.toggleRightBarButtonItem(atIndex: 1)
+        DBProxy.makeProxy { (result) in
+            self.navigationItem.toggleRightBarButtonItem(atIndex: 1)
+            switch result {
+            case .failure(let error):
+                self.showAlert("Error Creating Proxy", message: error.description)
+            case .success:
+                self.scrollToTop()
+            }
+        }
+    }
+
     func setDefaultButtons() {
-        navigationItem.leftBarButtonItem = deleteProxiesBarButton
-        navigationItem.rightBarButtonItems = [newMessageBarButton, newProxyBarButton]
+        navigationItem.leftBarButtonItem = buttonManager.deleteButton
+        navigationItem.rightBarButtonItems = [buttonManager.newMessageButton,
+                                              buttonManager.newProxyButton]
     }
-    
+
     func setEditModeButtons() {
-        navigationItem.leftBarButtonItem = cancelDeleteProxiesBarButton
-        navigationItem.rightBarButtonItems = [confirmDeleteProxiesBarButton]
+        navigationItem.leftBarButtonItem = buttonManager.cancelButton
+        navigationItem.rightBarButtonItems = [buttonManager.confirmButton]
     }
-    
-    @objc func toggleEditMode() {
+
+    func toggleEditMode() {
         tableView.setEditing(!tableView.isEditing, animated: true)
         if tableView.isEditing {
             setEditModeButtons()
         } else {
             setDefaultButtons()
-            proxiesToDelete = []
+            buttonManager.itemsToDelete = []
         }
     }
-    
-    func deleteSelectedProxies() {
-        tableView.setEditing(false, animated: true)
-        setDefaultButtons()
-        for proxy in proxiesToDelete {
-            api.deleteProxy(proxy)
-        }
-        proxiesToDelete = []
-    }
-    
-    @objc func confirmDeleteProxies() {
-        guard !proxiesToDelete.isEmpty else {
-            toggleEditMode()
-            return
-        }
-        let alert = UIAlertController(title: "Delete Proxies?", message: "You will not be able to view their conversations anymore.", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { (action) in
-            self.deleteSelectedProxies()
-        }))
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        self.present(alert, animated: true, completion: nil)
-    }
-    
-    @objc func createNewProxy() {
-        navigationItem.rightBarButtonItems![1].isEnabled = false
-        api.createProxy { (proxy) in
-            self.navigationItem.rightBarButtonItems![1].isEnabled = true
-            guard proxy != nil else {
-                self.showAlert("Proxy Limit Reached", message: "Cannot exceed 50 proxies. Delete some old ones, then try again!")
-                return
-            }
-            self.scrollToTop()
-        }
-    }
-    
-    @objc func scrollToTop() {
-        self.tableView.setContentOffset(CGPoint(x: 0, y: -self.tableView.contentInset.top), animated: true)
-    }
-    
-    // MARK: - Table view delegate
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return proxies.count
-    }
-    
-    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return CGFloat.leastNormalMagnitude
-    }
-    
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if !tableView.isEditing {
-            tableView.deselectRow(at: indexPath, animated: true)
-            showProxyInfoTableViewController(proxies[indexPath.row])
-        } else {
-            proxiesToDelete.append(proxies[indexPath.row])
-        }
-    }
-    
-    override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        var index = 0
-        let proxy = proxies[indexPath.row]
-        for _proxy in proxiesToDelete {
-            if _proxy.key == proxy.key {
-                proxiesToDelete.remove(at: index)
-                return
-            }
-            index += 1
-        }
-    }
+}
 
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.ProxyCell, for: indexPath as IndexPath) as! ProxyCell
-        let proxy = proxies[indexPath.row]
-        
-        // 'New' image
-//        cell.newImageView.isHidden = true
-//        cell.contentView.bringSubview(toFront: cell.newImageView)
-        
-        // Icon
-        cell.iconImageView.image = nil
-        DBProxy.getImageForIcon(proxy.icon, tag: cell.tag) { (result) in
-            guard
-                let (image, tag) = result,
-                tag == cell.tag else {
-                    return
-            }
-            DispatchQueue.main.async {
-                cell.iconImageView.image = image
-            }
+extension ProxiesTableViewController: UnreadObserverDelegate {
+    func setUnreadCount(to unreadCount: Int?) {
+        if let unreadCount = unreadCount {
+            navigationItem.title = "Proxies" + unreadCount.asLabelWithParens
+        } else {
+            navigationItem.title = "Proxies"
         }
-        
-        // Labels
-        cell.nameLabel.text = proxy.name
-        cell.nicknameLabel.text = proxy.nickname
-        cell.convoCountLabel.text = proxy.convoCount.asLabel
-        cell.unreadLabel.text = proxy.unreadCount.asLabel
-        
-        return cell
-    }
-    
-    // MARK: - Select proxy view controller delegate
-    func prepareToShowNewConvo(_ convo: Convo) {
-        self.convo = convo
-        shouldShowNewConvo = true
-    }
-    
-    func showNewConvo() {
-        if shouldShowNewConvo {
-            let dest = self.storyboard!.instantiateViewController(withIdentifier: Identifier.ConvoViewController) as! ConvoViewController
-            dest.convo = convo
-            shouldShowNewConvo = false
-            self.navigationController!.pushViewController(dest, animated: true)
-        }
-    }
-    
-    // MARK: - Navigation
-    @objc func showNewMessageViewController() {
-        let dest = storyboard!.instantiateViewController(withIdentifier: Identifier.NewMessageViewController) as! MakeNewMessageViewController
-        dest.delegate = self
-        navigationController?.pushViewController(dest, animated: true)
-    }
-    
-    func showProxyInfoTableViewController(_ proxy: Proxy) {
-        let dest = storyboard?.instantiateViewController(withIdentifier: Identifier.ProxyInfoTableViewController) as! ProxyInfoTableViewController
-        dest.proxy = proxy
-        navigationController?.pushViewController(dest, animated: true)
     }
 }

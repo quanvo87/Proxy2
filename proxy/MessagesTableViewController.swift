@@ -1,11 +1,10 @@
-class MessagesTableViewController: UITableViewController {
+class MessagesTableViewController: UITableViewController, MakeNewMessageViewControllerDelegate {
     let authObserver = AuthObserver()
+    var buttonManager = ButtonManager()
     let dataSource = MessagesTableViewDataSource()
-    var navigationItemManager = NavigationItemManager()
     let unreadCountObserver = UnreadCountObserver()
 
-    var convo: Convo?
-    var shouldGoToNewConvo = false
+    var newConvo: Convo?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,12 +23,14 @@ class MessagesTableViewController: UITableViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
-        if  shouldGoToNewConvo,
-            let convo = convo,
+        goToNewConvo()
+    }
+
+    func goToNewConvo() {
+        if  let newConvo = newConvo,
             let convoVC = storyboard?.instantiateViewController(withIdentifier: Identifier.ConvoViewController) as? ConvoViewController {
-            convoVC.convo = convo
-            self.convo = nil
-            shouldGoToNewConvo = false
+            convoVC.convo = newConvo
+            self.newConvo = nil
             navigationController?.pushViewController(convoVC, animated: true)
         }
     }
@@ -49,13 +50,10 @@ extension MessagesTableViewController {
             return
         }
         if tableView.isEditing {
-            navigationItemManager.itemsToDelete.append(convo)
+            buttonManager.itemsToDelete.append(convo)
         } else {
             tableView.deselectRow(at: indexPath, animated: true)
-            if let convoVC = storyboard?.instantiateViewController(withIdentifier: Identifier.ConvoViewController) as? ConvoViewController {
-                convoVC.convo = convo
-                navigationController?.pushViewController(convoVC, animated: true)
-            }
+            goToConvoVC(convo)
         }
     }
 
@@ -64,7 +62,14 @@ extension MessagesTableViewController {
             return
         }
         if let index = convos.index(where: { $0 == convo }) {
-            navigationItemManager.itemsToDelete.remove(at: index)
+            buttonManager.itemsToDelete.remove(at: index)
+        }
+    }
+
+    func goToConvoVC(_ convo: Convo) {
+        if let convoVC = storyboard?.instantiateViewController(withIdentifier: Identifier.ConvoViewController) as? ConvoViewController {
+            convoVC.convo = convo
+            navigationController?.pushViewController(convoVC, animated: true)
         }
     }
 }
@@ -72,7 +77,7 @@ extension MessagesTableViewController {
 extension MessagesTableViewController: AuthObserverDelegate {
     func logIn() {
         dataSource.load(tableView)
-        navigationItemManager.makeButtons(self)
+        buttonManager.makeButtons(self)
         setDefaultButtons()
         tabBarController?.tabBar.items?.setupForTabBar()
         unreadCountObserver.observe(self)
@@ -86,48 +91,20 @@ extension MessagesTableViewController: AuthObserverDelegate {
     }
 }
 
-extension MessagesTableViewController: MakeNewMessageViewControllerDelegate {
-    func prepareToShowNewConvo(_ convo: Convo) {
-        self.convo = convo
-        shouldGoToNewConvo = true
-    }
-}
-
-extension MessagesTableViewController: NavigationItemManagerDelegate {
-    func setDefaultButtons() {
-        navigationItem.leftBarButtonItem = navigationItemManager.deleteButton
-        navigationItem.rightBarButtonItems = [navigationItemManager.newMessageButton,
-                                              navigationItemManager.newProxyButton]
-    }
-
-    func setEditModeButtons() {
-        navigationItem.leftBarButtonItem = navigationItemManager.cancelButton
-        navigationItem.rightBarButtonItems = [navigationItemManager.confirmButton]
-    }
-
-    func toggleEditMode() {
-        tableView.setEditing(!tableView.isEditing, animated: true)
-        if tableView.isEditing {
-            setEditModeButtons()
-        } else {
-            setDefaultButtons()
-            navigationItemManager.itemsToDelete = []
-        }
-    }
-
+extension MessagesTableViewController: ButtonManagerDelegate {
     func deleteSelectedItems() {
-        if navigationItemManager.itemsToDelete.isEmpty {
+        if buttonManager.itemsToDelete.isEmpty {
             toggleEditMode()
             return
         }
         let alert = UIAlertController(title: "Leave Conversations?", message: "This will hide them until you receive another message in them.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Leave", style: .destructive) { _ in
             var index = 0
-            for item in self.navigationItemManager.itemsToDelete {
+            for item in self.buttonManager.itemsToDelete {
                 if let convo = item as? Convo {
                     DBConvo.leaveConvo(convo) { _ in }
                 }
-                self.navigationItemManager.itemsToDelete.remove(at: index)
+                self.buttonManager.itemsToDelete.remove(at: index)
                 index += 1
             }
             self.tableView.setEditing(false, animated: true)
@@ -135,20 +112,6 @@ extension MessagesTableViewController: NavigationItemManagerDelegate {
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         present(alert, animated: true)
-    }
-
-    func makeNewProxy() {
-        toggleRightBarButtonItem(atIndex: 1)
-        DBProxy.makeProxy { (result) in
-            self.toggleRightBarButtonItem(atIndex: 1)
-            switch result {
-            case .failure(let error):
-                self.showAlert("Error Creating Proxy", message: error.description)
-            case .success:
-                NotificationCenter.default.post(name: Notification.Name(rawValue: Notifications.madeNewProxyFromHomeTab), object: nil)
-                self.tabBarController?.selectedIndex = 1
-            }
-        }
     }
 
     func goToMakeNewMessageVC() {
@@ -159,9 +122,43 @@ extension MessagesTableViewController: NavigationItemManagerDelegate {
         }
     }
 
-    func toggleRightBarButtonItem(atIndex index: Int) {
-        if let item = navigationItem.rightBarButtonItems?[safe: index] {
-            item.isEnabled = !item.isEnabled
+    func makeNewProxy() {
+        navigationItem.toggleRightBarButtonItem(atIndex: 1)
+        DBProxy.makeProxy { (result) in
+            self.navigationItem.toggleRightBarButtonItem(atIndex: 1)
+            switch result {
+            case .failure(let error):
+                self.showAlert("Error Creating Proxy", message: error.description)
+            case .success:
+                guard
+                    let proxiesNavigationController = self.tabBarController?.viewControllers?[safe: 1] as? UINavigationController,
+                    let proxiesViewController = proxiesNavigationController.viewControllers[safe: 0] as? ProxiesTableViewController else {
+                        return
+                }
+                proxiesViewController.scrollToTop()
+                self.tabBarController?.selectedIndex = 1
+            }
+        }
+    }
+
+    func setDefaultButtons() {
+        navigationItem.leftBarButtonItem = buttonManager.deleteButton
+        navigationItem.rightBarButtonItems = [buttonManager.newMessageButton,
+                                              buttonManager.newProxyButton]
+    }
+
+    func setEditModeButtons() {
+        navigationItem.leftBarButtonItem = buttonManager.cancelButton
+        navigationItem.rightBarButtonItems = [buttonManager.confirmButton]
+    }
+
+    func toggleEditMode() {
+        tableView.setEditing(!tableView.isEditing, animated: true)
+        if tableView.isEditing {
+            setEditModeButtons()
+        } else {
+            setDefaultButtons()
+            buttonManager.itemsToDelete = []
         }
     }
 }
@@ -180,8 +177,8 @@ extension MessagesTableViewController: UnreadObserverDelegate {
 
 private extension Array where Element: UITabBarItem {
     func setupForTabBar() {
-        self[0].image = UIImage(named: "Assets/App Icons/Messages")?.resize(toNewSize: UISettings.navBarButtonCGSize, isAspectRatio: true)
-        self[1].image = UIImage(named: "Assets/App Icons/Proxy")?.resize(toNewSize: UISettings.navBarButtonCGSize, isAspectRatio: true)
-        self[2].image = UIImage(named: "Assets/App Icons/Me")?.resize(toNewSize: UISettings.navBarButtonCGSize, isAspectRatio: true)
+        self[0].image = UIImage(named: "Messages")
+        self[1].image = UIImage(named: "My Proxies")
+        self[2].image = UIImage(named: "Me")
     }
 }

@@ -1,7 +1,8 @@
 import FirebaseDatabase
 
 class ConvosObserver {
-    private var ref = DB.makeReference(Child.Convos, Shared.shared.uid)
+    private var ref: DatabaseReference?
+    private var handle: DatabaseHandle?
     private var convos = [Convo]()
 
     init() {}
@@ -11,14 +12,17 @@ class ConvosObserver {
     }
 
     func observe(_ tableView: UITableView) {
-        ref?.queryOrdered(byChild: Child.Timestamp).observe(.value, with: { [weak self] (data) in
+        ref = DB.makeReference(Child.Convos, Shared.shared.uid)
+        handle = ref?.queryOrdered(byChild: Child.Timestamp).observe(.value, with: { [weak self, weak tableView = tableView] (data) in
             self?.convos = data.toConvos(filtered: true).reversed()
-            tableView.visibleCells.incrementTags()
-            tableView.reloadData()
+            tableView?.visibleCells.incrementTags()
+            tableView?.reloadData()
         })
     }
 
     deinit {
-        ref?.removeAllObservers()
+        if let handle = handle {
+            ref?.removeObserver(withHandle: handle)
+        }
     }
 }

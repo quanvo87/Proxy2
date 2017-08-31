@@ -1,7 +1,8 @@
 import FirebaseDatabase
 
 class ProxiesObserver {
-    private var ref = DB.makeReference(Child.Proxies, Shared.shared.uid)
+    private var ref: DatabaseReference?
+    private var handle: DatabaseHandle?
     private var proxies = [Proxy]()
 
     init() {}
@@ -11,14 +12,17 @@ class ProxiesObserver {
     }
 
     func observe(_ tableView: UITableView) {
-        ref?.queryOrdered(byChild: Child.Timestamp).observe(.value, with: { [weak self] (data) in
+        ref = DB.makeReference(Child.Proxies, Shared.shared.uid)
+        handle = ref?.queryOrdered(byChild: Child.Timestamp).observe(.value, with: { [weak self, weak tableView = tableView] (data) in
             self?.proxies = data.toProxies().reversed()
-            tableView.visibleCells.incrementTags()
-            tableView.reloadData()
+            tableView?.visibleCells.incrementTags()
+            tableView?.reloadData()
         })
     }
 
     deinit {
-        ref?.removeAllObservers()
+        if let handle = handle {
+            ref?.removeObserver(withHandle: handle)
+        }
     }
 }

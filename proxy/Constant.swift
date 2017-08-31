@@ -87,12 +87,8 @@ struct Identifier {
     static let Cell = "Cell"
 }
 
-struct Notifications {
-    static let madeNewProxyFromHomeTab = "madeNewProxyFromHomeTab"
-}
-
-struct UISettings {
+struct UISetting {
     static let navBarButtonCGDouble = 30.0
-    static let navBarButtonCGRect = CGRect(x: 0, y: 0, width: UISettings.navBarButtonCGDouble, height: UISettings.navBarButtonCGDouble)
-    static let navBarButtonCGSize = CGSize(width: UISettings.navBarButtonCGDouble, height: UISettings.navBarButtonCGDouble)
+    static let navBarButtonCGRect = CGRect(x: 0, y: 0, width: UISetting.navBarButtonCGDouble, height: UISetting.navBarButtonCGDouble)
+    static let navBarButtonCGSize = CGSize(width: UISetting.navBarButtonCGDouble, height: UISetting.navBarButtonCGDouble)
 }

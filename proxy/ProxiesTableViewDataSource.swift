@@ -1,10 +1,12 @@
 class ProxiesTableViewDataSource: NSObject, UITableViewDataSource {
     let proxiesObserver = ProxiesObserver()
-    var tableview: UITableView?
+    weak var tableView: UITableView?
 
-    init(_ tableview: UITableView) {
-        self.tableview = tableview
-        proxiesObserver.observe(tableview)
+    override init() {}
+
+    func load(_ tableView: UITableView) {
+        self.tableView = tableView
+        proxiesObserver.observe(tableView)
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -37,6 +39,7 @@ class ProxiesTableViewDataSource: NSObject, UITableViewDataSource {
 
         if proxy.dateCreated.isNewProxyDate {
             cell.contentView.bringSubview(toFront: cell.newImageView)
+            cell.newImageView.image = UIImage(named: "New Proxy Badge")
             cell.newImageView.isHidden = false
         }
 

@@ -1,13 +1,11 @@
-import FirebaseDatabase
-
 class SenderPickerTableViewController: UITableViewController {
-    var dataSource: ProxiesTableViewDataSource?
-    var delegate: SenderPickerDelegate?
+    var dataSource = ProxiesTableViewDataSource()
+    weak var delegate: SenderPickerDelegate?
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        dataSource = ProxiesTableViewDataSource(tableView)
+        dataSource.load(tableView)
 
         navigationItem.title = "Pick A Sender"
 
@@ -23,7 +21,7 @@ extension SenderPickerTableViewController {
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let proxy = dataSource?.proxiesObserver.getProxies()[safe: indexPath.row] else {
+        guard let proxy = dataSource.proxiesObserver.getProxies()[safe: indexPath.row] else {
             return
         }
         delegate?.setSender(to: proxy)
@@ -31,6 +29,6 @@ extension SenderPickerTableViewController {
     }
 }
 
-protocol SenderPickerDelegate {
+protocol SenderPickerDelegate: class {
     func setSender(to proxy: Proxy)
 }

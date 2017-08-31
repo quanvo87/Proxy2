@@ -1,5 +1,3 @@
-import FirebaseDatabase
-
 class MakeNewMessageViewController: UIViewController, UITextViewDelegate {
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var makeNewProxyButton: UIButton!
@@ -8,7 +6,7 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate {
     @IBOutlet weak var pickSenderButton: UIButton!
     @IBOutlet weak var sendMessageButton: UIButton!
 
-    var delegate: MakeNewMessageViewControllerDelegate?
+    weak var delegate: MakeNewMessageViewControllerDelegate?
     var receiver: Proxy? {
         didSet {
             pickReceiverButton.setTitle(receiver?.name ?? "Pick A Receiver", for: .normal)
@@ -29,7 +27,7 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate {
         messageTextView.becomeFirstResponder()
         messageTextView.delegate = self
 
-        navigationItem.rightBarButtonItem = NavigationItemManager.makeCancelButton(target: self, selector: #selector(MakeNewMessageViewController.cancelMakingNewMessage))
+        navigationItem.rightBarButtonItem = ButtonManager.makeCancelButton(target: self, selector: #selector(MakeNewMessageViewController.cancelMakingNewMessage))
         navigationItem.title = "New Message"
 
         NotificationCenter.default.addObserver(self, selector: #selector(MakeNewMessageViewController.keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: view.window)
@@ -39,6 +37,21 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate {
 
     deinit {
         NotificationCenter.default.removeObserver(self)
+    }
+
+    @objc func keyboardWillShow(_ notification: Notification) {
+        guard
+            let info = notification.userInfo,
+            let keyboardFrame = (info[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
+                return
+        }
+        UIView.animate(withDuration: 0.1) {
+            self.bottomConstraint.constant = keyboardFrame.size.height + 5
+        }
+    }
+
+    func textViewDidChange(_ textView: UITextView) {
+        enableSendButton()
     }
 }
 
@@ -84,7 +97,7 @@ extension MakeNewMessageViewController {
                 self.enableButtons()
                 return
             }
-            self.delegate?.prepareToShowNewConvo(convo)
+            self.delegate?.newConvo = convo
             _ = self.navigationController?.popViewController(animated: true)
         }
     }
@@ -135,23 +148,6 @@ extension MakeNewMessageViewController {
     }
 }
 
-extension MakeNewMessageViewController {
-    @objc func keyboardWillShow(_ notification: Notification) {
-        guard
-            let info = notification.userInfo,
-            let keyboardFrame = (info[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
-                return
-        }
-        UIView.animate(withDuration: 0.1) {
-            self.bottomConstraint.constant = keyboardFrame.size.height + 5
-        }
-    }
-
-    func textViewDidChange(_ textView: UITextView) {
-        enableSendButton()
-    }
-}
-
 extension MakeNewMessageViewController: ReceiverPickerDelegate {
     func setReceiver(to proxy: Proxy) {
         receiver = proxy
@@ -170,6 +166,6 @@ extension MakeNewMessageViewController: SenderPickerDelegate {
     }
 }
 
-protocol MakeNewMessageViewControllerDelegate {
-    func prepareToShowNewConvo(_ convo: Convo)
+protocol MakeNewMessageViewControllerDelegate: class {
+    var newConvo: Convo? { get set }
 }

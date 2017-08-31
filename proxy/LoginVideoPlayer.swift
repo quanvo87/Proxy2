@@ -9,7 +9,7 @@ class LoginVideoPlayer {
         let videos = ["arabiangulf", "beachpalm", "dragontailzipline", "hawaiiancoast"]
         let random = Int(arc4random_uniform(UInt32(videos.count)))
 
-        guard let path = Bundle.main.path(forResource: "Assets/Splash Videos/\(videos[random])", ofType: "mp4") else {
+        guard let path = Bundle.main.path(forResource: "Splash Videos/\(videos[random])", ofType: "mp4") else {
             return
         }
 

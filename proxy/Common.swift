@@ -90,37 +90,10 @@ extension UIColor {
     }
 }
 
-extension UIImage {
-    func resize(toNewSize newSize: CGSize, isAspectRatio aspect: Bool) -> UIImage {
-        let originalRatio = self.size.width / self.size.height
-        let newRatio = newSize.width / newSize.height
-        var size = CGSize(width: 0, height: 0)
-
-        if aspect {
-            if originalRatio < newRatio {
-                size.height = newSize.height
-                size.width = newSize.height * originalRatio
-            } else {
-                size.width = newSize.width
-                size.height = newSize.width / originalRatio
-            }
-        } else {
-            size = newSize
-        }
-
-        let scale: CGFloat = 1.0
-        size.width /= scale
-        size.height /= scale
-
-        UIGraphicsBeginImageContextWithOptions(size, false, scale)
-        self.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
-        let resized = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-
-        if let resized = resized {
-            return resized
-        } else {
-            return UIImage()
+extension UINavigationItem {
+    func toggleRightBarButtonItem(atIndex index: Int) {
+        if let item = self.rightBarButtonItems?[safe: index] {
+            item.isEnabled = !item.isEnabled
         }
     }
 }

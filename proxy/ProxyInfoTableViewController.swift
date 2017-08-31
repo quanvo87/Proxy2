@@ -9,6 +9,12 @@
 import FirebaseDatabase
 
 class ProxyInfoTableViewController: UITableViewController, MakeNewMessageViewControllerDelegate {
+    var newConvo: Convo?
+
+    func goToNewConvo() {
+        
+    }
+
     
     let api = API.sharedInstance
     let ref = Database.database().reference()
@@ -215,7 +221,7 @@ class ProxyInfoTableViewController: UITableViewController, MakeNewMessageViewCon
     }
     
     // MARK: - Select proxy view controller delegate
-    func prepareToShowNewConvo(_ convo: Convo) {
+    func prepareToGoToNewConvo(_ convo: Convo) {
         self.convo = convo
         shouldShowNewConvo = true
     }

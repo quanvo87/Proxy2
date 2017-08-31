@@ -1,6 +1,6 @@
 class MessagesTableViewDataSource: NSObject, UITableViewDataSource {
-    var tableView: UITableView?
     var convosObserver = ConvosObserver()
+    weak var tableView: UITableView?
 
     override init() {}
 

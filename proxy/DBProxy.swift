@@ -54,7 +54,7 @@ struct DBProxy {
 
     static func getImageForIcon(_ icon: String, tag: Int, completion: @escaping ((image: UIImage, cellTag: Int)?) -> Void) {
         Shared.shared.queue.async {
-            guard let image = UIImage(named: "Assets/Proxy Icons/\(icon)") else {
+            guard let image = UIImage(named: icon) else {
                 completion(nil)
                 return
             }

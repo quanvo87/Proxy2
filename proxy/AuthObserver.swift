@@ -1,29 +1,32 @@
 import FirebaseAuth
 
 class AuthObserver {
-    private var handle = Auth.auth()
+    private var auth = Auth.auth()
+    private var handle: AuthStateDidChangeListenerHandle?
 
     init() {}
 
     func observe(_ delegate: AuthObserverDelegate) {
-        handle.addStateDidChangeListener { (_, user) in
+        handle = auth.addStateDidChangeListener { [weak delegate = delegate] (_, user) in
             if let user = user {
                 Shared.shared.uid = user.uid
                 API.sharedInstance.uid = user.uid   // TODO: Remove
-                delegate.logIn()
+                delegate?.logIn()
             } else {
                 Shared.shared.uid = ""
-                delegate.logOut()
+                delegate?.logOut()
             }
         }
     }
 
     deinit {
-        Auth.auth().removeStateDidChangeListener(handle)
+        if let handle = handle {
+            auth.removeStateDidChangeListener(handle)
+        }
     }
 }
 
-protocol AuthObserverDelegate {
+protocol AuthObserverDelegate: class {
     func logIn()
     func logOut()
 }

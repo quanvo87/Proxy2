@@ -88,15 +88,15 @@ class MeTableViewController: UITableViewController {
             cell.selectionStyle = .none
             switch indexPath.row {
             case 0:
-                cell.iconImageView.image = UIImage(named: "messages-received")?.resize(toNewSize: size, isAspectRatio: isAspectRatio)
+//                cell.iconImageView.image = UIImage(named: "messages-received")?.resize(toNewSize: size, isAspectRatio: isAspectRatio)
                 cell.subtitleLabel.text = messagesReceived
                 cell.titleLabel?.text = "Messages Received"
             case 1:
-                cell.iconImageView.image = UIImage(named: "messages-sent")?.resize(toNewSize: size, isAspectRatio: isAspectRatio)
+//                cell.iconImageView.image = UIImage(named: "messages-sent")?.resize(toNewSize: size, isAspectRatio: isAspectRatio)
                 cell.subtitleLabel.text = messagesSent
                 cell.titleLabel?.text = "Messages Sent"
             case 2:
-                cell.iconImageView.image = UIImage(named: "proxies-interacted-with")?.resize(toNewSize: size, isAspectRatio: isAspectRatio)
+//                cell.iconImageView.image = UIImage(named: "proxies-interacted-with")?.resize(toNewSize: size, isAspectRatio: isAspectRatio)
                 cell.subtitleLabel.text = proxiesInteractedWith
                 cell.titleLabel?.text = "Proxies Interacted With"
             default: break
@@ -104,7 +104,7 @@ class MeTableViewController: UITableViewController {
 
         case 1:
             cell.accessoryType = .disclosureIndicator
-            cell.iconImageView.image = UIImage(named: "blocked")?.resize(toNewSize: size, isAspectRatio: isAspectRatio)
+//            cell.iconImageView.image = UIImage(named: "blocked")?.resize(toNewSize: size, isAspectRatio: isAspectRatio)
             cell.subtitleLabel.text = ""
             cell.titleLabel.text = "Blocked Users"
 
@@ -112,10 +112,10 @@ class MeTableViewController: UITableViewController {
             cell.subtitleLabel.text = ""
             switch indexPath.row {
             case 0:
-                cell.iconImageView.image = UIImage(named: "logout")?.resize(toNewSize: size, isAspectRatio: isAspectRatio)
+//                cell.iconImageView.image = UIImage(named: "logout")?.resize(toNewSize: size, isAspectRatio: isAspectRatio)
                 cell.titleLabel?.text = "Log Out"
             case 1:
-                cell.iconImageView.image = UIImage(named: "about")?.resize(toNewSize: size, isAspectRatio: isAspectRatio)
+//                cell.iconImageView.image = UIImage(named: "about")?.resize(toNewSize: size, isAspectRatio: isAspectRatio)
                 cell.titleLabel?.text = "About"
             default: break
             }
