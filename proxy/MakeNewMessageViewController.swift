@@ -1,4 +1,4 @@
-class MakeNewMessageViewController: UIViewController, UITextViewDelegate {
+class MakeNewMessageViewController: UIViewController, UITextViewDelegate, ReceiverPickerDelegate, SenderPickerDelegate {
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var makeNewProxyButton: UIButton!
     @IBOutlet weak var messageTextView: UITextView!
@@ -19,8 +19,7 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate {
             enableButtons()
         }
     }
-    var senderIsNewProxy = false
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -72,17 +71,14 @@ extension MakeNewMessageViewController {
 
     @IBAction func makeNewProxy() {
         disableButtons()
-        if let sender = sender, senderIsNewProxy {
-            DBProxy.deleteProxy(sender) { (success) in
-                guard success else {
-                    self.enableButtons()
-                    return
-                }
-                self.senderIsNewProxy = false
-                self.makeNewProxyHelper()
+        DBProxy.makeProxy { (result) in
+            switch result {
+            case .failure(let error):
+                self.showAlert("Error Making New Proxy", message: error.description)
+                self.enableButtons()
+            case .success(let newProxy):
+                self.sender = newProxy
             }
-        } else {
-            makeNewProxyHelper()
         }
     }
 
@@ -105,15 +101,9 @@ extension MakeNewMessageViewController {
 
 extension MakeNewMessageViewController {
     @objc func cancelMakingNewMessage() {
-        disableButtons()
         DBProxy.cancelCreatingProxy()
-        if let sender = sender, senderIsNewProxy {
-            DBProxy.deleteProxy(sender) { _ in
-                self.dismiss(animated: true)
-            }
-        } else {
-            dismiss(animated: true)
-        }
+        disableButtons()
+        dismiss(animated: true)
     }
 
     func disableButtons() {
@@ -132,37 +122,6 @@ extension MakeNewMessageViewController {
     
     func enableSendButton() {
         sendMessageButton.isEnabled = sender != nil && receiver != nil && messageTextView.text != ""
-    }
-
-    func makeNewProxyHelper() {
-        DBProxy.makeProxy { (result) in
-            switch result {
-            case .failure(let error):
-                self.showAlert("Error Making New Proxy", message: error.description)
-                self.enableButtons()
-            case .success(let newProxy):
-                self.sender = newProxy
-                self.senderIsNewProxy = true
-            }
-        }
-    }
-}
-
-extension MakeNewMessageViewController: ReceiverPickerDelegate {
-    func setReceiver(to proxy: Proxy) {
-        receiver = proxy
-    }
-}
-
-extension MakeNewMessageViewController: SenderPickerDelegate {
-    func setSender(to proxy: Proxy) {
-        if let sender = sender, senderIsNewProxy {
-            DBProxy.deleteProxy(sender) { _ in }
-            self.sender = proxy
-            senderIsNewProxy = false
-        } else {
-            sender = proxy
-        }
     }
 }
 

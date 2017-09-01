@@ -5,9 +5,25 @@ struct ButtonManager {
     var newMessageButton = UIBarButtonItem()
     var newProxyButton = UIBarButtonItem()
 
-    var itemsToDelete = [Any]()
+    var itemsToDelete = [String: Any]()
 
     init() {}
+
+    func disableButtons() {
+        cancelButton.isEnabled = false
+        confirmButton.isEnabled = false
+        deleteButton.isEnabled = false
+        newMessageButton.isEnabled = false
+        newProxyButton.isEnabled = false
+    }
+
+    func enableButtons() {
+        cancelButton.isEnabled = true
+        confirmButton.isEnabled = true
+        deleteButton.isEnabled = true
+        newMessageButton.isEnabled = true
+        newProxyButton.isEnabled = true
+    }
 
     static func makeCancelButton(target: Any?, selector: Selector) -> UIBarButtonItem {
         return makeButton(target: target, selector: selector, imageName: "Cancel")

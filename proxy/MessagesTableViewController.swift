@@ -50,7 +50,7 @@ extension MessagesTableViewController {
             return
         }
         if tableView.isEditing {
-            buttonManager.itemsToDelete.append(convo)
+            buttonManager.itemsToDelete[convo.key] = convo
         } else {
             tableView.deselectRow(at: indexPath, animated: true)
             goToConvoVC(convo)
@@ -61,9 +61,7 @@ extension MessagesTableViewController {
         guard let convo = convos[safe: indexPath.row] else {
             return
         }
-        if let index = convos.index(where: { $0 == convo }) {
-            buttonManager.itemsToDelete.remove(at: index)
-        }
+        buttonManager.itemsToDelete.removeValue(forKey: convo.key)
     }
 
     func goToConvoVC(_ convo: Convo) {
@@ -97,18 +95,27 @@ extension MessagesTableViewController: ButtonManagerDelegate {
             toggleEditMode()
             return
         }
-        let alert = UIAlertController(title: "Leave Conversations?", message: "This will hide them until you receive another message in them.", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Leave Conversations?", message: "This will not delete the conversation.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Leave", style: .destructive) { _ in
-            var index = 0
-            for item in self.buttonManager.itemsToDelete {
+            self.buttonManager.disableButtons()
+            self.dataSource.convosObserver.stopObserving()
+            let key = AsyncWorkGroupKey()
+            for (_, item) in self.buttonManager.itemsToDelete {
                 if let convo = item as? Convo {
-                    DBConvo.leaveConvo(convo) { _ in }
+                    key.startWork()
+                    DBConvo.leaveConvo(convo) { _ in
+                        key.finishWork()
+                    }
                 }
-                self.buttonManager.itemsToDelete.remove(at: index)
-                index += 1
             }
-            self.tableView.setEditing(false, animated: true)
+            self.buttonManager.itemsToDelete.removeAll()
             self.setDefaultButtons()
+            self.tableView.setEditing(false, animated: true)
+            key.notify {
+                key.finishWorkGroup()
+                self.buttonManager.enableButtons()
+                self.dataSource.convosObserver.observe(self.tableView)
+            }
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         present(alert, animated: true)
@@ -158,7 +165,7 @@ extension MessagesTableViewController: ButtonManagerDelegate {
             setEditModeButtons()
         } else {
             setDefaultButtons()
-            buttonManager.itemsToDelete = []
+            buttonManager.itemsToDelete.removeAll()
         }
     }
 }

@@ -14,15 +14,11 @@ class DBProxyTests: DBTest {
         defer { waitForExpectations(timeout: 10) }
         
         DBTest.makeConvo { (convo, proxy, _) in
-            var proxy = proxy
-            proxy.unreadCount = 2
-            
             DBProxy.deleteProxy(proxy) { (success) in
                 XCTAssert(success)
                 let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
                 key.check(.receiverDeletedProxy(true), forConvo: convo, asSender: false)
-                key.check(.proxyCount, 0, forUser: proxy.ownerId)
-                key.check(.unreadCount, -proxy.unreadCount, forUser: proxy.ownerId)
+                key.check(.unreadCount, 0, forUser: proxy.ownerId)
                 key.checkConvoDeleted(convo, asSender: true)
                 key.checkDeleted(at: Child.Proxies, proxy.ownerId, proxy.key)
                 key.checkDeleted(at: Child.ProxyKeys, proxy.key)
@@ -123,32 +119,12 @@ class DBProxyTests: DBTest {
             XCTAssertNotEqual(proxy.icon, "")
             
             let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-            key.check(.proxyCount, 1, forUser: proxy.ownerId)
             key.checkProxyCreated(proxy)
             key.checkProxyKeyCreated(forProxy: proxy)
             key.checkProxyOwnerCreated(forProxy: proxy)
             key.notify {
                 key.finishWorkGroup()
                 expectation.fulfill()
-            }
-        }
-    }
-    
-    func testMakeProxyAtProxyLimit() {
-        let expectation = self.expectation(description: #function)
-        defer { waitForExpectations(timeout: 10) }
-        
-        DB.set(50, at: Child.UserInfo, Shared.shared.uid, Child.ProxyCount) { (success) in
-            XCTAssert(success)
-            
-            DBProxy.makeProxy { (result) in
-                switch result {
-                case .failure(let error):
-                    XCTAssertEqual(error, ProxyError(.proxyLimitReached))
-                    expectation.fulfill()
-                case .success:
-                    XCTFail()
-                }
             }
         }
     }

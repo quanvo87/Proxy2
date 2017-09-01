@@ -28,12 +28,18 @@ struct DBProxy {
     }
 
     static func deleteProxy(_ proxy: Proxy, completion: @escaping (Success) -> Void) {
-        DBConvo.getConvos(forProxy: proxy, filtered: false) { (convos) in
-            guard let convos = convos else {
+        DBProxy.getProxy(withKey: proxy.key, belongingTo: proxy.ownerId) { (proxy) in
+            guard let proxy = proxy else {
                 completion(false)
                 return
             }
-            deleteProxy(proxy, withConvos: convos, completion: completion)
+            DBConvo.getConvos(forProxy: proxy, filtered: false) { (convos) in
+                guard let convos = convos else {
+                    completion(false)
+                    return
+                }
+                deleteProxy(proxy, withConvos: convos, completion: completion)
+            }
         }
     }
 
@@ -43,7 +49,6 @@ struct DBProxy {
         key.delete(at: Child.ProxyKeys, proxy.key)
         key.delete(at: Child.ProxyOwners, proxy.key)
         key.deleteConvos(convos)
-        key.increment(by: -1, forProperty: .proxyCount, forUser: proxy.ownerId)
         key.increment(by: -proxy.unreadCount, forProperty: .unreadCount, forUser: proxy.ownerId)
         key.setReceiverDeletedProxy(to: true, forReceiverInConvos: convos)
         key.notify {
@@ -85,10 +90,12 @@ struct DBProxy {
     }
 
     static func makeProxy(withName specificName: String? = nil, forUser uid: String = Shared.shared.uid, completion: @escaping MakeProxyCallback) {
-        DB.get(Child.UserInfo, uid, Child.ProxyCount) { (data) in
-            guard data?.value as? Int ?? 0 <= Settings.MaxAllowedProxies else {
-                completion(.failure(.proxyLimitReached))
-                return
+        DB.get(Child.Proxies, uid) { (data) in
+            guard
+                let proxyCount = data?.childrenCount,
+                proxyCount < Settings.MaxAllowedProxies else {
+                    completion(.failure(.proxyLimitReached))
+                    return
             }
             Shared.shared.isCreatingProxy = true
             makeProxyHelper(withName: specificName, forUser: uid, completion: completion)
@@ -140,7 +147,6 @@ struct DBProxy {
                         let proxyOwner = ProxyOwner(key: proxyKey, ownerId: uid)
 
                         let key = AsyncWorkGroupKey()
-                        key.increment(by: 1, forProperty: .proxyCount, forUser: uid)
                         key.set(proxy.toDictionary(), at: Child.Proxies, proxy.ownerId, proxy.key)
                         key.set(proxyKeyDictionary, at: Child.ProxyKeys, proxy.key)
                         key.set(proxyOwner.toDictionary(), at: Child.ProxyOwners, proxy.key)

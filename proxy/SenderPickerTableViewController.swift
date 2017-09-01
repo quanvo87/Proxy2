@@ -24,11 +24,11 @@ extension SenderPickerTableViewController {
         guard let proxy = dataSource.proxiesObserver.getProxies()[safe: indexPath.row] else {
             return
         }
-        delegate?.setSender(to: proxy)
+        delegate?.sender = proxy
         _ = navigationController?.popViewController(animated: true)
     }
 }
 
 protocol SenderPickerDelegate: class {
-    func setSender(to proxy: Proxy)
+    var sender: Proxy? { get set }
 }

@@ -17,7 +17,7 @@ class ProxiesTableViewDataSource: NSObject, UITableViewDataSource {
         guard
             let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.ProxyCell, for: indexPath as IndexPath) as? ProxyCell,
             let proxy = proxiesObserver.getProxies()[safe: indexPath.row] else {
-                return UITableViewCell()
+                fatalError()
         }
 
         cell.accessoryType = .none
@@ -37,6 +37,7 @@ class ProxiesTableViewDataSource: NSObject, UITableViewDataSource {
             }
         }
 
+        // TODO: Do on bg queue
         if proxy.dateCreated.isNewProxyDate {
             cell.contentView.bringSubview(toFront: cell.newImageView)
             cell.newImageView.image = UIImage(named: "New Proxy Badge")
