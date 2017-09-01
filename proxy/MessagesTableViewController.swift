@@ -1,4 +1,4 @@
-class MessagesTableViewController: UITableViewController, MakeNewMessageViewControllerDelegate {
+class MessagesTableViewController: UITableViewController, MakeNewMessageDelegate {
     let authObserver = AuthObserver()
     var buttonManager = ButtonManager()
     let dataSource = MessagesTableViewDataSource()
@@ -23,15 +23,9 @@ class MessagesTableViewController: UITableViewController, MakeNewMessageViewCont
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
-        goToNewConvo()
-    }
-
-    func goToNewConvo() {
-        if  let newConvo = newConvo,
-            let convoVC = storyboard?.instantiateViewController(withIdentifier: Identifier.ConvoViewController) as? ConvoViewController {
-            convoVC.convo = newConvo
-            self.newConvo = nil
-            navigationController?.pushViewController(convoVC, animated: true)
+        
+        if let newConvo = newConvo {
+            goToConvoVC(newConvo)
         }
     }
 }
@@ -62,13 +56,6 @@ extension MessagesTableViewController {
             return
         }
         buttonManager.itemsToDelete.removeValue(forKey: convo.key)
-    }
-
-    func goToConvoVC(_ convo: Convo) {
-        if let convoVC = storyboard?.instantiateViewController(withIdentifier: Identifier.ConvoViewController) as? ConvoViewController {
-            convoVC.convo = convo
-            navigationController?.pushViewController(convoVC, animated: true)
-        }
     }
 }
 

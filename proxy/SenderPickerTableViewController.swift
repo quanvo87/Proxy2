@@ -5,7 +5,7 @@ class SenderPickerTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        dataSource.load(tableView)
+        dataSource.proxiesObserver.observe(tableView)
 
         navigationItem.title = "Pick A Sender"
 

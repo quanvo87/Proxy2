@@ -6,7 +6,7 @@ class MessagesTableViewDataSource: NSObject, UITableViewDataSource {
 
     func load(_ tableView: UITableView) {
         self.tableView = tableView
-        convosObserver.observe(tableView)
+        convosObserver.observeConvos(forOwner: Shared.shared.uid, tableView: tableView)
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -15,9 +15,9 @@ class MessagesTableViewDataSource: NSObject, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard
-            let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.ConvoCell, for: indexPath as IndexPath) as? ConvoCell,
+            let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.ConvoCell, for: indexPath) as? ConvoCell,
             let convo = convosObserver.getConvos()[safe: indexPath.row] else {
-                return UITableViewCell()
+                return tableView.dequeueReusableCell(withIdentifier: Identifier.ConvoCell, for: indexPath)
         }
 
         cell.iconImageView.image = nil

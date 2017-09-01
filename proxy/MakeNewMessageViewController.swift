@@ -6,32 +6,35 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate, Receiv
     @IBOutlet weak var pickSenderButton: UIButton!
     @IBOutlet weak var sendMessageButton: UIButton!
 
-    weak var delegate: MakeNewMessageViewControllerDelegate?
+    weak var delegate: MakeNewMessageDelegate?
+    var isLoaded = false
     var receiver: Proxy? {
         didSet {
-            pickReceiverButton.setTitle(receiver?.name ?? "Pick A Receiver", for: .normal)
-            enableButtons()
+            setReceiverButtonTitle()
         }
     }
     var sender: Proxy? {
         didSet {
-            pickSenderButton.setTitle(sender?.name ?? "Pick A Sender", for: .normal)
-            enableButtons()
+            setSenderButtonTitle()
         }
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        isLoaded = true
+
         messageTextView.becomeFirstResponder()
         messageTextView.delegate = self
 
-        navigationItem.rightBarButtonItem = ButtonManager.makeCancelButton(target: self, selector: #selector(MakeNewMessageViewController.cancelMakingNewMessage))
+        navigationItem.rightBarButtonItem = ButtonManager.makeButton(target: self, selector: #selector(self.cancelMakingNewMessage), imageName: .cancel)
         navigationItem.title = "New Message"
 
         NotificationCenter.default.addObserver(self, selector: #selector(MakeNewMessageViewController.keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: view.window)
 
         sendMessageButton.isEnabled = false
+
+        setSenderButtonTitle()
     }
 
     deinit {
@@ -123,8 +126,22 @@ extension MakeNewMessageViewController {
     func enableSendButton() {
         sendMessageButton.isEnabled = sender != nil && receiver != nil && messageTextView.text != ""
     }
+
+    func setReceiverButtonTitle() {
+        if isLoaded {
+            pickReceiverButton.setTitle(receiver?.name ?? "Pick A Receiver", for: .normal)
+            enableButtons()
+        }
+    }
+
+    func setSenderButtonTitle() {
+        if isLoaded {
+            pickSenderButton.setTitle(sender?.name ?? "Pick A Sender", for: .normal)
+            enableButtons()
+        }
+    }
 }
 
-protocol MakeNewMessageViewControllerDelegate: class {
+protocol MakeNewMessageDelegate: class {
     var newConvo: Convo? { get set }
 }

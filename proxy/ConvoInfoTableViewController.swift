@@ -241,7 +241,7 @@ class ConvoInfoTableViewController: UITableViewController {
         case 1:
             if let senderProxy = senderProxy {
                 let dest = self.storyboard!.instantiateViewController(withIdentifier: Identifier.ProxyInfoTableViewController) as! ProxyInfoTableViewController
-                dest.proxy = senderProxy
+//                dest.proxy = senderProxy
                 self.navigationController!.pushViewController(dest, animated: true)
             }
             

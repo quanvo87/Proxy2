@@ -1,4 +1,4 @@
-class ProxiesTableViewController: UITableViewController, MakeNewMessageViewControllerDelegate {
+class ProxiesTableViewController: UITableViewController, MakeNewMessageDelegate {
     var buttonManager = ButtonManager()
     let dataSource = ProxiesTableViewDataSource()
     let unreadCountObserver = UnreadCountObserver()
@@ -10,7 +10,7 @@ class ProxiesTableViewController: UITableViewController, MakeNewMessageViewContr
 
         buttonManager.makeButtons(self)
 
-        dataSource.load(tableView)
+        dataSource.proxiesObserver.observe(tableView)
 
         navigationItem.title = "Proxies"
 
@@ -76,7 +76,7 @@ extension ProxiesTableViewController {
 
     func goToProxyInfoVC(_ proxy: Proxy) {
         if let proxyInfoVC = storyboard?.instantiateViewController(withIdentifier: Identifier.ProxyInfoTableViewController) as? ProxyInfoTableViewController {
-            proxyInfoVC.proxy = proxy
+            proxyInfoVC.setProxy(proxy)
             navigationController?.pushViewController(proxyInfoVC, animated: true)
         }
     }

@@ -1,3 +1,11 @@
+enum ButtonName: String {
+    case cancel
+    case confirm
+    case delete
+    case makeNewMessage
+    case makeNewProxy
+}
+
 struct Child {
     static let app = "app"
 

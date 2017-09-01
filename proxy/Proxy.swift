@@ -1,3 +1,5 @@
+import FirebaseDatabase
+
 struct Proxy {
     var convoCount = 0
     var dateCreated = Date().timeIntervalSince1970
@@ -24,6 +26,10 @@ struct Proxy {
         self.key = name.lowercased()
         self.name = name
         self.ownerId = ownerId
+    }
+
+    init?(_ data: DataSnapshot) {
+        self.init(data.value as AnyObject)
     }
 
     init?(_ dictionary: AnyObject) {

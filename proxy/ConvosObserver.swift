@@ -11,8 +11,8 @@ class ConvosObserver {
         return convos
     }
 
-    func observe(_ tableView: UITableView) {
-        ref = DB.makeReference(Child.Convos, Shared.shared.uid)
+    func observeConvos(forOwner owner: String, tableView: UITableView) {
+        ref = DB.makeReference(Child.Convos, owner)
         handle = ref?.queryOrdered(byChild: Child.Timestamp).observe(.value, with: { [weak self, weak tableView = tableView] (data) in
             self?.convos = data.toConvos(filtered: true).reversed()
             tableView?.visibleCells.incrementTags()

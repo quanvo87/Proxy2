@@ -1,13 +1,7 @@
 class ProxiesTableViewDataSource: NSObject, UITableViewDataSource {
     let proxiesObserver = ProxiesObserver()
-    weak var tableView: UITableView?
 
     override init() {}
-
-    func load(_ tableView: UITableView) {
-        self.tableView = tableView
-        proxiesObserver.observe(tableView)
-    }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return proxiesObserver.getProxies().count
@@ -15,9 +9,9 @@ class ProxiesTableViewDataSource: NSObject, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard
-            let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.ProxyCell, for: indexPath as IndexPath) as? ProxyCell,
+            let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.ProxyCell, for: indexPath) as? ProxyCell,
             let proxy = proxiesObserver.getProxies()[safe: indexPath.row] else {
-                fatalError()
+                return tableView.dequeueReusableCell(withIdentifier: Identifier.ProxyCell, for: indexPath)
         }
 
         cell.accessoryType = .none

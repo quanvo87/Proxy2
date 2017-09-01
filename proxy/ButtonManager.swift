@@ -25,24 +25,20 @@ struct ButtonManager {
         newProxyButton.isEnabled = true
     }
 
-    static func makeCancelButton(target: Any?, selector: Selector) -> UIBarButtonItem {
-        return makeButton(target: target, selector: selector, imageName: "Cancel")
-    }
-
-    mutating func makeButtons(_ delegate: ButtonManagerDelegate) {
-        cancelButton = ButtonManager.makeButton(target: delegate, selector: #selector(delegate.toggleEditMode), imageName: "Cancel")
-        confirmButton = ButtonManager.makeButton(target: delegate, selector: #selector(delegate.deleteSelectedItems), imageName: "Confirm")
-        deleteButton = ButtonManager.makeButton(target: delegate, selector: #selector(delegate.toggleEditMode), imageName: "Delete")
-        newMessageButton = ButtonManager.makeButton(target: delegate, selector: #selector(delegate.goToMakeNewMessageVC), imageName: "New Message")
-        newProxyButton = ButtonManager.makeButton(target: delegate, selector: #selector(delegate.makeNewProxy), imageName: "Create New Proxy")
-    }
-
-    private static func makeButton(target: Any?, selector: Selector, imageName: String) -> UIBarButtonItem {
+    static func makeButton(target: Any?, selector: Selector, imageName: ButtonName) -> UIBarButtonItem {
         let button = UIButton(type: .custom)
         button.addTarget(target, action: selector, for: .touchUpInside)
         button.frame = UISetting.navBarButtonCGRect
-        button.setImage(UIImage(named: imageName), for: .normal)
+        button.setImage(UIImage(named: imageName.rawValue), for: .normal)
         return UIBarButtonItem(customView: button)
+    }
+    
+    mutating func makeButtons(_ delegate: ButtonManagerDelegate) {
+        cancelButton = ButtonManager.makeButton(target: delegate, selector: #selector(delegate.toggleEditMode), imageName: .cancel)
+        confirmButton = ButtonManager.makeButton(target: delegate, selector: #selector(delegate.deleteSelectedItems), imageName: .confirm)
+        deleteButton = ButtonManager.makeButton(target: delegate, selector: #selector(delegate.toggleEditMode), imageName: .delete)
+        newMessageButton = ButtonManager.makeButton(target: delegate, selector: #selector(delegate.goToMakeNewMessageVC), imageName: .makeNewMessage)
+        newProxyButton = ButtonManager.makeButton(target: delegate, selector: #selector(delegate.makeNewProxy), imageName: .makeNewProxy)
     }
 }
 
