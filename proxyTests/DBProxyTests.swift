@@ -128,6 +128,21 @@ class DBProxyTests: DBTest {
             }
         }
     }
+
+    func testMakeProxyAtProxyLimit() {
+        let expectation = self.expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
+
+        DBProxy.makeProxy(maxAllowedProxies: 0) { (result) in
+            switch result {
+            case .failure(let error):
+                XCTAssertEqual(error, ProxyError.proxyLimitReached)
+                expectation.fulfill()
+            case .success:
+                XCTFail()
+            }
+        }
+    }
     
     func testMakeProxyWithExistingName() {
         let expectation = self.expectation(description: #function)

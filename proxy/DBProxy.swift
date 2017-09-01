@@ -28,18 +28,12 @@ struct DBProxy {
     }
 
     static func deleteProxy(_ proxy: Proxy, completion: @escaping (Success) -> Void) {
-        DBProxy.getProxy(withKey: proxy.key, belongingTo: proxy.ownerId) { (proxy) in
-            guard let proxy = proxy else {
+        DBConvo.getConvos(forProxy: proxy, filtered: false) { (convos) in
+            guard let convos = convos else {
                 completion(false)
                 return
             }
-            DBConvo.getConvos(forProxy: proxy, filtered: false) { (convos) in
-                guard let convos = convos else {
-                    completion(false)
-                    return
-                }
-                deleteProxy(proxy, withConvos: convos, completion: completion)
-            }
+            deleteProxy(proxy, withConvos: convos, completion: completion)
         }
     }
 
@@ -89,13 +83,17 @@ struct DBProxy {
         }
     }
 
-    static func makeProxy(withName specificName: String? = nil, forUser uid: String = Shared.shared.uid, completion: @escaping MakeProxyCallback) {
+    private static func getProxyCount(forUser uid: String, completion: @escaping (UInt) -> Void) {
         DB.get(Child.Proxies, uid) { (data) in
-            guard
-                let proxyCount = data?.childrenCount,
-                proxyCount < Settings.MaxAllowedProxies else {
-                    completion(.failure(.proxyLimitReached))
-                    return
+            completion(data?.childrenCount ?? 0)
+        }
+    }
+
+    static func makeProxy(withName specificName: String? = nil, forUser uid: String = Shared.shared.uid, maxAllowedProxies: UInt = Settings.MaxAllowedProxies, completion: @escaping MakeProxyCallback) {
+        getProxyCount(forUser: uid) { (proxyCount) in
+            guard proxyCount < maxAllowedProxies else {
+                completion(.failure(.proxyLimitReached))
+                return
             }
             Shared.shared.isCreatingProxy = true
             makeProxyHelper(withName: specificName, forUser: uid, completion: completion)

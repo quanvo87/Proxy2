@@ -20,12 +20,6 @@ class ConvosObserver {
         })
     }
 
-    func stopObserving() {
-        if let handle = handle {
-            ref?.removeObserver(withHandle: handle)
-        }
-    }
-
     deinit {
         if let handle = handle {
             ref?.removeObserver(withHandle: handle)

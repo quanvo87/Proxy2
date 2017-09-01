@@ -97,25 +97,14 @@ extension MessagesTableViewController: ButtonManagerDelegate {
         }
         let alert = UIAlertController(title: "Leave Conversations?", message: "This will not delete the conversation.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Leave", style: .destructive) { _ in
-            self.buttonManager.disableButtons()
-            self.dataSource.convosObserver.stopObserving()
-            let key = AsyncWorkGroupKey()
             for (_, item) in self.buttonManager.itemsToDelete {
                 if let convo = item as? Convo {
-                    key.startWork()
-                    DBConvo.leaveConvo(convo) { _ in
-                        key.finishWork()
-                    }
+                    DBConvo.leaveConvo(convo) { _ in }
                 }
             }
             self.buttonManager.itemsToDelete.removeAll()
             self.setDefaultButtons()
             self.tableView.setEditing(false, animated: true)
-            key.notify {
-                key.finishWorkGroup()
-                self.buttonManager.enableButtons()
-                self.dataSource.convosObserver.observe(self.tableView)
-            }
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         present(alert, animated: true)
