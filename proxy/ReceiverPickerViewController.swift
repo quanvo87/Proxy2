@@ -6,7 +6,7 @@ class ReceiverPickerViewController: UIViewController, UICollectionViewDelegate {
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     
     let api = API.sharedInstance
-    var delegate: ReceiverPickerDelegate?
+    weak var delegate: ReceiverPickerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -66,6 +66,6 @@ class ReceiverPickerViewController: UIViewController, UICollectionViewDelegate {
     }
 }
 
-protocol ReceiverPickerDelegate {
-    func setReceiver(to proxy: Proxy)
+protocol ReceiverPickerDelegate: class {
+    var receiver: Proxy? { get set }
 }

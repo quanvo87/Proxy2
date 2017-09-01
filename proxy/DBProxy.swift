@@ -43,7 +43,6 @@ struct DBProxy {
         key.delete(at: Child.ProxyKeys, proxy.key)
         key.delete(at: Child.ProxyOwners, proxy.key)
         key.deleteConvos(convos)
-        key.increment(by: -1, forProperty: .proxyCount, forUser: proxy.ownerId)
         key.increment(by: -proxy.unreadCount, forProperty: .unreadCount, forUser: proxy.ownerId)
         key.setReceiverDeletedProxy(to: true, forReceiverInConvos: convos)
         key.notify {
@@ -84,9 +83,15 @@ struct DBProxy {
         }
     }
 
-    static func makeProxy(withName specificName: String? = nil, forUser uid: String = Shared.shared.uid, completion: @escaping MakeProxyCallback) {
-        DB.get(Child.UserInfo, uid, Child.ProxyCount) { (data) in
-            guard data?.value as? Int ?? 0 <= Settings.MaxAllowedProxies else {
+    private static func getProxyCount(forUser uid: String, completion: @escaping (UInt) -> Void) {
+        DB.get(Child.Proxies, uid) { (data) in
+            completion(data?.childrenCount ?? 0)
+        }
+    }
+
+    static func makeProxy(withName specificName: String? = nil, forUser uid: String = Shared.shared.uid, maxAllowedProxies: UInt = Settings.MaxAllowedProxies, completion: @escaping MakeProxyCallback) {
+        getProxyCount(forUser: uid) { (proxyCount) in
+            guard proxyCount < maxAllowedProxies else {
                 completion(.failure(.proxyLimitReached))
                 return
             }
@@ -140,7 +145,6 @@ struct DBProxy {
                         let proxyOwner = ProxyOwner(key: proxyKey, ownerId: uid)
 
                         let key = AsyncWorkGroupKey()
-                        key.increment(by: 1, forProperty: .proxyCount, forUser: uid)
                         key.set(proxy.toDictionary(), at: Child.Proxies, proxy.ownerId, proxy.key)
                         key.set(proxyKeyDictionary, at: Child.ProxyKeys, proxy.key)
                         key.set(proxyOwner.toDictionary(), at: Child.ProxyOwners, proxy.key)

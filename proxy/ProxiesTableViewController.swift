@@ -60,7 +60,7 @@ extension ProxiesTableViewController {
             return
         }
         if tableView.isEditing {
-            buttonManager.itemsToDelete.append(proxy)
+            buttonManager.itemsToDelete[proxy.key] = proxy
         } else {
             tableView.deselectRow(at: indexPath, animated: true)
             goToProxyInfoVC(proxy)
@@ -71,9 +71,7 @@ extension ProxiesTableViewController {
         guard let proxy = proxies[safe: indexPath.row] else {
             return
         }
-        if let index = proxies.index(where: { $0 == proxy }) {
-            buttonManager.itemsToDelete.remove(at: index)
-        }
+        buttonManager.itemsToDelete.removeValue(forKey: proxy.key)
     }
 
     func goToProxyInfoVC(_ proxy: Proxy) {
@@ -92,16 +90,25 @@ extension ProxiesTableViewController: ButtonManagerDelegate {
         }
         let alert = UIAlertController(title: "Delete Proxies?", message: "You will not be able to view their conversations anymore.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
-            var index = 0
-            for item in self.buttonManager.itemsToDelete {
+            self.buttonManager.disableButtons()
+            self.dataSource.proxiesObserver.stopObserving()
+            let key = AsyncWorkGroupKey()
+            for (_, item) in self.buttonManager.itemsToDelete {
                 if let proxy = item as? Proxy {
-                    DBProxy.deleteProxy(proxy) { _ in }
+                    key.startWork()
+                    DBProxy.deleteProxy(proxy) { _ in
+                        key.finishWork()
+                    }
                 }
-                self.buttonManager.itemsToDelete.remove(at: index)
-                index += 1
             }
-            self.tableView.setEditing(false, animated: true)
+            self.buttonManager.itemsToDelete.removeAll()
             self.setDefaultButtons()
+            self.tableView.setEditing(false, animated: true)
+            key.notify {
+                key.finishWorkGroup()
+                self.buttonManager.enableButtons()
+                self.dataSource.proxiesObserver.observe(self.tableView)
+            }
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         present(alert, animated: true)
@@ -145,7 +152,7 @@ extension ProxiesTableViewController: ButtonManagerDelegate {
             setEditModeButtons()
         } else {
             setDefaultButtons()
-            buttonManager.itemsToDelete = []
+            buttonManager.itemsToDelete.removeAll()
         }
     }
 }
