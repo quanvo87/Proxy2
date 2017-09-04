@@ -1,12 +1,12 @@
-class ProxyInfoTableViewController: UITableViewController, MakeNewMessageDelegate {
+class ProxyInfoTableViewController: UITableViewController {
     private let dataSource = ProxyInfoTableViewDataSource()
+    private var newConvo: Convo?
     private var proxy = Proxy()
-    var newConvo: Convo?
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        dataSource.load(proxy: proxy, tableViewController: self)
+        dataSource.observe(proxy: proxy, tableViewController: self)
 
         navigationItem.rightBarButtonItems = [ButtonManager.makeButton(target: self, selector: #selector(self.goToMakeNewMessageVC), imageName: .makeNewMessage),
                                               ButtonManager.makeButton(target: self, selector: #selector(self.deleteProxy), imageName: .delete)]
@@ -30,6 +30,26 @@ class ProxyInfoTableViewController: UITableViewController, MakeNewMessageDelegat
 
     func setProxy(_ proxy: Proxy) {
         self.proxy = proxy
+    }
+}
+
+private extension ProxyInfoTableViewController {
+    @objc func deleteProxy() {
+        let alert = UIAlertController(title: "Delete Proxy?", message: "You will not be able to see this proxy or its conversations again.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
+            DBProxy.deleteProxy(self.proxy) { _ in }
+            _ = self.navigationController?.popViewController(animated: true)
+        })
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
+
+    @objc func goToMakeNewMessageVC() {
+        guard let makeNewMessageVC = self.storyboard?.instantiateViewController(withIdentifier: Identifier.NewMessageViewController) as? MakeNewMessageViewController else { return }
+        makeNewMessageVC.setDelegate(to: self)
+        makeNewMessageVC.setSender(to: proxy)
+        let navigationController = UINavigationController(rootViewController: makeNewMessageVC)
+        present(navigationController, animated: true)
     }
 }
 
@@ -67,21 +87,8 @@ extension ProxyInfoTableViewController {
     }
 }
 
-private extension ProxyInfoTableViewController {
-    @objc func deleteProxy() {
-        let alert = UIAlertController(title: "Delete Proxy?", message: "You will not be able to see this proxy or its conversations again.", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
-            DBProxy.deleteProxy(self.proxy) { _ in }
-            _ = self.navigationController?.popViewController(animated: true)
-        })
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        self.present(alert, animated: true, completion: nil)
-    }
-
-    @objc func goToMakeNewMessageVC() {
-        guard let makeNewMessageVC = self.storyboard?.instantiateViewController(withIdentifier: Identifier.NewMessageViewController) as? MakeNewMessageViewController else { return }
-        makeNewMessageVC.delegate = self
-        let navigationController = UINavigationController(rootViewController: makeNewMessageVC)
-        present(navigationController, animated: true)
+extension ProxyInfoTableViewController: MakeNewMessageDelegate {
+    func setNewConvo(to convo: Convo) {
+        newConvo = convo
     }
 }

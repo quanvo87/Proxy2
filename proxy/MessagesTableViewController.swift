@@ -1,10 +1,10 @@
-class MessagesTableViewController: UITableViewController, MakeNewMessageDelegate {
-    let authObserver = AuthObserver()
-    var buttonManager = ButtonManager()
-    let dataSource = MessagesTableViewDataSource()
-    let unreadCountObserver = UnreadCountObserver()
+class MessagesTableViewController: UITableViewController {
+    private let authObserver = AuthObserver()
+    private let dataSource = MessagesTableViewDataSource()
+    private let unreadCountObserver = UnreadCountObserver()
 
-    var newConvo: Convo?
+    private var buttonManager = ButtonManager()
+    private var newConvo: Convo?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,7 +32,7 @@ class MessagesTableViewController: UITableViewController, MakeNewMessageDelegate
 
 extension MessagesTableViewController {
     var convos: [Convo] {
-        return dataSource.convosObserver.getConvos()
+        return dataSource.convos
     }
 
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -44,7 +44,7 @@ extension MessagesTableViewController {
             return
         }
         if tableView.isEditing {
-            buttonManager.itemsToDelete[convo.key] = convo
+            buttonManager.itemsToDeleteSet(value: convo, forKey: convo.key)
         } else {
             tableView.deselectRow(at: indexPath, animated: true)
             goToConvoVC(convo)
@@ -55,13 +55,13 @@ extension MessagesTableViewController {
         guard let convo = convos[safe: indexPath.row] else {
             return
         }
-        buttonManager.itemsToDelete.removeValue(forKey: convo.key)
+        buttonManager.itemsToDeleteRemoveValue(forKey: convo.key)
     }
 }
 
 extension MessagesTableViewController: AuthObserverDelegate {
     func logIn() {
-        dataSource.load(tableView)
+        dataSource.observe(tableView)
         buttonManager.makeButtons(self)
         setDefaultButtons()
         tabBarController?.tabBar.items?.setupForTabBar()
@@ -69,27 +69,29 @@ extension MessagesTableViewController: AuthObserverDelegate {
     }
 
     func logOut() {
-        if  let loginVC = self.storyboard?.instantiateViewController(withIdentifier: Identifier.LoginViewController) as? LoginViewController,
-            let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-            appDelegate.window?.rootViewController = loginVC
+        guard
+            let loginVC = storyboard?.instantiateViewController(withIdentifier: Identifier.LoginViewController) as? LoginViewController,
+            let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+                return
+
         }
+        appDelegate.window?.rootViewController = loginVC
     }
 }
 
 extension MessagesTableViewController: ButtonManagerDelegate {
     func deleteSelectedItems() {
-        if buttonManager.itemsToDelete.isEmpty {
+        if buttonManager.itemsToDeleteIsEmpty {
             toggleEditMode()
             return
         }
         let alert = UIAlertController(title: "Leave Conversations?", message: "This will not delete the conversation.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Leave", style: .destructive) { _ in
             for (_, item) in self.buttonManager.itemsToDelete {
-                if let convo = item as? Convo {
-                    DBConvo.leaveConvo(convo) { _ in }
-                }
+                guard let convo = item as? Convo else { return }
+                DBConvo.leaveConvo(convo) { _ in }
             }
-            self.buttonManager.itemsToDelete.removeAll()
+            self.buttonManager.itemsToDeleteRemoveAll()
             self.setDefaultButtons()
             self.tableView.setEditing(false, animated: true)
         })
@@ -98,11 +100,10 @@ extension MessagesTableViewController: ButtonManagerDelegate {
     }
 
     func goToMakeNewMessageVC() {
-        if let makeNewMessageVC = self.storyboard?.instantiateViewController(withIdentifier: Identifier.NewMessageViewController) as? MakeNewMessageViewController {
-            makeNewMessageVC.delegate = self
-            let navigationController = UINavigationController(rootViewController: makeNewMessageVC)
-            present(navigationController, animated: true)
-        }
+        guard let makeNewMessageVC = storyboard?.instantiateViewController(withIdentifier: Identifier.NewMessageViewController) as? MakeNewMessageViewController else { return }
+        makeNewMessageVC.setDelegate(to: self)
+        let navigationController = UINavigationController(rootViewController: makeNewMessageVC)
+        present(navigationController, animated: true)
     }
 
     func makeNewProxy() {
@@ -126,8 +127,7 @@ extension MessagesTableViewController: ButtonManagerDelegate {
 
     func setDefaultButtons() {
         navigationItem.leftBarButtonItem = buttonManager.deleteButton
-        navigationItem.rightBarButtonItems = [buttonManager.newMessageButton,
-                                              buttonManager.newProxyButton]
+        navigationItem.rightBarButtonItems = [buttonManager.makeNewMessageButton, buttonManager.makeNewProxyButton]
     }
 
     func setEditModeButtons() {
@@ -141,8 +141,14 @@ extension MessagesTableViewController: ButtonManagerDelegate {
             setEditModeButtons()
         } else {
             setDefaultButtons()
-            buttonManager.itemsToDelete.removeAll()
+            buttonManager.itemsToDeleteRemoveAll()
         }
+    }
+}
+
+extension MessagesTableViewController: MakeNewMessageDelegate {
+    func setNewConvo(to convo: Convo) {
+        newConvo = convo
     }
 }
 
@@ -160,8 +166,14 @@ extension MessagesTableViewController: UnreadObserverDelegate {
 
 private extension Array where Element: UITabBarItem {
     func setupForTabBar() {
-        self[0].image = UIImage(named: "Messages")
-        self[1].image = UIImage(named: "My Proxies")
-        self[2].image = UIImage(named: "Me")
+        guard
+            let tab0 = self[safe: 0],
+            let tab1 = self[safe: 1],
+            let tab2 = self[safe: 2] else {
+                return
+        }
+        tab0.image = UIImage(named: "Messages")
+        tab1.image = UIImage(named: "My Proxies")
+        tab2.image = UIImage(named: "Me")
     }
 }

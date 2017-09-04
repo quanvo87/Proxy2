@@ -67,5 +67,5 @@ class ReceiverPickerViewController: UIViewController, UICollectionViewDelegate {
 }
 
 protocol ReceiverPickerDelegate: class {
-    var receiver: Proxy? { get set }
+    func setReceiver(to proxy: Proxy)
 }

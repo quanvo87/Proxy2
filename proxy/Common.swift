@@ -92,14 +92,11 @@ extension UIColor {
 
 extension UITableViewController {
     func goToConvoVC(_ convo: Convo) {
-        if let convoVC = storyboard?.instantiateViewController(withIdentifier: Identifier.ConvoViewController) as? ConvoViewController {
-            convoVC.convo = convo
-            navigationController?.pushViewController(convoVC, animated: true)
-        }
+        guard let convoVC = storyboard?.instantiateViewController(withIdentifier: Identifier.ConvoViewController) as? ConvoViewController else { return }
+        convoVC.convo = convo
+        navigationController?.pushViewController(convoVC, animated: true)
     }
 }
-
-
 
 extension UINavigationItem {
     func toggleRightBarButtonItem(atIndex index: Int) {

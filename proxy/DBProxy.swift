@@ -89,6 +89,16 @@ struct DBProxy {
         }
     }
 
+    static func makeNewProxyBadge(completion: @escaping (UIImage?) -> Void) {
+        Shared.shared.queue.async {
+            guard let image = UIImage(named: "New Proxy Badge") else {
+                completion(nil)
+                return
+            }
+            completion(image)
+        }
+    }
+
     static func makeProxy(withName specificName: String? = nil, forUser uid: String = Shared.shared.uid, maxAllowedProxies: UInt = Settings.MaxAllowedProxies, completion: @escaping MakeProxyCallback) {
         getProxyCount(forUser: uid) { (proxyCount) in
             guard proxyCount < maxAllowedProxies else {

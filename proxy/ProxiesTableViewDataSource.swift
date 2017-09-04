@@ -1,16 +1,28 @@
 class ProxiesTableViewDataSource: NSObject, UITableViewDataSource {
-    let proxiesObserver = ProxiesObserver()
+    private let proxiesObserver = ProxiesObserver()
+
+    var proxies: [Proxy] {
+        return proxiesObserver.proxies
+    }
 
     override init() {}
 
+    func observe(_ tableView: UITableView) {
+        proxiesObserver.observe(tableView)
+    }
+
+    func stopObserving() {
+        proxiesObserver.stopObserving()
+    }
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return proxiesObserver.getProxies().count
+        return proxies.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard
             let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.ProxyCell, for: indexPath) as? ProxyCell,
-            let proxy = proxiesObserver.getProxies()[safe: indexPath.row] else {
+            let proxy = proxies[safe: indexPath.row] else {
                 return tableView.dequeueReusableCell(withIdentifier: Identifier.ProxyCell, for: indexPath)
         }
 
@@ -31,11 +43,16 @@ class ProxiesTableViewDataSource: NSObject, UITableViewDataSource {
             }
         }
 
-        // TODO: Do on bg queue
         if proxy.dateCreated.isNewProxyDate {
             cell.contentView.bringSubview(toFront: cell.newImageView)
-            cell.newImageView.image = UIImage(named: "New Proxy Badge")
             cell.newImageView.isHidden = false
+
+            DBProxy.makeNewProxyBadge { (image) in
+                guard let image = image else { return }
+                DispatchQueue.main.async {
+                    cell.newImageView.image = image
+                }
+            }
         }
 
         return cell

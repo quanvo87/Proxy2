@@ -1,22 +1,24 @@
 class MessagesTableViewDataSource: NSObject, UITableViewDataSource {
-    var convosObserver = ConvosObserver()
-    weak var tableView: UITableView?
+    private let convosObserver = ConvosObserver()
+
+    var convos: [Convo] {
+        return convosObserver.convos
+    }
 
     override init() {}
 
-    func load(_ tableView: UITableView) {
-        self.tableView = tableView
+    func observe(_ tableView: UITableView) {
         convosObserver.observeConvos(forOwner: Shared.shared.uid, tableView: tableView)
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return convosObserver.getConvos().count
+        return convos.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard
             let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.ConvoCell, for: indexPath) as? ConvoCell,
-            let convo = convosObserver.getConvos()[safe: indexPath.row] else {
+            let convo = convos[safe: indexPath.row] else {
                 return tableView.dequeueReusableCell(withIdentifier: Identifier.ConvoCell, for: indexPath)
         }
 

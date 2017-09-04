@@ -4,16 +4,16 @@ class ProxyInfoTableViewDataSource: NSObject, UITableViewDataSource {
     private weak var tableViewController: UITableViewController?
 
     var convos: [Convo] {
-        return convosObserver.getConvos()
+        return convosObserver.convos
     }
 
     var proxy: Proxy {
-        return proxyObserver.getProxy()
+        return proxyObserver.proxy
     }
 
     override init() {}
 
-    func load(proxy: Proxy, tableViewController: UITableViewController) {
+    func observe(proxy: Proxy, tableViewController: UITableViewController) {
         convosObserver.observeConvos(forOwner: proxy.ownerId, tableView: tableViewController.tableView)
         proxyObserver.observe(proxy, tableView: tableViewController.tableView)
         self.tableViewController = tableViewController
@@ -28,8 +28,8 @@ extension ProxyInfoTableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.section {
         case 0:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.SenderProxyInfoCell, for: indexPath as IndexPath) as? SenderProxyInfoCell else {
-                return tableView.dequeueReusableCell(withIdentifier: Identifier.SenderProxyInfoCell, for: indexPath as IndexPath)
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.SenderProxyInfoCell, for: indexPath) as? SenderProxyInfoCell else {
+                return tableView.dequeueReusableCell(withIdentifier: Identifier.SenderProxyInfoCell, for: indexPath)
             }
 
             cell.changeIconButton.addTarget(self, action: #selector(self.goToIconPickerVC), for: .touchUpInside)
@@ -52,9 +52,9 @@ extension ProxyInfoTableViewDataSource {
 
         case 1:
             guard
-                let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.ConvoCell, for: indexPath as IndexPath) as? ConvoCell,
+                let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.ConvoCell, for: indexPath) as? ConvoCell,
                 let convo = convos[safe: indexPath.row] else {
-                    return tableView.dequeueReusableCell(withIdentifier: Identifier.ConvoCell, for: indexPath as IndexPath)
+                    return tableView.dequeueReusableCell(withIdentifier: Identifier.ConvoCell, for: indexPath)
             }
 
             cell.iconImageView.image = nil
@@ -86,7 +86,7 @@ extension ProxyInfoTableViewDataSource {
         case 0:
             return 1
         case 1:
-            return convosObserver.getConvos().count
+            return convos.count
         default:
             return 0
         }

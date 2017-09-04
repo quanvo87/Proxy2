@@ -1,28 +1,26 @@
-class MakeNewMessageViewController: UIViewController, UITextViewDelegate, ReceiverPickerDelegate, SenderPickerDelegate {
+class MakeNewMessageViewController: UIViewController, UITextViewDelegate {
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
-    @IBOutlet weak var makeNewProxyButton: UIButton!
+    @IBOutlet weak var makeNewProxyButton: UIButton?
     @IBOutlet weak var messageTextView: UITextView!
-    @IBOutlet weak var pickReceiverButton: UIButton!
-    @IBOutlet weak var pickSenderButton: UIButton!
-    @IBOutlet weak var sendMessageButton: UIButton!
+    @IBOutlet weak var pickReceiverButton: UIButton?
+    @IBOutlet weak var pickSenderButton: UIButton?
+    @IBOutlet weak var sendMessageButton: UIButton?
 
-    weak var delegate: MakeNewMessageDelegate?
-    var isLoaded = false
-    var receiver: Proxy? {
+    private var receiver: Proxy? {
         didSet {
             setReceiverButtonTitle()
         }
     }
-    var sender: Proxy? {
+    private var sender: Proxy? {
         didSet {
             setSenderButtonTitle()
         }
     }
 
+    private weak var delegate: MakeNewMessageDelegate?
+
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        isLoaded = true
 
         messageTextView.becomeFirstResponder()
         messageTextView.delegate = self
@@ -30,15 +28,17 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate, Receiv
         navigationItem.rightBarButtonItem = ButtonManager.makeButton(target: self, selector: #selector(self.cancelMakingNewMessage), imageName: .cancel)
         navigationItem.title = "New Message"
 
-        NotificationCenter.default.addObserver(self, selector: #selector(MakeNewMessageViewController.keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: view.window)
-
-        sendMessageButton.isEnabled = false
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: view.window)
 
         setSenderButtonTitle()
     }
 
     deinit {
         NotificationCenter.default.removeObserver(self)
+    }
+
+    func setDelegate(to delegate: MakeNewMessageDelegate) {
+        self.delegate = delegate
     }
 
     @objc func keyboardWillShow(_ notification: Notification) {
@@ -57,19 +57,17 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate, Receiv
     }
 }
 
-extension MakeNewMessageViewController {
+private extension MakeNewMessageViewController {
     @IBAction func goToReceiverPickerVC() {
-        if let receiverPickerVC = storyboard?.instantiateViewController(withIdentifier: Identifier.ReceiverPickerViewController) as? ReceiverPickerViewController {
-            receiverPickerVC.delegate = self
-            navigationController?.pushViewController(receiverPickerVC, animated: true)
-        }
+        guard let receiverPickerVC = storyboard?.instantiateViewController(withIdentifier: Identifier.ReceiverPickerViewController) as? ReceiverPickerViewController else { return }
+        receiverPickerVC.delegate = self
+        navigationController?.pushViewController(receiverPickerVC, animated: true)
     }
 
     @IBAction func goToSenderPickerVC() {
-        if let senderPickerVC = self.storyboard?.instantiateViewController(withIdentifier: Identifier.SenderPickerTableViewController) as? SenderPickerTableViewController {
-            senderPickerVC.delegate = self
-            navigationController?.pushViewController(senderPickerVC, animated: true)
-        }
+        guard let senderPickerVC = self.storyboard?.instantiateViewController(withIdentifier: Identifier.SenderPickerTableViewController) as? SenderPickerTableViewController else { return }
+        senderPickerVC.setDelegate(to: self)
+        navigationController?.pushViewController(senderPickerVC, animated: true)
     }
 
     @IBAction func makeNewProxy() {
@@ -96,13 +94,13 @@ extension MakeNewMessageViewController {
                 self.enableButtons()
                 return
             }
-            self.delegate?.newConvo = convo
+            self.delegate?.setNewConvo(to: convo)
             _ = self.navigationController?.popViewController(animated: true)
         }
     }
 }
 
-extension MakeNewMessageViewController {
+private extension MakeNewMessageViewController {
     @objc func cancelMakingNewMessage() {
         DBProxy.cancelCreatingProxy()
         disableButtons()
@@ -110,38 +108,46 @@ extension MakeNewMessageViewController {
     }
 
     func disableButtons() {
-        makeNewProxyButton.isEnabled = false
-        pickReceiverButton.isEnabled = false
-        pickSenderButton.isEnabled = false
-        sendMessageButton.isEnabled = false
+        makeNewProxyButton?.isEnabled = false
+        pickReceiverButton?.isEnabled = false
+        pickSenderButton?.isEnabled = false
+        sendMessageButton?.isEnabled = false
     }
-    
+
     func enableButtons() {
-        makeNewProxyButton.isEnabled = true
-        pickReceiverButton.isEnabled = true
-        pickSenderButton.isEnabled = true
+        makeNewProxyButton?.isEnabled = true
+        pickReceiverButton?.isEnabled = true
+        pickSenderButton?.isEnabled = true
         enableSendButton()
     }
-    
+
     func enableSendButton() {
-        sendMessageButton.isEnabled = sender != nil && receiver != nil && messageTextView.text != ""
+        sendMessageButton?.isEnabled = sender != nil && receiver != nil && messageTextView.text != ""
     }
 
     func setReceiverButtonTitle() {
-        if isLoaded {
-            pickReceiverButton.setTitle(receiver?.name ?? "Pick A Receiver", for: .normal)
-            enableButtons()
-        }
+        pickReceiverButton?.setTitle(receiver?.name ?? "Pick A Receiver", for: .normal)
+        enableButtons()
     }
 
     func setSenderButtonTitle() {
-        if isLoaded {
-            pickSenderButton.setTitle(sender?.name ?? "Pick A Sender", for: .normal)
-            enableButtons()
-        }
+        pickSenderButton?.setTitle(sender?.name ?? "Pick A Sender", for: .normal)
+        enableButtons()
+    }
+}
+
+extension MakeNewMessageViewController: ReceiverPickerDelegate {
+    func setReceiver(to proxy: Proxy) {
+        receiver = proxy
+    }
+}
+
+extension MakeNewMessageViewController: SenderPickerDelegate {
+    func setSender(to proxy: Proxy) {
+        sender = proxy
     }
 }
 
 protocol MakeNewMessageDelegate: class {
-    var newConvo: Convo? { get set }
+    func setNewConvo(to convo: Convo)
 }

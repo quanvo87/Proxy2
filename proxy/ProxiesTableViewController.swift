@@ -1,16 +1,15 @@
-class ProxiesTableViewController: UITableViewController, MakeNewMessageDelegate {
-    var buttonManager = ButtonManager()
-    let dataSource = ProxiesTableViewDataSource()
-    let unreadCountObserver = UnreadCountObserver()
-
-    var newConvo: Convo?
+class ProxiesTableViewController: UITableViewController {
+    private var buttonManager = ButtonManager()
+    private let dataSource = ProxiesTableViewDataSource()
+    private var newConvo: Convo?
+    private let unreadCountObserver = UnreadCountObserver()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         buttonManager.makeButtons(self)
 
-        dataSource.proxiesObserver.observe(tableView)
+        dataSource.observe(tableView)
 
         navigationItem.title = "Proxies"
 
@@ -31,12 +30,14 @@ class ProxiesTableViewController: UITableViewController, MakeNewMessageDelegate 
     }
 
     func goToNewConvo() {
-        if  let newConvo = newConvo,
-            let convoVC = storyboard?.instantiateViewController(withIdentifier: Identifier.ConvoViewController) as? ConvoViewController {
-            convoVC.convo = newConvo
-            self.newConvo = nil
-            navigationController?.pushViewController(convoVC, animated: true)
+        guard
+            let newConvo = newConvo,
+            let convoVC = storyboard?.instantiateViewController(withIdentifier: Identifier.ConvoViewController) as? ConvoViewController else {
+                return
         }
+        convoVC.convo = newConvo
+        self.newConvo = nil
+        navigationController?.pushViewController(convoVC, animated: true)
     }
 
     func scrollToTop() {
@@ -48,7 +49,7 @@ class ProxiesTableViewController: UITableViewController, MakeNewMessageDelegate 
 
 extension ProxiesTableViewController {
     var proxies: [Proxy] {
-        return dataSource.proxiesObserver.getProxies()
+        return dataSource.proxies
     }
 
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -60,7 +61,7 @@ extension ProxiesTableViewController {
             return
         }
         if tableView.isEditing {
-            buttonManager.itemsToDelete[proxy.key] = proxy
+            buttonManager.itemsToDeleteSet(value: proxy, forKey: proxy.key)
         } else {
             tableView.deselectRow(at: indexPath, animated: true)
             goToProxyInfoVC(proxy)
@@ -71,7 +72,7 @@ extension ProxiesTableViewController {
         guard let proxy = proxies[safe: indexPath.row] else {
             return
         }
-        buttonManager.itemsToDelete.removeValue(forKey: proxy.key)
+        buttonManager.itemsToDeleteRemoveValue(forKey: proxy.key)
     }
 
     func goToProxyInfoVC(_ proxy: Proxy) {
@@ -91,7 +92,7 @@ extension ProxiesTableViewController: ButtonManagerDelegate {
         let alert = UIAlertController(title: "Delete Proxies?", message: "You will not be able to view their conversations anymore.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
             self.buttonManager.disableButtons()
-            self.dataSource.proxiesObserver.stopObserving()
+            self.dataSource.stopObserving()
             let key = AsyncWorkGroupKey()
             for (_, item) in self.buttonManager.itemsToDelete {
                 if let proxy = item as? Proxy {
@@ -101,13 +102,13 @@ extension ProxiesTableViewController: ButtonManagerDelegate {
                     }
                 }
             }
-            self.buttonManager.itemsToDelete.removeAll()
+            self.buttonManager.itemsToDeleteRemoveAll()
             self.setDefaultButtons()
             self.tableView.setEditing(false, animated: true)
             key.notify {
                 key.finishWorkGroup()
                 self.buttonManager.enableButtons()
-                self.dataSource.proxiesObserver.observe(self.tableView)
+                self.dataSource.observe(self.tableView)
             }
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
@@ -116,7 +117,7 @@ extension ProxiesTableViewController: ButtonManagerDelegate {
 
     func goToMakeNewMessageVC() {
         if let makeNewMessageVC = self.storyboard?.instantiateViewController(withIdentifier: Identifier.NewMessageViewController) as? MakeNewMessageViewController {
-            makeNewMessageVC.delegate = self
+            makeNewMessageVC.setDelegate(to: self)
             let navigationController = UINavigationController(rootViewController: makeNewMessageVC)
             present(navigationController, animated: true)
         }
@@ -137,8 +138,7 @@ extension ProxiesTableViewController: ButtonManagerDelegate {
 
     func setDefaultButtons() {
         navigationItem.leftBarButtonItem = buttonManager.deleteButton
-        navigationItem.rightBarButtonItems = [buttonManager.newMessageButton,
-                                              buttonManager.newProxyButton]
+        navigationItem.rightBarButtonItems = [buttonManager.makeNewMessageButton, buttonManager.makeNewProxyButton]
     }
 
     func setEditModeButtons() {
@@ -152,8 +152,14 @@ extension ProxiesTableViewController: ButtonManagerDelegate {
             setEditModeButtons()
         } else {
             setDefaultButtons()
-            buttonManager.itemsToDelete.removeAll()
+            buttonManager.itemsToDeleteRemoveAll()
         }
+    }
+}
+
+extension ProxiesTableViewController: MakeNewMessageDelegate {
+    func setNewConvo(to convo: Convo) {
+        newConvo = convo
     }
 }
 
