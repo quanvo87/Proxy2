@@ -3,45 +3,81 @@ import XCTest
 @testable import proxy
 
 class DBTests: DBTest {
+    func testDecrement() {
+        let expectation = self.expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
+
+        let rand1 = Int(arc4random_uniform(500))
+        let rand2 = Int(arc4random_uniform(500))
+
+        DB.set(rand1, at: "test") { (success) in
+            XCTAssert(success)
+
+            let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
+
+            for _ in 1...rand2 {
+
+                key.startWork()
+
+                DB.increment(by: -1, at: "test") { (success) in
+                    XCTAssert(success)
+
+                    key.finishWork()
+                }
+            }
+
+            key.notify {
+                DB.get("test") { (data) in
+                    XCTAssertEqual(data?.value as? Int, rand1 - rand2)
+
+                    key.finishWorkGroup()
+
+                    expectation.fulfill()
+                }
+            }
+        }
+    }
+
     func testGetSetDelete() {
         let expectation = self.expectation(description: #function)
-        
+        defer { waitForExpectations(timeout: 10) }
+
         DB.set("a", at: "test") { (success) in
             XCTAssert(success)
             
             DB.get("test") { (data) in
-                XCTAssertEqual(data?.value as? String ?? "", "a")
+                XCTAssertEqual(data?.value as? String, "a")
                 
                 DB.delete("test") { (success) in
                     XCTAssert(success)
                     
                     DB.get("test") { (data) in
-                        XCTAssertEqual(data?.value as? FirebaseDatabase.NSNull, FirebaseDatabase.NSNull())
+                        XCTAssertFalse(data?.exists() ?? true)
                         expectation.fulfill()
                     }
                 }
             }
         }
-        waitForExpectations(timeout: 10)
     }
     
     func testIncrement() {
         let expectation = self.expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
         
         DB.increment(by: 1, at: "test") { (success) in
             XCTAssert(success)
             
             DB.get("test") { (data) in
-                XCTAssertEqual(data?.value as? Int ?? 0, 1)
+                XCTAssertEqual(data?.value as? Int, 1)
                 expectation.fulfill()
             }
         }
-        waitForExpectations(timeout: 10)
     }
     
     func testIncrementConcurrent() {
         let expectation = self.expectation(description: #function)
-        
+        defer { waitForExpectations(timeout: 10) }
+
         let incrementsDone = DispatchGroup()
         
         for _ in 1...2 {
@@ -54,11 +90,10 @@ class DBTests: DBTest {
         
         incrementsDone.notify(queue: .main) {
             DB.get("test") { (data) in
-                XCTAssertEqual(data?.value as? Int ?? 0, 2)
+                XCTAssertEqual(data?.value as? Int, 2)
                 expectation.fulfill()
             }
         }
-        waitForExpectations(timeout: 10)
     }
 
     func testMakeDatabaseReference() {

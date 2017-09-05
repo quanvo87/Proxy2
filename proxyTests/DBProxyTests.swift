@@ -206,6 +206,30 @@ class DBProxyTests: DBTest {
             }
         }
     }
+
+    func testFixConvoCounts() {
+        let expectation = self.expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
+
+        DBTest.makeConvo { (_, sender, _) in
+
+            let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
+            key.set(.convoCount(0), forProxy: sender)
+            key.notify {
+                key.finishWorkGroup()
+
+                DBProxy.fixConvoCounts { (success) in
+                    XCTAssert(success)
+
+                    DBProxy.getConvoCount(forProxy: sender) { (convoCount) in
+                        XCTAssertEqual(convoCount, 1)
+
+                        expectation.fulfill()
+                    }
+                }
+            }
+        }
+    }
 }
 
 extension AsyncWorkGroupKey {

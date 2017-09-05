@@ -53,15 +53,18 @@ extension DB {
             completion(false)
             return
         }
-        ref.runTransactionBlock( { (currentData) -> TransactionResult in
+        ref.runTransactionBlock({ (currentData) -> TransactionResult in
             if let value = currentData.value {
                 var newValue = value as? Int ?? 0
                 newValue += amount
                 currentData.value = newValue
-                return TransactionResult.success(withValue: currentData)
+                return .success(withValue: currentData)
             }
-            return TransactionResult.success(withValue: currentData)
+            return .success(withValue: currentData)
         }) { (error, _, _) in
+            if let error = error {
+                fatalError(String(describing: error))
+            }
             completion(error == nil)
         }
     }

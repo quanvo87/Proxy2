@@ -1,11 +1,3 @@
-//
-//  AppDelegate.swift
-//  proxy
-//
-//  Created by Quan Vo on 8/14/16.
-//  Copyright © 2016 Quan Vo. All rights reserved.
-//
-
 import Firebase
 
 @UIApplicationMain
@@ -21,11 +13,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private func production() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        if let tabBarController = storyboard.instantiateViewController(withIdentifier: Identifier.TabBarController) as? UITabBarController {
-            window = UIWindow(frame: UIScreen.main.bounds)
-            window?.rootViewController = tabBarController
-            window?.makeKeyAndVisible()
-        }
+        guard let tabBarController = storyboard.instantiateViewController(withIdentifier: Identifier.TabBarController) as? UITabBarController else { return }
+        window = UIWindow(frame: UIScreen.main.bounds)
+        window?.rootViewController = tabBarController
+        window?.makeKeyAndVisible()
     }
 
     func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {

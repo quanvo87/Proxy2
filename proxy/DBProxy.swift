@@ -51,6 +51,31 @@ struct DBProxy {
         }
     }
 
+    static func fixConvoCounts(forUser user: String = Shared.shared.uid, completion: @escaping (Success) -> Void) {
+        DBProxy.getProxies(forUser: user) { (proxies) in
+            guard let proxies = proxies else {
+                completion(false)
+                return
+            }
+            let key = AsyncWorkGroupKey()
+            for proxy in proxies {
+                key.startWork()
+                getConvoCount(forProxy: proxy) { (convoCount) in
+                    guard let convoCount = convoCount else {
+                        completion(false)
+                        return
+                    }
+                    key.set(.convoCount(Int(convoCount)), forProxy: proxy)
+                    key.finishWork()
+                }
+            }
+            key.notify {
+                completion(key.workResult)
+                key.finishWorkGroup()
+            }
+        }
+    }
+
     static func getImageForIcon(_ icon: String, tag: Int, completion: @escaping ((image: UIImage, cellTag: Int)?) -> Void) {
         Shared.shared.queue.async {
             guard let image = UIImage(named: icon) else {
@@ -60,10 +85,16 @@ struct DBProxy {
             completion((image, tag))
         }
     }
-    
+
+    static func getConvoCount(forProxy proxy: Proxy, completion: @escaping (UInt?) -> Void) {
+        DB.get(Child.Convos, proxy.key) { (data) in
+            completion(data?.childrenCount)
+        }
+    }
+
     static func getProxies(forUser uid: String, completion: @escaping ([Proxy]?) -> Void) {
         DB.get(Child.Proxies, uid) { (data) in
-            completion(data?.toProxies())
+            completion(data?.toProxiesArray())
         }
     }
 
@@ -217,7 +248,7 @@ struct DBProxy {
 }
 
 extension DataSnapshot {
-    func toProxies() -> [Proxy] {
+    func toProxiesArray() -> [Proxy] {
         var proxies = [Proxy]()
         for child in self.children {
             if let proxy = Proxy((child as? DataSnapshot)?.value as AnyObject) {

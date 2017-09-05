@@ -207,7 +207,7 @@ extension DBConvoTests {
 
         DBTest.makeConvo { (convo, _, _) in
             DB.get(Child.Convos, convo.senderId) { (data) in
-                let convos = data?.toConvos(filtered: false)
+                let convos = data?.toConvosArray(filtered: false)
                 XCTAssertEqual(convos?.count, 1)
                 XCTAssertEqual(convos?[0], convo)
                 expectation.fulfill()

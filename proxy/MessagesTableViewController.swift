@@ -62,6 +62,7 @@ extension MessagesTableViewController {
 extension MessagesTableViewController: AuthObserverDelegate {
     func logIn() {
         dataSource.observe(tableView)
+        DBProxy.fixConvoCounts { _ in }
         buttonManager.makeButtons(self)
         setDefaultButtons()
         tabBarController?.tabBar.items?.setupForTabBar()

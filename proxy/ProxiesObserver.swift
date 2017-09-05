@@ -15,7 +15,7 @@ class ProxiesObserver {
     func observe(_ tableView: UITableView) {
         ref = DB.makeReference(Child.Proxies, Shared.shared.uid)
         handle = ref?.queryOrdered(byChild: Child.Timestamp).observe(.value, with: { [weak self, weak tableView = tableView] (data) in
-            self?._proxies = data.toProxies().reversed()
+            self?._proxies = data.toProxiesArray().reversed()
             tableView?.visibleCells.incrementTags()
             tableView?.reloadData()
         })

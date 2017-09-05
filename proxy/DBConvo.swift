@@ -19,13 +19,13 @@ struct DBConvo {
 
     static func getConvos(forProxy proxy: Proxy, filtered: Bool, completion: @escaping ([Convo]?) -> Void) {
         DB.get(Child.Convos, proxy.key) { (data) in
-            completion(data?.toConvos(filtered: filtered))
+            completion(data?.toConvosArray(filtered: filtered))
         }
     }
 
     static func getConvos(forUser uid: String, filtered: Bool, completion: @escaping ([Convo]?) -> Void) {
         DB.get(Child.Convos, uid) { (data) in
-            completion(data?.toConvos(filtered: filtered))
+            completion(data?.toConvosArray(filtered: filtered))
         }
     }
 
@@ -112,7 +112,7 @@ struct DBConvo {
 }
 
 extension DataSnapshot {
-    func toConvos(filtered: Bool) -> [Convo] {
+    func toConvosArray(filtered: Bool) -> [Convo] {
         var convos = [Convo]()
         for child in self.children {
             if let convo = Convo((child as? DataSnapshot)?.value as AnyObject) {
