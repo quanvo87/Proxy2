@@ -175,8 +175,8 @@ private extension Array where Element: UITabBarItem {
             let tab2 = self[safe: 2] else {
                 return
         }
-        tab0.image = UIImage(named: "Messages")
-        tab1.image = UIImage(named: "My Proxies")
-        tab2.image = UIImage(named: "Me")
+        tab0.image = UIImage(named: "messages")
+        tab1.image = UIImage(named: "proxies")
+        tab2.image = UIImage(named: "me")
     }
 }

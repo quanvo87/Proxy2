@@ -161,6 +161,7 @@
 		5973C8811F608A4E00647492 /* DBTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBTest.swift; sourceTree = "<group>"; };
 		5973C8821F608A4E00647492 /* UnreadCountObserverTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnreadCountObserverTests.swift; sourceTree = "<group>"; };
 		5973C8831F608A4E00647492 /* DBProxyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBProxyTests.swift; sourceTree = "<group>"; };
+		598F06881F60ACD60066B742 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		59B432DC1F60648400622DEA /* Proxy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Proxy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		59B432DF1F60648400622DEA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		59B432E41F60648400622DEA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -220,6 +221,21 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		598F06871F60ABCB0066B742 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				5973C83E1F608A2000647492 /* BlockedUsersTableViewCell.swift */,
+				5973C8161F608A1A00647492 /* ConvoCell.swift */,
+				5973C8341F608A1E00647492 /* IconPickerCell.swift */,
+				5973C82D1F608A1D00647492 /* MeTableViewCell.swift */,
+				5973C8261F608A1C00647492 /* ProxyCell.swift */,
+				5973C81F1F608A1B00647492 /* ReceiverProxyInfoCell.swift */,
+				5973C82B1F608A1D00647492 /* SenderProxyInfoCell.swift */,
+				5973C83A1F608A1F00647492 /* API.swift */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
 		59B432D31F60648400622DEA = {
 			isa = PBXGroup;
 			children = (
@@ -245,21 +261,17 @@
 		59B432DE1F60648400622DEA /* Proxy */ = {
 			isa = PBXGroup;
 			children = (
+				59E064371F60AB790082BDE8 /* Model */,
+				59E064361F60AB140082BDE8 /* Controller */,
+				598F06871F60ABCB0066B742 /* View */,
+				598F06881F60ACD60066B742 /* API.swift */,
 				59B432DF1F60648400622DEA /* AppDelegate.swift */,
-				5973C83A1F608A1F00647492 /* API.swift */,
 				5973C8251F608A1C00647492 /* AsyncWorkGroupKey.swift */,
 				5973C8471F608A2200647492 /* AuthObserver.swift */,
-				5973C81E1F608A1B00647492 /* BlockedUser.swift */,
-				5973C83E1F608A2000647492 /* BlockedUsersTableViewCell.swift */,
-				5973C8211F608A1B00647492 /* BlockedUsersTableViewController.swift */,
 				5973C8451F608A2100647492 /* ButtonManager.swift */,
 				5973C8291F608A1C00647492 /* Common.swift */,
 				5973C83F1F608A2000647492 /* Constant.swift */,
-				5973C8381F608A1F00647492 /* Convo.swift */,
-				5973C8161F608A1A00647492 /* ConvoCell.swift */,
-				5973C81A1F608A1B00647492 /* ConvoInfoTableViewController.swift */,
 				5973C83D1F608A2000647492 /* ConvosObserver.swift */,
-				5973C8281F608A1C00647492 /* ConvoViewController.swift */,
 				5973C82E1F608A1D00647492 /* DB.swift */,
 				5973C8151F608A1A00647492 /* DBConvo.swift */,
 				5973C83B1F608A2000647492 /* DBMessage.swift */,
@@ -267,36 +279,20 @@
 				5973C81B1F608A1B00647492 /* DBStorage.swift */,
 				5973C8171F608A1A00647492 /* DBUser.swift */,
 				5973C82A1F608A1C00647492 /* Header.h */,
-				5973C8341F608A1E00647492 /* IconPickerCell.swift */,
-				5973C82C1F608A1D00647492 /* IconPickerCollectionViewController.swift */,
 				5973C8421F608A2100647492 /* loadProxyIconNames.swift */,
 				5973C8461F608A2100647492 /* loadProxyNameAdjectives.swift */,
 				5973C8361F608A1F00647492 /* loadProxyNameNouns.swift */,
 				5973C8191F608A1B00647492 /* LoginVideoPlayer.swift */,
-				5973C8221F608A1B00647492 /* LoginViewController.swift */,
-				5973C8231F608A1C00647492 /* MakeNewMessageViewController.swift */,
-				5973C8371F608A1F00647492 /* Message.swift */,
-				5973C81C1F608A1B00647492 /* MessagesTableViewController.swift */,
 				5973C8241F608A1C00647492 /* MessagesTableViewDataSource.swift */,
-				5973C82D1F608A1D00647492 /* MeTableViewCell.swift */,
-				5973C8431F608A2100647492 /* MeTableViewController.swift */,
 				5973C8401F608A2000647492 /* notes.txt */,
 				5973C8131F608A1A00647492 /* NSDate+NVTimeAgo.h */,
 				5973C8181F608A1A00647492 /* NSDate+NVTimeAgo.m */,
 				5973C82F1F608A1D00647492 /* ProxiesObserver.swift */,
-				5973C8311F608A1D00647492 /* ProxiesTableViewController.swift */,
 				5973C8301F608A1D00647492 /* ProxiesTableViewDataSource.swift */,
-				5973C8321F608A1E00647492 /* Proxy.swift */,
-				5973C8261F608A1C00647492 /* ProxyCell.swift */,
 				5973C81D1F608A1B00647492 /* ProxyError.swift */,
-				5973C8351F608A1E00647492 /* ProxyInfoTableViewController.swift */,
 				5973C8201F608A1B00647492 /* ProxyInfoTableViewDataSource.swift */,
 				5973C8391F608A1F00647492 /* ProxyLoginManager.swift */,
 				5973C8141F608A1A00647492 /* ProxyObserver.swift */,
-				5973C8331F608A1E00647492 /* ReceiverPickerViewController.swift */,
-				5973C81F1F608A1B00647492 /* ReceiverProxyInfoCell.swift */,
-				5973C8441F608A2100647492 /* SenderPickerTableViewController.swift */,
-				5973C82B1F608A1D00647492 /* SenderProxyInfoCell.swift */,
 				5973C8411F608A2100647492 /* Shared.swift */,
 				5973C83C1F608A2000647492 /* UnreadCountObserver.swift */,
 				59B432E61F60648400622DEA /* Assets.xcassets */,
@@ -332,6 +328,36 @@
 				59B433011F60648400622DEA /* Info.plist */,
 			);
 			path = ProxyUITests;
+			sourceTree = "<group>";
+		};
+		59E064361F60AB140082BDE8 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				5973C8211F608A1B00647492 /* BlockedUsersTableViewController.swift */,
+				5973C81A1F608A1B00647492 /* ConvoInfoTableViewController.swift */,
+				5973C8281F608A1C00647492 /* ConvoViewController.swift */,
+				5973C82C1F608A1D00647492 /* IconPickerCollectionViewController.swift */,
+				5973C8231F608A1C00647492 /* MakeNewMessageViewController.swift */,
+				5973C8221F608A1B00647492 /* LoginViewController.swift */,
+				5973C8431F608A2100647492 /* MeTableViewController.swift */,
+				5973C81C1F608A1B00647492 /* MessagesTableViewController.swift */,
+				5973C8311F608A1D00647492 /* ProxiesTableViewController.swift */,
+				5973C8351F608A1E00647492 /* ProxyInfoTableViewController.swift */,
+				5973C8331F608A1E00647492 /* ReceiverPickerViewController.swift */,
+				5973C8441F608A2100647492 /* SenderPickerTableViewController.swift */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
+		59E064371F60AB790082BDE8 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				5973C81E1F608A1B00647492 /* BlockedUser.swift */,
+				5973C8381F608A1F00647492 /* Convo.swift */,
+				5973C8371F608A1F00647492 /* Message.swift */,
+				5973C8321F608A1E00647492 /* Proxy.swift */,
+			);
+			name = Model;
 			sourceTree = "<group>";
 		};
 		FD4F91054663754B0D196B1E /* Pods */ = {
