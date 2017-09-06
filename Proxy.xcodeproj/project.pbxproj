@@ -47,7 +47,6 @@
 		5973C86A1F608A2200647492 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8371F608A1F00647492 /* Message.swift */; };
 		5973C86B1F608A2200647492 /* Convo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8381F608A1F00647492 /* Convo.swift */; };
 		5973C86C1F608A2200647492 /* ProxyLoginManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8391F608A1F00647492 /* ProxyLoginManager.swift */; };
-		5973C86D1F608A2200647492 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C83A1F608A1F00647492 /* API.swift */; };
 		5973C86E1F608A2200647492 /* DBMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C83B1F608A2000647492 /* DBMessage.swift */; };
 		5973C86F1F608A2200647492 /* UnreadCountObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C83C1F608A2000647492 /* UnreadCountObserver.swift */; };
 		5973C8701F608A2200647492 /* ConvosObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C83D1F608A2000647492 /* ConvosObserver.swift */; };
@@ -70,6 +69,7 @@
 		5973C88A1F608A4E00647492 /* DBTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8811F608A4E00647492 /* DBTest.swift */; };
 		5973C88B1F608A4E00647492 /* UnreadCountObserverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8821F608A4E00647492 /* UnreadCountObserverTests.swift */; };
 		5973C88C1F608A4E00647492 /* DBProxyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8831F608A4E00647492 /* DBProxyTests.swift */; };
+		598F068A1F60AF060066B742 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598F06891F60AF060066B742 /* API.swift */; };
 		59B432E01F60648400622DEA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59B432DF1F60648400622DEA /* AppDelegate.swift */; };
 		59B432E51F60648400622DEA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 59B432E31F60648400622DEA /* Main.storyboard */; };
 		59B432E71F60648400622DEA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 59B432E61F60648400622DEA /* Assets.xcassets */; };
@@ -138,7 +138,6 @@
 		5973C8371F608A1F00647492 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		5973C8381F608A1F00647492 /* Convo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Convo.swift; sourceTree = "<group>"; };
 		5973C8391F608A1F00647492 /* ProxyLoginManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyLoginManager.swift; sourceTree = "<group>"; };
-		5973C83A1F608A1F00647492 /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		5973C83B1F608A2000647492 /* DBMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBMessage.swift; sourceTree = "<group>"; };
 		5973C83C1F608A2000647492 /* UnreadCountObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnreadCountObserver.swift; sourceTree = "<group>"; };
 		5973C83D1F608A2000647492 /* ConvosObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvosObserver.swift; sourceTree = "<group>"; };
@@ -161,7 +160,7 @@
 		5973C8811F608A4E00647492 /* DBTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBTest.swift; sourceTree = "<group>"; };
 		5973C8821F608A4E00647492 /* UnreadCountObserverTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnreadCountObserverTests.swift; sourceTree = "<group>"; };
 		5973C8831F608A4E00647492 /* DBProxyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBProxyTests.swift; sourceTree = "<group>"; };
-		598F06881F60ACD60066B742 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
+		598F06891F60AF060066B742 /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		59B432DC1F60648400622DEA /* Proxy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Proxy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		59B432DF1F60648400622DEA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		59B432E41F60648400622DEA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -231,7 +230,6 @@
 				5973C8261F608A1C00647492 /* ProxyCell.swift */,
 				5973C81F1F608A1B00647492 /* ReceiverProxyInfoCell.swift */,
 				5973C82B1F608A1D00647492 /* SenderProxyInfoCell.swift */,
-				5973C83A1F608A1F00647492 /* API.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -264,7 +262,7 @@
 				59E064371F60AB790082BDE8 /* Model */,
 				59E064361F60AB140082BDE8 /* Controller */,
 				598F06871F60ABCB0066B742 /* View */,
-				598F06881F60ACD60066B742 /* API.swift */,
+				598F06891F60AF060066B742 /* API.swift */,
 				59B432DF1F60648400622DEA /* AppDelegate.swift */,
 				5973C8251F608A1C00647492 /* AsyncWorkGroupKey.swift */,
 				5973C8471F608A2200647492 /* AuthObserver.swift */,
@@ -295,12 +293,7 @@
 				5973C8141F608A1A00647492 /* ProxyObserver.swift */,
 				5973C8411F608A2100647492 /* Shared.swift */,
 				5973C83C1F608A2000647492 /* UnreadCountObserver.swift */,
-				59B432E61F60648400622DEA /* Assets.xcassets */,
-				59B432E31F60648400622DEA /* Main.storyboard */,
-				59B432E81F60648400622DEA /* LaunchScreen.storyboard */,
-				59B432EB1F60648400622DEA /* Info.plist */,
-				5973C80F1F60840F00647492 /* GoogleService-Info.plist */,
-				59B433AD1F60807400622DEA /* Proxy-Bridging-Header.h */,
+				59C171AC1F60C07800EDE032 /* Other */,
 			);
 			path = Proxy;
 			sourceTree = "<group>";
@@ -328,6 +321,19 @@
 				59B433011F60648400622DEA /* Info.plist */,
 			);
 			path = ProxyUITests;
+			sourceTree = "<group>";
+		};
+		59C171AC1F60C07800EDE032 /* Other */ = {
+			isa = PBXGroup;
+			children = (
+				59B432E61F60648400622DEA /* Assets.xcassets */,
+				59B432EB1F60648400622DEA /* Info.plist */,
+				5973C80F1F60840F00647492 /* GoogleService-Info.plist */,
+				59B432E81F60648400622DEA /* LaunchScreen.storyboard */,
+				59B432E31F60648400622DEA /* Main.storyboard */,
+				59B433AD1F60807400622DEA /* Proxy-Bridging-Header.h */,
+			);
+			name = Other;
 			sourceTree = "<group>";
 		};
 		59E064361F60AB140082BDE8 /* Controller */ = {
@@ -760,11 +766,11 @@
 				5973C87A1F608A2200647492 /* AuthObserver.swift in Sources */,
 				5973C85E1F608A2200647492 /* SenderProxyInfoCell.swift in Sources */,
 				5973C85B1F608A2200647492 /* DBProxy.swift in Sources */,
-				5973C86D1F608A2200647492 /* API.swift in Sources */,
 				5973C84B1F608A2200647492 /* DBUser.swift in Sources */,
 				5973C8501F608A2200647492 /* MessagesTableViewController.swift in Sources */,
 				5973C86E1F608A2200647492 /* DBMessage.swift in Sources */,
 				5973C8541F608A2200647492 /* ProxyInfoTableViewDataSource.swift in Sources */,
+				598F068A1F60AF060066B742 /* API.swift in Sources */,
 				5973C85F1F608A2200647492 /* IconPickerCollectionViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

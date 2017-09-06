@@ -17,7 +17,7 @@ class MessagesTableViewDataSource: NSObject, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard
-            let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.ConvoCell, for: indexPath) as? ConvoCell,
+            let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.ConvoCell) as? ConvoCell,
             let convo = convos[safe: indexPath.row] else {
                 return tableView.dequeueReusableCell(withIdentifier: Identifier.ConvoCell, for: indexPath)
         }
