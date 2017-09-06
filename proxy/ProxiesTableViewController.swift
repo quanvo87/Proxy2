@@ -20,13 +20,12 @@ class ProxiesTableViewController: UITableViewController {
         tableView.rowHeight = 60
         tableView.separatorStyle = .none
 
-        unreadCountObserver.observe(self)
+        unreadCountObserver.observe(delegate: self)
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
         goToNewConvo()
-        scrollToTop()
     }
 
     func goToNewConvo() {
@@ -116,11 +115,10 @@ extension ProxiesTableViewController: ButtonManagerDelegate {
     }
 
     func goToMakeNewMessageVC() {
-        if let makeNewMessageVC = self.storyboard?.instantiateViewController(withIdentifier: Identifier.NewMessageViewController) as? MakeNewMessageViewController {
-            makeNewMessageVC.setDelegate(to: self)
-            let navigationController = UINavigationController(rootViewController: makeNewMessageVC)
-            present(navigationController, animated: true)
-        }
+        guard let makeNewMessageVC = self.storyboard?.instantiateViewController(withIdentifier: Identifier.NewMessageViewController) as? MakeNewMessageViewController else { return }
+        makeNewMessageVC.setDelegate(to: self)
+        let navigationController = UINavigationController(rootViewController: makeNewMessageVC)
+        present(navigationController, animated: true)
     }
 
     func makeNewProxy() {
@@ -163,7 +161,7 @@ extension ProxiesTableViewController: MakeNewMessageDelegate {
     }
 }
 
-extension ProxiesTableViewController: UnreadObserverDelegate {
+extension ProxiesTableViewController: UnreadCountObserverDelegate {
     func setUnreadCount(to unreadCount: Int?) {
         if let unreadCount = unreadCount {
             navigationItem.title = "Proxies" + unreadCount.asLabelWithParens

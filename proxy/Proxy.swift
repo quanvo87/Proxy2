@@ -3,6 +3,7 @@ import FirebaseDatabase
 struct Proxy {
     var convoCount = 0
     var dateCreated = Date().timeIntervalSince1970
+    var hasUnreadMessage = false
     var icon = ""
     var key = ""
     var lastMessage = ""
@@ -36,6 +37,7 @@ struct Proxy {
         guard
             let convoCount = dictionary["convoCount"] as? Int,
             let dateCreated = dictionary["dateCreated"] as? Double,
+            let hasUnreadMessage = dictionary["hasUnreadMessage"] as? Bool,
             let icon = dictionary["icon"] as? String,
             let key = dictionary["key"] as? String,
             let lastMessage = dictionary["lastMessage"] as? String,
@@ -48,6 +50,7 @@ struct Proxy {
         }
         self.convoCount = convoCount
         self.dateCreated = dateCreated
+        self.hasUnreadMessage = hasUnreadMessage
         self.icon = icon
         self.key = key
         self.lastMessage = lastMessage
@@ -62,6 +65,7 @@ struct Proxy {
         return [
             "convoCount": convoCount,
             "dateCreated": dateCreated,
+            "hasUnreadMessage": hasUnreadMessage,
             "icon": icon,
             "key": key,
             "lastMessage": lastMessage,
@@ -79,6 +83,7 @@ extension Proxy: Equatable {
         return
             lhs.convoCount == rhs.convoCount &&
             lhs.dateCreated.rounded() == rhs.dateCreated.rounded() &&
+            lhs.hasUnreadMessage == rhs.hasUnreadMessage &&
             lhs.icon == rhs.icon &&
             lhs.key == rhs.key &&
             lhs.lastMessage == rhs.lastMessage &&
@@ -97,6 +102,7 @@ enum IncrementableProxyProperty: String {
 
 enum SettableProxyProperty {
     case convoCount(Int)
+    case hasUnreadMessage(Bool)
     case icon(String)
     case lastMessage(String)
     case nickname(String)
@@ -106,6 +112,7 @@ enum SettableProxyProperty {
     var properties: (name: String, value: Any) {
         switch self {
         case .convoCount(let value): return ("convoCount", value)
+        case .hasUnreadMessage(let value): return ("hasUnreadMessage", value)
         case .icon(let value): return ("icon", value)
         case .lastMessage(let value): return ("lastMessage", value)
         case .nickname(let value): return ("nickname", value)

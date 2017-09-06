@@ -71,21 +71,29 @@ extension ButtonManager {
         _makeNewProxyButton.isEnabled = true
     }
 
-    static func makeButton(target: Any?, selector: Selector, imageName: ButtonName) -> UIBarButtonItem {
+    static func makeButton(target: Any?, action: Selector, imageName: ButtonName) -> UIBarButtonItem {
         let button = UIButton(type: .custom)
-        button.addTarget(target, action: selector, for: .touchUpInside)
+        button.addTarget(target, action: action, for: .touchUpInside)
         button.frame = UISetting.navBarButtonCGRect
         button.setImage(UIImage(named: imageName.rawValue), for: .normal)
         return UIBarButtonItem(customView: button)
     }
     
     mutating func makeButtons(_ delegate: ButtonManagerDelegate) {
-        _cancelButton = ButtonManager.makeButton(target: delegate, selector: #selector(delegate.toggleEditMode), imageName: .cancel)
-        _confirmButton = ButtonManager.makeButton(target: delegate, selector: #selector(delegate.deleteSelectedItems), imageName: .confirm)
-        _deleteButton = ButtonManager.makeButton(target: delegate, selector: #selector(delegate.toggleEditMode), imageName: .delete)
-        _makeNewMessageButton = ButtonManager.makeButton(target: delegate, selector: #selector(delegate.goToMakeNewMessageVC), imageName: .makeNewMessage)
-        _makeNewProxyButton = ButtonManager.makeButton(target: delegate, selector: #selector(delegate.makeNewProxy), imageName: .makeNewProxy)
+        _cancelButton = ButtonManager.makeButton(target: delegate, action: #selector(delegate.toggleEditMode), imageName: .cancel)
+        _confirmButton = ButtonManager.makeButton(target: delegate, action: #selector(delegate.deleteSelectedItems), imageName: .confirm)
+        _deleteButton = ButtonManager.makeButton(target: delegate, action: #selector(delegate.toggleEditMode), imageName: .delete)
+        _makeNewMessageButton = ButtonManager.makeButton(target: delegate, action: #selector(delegate.goToMakeNewMessageVC), imageName: .makeNewMessage)
+        _makeNewProxyButton = ButtonManager.makeButton(target: delegate, action: #selector(delegate.makeNewProxy), imageName: .makeNewProxy)
     }
+}
+
+enum ButtonName: String {
+    case cancel
+    case confirm
+    case delete
+    case makeNewMessage
+    case makeNewProxy
 }
 
 @objc protocol ButtonManagerDelegate {

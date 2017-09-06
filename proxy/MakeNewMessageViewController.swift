@@ -25,7 +25,7 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate {
         messageTextView.becomeFirstResponder()
         messageTextView.delegate = self
 
-        navigationItem.rightBarButtonItem = ButtonManager.makeButton(target: self, selector: #selector(self.cancelMakingNewMessage), imageName: .cancel)
+        navigationItem.rightBarButtonItem = ButtonManager.makeButton(target: self, action: #selector(self.cancelMakingNewMessage), imageName: .cancel)
         navigationItem.title = "New Message"
 
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: view.window)
@@ -84,11 +84,10 @@ private extension MakeNewMessageViewController {
     }
 
     @IBAction func sendMessage() {
-        disableButtons()
         guard let sender = sender, let receiver = receiver else {
-            enableButtons()
             return
         }
+        disableButtons()
         DBMessage.sendMessage(from: sender, to: receiver, withText: messageTextView.text) { (result) in
             guard let (_, convo) = result else {
                 self.enableButtons()
@@ -115,10 +114,10 @@ private extension MakeNewMessageViewController {
     }
 
     func enableButtons() {
+        enableSendButton()
         makeNewProxyButton?.isEnabled = true
         pickReceiverButton?.isEnabled = true
         pickSenderButton?.isEnabled = true
-        enableSendButton()
     }
 
     func enableSendButton() {
@@ -126,13 +125,13 @@ private extension MakeNewMessageViewController {
     }
 
     func setReceiverButtonTitle() {
-        pickReceiverButton?.setTitle(receiver?.name ?? "Pick A Receiver", for: .normal)
         enableButtons()
+        pickReceiverButton?.setTitle(receiver?.name ?? "Pick A Receiver", for: .normal)
     }
 
     func setSenderButtonTitle() {
-        pickSenderButton?.setTitle(sender?.name ?? "Pick A Sender", for: .normal)
         enableButtons()
+        pickSenderButton?.setTitle(sender?.name ?? "Pick A Sender", for: .normal)
     }
 }
 

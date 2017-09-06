@@ -15,10 +15,6 @@ class ProxiesTableViewDataSource: NSObject, UITableViewDataSource {
         proxiesObserver.stopObserving()
     }
 
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return proxies.count
-    }
-
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard
             let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.ProxyCell, for: indexPath) as? ProxyCell,
@@ -30,31 +26,35 @@ class ProxiesTableViewDataSource: NSObject, UITableViewDataSource {
         cell.convoCountLabel.text = proxy.convoCount.asLabel
         cell.iconImageView.image = nil
         cell.nameLabel.text = proxy.name
+        cell.newImageView.image = nil
         cell.newImageView.isHidden = true
         cell.nicknameLabel.text = proxy.nickname
         cell.unreadLabel.text = proxy.unreadCount.asLabel
 
         DBProxy.getImageForIcon(proxy.icon, tag: cell.tag) { (result) in
-            guard let (image, tag) = result, tag == cell.tag else {
-                return
-            }
+            guard let (image, tag) = result else { return }
             DispatchQueue.main.async {
+                guard tag == cell.tag else { return }
                 cell.iconImageView.image = image
             }
         }
 
+        // TODO: add tag check
         if proxy.dateCreated.isNewProxyDate {
-            cell.contentView.bringSubview(toFront: cell.newImageView)
-            cell.newImageView.isHidden = false
-
             DBProxy.makeNewProxyBadge { (image) in
                 guard let image = image else { return }
                 DispatchQueue.main.async {
+                    cell.contentView.bringSubview(toFront: cell.newImageView)
                     cell.newImageView.image = image
+                    cell.newImageView.isHidden = false
                 }
             }
         }
 
         return cell
+    }
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return proxies.count
     }
 }

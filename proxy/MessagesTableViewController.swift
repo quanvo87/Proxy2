@@ -66,7 +66,7 @@ extension MessagesTableViewController: AuthObserverDelegate {
         buttonManager.makeButtons(self)
         setDefaultButtons()
         tabBarController?.tabBar.items?.setupForTabBar()
-        unreadCountObserver.observe(self)
+        unreadCountObserver.observe(delegate: self)
     }
 
     func logOut() {
@@ -153,7 +153,7 @@ extension MessagesTableViewController: MakeNewMessageDelegate {
     }
 }
 
-extension MessagesTableViewController: UnreadObserverDelegate {
+extension MessagesTableViewController: UnreadCountObserverDelegate {
     func setUnreadCount(to unreadCount: Int?) {
         if let unreadCount = unreadCount {
             navigationItem.title = "Messages" + unreadCount.asLabelWithParens

@@ -18,7 +18,7 @@ class DBProxyTests: DBTest {
                 XCTAssert(success)
                 let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
                 key.check(.receiverDeletedProxy(true), forConvo: convo, asSender: false)
-                key.check(.unreadCount, 0, forUser: proxy.ownerId)
+                key.checkUnreadMessagesDeleted(for: proxy)
                 key.checkConvoDeleted(convo, asSender: true)
                 key.checkDeleted(at: Child.Proxies, proxy.ownerId, proxy.key)
                 key.checkDeleted(at: Child.ProxyKeys, proxy.key)
@@ -31,6 +31,53 @@ class DBProxyTests: DBTest {
         }
     }
 
+    func testDeleteProxyWithUnreadMessages() {
+        let expectation = self.expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
+
+        DBTest.makeProxy { (sender) in
+            DBTest.makeProxy(forUser: DBTest.testUser) { (receiver) in
+                DBMessage.sendMessage(from: receiver, to: sender, withText: DBTest.text) { (result) in
+                    XCTAssertNotNil(result)
+
+                    DBProxy.deleteProxy(sender) { (success) in
+                        XCTAssert(success)
+                        let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
+                        key.checkUnreadMessagesDeleted(for: sender)
+                        key.notify {
+                            key.finishWorkGroup()
+                            expectation.fulfill()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    func testFixConvoCounts() {
+        let expectation = self.expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
+
+        DBTest.makeConvo { (_, sender, _) in
+
+            let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
+            key.set(.convoCount(0), forProxy: sender)
+            key.notify {
+                key.finishWorkGroup()
+
+                DBProxy.fixConvoCounts { (success) in
+                    XCTAssert(success)
+
+                    DBProxy.getConvoCount(forProxy: sender) { (convoCount) in
+                        XCTAssertEqual(convoCount, 1)
+
+                        expectation.fulfill()
+                    }
+                }
+            }
+        }
+    }
+    
     func testGetImageForIcon() {
         XCTAssertEqual(Shared.shared.proxyIconNames.count, 101)
 
@@ -107,6 +154,20 @@ class DBProxyTests: DBTest {
         DBProxy.getProxy(withKey: "invalid key", belongingTo: Shared.shared.uid) { (proxy) in
             XCTAssertNil(proxy)
             expectation.fulfill()
+        }
+    }
+
+    func testGetUnreadMessagesForProxy() {
+        let expectation = self.expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
+
+        DBTest.sendMessage { (message, _, _, _) in
+
+            DBProxy.getUnreadMessagesForProxy(owner: message.receiverId, key: message.receiverProxyKey) { (messages) in
+                XCTAssertEqual(messages?[safe: 0], message)
+
+                expectation.fulfill()
+            }
         }
     }
 
@@ -206,30 +267,6 @@ class DBProxyTests: DBTest {
             }
         }
     }
-
-    func testFixConvoCounts() {
-        let expectation = self.expectation(description: #function)
-        defer { waitForExpectations(timeout: 10) }
-
-        DBTest.makeConvo { (_, sender, _) in
-
-            let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-            key.set(.convoCount(0), forProxy: sender)
-            key.notify {
-                key.finishWorkGroup()
-
-                DBProxy.fixConvoCounts { (success) in
-                    XCTAssert(success)
-
-                    DBProxy.getConvoCount(forProxy: sender) { (convoCount) in
-                        XCTAssertEqual(convoCount, 1)
-
-                        expectation.fulfill()
-                    }
-                }
-            }
-        }
-    }
 }
 
 extension AsyncWorkGroupKey {
@@ -253,6 +290,14 @@ extension AsyncWorkGroupKey {
         startWork()
         DB.get(Child.ProxyOwners, proxy.key) { (data) in
             XCTAssertEqual(ProxyOwner(data?.value as AnyObject), ProxyOwner(key: proxy.key, ownerId: Shared.shared.uid))
+            self.finishWork()
+        }
+    }
+
+    func checkUnreadMessagesDeleted(for proxy: Proxy) {
+        startWork()
+        DBProxy.getUnreadMessagesForProxy(owner: proxy.ownerId, key: proxy.key) { (messages) in
+            XCTAssertEqual(messages?.count, 0)
             self.finishWork()
         }
     }

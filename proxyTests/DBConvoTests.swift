@@ -60,6 +60,32 @@ class DBConvoTests: DBTest {
         }
     }
 
+    func testGetUnreadMessages() {
+        let expectation = self.expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
+
+        DBTest.makeConvo { (senderConvo, sender, receiver) in
+
+            DBMessage.sendMessage(from: receiver, to: sender, withText: "") { (result) in
+                guard let (message, convo) = result else {
+                    XCTFail()
+                    return
+                }
+
+                DBConvo.getUnreadMessages(for: convo) { (messages) in
+                    guard let messages = messages else {
+                        XCTFail()
+                        return
+                    }
+
+                    XCTAssertEqual(messages[safe: 0], message)
+
+                    expectation.fulfill()
+                }
+            }
+        }
+    }
+
     func testLeaveConvo() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
@@ -72,14 +98,50 @@ class DBConvoTests: DBTest {
                 XCTAssert(success)
 
                 let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
+                key.check(.convoCount(0), forProxy: sender)
+                key.check(.hasUnreadMessage(false), forProxy: sender)
                 key.check(.receiverLeftConvo(true), forConvo: convo, asSender: false)
                 key.check(.senderLeftConvo(true), forConvo: convo, asSender: true)
-                key.check(.convoCount(0), forProxy: sender)
-                key.check(.unreadCount(-convo.unreadCount), forProxy: sender)
-                key.check(.unreadCount, -convo.unreadCount, forUser: convo.senderId)
+                key.checkUnreadMessagesDeleted(for: convo)
                 key.notify {
                     key.finishWorkGroup()
                     expectation.fulfill()
+                }
+            }
+        }
+    }
+
+    func testLeaveConvoWithOtherMessages() {
+        let expectation = self.expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
+
+        DBTest.makeProxy { (sender) in
+            DBTest.makeProxy(forUser: DBTest.testUser) { (receiver1) in
+                DBTest.makeProxy(forUser: DBTest.testUser) { (receiver2) in
+                    DBMessage.sendMessage(from: receiver1, to: sender, withText: DBTest.text) { (result) in
+                        XCTAssertNotNil(result)
+
+                        DBMessage.sendMessage(from: receiver2, to: sender, withText: DBTest.text) { (result) in
+                            guard let (_, convo) = result else {
+                                XCTFail()
+                                return
+                            }
+
+                            DBConvo.leaveConvo(convo) { (success) in
+                                XCTAssert(success)
+
+                                let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
+
+                                key.check(.hasUnreadMessage(true), forProxy: sender)
+
+                                key.notify {
+                                    key.finishWorkGroup()
+
+                                    expectation.fulfill()
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -183,6 +245,20 @@ class DBConvoTests: DBTest {
         }
     }
 
+    func testToConvosArray() {
+        let expectation = self.expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
+
+        DBTest.makeConvo { (convo, _, _) in
+            DB.get(Child.Convos, convo.senderId) { (data) in
+                let convos = data?.toConvosArray(filtered: false)
+                XCTAssertEqual(convos?.count, 1)
+                XCTAssertEqual(convos?[0], convo)
+                expectation.fulfill()
+            }
+        }
+    }
+
     func testUserIsPresent() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
@@ -200,23 +276,15 @@ class DBConvoTests: DBTest {
     }
 }
 
-extension DBConvoTests {
-    func testGetConvosFromSnapshot() {
-        let expectation = self.expectation(description: #function)
-        defer { waitForExpectations(timeout: 10) }
-
-        DBTest.makeConvo { (convo, _, _) in
-            DB.get(Child.Convos, convo.senderId) { (data) in
-                let convos = data?.toConvosArray(filtered: false)
-                XCTAssertEqual(convos?.count, 1)
-                XCTAssertEqual(convos?[0], convo)
-                expectation.fulfill()
-            }
+extension AsyncWorkGroupKey {
+    func checkUnreadMessagesDeleted(for convo: Convo) {
+        startWork()
+        DBConvo.getUnreadMessages(for: convo) { (messages) in
+            XCTAssertEqual(messages?.count, 0)
+            self.finishWork()
         }
     }
-}
 
-extension AsyncWorkGroupKey {
     func checkConvoDeleted(_ convo: Convo, asSender: Bool) {
         let (ownerId, proxyKey) = AsyncWorkGroupKey.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
         checkDeleted(at: Child.Convos, ownerId, convo.key)

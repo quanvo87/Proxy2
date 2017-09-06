@@ -43,7 +43,7 @@ struct DBProxy {
         key.delete(at: Child.ProxyKeys, proxy.key)
         key.delete(at: Child.ProxyOwners, proxy.key)
         key.deleteConvos(convos)
-        key.increment(by: -proxy.unreadCount, forProperty: .unreadCount, forUser: proxy.ownerId)
+        key.deleteUnreadMessages(for: proxy)
         key.setReceiverDeletedProxy(to: true, forReceiverInConvos: convos)
         key.notify {
             completion(key.workResult)
@@ -120,9 +120,20 @@ struct DBProxy {
         }
     }
 
+    static func getUnreadMessagesForProxy(owner: String, key: String, completion: @escaping ([Message]?) -> Void) {
+        guard let ref = DB.makeReference(Child.UserInfo, owner, Child.unreadMessages) else {
+            completion(nil)
+            return
+        }
+
+        ref.queryOrdered(byChild: "receiverProxyKey").queryEqual(toValue: key).observeSingleEvent(of: .value, with: { (data) in
+            completion(data.toMessagesArray())
+        })
+    }
+
     static func makeNewProxyBadge(completion: @escaping (UIImage?) -> Void) {
         Shared.shared.queue.async {
-            guard let image = UIImage(named: "New Proxy Badge") else {
+            guard let image = UIImage(named: "newProxyBadge") else {
                 completion(nil)
                 return
             }
@@ -260,9 +271,53 @@ extension DataSnapshot {
 }
 
 extension AsyncWorkGroupKey {
+    func increment(by amount: Int, forProperty property: IncrementableProxyProperty, forProxy proxy: Proxy) {
+        increment(by: amount, forProperty: property, forProxyWithKey: proxy.key, ownerId: proxy.ownerId)
+    }
+
+    func increment(by amount: Int, forProperty property: IncrementableProxyProperty, forProxyInConvo convo: Convo, asSender: Bool) {
+        let (ownerId, proxyKey) = AsyncWorkGroupKey.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
+        increment(by: amount, forProperty: property, forProxyWithKey: proxyKey, ownerId: ownerId)
+    }
+
+    func increment(by amount: Int, forProperty property: IncrementableProxyProperty, forProxyWithKey key: String, ownerId: String) {
+        increment(by: amount, at: Child.Proxies, ownerId, key, property.rawValue)
+    }
+
+    func set(_ property: SettableProxyProperty, forProxy proxy: Proxy) {
+        set(property, forProxyWithKey: proxy.key, proxyOwner: proxy.ownerId)
+    }
+
+    func set(_ property: SettableProxyProperty, forProxyInConvo convo: Convo, asSender: Bool) {
+        let (ownerId, proxyKey) = AsyncWorkGroupKey.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
+        set(property, forProxyWithKey: proxyKey, proxyOwner: ownerId)
+    }
+
+    func set(_ property: SettableProxyProperty, forProxyWithKey key: String, proxyOwner: String) {
+        set(property.properties.value, at: Child.Proxies, proxyOwner, key, property.properties.name)
+    }
+}
+
+extension AsyncWorkGroupKey {
     func deleteConvos(_ convos: [Convo]) {
         for convo in convos {
             self.delete(convo, asSender: true)
+        }
+    }
+
+    func deleteUnreadMessages(for proxy: Proxy) {
+        startWork()
+        DBProxy.getUnreadMessagesForProxy(owner: proxy.ownerId, key: proxy.key) { (messages) in
+            guard let messages = messages else {
+                self.finishWork(withResult: false)
+                return
+            }
+
+            for message in messages {
+                self.delete(at: Child.UserInfo, message.receiverId, Child.unreadMessages, message.key)
+            }
+
+            self.finishWork()
         }
     }
 

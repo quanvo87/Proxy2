@@ -1,11 +1,3 @@
-enum ButtonName: String {
-    case cancel
-    case confirm
-    case delete
-    case makeNewMessage
-    case makeNewProxy
-}
-
 struct Child {
     static let app = "app"
 
@@ -23,6 +15,7 @@ struct Child {
 
     // User
     static let UserInfo = "userInfo"
+    static let unreadMessages = "unreadMessages"
     static let ProxiesInteractedWith = "proxiesInteractedWith"
     static let MessagesSent = "messagesSent"
     static let MessagesReceived = "messagesReceived"

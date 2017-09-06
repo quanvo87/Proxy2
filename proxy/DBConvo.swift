@@ -29,16 +29,30 @@ struct DBConvo {
         }
     }
 
+    static func getUnreadMessages(for convo: Convo, completion: @escaping ([Message]?) -> Void) {
+        guard let ref = DB.makeReference(Child.UserInfo, convo.receiverId, Child.unreadMessages) else {
+            completion(nil)
+            return
+        }
+
+        ref.queryOrdered(byChild: "parentConvo").queryEqual(toValue: convo.key).observeSingleEvent(of: .value, with: { (data) in
+            completion(data.toMessagesArray())
+        })
+    }
+
+    // TODO: have to mark all the messages as read?
     static func leaveConvo(_ convo: Convo, completion: @escaping (Success) -> Void) {
         let key = AsyncWorkGroupKey()
+        key.deleteUnreadMessages(for: convo)
         key.increment(by: -1, forProperty: .convoCount, forProxyInConvo: convo, asSender: true)
-        key.increment(by: -convo.unreadCount, forProperty: .unreadCount, forProxyInConvo: convo, asSender: true)
-        key.increment(by: -convo.unreadCount, forProperty: .unreadCount, forUser: convo.senderId)
         key.set(.receiverLeftConvo(true), forConvo: convo, asSender: false)
         key.set(.senderLeftConvo(true), forConvo: convo, asSender: true)
         key.notify {
-            completion(key.workResult)
-            key.finishWorkGroup()
+            key.setHasUnreadMessageForProxy(key: convo.receiverProxyKey, ownerId: convo.receiverId)
+            key.notify {
+                completion(key.workResult)
+                key.finishWorkGroup()
+            }
         }
     }
 
@@ -126,5 +140,59 @@ extension DataSnapshot {
             }
         }
         return convos
+    }
+}
+
+extension AsyncWorkGroupKey {
+    func delete(_ convo: Convo, asSender: Bool) {
+        let (ownerId, proxyKey) = AsyncWorkGroupKey.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
+        delete(at: Child.Convos, ownerId, convo.key)
+        delete(at: Child.Convos, proxyKey, convo.key)
+    }
+
+    func increment(by amount: Int, forProperty property: IncrementableConvoProperty, forConvo convo: Convo, asSender: Bool) {
+        let (ownerId, proxyKey) = AsyncWorkGroupKey.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
+        increment(by: amount, forProperty: property, forConvoWithKey: convo.key, ownerId: ownerId, proxyKey: proxyKey)
+    }
+
+    func increment(by amount: Int, forProperty property: IncrementableConvoProperty, forConvoWithKey key: String, ownerId: String, proxyKey: String) {
+        increment(by: amount, at: Child.Convos, ownerId, key, property.rawValue)
+        increment(by: amount, at: Child.Convos, proxyKey, key, property.rawValue)
+    }
+
+    func set(_ convo: Convo, asSender: Bool) {
+        let (ownerId, proxyKey) = AsyncWorkGroupKey.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
+        set(convo.toDictionary(), at: Child.Convos, ownerId, convo.key)
+        set(convo.toDictionary(), at: Child.Convos, proxyKey, convo.key)
+    }
+
+    func set(_ property: SettableConvoProperty, forConvo convo: Convo, asSender: Bool) {
+        let (ownerId, proxyKey) = AsyncWorkGroupKey.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
+        set(property.properties.value, at: Child.Convos, ownerId, convo.key, property.properties.name)
+        set(property.properties.value, at: Child.Convos, proxyKey, convo.key, property.properties.name)
+    }
+
+    func set(_ property: SettableConvoProperty, forConvoWithKey key: String, ownerId: String, proxyKey: String) {
+        set(property.properties.value, at: Child.Convos, ownerId, key, property.properties.name)
+        set(property.properties.value, at: Child.Convos, proxyKey, key, property.properties.name)
+    }
+}
+
+extension AsyncWorkGroupKey {
+    func deleteUnreadMessages(for convo: Convo) {
+        startWork()
+
+        DBConvo.getUnreadMessages(for: convo) { (messages) in
+            guard let messages = messages else {
+                self.finishWork(withResult: false)
+                return
+            }
+
+            for message in messages {
+                self.delete(at: Child.UserInfo, convo.senderId, Child.unreadMessages, message.key)
+            }
+
+            self.finishWork()
+        }
     }
 }

@@ -64,13 +64,10 @@ extension ProxyInfoTableViewDataSource {
             cell.unreadLabel.text = convo.unreadCount.asLabel
 
             DBProxy.getImageForIcon(convo.receiverIcon, tag: cell.tag) { (result) in
-                guard
-                    let (image, tag) = result,
-                    tag == cell.tag else {
-                        return
-                }
+                guard let (image, tag) = result else { return }
                 DispatchQueue.main.async {
-                    cell.imageView?.image = image
+                    guard tag == cell.tag else { return }
+                    cell.iconImageView.image = image
                 }
             }
 

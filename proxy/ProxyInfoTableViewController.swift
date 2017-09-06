@@ -8,8 +8,8 @@ class ProxyInfoTableViewController: UITableViewController {
 
         dataSource.observe(proxy: proxy, tableViewController: self)
 
-        navigationItem.rightBarButtonItems = [ButtonManager.makeButton(target: self, selector: #selector(self.goToMakeNewMessageVC), imageName: .makeNewMessage),
-                                              ButtonManager.makeButton(target: self, selector: #selector(self.deleteProxy), imageName: .delete)]
+        navigationItem.rightBarButtonItems = [ButtonManager.makeButton(target: self, action: #selector(self.goToMakeNewMessageVC), imageName: .makeNewMessage),
+                                              ButtonManager.makeButton(target: self, action: #selector(self.deleteProxy), imageName: .delete)]
 
         tableView.dataSource = dataSource
         tableView.delaysContentTouches = false

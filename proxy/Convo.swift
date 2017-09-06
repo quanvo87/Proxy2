@@ -1,5 +1,6 @@
 struct Convo {
     var key = ""
+    var hasUnreadMessage = false
     var lastMessage = ""
     var receiverDeletedProxy = false
     var receiverIcon = ""
@@ -23,6 +24,7 @@ struct Convo {
     init?(_ dictionary: AnyObject) {
         guard
             let key = dictionary["key"] as? String,
+            let hasUnreadMessage = dictionary["hasUnreadMessage"] as? Bool,
             let lastMessage = dictionary["lastMessage"] as? String,
             let receiverDeletedProxy = dictionary["receiverDeletedProxy"] as? Bool,
             let receiverIcon = dictionary["receiverIcon"] as? String,
@@ -43,6 +45,7 @@ struct Convo {
                 return nil
         }
         self.key = key
+        self.hasUnreadMessage = hasUnreadMessage
         self.lastMessage = lastMessage
         self.receiverDeletedProxy = receiverDeletedProxy
         self.receiverIcon = receiverIcon
@@ -65,6 +68,7 @@ struct Convo {
     func toDictionary() -> Any {
         return [
             "key": key,
+            "hasUnreadMessage": hasUnreadMessage,
             "lastMessage": lastMessage,
             "receiverDeletedProxy": receiverDeletedProxy,
             "receiverIcon": receiverIcon,
@@ -90,6 +94,7 @@ extension Convo: Equatable {
     static func ==(_ lhs: Convo, _ rhs: Convo) -> Bool {
         return
             lhs.key == rhs.key &&
+            lhs.hasUnreadMessage == rhs.hasUnreadMessage &&
             lhs.lastMessage == rhs.lastMessage &&
             lhs.receiverDeletedProxy == rhs.receiverDeletedProxy &&
             lhs.receiverIcon == rhs.receiverIcon &&
@@ -115,6 +120,7 @@ enum IncrementableConvoProperty: String {
 
 enum SettableConvoProperty {
     case lastMessage(String)
+    case hasUnreadMessage(Bool)
     case receiverDeletedProxy(Bool)
     case receiverIcon(String)
     case receiverIsBlocked(Bool)
@@ -129,6 +135,7 @@ enum SettableConvoProperty {
     var properties: (name: String, value: Any) {
         switch self {
         case .lastMessage(let value): return ("lastMessage", value)
+        case .hasUnreadMessage(let value): return ("hasUnreadMessage", value)
         case .receiverDeletedProxy(let value): return ("receiverDeletedProxy", value)
         case .receiverIcon(let value): return ("receiverIcon", value)
         case .receiverIsBlocked(let value): return ("receiverIsBlocked", value)
