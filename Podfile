@@ -8,6 +8,7 @@ def pods
   pod 'Firebase/Storage'
   pod 'FacebookCore'
   pod 'FacebookLogin'
+  pod 'JSQMessagesViewController'
 end
 
 target 'Proxy' do
