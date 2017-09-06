@@ -2,7 +2,6 @@ enum IncrementableUserProperty: String {
     case messagesReceived
     case messagesSent
     case proxiesInteractedWith
-    case unreadCount    // TODO: remove
 }
 
 extension AsyncWorkGroupKey {

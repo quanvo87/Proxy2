@@ -150,16 +150,6 @@ extension AsyncWorkGroupKey {
         delete(at: Child.Convos, proxyKey, convo.key)
     }
 
-    func increment(by amount: Int, forProperty property: IncrementableConvoProperty, forConvo convo: Convo, asSender: Bool) {
-        let (ownerId, proxyKey) = AsyncWorkGroupKey.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
-        increment(by: amount, forProperty: property, forConvoWithKey: convo.key, ownerId: ownerId, proxyKey: proxyKey)
-    }
-
-    func increment(by amount: Int, forProperty property: IncrementableConvoProperty, forConvoWithKey key: String, ownerId: String, proxyKey: String) {
-        increment(by: amount, at: Child.Convos, ownerId, key, property.rawValue)
-        increment(by: amount, at: Child.Convos, proxyKey, key, property.rawValue)
-    }
-
     func set(_ convo: Convo, asSender: Bool) {
         let (ownerId, proxyKey) = AsyncWorkGroupKey.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
         set(convo.toDictionary(), at: Child.Convos, ownerId, convo.key)

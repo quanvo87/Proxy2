@@ -91,9 +91,6 @@ class DBConvoTests: DBTest {
         defer { waitForExpectations(timeout: 10) }
 
         DBTest.makeConvo { (convo, sender, _) in
-            var convo = convo
-            convo.unreadCount = 2
-
             DBConvo.leaveConvo(convo) { (success) in
                 XCTAssert(success)
 

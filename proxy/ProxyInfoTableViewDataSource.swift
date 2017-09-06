@@ -61,7 +61,7 @@ extension ProxyInfoTableViewDataSource {
             cell.lastMessageLabel.text = convo.lastMessage
             cell.timestampLabel.text = convo.timestamp.asTimeAgo
             cell.titleLabel.attributedText = DBConvo.makeConvoTitle(receiverNickname: convo.receiverNickname, receiverProxyName: convo.senderProxyName, senderNickname: convo.senderNickname, senderProxyName: convo.senderProxyName)
-            cell.unreadLabel.text = convo.unreadCount.asLabel
+//            cell.unreadLabel.text = convo.unreadCount.asLabel
 
             DBProxy.getImageForIcon(convo.receiverIcon, tag: cell.tag) { (result) in
                 guard let (image, tag) = result else { return }

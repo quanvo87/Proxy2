@@ -129,10 +129,10 @@ extension AsyncWorkGroupKey {
         return "Function: \(function), Line: \(line)."
     }
     
-    func checkDeleted(at first: String, _ rest: String...) {
+    func checkDeleted(at first: String, _ rest: String..., function: String = #function, line: Int = #line) {
         startWork()
         DB.get(first, rest) { (data) in
-            XCTAssertFalse(data?.exists() ?? true)
+            XCTAssertFalse(data?.exists() ?? true, AsyncWorkGroupKey.makeErrorMessage(function: function, line: line))
             self.finishWork()
         }
     }

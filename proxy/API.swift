@@ -216,8 +216,8 @@ class API {
                     self.set(true as AnyObject, a: Child.Convos, b: _convo.receiverProxyKey, c: _convo.key, d: Child.SenderIsBlocked)
                     
                     // Decrement unreads by convo's unread
-                    self.increment(by: -_convo.unreadCount, a: Child.unreadCount, b: _convo.senderId, c: Child.unreadCount, d: nil)
-                    self.increment(by: -_convo.unreadCount, a: Child.Proxies, b: _convo.senderId, c: _convo.senderProxyKey, d: Child.unreadCount)
+//                    self.increment(by: -_convo.unreadCount, a: Child.unreadCount, b: _convo.senderId, c: Child.unreadCount, d: nil)
+//                    self.increment(by: -_convo.unreadCount, a: Child.Proxies, b: _convo.senderId, c: _convo.senderProxyKey, d: Child.unreadCount)
                 }
             }
         }
@@ -236,8 +236,8 @@ class API {
                     self.set(false as AnyObject, a: Child.Convos, b: convo.receiverId, c: convo.key, d: Child.SenderIsBlocked)
                     self.set(false as AnyObject, a: Child.Convos, b: convo.receiverProxyKey, c: convo.key, d: Child.SenderIsBlocked)
                     
-                    self.increment(by: convo.unreadCount, a: Child.unreadCount, b: convo.senderId, c: Child.unreadCount, d: nil)
-                    self.increment(by: convo.unreadCount, a: Child.Proxies, b: convo.senderId, c: convo.senderProxyKey, d: Child.unreadCount)
+//                    self.increment(by: convo.unreadCount, a: Child.unreadCount, b: convo.senderId, c: Child.unreadCount, d: nil)
+//                    self.increment(by: convo.unreadCount, a: Child.Proxies, b: convo.senderId, c: convo.senderProxyKey, d: Child.unreadCount)
                 }
             }
         }
@@ -416,8 +416,8 @@ class API {
         delete(a: Child.Proxies, b: uid, c: proxy.key, d: nil)
         
         // Decrement user's unread by the proxy's unread
-        increment(by: -proxy.unreadCount, a: Child.unreadCount, b: proxy.ownerId, c: Child.unreadCount, d: nil)
-        
+//        increment(by: -proxy.unreadCount, a: Child.unreadCount, b: proxy.ownerId, c: Child.unreadCount, d: nil)
+
         // Loop through the proxy's convos
         for convo in convos {
             
@@ -671,7 +671,7 @@ class API {
         set(0 as AnyObject, a: Child.Convos, b: convo.senderId, c: convo.key, d: Child.unreadCount)
         set(0 as AnyObject, a: Child.Convos, b: convo.senderProxyKey, c: convo.key, d: Child.unreadCount)
         increment(by: -1, a: Child.Proxies, b: convo.senderId, c: convo.senderProxyKey, d: Child.Convos)
-        increment(by: -convo.unreadCount, a: Child.unreadCount, b: convo.senderId, c: Child.unreadCount, d: nil)
-        increment(by: -convo.unreadCount, a: Child.Proxies, b: convo.senderId, c: convo.senderProxyKey, d: Child.unreadCount)
+//        increment(by: -convo.unreadCount, a: Child.unreadCount, b: convo.senderId, c: Child.unreadCount, d: nil)
+//        increment(by: -convo.unreadCount, a: Child.Proxies, b: convo.senderId, c: convo.senderProxyKey, d: Child.unreadCount)
     }
 }

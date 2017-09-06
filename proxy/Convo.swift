@@ -1,6 +1,6 @@
 struct Convo {
-    var key = ""
     var hasUnreadMessage = false
+    var key = ""
     var lastMessage = ""
     var receiverDeletedProxy = false
     var receiverIcon = ""
@@ -17,14 +17,13 @@ struct Convo {
     var senderProxyKey = ""
     var senderProxyName = ""
     var timestamp = 0.0
-    var unreadCount = 0
 
     init() {}
 
     init?(_ dictionary: AnyObject) {
         guard
-            let key = dictionary["key"] as? String,
             let hasUnreadMessage = dictionary["hasUnreadMessage"] as? Bool,
+            let key = dictionary["key"] as? String,
             let lastMessage = dictionary["lastMessage"] as? String,
             let receiverDeletedProxy = dictionary["receiverDeletedProxy"] as? Bool,
             let receiverIcon = dictionary["receiverIcon"] as? String,
@@ -40,12 +39,11 @@ struct Convo {
             let senderNickname = dictionary["senderNickname"] as? String,
             let senderProxyKey = dictionary["senderProxyKey"] as? String,
             let senderProxyName = dictionary["senderProxyName"] as? String,
-            let timestamp = dictionary["timestamp"] as? Double,
-            let unreadCount = dictionary["unreadCount"] as? Int else {
+            let timestamp = dictionary["timestamp"] as? Double else {
                 return nil
         }
-        self.key = key
         self.hasUnreadMessage = hasUnreadMessage
+        self.key = key
         self.lastMessage = lastMessage
         self.receiverDeletedProxy = receiverDeletedProxy
         self.receiverIcon = receiverIcon
@@ -62,13 +60,12 @@ struct Convo {
         self.senderProxyKey = senderProxyKey
         self.senderProxyName = senderProxyName
         self.timestamp = timestamp
-        self.unreadCount = unreadCount
     }
 
     func toDictionary() -> Any {
         return [
-            "key": key,
             "hasUnreadMessage": hasUnreadMessage,
+            "key": key,
             "lastMessage": lastMessage,
             "receiverDeletedProxy": receiverDeletedProxy,
             "receiverIcon": receiverIcon,
@@ -84,8 +81,7 @@ struct Convo {
             "senderNickname": senderNickname,
             "senderProxyKey": senderProxyKey,
             "senderProxyName": senderProxyName,
-            "timestamp": timestamp,
-            "unreadCount": unreadCount
+            "timestamp": timestamp
         ]
     }
 }
@@ -93,8 +89,8 @@ struct Convo {
 extension Convo: Equatable {
     static func ==(_ lhs: Convo, _ rhs: Convo) -> Bool {
         return
-            lhs.key == rhs.key &&
             lhs.hasUnreadMessage == rhs.hasUnreadMessage &&
+            lhs.key == rhs.key &&
             lhs.lastMessage == rhs.lastMessage &&
             lhs.receiverDeletedProxy == rhs.receiverDeletedProxy &&
             lhs.receiverIcon == rhs.receiverIcon &&
@@ -109,18 +105,13 @@ extension Convo: Equatable {
             lhs.senderNickname == rhs.senderNickname &&
             lhs.senderProxyKey == rhs.senderProxyKey &&
             lhs.senderProxyName == rhs.senderProxyName &&
-            lhs.timestamp.rounded() == rhs.timestamp.rounded() &&
-            lhs.unreadCount == rhs.unreadCount
+            lhs.timestamp.rounded() == rhs.timestamp.rounded()
     }
 }
 
-enum IncrementableConvoProperty: String {
-    case unreadCount
-}
-
 enum SettableConvoProperty {
-    case lastMessage(String)
     case hasUnreadMessage(Bool)
+    case lastMessage(String)
     case receiverDeletedProxy(Bool)
     case receiverIcon(String)
     case receiverIsBlocked(Bool)
@@ -130,12 +121,11 @@ enum SettableConvoProperty {
     case senderLeftConvo(Bool)
     case senderNickname(String)
     case timestamp(Double)
-    case unreadCount(Int)
 
     var properties: (name: String, value: Any) {
         switch self {
+            case .hasUnreadMessage(let value): return ("hasUnreadMessage", value)
         case .lastMessage(let value): return ("lastMessage", value)
-        case .hasUnreadMessage(let value): return ("hasUnreadMessage", value)
         case .receiverDeletedProxy(let value): return ("receiverDeletedProxy", value)
         case .receiverIcon(let value): return ("receiverIcon", value)
         case .receiverIsBlocked(let value): return ("receiverIsBlocked", value)
@@ -145,7 +135,6 @@ enum SettableConvoProperty {
         case .senderLeftConvo(let value): return ("senderLeftConvo", value)
         case .senderNickname(let value): return ("senderNickname", value)
         case .timestamp(let value): return ("timestamp", value)
-        case .unreadCount(let value): return ("unreadCount", value)
         }
     }
 }

@@ -4,7 +4,7 @@ import XCTest
 class DBStorageTests: DBTest {
     func testUploadImage() {
         let expectation = self.expectation(description: #function)
-        defer { waitForExpectations(timeout: 10) }
+        defer { waitForExpectations(timeout: 30) }
 
         guard let url = URL(string: "https://pre03.deviantart.net/ad3e/th/pre/f/2017/135/e/9/sylvanas_windrunner_by_enshanlee-db9ag0u.jpg") else {
             XCTFail()

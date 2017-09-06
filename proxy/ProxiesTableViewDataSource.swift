@@ -29,7 +29,7 @@ class ProxiesTableViewDataSource: NSObject, UITableViewDataSource {
         cell.newImageView.image = nil
         cell.newImageView.isHidden = true
         cell.nicknameLabel.text = proxy.nickname
-        cell.unreadLabel.text = proxy.unreadCount.asLabel
+//        cell.unreadLabel.text = proxy.unreadCount.asLabel
 
         DBProxy.getImageForIcon(proxy.icon, tag: cell.tag) { (result) in
             guard let (image, tag) = result else { return }
