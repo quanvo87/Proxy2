@@ -14,7 +14,7 @@
         <!--Login View Controller-->
         <scene sceneID="jNT-LK-tgD">
             <objects>
-                <viewController storyboardIdentifier="Login View Controller" id="mti-JT-f0N" customClass="LoginViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Login View Controller" id="mti-JT-f0N" customClass="LoginViewController" customModule="Proxy" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="9Lu-0E-rOH"/>
                         <viewControllerLayoutGuide type="bottom" id="Ibs-yw-gQo"/>
@@ -93,13 +93,13 @@
         <!--Proxy Info Table View Controller-->
         <scene sceneID="oEv-n1-XaV">
             <objects>
-                <tableViewController storyboardIdentifier="Proxy Info Table View Controller" id="6tV-td-Afa" customClass="ProxyInfoTableViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="Proxy Info Table View Controller" id="6tV-td-Afa" customClass="ProxyInfoTableViewController" customModule="Proxy" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="dl3-bR-bhC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Sender Proxy Info Cell" rowHeight="140" id="oAK-V1-7Sw" userLabel="Sender Proxy Info Cell" customClass="SenderProxyInfoCell" customModule="proxy" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Sender Proxy Info Cell" rowHeight="140" id="oAK-V1-7Sw" userLabel="Sender Proxy Info Cell" customClass="SenderProxyInfoCell" customModule="Proxy" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="55.5" width="375" height="140"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="oAK-V1-7Sw" id="Am8-Tu-hDQ">
@@ -150,7 +150,7 @@
                                     <outlet property="nicknameButton" destination="wEZ-z0-3Nq" id="0HN-hZ-IqG"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="Convo Cell" rowHeight="80" id="CMK-Tf-pys" userLabel="Convo Cell" customClass="ConvoCell" customModule="proxy" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="Convo Cell" rowHeight="80" id="CMK-Tf-pys" userLabel="Convo Cell" customClass="ConvoCell" customModule="Proxy" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="195.5" width="375" height="80"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="CMK-Tf-pys" id="lQV-S8-dXP">
@@ -227,13 +227,13 @@
         <!--Blocked Users Table View Controller-->
         <scene sceneID="Lmr-9Y-azS">
             <objects>
-                <tableViewController storyboardIdentifier="Blocked Users Table View Controller" id="Ksq-A2-f2n" customClass="BlockedUsersTableViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="Blocked Users Table View Controller" id="Ksq-A2-f2n" customClass="BlockedUsersTableViewController" customModule="Proxy" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="R2i-gS-Cne">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="Blocked Users Table View Cell" rowHeight="60" id="htW-7t-TZt" userLabel="Blocked Users Table View Cell" customClass="BlockedUsersTableViewCell" customModule="proxy" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="Blocked Users Table View Cell" rowHeight="60" id="htW-7t-TZt" userLabel="Blocked Users Table View Cell" customClass="BlockedUsersTableViewCell" customModule="Proxy" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="55.5" width="375" height="60"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="htW-7t-TZt" id="Zqj-3m-aMe">
@@ -298,7 +298,7 @@
         <!--Icon Picker Collection View Controller-->
         <scene sceneID="Rxe-2s-xMw">
             <objects>
-                <collectionViewController storyboardIdentifier="Icon Picker Collection View Controller" id="I8C-Eq-oiB" customClass="IconPickerCollectionViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
+                <collectionViewController storyboardIdentifier="Icon Picker Collection View Controller" id="I8C-Eq-oiB" customClass="IconPickerCollectionViewController" customModule="Proxy" customModuleProvider="target" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="1dJ-ga-eoP">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -309,7 +309,7 @@
                             <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                         </collectionViewFlowLayout>
                         <cells>
-                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="Icon Picker Cell" id="OhV-7i-pXz" customClass="IconPickerCell" customModule="proxy" customModuleProvider="target">
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="Icon Picker Cell" id="OhV-7i-pXz" customClass="IconPickerCell" customModule="Proxy" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="90" height="90"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -359,13 +359,13 @@
         <!--Proxies Table View Controller-->
         <scene sceneID="xza-Lr-4gX">
             <objects>
-                <tableViewController id="7n5-fe-DbV" customClass="ProxiesTableViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="7n5-fe-DbV" customClass="ProxiesTableViewController" customModule="Proxy" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="duD-kn-ioV">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="Proxy Cell" rowHeight="60" id="r4t-DE-FZD" customClass="ProxyCell" customModule="proxy" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="Proxy Cell" rowHeight="60" id="r4t-DE-FZD" customClass="ProxyCell" customModule="Proxy" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="55.5" width="375" height="60"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="r4t-DE-FZD" id="b1m-BB-wyt">
@@ -452,13 +452,13 @@
         <!--Me Table View Controller-->
         <scene sceneID="QBG-Pw-jKg">
             <objects>
-                <tableViewController id="P7j-Fh-6Kn" customClass="MeTableViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="P7j-Fh-6Kn" customClass="MeTableViewController" customModule="Proxy" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="rtB-2h-CSD">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Me Table View Cell" id="UXm-0c-4e1" customClass="MeTableViewCell" customModule="proxy" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Me Table View Cell" id="UXm-0c-4e1" customClass="MeTableViewCell" customModule="Proxy" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="55.5" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="UXm-0c-4e1" id="wYe-o7-fF8">
@@ -516,13 +516,13 @@
         <!--Messages Table View Controller-->
         <scene sceneID="wPT-wm-BuK">
             <objects>
-                <tableViewController id="iwU-xV-ap2" customClass="MessagesTableViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="iwU-xV-ap2" customClass="MessagesTableViewController" customModule="Proxy" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="WgE-r0-W3W">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="Convo Cell" rowHeight="80" id="lhh-B9-mZr" userLabel="Convo Cell" customClass="ConvoCell" customModule="proxy" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="Convo Cell" rowHeight="80" id="lhh-B9-mZr" userLabel="Convo Cell" customClass="ConvoCell" customModule="Proxy" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="55.5" width="375" height="80"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="lhh-B9-mZr" id="QQq-2S-rKN">
@@ -618,7 +618,7 @@
         <!--Convo View Controller-->
         <scene sceneID="zTB-3Y-1fk">
             <objects>
-                <viewController storyboardIdentifier="Convo View Controller" id="qft-ic-0R9" customClass="ConvoViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Convo View Controller" id="qft-ic-0R9" customClass="ConvoViewController" customModule="Proxy" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="VIo-Gq-Bem"/>
                         <viewControllerLayoutGuide type="bottom" id="gBO-Oe-A3e"/>
@@ -640,13 +640,13 @@
         <!--Convo Info Table View Controller-->
         <scene sceneID="4Xu-0x-N0F">
             <objects>
-                <tableViewController storyboardIdentifier="Convo Info Table View Controller" id="o3I-cl-y3O" customClass="ConvoInfoTableViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="Convo Info Table View Controller" id="o3I-cl-y3O" customClass="ConvoInfoTableViewController" customModule="Proxy" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="YxD-46-N7k">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Receiver Proxy Info Cell" rowHeight="80" id="LWs-B6-rD1" userLabel="Receiver Proxy Info Cell" customClass="ReceiverProxyInfoCell" customModule="proxy" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Receiver Proxy Info Cell" rowHeight="80" id="LWs-B6-rD1" userLabel="Receiver Proxy Info Cell" customClass="ReceiverProxyInfoCell" customModule="Proxy" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="55.5" width="375" height="80"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="LWs-B6-rD1" id="awj-Uk-6Kr">
@@ -689,7 +689,7 @@
                                     <outlet property="nicknameButton" destination="pzn-ft-C2B" id="0h2-yz-stN"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Sender Proxy Info Cell" rowHeight="80" id="hdZ-vT-kh8" userLabel="Sender Proxy Info Cell" customClass="SenderProxyInfoCell" customModule="proxy" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Sender Proxy Info Cell" rowHeight="80" id="hdZ-vT-kh8" userLabel="Sender Proxy Info Cell" customClass="SenderProxyInfoCell" customModule="Proxy" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="135.5" width="375" height="80"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="hdZ-vT-kh8" id="fVD-Aa-46m">
@@ -762,7 +762,7 @@
         <!--New Message View Controller-->
         <scene sceneID="1fM-QD-uNF">
             <objects>
-                <viewController storyboardIdentifier="New Message View Controller" id="hJ2-7r-RNJ" userLabel="New Message View Controller" customClass="MakeNewMessageViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="New Message View Controller" id="hJ2-7r-RNJ" userLabel="New Message View Controller" customClass="MakeNewMessageViewController" customModule="Proxy" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="KSv-ql-xXG"/>
                         <viewControllerLayoutGuide type="bottom" id="4JC-hV-Rck"/>
@@ -866,7 +866,7 @@
         <!--Receiver Picker View Controller-->
         <scene sceneID="GbH-7G-ATu">
             <objects>
-                <viewController storyboardIdentifier="Receiver Picker View Controller" id="tMI-6G-WhE" customClass="ReceiverPickerViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Receiver Picker View Controller" id="tMI-6G-WhE" customClass="ReceiverPickerViewController" customModule="Proxy" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="1rx-1s-0Qc"/>
                         <viewControllerLayoutGuide type="bottom" id="Ddw-0K-8mL"/>
@@ -918,20 +918,20 @@
         <!--Sender Picker Table View Controller-->
         <scene sceneID="eh3-Fo-KIZ">
             <objects>
-                <tableViewController storyboardIdentifier="Sender Picker Table View Controller" id="7cq-WY-8I6" customClass="SenderPickerTableViewController" customModule="proxy" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="Sender Picker Table View Controller" id="7cq-WY-8I6" customClass="SenderPickerTableViewController" customModule="Proxy" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="Edi-qn-AE3">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="Proxy Cell" rowHeight="60" id="Y0v-4e-HZe" customClass="ProxyCell" customModule="proxy" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="Proxy Cell" rowHeight="60" id="Y0v-4e-HZe" customClass="ProxyCell" customModule="Proxy" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="55.5" width="375" height="60"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Y0v-4e-HZe" id="6LS-2l-X8U">
                                     <rect key="frame" x="0.0" y="0.0" width="342" height="59.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="new" translatesAutoresizingMaskIntoConstraints="NO" id="j0t-Ci-z3F">
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="j0t-Ci-z3F">
                                             <rect key="frame" x="8" y="8" width="25" height="25"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="25" id="USN-rM-TsU"/>
@@ -1065,7 +1065,4 @@
             <point key="canvasLocation" x="-1243" y="-97"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="new" width="16" height="16"/>
-    </resources>
 </document>

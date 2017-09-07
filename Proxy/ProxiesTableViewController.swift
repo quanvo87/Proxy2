@@ -16,7 +16,6 @@ class ProxiesTableViewController: UITableViewController {
         setDefaultButtons()
         
         tableView.allowsMultipleSelectionDuringEditing = true
-        tableView.dataSource = dataSource
         tableView.rowHeight = 60
         tableView.separatorStyle = .none
 

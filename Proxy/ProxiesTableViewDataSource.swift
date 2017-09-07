@@ -9,6 +9,7 @@ class ProxiesTableViewDataSource: NSObject, UITableViewDataSource {
 
     func observe(_ tableView: UITableView) {
         proxiesObserver.observe(tableView)
+        tableView.dataSource = self
     }
 
     func stopObserving() {

@@ -9,6 +9,7 @@ class MessagesTableViewDataSource: NSObject, UITableViewDataSource {
 
     func observe(_ tableView: UITableView) {
         convosObserver.observeConvos(forOwner: Shared.shared.uid, tableView: tableView)
+        tableView.dataSource = self
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

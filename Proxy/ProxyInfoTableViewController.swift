@@ -11,7 +11,6 @@ class ProxyInfoTableViewController: UITableViewController {
         navigationItem.rightBarButtonItems = [ButtonManager.makeButton(target: self, action: #selector(self.goToMakeNewMessageVC), imageName: .makeNewMessage),
                                               ButtonManager.makeButton(target: self, action: #selector(self.deleteProxy), imageName: .delete)]
 
-        tableView.dataSource = dataSource
         tableView.delaysContentTouches = false
         tableView.separatorStyle = .none
 

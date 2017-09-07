@@ -16,7 +16,6 @@ class MessagesTableViewController: UITableViewController {
         navigationItem.title = "Messages"
 
         tableView.allowsMultipleSelectionDuringEditing = true
-        tableView.dataSource = dataSource
         tableView.rowHeight = 80
         tableView.separatorStyle = .none
     }

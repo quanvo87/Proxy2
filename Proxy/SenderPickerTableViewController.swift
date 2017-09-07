@@ -9,7 +9,6 @@ class SenderPickerTableViewController: UITableViewController {
 
         navigationItem.title = "Pick A Sender"
 
-        tableView.dataSource = dataSource
         tableView.rowHeight = 60
         tableView.separatorStyle = .none
     }

@@ -4,20 +4,6 @@ import XCTest
 class DBMessageTests: DBTest {
     private static let senderText = "You: \(text)"
 
-    func testToMessagesArray() {
-        let expectation = self.expectation(description: #function)
-        defer { waitForExpectations(timeout: 10) }
-
-        DBTest.sendMessage { (message, _, _, _) in
-
-            DB.get(Child.Messages, message.parentConvo) { (data) in
-                XCTAssertEqual(data?.toMessagesArray()[safe: 0], message)
-
-                expectation.fulfill()
-            }
-        }
-    }
-
     func testRead() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
@@ -173,6 +159,20 @@ class DBMessageTests: DBTest {
                     key.finishWorkGroup()
                     expectation.fulfill()
                 }
+            }
+        }
+    }
+
+    func testToMessagesArray() {
+        let expectation = self.expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
+
+        DBTest.sendMessage { (message, _, _, _) in
+
+            DB.get(Child.Messages, message.parentConvo) { (data) in
+                XCTAssertEqual(data?.toMessagesArray()[safe: 0], message)
+
+                expectation.fulfill()
             }
         }
     }

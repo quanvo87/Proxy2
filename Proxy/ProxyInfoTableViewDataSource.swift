@@ -17,6 +17,7 @@ class ProxyInfoTableViewDataSource: NSObject, UITableViewDataSource {
         convosObserver.observeConvos(forOwner: proxy.ownerId, tableView: tableViewController.tableView)
         proxyObserver.observe(proxy, tableView: tableViewController.tableView)
         self.tableViewController = tableViewController
+        tableViewController.tableView.dataSource = self
     }
 }
 

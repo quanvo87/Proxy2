@@ -54,7 +54,6 @@
     <key>FacebookDisplayName</key>
     <string>Proxy</string>
 
-
     <key>LSApplicationQueriesSchemes</key>
     <array>
         <string>fbapi</string>
