@@ -1,4 +1,5 @@
 import FirebaseDatabase
+import UIKit
 
 struct DBProxy {
     typealias MakeProxyCallback = (Result<Proxy, ProxyError>) -> Void

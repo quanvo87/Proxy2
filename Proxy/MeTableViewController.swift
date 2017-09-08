@@ -1,13 +1,6 @@
-//
-//  MeTableViewController.swift
-//  proxy
-//
-//  Created by Quan Vo on 10/24/16.
-//  Copyright © 2016 Quan Vo. All rights reserved.
-//
-
 import FirebaseAuth
 import FirebaseDatabase
+import UIKit
 
 class MeTableViewController: UITableViewController {
 

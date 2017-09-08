@@ -1,3 +1,5 @@
+import UIKit
+
 class MessagesTableViewCell: UITableViewCell {
     @IBOutlet weak var iconImageView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!

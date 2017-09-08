@@ -1,3 +1,5 @@
+import UIKit
+
 struct Child {
     static let blockedUsers = "blockedUsers"
     static let convos = "convos"

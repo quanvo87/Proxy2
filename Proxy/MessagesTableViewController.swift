@@ -1,3 +1,5 @@
+import UIKit
+
 class MessagesTableViewController: UITableViewController {
     private let authObserver = AuthObserver()
     private let dataSource = MessagesTableViewDataSource()

@@ -1,3 +1,5 @@
+import UIKit
+
 class ProxyTableViewController: UITableViewController {
     private let dataSource = ProxyTableViewDataSource()
     private var newConvo: Convo?

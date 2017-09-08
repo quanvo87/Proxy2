@@ -1,4 +1,5 @@
 import FirebaseDatabase
+import UIKit
 
 class ProxyObserver {
     private var ref: DatabaseReference?

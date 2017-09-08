@@ -1,5 +1,6 @@
 import AVFoundation
 import FirebaseStorage
+import UIKit
 
 struct DBStorage {
     typealias UploadFileCallback = (URL?) -> Void

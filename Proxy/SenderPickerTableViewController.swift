@@ -1,3 +1,5 @@
+import UIKit
+
 class SenderPickerTableViewController: UITableViewController {
     private let dataSource = ProxiesTableViewDataSource()
     private weak var delegate: SenderPickerDelegate?
