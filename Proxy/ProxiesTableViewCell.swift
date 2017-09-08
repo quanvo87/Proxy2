@@ -1,3 +1,5 @@
+import UIKit
+
 class ProxiesTableViewCell: UITableViewCell {
     @IBOutlet weak var newImageView: UIImageView!
     @IBOutlet weak var iconImageView: UIImageView!

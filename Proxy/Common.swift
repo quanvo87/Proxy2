@@ -1,3 +1,5 @@
+import UIKit
+
 typealias Success = Bool
 
 enum Result<T, Error> {

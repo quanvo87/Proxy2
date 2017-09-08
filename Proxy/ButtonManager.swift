@@ -1,3 +1,5 @@
+import UIKit
+
 struct ButtonManager {
     private(set) var cancelButton = UIBarButtonItem()
     private(set) var confirmButton = UIBarButtonItem()

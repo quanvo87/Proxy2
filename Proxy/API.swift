@@ -11,6 +11,7 @@ import FirebaseAuth
 import FirebaseDatabase
 import FirebaseStorage
 //import JSQMessagesViewController
+import UIKit
 
 class API {
     static let sharedInstance = API()

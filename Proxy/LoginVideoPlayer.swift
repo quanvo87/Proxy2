@@ -1,4 +1,5 @@
 import AVFoundation
+import UIKit
 
 class LoginVideoPlayer {
     private var player = AVPlayer()

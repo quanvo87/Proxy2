@@ -1,3 +1,5 @@
+import UIKit
+
 class ProxiesTableViewController: UITableViewController {
     private var buttonManager = ButtonManager()
     private let dataSource = ProxiesTableViewDataSource()

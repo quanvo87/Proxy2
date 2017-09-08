@@ -1,3 +1,5 @@
+import UIKit
+
 class ProxiesTableViewDataSource: NSObject, UITableViewDataSource {
     private let proxiesObserver = ProxiesObserver()
 

@@ -1,3 +1,5 @@
+import UIKit
+
 class ProxyTableViewDataSource: NSObject, UITableViewDataSource {
     private let convosObserver = ConvosObserver()
     private let proxyObserver = ProxyObserver()

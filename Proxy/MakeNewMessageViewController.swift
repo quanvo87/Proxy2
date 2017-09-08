@@ -1,3 +1,5 @@
+import UIKit
+
 class MakeNewMessageViewController: UIViewController, UITextViewDelegate {
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var makeNewProxyButton: UIButton?

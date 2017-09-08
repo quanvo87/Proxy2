@@ -1,4 +1,5 @@
 import FirebaseDatabase
+import UIKit
 
 struct DBConvo {
     static func deleteConvo(_ convo: Convo, completion: @escaping (Success) -> Void) {

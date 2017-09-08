@@ -1,3 +1,5 @@
+import UIKit
+
 class SenderProxyTableViewCell: UITableViewCell {
     @IBOutlet weak var iconImageView: UIImageView!
     @IBOutlet weak var changeIconButton: UIButton!

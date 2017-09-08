@@ -1,12 +1,5 @@
-//
-//  ConvoInfoTableViewController.swift
-//  proxy
-//
-//  Created by Quan Vo on 9/3/16.
-//  Copyright © 2016 Quan Vo. All rights reserved.
-//
-
 import FirebaseDatabase
+import UIKit
 
 class ConvoDetailTableViewController: UITableViewController {
     

@@ -1,3 +1,5 @@
+import UIKit
+
 // TODO: Add phone number sign up
 class LoginViewController: UIViewController {
     @IBOutlet weak var facebookButton: UIButton!
@@ -23,7 +25,7 @@ class LoginViewController: UIViewController {
     }
 
     @IBAction func login(_ sender: AnyObject) {
-        ProxyLoginManager.emailLogin(email: emailTextField.text?.lowercased(), password: passwordTextField.text) { (error) in
+        LoginManager.emailLogin(email: emailTextField.text?.lowercased(), password: passwordTextField.text) { (error) in
             if let error = error {
                 self.showAlert("Error Logging In", message: error.description)
                 return
@@ -33,7 +35,7 @@ class LoginViewController: UIViewController {
     }
 
     @IBAction func signUp(_ sender: AnyObject) {
-        ProxyLoginManager.emailSignUp(email: emailTextField.text?.lowercased(), password: passwordTextField.text) { (error) in
+        LoginManager.emailSignUp(email: emailTextField.text?.lowercased(), password: passwordTextField.text) { (error) in
             if let error = error {
                 self.showAlert("Error Signing Up", message: error.description)
                 return
@@ -43,7 +45,7 @@ class LoginViewController: UIViewController {
     }
 
     @IBAction func loginWithFacebook(_ sender: AnyObject) {
-        ProxyLoginManager.facebookLogin(viewController: self) { (error) in
+        LoginManager.facebookLogin(viewController: self) { (error) in
             if let error = error {
                 self.showAlert("Error Logging In With Facebook", message: error.description)
                 return

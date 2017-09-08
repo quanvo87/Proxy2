@@ -1,4 +1,5 @@
 import FirebaseDatabase
+import UIKit
 
 class ConvosObserver {
     private var ref: DatabaseReference?

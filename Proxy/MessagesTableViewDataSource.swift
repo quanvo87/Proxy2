@@ -1,3 +1,5 @@
+import UIKit
+
 class MessagesTableViewDataSource: NSObject, UITableViewDataSource {
     private let convosObserver = ConvosObserver()
 
