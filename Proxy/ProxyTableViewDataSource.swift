@@ -29,8 +29,8 @@ extension ProxyTableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.section {
         case 0:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.SenderProxyInfoCell, for: indexPath) as? SenderProxyInfoCell else {
-                return tableView.dequeueReusableCell(withIdentifier: Identifier.SenderProxyInfoCell, for: indexPath)
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.senderProxyTableViewCell, for: indexPath) as? SenderProxyTableViewCell else {
+                return tableView.dequeueReusableCell(withIdentifier: Identifier.senderProxyTableViewCell, for: indexPath)
             }
 
             cell.changeIconButton.addTarget(self, action: #selector(self.goToIconPickerVC), for: .touchUpInside)
@@ -52,9 +52,9 @@ extension ProxyTableViewDataSource {
 
         case 1:
             guard
-                let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.ConvoCell, for: indexPath) as? ConvoCell,
+                let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.messagesTableViewCell, for: indexPath) as? MessagesTableViewCell,
                 let convo = convos[safe: indexPath.row] else {
-                    return tableView.dequeueReusableCell(withIdentifier: Identifier.ConvoCell, for: indexPath)
+                    return tableView.dequeueReusableCell(withIdentifier: Identifier.messagesTableViewCell, for: indexPath)
             }
 
             cell.iconImageView.image = nil
@@ -121,7 +121,7 @@ private extension ProxyTableViewDataSource {
     }
 
     @objc func goToIconPickerVC() {
-        guard let iconPickerCollectionViewController = tableViewController?.storyboard?.instantiateViewController(withIdentifier: Identifier.IconPickerCollectionViewController) as? IconPickerCollectionViewController else { return }
+        guard let iconPickerCollectionViewController = tableViewController?.storyboard?.instantiateViewController(withIdentifier: Identifier.iconPickerCollectionViewController) as? IconPickerCollectionViewController else { return }
         iconPickerCollectionViewController.proxy = proxy
         tableViewController?.navigationController?.pushViewController(iconPickerCollectionViewController, animated: true)
     }

@@ -92,7 +92,7 @@ extension UIColor {
 
 extension UITableViewController {
     func goToConvoVC(_ convo: Convo) {
-        guard let convoVC = storyboard?.instantiateViewController(withIdentifier: Identifier.ConvoViewController) as? ConvoViewController else { return }
+        guard let convoVC = storyboard?.instantiateViewController(withIdentifier: Identifier.convoViewController) as? ConvoViewController else { return }
         convoVC.convo = convo
         navigationController?.pushViewController(convoVC, animated: true)
     }

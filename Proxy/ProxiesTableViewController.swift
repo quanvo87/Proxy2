@@ -30,7 +30,7 @@ class ProxiesTableViewController: UITableViewController {
     func goToNewConvo() {
         guard
             let newConvo = newConvo,
-            let convoVC = storyboard?.instantiateViewController(withIdentifier: Identifier.ConvoViewController) as? ConvoViewController else {
+            let convoVC = storyboard?.instantiateViewController(withIdentifier: Identifier.convoViewController) as? ConvoViewController else {
                 return
         }
         convoVC.convo = newConvo
@@ -74,7 +74,7 @@ extension ProxiesTableViewController {
     }
 
     func goToProxyInfoVC(_ proxy: Proxy) {
-        if let proxyInfoVC = storyboard?.instantiateViewController(withIdentifier: Identifier.ProxyTableViewController) as? ProxyTableViewController {
+        if let proxyInfoVC = storyboard?.instantiateViewController(withIdentifier: Identifier.proxyTableViewController) as? ProxyTableViewController {
             proxyInfoVC.setProxy(proxy)
             navigationController?.pushViewController(proxyInfoVC, animated: true)
         }
@@ -114,7 +114,7 @@ extension ProxiesTableViewController: ButtonManagerDelegate {
     }
 
     func goToMakeNewMessageVC() {
-        guard let makeNewMessageVC = self.storyboard?.instantiateViewController(withIdentifier: Identifier.NewMessageViewController) as? MakeNewMessageViewController else { return }
+        guard let makeNewMessageVC = self.storyboard?.instantiateViewController(withIdentifier: Identifier.makeNewMessageViewController) as? MakeNewMessageViewController else { return }
         makeNewMessageVC.setDelegate(to: self)
         let navigationController = UINavigationController(rootViewController: makeNewMessageVC)
         present(navigationController, animated: true)

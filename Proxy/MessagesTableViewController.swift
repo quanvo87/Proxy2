@@ -73,7 +73,7 @@ extension MessagesTableViewController: AuthObserverDelegate {
 
     func logOut() {
         guard
-            let loginVC = storyboard?.instantiateViewController(withIdentifier: Identifier.LoginViewController) as? LoginViewController,
+            let loginVC = storyboard?.instantiateViewController(withIdentifier: Identifier.loginViewController) as? LoginViewController,
             let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
                 return
 
@@ -103,7 +103,7 @@ extension MessagesTableViewController: ButtonManagerDelegate {
     }
 
     func goToMakeNewMessageVC() {
-        guard let makeNewMessageVC = storyboard?.instantiateViewController(withIdentifier: Identifier.NewMessageViewController) as? MakeNewMessageViewController else { return }
+        guard let makeNewMessageVC = storyboard?.instantiateViewController(withIdentifier: Identifier.makeNewMessageViewController) as? MakeNewMessageViewController else { return }
         makeNewMessageVC.setDelegate(to: self)
         let navigationController = UINavigationController(rootViewController: makeNewMessageVC)
         present(navigationController, animated: true)

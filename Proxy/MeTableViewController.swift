@@ -79,7 +79,7 @@ class MeTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.MeTableViewCell, for: indexPath as IndexPath) as! MeTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.meTableViewCell, for: indexPath as IndexPath) as! MeTableViewCell
 //        let size = CGSize(width: 30, height: 30)
 //        let isAspectRatio = true
         switch indexPath.section {
@@ -130,7 +130,7 @@ class MeTableViewController: UITableViewController {
 
         // Show blocked users
         case 1:
-            let dest = self.storyboard!.instantiateViewController(withIdentifier: Identifier.BlockedUsersTableViewController) as! BlockedUsersTableViewController
+            let dest = self.storyboard!.instantiateViewController(withIdentifier: Identifier.blockedUsersTableViewController) as! BlockedUsersTableViewController
             navigationController?.pushViewController(dest, animated: true)
 
         case 2:

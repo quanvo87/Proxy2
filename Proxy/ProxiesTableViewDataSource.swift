@@ -18,9 +18,9 @@ class ProxiesTableViewDataSource: NSObject, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard
-            let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.ProxyCell) as? ProxyCell,
+            let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.proxiesTableViewCell) as? ProxiesTableViewCell,
             let proxy = proxies[safe: indexPath.row] else {
-                return tableView.dequeueReusableCell(withIdentifier: Identifier.ProxyCell, for: indexPath)
+                return tableView.dequeueReusableCell(withIdentifier: Identifier.proxiesTableViewCell, for: indexPath)
         }
 
         cell.accessoryType = .none

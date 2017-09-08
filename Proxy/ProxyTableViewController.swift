@@ -44,7 +44,7 @@ private extension ProxyTableViewController {
     }
 
     @objc func goToMakeNewMessageVC() {
-        guard let makeNewMessageVC = self.storyboard?.instantiateViewController(withIdentifier: Identifier.NewMessageViewController) as? MakeNewMessageViewController else { return }
+        guard let makeNewMessageVC = self.storyboard?.instantiateViewController(withIdentifier: Identifier.makeNewMessageViewController) as? MakeNewMessageViewController else { return }
         makeNewMessageVC.setDelegate(to: self)
         makeNewMessageVC.setSender(to: proxy)
         let navigationController = UINavigationController(rootViewController: makeNewMessageVC)
@@ -57,7 +57,7 @@ extension ProxyTableViewController {
         if  indexPath.section == 1,
             let row = tableView.indexPathForSelectedRow?.row,
             let convo = dataSource.convos[safe: row],
-            let convoVC = storyboard?.instantiateViewController(withIdentifier: Identifier.ConvoViewController) as? ConvoViewController {
+            let convoVC = storyboard?.instantiateViewController(withIdentifier: Identifier.convoViewController) as? ConvoViewController {
             convoVC.convo = convo
             navigationController?.pushViewController(convoVC, animated: true)
         }

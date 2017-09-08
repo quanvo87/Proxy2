@@ -15,33 +15,25 @@ struct Child {
     static let userFiles = "userFiles"
 }
 
-
-
 struct Identifier {
+    static let blockedUsersTableViewCell = "BlockedUsersTableViewCell"
+    static let blockedUsersTableViewController = "BlockedUsersTableViewController"
+    static let convoDetailTableViewCell = "ConvoDetailTableViewCell"
+    static let convoDetailTableViewController = "ConvoDetailTableViewController"
+    static let convoViewController = "ConvoViewController"
+    static let iconPickerCollectionViewCell = "IconPickerCollectionViewCell"
+    static let iconPickerCollectionViewController = "IconPickerCollectionViewController"
+    static let makeNewMessageViewController = "MakeNewMessageViewController"
+    static let meTableViewCell = "MeTableViewCell"
+    static let messagesTableViewCell = "MessagesTableViewCell"
+    static let loginViewController = "LoginViewController"
+    static let proxiesTableViewCell = "ProxiesTableViewCell"
+    static let proxyTableViewController = "ProxyTableViewController"
+    static let receiverPickerViewController = "ReceiverPickerViewController"
+    static let receiverProxyTableViewCell = "ReceiverProxyTableViewCell"
+    static let senderPickerTableViewController = "SenderPickerTableViewController"
+    static let senderProxyTableViewCell = "SenderProxyTableViewCell"
     static let tabBarController = "TabBarController"
-    static let LoginViewController = "LoginViewController"
-    
-    static let ProxyTableViewController = "ProxyTableViewController"
-    static let ProxyCell = "ProxyCell"
-    static let SenderProxyInfoCell = "Sender Proxy Info Cell"
-    static let ReceiverProxyInfoCell = "Receiver Proxy Info Cell"
-    
-    static let IconPickerCollectionViewController = "Icon Picker Collection View Controller"
-    static let IconPickerCell = "Icon Picker Cell"
-    
-    static let NewMessageViewController = "New Message View Controller"
-    static let SenderPickerTableViewController = "Sender Picker Table View Controller"
-    static let ReceiverPickerViewController = "Receiver Picker View Controller"
-    
-    static let ConvoViewController = "Convo View Controller"
-    static let ConvoInfoTableViewController = "Convo Info Table View Controller"
-    static let ConvoCell = "Convo Cell"
-    
-    static let MeTableViewCell = "Me Table View Cell"
-    static let BlockedUsersTableViewController = "Blocked Users Table View Controller"
-    static let BlockedUsersTableViewCell = "Blocked Users Table View Cell"
-    
-    static let Cell = "Cell"
 }
 
 struct Setting {
