@@ -32,19 +32,19 @@ class ProxiesTableViewDataSource: NSObject, UITableViewDataSource {
         cell.nicknameLabel.text = proxy.nickname
         cell.unreadLabel.text = nil // TODO: delete
 
-        DBProxy.getImageForIcon(proxy.icon, tag: cell.tag) { (result) in
-            guard let (image, tag) = result else { return }
+        DBProxy.getImageForIcon(proxy.icon) { (result) in
+            guard let (icon, image) = result else { return }
             DispatchQueue.main.async {
-                guard tag == cell.tag else { return }
+                guard icon == proxy.icon else { return }
                 cell.iconImageView.image = image
             }
         }
 
-        // TODO: add tag check
         if proxy.dateCreated.isNewProxyDate {
             DBProxy.makeNewProxyBadge { (image) in
                 guard let image = image else { return }
                 DispatchQueue.main.async {
+                    guard proxy.dateCreated.isNewProxyDate else { return }
                     cell.contentView.bringSubview(toFront: cell.newImageView)
                     cell.newImageView.image = image
                     cell.newImageView.isHidden = false

@@ -1,7 +1,9 @@
 import FirebaseAuth
 import FacebookLogin
 
-struct ProxyLoginManager {}
+struct ProxyLoginManager {
+    private static let auth = Auth.auth()
+}
 
 extension ProxyLoginManager {
     static func emailLogin(email: String?, password: String?, completion: @escaping (Error?) -> Void) {
@@ -11,7 +13,7 @@ extension ProxyLoginManager {
                 completion(ProxyError(.blankCredentials))
                 return
         }
-        Auth.auth().signIn(withEmail: email, password: password) { (user, error) in
+        auth.signIn(withEmail: email, password: password) { (user, error) in
             changeDisplayName(user: user, error: error, email: email, completion: completion)
         }
     }
@@ -23,7 +25,7 @@ extension ProxyLoginManager {
                 completion(ProxyError(.blankCredentials))
                 return
         }
-        Auth.auth().createUser(withEmail: email, password: password) { (user, error) in
+        auth.createUser(withEmail: email, password: password) { (user, error) in
             changeDisplayName(user: user, error: error, email: email, completion: completion)
         }
     }
@@ -45,7 +47,7 @@ extension ProxyLoginManager {
             switch loginResult {
             case .success:
                 let credential = FacebookAuthProvider.credential(withAccessToken: FBSDKAccessToken.current().tokenString)
-                Auth.auth().signIn(with: credential) { (user, error) in
+                auth.signIn(with: credential) { (user, error) in
                     finishLogin(user: user, error: error, completion: completion)
                 }
             case .failed(let error):

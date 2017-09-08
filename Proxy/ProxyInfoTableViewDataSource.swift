@@ -40,11 +40,10 @@ extension ProxyInfoTableViewDataSource {
             cell.nicknameButton.setTitle(proxy.nickname == "" ? "Enter A Nickname" : proxy.nickname, for: .normal)
             cell.selectionStyle = .none
 
-            DBProxy.getImageForIcon(proxy.icon, tag: 0) { (result) in
-                guard let (image, _) = result else {
-                    return
-                }
+            DBProxy.getImageForIcon(proxy.icon) { (result) in
+                guard let (icon, image) = result else { return }
                 DispatchQueue.main.async {
+                    guard icon == self.proxy.icon else { return }
                     cell.iconImageView.image = image
                 }
             }
@@ -62,12 +61,12 @@ extension ProxyInfoTableViewDataSource {
             cell.lastMessageLabel.text = convo.lastMessage
             cell.timestampLabel.text = convo.timestamp.asTimeAgo
             cell.titleLabel.attributedText = DBConvo.makeConvoTitle(receiverNickname: convo.receiverNickname, receiverProxyName: convo.senderProxyName, senderNickname: convo.senderNickname, senderProxyName: convo.senderProxyName)
-            cell.unreadLabel.text = nil // TODO: nil
+            cell.unreadLabel.text = nil // TODO: delete
 
-            DBProxy.getImageForIcon(convo.receiverIcon, tag: cell.tag) { (result) in
-                guard let (image, tag) = result else { return }
+            DBProxy.getImageForIcon(convo.receiverIcon) { (result) in
+                guard let (icon, image) = result else { return }
                 DispatchQueue.main.async {
-                    guard tag == cell.tag else { return }
+                    guard icon == convo.receiverIcon else { return }
                     cell.iconImageView.image = image
                 }
             }

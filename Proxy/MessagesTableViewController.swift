@@ -15,6 +15,8 @@ class MessagesTableViewController: UITableViewController {
 
         navigationItem.title = "Messages"
 
+        tabBarController?.tabBar.items?.setupForTabBar()
+
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.rowHeight = 80
         tableView.separatorStyle = .none
@@ -63,7 +65,6 @@ extension MessagesTableViewController: AuthObserverDelegate {
         dataSource.observe(tableView)
         buttonManager.makeButtons(self)
         setDefaultButtons()
-        tabBarController?.tabBar.items?.setupForTabBar()
         DispatchQueue.global().async {
             DBProxy.fixConvoCounts { _ in }
             self.unreadCountObserver.observe(delegate: self)
@@ -83,7 +84,7 @@ extension MessagesTableViewController: AuthObserverDelegate {
 
 extension MessagesTableViewController: ButtonManagerDelegate {
     func deleteSelectedItems() {
-        if buttonManager.itemsToDeleteIsEmpty {
+        if buttonManager.itemsToDelete.isEmpty {
             toggleEditMode()
             return
         }

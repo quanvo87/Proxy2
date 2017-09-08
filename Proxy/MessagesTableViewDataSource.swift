@@ -32,10 +32,10 @@ class MessagesTableViewDataSource: NSObject, UITableViewDataSource {
                                                                 senderProxyName: convo.senderProxyName)
         cell.unreadLabel.text = nil // TODO: delete
 
-        DBProxy.getImageForIcon(convo.receiverIcon, tag: cell.tag) { (result) in
-            guard let (image, tag) = result else { return }
+        DBProxy.getImageForIcon(convo.receiverIcon) { (result) in
+            guard let (icon, image) = result else { return }
             DispatchQueue.main.async {
-                guard tag == cell.tag else { return }
+                guard icon == convo.receiverIcon else { return }
                 cell.imageView?.image = image
             }
         }

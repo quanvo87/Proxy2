@@ -1,74 +1,44 @@
 struct ButtonManager {
-    private var _cancelButton = UIBarButtonItem()
-    private var _confirmButton = UIBarButtonItem()
-    private var _deleteButton = UIBarButtonItem()
-    private var _makeNewMessageButton = UIBarButtonItem()
-    private var _makeNewProxyButton = UIBarButtonItem()
+    private(set) var cancelButton = UIBarButtonItem()
+    private(set) var confirmButton = UIBarButtonItem()
+    private(set) var deleteButton = UIBarButtonItem()
+    private(set) var makeNewMessageButton = UIBarButtonItem()
+    private(set) var makeNewProxyButton = UIBarButtonItem()
 
-    private var _itemsToDelete = [String: Any]()
+    private(set) var itemsToDelete = [String: Any]()
 
     init() {}
 }
 
 extension ButtonManager {
-    var cancelButton: UIBarButtonItem {
-        return _cancelButton
-    }
-
-    var confirmButton: UIBarButtonItem {
-        return _confirmButton
-    }
-
-    var deleteButton: UIBarButtonItem {
-        return _deleteButton
-    }
-
-    var makeNewMessageButton: UIBarButtonItem {
-        return _makeNewMessageButton
-    }
-
-    var makeNewProxyButton: UIBarButtonItem {
-        return _makeNewProxyButton
-    }
-}
-
-extension ButtonManager {
-    var itemsToDelete: [String: Any] {
-        return _itemsToDelete
-    }
-
-    var itemsToDeleteIsEmpty: Bool {
-        return _itemsToDelete.isEmpty
-    }
-
     mutating func itemsToDeleteRemoveAll() {
-        _itemsToDelete.removeAll()
+        itemsToDelete.removeAll()
     }
 
     mutating func itemsToDeleteRemoveValue(forKey key: String) {
-        _itemsToDelete.removeValue(forKey: key)
+        itemsToDelete.removeValue(forKey: key)
     }
 
     mutating func itemsToDeleteSet(value: Any, forKey key: String) {
-        _itemsToDelete[key] = value
+        itemsToDelete[key] = value
     }
 }
 
 extension ButtonManager {
     func disableButtons() {
-        _cancelButton.isEnabled = false
-        _confirmButton.isEnabled = false
-        _deleteButton.isEnabled = false
-        _makeNewMessageButton.isEnabled = false
-        _makeNewProxyButton.isEnabled = false
+        cancelButton.isEnabled = false
+        confirmButton.isEnabled = false
+        deleteButton.isEnabled = false
+        makeNewMessageButton.isEnabled = false
+        makeNewProxyButton.isEnabled = false
     }
 
     func enableButtons() {
-        _cancelButton.isEnabled = true
-        _confirmButton.isEnabled = true
-        _deleteButton.isEnabled = true
-        _makeNewMessageButton.isEnabled = true
-        _makeNewProxyButton.isEnabled = true
+        cancelButton.isEnabled = true
+        confirmButton.isEnabled = true
+        deleteButton.isEnabled = true
+        makeNewMessageButton.isEnabled = true
+        makeNewProxyButton.isEnabled = true
     }
 
     static func makeButton(target: Any?, action: Selector, imageName: ButtonName) -> UIBarButtonItem {
@@ -80,11 +50,11 @@ extension ButtonManager {
     }
     
     mutating func makeButtons(_ delegate: ButtonManagerDelegate) {
-        _cancelButton = ButtonManager.makeButton(target: delegate, action: #selector(delegate.toggleEditMode), imageName: .cancel)
-        _confirmButton = ButtonManager.makeButton(target: delegate, action: #selector(delegate.deleteSelectedItems), imageName: .confirm)
-        _deleteButton = ButtonManager.makeButton(target: delegate, action: #selector(delegate.toggleEditMode), imageName: .delete)
-        _makeNewMessageButton = ButtonManager.makeButton(target: delegate, action: #selector(delegate.goToMakeNewMessageVC), imageName: .makeNewMessage)
-        _makeNewProxyButton = ButtonManager.makeButton(target: delegate, action: #selector(delegate.makeNewProxy), imageName: .makeNewProxy)
+        cancelButton = ButtonManager.makeButton(target: delegate, action: #selector(delegate.toggleEditMode), imageName: .cancel)
+        confirmButton = ButtonManager.makeButton(target: delegate, action: #selector(delegate.deleteSelectedItems), imageName: .confirm)
+        deleteButton = ButtonManager.makeButton(target: delegate, action: #selector(delegate.toggleEditMode), imageName: .delete)
+        makeNewMessageButton = ButtonManager.makeButton(target: delegate, action: #selector(delegate.goToMakeNewMessageVC), imageName: .makeNewMessage)
+        makeNewProxyButton = ButtonManager.makeButton(target: delegate, action: #selector(delegate.makeNewProxy), imageName: .makeNewProxy)
     }
 }
 
