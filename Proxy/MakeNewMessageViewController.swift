@@ -42,7 +42,9 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate {
     func setDelegate(to delegate: MakeNewMessageDelegate) {
         self.delegate = delegate
     }
+}
 
+extension MakeNewMessageViewController {
     @objc func keyboardWillShow(_ notification: Notification) {
         guard
             let info = notification.userInfo,
@@ -68,7 +70,7 @@ private extension MakeNewMessageViewController {
 
     @IBAction func goToSenderPickerVC() {
         guard let senderPickerVC = self.storyboard?.instantiateViewController(withIdentifier: Identifier.senderPickerTableViewController) as? SenderPickerTableViewController else { return }
-        senderPickerVC.setDelegate(to: self)
+        senderPickerVC.setSenderPickerDelegate(to: self)
         navigationController?.pushViewController(senderPickerVC, animated: true)
     }
 

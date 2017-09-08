@@ -4,7 +4,7 @@ import UIKit
 class ProxyObserver {
     private var ref: DatabaseReference?
     private var handle: DatabaseHandle?
-    private(set) var proxy = Proxy()
+    private(set) var proxy: Proxy?
 
     init() {}
 

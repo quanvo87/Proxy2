@@ -32,10 +32,11 @@ extension ProxiesObserver {
         ref = DB.makeReference(Child.proxies, Shared.shared.uid)
         handle = ref?.queryOrdered(byChild: Child.timestamp).observe(.value, with: { [weak self] (data) in
             self?.proxies = data.toProxiesArray().reversed()
-            for tableView in self?.tableViews.objectEnumerator() ?? NSEnumerator() {
-                if let tableView = tableView as? UITableView {
-                    tableView.reloadData()
-                }
+
+            let enumerator = self?.tableViews.objectEnumerator()
+
+            while let tableView = enumerator?.nextObject() as? UITableView {
+                tableView.reloadData()
             }
         })
     }

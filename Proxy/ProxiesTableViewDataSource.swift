@@ -10,12 +10,10 @@ class ProxiesTableViewDataSource: NSObject {
     init(_ tableView: UITableView) {
         super.init()
 
-        tableView.dataSource = self
+        proxiesObserver = (UIApplication.shared.delegate as? AppDelegate)?.proxiesObserver
+        proxiesObserver?.addTableView(tableView, forKey: id)
 
-        if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-            self.proxiesObserver = appDelegate.proxiesObserver
-            self.proxiesObserver?.addTableView(tableView, forKey: id)
-        }
+        tableView.dataSource = self
     }
 
     deinit {
@@ -33,10 +31,7 @@ class ProxiesTableViewDataSource: NSObject {
 
 extension ProxiesTableViewDataSource: UITableViewDataSource {
     var proxies: [Proxy] {
-        if let proxies = proxiesObserver?.proxies {
-            return proxies
-        }
-        return []
+        return proxiesObserver?.proxies ?? []
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

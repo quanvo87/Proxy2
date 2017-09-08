@@ -5,14 +5,6 @@ class ProxyTableViewDataSource: NSObject, UITableViewDataSource {
     private let proxyObserver = ProxyObserver()
     private weak var tableViewController: UITableViewController?
 
-    var convos: [Convo] {
-        return convosObserver.convos
-    }
-
-    var proxy: Proxy {
-        return proxyObserver.proxy
-    }
-
     override init() {}
 
     func observe(proxy: Proxy, tableViewController: UITableViewController) {
@@ -24,6 +16,14 @@ class ProxyTableViewDataSource: NSObject, UITableViewDataSource {
 }
 
 extension ProxyTableViewDataSource {
+    var convos: [Convo] {
+        return convosObserver.convos
+    }
+
+    var proxy: Proxy? {
+        return proxyObserver.proxy
+    }
+    
     func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
@@ -31,7 +31,9 @@ extension ProxyTableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.section {
         case 0:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.senderProxyTableViewCell, for: indexPath) as? SenderProxyTableViewCell else {
+            guard
+                let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.senderProxyTableViewCell) as? SenderProxyTableViewCell,
+                let proxy = proxy else {
                 return tableView.dequeueReusableCell(withIdentifier: Identifier.senderProxyTableViewCell, for: indexPath)
             }
 
@@ -45,7 +47,7 @@ extension ProxyTableViewDataSource {
             DBProxy.getImageForIcon(proxy.icon) { (result) in
                 guard let (icon, image) = result else { return }
                 DispatchQueue.main.async {
-                    guard icon == self.proxy.icon else { return }
+                    guard icon == self.proxy?.icon else { return }
                     cell.iconImageView.image = image
                 }
             }
@@ -54,7 +56,7 @@ extension ProxyTableViewDataSource {
 
         case 1:
             guard
-                let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.convosTableViewCell, for: indexPath) as? ConvosTableViewCell,
+                let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.convosTableViewCell) as? ConvosTableViewCell,
                 let convo = convos[safe: indexPath.row] else {
                     return tableView.dequeueReusableCell(withIdentifier: Identifier.convosTableViewCell, for: indexPath)
             }
@@ -103,19 +105,20 @@ extension ProxyTableViewDataSource {
 
 private extension ProxyTableViewDataSource {
     @objc func editNickname() {
+        guard let proxy = proxy else { return }
         let alert = UIAlertController(title: "Edit Nickname", message: "Only you see your nickname.", preferredStyle: .alert)
         alert.addTextField { (textField) in
             textField.autocapitalizationType = .sentences
             textField.autocorrectionType = .yes
             textField.clearButtonMode = .whileEditing
             textField.placeholder = "Enter A Nickname"
-            textField.text = self.proxy.nickname
+            textField.text = proxy.nickname
         }
         alert.addAction(UIAlertAction(title: "Save", style: .default) { (action) in
             guard let nickname = alert.textFields?[0].text else { return }
             let trim = nickname.trimmingCharacters(in: CharacterSet(charactersIn: " "))
             if !(nickname != "" && trim == "") {
-                DBProxy.setNickname(to: nickname, forProxy: self.proxy) { _ in }
+                DBProxy.setNickname(to: nickname, forProxy: proxy) { _ in }
             }
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -123,6 +126,7 @@ private extension ProxyTableViewDataSource {
     }
 
     @objc func goToIconPickerVC() {
+        guard let proxy = proxy else { return }
         guard let iconPickerCollectionViewController = tableViewController?.storyboard?.instantiateViewController(withIdentifier: Identifier.iconPickerCollectionViewController) as? IconPickerCollectionViewController else { return }
         iconPickerCollectionViewController.proxy = proxy
         tableViewController?.navigationController?.pushViewController(iconPickerCollectionViewController, animated: true)
