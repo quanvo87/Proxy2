@@ -1,21 +1,42 @@
 import UIKit
 
-class ProxiesTableViewDataSource: NSObject, UITableViewDataSource {
-    private let proxiesObserver = ProxiesObserver()
+class ProxiesTableViewDataSource: NSObject {
+    private weak var proxiesObserver: ProxiesObserver?
 
-    var proxies: [Proxy] {
-        return proxiesObserver.proxies
+    var id: Int {
+        return ObjectIdentifier(self).hashValue
     }
 
-    override init() {}
+    init(_ tableView: UITableView) {
+        super.init()
 
-    func observe(_ tableView: UITableView) {
-        proxiesObserver.observe(tableView)
         tableView.dataSource = self
+
+        if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+            self.proxiesObserver = appDelegate.proxiesObserver
+            self.proxiesObserver?.addTableView(tableView, forKey: id)
+        }
+    }
+
+    deinit {
+        proxiesObserver?.removeTableView(forKey: id)
+    }
+
+    func observe() {
+        proxiesObserver?.observe()
     }
 
     func stopObserving() {
-        proxiesObserver.stopObserving()
+        proxiesObserver?.stopObserving()
+    }
+}
+
+extension ProxiesTableViewDataSource: UITableViewDataSource {
+    var proxies: [Proxy] {
+        if let proxies = proxiesObserver?.proxies {
+            return proxies
+        }
+        return []
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -25,34 +46,7 @@ class ProxiesTableViewDataSource: NSObject, UITableViewDataSource {
                 return tableView.dequeueReusableCell(withIdentifier: Identifier.proxiesTableViewCell, for: indexPath)
         }
 
-        cell.accessoryType = .none
-        cell.convoCountLabel.text = proxy.convoCount.asLabel
-        cell.iconImageView.image = nil
-        cell.nameLabel.text = proxy.name
-        cell.newImageView.image = nil
-        cell.newImageView.isHidden = true
-        cell.nicknameLabel.text = proxy.nickname
-        cell.unreadLabel.text = nil // TODO: delete
-
-        DBProxy.getImageForIcon(proxy.icon) { (result) in
-            guard let (icon, image) = result else { return }
-            DispatchQueue.main.async {
-                guard icon == proxy.icon else { return }
-                cell.iconImageView.image = image
-            }
-        }
-
-        if proxy.dateCreated.isNewProxyDate {
-            DBProxy.makeNewProxyBadge { (image) in
-                guard let image = image else { return }
-                DispatchQueue.main.async {
-                    guard proxy.dateCreated.isNewProxyDate else { return }
-                    cell.contentView.bringSubview(toFront: cell.newImageView)
-                    cell.newImageView.image = image
-                    cell.newImageView.isHidden = false
-                }
-            }
-        }
+        cell.configure(proxy)
 
         return cell
     }

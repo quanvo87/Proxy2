@@ -1,6 +1,6 @@
 import UIKit
 
-struct ButtonManager {
+class ButtonManager {
     private(set) var cancelButton = UIBarButtonItem()
     private(set) var confirmButton = UIBarButtonItem()
     private(set) var deleteButton = UIBarButtonItem()
@@ -13,15 +13,15 @@ struct ButtonManager {
 }
 
 extension ButtonManager {
-    mutating func itemsToDeleteRemoveAll() {
+    func removeAllItemsToDelete() {
         itemsToDelete.removeAll()
     }
 
-    mutating func itemsToDeleteRemoveValue(forKey key: String) {
+    func removeItemToDelete(forKey key: String) {
         itemsToDelete.removeValue(forKey: key)
     }
 
-    mutating func itemsToDeleteSet(value: Any, forKey key: String) {
+    func setItemToDelete(value: Any, forKey key: String) {
         itemsToDelete[key] = value
     }
 }
@@ -51,7 +51,7 @@ extension ButtonManager {
         return UIBarButtonItem(customView: button)
     }
     
-    mutating func makeButtons(_ delegate: ButtonManagerDelegate) {
+    func makeButtons(_ delegate: ButtonManagerDelegate) {
         cancelButton = ButtonManager.makeButton(target: delegate, action: #selector(delegate.toggleEditMode), imageName: .cancel)
         confirmButton = ButtonManager.makeButton(target: delegate, action: #selector(delegate.deleteSelectedItems), imageName: .confirm)
         deleteButton = ButtonManager.makeButton(target: delegate, action: #selector(delegate.toggleEditMode), imageName: .delete)

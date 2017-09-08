@@ -3,6 +3,7 @@ import FBSDKCoreKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
+    let proxiesObserver = ProxiesObserver()
 
     var window: UIWindow?
 
@@ -12,19 +13,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
     }
 
-    private func production() {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        guard let tabBarController = storyboard.instantiateViewController(withIdentifier: Identifier.tabBarController) as? UITabBarController else { return }
-        window = UIWindow(frame: UIScreen.main.bounds)
-        window?.rootViewController = tabBarController
-        window?.makeKeyAndVisible()
-    }
-
     func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
         return FBSDKApplicationDelegate.sharedInstance().application(application, open: url, sourceApplication: sourceApplication, annotation: annotation)
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         FBSDKAppEvents.activateApp()
+    }
+}
+
+private extension AppDelegate {
+    func production() {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        guard let tabBarController = storyboard.instantiateViewController(withIdentifier: Identifier.tabBarController) as? UITabBarController else { return }
+        window = UIWindow(frame: UIScreen.main.bounds)
+        window?.rootViewController = tabBarController
+        window?.makeKeyAndVisible()
     }
 }

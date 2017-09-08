@@ -47,7 +47,7 @@ extension MessagesTableViewController {
             return
         }
         if tableView.isEditing {
-            buttonManager.itemsToDeleteSet(value: convo, forKey: convo.key)
+            buttonManager.setItemToDelete(value: convo, forKey: convo.key)
         } else {
             tableView.deselectRow(at: indexPath, animated: true)
             goToConvoVC(convo)
@@ -58,7 +58,7 @@ extension MessagesTableViewController {
         guard let convo = convos[safe: indexPath.row] else {
             return
         }
-        buttonManager.itemsToDeleteRemoveValue(forKey: convo.key)
+        buttonManager.removeItemToDelete(forKey: convo.key)
     }
 }
 
@@ -96,7 +96,7 @@ extension MessagesTableViewController: ButtonManagerDelegate {
                 guard let convo = item as? Convo else { return }
                 DBConvo.leaveConvo(convo) { _ in }
             }
-            self.buttonManager.itemsToDeleteRemoveAll()
+            self.buttonManager.removeAllItemsToDelete()
             self.setDefaultButtons()
             self.tableView.setEditing(false, animated: true)
         })
@@ -146,7 +146,7 @@ extension MessagesTableViewController: ButtonManagerDelegate {
             setEditModeButtons()
         } else {
             setDefaultButtons()
-            buttonManager.itemsToDeleteRemoveAll()
+            buttonManager.removeAllItemsToDelete()
         }
     }
 }

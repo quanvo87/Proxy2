@@ -7,12 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		596D7FD41F62EC1100E6AF8D /* ProxiesTableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596D7FD31F62EC1100E6AF8D /* ProxiesTableViewDelegate.swift */; };
 		5973C8101F60844A00647492 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5973C80F1F60840F00647492 /* GoogleService-Info.plist */; };
 		5973C8111F60844A00647492 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5973C80F1F60840F00647492 /* GoogleService-Info.plist */; };
 		5973C8121F60844B00647492 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5973C80F1F60840F00647492 /* GoogleService-Info.plist */; };
 		5973C8481F608A2200647492 /* ProxyObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8141F608A1A00647492 /* ProxyObserver.swift */; };
 		5973C8491F608A2200647492 /* DBConvo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8151F608A1A00647492 /* DBConvo.swift */; };
-		5973C84A1F608A2200647492 /* MessagesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8161F608A1A00647492 /* MessagesTableViewCell.swift */; };
+		5973C84A1F608A2200647492 /* ConvosTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8161F608A1A00647492 /* ConvosTableViewCell.swift */; };
 		5973C84B1F608A2200647492 /* DBUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8171F608A1A00647492 /* DBUser.swift */; };
 		5973C84C1F608A2200647492 /* NSDate+NVTimeAgo.m in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8181F608A1A00647492 /* NSDate+NVTimeAgo.m */; };
 		5973C84D1F608A2200647492 /* LoginVideoPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8191F608A1B00647492 /* LoginVideoPlayer.swift */; };
@@ -101,11 +102,12 @@
 
 /* Begin PBXFileReference section */
 		3BAAA6C3B4320D57BE4DCA56 /* Pods-ProxyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ProxyTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ProxyTests/Pods-ProxyTests.debug.xcconfig"; sourceTree = "<group>"; };
+		596D7FD31F62EC1100E6AF8D /* ProxiesTableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxiesTableViewDelegate.swift; sourceTree = "<group>"; };
 		5973C80F1F60840F00647492 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5973C8131F608A1A00647492 /* NSDate+NVTimeAgo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+NVTimeAgo.h"; sourceTree = "<group>"; };
 		5973C8141F608A1A00647492 /* ProxyObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyObserver.swift; sourceTree = "<group>"; };
 		5973C8151F608A1A00647492 /* DBConvo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBConvo.swift; sourceTree = "<group>"; };
-		5973C8161F608A1A00647492 /* MessagesTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesTableViewCell.swift; sourceTree = "<group>"; };
+		5973C8161F608A1A00647492 /* ConvosTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvosTableViewCell.swift; sourceTree = "<group>"; };
 		5973C8171F608A1A00647492 /* DBUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBUser.swift; sourceTree = "<group>"; };
 		5973C8181F608A1A00647492 /* NSDate+NVTimeAgo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+NVTimeAgo.m"; sourceTree = "<group>"; };
 		5973C8191F608A1B00647492 /* LoginVideoPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginVideoPlayer.swift; sourceTree = "<group>"; };
@@ -231,7 +233,7 @@
 				5973C83E1F608A2000647492 /* BlockedUsersTableViewCell.swift */,
 				5973C8341F608A1E00647492 /* IconPickerCollectionViewCell.swift */,
 				5973C82D1F608A1D00647492 /* MeTableViewCell.swift */,
-				5973C8161F608A1A00647492 /* MessagesTableViewCell.swift */,
+				5973C8161F608A1A00647492 /* ConvosTableViewCell.swift */,
 				5973C8261F608A1C00647492 /* ProxiesTableViewCell.swift */,
 				5973C81F1F608A1B00647492 /* ReceiverProxyTableViewCell.swift */,
 				5973C82B1F608A1D00647492 /* SenderProxyTableViewCell.swift */,
@@ -360,6 +362,7 @@
 				5973C8241F608A1C00647492 /* MessagesTableViewDataSource.swift */,
 				5973C82F1F608A1D00647492 /* ProxiesObserver.swift */,
 				5973C8301F608A1D00647492 /* ProxiesTableViewDataSource.swift */,
+				596D7FD31F62EC1100E6AF8D /* ProxiesTableViewDelegate.swift */,
 				5973C8201F608A1B00647492 /* ProxyTableViewDataSource.swift */,
 				5973C8141F608A1A00647492 /* ProxyObserver.swift */,
 				5973C83C1F608A2000647492 /* UnreadCountObserver.swift */,
@@ -376,8 +379,8 @@
 				5973C82C1F608A1D00647492 /* IconPickerCollectionViewController.swift */,
 				5973C8231F608A1C00647492 /* MakeNewMessageViewController.swift */,
 				5973C8221F608A1B00647492 /* LoginViewController.swift */,
-				5973C8431F608A2100647492 /* MeTableViewController.swift */,
 				5973C81C1F608A1B00647492 /* MessagesTableViewController.swift */,
+				5973C8431F608A2100647492 /* MeTableViewController.swift */,
 				5973C8311F608A1D00647492 /* ProxiesTableViewController.swift */,
 				5973C8351F608A1E00647492 /* ProxyTableViewController.swift */,
 				5973C8331F608A1E00647492 /* ReceiverPickerViewController.swift */,
@@ -760,6 +763,7 @@
 				5973C8591F608A2200647492 /* AsyncWorkGroupKey.swift in Sources */,
 				5973C8651F608A2200647492 /* Proxy.swift in Sources */,
 				5973C8481F608A2200647492 /* ProxyObserver.swift in Sources */,
+				596D7FD41F62EC1100E6AF8D /* ProxiesTableViewDelegate.swift in Sources */,
 				5973C84E1F608A2200647492 /* ConvoDetailTableViewController.swift in Sources */,
 				5973C84F1F608A2200647492 /* DBStorage.swift in Sources */,
 				5973C86F1F608A2200647492 /* UnreadCountObserver.swift in Sources */,
@@ -792,7 +796,7 @@
 				5973C8601F608A2200647492 /* MeTableViewCell.swift in Sources */,
 				5973C8511F608A2200647492 /* ProxyError.swift in Sources */,
 				5973C85D1F608A2200647492 /* Common.swift in Sources */,
-				5973C84A1F608A2200647492 /* MessagesTableViewCell.swift in Sources */,
+				5973C84A1F608A2200647492 /* ConvosTableViewCell.swift in Sources */,
 				5973C8561F608A2200647492 /* LoginViewController.swift in Sources */,
 				5973C8681F608A2200647492 /* ProxyTableViewController.swift in Sources */,
 				5973C8781F608A2200647492 /* ButtonManager.swift in Sources */,

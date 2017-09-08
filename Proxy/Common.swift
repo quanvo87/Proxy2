@@ -7,12 +7,6 @@ enum Result<T, Error> {
     case failure(Error)
 }
 
-extension Array where Element: UITableViewCell {
-    func incrementTags() {
-        _ = self.map { $0.tag += 1 }
-    }
-}
-
 // https://stackoverflow.com/questions/25329186/safe-bounds-checked-array-lookup-in-swift-through-optional-bindings
 extension Collection {
     subscript(safe index: Index) -> Element? {

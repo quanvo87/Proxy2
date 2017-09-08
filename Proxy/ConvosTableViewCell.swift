@@ -1,6 +1,6 @@
 import UIKit
 
-class MessagesTableViewCell: UITableViewCell {
+class ConvosTableViewCell: UITableViewCell {
     @IBOutlet weak var iconImageView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var lastMessageLabel: UILabel!

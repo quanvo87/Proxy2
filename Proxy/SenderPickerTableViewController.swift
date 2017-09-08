@@ -1,13 +1,14 @@
 import UIKit
 
 class SenderPickerTableViewController: UITableViewController {
-    private let dataSource = ProxiesTableViewDataSource()
+    private var dataSource: ProxiesTableViewDataSource?
     private weak var delegate: SenderPickerDelegate?
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        dataSource.observe(tableView)
+        dataSource = ProxiesTableViewDataSource(tableView)
+        dataSource?.observe()
 
         navigationItem.title = "Pick A Sender"
 
@@ -26,7 +27,7 @@ extension SenderPickerTableViewController {
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let proxy = dataSource.proxies[safe: indexPath.row] else {
+        guard let proxy = dataSource?.proxies[safe: indexPath.row] else {
             return
         }
         delegate?.setSender(to: proxy)

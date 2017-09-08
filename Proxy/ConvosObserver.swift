@@ -12,7 +12,6 @@ class ConvosObserver {
         ref = DB.makeReference(Child.convos, owner)
         handle = ref?.queryOrdered(byChild: Child.timestamp).observe(.value, with: { [weak self, weak tableView = tableView] (data) in
             self?.convos = data.toConvosArray(filtered: true).reversed()
-            tableView?.visibleCells.incrementTags()
             tableView?.reloadData()
         })
     }
