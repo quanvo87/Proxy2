@@ -3,11 +3,7 @@ import FirebaseDatabase
 class ProxyObserver {
     private var ref: DatabaseReference?
     private var handle: DatabaseHandle?
-    private var _proxy = Proxy()
-
-    var proxy: Proxy {
-        return _proxy
-    }
+    private(set) var proxy = Proxy()
 
     init() {}
 
@@ -17,7 +13,7 @@ class ProxyObserver {
             guard let proxy = Proxy(data) else {
                 return
             }
-            self?._proxy = proxy
+            self?.proxy = proxy
             tableView?.reloadData()
         })
     }

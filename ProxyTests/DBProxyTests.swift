@@ -74,7 +74,7 @@ class DBProxyTests: DBTest {
 
         for icon in Shared.shared.proxyIconNames {
             key.startWork()
-            DBProxy.getImageForIcon(icon, tag: 0) { (result) in
+            DBProxy.getImageForIcon(icon) { (result) in
                 XCTAssertNotNil(result)
                 key.finishWork()
             }
