@@ -1,71 +1,28 @@
 struct Child {
-    static let app = "app"
-
-    // Objects
-    static let Proxies = "proxies"
-    static let ProxyOwners = "proxyOwners"
-    static let Convos = "convos"
-    static let Messages = "messages"
-    static let WordBank = "wordBank"
-    static let Icons = "icons"
-    static let UserFiles = "userFiles"
-
-    // Proxy
-    static let ProxyKeys = "proxyKeys"
-
-    // User
-    static let UserInfo = "userInfo"
-    static let unreadMessages = "unreadMessages"
-    static let ProxiesInteractedWith = "proxiesInteractedWith"
-    static let MessagesSent = "messagesSent"
-    static let MessagesReceived = "messagesReceived"
-    static let Blocked = "blocked"
-    static let Present = "present"
-    static let Typing = "typing"
-    
-    // Convo
-    static let ReceiverDeletedProxy = "receiverDeletedProxy"
-    static let ReceiverIsBlocked = "receiverIsBlocked"
-    static let ReceiverLeftConvo = "receiverLeftConvo"
-    static let ReceiverNickname = "receiverNickname"
-    static let SenderDeletedProxy = "senderDeletedProxy"
-    static let SenderIsBlocked = "senderIsBlocked"
-    static let SenderNickname = "senderNickname"
-    static let SenderLeftConvo = "senderLeftConvo"
-
-    // Message
-    static let Read = "read"
-    static let TimeRead = "timeRead"
-    static let MediaType = "mediaType"
-    static let MediaURL = "mediaURL"
-    
-    // Shared
-    static let Key = "key"
-    static let Name = "name"
-    static let Nickname = "nickname"
-    static let Icon = "icon"
-    static let Message = "message"
-    static let Created = "created"
-    static let Timestamp = "timestamp"
+    static let blockedUsers = "blockedUsers"
+    static let convos = "convos"
+    static let isPresent = "isPresent"
+    static let isTyping = "isTyping"
+    static let key = "key"
+    static let messages = "messages"
+    static let proxies = "proxies"
+    static let proxyKeys = "proxyKeys"
+    static let proxyOwners = "proxyOwners"
+    static let timestamp = "timestamp"
     static let unreadCount = "unreadCount"
+    static let unreadMessages = "unreadMessages"
+    static let userInfo = "userInfo"
+    static let userFiles = "userFiles"
 }
 
-struct URLs {
-    static let Storage = "gs://proxy-b8f1b.appspot.com/"
-}
 
-struct Settings {
-    static let MaxAllowedProxies = UInt(30)
-    static let TimeBetweenTimestamps = 30.0
-    static let newProxyDuration: Double = 60 * 5
-}
 
 struct Identifier {
-    static let TabBarController = "Tab Bar Controller"
-    static let LoginViewController = "Login View Controller"
+    static let tabBarController = "TabBarController"
+    static let LoginViewController = "LoginViewController"
     
-    static let ProxyInfoTableViewController = "Proxy Info Table View Controller"
-    static let ProxyCell = "Proxy Cell"
+    static let ProxyTableViewController = "ProxyTableViewController"
+    static let ProxyCell = "ProxyCell"
     static let SenderProxyInfoCell = "Sender Proxy Info Cell"
     static let ReceiverProxyInfoCell = "Receiver Proxy Info Cell"
     
@@ -85,6 +42,12 @@ struct Identifier {
     static let BlockedUsersTableViewCell = "Blocked Users Table View Cell"
     
     static let Cell = "Cell"
+}
+
+struct Setting {
+    static let maxAllowedProxies = UInt(30)
+    static let newProxyBadgeDuration: Double = 60 * 5
+    static let timeBetweenTimestamps = 30.0
 }
 
 struct UISetting {

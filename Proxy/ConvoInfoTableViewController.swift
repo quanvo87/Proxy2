@@ -45,33 +45,33 @@ class ConvoInfoTableViewController: UITableViewController {
             self.senderProxy = proxy
         }
         
-        receiverIconRef = api.ref.child(Child.Proxies).child(convo.receiverId).child(convo.receiverProxyKey).child(Child.Icon)
-        receiverNicknameRef = api.ref.child(Child.Convos).child(convo.senderId).child(convo.key).child(Child.ReceiverNickname)
-        senderIconRef = api.ref.child(Child.Proxies).child(convo.senderId).child(convo.senderProxyKey).child(Child.Icon)
-        senderNicknameRef = api.ref.child(Child.Convos).child(convo.senderId).child(convo.key).child(Child.SenderNickname)
+//        receiverIconRef = api.ref.child(Child.proxies).child(convo.receiverId).child(convo.receiverProxyKey).child(Child.Icon)
+//        receiverNicknameRef = api.ref.child(Child.convos).child(convo.senderId).child(convo.key).child(Child.ReceiverNickname)
+//        senderIconRef = api.ref.child(Child.proxies).child(convo.senderId).child(convo.senderProxyKey).child(Child.Icon)
+//        senderNicknameRef = api.ref.child(Child.convos).child(convo.senderId).child(convo.key).child(Child.SenderNickname)
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
         
         // Check if convo info should be closed
-        api.ref.child(Child.Convos).child(convo.senderId).child(convo.key).child(Child.SenderLeftConvo).observeSingleEvent(of: .value, with: { (data) in
-            if let leftConvo = data.value as? Bool, leftConvo {
-                self.close()
-            }
-        })
+//        api.ref.child(Child.convos).child(convo.senderId).child(convo.key).child(Child.SenderLeftConvo).observeSingleEvent(of: .value, with: { (data) in
+//            if let leftConvo = data.value as? Bool, leftConvo {
+//                self.close()
+//            }
+//        })
         
-        api.ref.child(Child.Convos).child(convo.senderId).child(convo.key).child(Child.SenderDeletedProxy).observeSingleEvent(of: .value, with: { (data) in
-            if let deletedProxy = data.value as? Bool, deletedProxy {
-                self.close()
-            }
-        })
+//        api.ref.child(Child.convos).child(convo.senderId).child(convo.key).child(Child.SenderDeletedProxy).observeSingleEvent(of: .value, with: { (data) in
+//            if let deletedProxy = data.value as? Bool, deletedProxy {
+//                self.close()
+//            }
+//        })
         
-        api.ref.child(Child.Convos).child(convo.senderId).child(convo.key).child(Child.ReceiverIsBlocked).observeSingleEvent(of: .value, with: { (data) in
-            if let isBlocking = data.value as? Bool, isBlocking {
-                self.close()
-            }
-        })
+//        api.ref.child(Child.convos).child(convo.senderId).child(convo.key).child(Child.ReceiverIsBlocked).observeSingleEvent(of: .value, with: { (data) in
+//            if let isBlocking = data.value as? Bool, isBlocking {
+//                self.close()
+//            }
+//        })
         
         // Observe database values
         receiverIconRefHandle = receiverIconRef.observe(.value, with: { (data) in
@@ -239,12 +239,13 @@ class ConvoInfoTableViewController: UITableViewController {
         
         // Go to sender proxy info
         case 1:
-            if let senderProxy = senderProxy {
-                let dest = self.storyboard!.instantiateViewController(withIdentifier: Identifier.ProxyInfoTableViewController) as! ProxyInfoTableViewController
-//                dest.proxy = senderProxy
-                self.navigationController!.pushViewController(dest, animated: true)
-            }
-            
+//            if let senderProxy = senderProxy {
+//                let dest = self.storyboard!.instantiateViewController(withIdentifier: Identifier.ProxyInfoTableViewController) as! ProxyInfoTableViewController
+////                dest.proxy = senderProxy
+//                self.navigationController!.pushViewController(dest, animated: true)
+//            }
+            break
+
         case 2:
             switch indexPath.row {
             

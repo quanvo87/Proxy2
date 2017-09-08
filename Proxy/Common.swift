@@ -25,7 +25,7 @@ extension Double {
 
     var isNewProxyDate: Bool {
         let secondsAgo = -Date(timeIntervalSince1970: self).timeIntervalSinceNow
-        return secondsAgo < Settings.newProxyDuration
+        return secondsAgo < Setting.newProxyBadgeDuration
     }
 }
 

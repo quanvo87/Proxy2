@@ -74,7 +74,7 @@ extension ProxiesTableViewController {
     }
 
     func goToProxyInfoVC(_ proxy: Proxy) {
-        if let proxyInfoVC = storyboard?.instantiateViewController(withIdentifier: Identifier.ProxyInfoTableViewController) as? ProxyInfoTableViewController {
+        if let proxyInfoVC = storyboard?.instantiateViewController(withIdentifier: Identifier.ProxyTableViewController) as? ProxyTableViewController {
             proxyInfoVC.setProxy(proxy)
             navigationController?.pushViewController(proxyInfoVC, animated: true)
         }

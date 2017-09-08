@@ -36,12 +36,12 @@ class IconPickerCollectionViewController: UICollectionViewController {
             scrollView.delaysContentTouches = false
         }
         
-        ref.child(Child.Icons).child(api.uid).queryOrdered(byChild: Child.Name).observeSingleEvent(of: .value, with: { (data) in
-            for child in data.children {
-                self.icons.append(((child as! DataSnapshot).value as AnyObject)[Child.Name] as! String)
-            }
-            self.collectionView?.reloadData()
-        })
+//        ref.child(Child.Icons).child(api.uid).queryOrdered(byChild: Child.Name).observeSingleEvent(of: .value, with: { (data) in
+//            for child in data.children {
+//                self.icons.append(((child as! DataSnapshot).value as AnyObject)[Child.Name] as! String)
+//            }
+//            self.collectionView?.reloadData()
+//        })
     }
     
     override func viewWillAppear(_ animated: Bool) {

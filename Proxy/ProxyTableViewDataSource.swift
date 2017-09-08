@@ -1,4 +1,4 @@
-class ProxyInfoTableViewDataSource: NSObject, UITableViewDataSource {
+class ProxyTableViewDataSource: NSObject, UITableViewDataSource {
     private let convosObserver = ConvosObserver()
     private let proxyObserver = ProxyObserver()
     private weak var tableViewController: UITableViewController?
@@ -21,7 +21,7 @@ class ProxyInfoTableViewDataSource: NSObject, UITableViewDataSource {
     }
 }
 
-extension ProxyInfoTableViewDataSource {
+extension ProxyTableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
@@ -99,7 +99,7 @@ extension ProxyInfoTableViewDataSource {
     }
 }
 
-private extension ProxyInfoTableViewDataSource {
+private extension ProxyTableViewDataSource {
     @objc func editNickname() {
         let alert = UIAlertController(title: "Edit Nickname", message: "Only you see your nickname.", preferredStyle: .alert)
         alert.addTextField { (textField) in

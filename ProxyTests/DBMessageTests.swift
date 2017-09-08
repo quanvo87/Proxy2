@@ -169,7 +169,7 @@ class DBMessageTests: DBTest {
 
         DBTest.sendMessage { (message, _, _, _) in
 
-            DB.get(Child.Messages, message.parentConvo) { (data) in
+            DB.get(Child.messages, message.parentConvo) { (data) in
                 XCTAssertEqual(data?.toMessagesArray()[safe: 0], message)
 
                 expectation.fulfill()
@@ -181,7 +181,7 @@ class DBMessageTests: DBTest {
 extension AsyncWorkGroupKey {
     func checkMessageCreated(_ message: Message) {
         startWork()
-        DB.get(Child.Messages, message.parentConvo, message.key) { (data) in
+        DB.get(Child.messages, message.parentConvo, message.key) { (data) in
             XCTAssertEqual(Message(data?.value as AnyObject), message)
             self.finishWork()
         }
@@ -189,7 +189,7 @@ extension AsyncWorkGroupKey {
 
     func checkUnreadMessageCreated(_ message: Message) {
         startWork()
-        DB.get(Child.UserInfo, message.receiverId, Child.unreadMessages, message.key) { (data) in
+        DB.get(Child.userInfo, message.receiverId, Child.unreadMessages, message.key) { (data) in
             XCTAssertEqual(Message(data?.value as AnyObject), message)
             self.finishWork()
         }
@@ -197,7 +197,7 @@ extension AsyncWorkGroupKey {
 
     func checkUnreadMessageDeleted(_ message: Message) {
         startWork()
-        DB.get(Child.UserInfo, message.receiverId, Child.unreadMessages, message.key) { (data) in
+        DB.get(Child.userInfo, message.receiverId, Child.unreadMessages, message.key) { (data) in
             XCTAssertFalse(data?.exists() ?? true)
             self.finishWork()
         }

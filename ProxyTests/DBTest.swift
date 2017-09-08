@@ -146,13 +146,13 @@ extension AsyncWorkGroupKey {
 
     func check(_ property: SettableConvoProperty, forConvoWithKey convoKey: String, ownerId: String, proxyKey: String, function: String = #function, line: Int = #line) {
         startWork()
-        DB.get(Child.Convos, ownerId, convoKey, property.properties.name) { (data) in
+        DB.get(Child.convos, ownerId, convoKey, property.properties.name) { (data) in
             AsyncWorkGroupKey.checkEquals(data, property.properties.value, function: function, line: line)
             self.finishWork()
         }
 
         startWork()
-        DB.get(Child.Convos, proxyKey, convoKey, property.properties.name) { (data) in
+        DB.get(Child.convos, proxyKey, convoKey, property.properties.name) { (data) in
             AsyncWorkGroupKey.checkEquals(data, property.properties.value, function: function, line: line)
             self.finishWork()
         }
@@ -162,7 +162,7 @@ extension AsyncWorkGroupKey {
 extension AsyncWorkGroupKey {
     func check(_ property: SettableMessageProperty, forMessage message: Message, function: String = #function, line: Int = #line) {
         startWork()
-        DB.get(Child.Messages, message.parentConvo, message.key, property.properties.name) { (data) in
+        DB.get(Child.messages, message.parentConvo, message.key, property.properties.name) { (data) in
             AsyncWorkGroupKey.checkEquals(data, property.properties.value, function: function, line: line)
             self.finishWork()
         }
@@ -181,7 +181,7 @@ extension AsyncWorkGroupKey {
     
     func check(_ property: SettableProxyProperty, forProxyWithKey proxyKey: String, ownerId: String, function: String = #function, line: Int = #line) {
         startWork()
-        DB.get(Child.Proxies, ownerId, proxyKey, property.properties.name) { (data) in
+        DB.get(Child.proxies, ownerId, proxyKey, property.properties.name) { (data) in
             AsyncWorkGroupKey.checkEquals(data, property.properties.value, function: function, line: line)
             self.finishWork()
         }
@@ -191,7 +191,7 @@ extension AsyncWorkGroupKey {
 extension AsyncWorkGroupKey {
     func check(_ property: IncrementableUserProperty, _ value: Int, forUser uid: String, function: String = #function, line: Int = #line) {
         startWork()
-        DB.get(Child.UserInfo, uid, property.rawValue) { (data) in
+        DB.get(Child.userInfo, uid, property.rawValue) { (data) in
             AsyncWorkGroupKey.checkEquals(data, value, function: function, line: line)
             self.finishWork()
         }

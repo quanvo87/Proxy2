@@ -1,5 +1,5 @@
-class ProxyInfoTableViewController: UITableViewController {
-    private let dataSource = ProxyInfoTableViewDataSource()
+class ProxyTableViewController: UITableViewController {
+    private let dataSource = ProxyTableViewDataSource()
     private var newConvo: Convo?
     private var proxy = Proxy()
 
@@ -32,7 +32,7 @@ class ProxyInfoTableViewController: UITableViewController {
     }
 }
 
-private extension ProxyInfoTableViewController {
+private extension ProxyTableViewController {
     @objc func deleteProxy() {
         let alert = UIAlertController(title: "Delete Proxy?", message: "You will not be able to see this proxy or its conversations again.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
@@ -52,7 +52,7 @@ private extension ProxyInfoTableViewController {
     }
 }
 
-extension ProxyInfoTableViewController {
+extension ProxyTableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if  indexPath.section == 1,
             let row = tableView.indexPathForSelectedRow?.row,
@@ -86,7 +86,7 @@ extension ProxyInfoTableViewController {
     }
 }
 
-extension ProxyInfoTableViewController: MakeNewMessageDelegate {
+extension ProxyTableViewController: MakeNewMessageDelegate {
     func setNewConvo(to convo: Convo) {
         newConvo = convo
     }

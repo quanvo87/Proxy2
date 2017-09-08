@@ -6,6 +6,6 @@ enum IncrementableUserProperty: String {
 
 extension AsyncWorkGroupKey {
     func increment(by amount: Int, forProperty property: IncrementableUserProperty, forUser uid: String) {
-        increment(by: amount, at: Child.UserInfo, uid, property.rawValue)
+        increment(by: amount, at: Child.userInfo, uid, property.rawValue)
     }
 }

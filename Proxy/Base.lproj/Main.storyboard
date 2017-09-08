@@ -14,7 +14,7 @@
         <!--Login View Controller-->
         <scene sceneID="jNT-LK-tgD">
             <objects>
-                <viewController storyboardIdentifier="Login View Controller" id="mti-JT-f0N" customClass="LoginViewController" customModule="Proxy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginViewController" id="mti-JT-f0N" customClass="LoginViewController" customModule="Proxy" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="9Lu-0E-rOH"/>
                         <viewControllerLayoutGuide type="bottom" id="Ibs-yw-gQo"/>
@@ -90,10 +90,10 @@
             </objects>
             <point key="canvasLocation" x="-2015.2" y="-97.601199400299862"/>
         </scene>
-        <!--Proxy Info Table View Controller-->
+        <!--Proxy Table View Controller-->
         <scene sceneID="oEv-n1-XaV">
             <objects>
-                <tableViewController storyboardIdentifier="Proxy Info Table View Controller" id="6tV-td-Afa" customClass="ProxyInfoTableViewController" customModule="Proxy" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="ProxyTableViewController" id="6tV-td-Afa" customClass="ProxyTableViewController" customModule="Proxy" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="dl3-bR-bhC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -365,7 +365,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="Proxy Cell" rowHeight="60" id="r4t-DE-FZD" customClass="ProxyCell" customModule="Proxy" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="ProxyCell" rowHeight="60" id="r4t-DE-FZD" customClass="ProxyCell" customModule="Proxy" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="55.5" width="375" height="60"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="r4t-DE-FZD" id="b1m-BB-wyt">
@@ -924,7 +924,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="Proxy Cell" rowHeight="60" id="Y0v-4e-HZe" customClass="ProxyCell" customModule="Proxy" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="ProxyCell" rowHeight="60" id="Y0v-4e-HZe" customClass="ProxyCell" customModule="Proxy" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="55.5" width="375" height="60"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Y0v-4e-HZe" id="6LS-2l-X8U">
@@ -1048,7 +1048,7 @@
         <!--Tab Bar Controller-->
         <scene sceneID="Pkv-GV-Lk6">
             <objects>
-                <tabBarController storyboardIdentifier="Tab Bar Controller" id="gUq-FF-2eh" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="TabBarController" id="gUq-FF-2eh" sceneMemberID="viewController">
                     <tabBar key="tabBar" contentMode="scaleToFill" id="jSI-x0-0LB">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>

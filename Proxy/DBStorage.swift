@@ -4,7 +4,7 @@ import FirebaseStorage
 struct DBStorage {
     typealias UploadFileCallback = (URL?) -> Void
 
-    private static let ref = Storage.storage().reference(forURL: URLs.Storage)
+    private static let ref = Storage.storage().reference(forURL: "gs://proxy-b8f1b.appspot.com/")
 
     static func makeReference(_ first: String, _ rest: String...) -> StorageReference? {
         return makeReference(first, rest)
@@ -20,7 +20,7 @@ struct DBStorage {
 
 extension DBStorage {
     static func deleteFile(withKey key: String, completion: @escaping (Success) -> Void) {
-        ref.child(Child.UserFiles).child(key).delete { (error) in
+        ref.child(Child.userFiles).child(key).delete { (error) in
             completion(error == nil)
         }
     }
@@ -30,7 +30,7 @@ extension DBStorage {
             completion(nil)
             return
         }
-        ref.child(Child.UserFiles).child(key).putData(data, metadata: nil) { (metadata, _) in
+        ref.child(Child.userFiles).child(key).putData(data, metadata: nil) { (metadata, _) in
             guard let url = metadata?.downloadURL() else {
                 completion(nil)
                 return
@@ -49,7 +49,7 @@ extension DBStorage {
             }
             switch session.status {
             case .completed:
-                ref.child(Child.UserFiles).child(key).putFile(from: compressedVideoURL, metadata: nil) { (metadata, _) in
+                ref.child(Child.userFiles).child(key).putFile(from: compressedVideoURL, metadata: nil) { (metadata, _) in
                     // TODO: Cache
                     completion(metadata?.downloadURL())
                     return

@@ -8,7 +8,7 @@ class ProxyObserver {
     init() {}
 
     func observe(_ proxy: Proxy, tableView: UITableView) {
-        ref = DB.makeReference(Child.Proxies, proxy.ownerId, proxy.key)
+        ref = DB.makeReference(Child.proxies, proxy.ownerId, proxy.key)
         handle = ref?.observe(.value, with: { [weak self, weak tableView = tableView] (data) in
             guard let proxy = Proxy(data) else {
                 return

@@ -28,17 +28,17 @@ class BlockedUsersTableViewController: UITableViewController {
         
         tableView.rowHeight = 60
         
-        blockedUsersRef = ref.child(Child.Blocked).child(api.uid)
-        blockedUsersRef.queryOrdered(byChild: Child.Created).observe(.value, with: { (data) in
-            var blockedUsers = [BlockedUser]()
-            for child in data.children {
-                if let blockedUser = BlockedUser(anyObject: (child as! DataSnapshot).value as AnyObject) {
-                    blockedUsers.append(blockedUser)
-                }
-            }
-            self.blockedUsers = blockedUsers.reversed()
-            self.tableView.reloadData()
-        })
+        blockedUsersRef = ref.child(Child.blockedUsers).child(api.uid)
+//        blockedUsersRef.queryOrdered(byChild: Child.Created).observe(.value, with: { (data) in
+//            var blockedUsers = [BlockedUser]()
+//            for child in data.children {
+//                if let blockedUser = BlockedUser(anyObject: (child as! DataSnapshot).value as AnyObject) {
+//                    blockedUsers.append(blockedUser)
+//                }
+//            }
+//            self.blockedUsers = blockedUsers.reversed()
+//            self.tableView.reloadData()
+//        })
     }
     
     override func viewWillAppear(_ animated: Bool) {
