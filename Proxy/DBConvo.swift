@@ -12,25 +12,25 @@ struct DBConvo {
     }
 
     static func getConvo(withKey key: String, belongingTo uid: String, completion: @escaping (Convo?) -> Void) {
-        DB.get(Child.Convos, uid, key) { (data) in
+        DB.get(Child.convos, uid, key) { (data) in
             completion(Convo(data?.value as AnyObject))
         }
     }
 
     static func getConvos(forProxy proxy: Proxy, filtered: Bool, completion: @escaping ([Convo]?) -> Void) {
-        DB.get(Child.Convos, proxy.key) { (data) in
+        DB.get(Child.convos, proxy.key) { (data) in
             completion(data?.toConvosArray(filtered: filtered))
         }
     }
 
     static func getConvos(forUser uid: String, filtered: Bool, completion: @escaping ([Convo]?) -> Void) {
-        DB.get(Child.Convos, uid) { (data) in
+        DB.get(Child.convos, uid) { (data) in
             completion(data?.toConvosArray(filtered: filtered))
         }
     }
 
     static func getUnreadMessages(for convo: Convo, completion: @escaping ([Message]?) -> Void) {
-        guard let ref = DB.makeReference(Child.UserInfo, convo.receiverId, Child.unreadMessages) else {
+        guard let ref = DB.makeReference(Child.userInfo, convo.receiverId, Child.unreadMessages) else {
             completion(nil)
             return
         }
@@ -57,7 +57,7 @@ struct DBConvo {
     }
 
     static func makeConvo(sender: Proxy, receiver: Proxy, completion: @escaping (Convo?) -> Void) {
-        DB.get(Child.UserInfo, receiver.ownerId, Child.Blocked, sender.ownerId) { (data) in
+        DB.get(Child.userInfo, receiver.ownerId, Child.blockedUsers, sender.ownerId) { (data) in
             let senderIsBlocked = data?.value as? Bool ?? false
             let convoKey = makeConvoKey(senderProxy: sender, receiverProxy: receiver)
 
@@ -119,7 +119,7 @@ struct DBConvo {
     }
 
     static func userIsPresent(user uid: String, inConvoWithKey convoKey: String, completion: @escaping (Bool) -> Void) {
-        DB.get(Child.UserInfo, uid, Child.Present, convoKey, Child.Present) { (data) in
+        DB.get(Child.userInfo, uid, Child.isPresent, convoKey, Child.isPresent) { (data) in
             completion(data?.value as? Bool ?? false)
         }
     }
@@ -146,25 +146,25 @@ extension DataSnapshot {
 extension AsyncWorkGroupKey {
     func delete(_ convo: Convo, asSender: Bool) {
         let (ownerId, proxyKey) = AsyncWorkGroupKey.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
-        delete(at: Child.Convos, ownerId, convo.key)
-        delete(at: Child.Convos, proxyKey, convo.key)
+        delete(at: Child.convos, ownerId, convo.key)
+        delete(at: Child.convos, proxyKey, convo.key)
     }
 
     func set(_ convo: Convo, asSender: Bool) {
         let (ownerId, proxyKey) = AsyncWorkGroupKey.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
-        set(convo.toDictionary(), at: Child.Convos, ownerId, convo.key)
-        set(convo.toDictionary(), at: Child.Convos, proxyKey, convo.key)
+        set(convo.toDictionary(), at: Child.convos, ownerId, convo.key)
+        set(convo.toDictionary(), at: Child.convos, proxyKey, convo.key)
     }
 
     func set(_ property: SettableConvoProperty, forConvo convo: Convo, asSender: Bool) {
         let (ownerId, proxyKey) = AsyncWorkGroupKey.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
-        set(property.properties.value, at: Child.Convos, ownerId, convo.key, property.properties.name)
-        set(property.properties.value, at: Child.Convos, proxyKey, convo.key, property.properties.name)
+        set(property.properties.value, at: Child.convos, ownerId, convo.key, property.properties.name)
+        set(property.properties.value, at: Child.convos, proxyKey, convo.key, property.properties.name)
     }
 
     func set(_ property: SettableConvoProperty, forConvoWithKey key: String, ownerId: String, proxyKey: String) {
-        set(property.properties.value, at: Child.Convos, ownerId, key, property.properties.name)
-        set(property.properties.value, at: Child.Convos, proxyKey, key, property.properties.name)
+        set(property.properties.value, at: Child.convos, ownerId, key, property.properties.name)
+        set(property.properties.value, at: Child.convos, proxyKey, key, property.properties.name)
     }
 }
 
@@ -179,7 +179,7 @@ extension AsyncWorkGroupKey {
             }
 
             for message in messages {
-                self.delete(at: Child.UserInfo, convo.senderId, Child.unreadMessages, message.key)
+                self.delete(at: Child.userInfo, convo.senderId, Child.unreadMessages, message.key)
             }
 
             self.finishWork()

@@ -30,7 +30,7 @@ class MeTableViewController: UITableViewController {
             if let user = user {
                 self.navigationItem.title = user.displayName
 
-                self.messagesReceivedRef = self.ref.child(Child.MessagesReceived).child(self.api.uid).child(Child.MessagesReceived)
+//                self.messagesReceivedRef = self.ref.child(Child.MessagesReceived).child(self.api.uid).child(Child.MessagesReceived)
                 self.messagesReceivedRef.observe(.value, with: { (data) in
                     if let messagesReceived = data.value as? Int {
                         self.messagesReceived = messagesReceived.asStringWithCommas
@@ -38,7 +38,7 @@ class MeTableViewController: UITableViewController {
                     }
                 })
 
-                self.messagesSentRef = self.ref.child(Child.MessagesSent).child(self.api.uid).child(Child.MessagesSent)
+//                self.messagesSentRef = self.ref.child(Child.MessagesSent).child(self.api.uid).child(Child.MessagesSent)
                 self.messagesSentRef.observe(.value, with: { (data) in
                     if let messagesSent = data.value as? Int {
                         self.messagesSent = messagesSent.asStringWithCommas
@@ -46,7 +46,7 @@ class MeTableViewController: UITableViewController {
                     }
                 })
 
-                self.proxiesInteractedWithRef = self.ref.child(Child.ProxiesInteractedWith).child(self.api.uid).child(Child.ProxiesInteractedWith)
+//                self.proxiesInteractedWithRef = self.ref.child(Child.ProxiesInteractedWith).child(self.api.uid).child(Child.ProxiesInteractedWith)
                 self.proxiesInteractedWithRef.observe(.value, with: { (data) in
                     if let proxiesInteractedWith = data.value as? Int {
                         self.proxiesInteractedWith = proxiesInteractedWith.asStringWithCommas
@@ -79,9 +79,9 @@ class MeTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.MeTableViewCell, for: indexPath as IndexPath) as! MeTableViewCell
-        let size = CGSize(width: 30, height: 30)
-        let isAspectRatio = true
+        let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.meTableViewCell, for: indexPath as IndexPath) as! MeTableViewCell
+//        let size = CGSize(width: 30, height: 30)
+//        let isAspectRatio = true
         switch indexPath.section {
 
         case 0:
@@ -130,7 +130,7 @@ class MeTableViewController: UITableViewController {
 
         // Show blocked users
         case 1:
-            let dest = self.storyboard!.instantiateViewController(withIdentifier: Identifier.BlockedUsersTableViewController) as! BlockedUsersTableViewController
+            let dest = self.storyboard!.instantiateViewController(withIdentifier: Identifier.blockedUsersTableViewController) as! BlockedUsersTableViewController
             navigationController?.pushViewController(dest, animated: true)
 
         case 2:

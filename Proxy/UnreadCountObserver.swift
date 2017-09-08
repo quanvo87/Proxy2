@@ -7,7 +7,7 @@ class UnreadCountObserver {
     init() {}
 
     func observe(uid: String = Shared.shared.uid, delegate: UnreadCountObserverDelegate) {
-        ref = DB.makeReference(Child.UserInfo, uid, Child.unreadMessages)
+        ref = DB.makeReference(Child.userInfo, uid, Child.unreadMessages)
         handle = ref?.observe(.value, with: { [weak delegate = delegate] (data) in
             delegate?.setUnreadCount(to: Int(data.childrenCount))
         })

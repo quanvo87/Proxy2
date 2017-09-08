@@ -59,13 +59,13 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate {
 
 private extension MakeNewMessageViewController {
     @IBAction func goToReceiverPickerVC() {
-        guard let receiverPickerVC = storyboard?.instantiateViewController(withIdentifier: Identifier.ReceiverPickerViewController) as? ReceiverPickerViewController else { return }
+        guard let receiverPickerVC = storyboard?.instantiateViewController(withIdentifier: Identifier.receiverPickerViewController) as? ReceiverPickerViewController else { return }
         receiverPickerVC.delegate = self
         navigationController?.pushViewController(receiverPickerVC, animated: true)
     }
 
     @IBAction func goToSenderPickerVC() {
-        guard let senderPickerVC = self.storyboard?.instantiateViewController(withIdentifier: Identifier.SenderPickerTableViewController) as? SenderPickerTableViewController else { return }
+        guard let senderPickerVC = self.storyboard?.instantiateViewController(withIdentifier: Identifier.senderPickerTableViewController) as? SenderPickerTableViewController else { return }
         senderPickerVC.setDelegate(to: self)
         navigationController?.pushViewController(senderPickerVC, animated: true)
     }

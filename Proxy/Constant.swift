@@ -1,90 +1,45 @@
 struct Child {
-    static let app = "app"
-
-    // Objects
-    static let Proxies = "proxies"
-    static let ProxyOwners = "proxyOwners"
-    static let Convos = "convos"
-    static let Messages = "messages"
-    static let WordBank = "wordBank"
-    static let Icons = "icons"
-    static let UserFiles = "userFiles"
-
-    // Proxy
-    static let ProxyKeys = "proxyKeys"
-
-    // User
-    static let UserInfo = "userInfo"
-    static let unreadMessages = "unreadMessages"
-    static let ProxiesInteractedWith = "proxiesInteractedWith"
-    static let MessagesSent = "messagesSent"
-    static let MessagesReceived = "messagesReceived"
-    static let Blocked = "blocked"
-    static let Present = "present"
-    static let Typing = "typing"
-    
-    // Convo
-    static let ReceiverDeletedProxy = "receiverDeletedProxy"
-    static let ReceiverIsBlocked = "receiverIsBlocked"
-    static let ReceiverLeftConvo = "receiverLeftConvo"
-    static let ReceiverNickname = "receiverNickname"
-    static let SenderDeletedProxy = "senderDeletedProxy"
-    static let SenderIsBlocked = "senderIsBlocked"
-    static let SenderNickname = "senderNickname"
-    static let SenderLeftConvo = "senderLeftConvo"
-
-    // Message
-    static let Read = "read"
-    static let TimeRead = "timeRead"
-    static let MediaType = "mediaType"
-    static let MediaURL = "mediaURL"
-    
-    // Shared
-    static let Key = "key"
-    static let Name = "name"
-    static let Nickname = "nickname"
-    static let Icon = "icon"
-    static let Message = "message"
-    static let Created = "created"
-    static let Timestamp = "timestamp"
+    static let blockedUsers = "blockedUsers"
+    static let convos = "convos"
+    static let isPresent = "isPresent"
+    static let isTyping = "isTyping"
+    static let key = "key"
+    static let messages = "messages"
+    static let proxies = "proxies"
+    static let proxyKeys = "proxyKeys"
+    static let proxyOwners = "proxyOwners"
+    static let timestamp = "timestamp"
     static let unreadCount = "unreadCount"
-}
-
-struct URLs {
-    static let Storage = "gs://proxy-b8f1b.appspot.com/"
-}
-
-struct Settings {
-    static let MaxAllowedProxies = UInt(30)
-    static let TimeBetweenTimestamps = 30.0
-    static let newProxyDuration: Double = 60 * 5
+    static let unreadMessages = "unreadMessages"
+    static let userInfo = "userInfo"
+    static let userFiles = "userFiles"
 }
 
 struct Identifier {
-    static let TabBarController = "Tab Bar Controller"
-    static let LoginViewController = "Login View Controller"
-    
-    static let ProxyInfoTableViewController = "Proxy Info Table View Controller"
-    static let ProxyCell = "Proxy Cell"
-    static let SenderProxyInfoCell = "Sender Proxy Info Cell"
-    static let ReceiverProxyInfoCell = "Receiver Proxy Info Cell"
-    
-    static let IconPickerCollectionViewController = "Icon Picker Collection View Controller"
-    static let IconPickerCell = "Icon Picker Cell"
-    
-    static let NewMessageViewController = "New Message View Controller"
-    static let SenderPickerTableViewController = "Sender Picker Table View Controller"
-    static let ReceiverPickerViewController = "Receiver Picker View Controller"
-    
-    static let ConvoViewController = "Convo View Controller"
-    static let ConvoInfoTableViewController = "Convo Info Table View Controller"
-    static let ConvoCell = "Convo Cell"
-    
-    static let MeTableViewCell = "Me Table View Cell"
-    static let BlockedUsersTableViewController = "Blocked Users Table View Controller"
-    static let BlockedUsersTableViewCell = "Blocked Users Table View Cell"
-    
-    static let Cell = "Cell"
+    static let blockedUsersTableViewCell = "BlockedUsersTableViewCell"
+    static let blockedUsersTableViewController = "BlockedUsersTableViewController"
+    static let convoDetailTableViewCell = "ConvoDetailTableViewCell"
+    static let convoDetailTableViewController = "ConvoDetailTableViewController"
+    static let convoViewController = "ConvoViewController"
+    static let iconPickerCollectionViewCell = "IconPickerCollectionViewCell"
+    static let iconPickerCollectionViewController = "IconPickerCollectionViewController"
+    static let makeNewMessageViewController = "MakeNewMessageViewController"
+    static let meTableViewCell = "MeTableViewCell"
+    static let messagesTableViewCell = "MessagesTableViewCell"
+    static let loginViewController = "LoginViewController"
+    static let proxiesTableViewCell = "ProxiesTableViewCell"
+    static let proxyTableViewController = "ProxyTableViewController"
+    static let receiverPickerViewController = "ReceiverPickerViewController"
+    static let receiverProxyTableViewCell = "ReceiverProxyTableViewCell"
+    static let senderPickerTableViewController = "SenderPickerTableViewController"
+    static let senderProxyTableViewCell = "SenderProxyTableViewCell"
+    static let tabBarController = "TabBarController"
+}
+
+struct Setting {
+    static let maxAllowedProxies = UInt(30)
+    static let newProxyBadgeDuration: Double = 60 * 5
+    static let timeBetweenTimestamps = 30.0
 }
 
 struct UISetting {

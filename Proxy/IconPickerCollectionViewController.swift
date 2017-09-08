@@ -36,12 +36,12 @@ class IconPickerCollectionViewController: UICollectionViewController {
             scrollView.delaysContentTouches = false
         }
         
-        ref.child(Child.Icons).child(api.uid).queryOrdered(byChild: Child.Name).observeSingleEvent(of: .value, with: { (data) in
-            for child in data.children {
-                self.icons.append(((child as! DataSnapshot).value as AnyObject)[Child.Name] as! String)
-            }
-            self.collectionView?.reloadData()
-        })
+//        ref.child(Child.Icons).child(api.uid).queryOrdered(byChild: Child.Name).observeSingleEvent(of: .value, with: { (data) in
+//            for child in data.children {
+//                self.icons.append(((child as! DataSnapshot).value as AnyObject)[Child.Name] as! String)
+//            }
+//            self.collectionView?.reloadData()
+//        })
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -64,7 +64,7 @@ class IconPickerCollectionViewController: UICollectionViewController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifier.IconPickerCell, for: indexPath as IndexPath) as! IconPickerCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifier.iconPickerCollectionViewCell, for: indexPath as IndexPath) as! IconPickerCollectionViewCell
 //        let icon = icons[indexPath.row]
         cell.iconImageView.image = nil
 //        api.getURL(forIconName: icon) { (url) in

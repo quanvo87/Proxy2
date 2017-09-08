@@ -18,9 +18,9 @@ class MessagesTableViewDataSource: NSObject, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard
-            let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.ConvoCell) as? ConvoCell,
+            let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.messagesTableViewCell) as? MessagesTableViewCell,
             let convo = convos[safe: indexPath.row] else {
-                return tableView.dequeueReusableCell(withIdentifier: Identifier.ConvoCell, for: indexPath)
+                return tableView.dequeueReusableCell(withIdentifier: Identifier.messagesTableViewCell, for: indexPath)
         }
 
         cell.iconImageView.image = nil

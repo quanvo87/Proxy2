@@ -39,9 +39,9 @@ struct DBProxy {
 
     static func deleteProxy(_ proxy: Proxy, withConvos convos: [Convo], completion: @escaping (Success) -> Void) {
         let key = AsyncWorkGroupKey()
-        key.delete(at: Child.Proxies, proxy.ownerId, proxy.key)
-        key.delete(at: Child.ProxyKeys, proxy.key)
-        key.delete(at: Child.ProxyOwners, proxy.key)
+        key.delete(at: Child.proxies, proxy.ownerId, proxy.key)
+        key.delete(at: Child.proxyKeys, proxy.key)
+        key.delete(at: Child.proxyOwners, proxy.key)
         key.deleteConvos(convos)
         key.deleteUnreadMessages(for: proxy)
         key.setReceiverDeletedProxy(to: true, forReceiverInConvos: convos)
@@ -87,19 +87,19 @@ struct DBProxy {
     }
 
     static func getConvoCount(forProxy proxy: Proxy, completion: @escaping (UInt?) -> Void) {
-        DB.get(Child.Convos, proxy.key) { (data) in
+        DB.get(Child.convos, proxy.key) { (data) in
             completion(data?.childrenCount)
         }
     }
 
     static func getProxies(forUser uid: String, completion: @escaping ([Proxy]?) -> Void) {
-        DB.get(Child.Proxies, uid) { (data) in
+        DB.get(Child.proxies, uid) { (data) in
             completion(data?.toProxiesArray())
         }
     }
 
     static func getProxy(withKey key: String, completion: @escaping (Proxy?) -> Void) {
-        DB.get(Child.ProxyOwners, key) { (data) in
+        DB.get(Child.proxyOwners, key) { (data) in
             guard let proxyOwner = ProxyOwner(data?.value as AnyObject) else {
                 completion(nil)
                 return
@@ -109,19 +109,19 @@ struct DBProxy {
     }
 
     static func getProxy(withKey key: String, belongingTo uid: String, completion: @escaping (Proxy?) -> Void) {
-        DB.get(Child.Proxies, uid, key) { (data) in
+        DB.get(Child.proxies, uid, key) { (data) in
             completion(Proxy(data?.value as AnyObject))
         }
     }
 
     private static func getProxyCount(forUser uid: String, completion: @escaping (UInt) -> Void) {
-        DB.get(Child.Proxies, uid) { (data) in
+        DB.get(Child.proxies, uid) { (data) in
             completion(data?.childrenCount ?? 0)
         }
     }
 
     static func getUnreadMessagesForProxy(owner: String, key: String, completion: @escaping ([Message]?) -> Void) {
-        guard let ref = DB.makeReference(Child.UserInfo, owner, Child.unreadMessages) else {
+        guard let ref = DB.makeReference(Child.userInfo, owner, Child.unreadMessages) else {
             completion(nil)
             return
         }
@@ -141,7 +141,7 @@ struct DBProxy {
         }
     }
 
-    static func makeProxy(withName specificName: String? = nil, forUser uid: String = Shared.shared.uid, maxAllowedProxies: UInt = Settings.MaxAllowedProxies, completion: @escaping MakeProxyCallback) {
+    static func makeProxy(withName specificName: String? = nil, forUser uid: String = Shared.shared.uid, maxAllowedProxies: UInt = Setting.maxAllowedProxies, completion: @escaping MakeProxyCallback) {
         getProxyCount(forUser: uid) { (proxyCount) in
             guard proxyCount < maxAllowedProxies else {
                 completion(.failure(.proxyLimitReached))
@@ -158,7 +158,7 @@ struct DBProxy {
     }
 
     private static func makeProxyHelper(withName specificName: String? = nil, forUser uid: String = Shared.shared.uid, completion: @escaping MakeProxyCallback) {
-        guard let proxyKeysRef = DB.makeReference(Child.ProxyKeys) else {
+        guard let proxyKeysRef = DB.makeReference(Child.proxyKeys) else {
             makeProxyDone(result: .failure(.unknown), completion: completion)
             return
         }
@@ -172,17 +172,17 @@ struct DBProxy {
         }
 
         let proxyKey = name.lowercased()
-        let proxyKeyDictionary = [Child.Key: proxyKey]
+        let proxyKeyDictionary = [Child.key: proxyKey]
         let autoId = proxyKeysRef.childByAutoId().key
 
-        DB.set(proxyKeyDictionary, at: Child.ProxyKeys, autoId) { (success) in
+        DB.set(proxyKeyDictionary, at: Child.proxyKeys, autoId) { (success) in
             guard success else {
                 makeProxyDone(result: .failure(.unknown), completion: completion)
                 return
             }
 
-            proxyKeysRef.queryOrdered(byChild: Child.Key).queryEqual(toValue: proxyKey).observeSingleEvent(of: .value, with: { (data) in
-                DB.delete(Child.ProxyKeys, autoId) { (success) in
+            proxyKeysRef.queryOrdered(byChild: Child.key).queryEqual(toValue: proxyKey).observeSingleEvent(of: .value, with: { (data) in
+                DB.delete(Child.proxyKeys, autoId) { (success) in
                     guard success else {
                         makeProxyDone(result: .failure(.unknown), completion: completion)
                         return
@@ -197,9 +197,9 @@ struct DBProxy {
                         let proxyOwner = ProxyOwner(key: proxyKey, ownerId: uid)
 
                         let key = AsyncWorkGroupKey()
-                        key.set(proxy.toDictionary(), at: Child.Proxies, proxy.ownerId, proxy.key)
-                        key.set(proxyKeyDictionary, at: Child.ProxyKeys, proxy.key)
-                        key.set(proxyOwner.toDictionary(), at: Child.ProxyOwners, proxy.key)
+                        key.set(proxy.toDictionary(), at: Child.proxies, proxy.ownerId, proxy.key)
+                        key.set(proxyKeyDictionary, at: Child.proxyKeys, proxy.key)
+                        key.set(proxyOwner.toDictionary(), at: Child.proxyOwners, proxy.key)
                         key.notify {
                             makeProxyDone(result: key.workResult ? .success(proxy) : .failure(.unknown), completion: completion)
                             key.finishWorkGroup()
@@ -281,7 +281,7 @@ extension AsyncWorkGroupKey {
     }
 
     func increment(by amount: Int, forProperty property: IncrementableProxyProperty, forProxyWithKey key: String, ownerId: String) {
-        increment(by: amount, at: Child.Proxies, ownerId, key, property.rawValue)
+        increment(by: amount, at: Child.proxies, ownerId, key, property.rawValue)
     }
 
     func set(_ property: SettableProxyProperty, forProxy proxy: Proxy) {
@@ -294,7 +294,7 @@ extension AsyncWorkGroupKey {
     }
 
     func set(_ property: SettableProxyProperty, forProxyWithKey key: String, proxyOwner: String) {
-        set(property.properties.value, at: Child.Proxies, proxyOwner, key, property.properties.name)
+        set(property.properties.value, at: Child.proxies, proxyOwner, key, property.properties.name)
     }
 }
 
@@ -314,7 +314,7 @@ extension AsyncWorkGroupKey {
             }
 
             for message in messages {
-                self.delete(at: Child.UserInfo, message.receiverId, Child.unreadMessages, message.key)
+                self.delete(at: Child.userInfo, message.receiverId, Child.unreadMessages, message.key)
             }
 
             self.finishWork()

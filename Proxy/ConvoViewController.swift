@@ -134,12 +134,12 @@ class ConvoViewController: JSQMessagesViewController {
         senderId = convo.senderId
         senderDisplayName = ""
         
-        messagesRef = ref.child(Child.Messages).child(convo.key)
-        senderIconRef = ref.child(Child.Proxies).child(convo.senderId).child(convo.senderProxyKey).child(Child.Icon)
-        receiverIconRef = ref.child(Child.Convos).child(convo.senderId).child(convo.key).child(Child.Icon)
-        senderNicknameRef = ref.child(Child.Convos).child(convo.senderId).child(convo.key).child(Child.SenderNickname)
-        receiverNicknameRef = ref.child(Child.Convos).child(convo.senderId).child(convo.key).child(Child.ReceiverNickname)
-        membersAreTypingRef = ref.child(Child.Typing).child(convo.key)
+        messagesRef = ref.child(Child.messages).child(convo.key)
+//        senderIconRef = ref.child(Child.proxies).child(convo.senderId).child(convo.senderProxyKey).child(Child.Icon)
+//        receiverIconRef = ref.child(Child.convos).child(convo.senderId).child(convo.key).child(Child.Icon)
+//        senderNicknameRef = ref.child(Child.convos).child(convo.senderId).child(convo.key).child(Child.SenderNickname)
+//        receiverNicknameRef = ref.child(Child.convos).child(convo.senderId).child(convo.key).child(Child.ReceiverNickname)
+        membersAreTypingRef = ref.child(Child.isTyping).child(convo.key)
     }
     
     func setTitle() {
@@ -160,27 +160,27 @@ class ConvoViewController: JSQMessagesViewController {
     }
     
     func checkLeftConvo() {
-        ref.child(Child.Convos).child(convo.senderId).child(convo.key).child(Child.SenderLeftConvo).observeSingleEvent(of: .value, with: { (data) in
-            if let leftConvo = data.value as? Bool, leftConvo {
-                self.close()
-            }
-        })
+//        ref.child(Child.convos).child(convo.senderId).child(convo.key).child(Child.SenderLeftConvo).observeSingleEvent(of: .value, with: { (data) in
+//            if let leftConvo = data.value as? Bool, leftConvo {
+//                self.close()
+//            }
+//        })
     }
     
     func checkDeletedProxy() {
-        ref.child(Child.Convos).child(convo.senderId).child(convo.key).child(Child.SenderDeletedProxy).observeSingleEvent(of: .value, with: { (data) in
-            if let deletedProxy = data.value as? Bool, deletedProxy {
-                self.close()
-            }
-        })
+//        ref.child(Child.convos).child(convo.senderId).child(convo.key).child(Child.SenderDeletedProxy).observeSingleEvent(of: .value, with: { (data) in
+//            if let deletedProxy = data.value as? Bool, deletedProxy {
+//                self.close()
+//            }
+//        })
     }
     
     func checkIsBlocking() {
-        ref.child(Child.Convos).child(convo.senderId).child(convo.key).child(Child.ReceiverIsBlocked).observeSingleEvent(of: .value, with: { (data) in
-            if let isBlocking = data.value as? Bool, isBlocking {
-                self.close()
-            }
-        })
+//        ref.child(Child.convos).child(convo.senderId).child(convo.key).child(Child.ReceiverIsBlocked).observeSingleEvent(of: .value, with: { (data) in
+//            if let isBlocking = data.value as? Bool, isBlocking {
+//                self.close()
+//            }
+//        })
     }
     
     func close() {
@@ -189,7 +189,7 @@ class ConvoViewController: JSQMessagesViewController {
     
     // Set user as present in the convo.
     func setUpSenderIsPresent() {
-        senderIsPresentRef = ref.child(Child.Present).child(convo.key).child(convo.senderId).child(Child.Present)
+        senderIsPresentRef = ref.child(Child.isPresent).child(convo.key).child(convo.senderId).child(Child.isPresent)
         senderIsPresentRef.onDisconnectRemoveValue()
         senderIsPresentIsSetUp = true
         senderIsPresent = true
@@ -197,7 +197,7 @@ class ConvoViewController: JSQMessagesViewController {
     
     // Observe and load messages.
     func observeMessages() {
-        messagesRefHandle = messagesRef.queryOrdered(byChild: Child.Timestamp).observe(.childAdded, with: { (data) in
+        messagesRefHandle = messagesRef.queryOrdered(byChild: Child.timestamp).observe(.childAdded, with: { (data) in
             guard let message = Message(data.value! as AnyObject) else { return }
             switch message.mediaType {
                 
@@ -262,10 +262,10 @@ class ConvoViewController: JSQMessagesViewController {
                 
                 // Wait for the message's content to be loaded to storage.
                 // Once this happens, the message's `mediaURL` will be updated.
-                var messageRefHandle = DatabaseHandle()
-                let messageRef = self.ref.child(Child.Messages).child(message.parentConvo).child(message.key).child(Child.MediaURL)
-                messageRefHandle = messageRef.observe(.value, with: { (data) in
-                    
+//                var messageRefHandle = DatabaseHandle()
+//                let messageRef = self.ref.child(Child.messages).child(message.parentConvo).child(message.key).child(Child.MediaURL)
+//                messageRefHandle = messageRef.observe(.value, with: { (data) in
+
                     // Get `mediaURL`.
                     guard let mediaURLString = data.value as? String, mediaURLString != "" else { return }
                     
@@ -278,9 +278,9 @@ class ConvoViewController: JSQMessagesViewController {
                     self.collectionView.reloadData()
                     
                     // Remove database observer for this message.
-                    messageRef.removeObserver(withHandle: messageRefHandle)
-                })
-                
+//                    messageRef.removeObserver(withHandle: messageRefHandle)
+//                })
+
             case "video":
                 
                 // Build JSQVideoMediaItem.
@@ -323,7 +323,7 @@ class ConvoViewController: JSQMessagesViewController {
     
     // Observe most recent message to see if it's an outgoing message that's been read.
     func observeLastMessage() {
-        lastMessageRefHandle = messagesRef.queryOrdered(byChild: Child.Timestamp).queryLimited(toLast: 1).observe(.value, with: { (data) in
+        lastMessageRefHandle = messagesRef.queryOrdered(byChild: Child.timestamp).queryLimited(toLast: 1).observe(.value, with: { (data) in
             guard data.hasChildren() else { return }
             guard let message = Message((data.children.nextObject()! as! DataSnapshot).value as AnyObject) else { return }
             if message.senderId == self.senderId && message.read {
@@ -396,7 +396,7 @@ class ConvoViewController: JSQMessagesViewController {
     func observeTyping() {
         
         // Stop monitoring user's typing when they disconnect.
-        userIsTypingRef = ref.child(Child.Typing).child(convo.key).child(convo.senderId).child(Child.Typing)
+        userIsTypingRef = ref.child(Child.isTyping).child(convo.key).child(convo.senderId).child(Child.isTyping)
         userIsTypingRef.onDisconnectRemoveValue()
         
         // Show typing indicator when other user is typing.
@@ -457,7 +457,7 @@ class ConvoViewController: JSQMessagesViewController {
         // When too much time has passed between two messages.
         let prev = self.messages[indexPath.item - 1]
         let curr = self.messages[indexPath.item]
-        if curr.date.timeIntervalSince(prev.date) / 60 > Settings.TimeBetweenTimestamps {
+        if curr.date.timeIntervalSince(prev.date) / 60 > Setting.timeBetweenTimestamps {
             return kJSQMessagesCollectionViewCellLabelHeightDefault
         }
         
@@ -475,7 +475,7 @@ class ConvoViewController: JSQMessagesViewController {
         
         // When too much time has passed between two messages.
         let prev = self.messages[indexPath.item - 1]
-        if curr.date.timeIntervalSince(prev.date) / 60 > Settings.TimeBetweenTimestamps {
+        if curr.date.timeIntervalSince(prev.date) / 60 > Setting.timeBetweenTimestamps {
             return JSQMessagesTimestampFormatter.shared().attributedTimestamp(for: curr.date)
         }
         
@@ -704,7 +704,7 @@ class ConvoViewController: JSQMessagesViewController {
     
     // MARK: - Navigation
     @objc func showConvoInfoTableViewController() {
-        let dest = storyboard?.instantiateViewController(withIdentifier: Identifier.ConvoInfoTableViewController) as! ConvoInfoTableViewController
+        let dest = storyboard?.instantiateViewController(withIdentifier: Identifier.convoDetailTableViewController) as! ConvoDetailTableViewController
         dest.convo = convo
         navigationController?.pushViewController(dest, animated: true)
     }

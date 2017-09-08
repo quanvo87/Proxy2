@@ -28,17 +28,17 @@ class BlockedUsersTableViewController: UITableViewController {
         
         tableView.rowHeight = 60
         
-        blockedUsersRef = ref.child(Child.Blocked).child(api.uid)
-        blockedUsersRef.queryOrdered(byChild: Child.Created).observe(.value, with: { (data) in
-            var blockedUsers = [BlockedUser]()
-            for child in data.children {
-                if let blockedUser = BlockedUser(anyObject: (child as! DataSnapshot).value as AnyObject) {
-                    blockedUsers.append(blockedUser)
-                }
-            }
-            self.blockedUsers = blockedUsers.reversed()
-            self.tableView.reloadData()
-        })
+        blockedUsersRef = ref.child(Child.blockedUsers).child(api.uid)
+//        blockedUsersRef.queryOrdered(byChild: Child.Created).observe(.value, with: { (data) in
+//            var blockedUsers = [BlockedUser]()
+//            for child in data.children {
+//                if let blockedUser = BlockedUser(anyObject: (child as! DataSnapshot).value as AnyObject) {
+//                    blockedUsers.append(blockedUser)
+//                }
+//            }
+//            self.blockedUsers = blockedUsers.reversed()
+//            self.tableView.reloadData()
+//        })
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -72,7 +72,7 @@ class BlockedUsersTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let blockedUser = blockedUsers[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.BlockedUsersTableViewCell, for: indexPath as IndexPath) as! BlockedUsersTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.blockedUsersTableViewCell, for: indexPath as IndexPath) as! BlockedUsersTableViewCell
         
         cell.blockedUser = blockedUser
         

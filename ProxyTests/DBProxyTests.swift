@@ -27,9 +27,9 @@ class DBProxyTests: DBTest {
                         key.check(.receiverDeletedProxy(true), forConvo: convo, asSender: true)
                         key.checkUnreadMessagesDeleted(for: sender)
                         key.checkConvoDeleted(convo, asSender: false)
-                        key.checkDeleted(at: Child.Proxies, sender.ownerId, sender.key)
-                        key.checkDeleted(at: Child.ProxyKeys, sender.key)
-                        key.checkDeleted(at: Child.ProxyOwners, sender.key)
+                        key.checkDeleted(at: Child.proxies, sender.ownerId, sender.key)
+                        key.checkDeleted(at: Child.proxyKeys, sender.key)
+                        key.checkDeleted(at: Child.proxyOwners, sender.key)
                         key.notify {
                             key.finishWorkGroup()
                             expectation.fulfill()
@@ -258,7 +258,7 @@ class DBProxyTests: DBTest {
 extension AsyncWorkGroupKey {
     func checkProxyCreated(_ proxy: Proxy) {
         startWork()
-        DB.get(Child.Proxies, Shared.shared.uid, proxy.key) { (data) in
+        DB.get(Child.proxies, Shared.shared.uid, proxy.key) { (data) in
             XCTAssertEqual(Proxy(data?.value as AnyObject), proxy)
             self.finishWork()
         }
@@ -266,15 +266,15 @@ extension AsyncWorkGroupKey {
     
     func checkProxyKeyCreated(forProxy proxy: Proxy) {
         startWork()
-        DB.get(Child.ProxyKeys, proxy.key) { (data) in
-            XCTAssertEqual(data?.value as? [String: String] ?? [:], [Child.Key: proxy.key])
+        DB.get(Child.proxyKeys, proxy.key) { (data) in
+            XCTAssertEqual(data?.value as? [String: String] ?? [:], [Child.key: proxy.key])
             self.finishWork()
         }
     }
     
     func checkProxyOwnerCreated(forProxy proxy: Proxy) {
         startWork()
-        DB.get(Child.ProxyOwners, proxy.key) { (data) in
+        DB.get(Child.proxyOwners, proxy.key) { (data) in
             XCTAssertEqual(ProxyOwner(data?.value as AnyObject), ProxyOwner(key: proxy.key, ownerId: Shared.shared.uid))
             self.finishWork()
         }

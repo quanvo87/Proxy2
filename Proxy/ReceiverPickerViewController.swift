@@ -13,7 +13,7 @@ class ReceiverPickerViewController: UIViewController, UICollectionViewDelegate {
         
         navigationItem.title = "Pick A Receiver"
         
-        api.ref.child(Child.Proxies).queryOrdered(byChild: Child.Key).observeSingleEvent(of: .value, with: { data in
+        api.ref.child(Child.proxies).queryOrdered(byChild: Child.key).observeSingleEvent(of: .value, with: { data in
             guard data.hasChildren() else { return }
             let dict = data.children.nextObject() as AnyObject
             var proxies = [String]()

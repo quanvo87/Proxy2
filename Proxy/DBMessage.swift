@@ -5,7 +5,7 @@ struct DBMessage {
 
     static func read(_ message: Message, atDate date: Double = Date().timeIntervalSince1970, completion: @escaping (Success) -> Void) {
         let key = AsyncWorkGroupKey()
-        key.delete(at: Child.UserInfo, message.receiverId, Child.unreadMessages, message.key)
+        key.delete(at: Child.userInfo, message.receiverId, Child.unreadMessages, message.key)
         key.set(.dateRead(date), forMessage: message)
         key.set(.hasUnreadMessage(false), forConvoWithKey: message.parentConvo, ownerId: message.receiverId, proxyKey: message.receiverProxyKey)
         key.set(.read(true), forMessage: message)
@@ -37,7 +37,7 @@ struct DBMessage {
     }
 
     private static func sendMessage(text: String, mediaType: String, senderConvo: Convo, completion: @escaping SendMessageCallback) {
-        guard let ref = DB.makeReference(Child.Messages, senderConvo.key) else {
+        guard let ref = DB.makeReference(Child.messages, senderConvo.key) else {
             completion(nil)
             return
         }
@@ -59,7 +59,7 @@ struct DBMessage {
                                   receiverProxyKey: senderConvo.receiverProxyKey,
                                   senderId: senderConvo.senderId,
                                   text: text)
-            key.set(message.toDictionary(), at: Child.Messages, message.parentConvo, message.key)
+            key.set(message.toDictionary(), at: Child.messages, message.parentConvo, message.key)
 
             // Receiver updates
             key.increment(by: 1, forProperty: .messagesReceived, forUser: senderConvo.receiverId)
@@ -70,7 +70,7 @@ struct DBMessage {
 
                 if !receiverIsPresent {
                     key.set(.hasUnreadMessage(true), forProxyWithKey: message.receiverProxyKey, proxyOwner: message.receiverId)
-                    key.set(message.toDictionary(), at: Child.UserInfo, message.receiverId, Child.unreadMessages, message.key)
+                    key.set(message.toDictionary(), at: Child.userInfo, message.receiverId, Child.unreadMessages, message.key)
                 }
             }
 
@@ -148,7 +148,7 @@ extension DataSnapshot {
 
 extension AsyncWorkGroupKey {
     func set(_ property: SettableMessageProperty, forMessage message: Message) {
-        set(property.properties.value, at: Child.Messages, message.parentConvo, message.key, property.properties.name)
+        set(property.properties.value, at: Child.messages, message.parentConvo, message.key, property.properties.name)
     }
 
     func setHasUnreadMessageForProxy(key: String, ownerId: String) {

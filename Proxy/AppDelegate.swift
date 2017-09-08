@@ -14,7 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private func production() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        guard let tabBarController = storyboard.instantiateViewController(withIdentifier: Identifier.TabBarController) as? UITabBarController else { return }
+        guard let tabBarController = storyboard.instantiateViewController(withIdentifier: Identifier.tabBarController) as? UITabBarController else { return }
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.rootViewController = tabBarController
         window?.makeKeyAndVisible()
