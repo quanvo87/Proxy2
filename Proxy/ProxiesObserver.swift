@@ -1,47 +1,22 @@
 import FirebaseDatabase
 import UIKit
 
-class ProxiesObserver {
-    private var ref: DatabaseReference?
-    private var handle: DatabaseHandle?
-    private var tableViews = NSMapTable<AnyObject, AnyObject>(keyOptions: [.weakMemory], valueOptions: [.weakMemory])
-
+class ProxiesObserver: ReferenceObserving, TableViewMapTableHandling {
+    private(set) var handle: DatabaseHandle?
     private(set) var proxies = [Proxy]()
+    private(set) var ref: DatabaseReference?
+    private(set) var tableViews = NSMapTable<AnyObject, AnyObject>(keyOptions: [.weakMemory], valueOptions: [.weakMemory])
 
-    init() {}
 
-    deinit {
-        if let handle = handle {
-            ref?.removeObserver(withHandle: handle)
-        }
-    }
-}
-
-extension ProxiesObserver {
-    func addTableView(_ tableView: UITableView, forKey key: Int) {
-        tableViews.setObject(tableView, forKey: key as AnyObject)
-    }
-
-    func removeTableView(forKey key: Int) {
-        tableViews.removeObject(forKey: key as AnyObject)
-    }
-}
-
-extension ProxiesObserver {
     func observe() {
         ref = DB.makeReference(Child.proxies, Shared.shared.uid)
         handle = ref?.queryOrdered(byChild: Child.timestamp).observe(.value, with: { [weak self] (data) in
             self?.proxies = data.toProxiesArray().reversed()
-
-            let enumerator = self?.tableViews.objectEnumerator()
-
-            while let tableView = enumerator?.nextObject() as? UITableView {
-                tableView.reloadData()
-            }
+            self?.reloadTableViews()
         })
     }
 
-    func stopObserving() {
+    deinit {
         if let handle = handle {
             ref?.removeObserver(withHandle: handle)
         }

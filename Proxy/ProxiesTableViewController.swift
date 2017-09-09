@@ -5,7 +5,6 @@ class ProxiesTableViewController: UITableViewController {
     private var dataSource: ProxiesTableViewDataSource?
     private var delegate: ProxiesTableViewDelegate?
     private var newConvo: Convo?
-    private let unreadCountObserver = UnreadCountObserver()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -13,7 +12,7 @@ class ProxiesTableViewController: UITableViewController {
         buttonManager.makeButtons(self)
 
         dataSource = ProxiesTableViewDataSource(tableView)
-        dataSource?.observe()
+        dataSource?.proxiesObserver?.observe()
 
         delegate = ProxiesTableViewDelegate(buttonManager: buttonManager, tableViewController: self)
 
@@ -24,8 +23,6 @@ class ProxiesTableViewController: UITableViewController {
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.rowHeight = 60
         tableView.separatorStyle = .none
-
-        unreadCountObserver.observe(delegate: self)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -60,7 +57,7 @@ extension ProxiesTableViewController: ButtonManagerDelegate {
         let alert = UIAlertController(title: "Delete Proxies?", message: "You will not be able to view their conversations anymore.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
             self.buttonManager.disableButtons()
-            self.dataSource?.stopObserving()
+            self.dataSource?.proxiesObserver?.stopObserving()
             let key = AsyncWorkGroupKey()
             for (_, item) in self.buttonManager.itemsToDelete {
                 if let proxy = item as? Proxy {
@@ -76,7 +73,7 @@ extension ProxiesTableViewController: ButtonManagerDelegate {
             key.notify {
                 key.finishWorkGroup()
                 self.buttonManager.enableButtons()
-                self.dataSource?.observe()
+                self.dataSource?.proxiesObserver?.observe()
             }
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
@@ -127,15 +124,5 @@ extension ProxiesTableViewController: ButtonManagerDelegate {
 extension ProxiesTableViewController: MakeNewMessageDelegate {
     func setNewConvo(to convo: Convo) {
         newConvo = convo
-    }
-}
-
-extension ProxiesTableViewController: UnreadCountObserverDelegate {
-    func setUnreadCount(to unreadCount: Int?) {
-        if let unreadCount = unreadCount {
-            navigationItem.title = "Proxies" + unreadCount.asLabelWithParens
-        } else {
-            navigationItem.title = "Proxies"
-        }
     }
 }

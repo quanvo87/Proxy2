@@ -1,7 +1,7 @@
 import UIKit
 
 class ProxiesTableViewDataSource: NSObject {
-    private weak var proxiesObserver: ProxiesObserver?
+    private(set) weak var proxiesObserver: ProxiesObserver?
 
     var id: Int {
         return ObjectIdentifier(self).hashValue
@@ -18,14 +18,6 @@ class ProxiesTableViewDataSource: NSObject {
 
     deinit {
         proxiesObserver?.removeTableView(forKey: id)
-    }
-
-    func observe() {
-        proxiesObserver?.observe()
-    }
-
-    func stopObserving() {
-        proxiesObserver?.stopObserving()
     }
 }
 

@@ -10,7 +10,7 @@ class SenderPickerTableViewController: UITableViewController {
         super.viewDidLoad()
 
         dataSource = ProxiesTableViewDataSource(tableView)
-        dataSource?.observe()
+        dataSource?.proxiesObserver?.observe()
 
         delegate = SenderPickerTableViewDelegate(delegate: senderPickerDelegate, tableViewController: self)
 
