@@ -1,9 +1,9 @@
 import UIKit
 
-class ProxiesTableViewController: UITableViewController, ButtonManaging {
+class ProxiesTableViewController: UITableViewController, ButtonManaging, MakeNewMessageDelegate {
     private var dataSource: ProxiesTableViewDataSource?
     private var delegate: ProxiesTableViewDelegate?
-    private var newConvo: Convo?
+    var newConvo: Convo?
     var buttons = Buttons()
     var itemsToDelete = [String : Any]()
 
@@ -48,7 +48,7 @@ class ProxiesTableViewController: UITableViewController, ButtonManaging {
     }
 }
 
-extension ProxiesTableViewController: ButtonManagerDelegate {
+extension ProxiesTableViewController: ButtonManagingDelegate {
     func deleteSelectedItems() {
         if itemsToDelete.isEmpty {
             toggleEditMode()
@@ -118,11 +118,5 @@ extension ProxiesTableViewController: ButtonManagerDelegate {
             setDefaultButtons()
             itemsToDelete.removeAll()
         }
-    }
-}
-
-extension ProxiesTableViewController: MakeNewMessageDelegate {
-    func setNewConvo(to convo: Convo) {
-        newConvo = convo
     }
 }

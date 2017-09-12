@@ -97,7 +97,7 @@ private extension MakeNewMessageViewController {
                 self.enableButtons()
                 return
             }
-            self.delegate?.setNewConvo(to: convo)
+            self.delegate?.newConvo = convo
             _ = self.navigationController?.popViewController(animated: true)
         }
     }
@@ -152,5 +152,5 @@ extension MakeNewMessageViewController: SenderPickerDelegate {
 }
 
 protocol MakeNewMessageDelegate: class {
-    func setNewConvo(to convo: Convo)
+    var newConvo: Convo? { get set }
 }

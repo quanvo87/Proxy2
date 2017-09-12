@@ -4,7 +4,7 @@ protocol ButtonManaging: class {
     var buttons: Buttons { get set }
     func disableButtons()
     func enableButtons()
-    func makeButtons(_ delegate: ButtonManagerDelegate)
+    func makeButtons(_ delegate: ButtonManagingDelegate)
 }
 
 extension ButtonManaging {
@@ -24,7 +24,7 @@ extension ButtonManaging {
         buttons.makeNewProxyButton.isEnabled = true
     }
 
-    func makeButtons(_ delegate: ButtonManagerDelegate) {
+    func makeButtons(_ delegate: ButtonManagingDelegate) {
         buttons.cancelButton = UIBarButtonItem.makeButton(target: delegate, action: #selector(delegate.toggleEditMode), imageName: .cancel)
         buttons.confirmButton = UIBarButtonItem.makeButton(target: delegate, action: #selector(delegate.deleteSelectedItems), imageName: .confirm)
         buttons.deleteButton = UIBarButtonItem.makeButton(target: delegate, action: #selector(delegate.toggleEditMode), imageName: .delete)
@@ -49,7 +49,7 @@ struct Buttons {
     var makeNewProxyButton = UIBarButtonItem()
 }
 
-@objc protocol ButtonManagerDelegate {
+@objc protocol ButtonManagingDelegate {
     func deleteSelectedItems()
     func goToMakeNewMessageVC()
     func makeNewProxy()

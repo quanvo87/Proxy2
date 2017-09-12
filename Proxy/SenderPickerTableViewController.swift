@@ -3,7 +3,6 @@ import UIKit
 class SenderPickerTableViewController: UITableViewController {
     private var dataSource: ProxiesTableViewDataSource?
     private var delegate: SenderPickerTableViewDelegate?
-
     private weak var senderPickerDelegate: SenderPickerDelegate?
 
     override func viewDidLoad() {

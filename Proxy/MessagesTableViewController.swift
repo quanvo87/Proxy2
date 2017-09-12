@@ -1,10 +1,10 @@
 import UIKit
 
-class MessagesTableViewController: UITableViewController, ButtonManaging {
+class MessagesTableViewController: UITableViewController, ButtonManaging, MakeNewMessageDelegate {
     private let authObserver = AuthObserver()
     private let dataSource = MessagesTableViewDataSource()
     private let unreadCountObserver = UnreadCountObserver()
-    private var newConvo: Convo?
+    var newConvo: Convo?
     var buttons = Buttons()
     var itemsToDelete = [String : Any]()
 
@@ -26,7 +26,6 @@ class MessagesTableViewController: UITableViewController, ButtonManaging {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
-        
         if let newConvo = newConvo {
             goToConvoVC(newConvo)
         }
@@ -83,7 +82,7 @@ extension MessagesTableViewController: AuthObserverDelegate {
     }
 }
 
-extension MessagesTableViewController: ButtonManagerDelegate {
+extension MessagesTableViewController: ButtonManagingDelegate {
     func deleteSelectedItems() {
         if itemsToDelete.isEmpty {
             toggleEditMode()
@@ -148,12 +147,6 @@ extension MessagesTableViewController: ButtonManagerDelegate {
             setDefaultButtons()
             itemsToDelete.removeAll()
         }
-    }
-}
-
-extension MessagesTableViewController: MakeNewMessageDelegate {
-    func setNewConvo(to convo: Convo) {
-        newConvo = convo
     }
 }
 

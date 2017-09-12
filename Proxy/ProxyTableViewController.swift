@@ -1,9 +1,9 @@
 import UIKit
 
-class ProxyTableViewController: UITableViewController {
+class ProxyTableViewController: UITableViewController, MakeNewMessageDelegate {
     private var dataSource: ProxyTableViewDataSource?
     private var delegate: ProxyTableViewDelegate?
-    private var newConvo: Convo?
+    var newConvo: Convo?
     private var proxy: Proxy?
 
     override func viewDidLoad() {
@@ -57,11 +57,5 @@ private extension ProxyTableViewController {
         makeNewMessageVC.setSender(to: proxy)
         let navigationController = UINavigationController(rootViewController: makeNewMessageVC)
         present(navigationController, animated: true)
-    }
-}
-
-extension ProxyTableViewController: MakeNewMessageDelegate {
-    func setNewConvo(to convo: Convo) {
-        newConvo = convo
     }
 }
