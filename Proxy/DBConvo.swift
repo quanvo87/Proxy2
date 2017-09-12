@@ -102,10 +102,10 @@ struct DBConvo {
         return [senderProxy.key, senderProxy.ownerId, receiverProxy.key, receiverProxy.ownerId].sorted().joined()
     }
 
-    static func makeConvoTitle(receiverNickname: String, receiverProxyName: String, senderNickname: String, senderProxyName: String) -> NSAttributedString {
+    static func makeConvoTitle(_ convo: Convo) -> NSAttributedString {
         let grayAttribute = [NSAttributedStringKey.foregroundColor: UIColor.gray]
-        let receiver = NSMutableAttributedString(string: (receiverNickname == "" ? receiverProxyName : receiverNickname) + ", ")
-        let sender = NSMutableAttributedString(string: senderNickname == "" ? senderProxyName : senderNickname, attributes: grayAttribute)
+        let receiver = NSMutableAttributedString(string: (convo.receiverNickname == "" ? convo.receiverProxyName : convo.receiverNickname) + ", ")
+        let sender = NSMutableAttributedString(string: convo.senderNickname == "" ? convo.senderProxyName : convo.senderNickname, attributes: grayAttribute)
         receiver.append(sender)
         return receiver
     }

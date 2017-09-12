@@ -76,6 +76,16 @@ extension String {
     }
 }
 
+extension UIBarButtonItem {
+    static func makeButton(target: Any?, action: Selector, imageName: ButtonName) -> UIBarButtonItem {
+        let button = UIButton(type: .custom)
+        button.addTarget(target, action: action, for: .touchUpInside)
+        button.frame = UISetting.navBarButtonCGRect
+        button.setImage(UIImage(named: imageName.rawValue), for: .normal)
+        return UIBarButtonItem(customView: button)
+    }
+}
+
 extension UIColor {
     convenience init(red: Int, green: Int, blue: Int) {
         self.init(red: CGFloat(red) / 255.0, green: CGFloat(green) / 255.0, blue: CGFloat(blue) / 255.0, alpha: 1.0)

@@ -1,27 +1,48 @@
 import UIKit
 
-class ProxyTableViewDataSource: NSObject, UITableViewDataSource {
-    private let convosObserver = ConvosObserver()
-    private let proxyObserver = ProxyObserver()
+class ProxyTableViewDataSource: NSObject {
+    private let proxyKey: String
     private weak var tableViewController: UITableViewController?
+    private(set) weak var convosObserver: ConvosObserver?
+    private(set) weak var proxyObserver: ProxyObserver?
 
-    override init() {}
+    private var id: Int {
+        return ObjectIdentifier(self).hashValue
+    }
 
-    func observe(proxy: Proxy, tableViewController: UITableViewController) {
-        convosObserver.observeConvos(forOwner: proxy.ownerId, tableView: tableViewController.tableView)
-        proxyObserver.observe(proxy, tableView: tableViewController.tableView)
+    init(proxy: Proxy, tableViewController: UITableViewController) {
+        proxyKey = proxy.key
+
+        super.init()
+
+        let appDelegate = UIApplication.shared.delegate as? AppDelegate
+
+        convosObserver = appDelegate?.convosObserver
+        convosObserver?.addTableView(tableViewController.tableView, forKey: id)
+        convosObserver?.observeConvos(forOwner: proxy.key)
+
+        proxyObserver = appDelegate?.proxyObserver
+        proxyObserver?.addTableView(tableViewController.tableView, forKey: id)
+        proxyObserver?.observe(proxy)
+
         self.tableViewController = tableViewController
+
         tableViewController.tableView.dataSource = self
+    }
+
+    deinit {
+        convosObserver?.removeTableView(forKey: id)
+        proxyObserver?.removeTableView(forKey: id)
     }
 }
 
-extension ProxyTableViewDataSource {
+extension ProxyTableViewDataSource: UITableViewDataSource {
     var convos: [Convo] {
-        return convosObserver.convos
+        return convosObserver?.convos ?? []
     }
 
     var proxy: Proxy? {
-        return proxyObserver.proxy
+        return proxyObserver?.getProxy(withKey: proxyKey)
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -36,47 +57,18 @@ extension ProxyTableViewDataSource {
                 let proxy = proxy else {
                 return tableView.dequeueReusableCell(withIdentifier: Identifier.senderProxyTableViewCell, for: indexPath)
             }
-
+            cell.configure(proxy)
             cell.changeIconButton.addTarget(self, action: #selector(self.goToIconPickerVC), for: .touchUpInside)
-            cell.iconImageView.image = nil
-            cell.nameLabel.text = proxy.name
             cell.nicknameButton.addTarget(self, action: #selector(self.editNickname), for: .touchUpInside)
-            cell.nicknameButton.setTitle(proxy.nickname == "" ? "Enter A Nickname" : proxy.nickname, for: .normal)
-            cell.selectionStyle = .none
-
-            DBProxy.getImageForIcon(proxy.icon) { (result) in
-                guard let (icon, image) = result else { return }
-                DispatchQueue.main.async {
-                    guard icon == self.proxy?.icon else { return }
-                    cell.iconImageView.image = image
-                }
-            }
-
             return cell
-
         case 1:
             guard
                 let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.convosTableViewCell) as? ConvosTableViewCell,
                 let convo = convos[safe: indexPath.row] else {
                     return tableView.dequeueReusableCell(withIdentifier: Identifier.convosTableViewCell, for: indexPath)
             }
-
-            cell.iconImageView.image = nil
-            cell.lastMessageLabel.text = convo.lastMessage
-            cell.timestampLabel.text = convo.timestamp.asTimeAgo
-            cell.titleLabel.attributedText = DBConvo.makeConvoTitle(receiverNickname: convo.receiverNickname, receiverProxyName: convo.senderProxyName, senderNickname: convo.senderNickname, senderProxyName: convo.senderProxyName)
-            cell.unreadLabel.text = nil // TODO: delete
-
-            DBProxy.getImageForIcon(convo.receiverIcon) { (result) in
-                guard let (icon, image) = result else { return }
-                DispatchQueue.main.async {
-                    guard icon == convo.receiverIcon else { return }
-                    cell.iconImageView.image = image
-                }
-            }
-
+            cell.configure(convo)
             return cell
-
         default:
             return UITableViewCell()
         }
@@ -126,8 +118,11 @@ private extension ProxyTableViewDataSource {
     }
 
     @objc func goToIconPickerVC() {
-        guard let proxy = proxy else { return }
-        guard let iconPickerCollectionViewController = tableViewController?.storyboard?.instantiateViewController(withIdentifier: Identifier.iconPickerCollectionViewController) as? IconPickerCollectionViewController else { return }
+        guard
+            let proxy = proxy,
+            let iconPickerCollectionViewController = tableViewController?.storyboard?.instantiateViewController(withIdentifier: Identifier.iconPickerCollectionViewController) as? IconPickerCollectionViewController else {
+                return
+        }
         iconPickerCollectionViewController.proxy = proxy
         tableViewController?.navigationController?.pushViewController(iconPickerCollectionViewController, animated: true)
     }

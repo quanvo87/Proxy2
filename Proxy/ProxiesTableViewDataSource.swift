@@ -3,7 +3,7 @@ import UIKit
 class ProxiesTableViewDataSource: NSObject {
     private(set) weak var proxiesObserver: ProxiesObserver?
 
-    var id: Int {
+    private var id: Int {
         return ObjectIdentifier(self).hashValue
     }
 
@@ -12,6 +12,7 @@ class ProxiesTableViewDataSource: NSObject {
 
         proxiesObserver = (UIApplication.shared.delegate as? AppDelegate)?.proxiesObserver
         proxiesObserver?.addTableView(tableView, forKey: id)
+        proxiesObserver?.observe()
 
         tableView.dataSource = self
     }

@@ -26,5 +26,5 @@ class SenderPickerTableViewController: UITableViewController {
 }
 
 protocol SenderPickerDelegate: class {
-    func setSender(to proxy: Proxy)
+    func setSender(to proxy: Proxy?)
 }

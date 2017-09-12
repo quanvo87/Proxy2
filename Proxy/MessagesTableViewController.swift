@@ -78,7 +78,6 @@ extension MessagesTableViewController: AuthObserverDelegate {
             let loginVC = storyboard?.instantiateViewController(withIdentifier: Identifier.loginViewController) as? LoginViewController,
             let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
                 return
-
         }
         appDelegate.window?.rootViewController = loginVC
     }
@@ -118,6 +117,7 @@ extension MessagesTableViewController: ButtonManagerDelegate {
             switch result {
             case .failure(let error):
                 self.showAlert("Error Creating Proxy", message: error.description)
+                self.tabBarController?.selectedIndex = 1
             case .success:
                 guard
                     let proxiesNavigationController = self.tabBarController?.viewControllers?[safe: 1] as? UINavigationController,

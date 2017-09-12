@@ -81,6 +81,7 @@
 		59C171B21F60C64500EDE032 /* beachpalm.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 59C171AE1F60C64400EDE032 /* beachpalm.mp4 */; };
 		59C171B31F60C64500EDE032 /* dragontailzipline.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 59C171AF1F60C64500EDE032 /* dragontailzipline.mp4 */; };
 		59C171B41F60C64500EDE032 /* hawaiiancoast.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 59C171B01F60C64500EDE032 /* hawaiiancoast.mp4 */; };
+		59DCE5FC1F65FCC900AC9CEC /* ProxyTableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59DCE5FB1F65FCC900AC9CEC /* ProxyTableViewDelegate.swift */; };
 		9F0C2E94B3D2ACDB881894D0 /* Pods_ProxyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 677A1D9397BD6DC3C3277EF9 /* Pods_ProxyTests.framework */; };
 		B63EEE9998BB7F5B134BDEC0 /* Pods_ProxyUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C400879BD437927EB6BE4FFF /* Pods_ProxyUITests.framework */; };
 		F2B2CA19F2DB777FA6238258 /* Pods_Proxy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF71924192AC74DD367E5BCE /* Pods_Proxy.framework */; };
@@ -185,6 +186,7 @@
 		59C171AE1F60C64400EDE032 /* beachpalm.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = beachpalm.mp4; sourceTree = "<group>"; };
 		59C171AF1F60C64500EDE032 /* dragontailzipline.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = dragontailzipline.mp4; sourceTree = "<group>"; };
 		59C171B01F60C64500EDE032 /* hawaiiancoast.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = hawaiiancoast.mp4; sourceTree = "<group>"; };
+		59DCE5FB1F65FCC900AC9CEC /* ProxyTableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyTableViewDelegate.swift; sourceTree = "<group>"; };
 		677A1D9397BD6DC3C3277EF9 /* Pods_ProxyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ProxyTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		72952ACE9075AEFF00E792D4 /* Pods-ProxyUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ProxyUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-ProxyUITests/Pods-ProxyUITests.release.xcconfig"; sourceTree = "<group>"; };
 		98C496244826E188C3B4E0DE /* Pods-ProxyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ProxyTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-ProxyTests/Pods-ProxyTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -370,6 +372,7 @@
 				5973C8301F608A1D00647492 /* ProxiesTableViewDataSource.swift */,
 				596D7FD31F62EC1100E6AF8D /* ProxiesTableViewDelegate.swift */,
 				5973C8201F608A1B00647492 /* ProxyTableViewDataSource.swift */,
+				59DCE5FB1F65FCC900AC9CEC /* ProxyTableViewDelegate.swift */,
 				5973C8141F608A1A00647492 /* ProxyObserver.swift */,
 				59B7CC6B1F638A2A0063D137 /* ReferenceObserving.swift */,
 				5949F5821F63331B004597A0 /* SenderPickerTableViewDelegate.swift */,
@@ -386,8 +389,8 @@
 				5973C8281F608A1C00647492 /* ConvoViewController.swift */,
 				5973C81A1F608A1B00647492 /* ConvoDetailTableViewController.swift */,
 				5973C82C1F608A1D00647492 /* IconPickerCollectionViewController.swift */,
-				5973C8231F608A1C00647492 /* MakeNewMessageViewController.swift */,
 				5973C8221F608A1B00647492 /* LoginViewController.swift */,
+				5973C8231F608A1C00647492 /* MakeNewMessageViewController.swift */,
 				5973C81C1F608A1B00647492 /* MessagesTableViewController.swift */,
 				5973C8431F608A2100647492 /* MeTableViewController.swift */,
 				5973C8311F608A1D00647492 /* ProxiesTableViewController.swift */,
@@ -822,6 +825,7 @@
 				5973C8541F608A2200647492 /* ProxyTableViewDataSource.swift in Sources */,
 				598F068A1F60AF060066B742 /* API.swift in Sources */,
 				5973C85F1F608A2200647492 /* IconPickerCollectionViewController.swift in Sources */,
+				59DCE5FC1F65FCC900AC9CEC /* ProxyTableViewDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -12,7 +12,6 @@ class ProxiesTableViewController: UITableViewController {
         buttonManager.makeButtons(self)
 
         dataSource = ProxiesTableViewDataSource(tableView)
-        dataSource?.proxiesObserver?.observe()
 
         delegate = ProxiesTableViewDelegate(buttonManager: buttonManager, tableViewController: self)
 

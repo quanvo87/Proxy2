@@ -7,14 +7,10 @@ class ProxiesTableViewDelegate: NSObject {
 
     init(buttonManager: ButtonManager, tableViewController: ProxiesTableViewController) {
         super.init()
-
         self.buttonManager = buttonManager
+        self.proxiesObserver = (UIApplication.shared.delegate as? AppDelegate)?.proxiesObserver
         self.tableViewController = tableViewController
         tableViewController.tableView.delegate = self
-
-        if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-            self.proxiesObserver = appDelegate.proxiesObserver
-        }
     }
 }
 

@@ -27,7 +27,7 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate {
         messageTextView.becomeFirstResponder()
         messageTextView.delegate = self
 
-        navigationItem.rightBarButtonItem = ButtonManager.makeButton(target: self, action: #selector(self.cancelMakingNewMessage), imageName: .cancel)
+        navigationItem.rightBarButtonItem = UIBarButtonItem.makeButton(target: self, action: #selector(self.cancelMakingNewMessage), imageName: .cancel)
         navigationItem.title = "New Message"
 
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: view.window)
@@ -146,7 +146,7 @@ extension MakeNewMessageViewController: ReceiverPickerDelegate {
 }
 
 extension MakeNewMessageViewController: SenderPickerDelegate {
-    func setSender(to proxy: Proxy) {
+    func setSender(to proxy: Proxy?) {
         sender = proxy
     }
 }

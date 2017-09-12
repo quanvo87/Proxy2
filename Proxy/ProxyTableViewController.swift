@@ -1,20 +1,25 @@
 import UIKit
 
 class ProxyTableViewController: UITableViewController {
-    private let dataSource = ProxyTableViewDataSource()
+    private var dataSource: ProxyTableViewDataSource?
+    private var delegate: ProxyTableViewDelegate?
     private var newConvo: Convo?
-    private var proxy = Proxy()
+    private var proxy: Proxy?
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        dataSource.observe(proxy: proxy, tableViewController: self)
+        delegate = ProxyTableViewDelegate(self)
 
-        navigationItem.rightBarButtonItems = [ButtonManager.makeButton(target: self, action: #selector(self.goToMakeNewMessageVC), imageName: .makeNewMessage),
-                                              ButtonManager.makeButton(target: self, action: #selector(self.deleteProxy), imageName: .delete)]
+        navigationItem.rightBarButtonItems = [UIBarButtonItem.makeButton(target: self, action: #selector(self.goToMakeNewMessageVC), imageName: .makeNewMessage),
+                                              UIBarButtonItem.makeButton(target: self, action: #selector(self.deleteProxy), imageName: .delete)]
 
         tableView.delaysContentTouches = false
         tableView.separatorStyle = .none
+
+        if let proxy = proxy {
+            dataSource = ProxyTableViewDataSource(proxy: proxy, tableViewController: self)
+        }
 
         for case let scrollView as UIScrollView in tableView.subviews {
             scrollView.delaysContentTouches = false
@@ -36,9 +41,10 @@ class ProxyTableViewController: UITableViewController {
 
 private extension ProxyTableViewController {
     @objc func deleteProxy() {
+        guard let proxy = proxy else { return }
         let alert = UIAlertController(title: "Delete Proxy?", message: "You will not be able to see this proxy or its conversations again.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
-            DBProxy.deleteProxy(self.proxy) { _ in }
+            DBProxy.deleteProxy(proxy) { _ in }
             _ = self.navigationController?.popViewController(animated: true)
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -51,40 +57,6 @@ private extension ProxyTableViewController {
         makeNewMessageVC.setSender(to: proxy)
         let navigationController = UINavigationController(rootViewController: makeNewMessageVC)
         present(navigationController, animated: true)
-    }
-}
-
-extension ProxyTableViewController {
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if  indexPath.section == 1,
-            let row = tableView.indexPathForSelectedRow?.row,
-            let convo = dataSource.convos[safe: row],
-            let convoVC = storyboard?.instantiateViewController(withIdentifier: Identifier.convoViewController) as? ConvoViewController {
-            convoVC.convo = convo
-            navigationController?.pushViewController(convoVC, animated: true)
-        }
-    }
-    
-    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        switch section {
-        case 0:
-            return CGFloat.leastNormalMagnitude
-        case 1:
-            return 15
-        default:
-            return 0
-        }
-    }
-    
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        switch indexPath.section {
-        case 0:
-            return 140
-        case 1:
-            return 80
-        default:
-            return 0
-        }
     }
 }
 

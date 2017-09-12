@@ -10,8 +10,8 @@ class MessagesTableViewDataSource: NSObject, UITableViewDataSource {
     override init() {}
 
     func observe(_ tableView: UITableView) {
-        convosObserver.observeConvos(forOwner: Shared.shared.uid, tableView: tableView)
-        tableView.dataSource = self
+//        convosObserver.observeConvos(forOwner: Shared.shared.uid, tableView: tableView)
+//        tableView.dataSource = self
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -28,16 +28,11 @@ class MessagesTableViewDataSource: NSObject, UITableViewDataSource {
         cell.iconImageView.image = nil
         cell.lastMessageLabel.text = convo.lastMessage
         cell.timestampLabel.text = convo.timestamp.asTimeAgo
-        cell.titleLabel.attributedText = DBConvo.makeConvoTitle(receiverNickname: convo.receiverNickname,
-                                                                receiverProxyName: convo.receiverProxyName,
-                                                                senderNickname: convo.senderNickname,
-                                                                senderProxyName: convo.senderProxyName)
+        cell.titleLabel.attributedText = DBConvo.makeConvoTitle(convo)
         cell.unreadLabel.text = nil // TODO: delete
 
-        DBProxy.getImageForIcon(convo.receiverIcon) { (result) in
-            guard let (icon, image) = result else { return }
+        DBProxy.getImageForIcon(convo.receiverIcon) { (image) in
             DispatchQueue.main.async {
-                guard icon == convo.receiverIcon else { return }
                 cell.imageView?.image = image
             }
         }
