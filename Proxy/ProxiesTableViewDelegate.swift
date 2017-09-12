@@ -1,13 +1,11 @@
 import UIKit
 
 class ProxiesTableViewDelegate: NSObject {
-    private weak var buttonManager: ButtonManager?
     private weak var proxiesObserver: ProxiesObserver?
     private weak var tableViewController: ProxiesTableViewController?
 
-    init(buttonManager: ButtonManager, tableViewController: ProxiesTableViewController) {
+    init(_ tableViewController: ProxiesTableViewController) {
         super.init()
-        self.buttonManager = buttonManager
         self.proxiesObserver = (UIApplication.shared.delegate as? AppDelegate)?.proxiesObserver
         self.tableViewController = tableViewController
         tableViewController.tableView.delegate = self
@@ -16,10 +14,7 @@ class ProxiesTableViewDelegate: NSObject {
 
 extension ProxiesTableViewDelegate: UITableViewDelegate {
     var proxies: [Proxy] {
-        if let proxies = proxiesObserver?.proxies {
-            return proxies
-        }
-        return []
+        return proxiesObserver?.proxies ?? []
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -31,7 +26,7 @@ extension ProxiesTableViewDelegate: UITableViewDelegate {
             return
         }
         if tableView.isEditing {
-            buttonManager?.setItemToDelete(value: proxy, forKey: proxy.key)
+            tableViewController?.itemsToDelete[proxy.key] = proxy
         } else {
             tableView.deselectRow(at: indexPath, animated: true)
             goToProxyInfoVC(proxy)
@@ -42,7 +37,7 @@ extension ProxiesTableViewDelegate: UITableViewDelegate {
         guard let proxy = proxies[safe: indexPath.row] else {
             return
         }
-        buttonManager?.removeItemToDelete(forKey: proxy.key)
+        tableViewController?.itemsToDelete.removeValue(forKey: proxy.key)
     }
 
     func goToProxyInfoVC(_ proxy: Proxy) {

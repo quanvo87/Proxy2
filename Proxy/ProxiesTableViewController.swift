@@ -1,19 +1,20 @@
 import UIKit
 
-class ProxiesTableViewController: UITableViewController {
-    private var buttonManager = ButtonManager()
+class ProxiesTableViewController: UITableViewController, ButtonManaging {
     private var dataSource: ProxiesTableViewDataSource?
     private var delegate: ProxiesTableViewDelegate?
     private var newConvo: Convo?
+    var buttons = Buttons()
+    var itemsToDelete = [String : Any]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        buttonManager.makeButtons(self)
+        makeButtons(self)
 
         dataSource = ProxiesTableViewDataSource(tableView)
 
-        delegate = ProxiesTableViewDelegate(buttonManager: buttonManager, tableViewController: self)
+        delegate = ProxiesTableViewDelegate(self)
 
         navigationItem.title = "Proxies"
 
@@ -49,16 +50,16 @@ class ProxiesTableViewController: UITableViewController {
 
 extension ProxiesTableViewController: ButtonManagerDelegate {
     func deleteSelectedItems() {
-        if buttonManager.itemsToDelete.isEmpty {
+        if itemsToDelete.isEmpty {
             toggleEditMode()
             return
         }
         let alert = UIAlertController(title: "Delete Proxies?", message: "You will not be able to view their conversations anymore.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
-            self.buttonManager.disableButtons()
+            self.disableButtons()
             self.dataSource?.proxiesObserver?.stopObserving()
             let key = AsyncWorkGroupKey()
-            for (_, item) in self.buttonManager.itemsToDelete {
+            for (_, item) in self.itemsToDelete {
                 if let proxy = item as? Proxy {
                     key.startWork()
                     DBProxy.deleteProxy(proxy) { _ in
@@ -66,12 +67,12 @@ extension ProxiesTableViewController: ButtonManagerDelegate {
                     }
                 }
             }
-            self.buttonManager.removeAllItemsToDelete()
+            self.itemsToDelete.removeAll()
             self.setDefaultButtons()
             self.tableView.setEditing(false, animated: true)
             key.notify {
                 key.finishWorkGroup()
-                self.buttonManager.enableButtons()
+                self.enableButtons()
                 self.dataSource?.proxiesObserver?.observe()
             }
         })
@@ -100,13 +101,13 @@ extension ProxiesTableViewController: ButtonManagerDelegate {
     }
 
     func setDefaultButtons() {
-        navigationItem.leftBarButtonItem = buttonManager.deleteButton
-        navigationItem.rightBarButtonItems = [buttonManager.makeNewMessageButton, buttonManager.makeNewProxyButton]
+        navigationItem.leftBarButtonItem = buttons.deleteButton
+        navigationItem.rightBarButtonItems = [buttons.makeNewMessageButton, buttons.makeNewProxyButton]
     }
 
     func setEditModeButtons() {
-        navigationItem.leftBarButtonItem = buttonManager.cancelButton
-        navigationItem.rightBarButtonItems = [buttonManager.confirmButton]
+        navigationItem.leftBarButtonItem = buttons.cancelButton
+        navigationItem.rightBarButtonItems = [buttons.confirmButton]
     }
 
     func toggleEditMode() {
@@ -115,7 +116,7 @@ extension ProxiesTableViewController: ButtonManagerDelegate {
             setEditModeButtons()
         } else {
             setDefaultButtons()
-            buttonManager.removeAllItemsToDelete()
+            itemsToDelete.removeAll()
         }
     }
 }

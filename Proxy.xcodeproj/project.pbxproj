@@ -58,7 +58,7 @@
 		5973C8751F608A2200647492 /* loadProxyIconNames.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8421F608A2100647492 /* loadProxyIconNames.swift */; };
 		5973C8761F608A2200647492 /* MeTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8431F608A2100647492 /* MeTableViewController.swift */; };
 		5973C8771F608A2200647492 /* SenderPickerTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8441F608A2100647492 /* SenderPickerTableViewController.swift */; };
-		5973C8781F608A2200647492 /* ButtonManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8451F608A2100647492 /* ButtonManager.swift */; };
+		5973C8781F608A2200647492 /* ButtonManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8451F608A2100647492 /* ButtonManaging.swift */; };
 		5973C8791F608A2200647492 /* loadProxyNameAdjectives.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8461F608A2100647492 /* loadProxyNameAdjectives.swift */; };
 		5973C87A1F608A2200647492 /* AuthObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8471F608A2200647492 /* AuthObserver.swift */; };
 		5973C8841F608A4E00647492 /* DBTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C87B1F608A4D00647492 /* DBTests.swift */; };
@@ -156,7 +156,7 @@
 		5973C8421F608A2100647492 /* loadProxyIconNames.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = loadProxyIconNames.swift; sourceTree = "<group>"; };
 		5973C8431F608A2100647492 /* MeTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeTableViewController.swift; sourceTree = "<group>"; };
 		5973C8441F608A2100647492 /* SenderPickerTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SenderPickerTableViewController.swift; sourceTree = "<group>"; };
-		5973C8451F608A2100647492 /* ButtonManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonManager.swift; sourceTree = "<group>"; };
+		5973C8451F608A2100647492 /* ButtonManaging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonManaging.swift; sourceTree = "<group>"; };
 		5973C8461F608A2100647492 /* loadProxyNameAdjectives.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = loadProxyNameAdjectives.swift; sourceTree = "<group>"; };
 		5973C8471F608A2200647492 /* AuthObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthObserver.swift; sourceTree = "<group>"; };
 		5973C87B1F608A4D00647492 /* DBTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBTests.swift; sourceTree = "<group>"; };
@@ -340,7 +340,7 @@
 				598F06891F60AF060066B742 /* API.swift */,
 				59B432DF1F60648400622DEA /* AppDelegate.swift */,
 				5973C8251F608A1C00647492 /* AsyncWorkGroupKey.swift */,
-				5973C8451F608A2100647492 /* ButtonManager.swift */,
+				5973C8451F608A2100647492 /* ButtonManaging.swift */,
 				5973C8291F608A1C00647492 /* Common.swift */,
 				5973C83F1F608A2000647492 /* Constant.swift */,
 				5973C8421F608A2100647492 /* loadProxyIconNames.swift */,
@@ -813,7 +813,7 @@
 				5973C84A1F608A2200647492 /* ConvosTableViewCell.swift in Sources */,
 				5973C8561F608A2200647492 /* LoginViewController.swift in Sources */,
 				5973C8681F608A2200647492 /* ProxyTableViewController.swift in Sources */,
-				5973C8781F608A2200647492 /* ButtonManager.swift in Sources */,
+				5973C8781F608A2200647492 /* ButtonManaging.swift in Sources */,
 				5973C8611F608A2200647492 /* DB.swift in Sources */,
 				5973C87A1F608A2200647492 /* AuthObserver.swift in Sources */,
 				5973C85E1F608A2200647492 /* SenderProxyTableViewCell.swift in Sources */,

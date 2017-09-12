@@ -1,12 +1,12 @@
 import UIKit
 
-class MessagesTableViewController: UITableViewController {
+class MessagesTableViewController: UITableViewController, ButtonManaging {
     private let authObserver = AuthObserver()
     private let dataSource = MessagesTableViewDataSource()
     private let unreadCountObserver = UnreadCountObserver()
-
-    private var buttonManager = ButtonManager()
     private var newConvo: Convo?
+    var buttons = Buttons()
+    var itemsToDelete = [String : Any]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,7 +47,7 @@ extension MessagesTableViewController {
             return
         }
         if tableView.isEditing {
-            buttonManager.setItemToDelete(value: convo, forKey: convo.key)
+            itemsToDelete[convo.key] = convo
         } else {
             tableView.deselectRow(at: indexPath, animated: true)
             goToConvoVC(convo)
@@ -58,14 +58,14 @@ extension MessagesTableViewController {
         guard let convo = convos[safe: indexPath.row] else {
             return
         }
-        buttonManager.removeItemToDelete(forKey: convo.key)
+        itemsToDelete.removeValue(forKey: convo.key)
     }
 }
 
 extension MessagesTableViewController: AuthObserverDelegate {
     func logIn() {
         dataSource.observe(tableView)
-        buttonManager.makeButtons(self)
+        makeButtons(self)
         setDefaultButtons()
         DispatchQueue.global().async {
             DBProxy.fixConvoCounts { _ in }
@@ -85,17 +85,17 @@ extension MessagesTableViewController: AuthObserverDelegate {
 
 extension MessagesTableViewController: ButtonManagerDelegate {
     func deleteSelectedItems() {
-        if buttonManager.itemsToDelete.isEmpty {
+        if itemsToDelete.isEmpty {
             toggleEditMode()
             return
         }
         let alert = UIAlertController(title: "Leave Conversations?", message: "This will not delete the conversation.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Leave", style: .destructive) { _ in
-            for (_, item) in self.buttonManager.itemsToDelete {
+            for (_, item) in self.itemsToDelete {
                 guard let convo = item as? Convo else { return }
                 DBConvo.leaveConvo(convo) { _ in }
             }
-            self.buttonManager.removeAllItemsToDelete()
+            self.itemsToDelete.removeAll()
             self.setDefaultButtons()
             self.tableView.setEditing(false, animated: true)
         })
@@ -131,13 +131,13 @@ extension MessagesTableViewController: ButtonManagerDelegate {
     }
 
     func setDefaultButtons() {
-        navigationItem.leftBarButtonItem = buttonManager.deleteButton
-        navigationItem.rightBarButtonItems = [buttonManager.makeNewMessageButton, buttonManager.makeNewProxyButton]
+        navigationItem.leftBarButtonItem = buttons.deleteButton
+        navigationItem.rightBarButtonItems = [buttons.makeNewMessageButton, buttons.makeNewProxyButton]
     }
 
     func setEditModeButtons() {
-        navigationItem.leftBarButtonItem = buttonManager.cancelButton
-        navigationItem.rightBarButtonItems = [buttonManager.confirmButton]
+        navigationItem.leftBarButtonItem = buttons.cancelButton
+        navigationItem.rightBarButtonItems = [buttons.confirmButton]
     }
 
     func toggleEditMode() {
@@ -146,7 +146,7 @@ extension MessagesTableViewController: ButtonManagerDelegate {
             setEditModeButtons()
         } else {
             setDefaultButtons()
-            buttonManager.removeAllItemsToDelete()
+            itemsToDelete.removeAll()
         }
     }
 }
