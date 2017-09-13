@@ -216,11 +216,6 @@ class DBConvoTests: DBTest {
         XCTAssertEqual(DBConvo.makeConvoKey(senderProxy: sender, receiverProxy: receiver), "abcd")
     }
 
-    func testMakeConvoTitle() {
-        XCTAssertEqual(DBConvo.makeConvoTitle(receiverNickname: "a", receiverProxyName: "b", senderNickname: "c", senderProxyName: "d").string, "a, c")
-        XCTAssertEqual(DBConvo.makeConvoTitle(receiverNickname: "", receiverProxyName: "a", senderNickname: "", senderProxyName: "b").string, "a, b")
-    }
-
     func testSetReceiverNickname() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }

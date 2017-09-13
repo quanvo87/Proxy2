@@ -1,24 +1,19 @@
 import UIKit
 
-class MessagesTableViewController: UITableViewController {
+class MessagesTableViewController: UITableViewController, ButtonManaging, MakeNewMessageDelegate {
     private let authObserver = AuthObserver()
     private let dataSource = MessagesTableViewDataSource()
     private let unreadCountObserver = UnreadCountObserver()
-
-    private var buttonManager = ButtonManager()
-    private var newConvo: Convo?
+    var buttons = Buttons()
+    var itemsToDelete = [String : Any]()
+    var newConvo: Convo?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         authObserver.observe(self)
-
         edgesForExtendedLayout = .all
-
         navigationItem.title = "Messages"
-
         tabBarController?.tabBar.items?.setupForTabBar()
-
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.rowHeight = 80
         tableView.separatorStyle = .none
@@ -26,7 +21,6 @@ class MessagesTableViewController: UITableViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
-        
         if let newConvo = newConvo {
             goToConvoVC(newConvo)
         }
@@ -47,7 +41,7 @@ extension MessagesTableViewController {
             return
         }
         if tableView.isEditing {
-            buttonManager.itemsToDeleteSet(value: convo, forKey: convo.key)
+            itemsToDelete[convo.key] = convo
         } else {
             tableView.deselectRow(at: indexPath, animated: true)
             goToConvoVC(convo)
@@ -58,18 +52,18 @@ extension MessagesTableViewController {
         guard let convo = convos[safe: indexPath.row] else {
             return
         }
-        buttonManager.itemsToDeleteRemoveValue(forKey: convo.key)
+        itemsToDelete.removeValue(forKey: convo.key)
     }
 }
 
 extension MessagesTableViewController: AuthObserverDelegate {
     func logIn() {
         dataSource.observe(tableView)
-        buttonManager.makeButtons(self)
+        makeButtons(self)
         setDefaultButtons()
+        unreadCountObserver.observe(delegate: self)
         DispatchQueue.global().async {
             DBProxy.fixConvoCounts { _ in }
-            self.unreadCountObserver.observe(delegate: self)
         }
     }
 
@@ -78,25 +72,24 @@ extension MessagesTableViewController: AuthObserverDelegate {
             let loginVC = storyboard?.instantiateViewController(withIdentifier: Identifier.loginViewController) as? LoginViewController,
             let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
                 return
-
         }
         appDelegate.window?.rootViewController = loginVC
     }
 }
 
-extension MessagesTableViewController: ButtonManagerDelegate {
+extension MessagesTableViewController: ButtonManagingDelegate {
     func deleteSelectedItems() {
-        if buttonManager.itemsToDelete.isEmpty {
+        if itemsToDelete.isEmpty {
             toggleEditMode()
             return
         }
         let alert = UIAlertController(title: "Leave Conversations?", message: "This will not delete the conversation.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Leave", style: .destructive) { _ in
-            for (_, item) in self.buttonManager.itemsToDelete {
+            for (_, item) in self.itemsToDelete {
                 guard let convo = item as? Convo else { return }
                 DBConvo.leaveConvo(convo) { _ in }
             }
-            self.buttonManager.itemsToDeleteRemoveAll()
+            self.itemsToDelete.removeAll()
             self.setDefaultButtons()
             self.tableView.setEditing(false, animated: true)
         })
@@ -106,7 +99,7 @@ extension MessagesTableViewController: ButtonManagerDelegate {
 
     func goToMakeNewMessageVC() {
         guard let makeNewMessageVC = storyboard?.instantiateViewController(withIdentifier: Identifier.makeNewMessageViewController) as? MakeNewMessageViewController else { return }
-        makeNewMessageVC.setDelegate(to: self)
+        makeNewMessageVC.delegate = self
         let navigationController = UINavigationController(rootViewController: makeNewMessageVC)
         present(navigationController, animated: true)
     }
@@ -118,6 +111,7 @@ extension MessagesTableViewController: ButtonManagerDelegate {
             switch result {
             case .failure(let error):
                 self.showAlert("Error Creating Proxy", message: error.description)
+                self.tabBarController?.selectedIndex = 1
             case .success:
                 guard
                     let proxiesNavigationController = self.tabBarController?.viewControllers?[safe: 1] as? UINavigationController,
@@ -131,13 +125,13 @@ extension MessagesTableViewController: ButtonManagerDelegate {
     }
 
     func setDefaultButtons() {
-        navigationItem.leftBarButtonItem = buttonManager.deleteButton
-        navigationItem.rightBarButtonItems = [buttonManager.makeNewMessageButton, buttonManager.makeNewProxyButton]
+        navigationItem.leftBarButtonItem = buttons.deleteButton
+        navigationItem.rightBarButtonItems = [buttons.makeNewMessageButton, buttons.makeNewProxyButton]
     }
 
     func setEditModeButtons() {
-        navigationItem.leftBarButtonItem = buttonManager.cancelButton
-        navigationItem.rightBarButtonItems = [buttonManager.confirmButton]
+        navigationItem.leftBarButtonItem = buttons.cancelButton
+        navigationItem.rightBarButtonItems = [buttons.confirmButton]
     }
 
     func toggleEditMode() {
@@ -146,14 +140,8 @@ extension MessagesTableViewController: ButtonManagerDelegate {
             setEditModeButtons()
         } else {
             setDefaultButtons()
-            buttonManager.itemsToDeleteRemoveAll()
+            itemsToDelete.removeAll()
         }
-    }
-}
-
-extension MessagesTableViewController: MakeNewMessageDelegate {
-    func setNewConvo(to convo: Convo) {
-        newConvo = convo
     }
 }
 

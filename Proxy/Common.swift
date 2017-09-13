@@ -7,12 +7,6 @@ enum Result<T, Error> {
     case failure(Error)
 }
 
-extension Array where Element: UITableViewCell {
-    func incrementTags() {
-        _ = self.map { $0.tag += 1 }
-    }
-}
-
 // https://stackoverflow.com/questions/25329186/safe-bounds-checked-array-lookup-in-swift-through-optional-bindings
 extension Collection {
     subscript(safe index: Index) -> Element? {
@@ -79,6 +73,16 @@ extension String {
     func makeBold(withSize size: CGFloat) -> NSMutableAttributedString {
         let boldAttr = [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: size)]
         return NSMutableAttributedString(string: self, attributes: boldAttr)
+    }
+}
+
+extension UIBarButtonItem {
+    static func makeButton(target: Any?, action: Selector, imageName: ButtonName) -> UIBarButtonItem {
+        let button = UIButton(type: .custom)
+        button.addTarget(target, action: action, for: .touchUpInside)
+        button.frame = UISetting.navBarButtonCGRect
+        button.setImage(UIImage(named: imageName.rawValue), for: .normal)
+        return UIBarButtonItem(customView: button)
     }
 }
 

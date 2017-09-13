@@ -77,13 +77,9 @@ struct DBProxy {
         }
     }
 
-    static func getImageForIcon(_ iconName: String, completion: @escaping ((iconName: String, image: UIImage)?) -> Void) {
+    static func getImageForIcon(_ iconName: String, completion: @escaping (UIImage?) -> Void) {
         Shared.shared.queue.async {
-            guard let image = UIImage(named: iconName) else {
-                completion(nil)
-                return
-            }
-            completion((iconName, image))
+            completion(UIImage(named: iconName))
         }
     }
 
