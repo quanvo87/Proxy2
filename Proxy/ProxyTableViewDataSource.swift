@@ -2,13 +2,10 @@ import UIKit
 
 class ProxyTableViewDataSource: NSObject {
     private let proxyKey: String
+    private var id: Int { return ObjectIdentifier(self).hashValue }
     private weak var tableViewController: UITableViewController?
     private weak var convosObserver: ConvosObserver?
     private weak var proxyObserver: ProxyObserver?
-
-    private var id: Int {
-        return ObjectIdentifier(self).hashValue
-    }
 
     init(proxy: Proxy, tableViewController: UITableViewController) {
         proxyKey = proxy.key

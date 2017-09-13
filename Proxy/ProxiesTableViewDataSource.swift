@@ -1,11 +1,8 @@
 import UIKit
 
 class ProxiesTableViewDataSource: NSObject {
+    private var id: Int { return ObjectIdentifier(self).hashValue }
     private(set) weak var proxiesObserver: ProxiesObserver?
-
-    private var id: Int {
-        return ObjectIdentifier(self).hashValue
-    }
 
     init(_ tableView: UITableView) {
         super.init()

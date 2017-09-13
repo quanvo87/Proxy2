@@ -7,25 +7,17 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate, Sender
     @IBOutlet weak var pickReceiverButton: UIButton?
     @IBOutlet weak var pickSenderButton: UIButton?
     @IBOutlet weak var sendMessageButton: UIButton?
+    private var receiver: Proxy? { didSet { setReceiverButtonTitle() } }
     weak var delegate: MakeNewMessageDelegate?
-    private var receiver: Proxy? {
-        didSet {
-            setReceiverButtonTitle()
-        }
-    }
-    var sender: Proxy? {
-        didSet {
-            setSenderButtonTitle()
-        }
-    }
+    var sender: Proxy? { didSet { setSenderButtonTitle() } }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         messageTextView.becomeFirstResponder()
         messageTextView.delegate = self
-        navigationItem.rightBarButtonItem = UIBarButtonItem.makeButton(target: self, action: #selector(self.cancelMakingNewMessage), imageName: .cancel)
+        navigationItem.rightBarButtonItem = UIBarButtonItem.makeButton(target: self, action: #selector(cancelMakingNewMessage), imageName: .cancel)
         navigationItem.title = "New Message"
-        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: view.window)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: view.window)
         setSenderButtonTitle()
     }
 
@@ -57,7 +49,7 @@ private extension MakeNewMessageViewController {
     }
 
     @IBAction func goToSenderPickerVC() {
-        guard let senderPickerVC = self.storyboard?.instantiateViewController(withIdentifier: Identifier.senderPickerTableViewController) as? SenderPickerTableViewController else { return }
+        guard let senderPickerVC = storyboard?.instantiateViewController(withIdentifier: Identifier.senderPickerTableViewController) as? SenderPickerTableViewController else { return }
         senderPickerVC.senderPickerDelegate = self
         navigationController?.pushViewController(senderPickerVC, animated: true)
     }
