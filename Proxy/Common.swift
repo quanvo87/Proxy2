@@ -44,6 +44,16 @@ extension Int {
     }
 }
 
+extension MakeNewMessageDelegate where Self: UIViewController {
+    func goToMakeNewMessageVC(_ sender: Proxy? = nil) {
+        guard let makeNewMessageVC = self.storyboard?.instantiateViewController(withIdentifier: Identifier.makeNewMessageViewController) as? MakeNewMessageViewController else { return }
+        makeNewMessageVC.delegate = self
+        makeNewMessageVC.sender = sender
+        let navigationController = UINavigationController(rootViewController: makeNewMessageVC)
+        present(navigationController, animated: true)
+    }
+}
+
 private extension NumberFormatter {
     static let proxyNumberFormatter: NumberFormatter = {
         let formatter = NumberFormatter()

@@ -8,14 +8,14 @@ class ProxyTableViewController: UITableViewController, MakeNewMessageDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        delegate = ProxyTableViewDelegate(self)
-        navigationItem.rightBarButtonItems = [UIBarButtonItem.makeButton(target: self, action: #selector(self.goToMakeNewMessageVC), imageName: .makeNewMessage),
-                                              UIBarButtonItem.makeButton(target: self, action: #selector(self.deleteProxy), imageName: .delete)]
-        tableView.delaysContentTouches = false
-        tableView.separatorStyle = .none
         if let proxy = proxy {
             dataSource = ProxyTableViewDataSource(proxy: proxy, tableViewController: self)
         }
+        delegate = ProxyTableViewDelegate(self)
+        navigationItem.rightBarButtonItems = [UIBarButtonItem.makeButton(target: self, action: #selector(goToMakeNewMessageVC), imageName: .makeNewMessage),
+                                              UIBarButtonItem.makeButton(target: self, action: #selector(deleteProxy), imageName: .delete)]
+        tableView.delaysContentTouches = false
+        tableView.separatorStyle = .none
         for case let scrollView as UIScrollView in tableView.subviews {
             scrollView.delaysContentTouches = false
         }
@@ -42,10 +42,6 @@ private extension ProxyTableViewController {
     }
 
     @objc func goToMakeNewMessageVC() {
-        guard let makeNewMessageVC = self.storyboard?.instantiateViewController(withIdentifier: Identifier.makeNewMessageViewController) as? MakeNewMessageViewController else { return }
-        makeNewMessageVC.delegate = self
-        makeNewMessageVC.sender = proxy
-        let navigationController = UINavigationController(rootViewController: makeNewMessageVC)
-        present(navigationController, animated: true)
+        goToMakeNewMessageVC(proxy)
     }
 }

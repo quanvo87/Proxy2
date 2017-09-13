@@ -1,10 +1,16 @@
 import UIKit
 
 class MessagesTableViewController: UITableViewController, ButtonManaging, MakeNewMessageDelegate {
+    var cancelButton = UIBarButtonItem()
+    var confirmButton = UIBarButtonItem()
+    var deleteButton = UIBarButtonItem()
+    var makeNewMessageButton = UIBarButtonItem()
+    var makeNewProxyButton = UIBarButtonItem()
+
     private let authObserver = AuthObserver()
     private let dataSource = MessagesTableViewDataSource()
     private let unreadCountObserver = UnreadCountObserver()
-    var buttons = Buttons()
+
     var itemsToDelete = [String : Any]()
     var newConvo: Convo?
 
@@ -59,7 +65,7 @@ extension MessagesTableViewController {
 extension MessagesTableViewController: AuthObserverDelegate {
     func logIn() {
         dataSource.observe(tableView)
-        makeButtons(self)
+        makeButtons()
         setDefaultButtons()
         unreadCountObserver.observe(delegate: self)
         DispatchQueue.global().async {
@@ -77,8 +83,8 @@ extension MessagesTableViewController: AuthObserverDelegate {
     }
 }
 
-extension MessagesTableViewController: ButtonManagingDelegate {
-    func deleteSelectedItems() {
+extension MessagesTableViewController {
+    func _deleteSelectedItems() {
         if itemsToDelete.isEmpty {
             toggleEditMode()
             return
@@ -97,14 +103,11 @@ extension MessagesTableViewController: ButtonManagingDelegate {
         present(alert, animated: true)
     }
 
-    func goToMakeNewMessageVC() {
-        guard let makeNewMessageVC = storyboard?.instantiateViewController(withIdentifier: Identifier.makeNewMessageViewController) as? MakeNewMessageViewController else { return }
-        makeNewMessageVC.delegate = self
-        let navigationController = UINavigationController(rootViewController: makeNewMessageVC)
-        present(navigationController, animated: true)
+    func _goToMakeNewMessageVC() {
+        goToMakeNewMessageVC()
     }
 
-    func makeNewProxy() {
+    func _makeNewProxy() {
         navigationItem.toggleRightBarButtonItem(atIndex: 1)
         DBProxy.makeProxy { (result) in
             self.navigationItem.toggleRightBarButtonItem(atIndex: 1)
@@ -124,24 +127,8 @@ extension MessagesTableViewController: ButtonManagingDelegate {
         }
     }
 
-    func setDefaultButtons() {
-        navigationItem.leftBarButtonItem = buttons.deleteButton
-        navigationItem.rightBarButtonItems = [buttons.makeNewMessageButton, buttons.makeNewProxyButton]
-    }
-
-    func setEditModeButtons() {
-        navigationItem.leftBarButtonItem = buttons.cancelButton
-        navigationItem.rightBarButtonItems = [buttons.confirmButton]
-    }
-
-    func toggleEditMode() {
-        tableView.setEditing(!tableView.isEditing, animated: true)
-        if tableView.isEditing {
-            setEditModeButtons()
-        } else {
-            setDefaultButtons()
-            itemsToDelete.removeAll()
-        }
+    func _toggleEditMode() {
+        toggleEditMode()
     }
 }
 
