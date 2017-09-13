@@ -34,15 +34,17 @@ extension ProxiesTableViewDelegate: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        guard let proxy = proxies[safe: indexPath.row] else {
-            return
+        guard
+            tableView.isEditing,
+            let proxy = proxies[safe: indexPath.row] else {
+                return
         }
         tableViewController?.itemsToDelete.removeValue(forKey: proxy.key)
     }
 
     func goToProxyInfoVC(_ proxy: Proxy) {
         guard let proxyVC = tableViewController?.storyboard?.instantiateViewController(withIdentifier: Identifier.proxyTableViewController) as? ProxyTableViewController else { return }
-        proxyVC.setProxy(proxy)
+        proxyVC.proxy = proxy
         tableViewController?.navigationController?.pushViewController(proxyVC, animated: true)
     }
 }

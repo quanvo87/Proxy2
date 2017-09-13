@@ -1,5 +1,4 @@
 import FirebaseDatabase
-import UIKit
 
 class ConvosObserver: ReferenceObserving, TableViewMapTableHandling {
     private(set) var convos = [Convo]()
@@ -8,12 +7,8 @@ class ConvosObserver: ReferenceObserving, TableViewMapTableHandling {
     private(set) var tableViews = NSMapTable<AnyObject, AnyObject>(keyOptions: [.weakMemory], valueOptions: [.weakMemory])
 
     func observeConvos(forOwner owner: String) {
-        if let handle = handle {
-            ref?.removeObserver(withHandle: handle)
-        }
-
+        stopObserving()
         ref = DB.makeReference(Child.convos, owner)
-
         handle = ref?.queryOrdered(byChild: Child.timestamp).observe(.value, with: { [weak self] (data) in
             self?.convos = data.toConvosArray(filtered: true).reversed()
             self?.reloadTableViews()
@@ -21,8 +16,6 @@ class ConvosObserver: ReferenceObserving, TableViewMapTableHandling {
     }
 
     deinit {
-        if let handle = handle {
-            ref?.removeObserver(withHandle: handle)
-        }
+        stopObserving()
     }
 }

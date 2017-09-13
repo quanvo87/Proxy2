@@ -1,5 +1,30 @@
 import UIKit
 
+enum ButtonName: String {
+    case cancel
+    case confirm
+    case delete
+    case makeNewMessage
+    case makeNewProxy
+}
+
+struct Buttons {
+    var cancelButton = UIBarButtonItem()
+    var confirmButton = UIBarButtonItem()
+    var deleteButton = UIBarButtonItem()
+    var makeNewMessageButton = UIBarButtonItem()
+    var makeNewProxyButton = UIBarButtonItem()
+}
+
+@objc protocol ButtonManagingDelegate {
+    func deleteSelectedItems()
+    func goToMakeNewMessageVC()
+    func makeNewProxy()
+    func setDefaultButtons()
+    func setEditModeButtons()
+    func toggleEditMode()
+}
+
 protocol ButtonManaging: class {
     var buttons: Buttons { get set }
     func disableButtons()
@@ -31,29 +56,4 @@ extension ButtonManaging {
         buttons.makeNewMessageButton = UIBarButtonItem.makeButton(target: delegate, action: #selector(delegate.goToMakeNewMessageVC), imageName: .makeNewMessage)
         buttons.makeNewProxyButton = UIBarButtonItem.makeButton(target: delegate, action: #selector(delegate.makeNewProxy), imageName: .makeNewProxy)
     }
-}
-
-enum ButtonName: String {
-    case cancel
-    case confirm
-    case delete
-    case makeNewMessage
-    case makeNewProxy
-}
-
-struct Buttons {
-    var cancelButton = UIBarButtonItem()
-    var confirmButton = UIBarButtonItem()
-    var deleteButton = UIBarButtonItem()
-    var makeNewMessageButton = UIBarButtonItem()
-    var makeNewProxyButton = UIBarButtonItem()
-}
-
-@objc protocol ButtonManagingDelegate {
-    func deleteSelectedItems()
-    func goToMakeNewMessageVC()
-    func makeNewProxy()
-    func setDefaultButtons()
-    func setEditModeButtons()
-    func toggleEditMode()
 }

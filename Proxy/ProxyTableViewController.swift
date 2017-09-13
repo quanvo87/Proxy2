@@ -4,23 +4,18 @@ class ProxyTableViewController: UITableViewController, MakeNewMessageDelegate {
     private var dataSource: ProxyTableViewDataSource?
     private var delegate: ProxyTableViewDelegate?
     var newConvo: Convo?
-    private var proxy: Proxy?
+    var proxy: Proxy?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         delegate = ProxyTableViewDelegate(self)
-
         navigationItem.rightBarButtonItems = [UIBarButtonItem.makeButton(target: self, action: #selector(self.goToMakeNewMessageVC), imageName: .makeNewMessage),
                                               UIBarButtonItem.makeButton(target: self, action: #selector(self.deleteProxy), imageName: .delete)]
-
         tableView.delaysContentTouches = false
         tableView.separatorStyle = .none
-
         if let proxy = proxy {
             dataSource = ProxyTableViewDataSource(proxy: proxy, tableViewController: self)
         }
-
         for case let scrollView as UIScrollView in tableView.subviews {
             scrollView.delaysContentTouches = false
         }
@@ -28,14 +23,9 @@ class ProxyTableViewController: UITableViewController, MakeNewMessageDelegate {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
-
         if let newConvo = newConvo {
             goToConvoVC(newConvo)
         }
-    }
-
-    func setProxy(_ proxy: Proxy) {
-        self.proxy = proxy
     }
 }
 
@@ -48,13 +38,13 @@ private extension ProxyTableViewController {
             _ = self.navigationController?.popViewController(animated: true)
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        self.present(alert, animated: true, completion: nil)
+        present(alert, animated: true, completion: nil)
     }
 
     @objc func goToMakeNewMessageVC() {
         guard let makeNewMessageVC = self.storyboard?.instantiateViewController(withIdentifier: Identifier.makeNewMessageViewController) as? MakeNewMessageViewController else { return }
-        makeNewMessageVC.setDelegate(to: self)
-        makeNewMessageVC.setSender(to: proxy)
+        makeNewMessageVC.delegate = self
+        makeNewMessageVC.sender = proxy
         let navigationController = UINavigationController(rootViewController: makeNewMessageVC)
         present(navigationController, animated: true)
     }

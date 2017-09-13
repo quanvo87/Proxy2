@@ -8,7 +8,6 @@ class ReceiverPickerViewController: UIViewController, UICollectionViewDelegate {
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     
     let api = API.sharedInstance
-    weak var delegate: ReceiverPickerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -66,8 +65,4 @@ class ReceiverPickerViewController: UIViewController, UICollectionViewDelegate {
     @objc func keyboardWillHide(_ notification: Notification) {
         bottomConstraint.constant = 5
     }
-}
-
-protocol ReceiverPickerDelegate: class {
-    func setReceiver(to proxy: Proxy)
 }

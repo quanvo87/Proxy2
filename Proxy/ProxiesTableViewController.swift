@@ -3,23 +3,17 @@ import UIKit
 class ProxiesTableViewController: UITableViewController, ButtonManaging, MakeNewMessageDelegate {
     private var dataSource: ProxiesTableViewDataSource?
     private var delegate: ProxiesTableViewDelegate?
-    var newConvo: Convo?
     var buttons = Buttons()
     var itemsToDelete = [String : Any]()
+    var newConvo: Convo?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        makeButtons(self)
-
         dataSource = ProxiesTableViewDataSource(tableView)
-
         delegate = ProxiesTableViewDelegate(self)
-
+        makeButtons(self)
         navigationItem.title = "Proxies"
-
         setDefaultButtons()
-        
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.rowHeight = 60
         tableView.separatorStyle = .none
@@ -82,7 +76,7 @@ extension ProxiesTableViewController: ButtonManagingDelegate {
 
     func goToMakeNewMessageVC() {
         guard let makeNewMessageVC = self.storyboard?.instantiateViewController(withIdentifier: Identifier.makeNewMessageViewController) as? MakeNewMessageViewController else { return }
-        makeNewMessageVC.setDelegate(to: self)
+        makeNewMessageVC.delegate = self
         let navigationController = UINavigationController(rootViewController: makeNewMessageVC)
         present(navigationController, animated: true)
     }

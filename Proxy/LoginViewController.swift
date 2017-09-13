@@ -12,13 +12,10 @@ class LoginViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         player.play(self.view)
-
         emailTextField.clearButtonMode = .whileEditing
         passwordTextField.clearButtonMode = .whileEditing
         passwordTextField.isSecureTextEntry = true
-
         facebookButton.setupForLogin()
         loginButton.setupForLogin()
         signUpButton.setupForLogin()

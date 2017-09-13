@@ -3,8 +3,8 @@ import UIKit
 class ProxyTableViewDataSource: NSObject {
     private let proxyKey: String
     private weak var tableViewController: UITableViewController?
-    private(set) weak var convosObserver: ConvosObserver?
-    private(set) weak var proxyObserver: ProxyObserver?
+    private weak var convosObserver: ConvosObserver?
+    private weak var proxyObserver: ProxyObserver?
 
     private var id: Int {
         return ObjectIdentifier(self).hashValue
@@ -12,27 +12,21 @@ class ProxyTableViewDataSource: NSObject {
 
     init(proxy: Proxy, tableViewController: UITableViewController) {
         proxyKey = proxy.key
-
         super.init()
-
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
-
         convosObserver = appDelegate?.convosObserver
-        convosObserver?.addTableView(tableViewController.tableView, forKey: id)
+        convosObserver?.tableViews.setObject(tableViewController.tableView, forKey: id as AnyObject)
         convosObserver?.observeConvos(forOwner: proxy.key)
-
         proxyObserver = appDelegate?.proxyObserver
-        proxyObserver?.addTableView(tableViewController.tableView, forKey: id)
+        proxyObserver?.tableViews.setObject(tableViewController.tableView, forKey: id as AnyObject)
         proxyObserver?.observe(proxy)
-
         self.tableViewController = tableViewController
-
         tableViewController.tableView.dataSource = self
     }
 
     deinit {
-        convosObserver?.removeTableView(forKey: id)
-        proxyObserver?.removeTableView(forKey: id)
+        convosObserver?.tableViews.removeObject(forKey: id as AnyObject)
+        proxyObserver?.tableViews.removeObject(forKey: id as AnyObject)
     }
 }
 
@@ -42,7 +36,7 @@ extension ProxyTableViewDataSource: UITableViewDataSource {
     }
 
     var proxy: Proxy? {
-        return proxyObserver?.getProxy(withKey: proxyKey)
+        return proxyObserver?.proxies.object(forKey: proxyKey as NSString) as? Proxy
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -55,7 +49,7 @@ extension ProxyTableViewDataSource: UITableViewDataSource {
             guard
                 let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.senderProxyTableViewCell) as? SenderProxyTableViewCell,
                 let proxy = proxy else {
-                return tableView.dequeueReusableCell(withIdentifier: Identifier.senderProxyTableViewCell, for: indexPath)
+                    return tableView.dequeueReusableCell(withIdentifier: Identifier.senderProxyTableViewCell, for: indexPath)
             }
             cell.configure(proxy)
             cell.changeIconButton.addTarget(self, action: #selector(self.goToIconPickerVC), for: .touchUpInside)
@@ -76,21 +70,16 @@ extension ProxyTableViewDataSource: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
-        case 0:
-            return 1
-        case 1:
-            return convos.count
-        default:
-            return 0
+        case 0: return 1
+        case 1: return convos.count
+        default: return 0
         }
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
-        case 1:
-            return "CONVERSATIONS"
-        default:
-            return nil
+        case 1: return "CONVERSATIONS"
+        default: return nil
         }
     }
 }

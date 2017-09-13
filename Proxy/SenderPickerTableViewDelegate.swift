@@ -7,11 +7,9 @@ class SenderPickerTableViewDelegate: NSObject {
 
     init(delegate: SenderPickerDelegate?, tableViewController: SenderPickerTableViewController) {
         super.init()
-
         self.delegate = delegate
         self.proxiesObserver = (UIApplication.shared.delegate as? AppDelegate)?.proxiesObserver
         self.tableViewController = tableViewController
-
         tableViewController.tableView.delegate = self
     }
 }
@@ -24,7 +22,7 @@ extension SenderPickerTableViewDelegate: UITableViewDelegate {
             let viewController = tableViewController else {
                 return
         }
-        delegate.setSender(to: proxy)
+        delegate.sender = proxy
         _ = viewController.navigationController?.popViewController(animated: true)
     }
 

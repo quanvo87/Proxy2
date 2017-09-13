@@ -4,21 +4,16 @@ class MessagesTableViewController: UITableViewController, ButtonManaging, MakeNe
     private let authObserver = AuthObserver()
     private let dataSource = MessagesTableViewDataSource()
     private let unreadCountObserver = UnreadCountObserver()
-    var newConvo: Convo?
     var buttons = Buttons()
     var itemsToDelete = [String : Any]()
+    var newConvo: Convo?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         authObserver.observe(self)
-
         edgesForExtendedLayout = .all
-
         navigationItem.title = "Messages"
-
         tabBarController?.tabBar.items?.setupForTabBar()
-
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.rowHeight = 80
         tableView.separatorStyle = .none
@@ -66,9 +61,9 @@ extension MessagesTableViewController: AuthObserverDelegate {
         dataSource.observe(tableView)
         makeButtons(self)
         setDefaultButtons()
+        unreadCountObserver.observe(delegate: self)
         DispatchQueue.global().async {
             DBProxy.fixConvoCounts { _ in }
-            self.unreadCountObserver.observe(delegate: self)
         }
     }
 
@@ -104,7 +99,7 @@ extension MessagesTableViewController: ButtonManagingDelegate {
 
     func goToMakeNewMessageVC() {
         guard let makeNewMessageVC = storyboard?.instantiateViewController(withIdentifier: Identifier.makeNewMessageViewController) as? MakeNewMessageViewController else { return }
-        makeNewMessageVC.setDelegate(to: self)
+        makeNewMessageVC.delegate = self
         let navigationController = UINavigationController(rootViewController: makeNewMessageVC)
         present(navigationController, animated: true)
     }
