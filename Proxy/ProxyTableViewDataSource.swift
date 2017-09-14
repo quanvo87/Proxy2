@@ -1,14 +1,14 @@
 import UIKit
 
 class ProxyTableViewDataSource: NSObject {
-    private let proxy: Proxy
+    private let _proxy: Proxy
     private var id: Int { return ObjectIdentifier(self).hashValue }
     private weak var tableViewController: UITableViewController?
     private weak var convosObserver: ConvosObserver?
     private weak var proxyObserver: ProxyObserver?
 
     init(proxy: Proxy, tableViewController: UITableViewController) {
-        self.proxy = proxy
+        self._proxy = proxy
         super.init()
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
         convosObserver = appDelegate?.convosObserver
@@ -19,8 +19,8 @@ class ProxyTableViewDataSource: NSObject {
 
     func observe() {
         guard let tableView = tableViewController?.tableView else { return }
-        convosObserver?.observeConvos(owner: proxy.key, tableView: tableView)
-        proxyObserver?.observe(proxy: proxy, tableView: tableView)
+        convosObserver?.observeConvos(owner: _proxy.key, tableView: tableView)
+        proxyObserver?.observe(proxy: _proxy, tableView: tableView)
     }
 
     func stopObserving() {
@@ -34,8 +34,8 @@ extension ProxyTableViewDataSource: UITableViewDataSource {
         return convosObserver?.convos ?? []
     }
 
-    var freshProxy: Proxy? {
-        return proxyObserver?.getProxy(forKey: proxy.key)
+    var proxy: Proxy? {
+        return proxyObserver?.getProxy(forKey: _proxy.key)
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -47,7 +47,7 @@ extension ProxyTableViewDataSource: UITableViewDataSource {
         case 0:
             guard
                 let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.senderProxyTableViewCell) as? SenderProxyTableViewCell,
-                let proxy = freshProxy else {
+                let proxy = proxy else {
                     return tableView.dequeueReusableCell(withIdentifier: Identifier.senderProxyTableViewCell, for: indexPath)
             }
             cell.configure(proxy)
@@ -85,7 +85,7 @@ extension ProxyTableViewDataSource: UITableViewDataSource {
 
 private extension ProxyTableViewDataSource {
     @objc func editNickname() {
-        guard let proxy = freshProxy else { return }
+        guard let proxy = proxy else { return }
         let alert = UIAlertController(title: "Edit Nickname", message: "Only you see your nickname.", preferredStyle: .alert)
         alert.addTextField { (textField) in
             textField.autocapitalizationType = .sentences
@@ -107,7 +107,7 @@ private extension ProxyTableViewDataSource {
 
     @objc func goToIconPickerVC() {
         guard
-            let proxy = freshProxy,
+            let proxy = proxy,
             let iconPickerCollectionViewController = tableViewController?.storyboard?.instantiateViewController(withIdentifier: Identifier.iconPickerCollectionViewController) as? IconPickerCollectionViewController else {
                 return
         }
