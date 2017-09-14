@@ -17,6 +17,7 @@ class ProxiesTableViewController: UITableViewController, ButtonManaging, MakeNew
         super.viewDidLoad()
         dataSource = ProxiesTableViewDataSource(tableView)
         delegate = ProxiesTableViewDelegate(self)
+        edgesForExtendedLayout = .all
         makeButtons()
         navigationItem.title = "Proxies"
         setDefaultButtons()

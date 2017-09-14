@@ -19,7 +19,7 @@ class MessagesTableViewController: UITableViewController, ButtonManaging, MakeNe
     override func viewDidLoad() {
         super.viewDidLoad()
         authObserver.observe(self)
-        edgesForExtendedLayout = .all
+        delegate = MessagesTableViewDelegate(self)
         navigationItem.title = "Messages"
         tabBarController?.tabBar.items?.setupForTabBar()
         tableView.allowsMultipleSelectionDuringEditing = true
@@ -38,7 +38,6 @@ class MessagesTableViewController: UITableViewController, ButtonManaging, MakeNe
 extension MessagesTableViewController: AuthObserverDelegate {
     func logIn() {
         dataSource = MessagesTableViewDataSource(tableView)
-        delegate = MessagesTableViewDelegate(self)
         makeButtons()
         setDefaultButtons()
         unreadCountObserver.observe(delegate: self)
