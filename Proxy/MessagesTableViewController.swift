@@ -7,8 +7,10 @@ class MessagesTableViewController: UITableViewController, ButtonManaging, MakeNe
     var makeNewMessageButton = UIBarButtonItem()
     var makeNewProxyButton = UIBarButtonItem()
 
+    private var dataSource: MessagesTableViewDataSource?
+    private var delegate: MessagesTableViewDelegate?
+
     private let authObserver = AuthObserver()
-    private let dataSource = MessagesTableViewDataSource()
     private let unreadCountObserver = UnreadCountObserver()
 
     var itemsToDelete = [String : Any]()
@@ -17,7 +19,7 @@ class MessagesTableViewController: UITableViewController, ButtonManaging, MakeNe
     override func viewDidLoad() {
         super.viewDidLoad()
         authObserver.observe(self)
-        edgesForExtendedLayout = .all
+        delegate = MessagesTableViewDelegate(self)
         navigationItem.title = "Messages"
         tabBarController?.tabBar.items?.setupForTabBar()
         tableView.allowsMultipleSelectionDuringEditing = true
@@ -33,38 +35,9 @@ class MessagesTableViewController: UITableViewController, ButtonManaging, MakeNe
     }
 }
 
-extension MessagesTableViewController {
-    var convos: [Convo] {
-        return dataSource.convos
-    }
-
-    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return CGFloat.leastNormalMagnitude
-    }
-
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let convo = convos[safe: indexPath.row] else {
-            return
-        }
-        if tableView.isEditing {
-            itemsToDelete[convo.key] = convo
-        } else {
-            tableView.deselectRow(at: indexPath, animated: true)
-            goToConvoVC(convo)
-        }
-    }
-
-    override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        guard let convo = convos[safe: indexPath.row] else {
-            return
-        }
-        itemsToDelete.removeValue(forKey: convo.key)
-    }
-}
-
 extension MessagesTableViewController: AuthObserverDelegate {
     func logIn() {
-        dataSource.observe(tableView)
+        dataSource = MessagesTableViewDataSource(tableView)
         makeButtons()
         setDefaultButtons()
         unreadCountObserver.observe(delegate: self)
