@@ -2,18 +2,23 @@ import UIKit
 
 class ProxiesTableViewDataSource: NSObject {
     private var id: Int { return ObjectIdentifier(self).hashValue }
-    private(set) weak var proxiesObserver: ProxiesObserver?
+    private weak var proxiesObserver: ProxiesObserver?
+    private weak var tableView: UITableView?
 
     init(_ tableView: UITableView) {
         super.init()
         proxiesObserver = (UIApplication.shared.delegate as? AppDelegate)?.proxiesObserver
-        proxiesObserver?.tableViews.setObject(tableView, forKey: id as AnyObject)
-        proxiesObserver?.observe()
+        self.tableView = tableView
         tableView.dataSource = self
     }
 
-    deinit {
-        proxiesObserver?.tableViews.removeObject(forKey: id as AnyObject)
+    func observe() {
+        guard let tableView = tableView else { return }
+        proxiesObserver?.observe(tableView)
+    }
+
+    func stopObserving() {
+        proxiesObserver?.stopObserving()
     }
 }
 

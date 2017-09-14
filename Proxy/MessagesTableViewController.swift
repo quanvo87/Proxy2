@@ -27,17 +27,24 @@ class MessagesTableViewController: UITableViewController, ButtonManaging, MakeNe
         tableView.separatorStyle = .none
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(true)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
         if let newConvo = newConvo {
             goToConvoVC(newConvo)
         }
+        dataSource?.observe()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(true)
+        dataSource?.stopObserving()
     }
 }
 
 extension MessagesTableViewController: AuthObserverDelegate {
     func logIn() {
         dataSource = MessagesTableViewDataSource(tableView)
+        dataSource?.observe()
         makeButtons()
         setDefaultButtons()
         unreadCountObserver.observe(delegate: self)

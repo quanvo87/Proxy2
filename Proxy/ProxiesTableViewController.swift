@@ -9,13 +9,13 @@ class ProxiesTableViewController: UITableViewController, ButtonManaging, MakeNew
 
     private var dataSource: ProxiesTableViewDataSource?
     private var delegate: ProxiesTableViewDelegate?
-
     var itemsToDelete = [String : Any]()
     var newConvo: Convo?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         dataSource = ProxiesTableViewDataSource(tableView)
+        dataSource?.observe()
         delegate = ProxiesTableViewDelegate(self)
         makeButtons()
         navigationItem.title = "Proxies"
@@ -25,9 +25,15 @@ class ProxiesTableViewController: UITableViewController, ButtonManaging, MakeNew
         tableView.separatorStyle = .none
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(true)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
         goToNewConvo()
+        dataSource?.observe()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(true)
+        dataSource?.stopObserving()
     }
 
     func goToNewConvo() {
@@ -57,7 +63,7 @@ extension ProxiesTableViewController {
         let alert = UIAlertController(title: "Delete Proxies?", message: "You will not be able to view their conversations anymore.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
             self.disableButtons()
-            self.dataSource?.proxiesObserver?.stopObserving()
+            self.dataSource?.stopObserving()
             let key = AsyncWorkGroupKey()
             for (_, item) in self.itemsToDelete {
                 guard let proxy = item as? Proxy else { return }
@@ -72,7 +78,7 @@ extension ProxiesTableViewController {
             key.notify {
                 key.finishWorkGroup()
                 self.enableButtons()
-                self.dataSource?.proxiesObserver?.observe()
+                self.dataSource?.observe()
             }
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))

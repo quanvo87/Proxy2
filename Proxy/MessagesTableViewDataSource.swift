@@ -3,17 +3,22 @@ import UIKit
 class MessagesTableViewDataSource: NSObject {
     private var id: Int { return ObjectIdentifier(self).hashValue }
     private weak var convosObserver: ConvosObserver?
+    private weak var tableView: UITableView?
 
     init(_ tableView: UITableView) {
         super.init()
         convosObserver = (UIApplication.shared.delegate as? AppDelegate)?.convosObserver
-        convosObserver?.tableViews.setObject(tableView, forKey: id as AnyObject)
-        convosObserver?.observeConvos(forOwner: Shared.shared.uid)
+        self.tableView = tableView
         tableView.dataSource = self
     }
 
-    deinit {
-        convosObserver?.tableViews.removeObject(forKey: id as AnyObject)
+    func observe() {
+        guard let tableView = tableView else { return }
+        convosObserver?.observeConvos(owner: Shared.shared.uid, tableView: tableView)
+    }
+
+    func stopObserving() {
+        convosObserver?.stopObserving()
     }
 }
 
