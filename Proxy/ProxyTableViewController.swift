@@ -10,6 +10,7 @@ class ProxyTableViewController: UITableViewController, MakeNewMessageDelegate {
         super.viewDidLoad()
         if let proxy = proxy {
             dataSource = ProxyTableViewDataSource(proxy: proxy, tableViewController: self)
+            dataSource?.observe()
         }
         delegate = ProxyTableViewDelegate(self)
         navigationItem.rightBarButtonItems = [UIBarButtonItem.makeButton(target: self, action: #selector(goToMakeNewMessageVC), imageName: .makeNewMessage),
@@ -21,11 +22,17 @@ class ProxyTableViewController: UITableViewController, MakeNewMessageDelegate {
         }
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(true)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
         if let newConvo = newConvo {
             goToConvoVC(newConvo)
         }
+        dataSource?.observe()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(true)
+        dataSource?.stopObserving()
     }
 }
 

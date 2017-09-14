@@ -1,29 +1,31 @@
 import UIKit
 
 class ProxyTableViewDataSource: NSObject {
-    private let proxyKey: String
+    private let _proxy: Proxy
     private var id: Int { return ObjectIdentifier(self).hashValue }
     private weak var tableViewController: UITableViewController?
     private weak var convosObserver: ConvosObserver?
     private weak var proxyObserver: ProxyObserver?
 
     init(proxy: Proxy, tableViewController: UITableViewController) {
-        proxyKey = proxy.key
+        self._proxy = proxy
         super.init()
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
         convosObserver = appDelegate?.convosObserver
-        convosObserver?.tableViews.setObject(tableViewController.tableView, forKey: id as AnyObject)
-        convosObserver?.observeConvos(forOwner: proxy.key)
         proxyObserver = appDelegate?.proxyObserver
-        proxyObserver?.tableViews.setObject(tableViewController.tableView, forKey: id as AnyObject)
-        proxyObserver?.observe(proxy)
         self.tableViewController = tableViewController
         tableViewController.tableView.dataSource = self
     }
 
-    deinit {
-        convosObserver?.tableViews.removeObject(forKey: id as AnyObject)
-        proxyObserver?.tableViews.removeObject(forKey: id as AnyObject)
+    func observe() {
+        guard let tableView = tableViewController?.tableView else { return }
+        convosObserver?.observeConvos(owner: _proxy.key, tableView: tableView)
+        proxyObserver?.observe(proxy: _proxy, tableView: tableView)
+    }
+
+    func stopObserving() {
+        convosObserver?.stopObserving()
+        proxyObserver?.stopObserving()
     }
 }
 
@@ -33,7 +35,7 @@ extension ProxyTableViewDataSource: UITableViewDataSource {
     }
 
     var proxy: Proxy? {
-        return proxyObserver?.proxies.object(forKey: proxyKey as NSString) as? Proxy
+        return proxyObserver?.getProxy(forKey: _proxy.key)
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
