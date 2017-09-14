@@ -10,6 +10,10 @@ class ProxyObserver: ReferenceObserving {
         return proxies.object(forKey: key as NSString) as? Proxy
     }
 
+    func removeProxy(forKey key: String) {
+        proxies.removeObject(forKey: key as NSString)
+    }
+
     func observe(proxy: Proxy, tableView: UITableView) {
         stopObserving()
         ref = DB.makeReference(Child.proxies, proxy.ownerId, proxy.key)
