@@ -17,10 +17,6 @@ extension ProxiesTableViewDelegate: UITableViewDelegate {
         return proxiesObserver?.proxies ?? []
     }
 
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return CGFloat.leastNormalMagnitude
-    }
-
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let proxy = proxies[safe: indexPath.row] else {
             return
@@ -42,6 +38,12 @@ extension ProxiesTableViewDelegate: UITableViewDelegate {
         tableViewController?.itemsToDelete.removeValue(forKey: proxy.key)
     }
 
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return CGFloat.leastNormalMagnitude
+    }
+}
+
+extension ProxiesTableViewDelegate {
     func goToProxyInfoVC(_ proxy: Proxy) {
         guard let proxyVC = tableViewController?.storyboard?.instantiateViewController(withIdentifier: Identifier.proxyTableViewController) as? ProxyTableViewController else { return }
         proxyVC.proxy = proxy

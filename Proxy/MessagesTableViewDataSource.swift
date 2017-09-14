@@ -1,21 +1,25 @@
 import UIKit
 
-class MessagesTableViewDataSource: NSObject, UITableViewDataSource {
-    private let convosObserver = ConvosObserver()
+class MessagesTableViewDataSource: NSObject {
+    private var id: Int { return ObjectIdentifier(self).hashValue }
+    private weak var convosObserver: ConvosObserver?
 
+    init(_ tableView: UITableView) {
+        super.init()
+        convosObserver = (UIApplication.shared.delegate as? AppDelegate)?.convosObserver
+        convosObserver?.tableViews.setObject(tableView, forKey: id as AnyObject)
+        convosObserver?.observeConvos(forOwner: Shared.shared.uid)
+        tableView.dataSource = self
+    }
+
+    deinit {
+        convosObserver?.tableViews.removeObject(forKey: id as AnyObject)
+    }
+}
+
+extension MessagesTableViewDataSource: UITableViewDataSource {
     var convos: [Convo] {
-        return convosObserver.convos
-    }
-
-    override init() {}
-
-    func observe(_ tableView: UITableView) {
-//        convosObserver.observeConvos(forOwner: Shared.shared.uid, tableView: tableView)
-//        tableView.dataSource = self
-    }
-
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return convos.count
+        return convosObserver?.convos ?? []
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -24,19 +28,11 @@ class MessagesTableViewDataSource: NSObject, UITableViewDataSource {
             let convo = convos[safe: indexPath.row] else {
                 return tableView.dequeueReusableCell(withIdentifier: Identifier.convosTableViewCell, for: indexPath)
         }
-
-        cell.iconImageView.image = nil
-        cell.lastMessageLabel.text = convo.lastMessage
-        cell.timestampLabel.text = convo.timestamp.asTimeAgo
-        cell.titleLabel.attributedText = DBConvo.makeConvoTitle(convo)
-        cell.unreadLabel.text = nil // TODO: delete
-
-        DBProxy.getImageForIcon(convo.receiverIcon) { (image) in
-            DispatchQueue.main.async {
-                cell.imageView?.image = image
-            }
-        }
-        
+        cell.configure(convo)
         return cell
+    }
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return convos.count
     }
 }
