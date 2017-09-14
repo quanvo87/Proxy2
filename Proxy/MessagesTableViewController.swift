@@ -37,7 +37,7 @@ class MessagesTableViewController: UITableViewController, ButtonManaging, MakeNe
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
-        dataSource?.stopObserving()
+//        dataSource?.stopObserving()
     }
 }
 

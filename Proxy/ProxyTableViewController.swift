@@ -32,7 +32,7 @@ class ProxyTableViewController: UITableViewController, MakeNewMessageDelegate {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
-        dataSource?.stopObserving()
+//        dataSource?.stopObserving()
     }
 }
 
