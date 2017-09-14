@@ -41,15 +41,15 @@ class DBTest: XCTestCase {
         }
     }
     
-    override func tearDown() {
-        let expectation = self.expectation(description: #function)
-        defer { waitForExpectations(timeout: 10) }
-        DBTest.clearCache()
-        DBTest.clearWorkGroups()
-        DBTest.clearDB {
-            expectation.fulfill()
-        }
-    }
+//    override func tearDown() {
+//        let expectation = self.expectation(description: #function)
+//        defer { waitForExpectations(timeout: 10) }
+//        DBTest.clearCache()
+//        DBTest.clearWorkGroups()
+//        DBTest.clearDB {
+//            expectation.fulfill()
+//        }
+//    }
 
     private static func clearCache() {
         Shared.shared.cache.removeAllObjects()

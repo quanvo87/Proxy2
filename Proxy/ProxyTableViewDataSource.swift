@@ -11,7 +11,7 @@ class ProxyTableViewDataSource: NSObject {
         self._proxy = proxy
         super.init()
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
-        convosObserver = appDelegate?.convosObserver
+//        convosObserver = appDelegate?.convosObserver
         proxyObserver = appDelegate?.proxyObserver
         self.tableViewController = tableViewController
         tableViewController.tableView.dataSource = self
@@ -19,7 +19,7 @@ class ProxyTableViewDataSource: NSObject {
 
     func observe() {
         guard let tableView = tableViewController?.tableView else { return }
-        convosObserver?.observeConvos(owner: _proxy.key, tableView: tableView)
+//        convosObserver?.observeConvos(owner: _proxy.key, tableView: tableView)
         proxyObserver?.observe(proxy: _proxy, tableView: tableView)
     }
 

@@ -1,30 +1,18 @@
 import UIKit
 
 class MessagesTableViewDataSource: NSObject {
-    private var id: Int { return ObjectIdentifier(self).hashValue }
-    private weak var convosObserver: ConvosObserver?
-    private weak var tableView: UITableView?
+    private weak var controller: ConvosObserving?
 
-    init(_ tableView: UITableView) {
+    init(_ controller: ConvosObserving) {
         super.init()
-        convosObserver = (UIApplication.shared.delegate as? AppDelegate)?.convosObserver
-        self.tableView = tableView
-        tableView.dataSource = self
-    }
-
-    func observe() {
-        guard let tableView = tableView else { return }
-        convosObserver?.observeConvos(owner: Shared.shared.uid, tableView: tableView)
-    }
-
-    func stopObserving() {
-        convosObserver?.stopObserving()
+        controller.tableView.dataSource = self
+        self.controller = controller
     }
 }
 
 extension MessagesTableViewDataSource: UITableViewDataSource {
     var convos: [Convo] {
-        return convosObserver?.convos ?? []
+        return controller?.convos ?? []
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -40,4 +28,8 @@ extension MessagesTableViewDataSource: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return convos.count
     }
+}
+
+protocol ConvosObserving: class, TableViewOwning {
+    var convos: [Convo] { get }
 }

@@ -1,20 +1,18 @@
 import UIKit
 
 class ProxiesTableViewDelegate: NSObject {
-    private weak var proxiesObserver: ProxiesObserver?
-    private weak var tableViewController: ProxiesTableViewController?
+    private weak var controller: ProxiesTableViewController?
 
-    init(_ tableViewController: ProxiesTableViewController) {
+    init(_ controller: ProxiesTableViewController) {
         super.init()
-        self.proxiesObserver = (UIApplication.shared.delegate as? AppDelegate)?.proxiesObserver
-        self.tableViewController = tableViewController
-        tableViewController.tableView.delegate = self
+        controller.tableView.delegate = self
+        self.controller = controller
     }
 }
 
 extension ProxiesTableViewDelegate: UITableViewDelegate {
     var proxies: [Proxy] {
-        return proxiesObserver?.proxies ?? []
+        return controller?.proxies ?? []
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -22,7 +20,7 @@ extension ProxiesTableViewDelegate: UITableViewDelegate {
             return
         }
         if tableView.isEditing {
-            tableViewController?.itemsToDelete[proxy.key] = proxy
+            controller?.itemsToDelete[proxy.key] = proxy
         } else {
             tableView.deselectRow(at: indexPath, animated: true)
             goToProxyInfoVC(proxy)
@@ -35,7 +33,7 @@ extension ProxiesTableViewDelegate: UITableViewDelegate {
             let proxy = proxies[safe: indexPath.row] else {
                 return
         }
-        tableViewController?.itemsToDelete.removeValue(forKey: proxy.key)
+        controller?.itemsToDelete.removeValue(forKey: proxy.key)
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -43,10 +41,10 @@ extension ProxiesTableViewDelegate: UITableViewDelegate {
     }
 }
 
-extension ProxiesTableViewDelegate {
+private extension ProxiesTableViewDelegate {
     func goToProxyInfoVC(_ proxy: Proxy) {
-        guard let proxyVC = tableViewController?.storyboard?.instantiateViewController(withIdentifier: Identifier.proxyTableViewController) as? ProxyTableViewController else { return }
+        guard let proxyVC = controller?.storyboard?.instantiateViewController(withIdentifier: Identifier.proxyTableViewController) as? ProxyTableViewController else { return }
         proxyVC.proxy = proxy
-        tableViewController?.navigationController?.pushViewController(proxyVC, animated: true)
+        controller?.navigationController?.pushViewController(proxyVC, animated: true)
     }
 }

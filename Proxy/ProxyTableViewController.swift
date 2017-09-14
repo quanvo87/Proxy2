@@ -29,11 +29,6 @@ class ProxyTableViewController: UITableViewController, MakeNewMessageDelegate {
         }
         dataSource?.observe()
     }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(true)
-//        dataSource?.stopObserving()
-    }
 }
 
 private extension ProxyTableViewController {
