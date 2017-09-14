@@ -60,11 +60,10 @@ extension ProxiesTableViewController {
             self.dataSource?.proxiesObserver?.stopObserving()
             let key = AsyncWorkGroupKey()
             for (_, item) in self.itemsToDelete {
-                if let proxy = item as? Proxy {
-                    key.startWork()
-                    DBProxy.deleteProxy(proxy) { _ in
-                        key.finishWork()
-                    }
+                guard let proxy = item as? Proxy else { return }
+                key.startWork()
+                DBProxy.deleteProxy(proxy) { _ in
+                    key.finishWork()
                 }
             }
             self.itemsToDelete.removeAll()

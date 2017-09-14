@@ -1,6 +1,6 @@
 import FirebaseDatabase
 
-class ConvosObserver: ReferenceObserving, TableViewMapTableHandling {
+class ConvosObserver: ReferenceObserving, TableViewsReloading {
     private(set) var convos = [Convo]()
     private(set) var handle: DatabaseHandle?
     private(set) var ref: DatabaseReference?

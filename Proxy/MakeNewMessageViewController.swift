@@ -7,8 +7,8 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate, Sender
     @IBOutlet weak var pickReceiverButton: UIButton?
     @IBOutlet weak var pickSenderButton: UIButton?
     @IBOutlet weak var sendMessageButton: UIButton?
-    private var receiver: Proxy? { didSet { setReceiverButtonTitle() } }
     weak var delegate: MakeNewMessageDelegate?
+    var receiver: Proxy? { didSet { setReceiverButtonTitle() } }
     var sender: Proxy? { didSet { setSenderButtonTitle() } }
 
     override func viewDidLoad() {
@@ -44,10 +44,6 @@ extension MakeNewMessageViewController {
 }
 
 private extension MakeNewMessageViewController {
-    @IBAction func goToReceiverPickerVC() {
-        // just make a alert for now
-    }
-
     @IBAction func goToSenderPickerVC() {
         guard let senderPickerVC = storyboard?.instantiateViewController(withIdentifier: Identifier.senderPickerTableViewController) as? SenderPickerTableViewController else { return }
         senderPickerVC.senderPickerDelegate = self
@@ -80,6 +76,11 @@ private extension MakeNewMessageViewController {
             self.delegate?.newConvo = convo
             _ = self.navigationController?.popViewController(animated: true)
         }
+    }
+
+    @IBAction func showReceiverPickerAlert() {
+        let receiverPicker = ReceiverPicker(self)
+        receiverPicker.start()
     }
 }
 

@@ -1,10 +1,10 @@
 import UIKit
 
-protocol TableViewMapTableHandling {
+protocol TableViewsReloading {
     var tableViews: NSMapTable<AnyObject, AnyObject> { get }
 }
 
-extension TableViewMapTableHandling {
+extension TableViewsReloading {
     func reloadTableViews() {
         let enumerator = tableViews.objectEnumerator()
         while let tableView = enumerator?.nextObject() as? UITableView {

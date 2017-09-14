@@ -1,6 +1,6 @@
 import FirebaseDatabase
 
-class ProxiesObserver: ReferenceObserving, TableViewMapTableHandling {
+class ProxiesObserver: ReferenceObserving, TableViewsReloading {
     private(set) var handle: DatabaseHandle?
     private(set) var proxies = [Proxy]()
     private(set) var ref: DatabaseReference?

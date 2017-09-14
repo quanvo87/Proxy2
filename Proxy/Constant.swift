@@ -31,7 +31,6 @@ struct Identifier {
     static let loginViewController = "LoginViewController"
     static let proxiesTableViewCell = "ProxiesTableViewCell"
     static let proxyTableViewController = "ProxyTableViewController"
-    static let receiverPickerViewController = "ReceiverPickerViewController"
     static let receiverProxyTableViewCell = "ReceiverProxyTableViewCell"
     static let senderPickerTableViewController = "SenderPickerTableViewController"
     static let senderProxyTableViewCell = "SenderProxyTableViewCell"
@@ -40,12 +39,9 @@ struct Identifier {
 
 struct Setting {
     static let maxAllowedProxies = UInt(30)
+    static let navBarButtonCGDouble = 30.0
+    static let navBarButtonCGRect = CGRect(x: 0, y: 0, width: Setting.navBarButtonCGDouble, height: Setting.navBarButtonCGDouble)
+    static let navBarButtonCGSize = CGSize(width: Setting.navBarButtonCGDouble, height: Setting.navBarButtonCGDouble)
     static let newProxyBadgeDuration: Double = 60 * 5
     static let timeBetweenTimestamps = 30.0
-}
-
-struct UISetting {
-    static let navBarButtonCGDouble = 30.0
-    static let navBarButtonCGRect = CGRect(x: 0, y: 0, width: UISetting.navBarButtonCGDouble, height: UISetting.navBarButtonCGDouble)
-    static let navBarButtonCGSize = CGSize(width: UISetting.navBarButtonCGDouble, height: UISetting.navBarButtonCGDouble)
 }

@@ -1,6 +1,6 @@
 import FirebaseDatabase
 
-class ProxyObserver: ReferenceObserving, TableViewMapTableHandling {
+class ProxyObserver: ReferenceObserving, TableViewsReloading {
     private(set) var handle: DatabaseHandle?
     private(set) var proxies = NSCache<NSString, AnyObject>()
     private(set) var ref: DatabaseReference?
