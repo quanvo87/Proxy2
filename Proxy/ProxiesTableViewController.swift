@@ -33,7 +33,7 @@ class ProxiesTableViewController: UITableViewController, ButtonManaging, MakeNew
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
-        dataSource?.stopObserving()
+//        dataSource?.stopObserving()
     }
 
     func goToNewConvo() {

@@ -14,11 +14,11 @@ class BlockedUsersTableViewController: UITableViewController {
         
         navigationItem.title = "Blocked Users"
         
-        let cancelButton = UIButton(type: .custom)
-        cancelButton.addTarget(self, action: #selector(BlockedUsersTableViewController.cancel), for: UIControlEvents.touchUpInside)
-        cancelButton.frame = CGRect(x: 0, y: 0, width: 25, height: 25)
-        cancelButton.setImage(UIImage(named: "cancel"), for: UIControlState.normal)
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: cancelButton)
+//        let cancelButton = UIButton(type: .custom)
+//        cancelButton.addTarget(self, action: #selector(BlockedUsersTableViewController.cancelPickingIcon), for: UIControlEvents.touchUpInside)
+//        cancelButton.frame = CGRect(x: 0, y: 0, width: 25, height: 25)
+//        cancelButton.setImage(UIImage(named: "cancel"), for: UIControlState.normal)
+//        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: cancelButton)
         
         tableView.rowHeight = 60
         

@@ -112,6 +112,7 @@ private extension ProxyTableViewDataSource {
                 return
         }
         iconPickerCollectionViewController.proxy = proxy
-        tableViewController?.navigationController?.pushViewController(iconPickerCollectionViewController, animated: true)
+        let navigationController = UINavigationController(rootViewController: iconPickerCollectionViewController)
+        tableViewController?.present(navigationController, animated: true)
     }
 }

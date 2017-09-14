@@ -321,7 +321,6 @@ class ConvoDetailTableViewController: UITableViewController {
         api.getConvos(for: senderProxy!) { (convos) in
             let dest = self.storyboard?.instantiateViewController(withIdentifier: Identifier.iconPickerCollectionViewController) as! IconPickerCollectionViewController
             dest.proxy = self.senderProxy!
-            dest.convos = convos
             self.navigationController?.pushViewController(dest, animated: true)
         }
     }
