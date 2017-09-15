@@ -1,25 +1,27 @@
 import FirebaseDatabase
 
-class UnreadCountObserver {
-    private var ref: DatabaseReference?
-    private var handle: DatabaseHandle?
+class UnreadCountObserver: ReferenceObserving {
+    let ref: DatabaseReference?
+    private weak var delegate: UnreadCountObserving?
+    private(set) var handle: DatabaseHandle?
 
-    init() {}
+    init(user: String = Shared.shared.uid, delegate: UnreadCountObserving) {
+        ref = DB.makeReference(Child.userInfo, user, Child.unreadMessages)
+        self.delegate = delegate
+    }
 
-    func observe(uid: String = Shared.shared.uid, delegate: UnreadCountObserverDelegate) {
-        ref = DB.makeReference(Child.userInfo, uid, Child.unreadMessages)
-        handle = ref?.observe(.value, with: { [weak delegate = delegate] (data) in
-            delegate?.setUnreadCount(to: Int(data.childrenCount))
+    func observe() {
+        stopObserving()
+        handle = ref?.observe(.value, with: { [weak self = self] (data) in
+            self?.delegate?.setUnreadCount(Int(data.childrenCount))
         })
     }
 
     deinit {
-        if let handle = handle {
-            ref?.removeObserver(withHandle: handle)
-        }
+        stopObserving()
     }
 }
 
-protocol UnreadCountObserverDelegate: class {
-    func setUnreadCount(to unreadCount: Int?)
+protocol UnreadCountObserving: class {
+    func setUnreadCount(_ count: Int?)
 }

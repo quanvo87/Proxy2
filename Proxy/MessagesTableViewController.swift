@@ -7,18 +7,20 @@ class MessagesTableViewController: UITableViewController, ButtonManaging, Convos
     var makeNewMessageButton = UIBarButtonItem()
     var makeNewProxyButton = UIBarButtonItem()
 
-    private let authObserver = AuthObserver()
+    private var authObserver: AuthObserver?
     private var convosObserver: ConvosObserver?
     private var dataSource: MessagesTableViewDataSource?
     private var delegate: MessagesTableViewDelegate?
-    private let unreadCountObserver = UnreadCountObserver()
+    private var unreadCountObserver: UnreadCountObserver?
     var convos = [Convo]()
     var itemsToDelete = [String : Any]()
     var newConvo: Convo?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        authObserver.observe(self)
+        authObserver = AuthObserver(self)
+        authObserver?.observe()
+        dataSource = MessagesTableViewDataSource(self)
         delegate = MessagesTableViewDelegate(self)
         navigationItem.title = "Messages"
         tabBarController?.tabBar.items?.setupForTabBar()
@@ -84,14 +86,14 @@ extension MessagesTableViewController {
     }
 }
 
-extension MessagesTableViewController: AuthObserverDelegate {
+extension MessagesTableViewController: AuthObserving {
     func logIn() {
         convosObserver = ConvosObserver(owner: Shared.shared.uid, controller: self)
         convosObserver?.observe()
-        dataSource = MessagesTableViewDataSource(self)
         makeButtons()
         setDefaultButtons()
-        unreadCountObserver.observe(delegate: self)
+        unreadCountObserver = UnreadCountObserver(delegate: self)
+        unreadCountObserver?.observe()
         DispatchQueue.global().async {
             DBProxy.fixConvoCounts { _ in }
         }
@@ -107,11 +109,11 @@ extension MessagesTableViewController: AuthObserverDelegate {
     }
 }
 
-extension MessagesTableViewController: UnreadCountObserverDelegate {
-    func setUnreadCount(to unreadCount: Int?) {
-        if let unreadCount = unreadCount {
-            navigationItem.title = "Messages" + unreadCount.asLabelWithParens
-            tabBarController?.tabBar.items?.first?.badgeValue = unreadCount == 0 ? nil : String(unreadCount)
+extension MessagesTableViewController: UnreadCountObserving {
+    func setUnreadCount(_ count: Int?) {
+        if let count = count {
+            navigationItem.title = "Messages" + count.asLabelWithParens
+            tabBarController?.tabBar.items?.first?.badgeValue = count == 0 ? nil : String(count)
         } else {
             navigationItem.title = "Messages"
             tabBarController?.tabBar.items?.first?.badgeValue = nil

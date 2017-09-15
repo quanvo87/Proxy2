@@ -3,13 +3,14 @@ import XCTest
 
 class UnreadCountObserverTests: DBTest {
     let delegate = TestUnreadCountObserverDelegate()
-    let unreadCountObserver = UnreadCountObserver()
+    var unreadCountObserver: UnreadCountObserver?
 
     func testReadMessage() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        unreadCountObserver.observe(uid: DBTest.testUser, delegate: delegate)
+        unreadCountObserver = UnreadCountObserver(user: DBTest.testUser, delegate: delegate)
+        unreadCountObserver?.observe()
 
         DBTest.sendMessage { (message, _, _, _) in
 
@@ -27,7 +28,8 @@ class UnreadCountObserverTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        unreadCountObserver.observe(uid: DBTest.testUser, delegate: delegate)
+        unreadCountObserver = UnreadCountObserver(user: DBTest.testUser, delegate: delegate)
+        unreadCountObserver?.observe()
 
         DBTest.sendMessage { (_, _, _, _) in
             XCTAssertEqual(self.delegate.unreadCount, 1)
@@ -37,10 +39,10 @@ class UnreadCountObserverTests: DBTest {
     }
 }
 
-class TestUnreadCountObserverDelegate: UnreadCountObserverDelegate {
+class TestUnreadCountObserverDelegate: UnreadCountObserving {
     var unreadCount: Int?
 
-    func setUnreadCount(to unreadCount: Int?) {
-        self.unreadCount = unreadCount
+    func setUnreadCount(_ count: Int?) {
+        unreadCount = count
     }
 }
