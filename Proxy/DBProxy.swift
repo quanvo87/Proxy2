@@ -77,12 +77,6 @@ struct DBProxy {
         }
     }
 
-    static func getImageForIcon(_ iconName: String, completion: @escaping (UIImage?) -> Void) {
-        Shared.shared.queue.async {
-            completion(UIImage(named: iconName))
-        }
-    }
-
     static func getConvoCount(forProxy proxy: Proxy, completion: @escaping (UInt?) -> Void) {
         DB.get(Child.convos, proxy.key) { (data) in
             completion(data?.childrenCount)
@@ -126,16 +120,6 @@ struct DBProxy {
         ref.queryOrdered(byChild: "receiverProxyKey").queryEqual(toValue: key).observeSingleEvent(of: .value, with: { (data) in
             completion(data.toMessagesArray())
         })
-    }
-
-    static func makeNewProxyBadge(completion: @escaping (UIImage?) -> Void) {
-        Shared.shared.queue.async {
-            guard let image = UIImage(named: "newProxyBadge") else {
-                completion(nil)
-                return
-            }
-            completion(image)
-        }
     }
 
     static func makeProxy(withName specificName: String? = nil, forUser uid: String = Shared.shared.uid, maxAllowedProxies: UInt = Setting.maxAllowedProxies, completion: @escaping MakeProxyCallback) {

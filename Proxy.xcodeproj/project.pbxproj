@@ -10,6 +10,9 @@
 		5949F5831F63331B004597A0 /* SenderPickerTableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5949F5821F63331B004597A0 /* SenderPickerTableViewDelegate.swift */; };
 		594D2A501F6B0CDD00ECCF06 /* IconPickerCollectionViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 594D2A4F1F6B0CDD00ECCF06 /* IconPickerCollectionViewDataSource.swift */; };
 		594D2A521F6B167F00ECCF06 /* IconPickerCollectionViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 594D2A511F6B167F00ECCF06 /* IconPickerCollectionViewDelegate.swift */; };
+		5958D5061F6C140100B07B0F /* MessagesSentObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5958D5051F6C140100B07B0F /* MessagesSentObserver.swift */; };
+		5958D5081F6C15EA00B07B0F /* ProxiesInteractedWithObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5958D5071F6C15EA00B07B0F /* ProxiesInteractedWithObserver.swift */; };
+		5958D50A1F6C18B600B07B0F /* MeTableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5958D5091F6C18B600B07B0F /* MeTableViewDelegate.swift */; };
 		596D7FD41F62EC1100E6AF8D /* ProxiesTableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596D7FD31F62EC1100E6AF8D /* ProxiesTableViewDelegate.swift */; };
 		5973C8101F60844A00647492 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5973C80F1F60840F00647492 /* GoogleService-Info.plist */; };
 		5973C8111F60844A00647492 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5973C80F1F60840F00647492 /* GoogleService-Info.plist */; };
@@ -72,6 +75,8 @@
 		5973C88B1F608A4E00647492 /* UnreadCountObserverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8821F608A4E00647492 /* UnreadCountObserverTests.swift */; };
 		5973C88C1F608A4E00647492 /* DBProxyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8831F608A4E00647492 /* DBProxyTests.swift */; };
 		598F068A1F60AF060066B742 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598F06891F60AF060066B742 /* API.swift */; };
+		59AC04B61F6BFCFD00DB580B /* MessagesReceivedObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59AC04B51F6BFCFD00DB580B /* MessagesReceivedObserver.swift */; };
+		59AC04B81F6C049100DB580B /* MeTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59AC04B71F6C049100DB580B /* MeTableViewDataSource.swift */; };
 		59B432E01F60648400622DEA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59B432DF1F60648400622DEA /* AppDelegate.swift */; };
 		59B432E51F60648400622DEA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 59B432E31F60648400622DEA /* Main.storyboard */; };
 		59B432E71F60648400622DEA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 59B432E61F60648400622DEA /* Assets.xcassets */; };
@@ -111,6 +116,9 @@
 		5949F5821F63331B004597A0 /* SenderPickerTableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SenderPickerTableViewDelegate.swift; sourceTree = "<group>"; };
 		594D2A4F1F6B0CDD00ECCF06 /* IconPickerCollectionViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconPickerCollectionViewDataSource.swift; sourceTree = "<group>"; };
 		594D2A511F6B167F00ECCF06 /* IconPickerCollectionViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconPickerCollectionViewDelegate.swift; sourceTree = "<group>"; };
+		5958D5051F6C140100B07B0F /* MessagesSentObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesSentObserver.swift; sourceTree = "<group>"; };
+		5958D5071F6C15EA00B07B0F /* ProxiesInteractedWithObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxiesInteractedWithObserver.swift; sourceTree = "<group>"; };
+		5958D5091F6C18B600B07B0F /* MeTableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeTableViewDelegate.swift; sourceTree = "<group>"; };
 		596D7FD31F62EC1100E6AF8D /* ProxiesTableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxiesTableViewDelegate.swift; sourceTree = "<group>"; };
 		5973C80F1F60840F00647492 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5973C8131F608A1A00647492 /* NSDate+NVTimeAgo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+NVTimeAgo.h"; sourceTree = "<group>"; };
@@ -172,6 +180,8 @@
 		5973C8821F608A4E00647492 /* UnreadCountObserverTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnreadCountObserverTests.swift; sourceTree = "<group>"; };
 		5973C8831F608A4E00647492 /* DBProxyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBProxyTests.swift; sourceTree = "<group>"; };
 		598F06891F60AF060066B742 /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
+		59AC04B51F6BFCFD00DB580B /* MessagesReceivedObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesReceivedObserver.swift; sourceTree = "<group>"; };
+		59AC04B71F6C049100DB580B /* MeTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeTableViewDataSource.swift; sourceTree = "<group>"; };
 		59B432DC1F60648400622DEA /* Proxy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Proxy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		59B432DF1F60648400622DEA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		59B432E41F60648400622DEA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -318,6 +328,9 @@
 			children = (
 				5973C8471F608A2200647492 /* AuthObserver.swift */,
 				5973C83D1F608A2000647492 /* ConvosObserver.swift */,
+				59AC04B51F6BFCFD00DB580B /* MessagesReceivedObserver.swift */,
+				5958D5051F6C140100B07B0F /* MessagesSentObserver.swift */,
+				5958D5071F6C15EA00B07B0F /* ProxiesInteractedWithObserver.swift */,
 				5973C82F1F608A1D00647492 /* ProxiesObserver.swift */,
 				5973C8141F608A1A00647492 /* ProxyObserver.swift */,
 				5973C83C1F608A2000647492 /* UnreadCountObserver.swift */,
@@ -353,6 +366,7 @@
 			children = (
 				594D2A4F1F6B0CDD00ECCF06 /* IconPickerCollectionViewDataSource.swift */,
 				5973C8241F608A1C00647492 /* MessagesTableViewDataSource.swift */,
+				59AC04B71F6C049100DB580B /* MeTableViewDataSource.swift */,
 				5973C8301F608A1D00647492 /* ProxiesTableViewDataSource.swift */,
 				5973C8201F608A1B00647492 /* ProxyTableViewDataSource.swift */,
 			);
@@ -364,6 +378,7 @@
 			children = (
 				594D2A511F6B167F00ECCF06 /* IconPickerCollectionViewDelegate.swift */,
 				59DDF43A1F6AB2F100D4E239 /* MessagesTableViewDelegate.swift */,
+				5958D5091F6C18B600B07B0F /* MeTableViewDelegate.swift */,
 				596D7FD31F62EC1100E6AF8D /* ProxiesTableViewDelegate.swift */,
 				59DCE5FB1F65FCC900AC9CEC /* ProxyTableViewDelegate.swift */,
 				5949F5821F63331B004597A0 /* SenderPickerTableViewDelegate.swift */,
@@ -819,9 +834,12 @@
 				5973C8571F608A2200647492 /* MakeNewMessageViewController.swift in Sources */,
 				594D2A501F6B0CDD00ECCF06 /* IconPickerCollectionViewDataSource.swift in Sources */,
 				5973C8531F608A2200647492 /* ReceiverProxyTableViewCell.swift in Sources */,
+				5958D5081F6C15EA00B07B0F /* ProxiesInteractedWithObserver.swift in Sources */,
 				59B5007D1F6A3469002D4C29 /* ReceiverPicker.swift in Sources */,
 				5973C8591F608A2200647492 /* AsyncWorkGroupKey.swift in Sources */,
 				5973C8651F608A2200647492 /* Proxy.swift in Sources */,
+				5958D50A1F6C18B600B07B0F /* MeTableViewDelegate.swift in Sources */,
+				59AC04B61F6BFCFD00DB580B /* MessagesReceivedObserver.swift in Sources */,
 				5973C8481F608A2200647492 /* ProxyObserver.swift in Sources */,
 				596D7FD41F62EC1100E6AF8D /* ProxiesTableViewDelegate.swift in Sources */,
 				594D2A521F6B167F00ECCF06 /* IconPickerCollectionViewDelegate.swift in Sources */,
@@ -840,6 +858,7 @@
 				59B7CC6C1F638A2A0063D137 /* ReferenceObserving.swift in Sources */,
 				5973C8621F608A2200647492 /* ProxiesObserver.swift in Sources */,
 				5973C8551F608A2200647492 /* BlockedUsersTableViewController.swift in Sources */,
+				59AC04B81F6C049100DB580B /* MeTableViewDataSource.swift in Sources */,
 				59B432E01F60648400622DEA /* AppDelegate.swift in Sources */,
 				5973C8721F608A2200647492 /* Constant.swift in Sources */,
 				5973C8791F608A2200647492 /* loadProxyNameAdjectives.swift in Sources */,
@@ -858,6 +877,7 @@
 				5973C8761F608A2200647492 /* MeTableViewController.swift in Sources */,
 				5973C8601F608A2200647492 /* MeTableViewCell.swift in Sources */,
 				5973C8511F608A2200647492 /* ProxyError.swift in Sources */,
+				5958D5061F6C140100B07B0F /* MessagesSentObserver.swift in Sources */,
 				5973C85D1F608A2200647492 /* Common.swift in Sources */,
 				5973C84A1F608A2200647492 /* ConvosTableViewCell.swift in Sources */,
 				5973C8561F608A2200647492 /* LoginViewController.swift in Sources */,

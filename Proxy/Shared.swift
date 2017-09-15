@@ -12,6 +12,7 @@ class Shared {
     var proxyNameWords = (adjectives: [String](), nouns: [String]())
     var proxyIconNames = [String]()
     var uid = ""
+    var userName = ""
 
     private init() {
         loadProxyIconNames()

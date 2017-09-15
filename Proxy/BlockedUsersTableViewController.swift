@@ -1,28 +1,15 @@
 import FirebaseDatabase
 import UIKit
 
-
 class BlockedUsersTableViewController: UITableViewController {
-
-    let api = API.sharedInstance
-    let ref = Database.database().reference()
-    var blockedUsersRef = DatabaseReference()
     var blockedUsers = [BlockedUser]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         navigationItem.title = "Blocked Users"
-        
-//        let cancelButton = UIButton(type: .custom)
-//        cancelButton.addTarget(self, action: #selector(BlockedUsersTableViewController.cancelPickingIcon), for: UIControlEvents.touchUpInside)
-//        cancelButton.frame = CGRect(x: 0, y: 0, width: 25, height: 25)
-//        cancelButton.setImage(UIImage(named: "cancel"), for: UIControlState.normal)
-//        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: cancelButton)
-        
         tableView.rowHeight = 60
         
-        blockedUsersRef = ref.child(Child.blockedUsers).child(api.uid)
+//        blockedUsersRef = ref.child(Child.blockedUsers).child(api.uid)
 //        blockedUsersRef.queryOrdered(byChild: Child.Created).observe(.value, with: { (data) in
 //            var blockedUsers = [BlockedUser]()
 //            for child in data.children {
@@ -34,26 +21,9 @@ class BlockedUsersTableViewController: UITableViewController {
 //            self.tableView.reloadData()
 //        })
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(true)
-        navigationItem.hidesBackButton = true
-        tabBarController?.tabBar.isHidden = true
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(true)
-        tabBarController?.tabBar.isHidden = false
-    }
-    
-    deinit {
-        blockedUsersRef.removeAllObservers()
-    }
-    
-    @objc func cancel() {
-        _ = navigationController?.popViewController(animated: true)
-    }
+}
 
+extension BlockedUsersTableViewController {
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {

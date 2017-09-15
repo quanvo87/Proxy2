@@ -13,8 +13,7 @@ class ConvosTableViewCell: UITableViewCell {
         timestampLabel.text = convo.timestamp.asTimeAgo
         titleLabel.attributedText = DBConvo.makeConvoTitle(convo)
         unreadLabel.text = nil // TODO: delete
-
-        DBProxy.getImageForIcon(convo.receiverIcon) { (image) in
+        UIImage.makeImage(named: convo.receiverIcon) { (image) in
             DispatchQueue.main.async {
                 self.iconImageView.image = image
             }

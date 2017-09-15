@@ -98,15 +98,6 @@ extension MessagesTableViewController: AuthObserving {
             DBProxy.fixConvoCounts { _ in }
         }
     }
-
-    func logOut() {
-        guard
-            let loginVC = storyboard?.instantiateViewController(withIdentifier: Identifier.loginViewController) as? LoginViewController,
-            let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-                return
-        }
-        appDelegate.window?.rootViewController = loginVC
-    }
 }
 
 extension MessagesTableViewController: UnreadCountObserving {

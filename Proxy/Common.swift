@@ -33,15 +33,6 @@ extension Int {
     var asLabelWithParens: String {
         return self == 0 ? "" : " (\(self))"
     }
-
-    var asStringWithCommas: String {
-        var num = Double(self)
-        num = fabs(num)
-        if let string = NumberFormatter.proxyNumberFormatter.string(from: NSNumber(integerLiteral: Int(num))) {
-            return string
-        }
-        return "-"
-    }
 }
 
 extension MakeNewMessageDelegate where Self: UIViewController {
@@ -52,14 +43,6 @@ extension MakeNewMessageDelegate where Self: UIViewController {
         let navigationController = UINavigationController(rootViewController: makeNewMessageVC)
         present(navigationController, animated: true)
     }
-}
-
-private extension NumberFormatter {
-    static let proxyNumberFormatter: NumberFormatter = {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        return formatter
-    }()
 }
 
 extension String {
@@ -106,6 +89,25 @@ extension UIColor {
     }
 }
 
+extension UIImage {
+    static func makeImage(named image: String, completion: @escaping (UIImage?) -> Void) {
+        Shared.shared.queue.async {
+            completion(UIImage(named: image))
+        }
+    }
+}
+
+extension UInt {
+    var asStringWithCommas: String {
+        var num = Double(self)
+        num = fabs(num)
+        if let string = NumberFormatter.numberFormatter.string(from: NSNumber(integerLiteral: Int(num))) {
+            return string
+        }
+        return "-"
+    }
+}
+
 extension UITableViewController {
     func goToConvoVC(_ convo: Convo) {
         guard let convoVC = storyboard?.instantiateViewController(withIdentifier: Identifier.convoViewController) as? ConvoViewController else { return }
@@ -125,7 +127,15 @@ extension UINavigationItem {
 extension UIViewController {
     func showAlert(_ title: String?, message: String?) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-        present(alert, animated: true, completion: nil)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
     }
+}
+
+private extension NumberFormatter {
+    static let numberFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        return formatter
+    }()
 }
