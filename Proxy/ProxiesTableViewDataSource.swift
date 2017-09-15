@@ -1,30 +1,18 @@
 import UIKit
 
 class ProxiesTableViewDataSource: NSObject {
-    private var id: Int { return ObjectIdentifier(self).hashValue }
-    private weak var proxiesObserver: ProxiesObserver?
-    private weak var tableView: UITableView?
+    private weak var controller: ProxiesObserving?
 
-    init(_ tableView: UITableView) {
+    init(_ controller: ProxiesObserving) {
         super.init()
-        proxiesObserver = (UIApplication.shared.delegate as? AppDelegate)?.proxiesObserver
-        self.tableView = tableView
-        tableView.dataSource = self
-    }
-
-    func observe() {
-        guard let tableView = tableView else { return }
-        proxiesObserver?.observe(tableView)
-    }
-
-    func stopObserving() {
-        proxiesObserver?.stopObserving()
+        controller.tableView.dataSource = self
+        self.controller = controller
     }
 }
 
 extension ProxiesTableViewDataSource: UITableViewDataSource {
     var proxies: [Proxy] {
-        return proxiesObserver?.proxies ?? []
+        return controller?.proxies ?? []
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

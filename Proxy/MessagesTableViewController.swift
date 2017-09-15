@@ -1,18 +1,18 @@
 import UIKit
 
-class MessagesTableViewController: UITableViewController, ButtonManaging, MakeNewMessageDelegate {
+class MessagesTableViewController: UITableViewController, ButtonManaging, ConvosObserving, MakeNewMessageDelegate {
     var cancelButton = UIBarButtonItem()
     var confirmButton = UIBarButtonItem()
     var deleteButton = UIBarButtonItem()
     var makeNewMessageButton = UIBarButtonItem()
     var makeNewProxyButton = UIBarButtonItem()
 
+    private let authObserver = AuthObserver()
+    private var convosObserver: ConvosObserver?
     private var dataSource: MessagesTableViewDataSource?
     private var delegate: MessagesTableViewDelegate?
-
-    private let authObserver = AuthObserver()
     private let unreadCountObserver = UnreadCountObserver()
-
+    var convos = [Convo]()
     var itemsToDelete = [String : Any]()
     var newConvo: Convo?
 
@@ -32,34 +32,6 @@ class MessagesTableViewController: UITableViewController, ButtonManaging, MakeNe
         if let newConvo = newConvo {
             goToConvoVC(newConvo)
         }
-        dataSource?.observe()
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(true)
-//        dataSource?.stopObserving()
-    }
-}
-
-extension MessagesTableViewController: AuthObserverDelegate {
-    func logIn() {
-        dataSource = MessagesTableViewDataSource(tableView)
-        dataSource?.observe()
-        makeButtons()
-        setDefaultButtons()
-        unreadCountObserver.observe(delegate: self)
-        DispatchQueue.global().async {
-            DBProxy.fixConvoCounts { _ in }
-        }
-    }
-
-    func logOut() {
-        guard
-            let loginVC = storyboard?.instantiateViewController(withIdentifier: Identifier.loginViewController) as? LoginViewController,
-            let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-                return
-        }
-        appDelegate.window?.rootViewController = loginVC
     }
 }
 
@@ -109,6 +81,29 @@ extension MessagesTableViewController {
 
     func _toggleEditMode() {
         toggleEditMode()
+    }
+}
+
+extension MessagesTableViewController: AuthObserverDelegate {
+    func logIn() {
+        convosObserver = ConvosObserver(owner: Shared.shared.uid, controller: self)
+        convosObserver?.observe()
+        dataSource = MessagesTableViewDataSource(self)
+        makeButtons()
+        setDefaultButtons()
+        unreadCountObserver.observe(delegate: self)
+        DispatchQueue.global().async {
+            DBProxy.fixConvoCounts { _ in }
+        }
+    }
+
+    func logOut() {
+        guard
+            let loginVC = storyboard?.instantiateViewController(withIdentifier: Identifier.loginViewController) as? LoginViewController,
+            let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+                return
+        }
+        appDelegate.window?.rootViewController = loginVC
     }
 }
 

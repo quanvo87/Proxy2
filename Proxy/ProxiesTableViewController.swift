@@ -1,6 +1,6 @@
 import UIKit
 
-class ProxiesTableViewController: UITableViewController, ButtonManaging, MakeNewMessageDelegate {
+class ProxiesTableViewController: UITableViewController, ButtonManaging, MakeNewMessageDelegate, ProxiesObserving {
     var cancelButton = UIBarButtonItem()
     var confirmButton = UIBarButtonItem()
     var deleteButton = UIBarButtonItem()
@@ -9,16 +9,19 @@ class ProxiesTableViewController: UITableViewController, ButtonManaging, MakeNew
 
     private var dataSource: ProxiesTableViewDataSource?
     private var delegate: ProxiesTableViewDelegate?
+    private var proxiesObserver: ProxiesObserver?
     var itemsToDelete = [String : Any]()
     var newConvo: Convo?
+    var proxies = [Proxy]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        dataSource = ProxiesTableViewDataSource(tableView)
-        dataSource?.observe()
+        dataSource = ProxiesTableViewDataSource(self)
         delegate = ProxiesTableViewDelegate(self)
         makeButtons()
         navigationItem.title = "Proxies"
+        proxiesObserver = ProxiesObserver(self)
+        proxiesObserver?.observe()
         setDefaultButtons()
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.rowHeight = 60
@@ -28,12 +31,6 @@ class ProxiesTableViewController: UITableViewController, ButtonManaging, MakeNew
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         goToNewConvo()
-        dataSource?.observe()
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(true)
-//        dataSource?.stopObserving()
     }
 
     func goToNewConvo() {
@@ -63,7 +60,7 @@ extension ProxiesTableViewController {
         let alert = UIAlertController(title: "Delete Proxies?", message: "You will not be able to view their conversations anymore.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
             self.disableButtons()
-            self.dataSource?.stopObserving()
+            self.proxiesObserver?.stopObserving()
             let key = AsyncWorkGroupKey()
             for (_, item) in self.itemsToDelete {
                 guard let proxy = item as? Proxy else { return }
@@ -78,7 +75,7 @@ extension ProxiesTableViewController {
             key.notify {
                 key.finishWorkGroup()
                 self.enableButtons()
-                self.dataSource?.observe()
+                self.proxiesObserver?.observe()
             }
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))

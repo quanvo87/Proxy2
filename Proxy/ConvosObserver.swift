@@ -2,20 +2,28 @@ import FirebaseDatabase
 import UIKit
 
 class ConvosObserver: ReferenceObserving {
-    private(set) var convos = [Convo]()
+    let ref: DatabaseReference?
+    private weak var controller: ConvosObserving?
     private(set) var handle: DatabaseHandle?
-    private(set) var ref: DatabaseReference?
 
-    func observeConvos(owner: String, tableView: UITableView) {
-        stopObserving()
+    init(owner: String, controller: ConvosObserving) {
         ref = DB.makeReference(Child.convos, owner)
-        handle = ref?.queryOrdered(byChild: Child.timestamp).observe(.value, with: { [weak self, weak tableView = tableView] (data) in
-            self?.convos = data.toConvosArray(filtered: true).reversed()
-            tableView?.reloadData()
+        self.controller = controller
+    }
+
+    func observe() {
+        stopObserving()
+        handle = ref?.queryOrdered(byChild: Child.timestamp).observe(.value, with: { [weak self] (data) in
+            self?.controller?.convos = data.toConvosArray(filtered: true).reversed()
+            self?.controller?.tableView?.reloadData()
         })
     }
 
     deinit {
         stopObserving()
     }
+}
+
+protocol ConvosObserving: class, TableViewOwning {
+    var convos: [Convo] { get set }
 }

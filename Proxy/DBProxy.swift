@@ -39,7 +39,6 @@ struct DBProxy {
     }
 
     static func deleteProxy(_ proxy: Proxy, withConvos convos: [Convo], completion: @escaping (Success) -> Void) {
-        (UIApplication.shared.delegate as? AppDelegate)?.proxyObserver.removeProxy(forKey: proxy.key)
         let key = AsyncWorkGroupKey()
         key.delete(at: Child.proxies, proxy.ownerId, proxy.key)
         key.delete(at: Child.proxyKeys, proxy.key)

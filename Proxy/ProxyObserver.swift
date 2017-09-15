@@ -2,29 +2,29 @@ import FirebaseDatabase
 import UIKit
 
 class ProxyObserver: ReferenceObserving {
-    private var proxies = NSCache<NSString, AnyObject>()
+    let ref: DatabaseReference?
+    private weak var controller: ProxyObserving?
     private(set) var handle: DatabaseHandle?
-    private(set) var ref: DatabaseReference?
 
-    func getProxy(forKey key: String) -> Proxy? {
-        return proxies.object(forKey: key as NSString) as? Proxy
-    }
-
-    func removeProxy(forKey key: String) {
-        proxies.removeObject(forKey: key as NSString)
-    }
-
-    func observe(proxy: Proxy, tableView: UITableView) {
-        stopObserving()
+    init(proxy: Proxy, controller: ProxyObserving) {
         ref = DB.makeReference(Child.proxies, proxy.ownerId, proxy.key)
-        handle = ref?.observe(.value, with: { [weak self, weak tableView = tableView] (data) in
+        self.controller = controller
+    }
+
+    func observe() {
+        stopObserving()
+        handle = ref?.observe(.value, with: { [weak self] (data) in
             guard let proxy = Proxy(data) else { return }
-            self?.proxies.setObject(proxy as AnyObject, forKey: proxy.key as NSString)
-            tableView?.reloadData()
+            self?.controller?.proxy = proxy
+            self?.controller?.tableView.reloadData()
         })
     }
 
     deinit {
         stopObserving()
     }
+}
+
+protocol ProxyObserving: class, TableViewOwning {
+    var proxy: Proxy? { get set }
 }

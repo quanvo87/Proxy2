@@ -1,41 +1,22 @@
 import UIKit
 
 class ProxyTableViewDataSource: NSObject {
-    private let _proxy: Proxy
-    private var id: Int { return ObjectIdentifier(self).hashValue }
-    private weak var tableViewController: UITableViewController?
-    private weak var convosObserver: ConvosObserver?
-    private weak var proxyObserver: ProxyObserver?
+    private weak var controller: ProxyTableViewController?
 
-    init(proxy: Proxy, tableViewController: UITableViewController) {
-        self._proxy = proxy
+    init(_ controller: ProxyTableViewController) {
         super.init()
-        let appDelegate = UIApplication.shared.delegate as? AppDelegate
-        convosObserver = appDelegate?.convosObserver
-        proxyObserver = appDelegate?.proxyObserver
-        self.tableViewController = tableViewController
-        tableViewController.tableView.dataSource = self
-    }
-
-    func observe() {
-        guard let tableView = tableViewController?.tableView else { return }
-        convosObserver?.observeConvos(owner: _proxy.key, tableView: tableView)
-        proxyObserver?.observe(proxy: _proxy, tableView: tableView)
-    }
-
-    func stopObserving() {
-        convosObserver?.stopObserving()
-        proxyObserver?.stopObserving()
+        controller.tableView.dataSource = self
+        self.controller = controller
     }
 }
 
 extension ProxyTableViewDataSource: UITableViewDataSource {
     var convos: [Convo] {
-        return convosObserver?.convos ?? []
+        return controller?.convos ?? []
     }
 
     var proxy: Proxy? {
-        return proxyObserver?.getProxy(forKey: _proxy.key)
+        return controller?.proxy
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -102,17 +83,17 @@ private extension ProxyTableViewDataSource {
             }
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        tableViewController?.present(alert, animated: true, completion: nil)
+        controller?.present(alert, animated: true, completion: nil)
     }
 
     @objc func goToIconPickerVC() {
         guard
             let proxy = proxy,
-            let iconPickerCollectionViewController = tableViewController?.storyboard?.instantiateViewController(withIdentifier: Identifier.iconPickerCollectionViewController) as? IconPickerCollectionViewController else {
+            let iconPickerCollectionViewController = controller?.storyboard?.instantiateViewController(withIdentifier: Identifier.iconPickerCollectionViewController) as? IconPickerCollectionViewController else {
                 return
         }
         iconPickerCollectionViewController.proxy = proxy
         let navigationController = UINavigationController(rootViewController: iconPickerCollectionViewController)
-        tableViewController?.present(navigationController, animated: true)
+        controller?.present(navigationController, animated: true)
     }
 }
