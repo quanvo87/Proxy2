@@ -3,8 +3,8 @@ import UIKit
 
 class ProxyObserver: ReferenceObserving {
     let ref: DatabaseReference?
-    private(set) var handle: DatabaseHandle?
     private weak var controller: ProxyObserving?
+    private(set) var handle: DatabaseHandle?
 
     init(proxy: Proxy, controller: ProxyObserving) {
         ref = DB.makeReference(Child.proxies, proxy.ownerId, proxy.key)

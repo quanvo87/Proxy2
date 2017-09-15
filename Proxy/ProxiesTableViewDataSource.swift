@@ -29,7 +29,3 @@ extension ProxiesTableViewDataSource: UITableViewDataSource {
         return proxies.count
     }
 }
-
-protocol ProxiesObserving: class, TableViewOwning {
-    var proxies: [Proxy] { get }
-}

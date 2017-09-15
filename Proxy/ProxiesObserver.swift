@@ -3,24 +3,27 @@ import UIKit
 
 class ProxiesObserver: ReferenceObserving {
     let ref: DatabaseReference?
+    private weak var controller: ProxiesObserving?
     private(set) var handle: DatabaseHandle?
-    private(set) var proxies = [Proxy]()
-    private weak var tableView: UITableView?
 
-    init(_ tableView: UITableView) {
+    init(_ controller: ProxiesObserving) {
         ref = DB.makeReference(Child.proxies, Shared.shared.uid)
-        self.tableView = tableView
+        self.controller = controller
     }
 
     func observe() {
         stopObserving()
         handle = ref?.queryOrdered(byChild: Child.timestamp).observe(.value, with: { [weak self] (data) in
-            self?.proxies = data.toProxiesArray().reversed()
-            self?.tableView?.reloadData()
+            self?.controller?.proxies = data.toProxiesArray().reversed()
+            self?.controller?.tableView?.reloadData()
         })
     }
 
     deinit {
         stopObserving()
     }
+}
+
+protocol ProxiesObserving: class, TableViewOwning {
+    var proxies: [Proxy] { get set }
 }

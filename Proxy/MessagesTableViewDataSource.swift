@@ -1,9 +1,9 @@
 import UIKit
 
 class MessagesTableViewDataSource: NSObject {
-    private weak var controller: MessagesTableViewController?
+    private weak var controller: ConvosObserving?
 
-    init(_ controller: MessagesTableViewController) {
+    init(_ controller: ConvosObserving) {
         super.init()
         controller.tableView.dataSource = self
         self.controller = controller

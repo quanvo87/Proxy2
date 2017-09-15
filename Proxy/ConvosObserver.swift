@@ -3,24 +3,27 @@ import UIKit
 
 class ConvosObserver: ReferenceObserving {
     let ref: DatabaseReference?
-    private(set) var convos = [Convo]()
+    private weak var controller: ConvosObserving?
     private(set) var handle: DatabaseHandle?
-    private weak var tableView: UITableView?
 
-    init(owner: String, tableView: UITableView) {
+    init(owner: String, controller: ConvosObserving) {
         ref = DB.makeReference(Child.convos, owner)
-        self.tableView = tableView
+        self.controller = controller
     }
 
     func observe() {
         stopObserving()
         handle = ref?.queryOrdered(byChild: Child.timestamp).observe(.value, with: { [weak self] (data) in
-            self?.convos = data.toConvosArray(filtered: true).reversed()
-            self?.tableView?.reloadData()
+            self?.controller?.convos = data.toConvosArray(filtered: true).reversed()
+            self?.controller?.tableView?.reloadData()
         })
     }
 
     deinit {
         stopObserving()
     }
+}
+
+protocol ConvosObserving: class, TableViewOwning {
+    var convos: [Convo] { get set }
 }

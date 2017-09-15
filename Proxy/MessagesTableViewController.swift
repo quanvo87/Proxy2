@@ -1,6 +1,6 @@
 import UIKit
 
-class MessagesTableViewController: UITableViewController, ButtonManaging, MakeNewMessageDelegate {
+class MessagesTableViewController: UITableViewController, ButtonManaging, ConvosObserving, MakeNewMessageDelegate {
     var cancelButton = UIBarButtonItem()
     var confirmButton = UIBarButtonItem()
     var deleteButton = UIBarButtonItem()
@@ -12,13 +12,9 @@ class MessagesTableViewController: UITableViewController, ButtonManaging, MakeNe
     private var dataSource: MessagesTableViewDataSource?
     private var delegate: MessagesTableViewDelegate?
     private let unreadCountObserver = UnreadCountObserver()
-
+    var convos = [Convo]()
     var itemsToDelete = [String : Any]()
     var newConvo: Convo?
-
-    var convos: [Convo] {
-        return convosObserver?.convos ?? []
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -90,7 +86,7 @@ extension MessagesTableViewController {
 
 extension MessagesTableViewController: AuthObserverDelegate {
     func logIn() {
-        convosObserver = ConvosObserver(owner: Shared.shared.uid, tableView: tableView)
+        convosObserver = ConvosObserver(owner: Shared.shared.uid, controller: self)
         convosObserver?.observe()
         dataSource = MessagesTableViewDataSource(self)
         makeButtons()

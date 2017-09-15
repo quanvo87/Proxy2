@@ -1,6 +1,6 @@
 import UIKit
 
-class ProxiesTableViewController: UITableViewController, ButtonManaging, MakeNewMessageDelegate {
+class ProxiesTableViewController: UITableViewController, ButtonManaging, MakeNewMessageDelegate, ProxiesObserving {
     var cancelButton = UIBarButtonItem()
     var confirmButton = UIBarButtonItem()
     var deleteButton = UIBarButtonItem()
@@ -12,6 +12,7 @@ class ProxiesTableViewController: UITableViewController, ButtonManaging, MakeNew
     private var proxiesObserver: ProxiesObserver?
     var itemsToDelete = [String : Any]()
     var newConvo: Convo?
+    var proxies = [Proxy]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,7 +20,7 @@ class ProxiesTableViewController: UITableViewController, ButtonManaging, MakeNew
         delegate = ProxiesTableViewDelegate(self)
         makeButtons()
         navigationItem.title = "Proxies"
-        proxiesObserver = ProxiesObserver(tableView)
+        proxiesObserver = ProxiesObserver(self)
         proxiesObserver?.observe()
         setDefaultButtons()
         tableView.allowsMultipleSelectionDuringEditing = true
@@ -100,11 +101,5 @@ extension ProxiesTableViewController {
 
     func _toggleEditMode() {
         toggleEditMode()
-    }
-}
-
-extension ProxiesTableViewController: ProxiesObserving {
-    var proxies: [Proxy] {
-        return proxiesObserver?.proxies ?? []
     }
 }
