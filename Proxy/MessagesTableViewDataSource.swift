@@ -1,9 +1,9 @@
 import UIKit
 
 class MessagesTableViewDataSource: NSObject {
-    private weak var controller: ConvosObserving?
+    private weak var controller: MessagesTableViewController?
 
-    init(_ controller: ConvosObserving) {
+    init(_ controller: MessagesTableViewController) {
         super.init()
         controller.tableView.dataSource = self
         self.controller = controller
@@ -28,8 +28,4 @@ extension MessagesTableViewDataSource: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return convos.count
     }
-}
-
-protocol ConvosObserving: class, TableViewOwning {
-    var convos: [Convo] { get }
 }

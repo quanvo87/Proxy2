@@ -1,20 +1,28 @@
 import UIKit
 
-class ProxyTableViewController: UITableViewController, MakeNewMessageDelegate {
+class ProxyTableViewController: UITableViewController, MakeNewMessageDelegate, ProxyObserving {
+    private var convosObserver: ConvosObserver?
     private var dataSource: ProxyTableViewDataSource?
     private var delegate: ProxyTableViewDelegate?
+    private var proxyObserver: ProxyObserver?
     var newConvo: Convo?
     var proxy: Proxy?
 
+    var convos: [Convo] {
+        return convosObserver?.convos ?? []
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        if let proxy = proxy {
-            dataSource = ProxyTableViewDataSource(proxy: proxy, tableViewController: self)
-            dataSource?.observe()
-        }
-        delegate = ProxyTableViewDelegate(self)
         navigationItem.rightBarButtonItems = [UIBarButtonItem.makeButton(target: self, action: #selector(goToMakeNewMessageVC), imageName: .makeNewMessage),
                                               UIBarButtonItem.makeButton(target: self, action: #selector(deleteProxy), imageName: .delete)]
+        guard let proxy = proxy else { return }
+        convosObserver = ConvosObserver(owner: proxy.key, tableView: tableView)
+        convosObserver?.observe()
+        dataSource = ProxyTableViewDataSource(self)
+        delegate = ProxyTableViewDelegate(self)
+        proxyObserver = ProxyObserver(proxy: proxy, controller: self)
+        proxyObserver?.observe()
         tableView.delaysContentTouches = false
         tableView.separatorStyle = .none
         for case let scrollView as UIScrollView in tableView.subviews {
@@ -27,7 +35,6 @@ class ProxyTableViewController: UITableViewController, MakeNewMessageDelegate {
         if let newConvo = newConvo {
             goToConvoVC(newConvo)
         }
-        dataSource?.observe()
     }
 }
 
@@ -39,8 +46,8 @@ private extension ProxyTableViewController {
             DBProxy.deleteProxy(proxy) { _ in }
             _ = self.navigationController?.popViewController(animated: true)
         })
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        present(alert, animated: true, completion: nil)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(alert, animated: true)
     }
 
     @objc func goToMakeNewMessageVC() {

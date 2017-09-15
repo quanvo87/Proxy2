@@ -23,7 +23,7 @@ class DBProxyTests: DBTest {
 
                     DBProxy.deleteProxy(sender) { (success) in
                         XCTAssert(success)
-                        XCTAssertNil((UIApplication.shared.delegate as? AppDelegate)?.proxyObserver.getProxy(forKey: sender.key))
+                        
                         let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
                         key.check(.receiverDeletedProxy(true), forConvo: convo, asSender: true)
                         key.checkUnreadMessagesDeleted(for: sender)

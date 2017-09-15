@@ -16,6 +16,10 @@ class MessagesTableViewController: UITableViewController, ButtonManaging, MakeNe
     var itemsToDelete = [String : Any]()
     var newConvo: Convo?
 
+    var convos: [Convo] {
+        return convosObserver?.convos ?? []
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         authObserver.observe(self)
@@ -104,12 +108,6 @@ extension MessagesTableViewController: AuthObserverDelegate {
                 return
         }
         appDelegate.window?.rootViewController = loginVC
-    }
-}
-
-extension MessagesTableViewController: ConvosObserving {
-    var convos: [Convo] {
-        return convosObserver?.convos ?? []
     }
 }
 
