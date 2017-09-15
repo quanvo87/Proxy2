@@ -11,8 +11,7 @@ class SenderProxyTableViewCell: UITableViewCell {
         nameLabel.text = proxy.name
         nicknameButton.setTitle(proxy.nickname == "" ? "Enter A Nickname" : proxy.nickname, for: .normal)
         selectionStyle = .none
-
-        DBProxy.getImageForIcon(proxy.icon) { (image) in
+        UIImage.makeImage(named: proxy.icon) { (image) in
             DispatchQueue.main.async {
                 self.iconImageView.image = image
             }

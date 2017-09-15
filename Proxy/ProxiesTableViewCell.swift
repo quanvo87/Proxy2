@@ -18,14 +18,14 @@ class ProxiesTableViewCell: UITableViewCell {
         nicknameLabel.text = proxy.nickname
         unreadLabel.text = nil // TODO: delete
 
-        DBProxy.getImageForIcon(proxy.icon) { (image) in
+        UIImage.makeImage(named: proxy.icon) { (image) in
             DispatchQueue.main.async {
                 self.iconImageView.image = image
             }
         }
 
         if proxy.dateCreated.isNewProxyDate {
-            DBProxy.makeNewProxyBadge { (image) in
+            UIImage.makeImage(named: "newProxyBadge") { (image) in
                 DispatchQueue.main.async {
                     self.contentView.bringSubview(toFront: self.newProxyBadgeImageView)
                     self.newProxyBadgeImageView.image = image

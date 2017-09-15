@@ -28,11 +28,11 @@ class CommonTests: XCTestCase {
     }
     
     func testShortForm() {
-        XCTAssertEqual(1.asStringWithCommas, "1")
-        XCTAssertEqual(100.asStringWithCommas, "100")
-        XCTAssertEqual(1000.asStringWithCommas, "1,000")
-        XCTAssertEqual(10000.asStringWithCommas, "10,000")
-        XCTAssertEqual(100000.asStringWithCommas, "100,000")
-        XCTAssertEqual(1000000.asStringWithCommas, "1,000,000")
+        XCTAssertEqual(UInt(1).asStringWithCommas, "1")
+        XCTAssertEqual(UInt(100).asStringWithCommas, "100")
+        XCTAssertEqual(UInt(1000).asStringWithCommas, "1,000")
+        XCTAssertEqual(UInt(10000).asStringWithCommas, "10,000")
+        XCTAssertEqual(UInt(100000).asStringWithCommas, "100,000")
+        XCTAssertEqual(UInt(1000000).asStringWithCommas, "1,000,000")
     }
 }
