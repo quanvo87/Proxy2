@@ -46,23 +46,6 @@ extension MakeNewMessageDelegate where Self: UIViewController {
 }
 
 extension String {
-    static func makePath(_ first: String, _ rest: String...) -> String? {
-        return makePath(first, rest)
-    }
-
-    static func makePath(_ first: String, _ rest: [String]) -> String? {
-        var children = rest
-        children.insert(first, at: 0)
-
-        let trimmed = children.map { $0.trimmingCharacters(in: CharacterSet(charactersIn: "/")) }
-
-        for child in trimmed where child == "" || child.contains("//") {
-            return nil
-        }
-
-        return trimmed.joined(separator: "/")
-    }
-
     func makeBold(withSize size: CGFloat) -> NSMutableAttributedString {
         let boldAttr = [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: size)]
         return NSMutableAttributedString(string: self, attributes: boldAttr)

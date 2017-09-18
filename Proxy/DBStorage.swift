@@ -12,7 +12,7 @@ struct DBStorage {
     }
 
     static func makeReference(_ first: String, _ rest: [String]) -> StorageReference? {
-        guard let path = String.makePath(first, rest) else {
+        guard let path = Path.makePath(first, rest) else {
             return nil
         }
         return ref.child(path)
