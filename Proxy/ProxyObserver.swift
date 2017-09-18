@@ -9,6 +9,7 @@ class ProxyObserver: ReferenceObserving {
     init(proxy: Proxy, controller: ProxyObserving) {
         ref = DB.makeReference(Child.proxies, proxy.ownerId, proxy.key)
         self.controller = controller
+        observe()
     }
 
     func observe() {

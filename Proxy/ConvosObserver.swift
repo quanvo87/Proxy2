@@ -9,6 +9,7 @@ class ConvosObserver: ReferenceObserving {
     init(owner: String, controller: ConvosObserving) {
         ref = DB.makeReference(Child.convos, owner)
         self.controller = controller
+        observe()
     }
 
     func observe() {

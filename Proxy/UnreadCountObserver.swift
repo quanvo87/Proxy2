@@ -8,6 +8,7 @@ class UnreadCountObserver: ReferenceObserving {
     init(user: String = Shared.shared.uid, delegate: UnreadCountObserving) {
         ref = DB.makeReference(Child.userInfo, user, Child.unreadMessages)
         self.delegate = delegate
+        observe()
     }
 
     func observe() {

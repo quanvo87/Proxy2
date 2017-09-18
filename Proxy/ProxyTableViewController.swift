@@ -15,11 +15,9 @@ class ProxyTableViewController: UITableViewController, MakeNewMessageDelegate, C
                                               UIBarButtonItem.makeButton(target: self, action: #selector(deleteProxy), imageName: .delete)]
         guard let proxy = proxy else { return }
         convosObserver = ConvosObserver(owner: proxy.key, controller: self)
-        convosObserver?.observe()
         dataSource = ProxyTableViewDataSource(self)
         delegate = ProxyTableViewDelegate(self)
         proxyObserver = ProxyObserver(proxy: proxy, controller: self)
-        proxyObserver?.observe()
         tableView.delaysContentTouches = false
         tableView.separatorStyle = .none
         for case let scrollView as UIScrollView in tableView.subviews {

@@ -19,7 +19,6 @@ class MessagesTableViewController: UITableViewController, ButtonManaging, Convos
     override func viewDidLoad() {
         super.viewDidLoad()
         authObserver = AuthObserver(self)
-        authObserver?.observe()
         dataSource = MessagesTableViewDataSource(self)
         delegate = MessagesTableViewDelegate(self)
         navigationItem.title = "Messages"
@@ -89,11 +88,9 @@ extension MessagesTableViewController {
 extension MessagesTableViewController: AuthObserving {
     func logIn() {
         convosObserver = ConvosObserver(owner: Shared.shared.uid, controller: self)
-        convosObserver?.observe()
         makeButtons()
         setDefaultButtons()
         unreadCountObserver = UnreadCountObserver(delegate: self)
-        unreadCountObserver?.observe()
         DispatchQueue.global().async {
             DBProxy.fixConvoCounts { _ in }
         }

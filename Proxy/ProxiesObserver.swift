@@ -9,6 +9,7 @@ class ProxiesObserver: ReferenceObserving {
     init(_ controller: ProxiesObserving) {
         ref = DB.makeReference(Child.proxies, Shared.shared.uid)
         self.controller = controller
+        observe()
     }
 
     func observe() {
