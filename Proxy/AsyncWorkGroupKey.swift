@@ -45,31 +45,3 @@ extension AsyncWorkGroupKey {
         Shared.shared.asyncWorkGroups[self]?.group.leave()
     }
 }
-
-extension AsyncWorkGroupKey {
-    static func getOwnerIdAndProxyKey(fromConvo convo: Convo, asSender: Bool) -> (ownerId: String, proxyKey: String) {
-        return (asSender ? convo.senderId : convo.receiverId,
-                asSender ? convo.senderProxyKey : convo.receiverProxyKey)
-    }
-    
-    func delete(at first: String, _ rest: String...) {
-        startWork()
-        DB.delete(first, rest) { (success) in
-            self.finishWork(withResult: success)
-        }
-    }
-
-    func increment(by amount: Int, at first: String, _ rest: String...) {
-        startWork()
-        DB.increment(by: amount, at: first, rest) { (success) in
-            self.finishWork(withResult: success)
-        }
-    }
-
-    func set(_ value: Any, at first: String, _ rest: String...) {
-        startWork()
-        DB.set(value, at: first, rest) { (success) in
-            self.finishWork(withResult: success)
-        }
-    }
-}

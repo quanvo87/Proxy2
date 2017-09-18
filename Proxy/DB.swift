@@ -1,5 +1,7 @@
 import FirebaseDatabase
 
+typealias Path = String
+
 struct DB {
     private static let ref = Database.database().reference()
 
@@ -8,7 +10,7 @@ struct DB {
     }
 
     static func makeReference(_ first: String, _ rest: [String]) -> DatabaseReference? {
-        guard let path = String.makePath(first, rest) else {
+        guard let path = Path.makePath(first, rest) else {
             return nil
         }
         return ref.child(path)
@@ -81,5 +83,52 @@ extension DB {
         ref.setValue(value) { (error, _) in
             completion(error == nil)
         }
+    }
+}
+
+extension AsyncWorkGroupKey {
+    static func getOwnerIdAndProxyKey(fromConvo convo: Convo, asSender: Bool) -> (ownerId: String, proxyKey: String) {
+        return (asSender ? convo.senderId : convo.receiverId,
+                asSender ? convo.senderProxyKey : convo.receiverProxyKey)
+    }
+
+    func delete(at first: String, _ rest: String...) {
+        startWork()
+        DB.delete(first, rest) { (success) in
+            self.finishWork(withResult: success)
+        }
+    }
+
+    func increment(by amount: Int, at first: String, _ rest: String...) {
+        startWork()
+        DB.increment(by: amount, at: first, rest) { (success) in
+            self.finishWork(withResult: success)
+        }
+    }
+
+    func set(_ value: Any, at first: String, _ rest: String...) {
+        startWork()
+        DB.set(value, at: first, rest) { (success) in
+            self.finishWork(withResult: success)
+        }
+    }
+}
+
+extension Path {
+    static func makePath(_ first: String, _ rest: String...) -> String? {
+        return makePath(first, rest)
+    }
+
+    static func makePath(_ first: String, _ rest: [String]) -> String? {
+        var children = rest
+        children.insert(first, at: 0)
+
+        let trimmed = children.map { $0.trimmingCharacters(in: CharacterSet(charactersIn: "/")) }
+
+        for child in trimmed where child == "" || child.contains("//") {
+            return nil
+        }
+
+        return trimmed.joined(separator: "/")
     }
 }
