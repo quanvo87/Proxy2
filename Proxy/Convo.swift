@@ -124,7 +124,7 @@ enum SettableConvoProperty {
 
     var properties: (name: String, value: Any) {
         switch self {
-            case .hasUnreadMessage(let value): return ("hasUnreadMessage", value)
+        case .hasUnreadMessage(let value): return ("hasUnreadMessage", value)
         case .lastMessage(let value): return ("lastMessage", value)
         case .receiverDeletedProxy(let value): return ("receiverDeletedProxy", value)
         case .receiverIcon(let value): return ("receiverIcon", value)

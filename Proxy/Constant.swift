@@ -10,6 +10,8 @@ struct Child {
     static let proxies = "proxies"
     static let proxyKeys = "proxyKeys"
     static let proxyOwners = "proxyOwners"
+    static let receiverIsBlocked = "receiverIsBlocked"
+    static let senderLeftConvo = "senderLeftConvo"
     static let timestamp = "timestamp"
     static let unreadCount = "unreadCount"
     static let unreadMessages = "unreadMessages"
