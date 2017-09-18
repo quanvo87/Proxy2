@@ -13,6 +13,7 @@
 		5958D5061F6C140100B07B0F /* MessagesSentObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5958D5051F6C140100B07B0F /* MessagesSentObserver.swift */; };
 		5958D5081F6C15EA00B07B0F /* ProxiesInteractedWithObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5958D5071F6C15EA00B07B0F /* ProxiesInteractedWithObserver.swift */; };
 		5958D50A1F6C18B600B07B0F /* MeTableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5958D5091F6C18B600B07B0F /* MeTableViewDelegate.swift */; };
+		595A25DC1F704F36005D82F1 /* ConvoIsActiveChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 595A25DB1F704F36005D82F1 /* ConvoIsActiveChecker.swift */; };
 		596D7FD41F62EC1100E6AF8D /* ProxiesTableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596D7FD31F62EC1100E6AF8D /* ProxiesTableViewDelegate.swift */; };
 		5973C8101F60844A00647492 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5973C80F1F60840F00647492 /* GoogleService-Info.plist */; };
 		5973C8111F60844A00647492 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5973C80F1F60840F00647492 /* GoogleService-Info.plist */; };
@@ -119,6 +120,7 @@
 		5958D5051F6C140100B07B0F /* MessagesSentObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesSentObserver.swift; sourceTree = "<group>"; };
 		5958D5071F6C15EA00B07B0F /* ProxiesInteractedWithObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxiesInteractedWithObserver.swift; sourceTree = "<group>"; };
 		5958D5091F6C18B600B07B0F /* MeTableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeTableViewDelegate.swift; sourceTree = "<group>"; };
+		595A25DB1F704F36005D82F1 /* ConvoIsActiveChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoIsActiveChecker.swift; sourceTree = "<group>"; };
 		596D7FD31F62EC1100E6AF8D /* ProxiesTableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxiesTableViewDelegate.swift; sourceTree = "<group>"; };
 		5973C80F1F60840F00647492 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5973C8131F608A1A00647492 /* NSDate+NVTimeAgo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+NVTimeAgo.h"; sourceTree = "<group>"; };
@@ -439,6 +441,7 @@
 				59B5007E1F6A49C6002D4C29 /* Observer */,
 				59B5007F1F6A49D8002D4C29 /* Login */,
 				5973C8451F608A2100647492 /* ButtonManaging.swift */,
+				595A25DB1F704F36005D82F1 /* ConvoIsActiveChecker.swift */,
 				59B5007C1F6A3469002D4C29 /* ReceiverPicker.swift */,
 			);
 			name = "Model Controller";
@@ -838,6 +841,7 @@
 				59B5007D1F6A3469002D4C29 /* ReceiverPicker.swift in Sources */,
 				5973C8591F608A2200647492 /* AsyncWorkGroupKey.swift in Sources */,
 				5973C8651F608A2200647492 /* Proxy.swift in Sources */,
+				595A25DC1F704F36005D82F1 /* ConvoIsActiveChecker.swift in Sources */,
 				5958D50A1F6C18B600B07B0F /* MeTableViewDelegate.swift in Sources */,
 				59AC04B61F6BFCFD00DB580B /* MessagesReceivedObserver.swift in Sources */,
 				5973C8481F608A2200647492 /* ProxyObserver.swift in Sources */,

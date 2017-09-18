@@ -6,6 +6,7 @@ enum ButtonName: String {
     case cancel
     case confirm
     case delete
+    case info
     case makeNewMessage
     case makeNewProxy
 }

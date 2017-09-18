@@ -110,6 +110,18 @@ struct DBConvo {
         return receiver
     }
 
+    static func receiverIsBlocked(_ convo: Convo, completion: @escaping (Bool) -> Void) {
+        DB.get(Child.convos, convo.senderId, convo.key, Child.receiverIsBlocked) { (data) in
+            completion(data?.value as? Bool ?? false)
+        }
+    }
+
+    static func senderLeftConvo(_ convo: Convo, completion: @escaping (Bool) -> Void) {
+        DB.get(Child.convos, convo.senderId, convo.key, Child.senderLeftConvo) { (data) in
+            completion(data?.value as? Bool ?? false)
+        }
+    }
+
     static func setReceiverNickname(to nickname: String, forConvo convo: Convo, completion: @escaping (Success) -> Void) {
         let key = AsyncWorkGroupKey()
         key.set(.receiverNickname(nickname), forConvo: convo, asSender: true)

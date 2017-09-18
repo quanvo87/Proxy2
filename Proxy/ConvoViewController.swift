@@ -5,7 +5,8 @@ import JSQMessagesViewController
 
 //class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
 class ConvoViewController: JSQMessagesViewController {
-    
+    private var convoIsActiveChecker: ConvoIsActiveChecker?
+
     let api = API.sharedInstance
     let ref = Database.database().reference()
     var convo = Convo()
@@ -59,6 +60,9 @@ class ConvoViewController: JSQMessagesViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        convoIsActiveChecker = ConvoIsActiveChecker(controller: self, convo: convo)
+
         setUp()
         setUpBubbles()
         setUpSenderIsPresent()
@@ -78,7 +82,9 @@ class ConvoViewController: JSQMessagesViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
-        checkStatus()
+
+        convoIsActiveChecker?.check()
+
         if senderIsPresentIsSetUp {
             senderIsPresent = true
         }
@@ -111,16 +117,14 @@ class ConvoViewController: JSQMessagesViewController {
         names[convo.receiverId] = convo.receiverProxyName
         
         setTitle()
-        
-        let infoButton = UIButton(type: .custom)
-        infoButton.setImage(UIImage(named: "info.png"), for: UIControlState())
-        infoButton.addTarget(self, action: #selector(ConvoViewController.showConvoInfoTableViewController), for: UIControlEvents.touchUpInside)
-        infoButton.frame = CGRect(x: 0, y: 0, width: 25, height: 25)
-        navigationItem.rightBarButtonItem =  UIBarButtonItem(customView: infoButton)
-        navigationController!.view.backgroundColor = UIColor.white
-        
-        collectionView?.collectionViewLayout.incomingAvatarViewSize = CGSize(width: kJSQMessagesCollectionViewAvatarSizeDefault, height:kJSQMessagesCollectionViewAvatarSizeDefault)
-        collectionView?.collectionViewLayout.outgoingAvatarViewSize = CGSize(width: kJSQMessagesCollectionViewAvatarSizeDefault, height:kJSQMessagesCollectionViewAvatarSizeDefault)
+
+        navigationItem.rightBarButtonItem = UIBarButtonItem.makeButton(target: self, action: #selector(showConvoInfoTableViewController), imageName: .info)
+        navigationController?.view.backgroundColor = UIColor.white
+
+        collectionView?.collectionViewLayout.incomingAvatarViewSize = CGSize(width: kJSQMessagesCollectionViewAvatarSizeDefault,
+                                                                             height: kJSQMessagesCollectionViewAvatarSizeDefault)
+        collectionView?.collectionViewLayout.outgoingAvatarViewSize = CGSize(width: kJSQMessagesCollectionViewAvatarSizeDefault,
+                                                                             height: kJSQMessagesCollectionViewAvatarSizeDefault)
         collectionView.contentInset.bottom = 0
         
         senderId = convo.senderId
@@ -145,40 +149,6 @@ class ConvoViewController: JSQMessagesViewController {
     }
     
     // MARK: - Database
-    func checkStatus() {
-        checkLeftConvo()
-        checkDeletedProxy()
-        checkIsBlocking()
-    }
-    
-    func checkLeftConvo() {
-//        ref.child(Child.convos).child(convo.senderId).child(convo.key).child(Child.SenderLeftConvo).observeSingleEvent(of: .value, with: { (data) in
-//            if let leftConvo = data.value as? Bool, leftConvo {
-//                self.close()
-//            }
-//        })
-    }
-    
-    func checkDeletedProxy() {
-//        ref.child(Child.convos).child(convo.senderId).child(convo.key).child(Child.SenderDeletedProxy).observeSingleEvent(of: .value, with: { (data) in
-//            if let deletedProxy = data.value as? Bool, deletedProxy {
-//                self.close()
-//            }
-//        })
-    }
-    
-    func checkIsBlocking() {
-//        ref.child(Child.convos).child(convo.senderId).child(convo.key).child(Child.ReceiverIsBlocked).observeSingleEvent(of: .value, with: { (data) in
-//            if let isBlocking = data.value as? Bool, isBlocking {
-//                self.close()
-//            }
-//        })
-    }
-    
-    func close() {
-        _ = navigationController?.popViewController(animated: true)
-    }
-    
     // Set user as present in the convo.
     func setUpSenderIsPresent() {
         senderIsPresentRef = ref.child(Child.isPresent).child(convo.key).child(convo.senderId).child(Child.isPresent)
