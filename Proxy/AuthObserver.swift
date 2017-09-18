@@ -8,6 +8,7 @@ class AuthObserver {
 
     init(_ delegate: AuthObserving) {
         self.delegate = delegate
+        observe()
     }
 
     func observe() {
@@ -25,7 +26,7 @@ class AuthObserver {
         }
     }
 
-    private func stopObserving() {
+    func stopObserving() {
         if let handle = handle {
             auth.removeStateDidChangeListener(handle)
         }

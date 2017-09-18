@@ -1,11 +1,3 @@
-//
-//  ConvoViewController.swift
-//  proxy
-//
-//  Created by Quan Vo on 8/30/16.
-//  Copyright © 2016 Quan Vo. All rights reserved.
-//
-
 import FirebaseDatabase
 import JSQMessagesViewController
 //import Fusuma
@@ -623,7 +615,7 @@ class ConvoViewController: JSQMessagesViewController {
     
     func finishedWritingMessage() {
         finishSendingMessage()
-        JSQSystemSoundPlayer.jsq_playMessageSentSound()
+//        JSQSystemSoundPlayer.jsq_playMessageSentSound()
         userIsTyping = false
     }
     

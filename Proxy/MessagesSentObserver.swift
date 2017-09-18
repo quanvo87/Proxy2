@@ -9,6 +9,7 @@ class MessagesSentObserver: ReferenceObserving {
     init(user: String = Shared.shared.uid, controller: MessagesSentObserving) {
         ref = DB.makeReference(Child.userInfo, user, IncrementableUserProperty.messagesSent.rawValue)
         self.controller = controller
+        observe()
     }
 
     func observe() {

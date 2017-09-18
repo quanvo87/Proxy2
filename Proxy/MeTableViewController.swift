@@ -17,7 +17,6 @@ class MeTableViewController: UITableViewController, MeObserving {
     override func viewDidLoad() {
         super.viewDidLoad()
         authObserver = AuthObserver(self)
-        authObserver?.observe()
         dataSource = MeTableViewDataSource(self)
         delegate = MeTableViewDelegate(self)
     }
@@ -27,11 +26,8 @@ extension MeTableViewController: AuthObserving {
     func logIn() {
         navigationItem.title = Shared.shared.userName
         messagesReceivedObserver = MessagesReceivedObserver(controller: self)
-        messagesReceivedObserver?.observe()
         messagesSentObserver = MessagesSentObserver(controller: self)
-        messagesSentObserver?.observe()
         proxiesInteractedWithObserver = ProxiesInteractedWithObserver(controller: self)
-        proxiesInteractedWithObserver?.observe()
         tableView.reloadData()
     }
 }

@@ -10,7 +10,7 @@ class ProxiesTableViewController: UITableViewController, ButtonManaging, MakeNew
     private var dataSource: ProxiesTableViewDataSource?
     private var delegate: ProxiesTableViewDelegate?
     private var proxiesObserver: ProxiesObserver?
-    var itemsToDelete = [String : Any]()
+    var itemsToDelete = [String: Any]()
     var newConvo: Convo?
     var proxies = [Proxy]()
 
@@ -21,7 +21,6 @@ class ProxiesTableViewController: UITableViewController, ButtonManaging, MakeNew
         makeButtons()
         navigationItem.title = "Proxies"
         proxiesObserver = ProxiesObserver(self)
-        proxiesObserver?.observe()
         setDefaultButtons()
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.rowHeight = 60

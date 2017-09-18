@@ -9,6 +9,7 @@ class ProxiesInteractedWithObserver: ReferenceObserving {
     init(user: String = Shared.shared.uid, controller: ProxiesInteractedWithObserving) {
         ref = DB.makeReference(Child.userInfo, user, IncrementableUserProperty.proxiesInteractedWith.rawValue)
         self.controller = controller
+        observe()
     }
 
     func observe() {
