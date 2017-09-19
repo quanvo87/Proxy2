@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5912F0E71F708B770017D1EE /* ConvoMemberIconsObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5912F0E61F708B770017D1EE /* ConvoMemberIconsObserving.swift */; };
 		5949F5831F63331B004597A0 /* SenderPickerTableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5949F5821F63331B004597A0 /* SenderPickerTableViewDelegate.swift */; };
 		594D2A501F6B0CDD00ECCF06 /* IconPickerCollectionViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 594D2A4F1F6B0CDD00ECCF06 /* IconPickerCollectionViewDataSource.swift */; };
 		594D2A521F6B167F00ECCF06 /* IconPickerCollectionViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 594D2A511F6B167F00ECCF06 /* IconPickerCollectionViewDelegate.swift */; };
@@ -114,6 +115,7 @@
 
 /* Begin PBXFileReference section */
 		3BAAA6C3B4320D57BE4DCA56 /* Pods-ProxyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ProxyTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ProxyTests/Pods-ProxyTests.debug.xcconfig"; sourceTree = "<group>"; };
+		5912F0E61F708B770017D1EE /* ConvoMemberIconsObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoMemberIconsObserving.swift; sourceTree = "<group>"; };
 		5949F5821F63331B004597A0 /* SenderPickerTableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SenderPickerTableViewDelegate.swift; sourceTree = "<group>"; };
 		594D2A4F1F6B0CDD00ECCF06 /* IconPickerCollectionViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconPickerCollectionViewDataSource.swift; sourceTree = "<group>"; };
 		594D2A511F6B167F00ECCF06 /* IconPickerCollectionViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconPickerCollectionViewDelegate.swift; sourceTree = "<group>"; };
@@ -329,6 +331,7 @@
 			isa = PBXGroup;
 			children = (
 				5973C8471F608A2200647492 /* AuthObserver.swift */,
+				5912F0E61F708B770017D1EE /* ConvoMemberIconsObserving.swift */,
 				5973C83D1F608A2000647492 /* ConvosObserver.swift */,
 				59AC04B51F6BFCFD00DB580B /* MessagesReceivedObserver.swift */,
 				5958D5051F6C140100B07B0F /* MessagesSentObserver.swift */,
@@ -855,6 +858,7 @@
 				5973C8641F608A2200647492 /* ProxiesTableViewController.swift in Sources */,
 				5949F5831F63331B004597A0 /* SenderPickerTableViewDelegate.swift in Sources */,
 				5973C8491F608A2200647492 /* DBConvo.swift in Sources */,
+				5912F0E71F708B770017D1EE /* ConvoMemberIconsObserving.swift in Sources */,
 				5973C8581F608A2200647492 /* MessagesTableViewDataSource.swift in Sources */,
 				5973C8671F608A2200647492 /* IconPickerCollectionViewCell.swift in Sources */,
 				5973C8741F608A2200647492 /* Shared.swift in Sources */,

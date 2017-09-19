@@ -3,6 +3,7 @@ import UIKit
 struct Child {
     static let blockedUsers = "blockedUsers"
     static let convos = "convos"
+    static let icon = "icon"
     static let isPresent = "isPresent"
     static let isTyping = "isTyping"
     static let key = "key"
@@ -10,6 +11,7 @@ struct Child {
     static let proxies = "proxies"
     static let proxyKeys = "proxyKeys"
     static let proxyOwners = "proxyOwners"
+    static let receiverIcon = "receiverIcon"
     static let receiverIsBlocked = "receiverIsBlocked"
     static let senderLeftConvo = "senderLeftConvo"
     static let timestamp = "timestamp"
