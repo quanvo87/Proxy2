@@ -51,7 +51,7 @@ class ReceiverIconObserver: ReferenceObserving {
     init(controller: ConvoMemberIconsObserving, convo: Convo) {
         self.controller = controller
         receiverId = convo.receiverId
-        ref = DB.makeReference(Child.convos, convo.senderId, convo.key, Child.receiverIcon)
+        ref = DB.makeReference(Child.proxies, convo.receiverId, convo.receiverProxyKey, Child.icon)
         observe()
     }
 
