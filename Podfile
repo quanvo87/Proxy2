@@ -2,12 +2,12 @@
 platform :ios, '11.0'
 
 def pods
+  pod 'FacebookCore'
+  pod 'FacebookLogin'
   pod 'Firebase'
   pod 'FirebaseAuth'
   pod 'Firebase/Database'
   pod 'Firebase/Storage'
-  pod 'FacebookCore'
-  pod 'FacebookLogin'
   pod 'JSQMessagesViewController'
 end
 
