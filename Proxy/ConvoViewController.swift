@@ -7,7 +7,10 @@ import JSQMessagesViewController
 class ConvoViewController: JSQMessagesViewController, ConvoMemberIconsObserving {
     private var convoIsActiveChecker: ConvoIsActiveChecker?
     private var receiverIconObserver: ReceiverIconObserver?
+    private var receiverNicknameObserver: ReceiverNicknameObserver?
     private var senderIconObserver: SenderIconObserver?
+    private var senderNicknameObserver: SenderNicknameObserver?
+    var convoMemberDisplayNames = [String: String]()
     var convoMemberIcons = [String: JSQMessagesAvatarImage]()
 
     let api = API.sharedInstance
@@ -36,13 +39,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoMemberIconsObserving 
 
     var messages = [Message]()
     var unreadMessages = [Message]()
-    
-    var senderNicknameRef = DatabaseReference()
-    var senderNicknameRefHandle = DatabaseHandle()
-    var receiverNicknameRef = DatabaseReference()
-    var receiverNicknameRefHandle = DatabaseHandle()
-    var convoMemberDisplayNames = [String: String]()
-    
+
     var membersAreTypingRef = DatabaseReference()
     var membersAreTypingRefHandle = DatabaseHandle()
 
@@ -77,7 +74,9 @@ class ConvoViewController: JSQMessagesViewController, ConvoMemberIconsObserving 
         navigationItem.rightBarButtonItem = UIBarButtonItem.makeButton(target: self, action: #selector(showConvoInfoTableViewController), imageName: .info)
 
         receiverIconObserver = ReceiverIconObserver(controller: self, convo: convo)
+        receiverNicknameObserver = ReceiverNicknameObserver(controller: self, convo: convo)
         senderIconObserver = SenderIconObserver(controller: self, convo: convo)
+        senderNicknameObserver = SenderNicknameObserver(controller: self, convo: convo)
 
         senderId = convo.senderId
         senderDisplayName = ""
@@ -88,8 +87,6 @@ class ConvoViewController: JSQMessagesViewController, ConvoMemberIconsObserving 
         setUpSenderIsPresent()
         observeMessages()
         observeLastMessage()
-        observeSenderNickname()
-        observeReceiverNickname()
         observeTyping()
     }
     
@@ -123,15 +120,11 @@ class ConvoViewController: JSQMessagesViewController, ConvoMemberIconsObserving 
 //    deinit {
 //        messagesRef.removeObserver(withHandle: messagesRefHandle)
 //        messagesRef.removeObserver(withHandle: lastMessageRefHandle)
-//        senderNicknameRef.removeObserver(withHandle: senderNicknameRefHandle)
-//        receiverNicknameRef.removeObserver(withHandle: receiverNicknameRefHandle)
 //        membersAreTypingRef.removeObserver(withHandle: membersAreTypingRefHandle)
 //    }
 
     func setUp() {
         messagesRef = ref.child(Child.messages).child(convo.key)
-//        senderNicknameRef = ref.child(Child.convos).child(convo.senderId).child(convo.key).child(Child.SenderNickname)
-//        receiverNicknameRef = ref.child(Child.convos).child(convo.senderId).child(convo.key).child(Child.ReceiverNickname)
         membersAreTypingRef = ref.child(Child.isTyping).child(convo.key)
     }
 
@@ -143,6 +136,19 @@ class ConvoViewController: JSQMessagesViewController, ConvoMemberIconsObserving 
         let factory = JSQMessagesBubbleImageFactory()
         incomingBubble = factory?.incomingMessagesBubbleImage(with: UIColor.jsq_messageBubbleLightGray())
         outgoingBubble = factory?.outgoingMessagesBubbleImage(with: UIColor.jsq_messageBubbleBlue())
+    }
+}
+
+extension ConvoViewController: ConvoMemberNicknamesObserving {
+    func setReceiverNickname(_ nickname: String) {
+        convoMemberDisplayNames[convo.receiverId] = nickname == "" ? convo.receiverProxyName : nickname
+        setTitle()
+        collectionView.reloadData()
+    }
+
+    func setSenderNickname(_ nickname: String) {
+        convoMemberDisplayNames[convo.senderId] = nickname == "" ? convo.senderProxyName : nickname
+        collectionView.reloadData()
     }
 }
 
@@ -306,28 +312,6 @@ extension ConvoViewController {
             api.setRead(for: message, forProxyKey: self.convo.senderProxyKey, belongingToUserId: self.convo.senderId)
         }
         unreadMessages = []
-    }
-    
-    // Observe when sender changes their nickname and update all cells that are displaying it.
-    func observeSenderNickname() {
-        senderNicknameRefHandle = senderNicknameRef.observe(.value, with: { (data) in
-            if let nickname = data.value as? String {
-                self.convoMemberDisplayNames[self.convo.senderId] = nickname == "" ? self.convo.senderProxyName : nickname
-                self.collectionView.reloadData()
-            }
-        })
-    }
-    
-    // Observe when sender changes receiver's nickname for this convo and update all cells that are displaying it.
-    // Also update navigation bar title.
-    func observeReceiverNickname() {
-        receiverNicknameRefHandle = receiverNicknameRef.observe(.value, with: { (data) in
-            if let nickname = data.value as? String {
-                self.convoMemberDisplayNames[self.convo.receiverId] = nickname == "" ? self.convo.receiverProxyName : nickname
-                self.setTitle()
-                self.collectionView.reloadData()
-            }
-        })
     }
     
     func observeTyping() {
@@ -645,4 +629,8 @@ extension ConvoViewController {
         dest.convo = convo
         navigationController?.pushViewController(dest, animated: true)
     }
+}
+
+protocol JSQMessagesCollectionViewOwning {
+    var collectionView: JSQMessagesCollectionView! { get }
 }
