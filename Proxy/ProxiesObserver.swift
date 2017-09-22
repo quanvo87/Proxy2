@@ -16,7 +16,8 @@ class ProxiesObserver: ReferenceObserving {
         stopObserving()
         handle = ref?.queryOrdered(byChild: Child.timestamp).observe(.value, with: { [weak self] (data) in
             self?.controller?.proxies = data.toProxiesArray().reversed()
-            self?.controller?.tableView?.reloadData()
+            self?.controller?.reload()
+//            self?.controller?.tableView?.reloadData()
         })
     }
 
@@ -25,6 +26,6 @@ class ProxiesObserver: ReferenceObserving {
     }
 }
 
-protocol ProxiesObserving: class, TableViewOwning {
+protocol ProxiesObserving: class, TableViewReloading {
     var proxies: [Proxy] { get set }
 }

@@ -1,18 +1,18 @@
 import UIKit
 
 class MessagesTableViewDataSource: NSObject {
-    private weak var controller: ConvosObserving?
+    private weak var manager: ConvosManaging?
 
-    init(_ controller: ConvosObserving) {
+    init(observer: ConvosManaging, tableView: UITableView) {
         super.init()
-        controller.tableView.dataSource = self
-        self.controller = controller
+        self.manager = observer
+        tableView.dataSource = self
     }
 }
 
 extension MessagesTableViewDataSource: UITableViewDataSource {
     var convos: [Convo] {
-        return controller?.convos ?? []
+        return manager?.convos ?? []
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

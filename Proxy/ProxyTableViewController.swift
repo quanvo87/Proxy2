@@ -1,20 +1,25 @@
 import UIKit
 
-class ProxyTableViewController: UITableViewController, MakeNewMessageDelegate, ConvosObserving, ProxyObserving {
+class ProxyTableViewController: UITableViewController, MakeNewMessageDelegate, ProxyObserving {
     private var convosObserver: ConvosObserver?
     private var dataSource: ProxyTableViewDataSource?
     private var delegate: ProxyTableViewDelegate?
     private var proxyObserver: ProxyObserver?
-    var convos = [Convo]()
     var newConvo: Convo?
     var proxy: Proxy?
+
+    private(set) var convos = [Convo]() {
+        didSet {
+            tableView.reloadData()
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.rightBarButtonItems = [UIBarButtonItem.makeButton(target: self, action: #selector(goToMakeNewMessageVC), imageName: .makeNewMessage),
                                               UIBarButtonItem.makeButton(target: self, action: #selector(deleteProxy), imageName: .delete)]
         guard let proxy = proxy else { return }
-        convosObserver = ConvosObserver(owner: proxy.key, controller: self)
+        convosObserver = ConvosObserver(manager: self, owner: proxy.key)
         dataSource = ProxyTableViewDataSource(self)
         delegate = ProxyTableViewDelegate(self)
         proxyObserver = ProxyObserver(proxy: proxy, controller: self)
@@ -30,6 +35,12 @@ class ProxyTableViewController: UITableViewController, MakeNewMessageDelegate, C
         if let newConvo = newConvo {
             goToConvoVC(newConvo)
         }
+    }
+}
+
+extension ProxyTableViewController: ConvosManaging {
+    func setConvos(_ convos: [Convo]) {
+        self.convos = convos
     }
 }
 

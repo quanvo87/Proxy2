@@ -4,14 +4,14 @@ import JSQMessagesViewController
 //import MobilePlayer
 
 //class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
-class ConvoViewController: JSQMessagesViewController, ConvoMemberIconsObserving {
+class ConvoViewController: JSQMessagesViewController {
     private var convoIsActiveChecker: ConvoIsActiveChecker?
     private var receiverIconObserver: ReceiverIconObserver?
     private var receiverNicknameObserver: ReceiverNicknameObserver?
     private var senderIconObserver: SenderIconObserver?
     private var senderNicknameObserver: SenderNicknameObserver?
     var convoMemberDisplayNames = [String: String]()
-    var convoMemberIcons = [String: JSQMessagesAvatarImage]()
+    private var convoMemberIcons = [String: JSQMessagesAvatarImage]()
 
     let api = API.sharedInstance
     let ref = Database.database().reference()
@@ -73,10 +73,10 @@ class ConvoViewController: JSQMessagesViewController, ConvoMemberIconsObserving 
         navigationController?.view.backgroundColor = UIColor.white
         navigationItem.rightBarButtonItem = UIBarButtonItem.makeButton(target: self, action: #selector(showConvoInfoTableViewController), imageName: .info)
 
-        receiverIconObserver = ReceiverIconObserver(controller: self, convo: convo)
-        receiverNicknameObserver = ReceiverNicknameObserver(controller: self, convo: convo)
-        senderIconObserver = SenderIconObserver(controller: self, convo: convo)
-        senderNicknameObserver = SenderNicknameObserver(controller: self, convo: convo)
+        receiverIconObserver = ReceiverIconObserver(convo: convo, manager: self)
+        receiverNicknameObserver = ReceiverNicknameObserver(convo: convo, manager: self)
+        senderIconObserver = SenderIconObserver(convo: convo, manager: self)
+        senderNicknameObserver = SenderNicknameObserver(convo: convo, manager: self)
 
         senderId = convo.senderId
         senderDisplayName = ""
@@ -139,7 +139,29 @@ class ConvoViewController: JSQMessagesViewController, ConvoMemberIconsObserving 
     }
 }
 
-extension ConvoViewController: ConvoMemberNicknamesObserving {
+extension ConvoViewController: IconsManaging {
+    func setReceiverIcon(_ icon: String) {
+        UIImage.makeImage(named: icon) { (image) in
+            guard let image = image else { return }
+            self.convoMemberIcons[self.convo.receiverId] = JSQMessagesAvatarImage(placeholder: image)
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+            }
+        }
+    }
+    
+    func setSenderIcon(_ icon: String) {
+        UIImage.makeImage(named: icon) { (image) in
+            guard let image = image else { return }
+            self.convoMemberIcons[self.convo.senderId] = JSQMessagesAvatarImage(placeholder: image)
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+            }
+        }
+    }
+}
+
+extension ConvoViewController: NicknamesManaging {
     func setReceiverNickname(_ nickname: String) {
         convoMemberDisplayNames[convo.receiverId] = nickname == "" ? convo.receiverProxyName : nickname
         setTitle()

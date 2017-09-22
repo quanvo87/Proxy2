@@ -17,7 +17,8 @@ class ProxyObserver: ReferenceObserving {
         handle = ref?.observe(.value, with: { [weak self] (data) in
             guard let proxy = Proxy(data) else { return }
             self?.controller?.proxy = proxy
-            self?.controller?.tableView.reloadData()
+            self?.controller?.reload()
+//            self?.controller?.tableView.reloadData()
         })
     }
 
@@ -26,6 +27,6 @@ class ProxyObserver: ReferenceObserving {
     }
 }
 
-protocol ProxyObserving: class, TableViewOwning {
+protocol ProxyObserving: class, TableViewReloading {
     var proxy: Proxy? { get set }
 }

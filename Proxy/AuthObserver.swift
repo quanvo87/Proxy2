@@ -4,10 +4,10 @@ import UIKit
 class AuthObserver {
     private let auth = Auth.auth()
     private var handle: AuthStateDidChangeListenerHandle?
-    private weak var delegate: AuthObserving?
+    private weak var manager: AuthManaging?
 
-    init(_ delegate: AuthObserving) {
-        self.delegate = delegate
+    init(_ manager: AuthManaging) {
+        self.manager = manager
         observe()
     }
 
@@ -17,11 +17,11 @@ class AuthObserver {
             if let user = user {
                 Shared.shared.uid = user.uid
                 Shared.shared.userName = user.displayName ?? ""
-                self?.delegate?.logIn()
+                self?.manager?.logIn()
             } else {
                 Shared.shared.uid = ""
                 Shared.shared.userName = ""
-                self?.delegate?.logOut()
+                self?.manager?.logOut()
             }
         }
     }
@@ -37,15 +37,15 @@ class AuthObserver {
     }
 }
 
-protocol AuthObserving: class {
-    var storyboard: UIStoryboard? { get }
+protocol AuthManaging: class {
     func logIn()
 }
 
-extension AuthObserving {
+extension AuthManaging {
     func logOut() {
         guard
-            let loginVC = storyboard?.instantiateViewController(withIdentifier: Identifier.loginViewController) as? LoginViewController,
+            let controller = self as? UIViewController,
+            let loginVC = controller.storyboard?.instantiateViewController(withIdentifier: Identifier.loginViewController) as? LoginViewController,
             let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
                 return
         }

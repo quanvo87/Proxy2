@@ -22,7 +22,7 @@ class MeTableViewController: UITableViewController, MeObserving {
     }
 }
 
-extension MeTableViewController: AuthObserving {
+extension MeTableViewController: AuthManaging {
     func logIn() {
         navigationItem.title = Shared.shared.userName
         messagesReceivedObserver = MessagesReceivedObserver(controller: self)

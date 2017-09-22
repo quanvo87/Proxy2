@@ -9,8 +9,8 @@ class ProxiesTableViewController: UITableViewController, ButtonManaging, MakeNew
 
     private var dataSource: ProxiesTableViewDataSource?
     private var delegate: ProxiesTableViewDelegate?
+    private var itemsToDelete = [String: Any]()
     private var proxiesObserver: ProxiesObserver?
-    var itemsToDelete = [String: Any]()
     var newConvo: Convo?
     var proxies = [Proxy]()
 
@@ -47,6 +47,20 @@ class ProxiesTableViewController: UITableViewController, ButtonManaging, MakeNew
         if tableView.numberOfRows(inSection: 0) > 0 {
             tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
         }
+    }
+}
+
+extension ProxiesTableViewController: ItemsDeleting {
+    func set(_ object: Any, forKey key: String) {
+        itemsToDelete[key] = object
+    }
+
+    func remove(atKey key: String) {
+        itemsToDelete.removeValue(forKey: key)
+    }
+
+    func removeAll() {
+        itemsToDelete.removeAll()
     }
 }
 

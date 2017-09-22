@@ -17,7 +17,8 @@ class ProxiesInteractedWithObserver: ReferenceObserving {
         handle = ref?.observe(.value, with: { [weak self] (data) in
             if let count = data.value as? UInt {
                 self?.controller?.proxiesInteractedWithCount = count.asStringWithCommas
-                self?.controller?.tableView.reloadData()
+                self?.controller?.reload()
+//                self?.controller?.tableView.reloadData()
             }
         })
     }
@@ -27,6 +28,6 @@ class ProxiesInteractedWithObserver: ReferenceObserving {
     }
 }
 
-protocol ProxiesInteractedWithObserving: class, TableViewOwning {
+protocol ProxiesInteractedWithObserving: class, TableViewReloading {
     var proxiesInteractedWithCount: String { get set }
 }

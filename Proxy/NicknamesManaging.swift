@@ -1,13 +1,14 @@
 import FirebaseDatabase
-import UIKit
+
+typealias NicknamesManaging = ReceiverNicknameManaging & SenderNicknameManaging
 
 class ReceiverNicknameObserver: ReferenceObserving {
     let ref: DatabaseReference?
-    private weak var controller: ConvoMemberNicknamesObserving?
+    private weak var manager: ReceiverNicknameManaging?
     private(set) var handle: DatabaseHandle?
 
-    init(controller: ConvoMemberNicknamesObserving, convo: Convo) {
-        self.controller = controller
+    init(convo: Convo, manager: ReceiverNicknameManaging) {
+        self.manager = manager
         ref = DB.makeReference(Child.convos, convo.senderId, convo.key, Child.receiverNickname)
         observe()
     }
@@ -16,7 +17,7 @@ class ReceiverNicknameObserver: ReferenceObserving {
         stopObserving()
         handle = ref?.observe(.value, with: { [weak self] (data) in
             guard let nickname = data.value as? String else { return }
-            self?.controller?.setReceiverNickname(nickname)
+            self?.manager?.setReceiverNickname(nickname)
         })
     }
 
@@ -27,11 +28,11 @@ class ReceiverNicknameObserver: ReferenceObserving {
 
 class SenderNicknameObserver: ReferenceObserving {
     let ref: DatabaseReference?
-    private weak var controller: ConvoMemberNicknamesObserving?
+    private weak var manager: SenderNicknameManaging?
     private(set) var handle: DatabaseHandle?
 
-    init(controller: ConvoMemberNicknamesObserving, convo: Convo) {
-        self.controller = controller
+    init(convo: Convo, manager: SenderNicknameManaging) {
+        self.manager = manager
         ref = DB.makeReference(Child.convos, convo.senderId, convo.key, Child.senderNickname)
         observe()
     }
@@ -40,7 +41,7 @@ class SenderNicknameObserver: ReferenceObserving {
         stopObserving()
         handle = ref?.observe(.value, with: { [weak self] (data) in
             guard let nickname = data.value as? String else { return }
-            self?.controller?.setSenderNickname(nickname)
+            self?.manager?.setSenderNickname(nickname)
         })
     }
 
@@ -49,7 +50,10 @@ class SenderNicknameObserver: ReferenceObserving {
     }
 }
 
-protocol ConvoMemberNicknamesObserving: class {
+protocol ReceiverNicknameManaging: class {
     func setReceiverNickname(_ nickname: String)
+}
+
+protocol SenderNicknameManaging: class {
     func setSenderNickname(_ nickname: String)
 }

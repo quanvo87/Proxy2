@@ -17,7 +17,9 @@ class MessagesSentObserver: ReferenceObserving {
         handle = ref?.observe(.value, with: { [weak self] (data) in
             if let count = data.value as? UInt {
                 self?.controller?.messagesSentCount = count.asStringWithCommas
-                self?.controller?.tableView.reloadData()
+                self?.controller?.reload()
+//                self?.controller?.tableView.reloadData()
+                
             }
         })
     }
@@ -27,6 +29,6 @@ class MessagesSentObserver: ReferenceObserving {
     }
 }
 
-protocol MessagesSentObserving: class, TableViewOwning {
+protocol MessagesSentObserving: class, TableViewReloading {
     var messagesSentCount: String { get set }
 }

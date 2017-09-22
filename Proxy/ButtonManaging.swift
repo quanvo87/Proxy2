@@ -1,6 +1,6 @@
 import UIKit
 
-typealias ButtonManaging = ButtonEditing & ButtonMaking & ButtonOwning & ItemsDeleting
+typealias ButtonManaging = ButtonEditing & ButtonMaking & ButtonOwning
 
 enum ButtonName: String {
     case cancel
@@ -46,7 +46,8 @@ extension ButtonEditing where Self: ButtonOwning & ItemsDeleting & UITableViewCo
             setEditModeButtons()
         } else {
             setDefaultButtons()
-            itemsToDelete.removeAll()
+            removeAll()
+//            itemsToDelete.removeAll()
         }
     }
 }
@@ -77,5 +78,8 @@ extension ButtonMaking {
 }
 
 protocol ItemsDeleting: class {
-    var itemsToDelete: [String: Any] { get set }
+//    var itemsToDelete: [String: Any] { get set }
+    func set(_ object: Any, forKey key: String)
+    func remove(atKey key: String)
+    func removeAll()
 }

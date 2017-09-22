@@ -14,6 +14,12 @@ extension ReferenceObserving {
     }
 }
 
-protocol TableViewOwning {
+protocol TableViewReloading {
     var tableView: UITableView! { get }
+}
+
+extension TableViewReloading {
+    func reload() {
+        tableView.reloadData()
+    }
 }

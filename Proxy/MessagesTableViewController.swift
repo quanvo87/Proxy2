@@ -1,25 +1,33 @@
 import UIKit
 
-class MessagesTableViewController: UITableViewController, ButtonManaging, ConvosObserving, MakeNewMessageDelegate {
+class MessagesTableViewController: UITableViewController, ButtonManaging, MakeNewMessageDelegate {
     var cancelButton = UIBarButtonItem()
     var confirmButton = UIBarButtonItem()
     var deleteButton = UIBarButtonItem()
     var makeNewMessageButton = UIBarButtonItem()
     var makeNewProxyButton = UIBarButtonItem()
 
-    private var authObserver: AuthObserver?
-    private var convosObserver: ConvosObserver?
     private var dataSource: MessagesTableViewDataSource?
     private var delegate: MessagesTableViewDelegate?
+
+    private var authObserver: AuthObserver?
+    private var convosObserver: ConvosObserver?
     private var unreadCountObserver: UnreadCountObserver?
-    var convos = [Convo]()
-    var itemsToDelete = [String : Any]()
+
+    private var itemsToDelete = [String : Any]()
+
     var newConvo: Convo?
+
+    private(set) var convos = [Convo]() {
+        didSet {
+            tableView.reloadData()
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         authObserver = AuthObserver(self)
-        dataSource = MessagesTableViewDataSource(self)
+        dataSource = MessagesTableViewDataSource(observer: self, tableView: tableView)
         delegate = MessagesTableViewDelegate(self)
         navigationItem.title = "Messages"
         tabBarController?.tabBar.items?.setupForTabBar()
@@ -33,6 +41,26 @@ class MessagesTableViewController: UITableViewController, ButtonManaging, Convos
         if let newConvo = newConvo {
             goToConvoVC(newConvo)
         }
+    }
+}
+
+extension MessagesTableViewController: ConvosManaging {
+    func setConvos(_ convos: [Convo]) {
+        self.convos = convos
+    }
+}
+
+extension MessagesTableViewController: ItemsDeleting {
+    func set(_ object: Any, forKey key: String) {
+        itemsToDelete[key] = object
+    }
+
+    func remove(atKey key: String) {
+        itemsToDelete.removeValue(forKey: key)
+    }
+
+    func removeAll() {
+        itemsToDelete.removeAll()
     }
 }
 
@@ -85,9 +113,9 @@ extension MessagesTableViewController {
     }
 }
 
-extension MessagesTableViewController: AuthObserving {
+extension MessagesTableViewController: AuthManaging {
     func logIn() {
-        convosObserver = ConvosObserver(owner: Shared.shared.uid, controller: self)
+        convosObserver = ConvosObserver(manager: self, owner: Shared.shared.uid)
         makeButtons()
         setDefaultButtons()
         unreadCountObserver = UnreadCountObserver(delegate: self)
