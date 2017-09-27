@@ -11,9 +11,13 @@ enum ButtonName: String {
     case makeNewProxy
 }
 
-protocol ButtonEditing {}
+protocol ButtonEditing: ButtonOwning {
+    var itemsToDeleteManager: ItemsToDeleteManaging { get }
+    var navigationItem: UINavigationItem? { get }
+    var tableView: UITableView? { get }
+}
 
-extension ButtonEditing where Self: ButtonOwning & ItemsDeleting & UITableViewController {
+extension ButtonEditing {
     func disableButtons() {
         cancelButton.isEnabled = false
         confirmButton.isEnabled = false
@@ -31,23 +35,23 @@ extension ButtonEditing where Self: ButtonOwning & ItemsDeleting & UITableViewCo
     }
 
     func setDefaultButtons() {
-        navigationItem.leftBarButtonItem = deleteButton
-        navigationItem.rightBarButtonItems = [makeNewMessageButton, makeNewProxyButton]
+        navigationItem?.leftBarButtonItem = deleteButton
+        navigationItem?.rightBarButtonItems = [makeNewMessageButton, makeNewProxyButton]
     }
 
     func setEditModeButtons() {
-        navigationItem.leftBarButtonItem = cancelButton
-        navigationItem.rightBarButtonItems = [confirmButton]
+        navigationItem?.leftBarButtonItem = cancelButton
+        navigationItem?.rightBarButtonItems = [confirmButton]
     }
 
     func toggleEditMode() {
+        guard let tableView = tableView else { return }
         tableView.setEditing(!tableView.isEditing, animated: true)
         if tableView.isEditing {
             setEditModeButtons()
         } else {
             setDefaultButtons()
-            removeAll()
-//            itemsToDelete.removeAll()
+            itemsToDeleteManager.itemsToDelete.removeAll()
         }
     }
 }
@@ -75,11 +79,4 @@ extension ButtonMaking {
     var deleteButton: UIBarButtonItem { get set }
     var makeNewMessageButton: UIBarButtonItem { get set }
     var makeNewProxyButton: UIBarButtonItem { get set }
-}
-
-protocol ItemsDeleting: class {
-//    var itemsToDelete: [String: Any] { get set }
-    func set(_ object: Any, forKey key: String)
-    func remove(atKey key: String)
-    func removeAll()
 }

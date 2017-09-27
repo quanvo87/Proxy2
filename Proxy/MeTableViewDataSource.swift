@@ -5,7 +5,7 @@ class MeTableViewDataSource: NSObject {
 
     init(_ controller: MeObserving) {
         super.init()
-        controller.tableView.dataSource = self
+//        controller.tableView.dataSource = self
         self.controller = controller
     }
 }

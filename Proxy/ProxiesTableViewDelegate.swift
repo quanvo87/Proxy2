@@ -1,18 +1,17 @@
 import UIKit
 
 class ProxiesTableViewDelegate: NSObject {
-    private weak var controller: ProxiesTableViewController?
+    weak var controller: ProxiesTableViewController?
 
-    init(_ controller: ProxiesTableViewController) {
-        super.init()
-        controller.tableView.delegate = self
+    func load(_ controller: ProxiesTableViewController) {
         self.controller = controller
+        controller.tableView.delegate = self
     }
 }
 
 extension ProxiesTableViewDelegate: UITableViewDelegate {
     var proxies: [Proxy] {
-        return controller?.proxies ?? []
+        return controller?.proxiesManager.proxies ?? []
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -20,8 +19,7 @@ extension ProxiesTableViewDelegate: UITableViewDelegate {
             return
         }
         if tableView.isEditing {
-            controller?.set(proxy, forKey: proxy.key)
-//            controller?.itemsToDelete[proxy.key] = proxy
+            controller?.buttonManager?.itemsToDeleteManager.itemsToDelete[proxy.key] = proxy
         } else {
             tableView.deselectRow(at: indexPath, animated: true)
             goToProxyInfoVC(proxy)
@@ -34,8 +32,7 @@ extension ProxiesTableViewDelegate: UITableViewDelegate {
             let proxy = proxies[safe: indexPath.row] else {
                 return
         }
-        controller?.remove(atKey: proxy.key)
-//        controller?.itemsToDelete.removeValue(forKey: proxy.key)
+        controller?.buttonManager?.itemsToDeleteManager.itemsToDelete.removeValue(forKey: proxy.key)
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

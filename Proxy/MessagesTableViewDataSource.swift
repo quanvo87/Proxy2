@@ -1,11 +1,10 @@
 import UIKit
 
 class MessagesTableViewDataSource: NSObject {
-    private weak var manager: ConvosManaging?
+    weak var manager: ConvosManaging?
 
-    init(observer: ConvosManaging, tableView: UITableView) {
+    init(_ tableView: UITableView) {
         super.init()
-        self.manager = observer
         tableView.dataSource = self
     }
 }

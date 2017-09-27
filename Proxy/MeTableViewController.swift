@@ -4,6 +4,10 @@ import UIKit
 typealias MeObserving = MessagesReceivedObserving & MessagesSentObserving & ProxiesInteractedWithObserving
 
 class MeTableViewController: UITableViewController, MeObserving {
+    func reloadTableView() {
+        
+    }
+
     private var authObserver: AuthObserver?
     private var dataSource: MeTableViewDataSource?
     private var delegate: MeTableViewDelegate?

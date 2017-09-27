@@ -1,6 +1,10 @@
 import UIKit
 
 class ProxyTableViewController: UITableViewController, MakeNewMessageDelegate, ProxyObserving {
+    func reloadTableView() {
+        
+    }
+
     private var convosObserver: ConvosObserver?
     private var dataSource: ProxyTableViewDataSource?
     private var delegate: ProxyTableViewDelegate?
@@ -8,7 +12,7 @@ class ProxyTableViewController: UITableViewController, MakeNewMessageDelegate, P
     var newConvo: Convo?
     var proxy: Proxy?
 
-    private(set) var convos = [Convo]() {
+    var convos = [Convo]() {
         didSet {
             tableView.reloadData()
         }
@@ -19,7 +23,7 @@ class ProxyTableViewController: UITableViewController, MakeNewMessageDelegate, P
         navigationItem.rightBarButtonItems = [UIBarButtonItem.makeButton(target: self, action: #selector(goToMakeNewMessageVC), imageName: .makeNewMessage),
                                               UIBarButtonItem.makeButton(target: self, action: #selector(deleteProxy), imageName: .delete)]
         guard let proxy = proxy else { return }
-        convosObserver = ConvosObserver(manager: self, owner: proxy.key)
+        convosObserver = ConvosObserver(convosOwner: proxy.key, manager: self)
         dataSource = ProxyTableViewDataSource(self)
         delegate = ProxyTableViewDelegate(self)
         proxyObserver = ProxyObserver(proxy: proxy, controller: self)

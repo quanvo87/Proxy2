@@ -44,9 +44,9 @@ protocol AuthManaging: class {
 extension AuthManaging {
     func logOut() {
         guard
+            let appDelegate = UIApplication.shared.delegate as? AppDelegate,
             let controller = self as? UIViewController,
-            let loginVC = controller.storyboard?.instantiateViewController(withIdentifier: Identifier.loginViewController) as? LoginViewController,
-            let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            let loginVC = controller.storyboard?.instantiateViewController(withIdentifier: Identifier.loginViewController) as? LoginViewController else {
                 return
         }
         appDelegate.window?.rootViewController = loginVC

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		5912F0E71F708B770017D1EE /* IconsManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5912F0E61F708B770017D1EE /* IconsManaging.swift */; };
+		5935D2B51F7B3CDE002B44B1 /* ItemsToDeleteManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5935D2B41F7B3CDE002B44B1 /* ItemsToDeleteManaging.swift */; };
 		5949F5831F63331B004597A0 /* SenderPickerTableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5949F5821F63331B004597A0 /* SenderPickerTableViewDelegate.swift */; };
 		594D2A501F6B0CDD00ECCF06 /* IconPickerCollectionViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 594D2A4F1F6B0CDD00ECCF06 /* IconPickerCollectionViewDataSource.swift */; };
 		594D2A521F6B167F00ECCF06 /* IconPickerCollectionViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 594D2A511F6B167F00ECCF06 /* IconPickerCollectionViewDelegate.swift */; };
@@ -80,16 +81,20 @@
 		598F068A1F60AF060066B742 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598F06891F60AF060066B742 /* API.swift */; };
 		59AC04B61F6BFCFD00DB580B /* MessagesReceivedObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59AC04B51F6BFCFD00DB580B /* MessagesReceivedObserver.swift */; };
 		59AC04B81F6C049100DB580B /* MeTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59AC04B71F6C049100DB580B /* MeTableViewDataSource.swift */; };
+		59AF0E7C1F7B5129009F6F38 /* ProxiesButtonManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59AF0E7B1F7B5129009F6F38 /* ProxiesButtonManager.swift */; };
 		59B432E01F60648400622DEA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59B432DF1F60648400622DEA /* AppDelegate.swift */; };
 		59B432E51F60648400622DEA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 59B432E31F60648400622DEA /* Main.storyboard */; };
 		59B432E71F60648400622DEA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 59B432E61F60648400622DEA /* Assets.xcassets */; };
 		59B432EA1F60648400622DEA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 59B432E81F60648400622DEA /* LaunchScreen.storyboard */; };
 		59B5007D1F6A3469002D4C29 /* ReceiverPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59B5007C1F6A3469002D4C29 /* ReceiverPicker.swift */; };
 		59B7CC6C1F638A2A0063D137 /* ReferenceObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59B7CC6B1F638A2A0063D137 /* ReferenceObserving.swift */; };
+		59BAB2DA1F7A7EBE00A2B581 /* TableViewReloading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BAB2D91F7A7EBE00A2B581 /* TableViewReloading.swift */; };
+		59BAB2DC1F7A7FB200A2B581 /* ConvosManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BAB2DB1F7A7FB200A2B581 /* ConvosManaging.swift */; };
 		59C171B11F60C64500EDE032 /* arabiangulf.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 59C171AD1F60C64400EDE032 /* arabiangulf.mp4 */; };
 		59C171B21F60C64500EDE032 /* beachpalm.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 59C171AE1F60C64400EDE032 /* beachpalm.mp4 */; };
 		59C171B31F60C64500EDE032 /* dragontailzipline.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 59C171AF1F60C64500EDE032 /* dragontailzipline.mp4 */; };
 		59C171B41F60C64500EDE032 /* hawaiiancoast.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 59C171B01F60C64500EDE032 /* hawaiiancoast.mp4 */; };
+		59D5F9351F7B173800FD5670 /* ProxiesManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D5F9341F7B173800FD5670 /* ProxiesManaging.swift */; };
 		59DCE5FC1F65FCC900AC9CEC /* ProxyTableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59DCE5FB1F65FCC900AC9CEC /* ProxyTableViewDelegate.swift */; };
 		59DDF43B1F6AB2F100D4E239 /* MessagesTableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59DDF43A1F6AB2F100D4E239 /* MessagesTableViewDelegate.swift */; };
 		9F0C2E94B3D2ACDB881894D0 /* Pods_ProxyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 677A1D9397BD6DC3C3277EF9 /* Pods_ProxyTests.framework */; };
@@ -117,6 +122,7 @@
 /* Begin PBXFileReference section */
 		3BAAA6C3B4320D57BE4DCA56 /* Pods-ProxyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ProxyTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ProxyTests/Pods-ProxyTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5912F0E61F708B770017D1EE /* IconsManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconsManaging.swift; sourceTree = "<group>"; };
+		5935D2B41F7B3CDE002B44B1 /* ItemsToDeleteManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsToDeleteManaging.swift; sourceTree = "<group>"; };
 		5949F5821F63331B004597A0 /* SenderPickerTableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SenderPickerTableViewDelegate.swift; sourceTree = "<group>"; };
 		594D2A4F1F6B0CDD00ECCF06 /* IconPickerCollectionViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconPickerCollectionViewDataSource.swift; sourceTree = "<group>"; };
 		594D2A511F6B167F00ECCF06 /* IconPickerCollectionViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconPickerCollectionViewDelegate.swift; sourceTree = "<group>"; };
@@ -188,6 +194,7 @@
 		598F06891F60AF060066B742 /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		59AC04B51F6BFCFD00DB580B /* MessagesReceivedObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesReceivedObserver.swift; sourceTree = "<group>"; };
 		59AC04B71F6C049100DB580B /* MeTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeTableViewDataSource.swift; sourceTree = "<group>"; };
+		59AF0E7B1F7B5129009F6F38 /* ProxiesButtonManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxiesButtonManager.swift; sourceTree = "<group>"; };
 		59B432DC1F60648400622DEA /* Proxy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Proxy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		59B432DF1F60648400622DEA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		59B432E41F60648400622DEA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -201,10 +208,13 @@
 		59B433AD1F60807400622DEA /* Proxy-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Proxy-Bridging-Header.h"; sourceTree = "<group>"; };
 		59B5007C1F6A3469002D4C29 /* ReceiverPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiverPicker.swift; sourceTree = "<group>"; };
 		59B7CC6B1F638A2A0063D137 /* ReferenceObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReferenceObserving.swift; sourceTree = "<group>"; };
+		59BAB2D91F7A7EBE00A2B581 /* TableViewReloading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewReloading.swift; sourceTree = "<group>"; };
+		59BAB2DB1F7A7FB200A2B581 /* ConvosManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvosManaging.swift; sourceTree = "<group>"; };
 		59C171AD1F60C64400EDE032 /* arabiangulf.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = arabiangulf.mp4; sourceTree = "<group>"; };
 		59C171AE1F60C64400EDE032 /* beachpalm.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = beachpalm.mp4; sourceTree = "<group>"; };
 		59C171AF1F60C64500EDE032 /* dragontailzipline.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = dragontailzipline.mp4; sourceTree = "<group>"; };
 		59C171B01F60C64500EDE032 /* hawaiiancoast.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = hawaiiancoast.mp4; sourceTree = "<group>"; };
+		59D5F9341F7B173800FD5670 /* ProxiesManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxiesManaging.swift; sourceTree = "<group>"; };
 		59DCE5FB1F65FCC900AC9CEC /* ProxyTableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyTableViewDelegate.swift; sourceTree = "<group>"; };
 		59DDF43A1F6AB2F100D4E239 /* MessagesTableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesTableViewDelegate.swift; sourceTree = "<group>"; };
 		677A1D9397BD6DC3C3277EF9 /* Pods_ProxyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ProxyTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -394,6 +404,19 @@
 			name = Delegate;
 			sourceTree = "<group>";
 		};
+		59BAB2DD1F7A7FB800A2B581 /* Manager */ = {
+			isa = PBXGroup;
+			children = (
+				5973C8451F608A2100647492 /* ButtonManaging.swift */,
+				59BAB2DB1F7A7FB200A2B581 /* ConvosManaging.swift */,
+				5935D2B41F7B3CDE002B44B1 /* ItemsToDeleteManaging.swift */,
+				59D5F9341F7B173800FD5670 /* ProxiesManaging.swift */,
+				59AF0E7B1F7B5129009F6F38 /* ProxiesButtonManager.swift */,
+				59BAB2D91F7A7EBE00A2B581 /* TableViewReloading.swift */,
+			);
+			name = Manager;
+			sourceTree = "<group>";
+		};
 		59C171AC1F60C07800EDE032 /* Other */ = {
 			isa = PBXGroup;
 			children = (
@@ -444,9 +467,9 @@
 				59B500801F6A49E2002D4C29 /* Database */,
 				59B500811F6A49F8002D4C29 /* Data Source */,
 				59B500821F6A4A06002D4C29 /* Delegate */,
+				59BAB2DD1F7A7FB800A2B581 /* Manager */,
 				59B5007E1F6A49C6002D4C29 /* Observer */,
 				59B5007F1F6A49D8002D4C29 /* Login */,
-				5973C8451F608A2100647492 /* ButtonManaging.swift */,
 				595A25DB1F704F36005D82F1 /* ConvoIsActiveChecker.swift */,
 				59B5007C1F6A3469002D4C29 /* ReceiverPicker.swift */,
 			);
@@ -848,14 +871,17 @@
 				5973C8591F608A2200647492 /* AsyncWorkGroupKey.swift in Sources */,
 				5973C8651F608A2200647492 /* Proxy.swift in Sources */,
 				595A25DC1F704F36005D82F1 /* ConvoIsActiveChecker.swift in Sources */,
+				5935D2B51F7B3CDE002B44B1 /* ItemsToDeleteManaging.swift in Sources */,
 				5958D50A1F6C18B600B07B0F /* MeTableViewDelegate.swift in Sources */,
 				59710E3E1F7237EB00C39857 /* NicknamesManaging.swift in Sources */,
+				59BAB2DA1F7A7EBE00A2B581 /* TableViewReloading.swift in Sources */,
 				59AC04B61F6BFCFD00DB580B /* MessagesReceivedObserver.swift in Sources */,
 				5973C8481F608A2200647492 /* ProxyObserver.swift in Sources */,
 				596D7FD41F62EC1100E6AF8D /* ProxiesTableViewDelegate.swift in Sources */,
 				594D2A521F6B167F00ECCF06 /* IconPickerCollectionViewDelegate.swift in Sources */,
 				5973C84E1F608A2200647492 /* ConvoDetailTableViewController.swift in Sources */,
 				5973C84F1F608A2200647492 /* DBStorage.swift in Sources */,
+				59BAB2DC1F7A7FB200A2B581 /* ConvosManaging.swift in Sources */,
 				5973C86F1F608A2200647492 /* UnreadCountObserver.swift in Sources */,
 				5973C8521F608A2200647492 /* BlockedUser.swift in Sources */,
 				5973C84C1F608A2200647492 /* NSDate+NVTimeAgo.m in Sources */,
@@ -866,6 +892,7 @@
 				5973C8581F608A2200647492 /* MessagesTableViewDataSource.swift in Sources */,
 				5973C8671F608A2200647492 /* IconPickerCollectionViewCell.swift in Sources */,
 				5973C8741F608A2200647492 /* Shared.swift in Sources */,
+				59D5F9351F7B173800FD5670 /* ProxiesManaging.swift in Sources */,
 				5973C8711F608A2200647492 /* BlockedUsersTableViewCell.swift in Sources */,
 				59B7CC6C1F638A2A0063D137 /* ReferenceObserving.swift in Sources */,
 				5973C8621F608A2200647492 /* ProxiesObserver.swift in Sources */,
@@ -898,6 +925,7 @@
 				5973C8611F608A2200647492 /* DB.swift in Sources */,
 				5973C87A1F608A2200647492 /* AuthObserver.swift in Sources */,
 				5973C85E1F608A2200647492 /* SenderProxyTableViewCell.swift in Sources */,
+				59AF0E7C1F7B5129009F6F38 /* ProxiesButtonManager.swift in Sources */,
 				5973C85B1F608A2200647492 /* DBProxy.swift in Sources */,
 				5973C84B1F608A2200647492 /* DBUser.swift in Sources */,
 				5973C8501F608A2200647492 /* MessagesTableViewController.swift in Sources */,
