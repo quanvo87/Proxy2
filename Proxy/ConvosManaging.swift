@@ -2,8 +2,8 @@ protocol ConvosManaging: class {
     var convos: [Convo] { get set }
 }
 
-class ConvosManager: NSObject, ConvosManaging {
-    var observer: ConvosObserver?
+class ConvosManager: ConvosManaging {
+    let observer = ConvosObserver()
     weak var reloader: TableViewReloading?
     var convos = [Convo]() {
         didSet {
@@ -11,9 +11,8 @@ class ConvosManager: NSObject, ConvosManaging {
         }
     }
 
-    init(convosOwner owner: String, delegate: TableViewReloading?) {
-        super.init()
-        self.reloader = delegate
-        observer = ConvosObserver(convosOwner: owner, manager: self)
+    func load(convosOwner owner: String, reloader: TableViewReloading?) {
+        self.reloader = reloader
+        observer.observe(convosOwner: owner, manager: self)
     }
 }

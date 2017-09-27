@@ -12,7 +12,7 @@ enum ButtonName: String {
 }
 
 protocol ButtonEditing: ButtonOwning {
-    var itemsToDeleteManager: ItemsToDeleteManaging { get }
+    var itemsToDeleteManager: ItemsToDeleteManaging? { get }
     var navigationItem: UINavigationItem? { get }
     var tableView: UITableView? { get }
 }
@@ -51,7 +51,7 @@ extension ButtonEditing {
             setEditModeButtons()
         } else {
             setDefaultButtons()
-            itemsToDeleteManager.itemsToDelete.removeAll()
+            itemsToDeleteManager?.itemsToDelete.removeAll()
         }
     }
 }

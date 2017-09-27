@@ -19,7 +19,7 @@ extension ProxiesTableViewDelegate: UITableViewDelegate {
             return
         }
         if tableView.isEditing {
-            controller?.buttonManager?.itemsToDeleteManager.itemsToDelete[proxy.key] = proxy
+            controller?.buttonManager.itemsToDeleteManager?.itemsToDelete[proxy.key] = proxy
         } else {
             tableView.deselectRow(at: indexPath, animated: true)
             goToProxyInfoVC(proxy)
@@ -32,7 +32,7 @@ extension ProxiesTableViewDelegate: UITableViewDelegate {
             let proxy = proxies[safe: indexPath.row] else {
                 return
         }
-        controller?.buttonManager?.itemsToDeleteManager.itemsToDelete.removeValue(forKey: proxy.key)
+        controller?.buttonManager.itemsToDeleteManager?.itemsToDelete.removeValue(forKey: proxy.key)
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

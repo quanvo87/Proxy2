@@ -1,16 +1,16 @@
 import UIKit
 
 class ProxiesTableViewController: UITableViewController, MakeNewMessageDelegate {
+    let buttonManager = ProxiesButtonManager()
     let dataSource = ProxiesTableViewDataSource()
     let delegate = ProxiesTableViewDelegate()
     let proxiesManager = ProxiesManager()
     let reloader = TableViewReloader()
-    var buttonManager: ProxiesButtonManager?
     var newConvo: Convo?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        buttonManager = ProxiesButtonManager(self)
+        buttonManager.load(self)
         dataSource.load(manager: proxiesManager, tableView: tableView)
         delegate.load(self)
         navigationItem.title = "Proxies"
@@ -23,14 +23,10 @@ class ProxiesTableViewController: UITableViewController, MakeNewMessageDelegate 
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        guard
-            let convoVC = storyboard?.instantiateViewController(withIdentifier: Identifier.convoViewController) as? ConvoViewController,
-            let newConvo = newConvo else {
-                return
+        if let newConvo = newConvo {
+            goToConvoVC(newConvo)
+            self.newConvo = nil
         }
-        convoVC.convo = newConvo
-        self.newConvo = nil
-        navigationController?.pushViewController(convoVC, animated: true)
     }
 
     func scrollToTop() {

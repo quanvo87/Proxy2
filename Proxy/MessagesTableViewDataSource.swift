@@ -2,11 +2,6 @@ import UIKit
 
 class MessagesTableViewDataSource: NSObject {
     weak var manager: ConvosManaging?
-
-    init(_ tableView: UITableView) {
-        super.init()
-        tableView.dataSource = self
-    }
 }
 
 extension MessagesTableViewDataSource: UITableViewDataSource {

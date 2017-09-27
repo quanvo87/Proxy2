@@ -2,26 +2,20 @@ import FirebaseAuth
 import UIKit
 
 class AuthObserver {
-    private let auth = Auth.auth()
-    private var handle: AuthStateDidChangeListenerHandle?
-    private weak var manager: AuthManaging?
+    let auth = Auth.auth()
+    var handle: AuthStateDidChangeListenerHandle?
 
-    init(_ manager: AuthManaging) {
-        self.manager = manager
-        observe()
-    }
-
-    func observe() {
+    func observe(_ manager: AuthManaging) {
         stopObserving()
-        handle = auth.addStateDidChangeListener { [weak self] (_, user) in
+        handle = auth.addStateDidChangeListener { [weak manager = manager] (_, user) in
             if let user = user {
                 Shared.shared.uid = user.uid
                 Shared.shared.userName = user.displayName ?? ""
-                self?.manager?.logIn()
+                manager?.logIn()
             } else {
                 Shared.shared.uid = ""
                 Shared.shared.userName = ""
-                self?.manager?.logOut()
+                manager?.logOut()
             }
         }
     }
@@ -34,21 +28,5 @@ class AuthObserver {
 
     deinit {
         stopObserving()
-    }
-}
-
-protocol AuthManaging: class {
-    func logIn()
-}
-
-extension AuthManaging {
-    func logOut() {
-        guard
-            let appDelegate = UIApplication.shared.delegate as? AppDelegate,
-            let controller = self as? UIViewController,
-            let loginVC = controller.storyboard?.instantiateViewController(withIdentifier: Identifier.loginViewController) as? LoginViewController else {
-                return
-        }
-        appDelegate.window?.rootViewController = loginVC
     }
 }

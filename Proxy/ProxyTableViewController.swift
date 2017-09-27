@@ -23,7 +23,7 @@ class ProxyTableViewController: UITableViewController, MakeNewMessageDelegate, P
         navigationItem.rightBarButtonItems = [UIBarButtonItem.makeButton(target: self, action: #selector(goToMakeNewMessageVC), imageName: .makeNewMessage),
                                               UIBarButtonItem.makeButton(target: self, action: #selector(deleteProxy), imageName: .delete)]
         guard let proxy = proxy else { return }
-        convosObserver = ConvosObserver(convosOwner: proxy.key, manager: self)
+//        convosObserver = ConvosObserver(convosOwner: proxy.key, manager: self)
         dataSource = ProxyTableViewDataSource(self)
         delegate = ProxyTableViewDelegate(self)
         proxyObserver = ProxyObserver(proxy: proxy, controller: self)

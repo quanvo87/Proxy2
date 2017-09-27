@@ -1,5 +1,4 @@
 import FirebaseDatabase
-import UIKit
 
 class ProxiesObserver: ReferenceObserving {
     var handle: DatabaseHandle?
