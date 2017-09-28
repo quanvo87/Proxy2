@@ -2,9 +2,11 @@ import UIKit
 
 class ProxiesTableViewDataSource: NSObject {
     weak var manager: ProxiesManaging?
+    var showDisclosureIndicator = false
 
-    func load(manager: ProxiesManaging, tableView: UITableView) {
+    func load(manager: ProxiesManaging, tableView: UITableView, showDisclosureIndicator: Bool) {
         self.manager = manager
+        self.showDisclosureIndicator = showDisclosureIndicator
         tableView.dataSource = self
     }
 }
@@ -20,6 +22,7 @@ extension ProxiesTableViewDataSource: UITableViewDataSource {
             let proxy = proxies[safe: indexPath.row] else {
                 return tableView.dequeueReusableCell(withIdentifier: Identifier.proxiesTableViewCell, for: indexPath)
         }
+        cell.accessoryType = showDisclosureIndicator ? .disclosureIndicator : .none
         cell.configure(proxy)
         return cell
     }

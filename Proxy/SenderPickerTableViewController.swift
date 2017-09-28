@@ -1,29 +1,19 @@
 import UIKit
 
-class SenderPickerTableViewController: UITableViewController, ProxiesManaging {
-    func reload() {
-        
-    }
-
+class SenderPickerTableViewController: UITableViewController {
+    let dataSource = ProxiesTableViewDataSource()
+    let delegate = SenderPickerTableViewDelegate()
     let manager = ProxiesManager()
     let reloader = TableViewReloader()
-
-    let proxiesObserver = ProxiesObserver()
-
-    private var dataSource: ProxiesTableViewDataSource?
-    private var delegate: SenderPickerTableViewDelegate?
     weak var senderPickerDelegate: SenderPickerDelegate?
-    var proxies = [Proxy]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        reloader.tableView = tableView
+        dataSource.load(manager: manager, tableView: tableView, showDisclosureIndicator: false)
+        delegate.load(self)
         manager.load(reloader)
-
-//        dataSource = ProxiesTableViewDataSource(self)
-        delegate = SenderPickerTableViewDelegate(delegate: senderPickerDelegate, controller: self)
         navigationItem.title = "Pick A Sender"
+        reloader.tableView = tableView
         tableView.rowHeight = 60
         tableView.separatorStyle = .none
     }

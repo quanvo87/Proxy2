@@ -11,7 +11,7 @@ class ProxiesTableViewController: UITableViewController, MakeNewMessageDelegate 
     override func viewDidLoad() {
         super.viewDidLoad()
         buttonManager.load(self)
-        dataSource.load(manager: proxiesManager, tableView: tableView)
+        dataSource.load(manager: proxiesManager, tableView: tableView, showDisclosureIndicator: true)
         delegate.load(self)
         navigationItem.title = "Proxies"
         proxiesManager.load(reloader)

@@ -9,7 +9,6 @@ class ProxiesTableViewCell: UITableViewCell {
     @IBOutlet weak var unreadLabel: UILabel!    // TODO: delete
 
     func configure(_ proxy: Proxy) {
-        accessoryType = .disclosureIndicator
         convoCountLabel.text = proxy.convoCount.asLabel
         iconImageView.image = nil
         nameLabel.text = proxy.name
