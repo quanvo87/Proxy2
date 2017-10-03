@@ -4,14 +4,14 @@ protocol ProxiesManaging: class {
 
 class ProxiesManager: ProxiesManaging {
     let observer = ProxiesObserver()
-    weak var reloader: TableViewReloader?
+    weak var reloader: TableViewReloading?
     var proxies = [Proxy]() {
         didSet {
             reloader?.reloadTableView()
         }
     }
 
-    func load(_ reloader: TableViewReloader) {
+    func load(_ reloader: TableViewReloading) {
         self.reloader = reloader
         observer.observe(self)
     }

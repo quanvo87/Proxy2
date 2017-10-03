@@ -1,32 +1,24 @@
 import UIKit
 
-class ProxyTableViewController: UITableViewController, MakeNewMessageDelegate, ProxyObserving {
-    func reloadTableView() {
-        
-    }
-
-    private var convosObserver: ConvosObserver?
-    private var dataSource: ProxyTableViewDataSource?
-    private var delegate: ProxyTableViewDelegate?
-    private var proxyObserver: ProxyObserver?
+class ProxyTableViewController: UITableViewController, MakeNewMessageDelegate {
+    let convosManager = ConvosManager()
+    let dataSource = ProxyTableViewDataSource()
+    let delegate = ProxyTableViewDelegate()
+    let proxyManager = ProxyManager()
+    let reloader = TableViewReloader()
     var newConvo: Convo?
     var proxy: Proxy?
 
-    var convos = [Convo]() {
-        didSet {
-            tableView.reloadData()
-        }
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
+        guard let proxy = proxy else { return }
+        convosManager.load(convosOwner: proxy.key, reloader: reloader)
+        dataSource.load(self)
+        delegate.load(self)
+        proxyManager.load(proxy: proxy, reloader: reloader)
         navigationItem.rightBarButtonItems = [UIBarButtonItem.makeButton(target: self, action: #selector(goToMakeNewMessageVC), imageName: .makeNewMessage),
                                               UIBarButtonItem.makeButton(target: self, action: #selector(deleteProxy), imageName: .delete)]
-        guard let proxy = proxy else { return }
-//        convosObserver = ConvosObserver(convosOwner: proxy.key, manager: self)
-        dataSource = ProxyTableViewDataSource(self)
-        delegate = ProxyTableViewDelegate(self)
-        proxyObserver = ProxyObserver(proxy: proxy, controller: self)
+        reloader.tableView = tableView
         tableView.delaysContentTouches = false
         tableView.separatorStyle = .none
         for case let scrollView as UIScrollView in tableView.subviews {
@@ -38,13 +30,8 @@ class ProxyTableViewController: UITableViewController, MakeNewMessageDelegate, P
         super.viewWillAppear(true)
         if let newConvo = newConvo {
             goToConvoVC(newConvo)
+            self.newConvo = nil
         }
-    }
-}
-
-extension ProxyTableViewController: ConvosManaging {
-    func setConvos(_ convos: [Convo]) {
-        self.convos = convos
     }
 }
 

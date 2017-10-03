@@ -1,12 +1,11 @@
 import UIKit
 
 class ProxyTableViewDelegate: NSObject {
-    private weak var controller: ProxyTableViewController?
+    weak var controller: ProxyTableViewController?
 
-    init(_ controller: ProxyTableViewController) {
-        super.init()
-        controller.tableView.delegate = self
+    func load(_ controller: ProxyTableViewController) {
         self.controller = controller
+        controller.tableView.delegate = self
     }
 }
 
@@ -14,7 +13,7 @@ extension ProxyTableViewDelegate: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if  indexPath.section == 1,
             let row = tableView.indexPathForSelectedRow?.row,
-            let convo = controller?.convos[safe: row],
+            let convo = controller?.convosManager.convos[safe: row],
             let convoVC = controller?.storyboard?.instantiateViewController(withIdentifier: Identifier.convoViewController) as? ConvoViewController {
             convoVC.convo = convo
             controller?.navigationController?.pushViewController(convoVC, animated: true)

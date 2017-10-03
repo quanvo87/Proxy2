@@ -22,7 +22,9 @@ extension ProxiesTableViewDelegate: UITableViewDelegate {
             controller?.buttonManager.itemsToDeleteManager?.itemsToDelete[proxy.key] = proxy
         } else {
             tableView.deselectRow(at: indexPath, animated: true)
-            goToProxyInfoVC(proxy)
+            guard let proxyVC = controller?.storyboard?.instantiateViewController(withIdentifier: Identifier.proxyTableViewController) as? ProxyTableViewController else { return }
+            proxyVC.proxy = proxy
+            controller?.navigationController?.pushViewController(proxyVC, animated: true)
         }
     }
 
@@ -37,13 +39,5 @@ extension ProxiesTableViewDelegate: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return CGFloat.leastNormalMagnitude
-    }
-}
-
-private extension ProxiesTableViewDelegate {
-    func goToProxyInfoVC(_ proxy: Proxy) {
-        guard let proxyVC = controller?.storyboard?.instantiateViewController(withIdentifier: Identifier.proxyTableViewController) as? ProxyTableViewController else { return }
-        proxyVC.proxy = proxy
-        controller?.navigationController?.pushViewController(proxyVC, animated: true)
     }
 }
