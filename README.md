@@ -6,4 +6,4 @@ Fast and easy anonymous chat for iOS.
 - `AsyncWorkGroupKey.swift`: clean and easy way to wait on multiple async requests to complete
 - Heavily protocol oriented
 - Clean view controllers, nearly all logic abstracted away
-  - Lots going on but all under 50 lines of code
+  - Lots going on but most under 50 lines of code
