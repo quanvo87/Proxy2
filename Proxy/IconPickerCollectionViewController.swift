@@ -8,23 +8,20 @@ class IconPickerCollectionViewController: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        navigationItem.rightBarButtonItem = UIBarButtonItem.makeButton(target: self, action: #selector(cancelPickingIcon), imageName: .cancel)
-        navigationItem.title = "Select An Icon"
+        let flowLayout = UICollectionViewFlowLayout()
+        flowLayout.itemSize = CGSize(width: 60, height: 90)
 
-        guard let collectionView = collectionView else { return }
+        collectionView?.backgroundColor = UIColor.white
+        collectionView?.delaysContentTouches = false
+        collectionView?.setCollectionViewLayout(flowLayout, animated: true)
 
         dataSource.load(collectionView)
         delegate.load(self)
 
-        let flowLayout = UICollectionViewFlowLayout()
-        flowLayout.itemSize = CGSize(width: 60, height: 90)
+        navigationItem.rightBarButtonItem = UIBarButtonItem.makeButton(target: self, action: #selector(cancelPickingIcon), imageName: .cancel)
+        navigationItem.title = "Select An Icon"
 
-        collectionView.backgroundColor = UIColor.white
-        collectionView.delaysContentTouches = false
-        collectionView.setCollectionViewLayout(flowLayout, animated: true)
-        collectionView.reloadData()
-
-        for case let scrollView as UIScrollView in collectionView.subviews {
+        for case let scrollView as UIScrollView in collectionView?.subviews ?? [] {
             scrollView.delaysContentTouches = false
         }
     }

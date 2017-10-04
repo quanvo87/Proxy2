@@ -1,8 +1,9 @@
 import UIKit
 
 class IconPickerCollectionViewDataSource: NSObject {
-    func load(_ collectionView: UICollectionView) {
-        collectionView.dataSource = self
+    func load(_ collectionView: UICollectionView?) {
+        collectionView?.dataSource = self
+        collectionView?.reloadData()
     }
 }
 

@@ -1,24 +1,15 @@
 import FirebaseDatabase
-import UIKit
 
 class ProxiesInteractedWithObserver: ReferenceObserving {
-    let ref: DatabaseReference?
-    private weak var controller: ProxiesInteractedWithObserving?
-    private(set) var handle: DatabaseHandle?
+    var handle: DatabaseHandle?
+    var ref: DatabaseReference?
 
-    init(user: String = Shared.shared.uid, controller: ProxiesInteractedWithObserving) {
-        ref = DB.makeReference(Child.userInfo, user, IncrementableUserProperty.proxiesInteractedWith.rawValue)
-        self.controller = controller
-        observe()
-    }
-
-    func observe() {
+    func observe(manager: ProxiesInteractedWithManaging, uid: String) {
         stopObserving()
-        handle = ref?.observe(.value, with: { [weak self] (data) in
+        ref = DB.makeReference(Child.userInfo, uid, IncrementableUserProperty.proxiesInteractedWith.rawValue)
+        handle = ref?.observe(.value, with: { [weak manager = manager] (data) in
             if let count = data.value as? UInt {
-                self?.controller?.proxiesInteractedWithCount = count.asStringWithCommas
-//                self?.controller?.reload()
-//                self?.controller?.tableView.reloadData()
+                manager?.proxiesInteractedWithCount = count.asStringWithCommas
             }
         })
     }
@@ -26,8 +17,4 @@ class ProxiesInteractedWithObserver: ReferenceObserving {
     deinit {
         stopObserving()
     }
-}
-
-protocol ProxiesInteractedWithObserving: class, TableViewReloading {
-    var proxiesInteractedWithCount: String { get set }
 }

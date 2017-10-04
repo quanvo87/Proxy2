@@ -1,24 +1,16 @@
 import FirebaseDatabase
-import UIKit
 
 class MessagesReceivedObserver: ReferenceObserving {
-    let ref: DatabaseReference?
-    private weak var controller: MessagesReceivedObserving?
-    private(set) var handle: DatabaseHandle?
+    var handle: DatabaseHandle?
+    var ref: DatabaseReference?
+    weak var manager: MessagesReceivedManaging?
 
-    init(user: String = Shared.shared.uid, controller: MessagesReceivedObserving) {
-        ref = DB.makeReference(Child.userInfo, user, IncrementableUserProperty.messagesReceived.rawValue)
-        self.controller = controller
-        observe()
-    }
-
-    func observe() {
+    func observe(manager: MessagesReceivedManaging, uid: String) {
         stopObserving()
-        handle = ref?.observe(.value, with: { [weak self] (data) in
+        ref = DB.makeReference(Child.userInfo, uid, IncrementableUserProperty.messagesReceived.rawValue)
+        handle = ref?.observe(.value, with: { [weak manager = manager] (data) in
             if let count = data.value as? UInt {
-                self?.controller?.messagesReceivedCount = count.asStringWithCommas
-//                self?.controller?.reload()
-//                self?.controller?.tableView.reloadData()
+                manager?.messagesReceivedCount = count.asStringWithCommas
             }
         })
     }
@@ -26,8 +18,4 @@ class MessagesReceivedObserver: ReferenceObserving {
     deinit {
         stopObserving()
     }
-}
-
-protocol MessagesReceivedObserving: class, TableViewReloading {
-    var messagesReceivedCount: String { get set }
 }
