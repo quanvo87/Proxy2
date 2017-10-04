@@ -7,4 +7,3 @@ Fast and easy anonymous chat for iOS.
 - Heavily protocol oriented
 - Clean view controllers, nearly all logic abstracted away
   - Lots going on but all under 50 lines of code
-- Unit tests
