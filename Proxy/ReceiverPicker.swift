@@ -1,14 +1,11 @@
 import UIKit
 
 class ReceiverPicker {
-    private weak var okAction: UIAlertAction?
-    private weak var viewController: MakeNewMessageViewController?
+    weak var okAction: UIAlertAction?
+    weak var controller: MakeNewMessageViewController?
 
-    init(_ viewController: MakeNewMessageViewController) {
-        self.viewController = viewController
-    }
-
-    func start() {
+    func load(_ controller: MakeNewMessageViewController?) {
+        self.controller = controller
         let alert = UIAlertController(title: "Enter Receiver Name", message: "Proxy names only. Nicknames do not work.", preferredStyle: .alert)
         let okAction = UIAlertAction(title: "OK", style: .default) { [weak alert = alert] _ in
             guard let text = alert?.textFields?[safe: 0]?.text?.lowercased() else { return }
@@ -20,7 +17,7 @@ class ReceiverPicker {
             textField.addTarget(self, action: #selector(self.textFieldDidChange), for: .editingChanged)
         }
         self.okAction = okAction
-        viewController?.present(alert, animated: true)
+        controller?.present(alert, animated: true)
         okAction.isEnabled = false
     }
 }
@@ -36,16 +33,16 @@ private extension ReceiverPicker {
                 self.showErrorAlert(title: "Cannot Send Message To Your Own Proxy", message: "Please try again.")
                 return
             }
-            self.viewController?.receiver = proxy
+            self.controller?.receiver = proxy
         })
     }
 
     func showErrorAlert(title: String?, message: String?) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default) { _ in
-            self.start()
+            self.load(self.controller)
         })
-        viewController?.present(alert, animated: true)
+        controller?.present(alert, animated: true)
     }
 
     @objc func textFieldDidChange(_ sender: UITextField) {

@@ -1,8 +1,8 @@
 import UIKit
 
 class IconPickerCollectionViewController: UICollectionViewController {
-    private var dataSource: IconPickerCollectionViewDataSource?
-    private var delegate: IconPickerCollectionViewDelegate?
+    let dataSource = IconPickerCollectionViewDataSource()
+    let delegate = IconPickerCollectionViewDelegate()
     var proxy: Proxy?
     
     override func viewDidLoad() {
@@ -11,18 +11,10 @@ class IconPickerCollectionViewController: UICollectionViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem.makeButton(target: self, action: #selector(cancelPickingIcon), imageName: .cancel)
         navigationItem.title = "Select An Icon"
 
-        guard
-            let collectionView = collectionView,
-            let proxy = proxy else {
-                return
-        }
+        guard let collectionView = collectionView else { return }
 
-        dataSource = IconPickerCollectionViewDataSource(collectionView)
-        delegate = IconPickerCollectionViewDelegate(collectionViewController: self, proxy: proxy)
-
-        for case let scrollView as UIScrollView in collectionView.subviews {
-            scrollView.delaysContentTouches = false
-        }
+        dataSource.load(collectionView)
+        delegate.load(self)
 
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.itemSize = CGSize(width: 60, height: 90)
@@ -31,6 +23,10 @@ class IconPickerCollectionViewController: UICollectionViewController {
         collectionView.delaysContentTouches = false
         collectionView.setCollectionViewLayout(flowLayout, animated: true)
         collectionView.reloadData()
+
+        for case let scrollView as UIScrollView in collectionView.subviews {
+            scrollView.delaysContentTouches = false
+        }
     }
     
     @objc func cancelPickingIcon() {

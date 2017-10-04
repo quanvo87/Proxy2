@@ -103,6 +103,11 @@
 		59D5F9351F7B173800FD5670 /* ProxiesManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D5F9341F7B173800FD5670 /* ProxiesManaging.swift */; };
 		59DCE5FC1F65FCC900AC9CEC /* ProxyTableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59DCE5FB1F65FCC900AC9CEC /* ProxyTableViewDelegate.swift */; };
 		59DDF43B1F6AB2F100D4E239 /* MessagesTableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59DDF43A1F6AB2F100D4E239 /* MessagesTableViewDelegate.swift */; };
+		59E75B2A1F846F140033A407 /* ConvosManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E75B291F846F140033A407 /* ConvosManager.swift */; };
+		59E75B2C1F846F380033A407 /* ItemsToDeleteManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E75B2B1F846F380033A407 /* ItemsToDeleteManager.swift */; };
+		59E75B2E1F846F550033A407 /* ProxiesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E75B2D1F846F550033A407 /* ProxiesManager.swift */; };
+		59E75B301F846F6B0033A407 /* ProxyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E75B2F1F846F6B0033A407 /* ProxyManager.swift */; };
+		59E75B321F846F800033A407 /* TableViewReloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E75B311F846F800033A407 /* TableViewReloader.swift */; };
 		9F0C2E94B3D2ACDB881894D0 /* Pods_ProxyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 677A1D9397BD6DC3C3277EF9 /* Pods_ProxyTests.framework */; };
 		B63EEE9998BB7F5B134BDEC0 /* Pods_ProxyUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C400879BD437927EB6BE4FFF /* Pods_ProxyUITests.framework */; };
 		F2B2CA19F2DB777FA6238258 /* Pods_Proxy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF71924192AC74DD367E5BCE /* Pods_Proxy.framework */; };
@@ -229,6 +234,11 @@
 		59D5F9341F7B173800FD5670 /* ProxiesManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxiesManaging.swift; sourceTree = "<group>"; };
 		59DCE5FB1F65FCC900AC9CEC /* ProxyTableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyTableViewDelegate.swift; sourceTree = "<group>"; };
 		59DDF43A1F6AB2F100D4E239 /* MessagesTableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesTableViewDelegate.swift; sourceTree = "<group>"; };
+		59E75B291F846F140033A407 /* ConvosManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvosManager.swift; sourceTree = "<group>"; };
+		59E75B2B1F846F380033A407 /* ItemsToDeleteManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsToDeleteManager.swift; sourceTree = "<group>"; };
+		59E75B2D1F846F550033A407 /* ProxiesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxiesManager.swift; sourceTree = "<group>"; };
+		59E75B2F1F846F6B0033A407 /* ProxyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyManager.swift; sourceTree = "<group>"; };
+		59E75B311F846F800033A407 /* TableViewReloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewReloader.swift; sourceTree = "<group>"; };
 		677A1D9397BD6DC3C3277EF9 /* Pods_ProxyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ProxyTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		72952ACE9075AEFF00E792D4 /* Pods-ProxyUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ProxyUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-ProxyUITests/Pods-ProxyUITests.release.xcconfig"; sourceTree = "<group>"; };
 		98C496244826E188C3B4E0DE /* Pods-ProxyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ProxyTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-ProxyTests/Pods-ProxyTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -434,10 +444,15 @@
 		59BAB2DD1F7A7FB800A2B581 /* Manager */ = {
 			isa = PBXGroup;
 			children = (
+				59E75B291F846F140033A407 /* ConvosManager.swift */,
+				59E75B2B1F846F380033A407 /* ItemsToDeleteManager.swift */,
 				59155AB71F7B87F3001EDDD0 /* MessagesAuthManager.swift */,
 				59155AB51F7B7951001EDDD0 /* MessagesButtonManager.swift */,
 				590F08E51F7BF21B00F3200F /* MessagesUnreadCountManager.swift */,
 				59AF0E7B1F7B5129009F6F38 /* ProxiesButtonManager.swift */,
+				59E75B2D1F846F550033A407 /* ProxiesManager.swift */,
+				59E75B2F1F846F6B0033A407 /* ProxyManager.swift */,
+				59E75B311F846F800033A407 /* TableViewReloader.swift */,
 			);
 			name = Manager;
 			sourceTree = "<group>";
@@ -909,6 +924,7 @@
 				5973C84E1F608A2200647492 /* ConvoDetailTableViewController.swift in Sources */,
 				5973C84F1F608A2200647492 /* DBStorage.swift in Sources */,
 				59BAB2DC1F7A7FB200A2B581 /* ConvosManaging.swift in Sources */,
+				59E75B2E1F846F550033A407 /* ProxiesManager.swift in Sources */,
 				5973C86F1F608A2200647492 /* UnreadCountObserver.swift in Sources */,
 				5973C8521F608A2200647492 /* BlockedUser.swift in Sources */,
 				5973C84C1F608A2200647492 /* NSDate+NVTimeAgo.m in Sources */,
@@ -924,6 +940,7 @@
 				59D5F9351F7B173800FD5670 /* ProxiesManaging.swift in Sources */,
 				5973C8711F608A2200647492 /* BlockedUsersTableViewCell.swift in Sources */,
 				59B7CC6C1F638A2A0063D137 /* ReferenceObserving.swift in Sources */,
+				59E75B2A1F846F140033A407 /* ConvosManager.swift in Sources */,
 				5973C8621F608A2200647492 /* ProxiesObserver.swift in Sources */,
 				5973C8551F608A2200647492 /* BlockedUsersTableViewController.swift in Sources */,
 				59AC04B81F6C049100DB580B /* MeTableViewDataSource.swift in Sources */,
@@ -932,14 +949,17 @@
 				5973C8791F608A2200647492 /* loadProxyNameAdjectives.swift in Sources */,
 				5973C85A1F608A2200647492 /* ProxiesTableViewCell.swift in Sources */,
 				5973C8771F608A2200647492 /* SenderPickerTableViewController.swift in Sources */,
+				59E75B321F846F800033A407 /* TableViewReloader.swift in Sources */,
 				5973C86B1F608A2200647492 /* Convo.swift in Sources */,
 				5973C8631F608A2200647492 /* ProxiesTableViewDataSource.swift in Sources */,
 				5973C84D1F608A2200647492 /* LoginVideoPlayer.swift in Sources */,
 				5973C85C1F608A2200647492 /* ConvoViewController.swift in Sources */,
 				5973C8751F608A2200647492 /* loadProxyIconNames.swift in Sources */,
+				59E75B2C1F846F380033A407 /* ItemsToDeleteManager.swift in Sources */,
 				59155AB61F7B7951001EDDD0 /* MessagesButtonManager.swift in Sources */,
 				59DDF43B1F6AB2F100D4E239 /* MessagesTableViewDelegate.swift in Sources */,
 				5973C8701F608A2200647492 /* ConvosObserver.swift in Sources */,
+				59E75B301F846F6B0033A407 /* ProxyManager.swift in Sources */,
 				5973C86A1F608A2200647492 /* Message.swift in Sources */,
 				5973C8691F608A2200647492 /* loadProxyNameNouns.swift in Sources */,
 				5973C86C1F608A2200647492 /* LoginManager.swift in Sources */,

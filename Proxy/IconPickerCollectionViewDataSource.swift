@@ -1,8 +1,7 @@
 import UIKit
 
 class IconPickerCollectionViewDataSource: NSObject {
-    init(_ collectionView: UICollectionView) {
-        super.init()
+    func load(_ collectionView: UICollectionView) {
         collectionView.dataSource = self
     }
 }
