@@ -1,7 +1,6 @@
-# Proxy - WIP ~50% done
+# Proxy
 Fast and easy anonymous chat for iOS.
 
-## Notable features
 - `DB.swift` and other `DB*` files: [Firebase](https://firebase.google.com/) wrapper
 - `AsyncWorkGroupKey.swift`: clean and easy way to wait on multiple async requests to complete
 - Heavily protocol oriented
