@@ -20,6 +20,9 @@ class MessagesTableViewController: UITableViewController, MakeNewMessageDelegate
         tableView.delegate = delegate
         tableView.rowHeight = 80
         tableView.separatorStyle = .none
+        for item in tabBarController?.tabBar.items ?? [] {
+            item.isEnabled = false
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {

@@ -1,9 +1,9 @@
 import UIKit
 
-class TableViewReloader: TableViewReloading {
+class TableViewReloader: ViewReloading {
     weak var tableView: UITableView?
 
-    func reloadTableView() {
+    func reload() {
         tableView?.reloadData()
     }
 }

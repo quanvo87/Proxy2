@@ -1,9 +1,9 @@
 class ProxiesManager: ProxiesManaging {
     let observer = ProxiesObserver()
-    weak var reloader: TableViewReloading?
-    var proxies = [Proxy]() { didSet { reloader?.reloadTableView() } }
+    weak var reloader: ViewReloading?
+    var proxies = [Proxy]() { didSet { reloader?.reload() } }
 
-    func load(_ reloader: TableViewReloading) {
+    func load(_ reloader: ViewReloading) {
         self.reloader = reloader
         observer.observe(self)
     }

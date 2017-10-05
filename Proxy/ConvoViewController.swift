@@ -1,3 +1,5 @@
+/* BEING REFACTORED */
+
 import FirebaseDatabase
 import JSQMessagesViewController
 //import Fusuma
@@ -5,22 +7,24 @@ import JSQMessagesViewController
 
 //class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
 class ConvoViewController: JSQMessagesViewController {
-    private var convoIsActiveChecker: ConvoIsActiveChecker?
-    private var receiverIconObserver: ReceiverIconObserver?
+    let convoIsActiveChecker = ConvoIsActiveChecker()
+    let convoMemberIconsManager = ConvoMemberIconsManager()
+    let reloader = CollectionViewReloader()
+
+    var incomingBubble: JSQMessagesBubbleImage!
+    var outgoingBubble: JSQMessagesBubbleImage!
+
+    //
+    
     private var receiverNicknameObserver: ReceiverNicknameObserver?
-    private var senderIconObserver: SenderIconObserver?
     private var senderNicknameObserver: SenderNicknameObserver?
     var convoMemberDisplayNames = [String: String]()
-    private var convoMemberIcons = [String: JSQMessagesAvatarImage]()
 
     let api = API.sharedInstance
     let ref = Database.database().reference()
     var convo = Convo()
     var readReceiptIndex = -1
-    
-    var incomingBubble: JSQMessagesBubbleImage!
-    var outgoingBubble: JSQMessagesBubbleImage!
-    
+
     var senderIsPresentIsSetUp = false
     var senderIsPresentRef = DatabaseReference()
     var senderIsPresent = false {
@@ -57,25 +61,24 @@ class ConvoViewController: JSQMessagesViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        setUp()
-
-        convoIsActiveChecker = ConvoIsActiveChecker(controller: self, convo: convo)
-
-        collectionView?.collectionViewLayout.incomingAvatarViewSize = CGSize(width: kJSQMessagesCollectionViewAvatarSizeDefault,
-                                                                             height: kJSQMessagesCollectionViewAvatarSizeDefault)
-        collectionView?.collectionViewLayout.outgoingAvatarViewSize = CGSize(width: kJSQMessagesCollectionViewAvatarSizeDefault,
-                                                                             height: kJSQMessagesCollectionViewAvatarSizeDefault)
+        collectionView?.collectionViewLayout.incomingAvatarViewSize = CGSize(width: kJSQMessagesCollectionViewAvatarSizeDefault, height: kJSQMessagesCollectionViewAvatarSizeDefault)
+        collectionView?.collectionViewLayout.outgoingAvatarViewSize = CGSize(width: kJSQMessagesCollectionViewAvatarSizeDefault, height: kJSQMessagesCollectionViewAvatarSizeDefault)
         collectionView.contentInset.bottom = 0
 
-        convoMemberDisplayNames[convo.senderId] = convo.senderProxyName
-        convoMemberDisplayNames[convo.receiverId] = convo.receiverProxyName
+        convoMemberIconsManager.load(convo: convo, reloader: reloader)
+        reloader.collectionView = collectionView
 
         navigationController?.view.backgroundColor = UIColor.white
         navigationItem.rightBarButtonItem = UIBarButtonItem.makeButton(target: self, action: #selector(showConvoInfoTableViewController), imageName: .info)
 
-        receiverIconObserver = ReceiverIconObserver(convo: convo, manager: self)
+        //
+
+        setUp()
+
+        convoMemberDisplayNames[convo.senderId] = convo.senderProxyName
+        convoMemberDisplayNames[convo.receiverId] = convo.receiverProxyName
+
         receiverNicknameObserver = ReceiverNicknameObserver(convo: convo, manager: self)
-        senderIconObserver = SenderIconObserver(convo: convo, manager: self)
         senderNicknameObserver = SenderNicknameObserver(convo: convo, manager: self)
 
         senderId = convo.senderId
@@ -92,18 +95,16 @@ class ConvoViewController: JSQMessagesViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
+        convoIsActiveChecker.check(controller: self, convo: convo)
+        readMessages()
         tabBarController?.tabBar.isHidden = true
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
-
-        convoIsActiveChecker?.check()
-
         if senderIsPresentIsSetUp {
             senderIsPresent = true
         }
-        readMessages()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -136,28 +137,6 @@ class ConvoViewController: JSQMessagesViewController {
         let factory = JSQMessagesBubbleImageFactory()
         incomingBubble = factory?.incomingMessagesBubbleImage(with: UIColor.jsq_messageBubbleLightGray())
         outgoingBubble = factory?.outgoingMessagesBubbleImage(with: UIColor.jsq_messageBubbleBlue())
-    }
-}
-
-extension ConvoViewController: IconsManaging {
-    func setReceiverIcon(_ icon: String) {
-        UIImage.makeImage(named: icon) { (image) in
-            guard let image = image else { return }
-            self.convoMemberIcons[self.convo.receiverId] = JSQMessagesAvatarImage(placeholder: image)
-            DispatchQueue.main.async {
-                self.collectionView.reloadData()
-            }
-        }
-    }
-    
-    func setSenderIcon(_ icon: String) {
-        UIImage.makeImage(named: icon) { (image) in
-            guard let image = image else { return }
-            self.convoMemberIcons[self.convo.senderId] = JSQMessagesAvatarImage(placeholder: image)
-            DispatchQueue.main.async {
-                self.collectionView.reloadData()
-            }
-        }
     }
 }
 
@@ -431,23 +410,23 @@ extension ConvoViewController {
         
         // Display an avatar for the first message of the convo.
         if indexPath.item == 0 {
-            return convoMemberIcons[curr.senderId]
+            return convoMemberIconsManager.convoMemberIcons[curr.senderId]
         }
         
         // Display an avatar for the last message of the convo.
         if indexPath.item == messages.count - 1 {
-            return convoMemberIcons[curr.senderId]
+            return convoMemberIconsManager.convoMemberIcons[curr.senderId]
         }
         
         // Display an avatar for each user on message chain breaks.
         let next = self.messages[indexPath.item + 1]
         if curr.senderId != next.senderId {
-            return convoMemberIcons[curr.senderId]
+            return convoMemberIconsManager.convoMemberIcons[curr.senderId]
         }
         
         let prev = self.messages[indexPath.item - 1]
         if prev.senderId != curr.senderId {
-            return convoMemberIcons[curr.senderId]
+            return convoMemberIconsManager.convoMemberIcons[curr.senderId]
         }
         
         return nil

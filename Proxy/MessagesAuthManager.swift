@@ -32,8 +32,11 @@ private extension Array where Element: UITabBarItem {
             let tab2 = self[safe: 2] else {
                 return
         }
+        tab0.isEnabled = true
         tab0.image = UIImage(named: "messages")
+        tab1.isEnabled = true
         tab1.image = UIImage(named: "proxies")
+        tab2.isEnabled = true
         tab2.image = UIImage(named: "me")
     }
 }
