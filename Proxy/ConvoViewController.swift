@@ -1,26 +1,26 @@
+/* BEING REFACTORED */
+
 import FirebaseDatabase
 import JSQMessagesViewController
 //import Fusuma
 //import MobilePlayer
 
 //class ConvoViewController: JSQMessagesViewController, FusumaDelegate {
-class ConvoViewController: JSQMessagesViewController, ConvoMemberIconsObserving {
-    private var convoIsActiveChecker: ConvoIsActiveChecker?
-    private var receiverIconObserver: ReceiverIconObserver?
-    private var receiverNicknameObserver: ReceiverNicknameObserver?
-    private var senderIconObserver: SenderIconObserver?
-    private var senderNicknameObserver: SenderNicknameObserver?
-    var convoMemberDisplayNames = [String: String]()
-    var convoMemberIcons = [String: JSQMessagesAvatarImage]()
+class ConvoViewController: JSQMessagesViewController {
+    let convoIsActiveChecker = ConvoIsActiveChecker()
+    let convoIconsManager = ConvoIconsManager()
+    let convoNicknamesManager = ConvoNicknamesManager()
+
+    var incomingBubble: JSQMessagesBubbleImage!
+    var outgoingBubble: JSQMessagesBubbleImage!
+
+    var convo: Convo?
+
+    //
 
     let api = API.sharedInstance
     let ref = Database.database().reference()
-    var convo = Convo()
     var readReceiptIndex = -1
-    
-    var incomingBubble: JSQMessagesBubbleImage!
-    var outgoingBubble: JSQMessagesBubbleImage!
-    
     var senderIsPresentIsSetUp = false
     var senderIsPresentRef = DatabaseReference()
     var senderIsPresent = false {
@@ -57,31 +57,25 @@ class ConvoViewController: JSQMessagesViewController, ConvoMemberIconsObserving 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        setUp()
+        guard let convo = convo else { return }
 
-        convoIsActiveChecker = ConvoIsActiveChecker(controller: self, convo: convo)
-
-        collectionView?.collectionViewLayout.incomingAvatarViewSize = CGSize(width: kJSQMessagesCollectionViewAvatarSizeDefault,
-                                                                             height: kJSQMessagesCollectionViewAvatarSizeDefault)
-        collectionView?.collectionViewLayout.outgoingAvatarViewSize = CGSize(width: kJSQMessagesCollectionViewAvatarSizeDefault,
-                                                                             height: kJSQMessagesCollectionViewAvatarSizeDefault)
+        collectionView?.collectionViewLayout.incomingAvatarViewSize = CGSize(width: kJSQMessagesCollectionViewAvatarSizeDefault, height: kJSQMessagesCollectionViewAvatarSizeDefault)
+        collectionView?.collectionViewLayout.outgoingAvatarViewSize = CGSize(width: kJSQMessagesCollectionViewAvatarSizeDefault, height: kJSQMessagesCollectionViewAvatarSizeDefault)
         collectionView.contentInset.bottom = 0
 
-        convoMemberDisplayNames[convo.senderId] = convo.senderProxyName
-        convoMemberDisplayNames[convo.receiverId] = convo.receiverProxyName
+        convoIconsManager.load(collectionView: collectionView, convo: convo)
+        convoNicknamesManager.load(collectionView: collectionView, convo: convo, navigationItem: navigationItem)
 
         navigationController?.view.backgroundColor = UIColor.white
         navigationItem.rightBarButtonItem = UIBarButtonItem.makeButton(target: self, action: #selector(showConvoInfoTableViewController), imageName: .info)
 
-        receiverIconObserver = ReceiverIconObserver(controller: self, convo: convo)
-        receiverNicknameObserver = ReceiverNicknameObserver(controller: self, convo: convo)
-        senderIconObserver = SenderIconObserver(controller: self, convo: convo)
-        senderNicknameObserver = SenderNicknameObserver(controller: self, convo: convo)
+        //
+
+        messagesRef = ref.child(Child.messages).child(convo.key)
+        membersAreTypingRef = ref.child(Child.isTyping).child(convo.key)
 
         senderId = convo.senderId
         senderDisplayName = ""
-
-        setTitle()
 
         setUpBubbles()
         setUpSenderIsPresent()
@@ -93,17 +87,16 @@ class ConvoViewController: JSQMessagesViewController, ConvoMemberIconsObserving 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         tabBarController?.tabBar.isHidden = true
+        guard let convo = convo else { return }
+        convoIsActiveChecker.check(controller: self, convo: convo)
+        readMessages()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
-
-        convoIsActiveChecker?.check()
-
         if senderIsPresentIsSetUp {
             senderIsPresent = true
         }
-        readMessages()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -116,22 +109,7 @@ class ConvoViewController: JSQMessagesViewController, ConvoMemberIconsObserving 
         senderIsPresent = false
         senderIsTyping = false
     }
-    
-//    deinit {
-//        messagesRef.removeObserver(withHandle: messagesRefHandle)
-//        messagesRef.removeObserver(withHandle: lastMessageRefHandle)
-//        membersAreTypingRef.removeObserver(withHandle: membersAreTypingRefHandle)
-//    }
 
-    func setUp() {
-        messagesRef = ref.child(Child.messages).child(convo.key)
-        membersAreTypingRef = ref.child(Child.isTyping).child(convo.key)
-    }
-
-    func setTitle() {
-        navigationItem.title = convoMemberDisplayNames[convo.receiverId]
-    }
-    
     private func setUpBubbles() {
         let factory = JSQMessagesBubbleImageFactory()
         incomingBubble = factory?.incomingMessagesBubbleImage(with: UIColor.jsq_messageBubbleLightGray())
@@ -139,24 +117,11 @@ class ConvoViewController: JSQMessagesViewController, ConvoMemberIconsObserving 
     }
 }
 
-extension ConvoViewController: ConvoMemberNicknamesObserving {
-    func setReceiverNickname(_ nickname: String) {
-        convoMemberDisplayNames[convo.receiverId] = nickname == "" ? convo.receiverProxyName : nickname
-        setTitle()
-        collectionView.reloadData()
-    }
-
-    func setSenderNickname(_ nickname: String) {
-        convoMemberDisplayNames[convo.senderId] = nickname == "" ? convo.senderProxyName : nickname
-        collectionView.reloadData()
-    }
-}
-
 extension ConvoViewController {
     // MARK: - Database
     // Set user as present in the convo.
     func setUpSenderIsPresent() {
-        senderIsPresentRef = ref.child(Child.isPresent).child(convo.key).child(convo.senderId).child(Child.isPresent)
+        senderIsPresentRef = ref.child(Child.isPresent).child(convo!.key).child(convo!.senderId).child(Child.isPresent)
         senderIsPresentRef.onDisconnectRemoveValue()
         senderIsPresentIsSetUp = true
         senderIsPresent = true
@@ -272,7 +237,7 @@ extension ConvoViewController {
             if message.senderId != self.senderId {
                 if !message.read {
                     if self.senderIsPresent {
-                        self.api.setRead(for: message, forProxyKey: self.convo.senderProxyKey, belongingToUserId: self.convo.senderId)
+                        self.api.setRead(for: message, forProxyKey: self.convo!.senderProxyKey, belongingToUserId: self.convo!.senderId)
                     } else {
                         self.unreadMessages.append(message)
                     }
@@ -309,7 +274,7 @@ extension ConvoViewController {
     // Mark messages as read for incoming messages that came in while convo was open but not on screen.
     func readMessages() {
         for message in unreadMessages {
-            api.setRead(for: message, forProxyKey: self.convo.senderProxyKey, belongingToUserId: self.convo.senderId)
+            api.setRead(for: message, forProxyKey: self.convo!.senderProxyKey, belongingToUserId: self.convo!.senderId)
         }
         unreadMessages = []
     }
@@ -317,7 +282,7 @@ extension ConvoViewController {
     func observeTyping() {
         
         // Stop monitoring user's typing when they disconnect.
-        senderIsTypingRef = ref.child(Child.isTyping).child(convo.key).child(convo.senderId).child(Child.isTyping)
+        senderIsTypingRef = ref.child(Child.isTyping).child(convo!.key).child(convo!.senderId).child(Child.isTyping)
         senderIsTypingRef.onDisconnectRemoveValue()
         
         // Show typing indicator when other user is typing.
@@ -409,23 +374,23 @@ extension ConvoViewController {
         
         // Display an avatar for the first message of the convo.
         if indexPath.item == 0 {
-            return convoMemberIcons[curr.senderId]
+            return convoIconsManager.icons[curr.senderId]
         }
         
         // Display an avatar for the last message of the convo.
         if indexPath.item == messages.count - 1 {
-            return convoMemberIcons[curr.senderId]
+            return convoIconsManager.icons[curr.senderId]
         }
         
         // Display an avatar for each user on message chain breaks.
         let next = self.messages[indexPath.item + 1]
         if curr.senderId != next.senderId {
-            return convoMemberIcons[curr.senderId]
+            return convoIconsManager.icons[curr.senderId]
         }
         
         let prev = self.messages[indexPath.item - 1]
         if prev.senderId != curr.senderId {
-            return convoMemberIcons[curr.senderId]
+            return convoIconsManager.icons[curr.senderId]
         }
         
         return nil
@@ -454,12 +419,18 @@ extension ConvoViewController {
         
         // Show names/nicknames for last message by either user.
         if indexPath.item == messages.count - 1 {
-            return NSAttributedString(string: convoMemberDisplayNames[curr.senderId]!)
+            guard let nickname = convoNicknamesManager.nicknames[curr.senderId] else {
+                return NSAttributedString()
+            }
+            return NSAttributedString(string: nickname)
         }
         
         let next = self.messages[indexPath.item + 1]
         if curr.senderId != next.senderId {
-            return NSAttributedString(string: convoMemberDisplayNames[curr.senderId]!)
+            guard let nickname = convoNicknamesManager.nicknames[curr.senderId] else {
+                return NSAttributedString()
+            }
+            return NSAttributedString(string: nickname)
         }
         
         return nil
@@ -520,7 +491,7 @@ extension ConvoViewController {
     
     // Write message to database.
     override func didPressSend(_ button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: Date!) {
-        api.getConvo(withKey: convo.key, belongingToUserId: convo.senderId, completion: { (convo) in
+        api.getConvo(withKey: convo!.key, belongingToUserId: convo!.senderId, completion: { (convo) in
             self.convo = convo
             self.api.sendMessage(text: text, mediaType: "", convo: convo) { (convo, message) in
                 self.finishedWritingMessage()
@@ -575,11 +546,11 @@ extension ConvoViewController {
     }
     
     func send(image: UIImage) {
-        api.getConvo(withKey: convo.key, belongingToUserId: convo.senderId, completion: { (convo) in
+        api.getConvo(withKey: convo!.key, belongingToUserId: convo!.senderId, completion: { (convo) in
             self.convo = convo
             
             // First send a placeholder message that displays a loading indicator.
-            self.api.sendMessage(text: "[Photo 📸]", mediaType: "imagePlaceholder", convo: self.convo) { (convo, message) in
+            self.api.sendMessage(text: "[Photo 📸]", mediaType: "imagePlaceholder", convo: self.convo!) { (convo, message) in
                 self.finishSendingMessage()
                 
                 // Then upload the image to storage.
@@ -595,11 +566,11 @@ extension ConvoViewController {
     }
     
     func send(videoWithURL url: URL) {
-        api.getConvo(withKey: convo.key, belongingToUserId: convo.senderId, completion: { (convo) in
+        api.getConvo(withKey: convo!.key, belongingToUserId: convo!.senderId, completion: { (convo) in
             self.convo = convo
             
             // First send a placeholder message that displays a loading indicator.
-            self.api.sendMessage(text: "[Video 🎥]", mediaType: "videoPlaceholder", convo: self.convo) { (convo, message) in
+            self.api.sendMessage(text: "[Video 🎥]", mediaType: "videoPlaceholder", convo: self.convo!) { (convo, message) in
                 self.finishSendingMessage()
                 
                 // Then upload the image to storage.
@@ -626,11 +597,7 @@ extension ConvoViewController {
     // MARK: - Navigation
     @objc func showConvoInfoTableViewController() {
         let dest = storyboard?.instantiateViewController(withIdentifier: Identifier.convoDetailTableViewController) as! ConvoDetailTableViewController
-        dest.convo = convo
+        dest.convo = convo!
         navigationController?.pushViewController(dest, animated: true)
     }
-}
-
-protocol JSQMessagesCollectionViewOwning {
-    var collectionView: JSQMessagesCollectionView! { get }
 }

@@ -2,12 +2,11 @@ import FirebaseAuth
 import UIKit
 
 class MeTableViewDelegate: NSObject {
-    private weak var controller: MeTableViewController?
+    weak var controller: MeTableViewController?
 
-    init(_ controller: MeTableViewController) {
-        super.init()
-        controller.tableView.delegate = self
+    func load(_ controller: MeTableViewController) {
         self.controller = controller
+        controller.tableView.delegate = self
     }
 }
 
@@ -28,7 +27,7 @@ extension MeTableViewDelegate: UITableViewDelegate {
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
                 controller?.present(alert, animated: true)
             case 1:
-                let alert = UIAlertController(title: "Proxy v0.1.0", message: "Contact: qvo1987@gmail.com\n\nIcons from icons8.com", preferredStyle: .alert)
+                let alert = UIAlertController(title: "Proxy v0.0.1", message: "Contact: qvo1987@gmail.com\n\nIcons from icons8.com", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "OK", style: .cancel) { action in
                 })
                 controller?.present(alert, animated: true)

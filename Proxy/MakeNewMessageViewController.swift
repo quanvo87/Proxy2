@@ -79,8 +79,8 @@ private extension MakeNewMessageViewController {
     }
 
     @IBAction func showReceiverPickerAlert() {
-        let receiverPicker = ReceiverPicker(self)
-        receiverPicker.start()
+        let receiverPicker = ReceiverPicker()
+        receiverPicker.load(self)
     }
 }
 

@@ -1,22 +1,21 @@
 import UIKit
 
 class ProxyTableViewDataSource: NSObject {
-    private weak var controller: ProxyTableViewController?
+    weak var controller: ProxyTableViewController?
 
-    init(_ controller: ProxyTableViewController) {
-        super.init()
-        controller.tableView.dataSource = self
+    func load(_ controller: ProxyTableViewController) {
         self.controller = controller
+        controller.tableView.dataSource = self
     }
 }
 
 extension ProxyTableViewDataSource: UITableViewDataSource {
     var convos: [Convo] {
-        return controller?.convos ?? []
+        return controller?.convosManager.convos ?? []
     }
 
     var proxy: Proxy? {
-        return controller?.proxy
+        return controller?.proxyManager.proxy
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -32,8 +31,8 @@ extension ProxyTableViewDataSource: UITableViewDataSource {
                     return tableView.dequeueReusableCell(withIdentifier: Identifier.senderProxyTableViewCell, for: indexPath)
             }
             cell.configure(proxy)
-            cell.changeIconButton.addTarget(self, action: #selector(self.goToIconPickerVC), for: .touchUpInside)
-            cell.nicknameButton.addTarget(self, action: #selector(self.editNickname), for: .touchUpInside)
+            cell.changeIconButton.addTarget(self, action: #selector(goToIconPickerVC), for: .touchUpInside)
+            cell.nicknameButton.addTarget(self, action: #selector(editNickname), for: .touchUpInside)
             return cell
         case 1:
             guard

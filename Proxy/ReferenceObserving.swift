@@ -1,9 +1,8 @@
 import FirebaseDatabase
-import UIKit
 
 protocol ReferenceObserving {
-    var ref: DatabaseReference? { get }
     var handle: DatabaseHandle? { get }
+    var ref: DatabaseReference? { get }
 }
 
 extension ReferenceObserving {
@@ -12,8 +11,4 @@ extension ReferenceObserving {
             ref?.removeObserver(withHandle: handle)
         }
     }
-}
-
-protocol TableViewOwning {
-    var tableView: UITableView! { get }
 }

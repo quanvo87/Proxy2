@@ -1,21 +1,18 @@
 import UIKit
 
-struct ConvoIsActiveChecker {
-    private let convo: Convo
-    private weak var controller: UIViewController?
+class ConvoIsActiveChecker {
+    weak var controller: UIViewController?
 
-    init(controller: UIViewController, convo: Convo) {
+    func check(controller: UIViewController, convo: Convo) {
         self.controller = controller
-        self.convo = convo
+        checkIfReceiverIsBlocked(convo)
+        checkIfSenderDeletedProxy(convo)
+        checkIfSenderLeftConvo(convo)
     }
+}
 
-    func check() {
-        checkIfReceiverIsBlocked()
-        checkIfSenderDeletedProxy()
-        checkIfSenderLeftConvo()
-    }
-
-    private func checkIfReceiverIsBlocked() {
+private extension ConvoIsActiveChecker {
+    func checkIfReceiverIsBlocked(_ convo: Convo) {
         DBConvo.receiverIsBlocked(convo) { (receiverIsBlocked) in
             if receiverIsBlocked {
                 self.close()
@@ -23,7 +20,7 @@ struct ConvoIsActiveChecker {
         }
     }
 
-    private func checkIfSenderDeletedProxy() {
+    func checkIfSenderDeletedProxy(_ convo: Convo) {
         DBConvo.getConvo(withKey: convo.key, belongingTo: convo.senderId) { (convo) in
             if convo == nil {
                 self.close()
@@ -31,7 +28,7 @@ struct ConvoIsActiveChecker {
         }
     }
 
-    private func checkIfSenderLeftConvo() {
+    func checkIfSenderLeftConvo(_ convo: Convo) {
         DBConvo.senderLeftConvo(convo) { (senderLeftConvo) in
             if senderLeftConvo {
                 self.close()
@@ -39,7 +36,7 @@ struct ConvoIsActiveChecker {
         }
     }
 
-    private func close() {
+    func close() {
         _ = controller?.navigationController?.popViewController(animated: true)
     }
 }
