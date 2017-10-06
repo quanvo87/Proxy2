@@ -1,10 +1,12 @@
+import UIKit
+
 class ProxyManager: ProxyManaging {
     let observer = ProxyObserver()
-    weak var reloader: ViewReloading?
-    var proxy: Proxy? { didSet { reloader?.reload() } }
+    weak var tableView: UITableView?
+    var proxy: Proxy? { didSet { tableView?.reloadData() } }
 
-    func load(proxy: Proxy, reloader: ViewReloading) {
-        self.reloader = reloader
+    func load(proxy: Proxy, tableView: UITableView) {
+        self.tableView = tableView
         observer.observe(manager: self, proxy: proxy)
     }
 }

@@ -5,7 +5,6 @@ class ProxiesTableViewController: UITableViewController, MakeNewMessageDelegate 
     let dataSource = ProxiesTableViewDataSource()
     let delegate = ProxiesTableViewDelegate()
     let proxiesManager = ProxiesManager()
-    let reloader = TableViewReloader()
     var newConvo: Convo?
 
     override func viewDidLoad() {
@@ -14,8 +13,7 @@ class ProxiesTableViewController: UITableViewController, MakeNewMessageDelegate 
         dataSource.load(manager: proxiesManager, tableView: tableView, showDisclosureIndicator: true)
         delegate.load(self)
         navigationItem.title = "Proxies"
-        proxiesManager.load(reloader)
-        reloader.tableView = tableView
+        proxiesManager.load(tableView)
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.rowHeight = 60
         tableView.separatorStyle = .none

@@ -14,8 +14,8 @@ class MeAuthManager: AuthManaging {
     func logIn() {
         guard let controller = controller else { return }
         controller.navigationItem.title = Shared.shared.userName
-        controller.messagesReceivedManager.load(reloader: controller.reloader, uid: Shared.shared.uid)
-        controller.messagesSentManager.load(reloader: controller.reloader, uid: Shared.shared.uid)
-        controller.proxiesInteractedWithManager.load(reloader: controller.reloader, uid: Shared.shared.uid)
+        controller.messagesReceivedManager.load(tableView: controller.tableView, uid: Shared.shared.uid)
+        controller.messagesSentManager.load(tableView: controller.tableView, uid: Shared.shared.uid)
+        controller.proxiesInteractedWithManager.load(tableView: controller.tableView, uid: Shared.shared.uid)
     }
 }

@@ -13,7 +13,7 @@ class MessagesAuthManager: AuthManaging {
     func logIn() {
         guard let controller = controller else { return }
         controller.buttonManager.load(controller)
-        controller.convosManager.load(convosOwner: Shared.shared.uid, reloader: controller.reloader)
+        controller.convosManager.load(convosOwner: Shared.shared.uid, tableView: controller.tableView)
         controller.dataSource.manager = controller.convosManager
         controller.delegate.controller = controller
         controller.tabBarController?.tabBar.items?.setupForTabBar()

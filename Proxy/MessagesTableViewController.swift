@@ -6,7 +6,6 @@ class MessagesTableViewController: UITableViewController, MakeNewMessageDelegate
     let convosManager = ConvosManager()
     let dataSource = MessagesTableViewDataSource()
     let delegate = MessagesTableViewDelegate()
-    let reloader = TableViewReloader()
     let unreadCountManager = MessagesUnreadCountManager()
     var newConvo: Convo?
 
@@ -14,7 +13,6 @@ class MessagesTableViewController: UITableViewController, MakeNewMessageDelegate
         super.viewDidLoad()
         authManager.load(self)
         navigationItem.title = "Messages"
-        reloader.tableView = tableView
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.dataSource = dataSource
         tableView.delegate = delegate

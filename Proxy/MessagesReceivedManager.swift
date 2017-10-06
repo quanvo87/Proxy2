@@ -1,10 +1,12 @@
+import UIKit
+
 class MessagesReceivedManager: MessagesReceivedManaging {
     let observer = MessagesReceivedObserver()
-    weak var reloader: ViewReloading?
-    var messagesReceivedCount = "-" { didSet { reloader?.reload() } }
+    weak var tableView: UITableView?
+    var messagesReceivedCount = "-" { didSet { tableView?.reloadData() } }
 
-    func load(reloader: ViewReloading, uid: String) {
-        self.reloader = reloader
+    func load(tableView: UITableView, uid: String) {
+        self.tableView = tableView
         observer.observe(manager: self, uid: uid)
     }
 }

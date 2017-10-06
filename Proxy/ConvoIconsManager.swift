@@ -1,22 +1,22 @@
 import JSQMessagesViewController
 
-class ConvoMemberIconsManager: ConvoMemberIconsManaging {
+class ConvoIconsManager: ConvoIconsManaging {
     let receiverIconObserver = ReceiverIconObserver()
     let senderIconObserver = SenderIconObserver()
     var convo: Convo?
-    weak var reloader: CollectionViewReloader?
+    weak var collectionView: UICollectionView?
 
-    func load(convo: Convo, reloader: CollectionViewReloader) {
+    func load(collectionView: UICollectionView, convo: Convo) {
+        self.collectionView = collectionView
         self.convo = convo
-        self.reloader = reloader
         receiverIconObserver.observe(convo: convo, manager: self)
         senderIconObserver.observe(convo: convo, manager: self)
     }
 
-    var convoMemberIcons = [String : JSQMessagesAvatarImage]() {
+    var icons = [String : JSQMessagesAvatarImage]() {
         didSet {
             DispatchQueue.main.async {
-                self.reloader?.reload()
+                self.collectionView?.reloadData()
             }
         }
     }
@@ -26,7 +26,7 @@ class ConvoMemberIconsManager: ConvoMemberIconsManaging {
             guard let receiverId = convo?.receiverId else { return }
             UIImage.makeImage(named: receiverIcon) { (image) in
                 guard let image = image else { return }
-                self.convoMemberIcons[receiverId] = JSQMessagesAvatarImage(placeholder: image)
+                self.icons[receiverId] = JSQMessagesAvatarImage(placeholder: image)
             }
         }
     }
@@ -36,7 +36,7 @@ class ConvoMemberIconsManager: ConvoMemberIconsManaging {
             guard let senderId = convo?.senderId else { return }
             UIImage.makeImage(named: senderIcon) { (image) in
                 guard let image = image else { return }
-                self.convoMemberIcons[senderId] = JSQMessagesAvatarImage(placeholder: image)
+                self.icons[senderId] = JSQMessagesAvatarImage(placeholder: image)
             }
         }
     }
