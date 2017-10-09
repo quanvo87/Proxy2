@@ -11,10 +11,9 @@ class MessagesTableViewController: UITableViewController, MakeNewMessageDelegate
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        authManager.load(self)
         navigationItem.title = "Messages"
+        setupAuthManager()
         tableView.allowsMultipleSelectionDuringEditing = true
-        tableView.dataSource = dataSource
         tableView.delegate = delegate
         tableView.rowHeight = 80
         tableView.separatorStyle = .none
@@ -29,5 +28,26 @@ class MessagesTableViewController: UITableViewController, MakeNewMessageDelegate
             goToConvoVC(newConvo)
             self.newConvo = nil
         }
+    }
+}
+
+extension MessagesTableViewController {
+    func setupAuthManager() {
+        authManager.controller = self
+    }
+
+    func setupButtonManager() {
+        buttonManager.controller = self
+    }
+
+    func setupDataSource() {
+        dataSource.manager = convosManager
+        tableView.dataSource = dataSource
+    }
+
+    func setupDelegate() {
+        delegate.controller = self
+        delegate.convosManager = convosManager
+        delegate.itemsToDeleteManager = buttonManager.itemsToDeleteManager
     }
 }

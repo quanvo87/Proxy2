@@ -7,17 +7,16 @@ class MessagesButtonManager: ButtonManaging {
     var makeNewMessageButton = UIBarButtonItem()
     var makeNewProxyButton = UIBarButtonItem()
     var itemsToDeleteManager: ItemsToDeleteManaging?
-    weak var controller: MessagesTableViewController?
     weak var navigationItem: UINavigationItem?
     weak var tableView: UITableView?
-    
-    func load(_ controller: MessagesTableViewController) {
-        self.controller = controller
-        itemsToDeleteManager = ItemsToDeleteManager()
-        navigationItem = controller.navigationItem
-        tableView = controller.tableView
-        makeButtons()
-        setDefaultButtons()
+    weak var controller: MessagesTableViewController? {
+        didSet {
+            itemsToDeleteManager = ItemsToDeleteManager()
+            navigationItem = controller?.navigationItem
+            tableView = controller?.tableView
+            makeButtons()
+            setDefaultButtons()
+        }
     }
     
     func _deleteSelectedItems() {

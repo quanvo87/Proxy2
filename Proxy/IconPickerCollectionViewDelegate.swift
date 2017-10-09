@@ -1,12 +1,8 @@
 import UIKit
 
 class IconPickerCollectionViewDelegate: NSObject {
-    weak var controller: IconPickerCollectionViewController?
-
-    func load(_ controller: IconPickerCollectionViewController) {
-        self.controller = controller
-        controller.collectionView?.delegate = self
-    }
+    var proxy: Proxy?
+    weak var controller: UIViewController?
 }
 
 extension IconPickerCollectionViewDelegate: UICollectionViewDelegate {
@@ -23,7 +19,7 @@ extension IconPickerCollectionViewDelegate: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard
             let icon = Shared.shared.proxyIconNames[safe: indexPath.row],
-            let proxy = controller?.proxy else {
+            let proxy = proxy else {
                 return
         }
         DBProxy.setIcon(to: icon, forProxy: proxy) { _ in }

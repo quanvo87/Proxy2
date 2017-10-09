@@ -1,13 +1,6 @@
 import UIKit
 
-class IconPickerCollectionViewDataSource: NSObject {
-    func load(_ collectionView: UICollectionView?) {
-        collectionView?.dataSource = self
-        collectionView?.reloadData()
-    }
-}
-
-extension IconPickerCollectionViewDataSource: UICollectionViewDataSource {
+class IconPickerCollectionViewDataSource: NSObject, UICollectionViewDataSource {
     var icons: [String] {
         return Shared.shared.proxyIconNames
     }

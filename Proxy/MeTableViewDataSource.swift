@@ -1,12 +1,9 @@
 import UIKit
 
 class MeTableViewDataSource: NSObject {
-    weak var controller: MeTableViewController?
-
-    func load(_ controller: MeTableViewController) {
-        self.controller = controller
-        controller.tableView.dataSource = self
-    }
+    weak var messagesReceivedManager: MessagesReceivedManaging?
+    weak var messagesSentManager: MessagesSentManaging?
+    weak var proxiesInteractedWithManager: ProxiesInteractedWithManaging?
 }
 
 extension MeTableViewDataSource: UITableViewDataSource {
@@ -23,7 +20,7 @@ extension MeTableViewDataSource: UITableViewDataSource {
             cell.selectionStyle = .none
             switch indexPath.row {
             case 0:
-                cell.subtitleLabel.text = controller?.messagesReceivedManager.messagesReceivedCount
+                cell.subtitleLabel.text = messagesReceivedManager?.messagesReceivedCount
                 cell.titleLabel?.text = "Messages Received"
                 UIImage.makeImage(named: "messagesReceived", completion: { (image) in
                     DispatchQueue.main.async {
@@ -31,7 +28,7 @@ extension MeTableViewDataSource: UITableViewDataSource {
                     }
                 })
             case 1:
-                cell.subtitleLabel.text = controller?.messagesSentManager.messagesSentCount
+                cell.subtitleLabel.text = messagesSentManager?.messagesSentCount
                 cell.titleLabel?.text = "Messages Sent"
                 UIImage.makeImage(named: "messagesSent", completion: { (image) in
                     DispatchQueue.main.async {
@@ -39,7 +36,7 @@ extension MeTableViewDataSource: UITableViewDataSource {
                     }
                 })
             case 2:
-                cell.subtitleLabel.text = controller?.proxiesInteractedWithManager.proxiesInteractedWithCount
+                cell.subtitleLabel.text = proxiesInteractedWithManager?.proxiesInteractedWithCount
                 cell.titleLabel?.text = "Proxies Interacted With"
                 UIImage.makeImage(named: "proxiesInteractedWith", completion: { (image) in
                     DispatchQueue.main.async {

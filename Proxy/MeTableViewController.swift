@@ -11,7 +11,21 @@ class MeTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         authManager.load(self)
-        dataSource.load(self)
-        delegate.load(self)
+        setupDatasource()
+        setupDelegate()
+    }
+}
+
+private extension MeTableViewController {
+    func setupDatasource() {
+        dataSource.messagesReceivedManager = messagesReceivedManager
+        dataSource.messagesSentManager = messagesSentManager
+        dataSource.proxiesInteractedWithManager = proxiesInteractedWithManager
+        tableView.dataSource = dataSource
+    }
+
+    func setupDelegate() {
+        delegate.controller = self
+        tableView.delegate = delegate
     }
 }

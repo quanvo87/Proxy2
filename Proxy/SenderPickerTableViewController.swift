@@ -8,12 +8,25 @@ class SenderPickerTableViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        dataSource.load(manager: manager, tableView: tableView, showDisclosureIndicator: false)
         delegate.load(self)
         manager.load(tableView)
         navigationItem.title = "Pick A Sender"
+        setupDataSource()
         tableView.rowHeight = 60
         tableView.separatorStyle = .none
+    }
+}
+
+private extension SenderPickerTableViewController {
+    func setupDataSource() {
+        dataSource.manager = manager
+        dataSource.showDisclosureIndicator = false
+        tableView.dataSource = dataSource
+    }
+
+    func setupDelegate() {
+        delegate.controller = self
+        tableView.delegate = delegate
     }
 }
 
