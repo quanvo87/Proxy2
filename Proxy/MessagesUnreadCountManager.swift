@@ -3,11 +3,6 @@ import UIKit
 class MessagesUnreadCountManager: UnreadCountManaging {
     private let observer = UnreadCountObserver()
     private weak var controller: UIViewController?
-    
-    func load(_ controller: UIViewController) {
-        self.controller = controller
-        observer.observe(uid: Shared.shared.uid, manager: self)
-    }
 
     var unreadCount: Int? {
         didSet {
@@ -19,5 +14,10 @@ class MessagesUnreadCountManager: UnreadCountManaging {
                 controller?.tabBarController?.tabBar.items?.first?.badgeValue = nil
             }
         }
+    }
+    
+    func load(_ controller: UIViewController) {
+        self.controller = controller
+        observer.observe(uid: Shared.shared.uid, manager: self)
     }
 }

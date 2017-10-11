@@ -10,25 +10,6 @@ class ConvoNicknamesManager: ConvoNicknamesManaging {
     private weak var collectionView: UICollectionView?
     private weak var navigationItem: UINavigationItem?
 
-    func load(receiverId: String,
-              receiverProxyName: String,
-              senderId: String,
-              senderProxyName: String,
-              key: String,
-              collectionView: UICollectionView,
-              navigationItem: UINavigationItem) {
-        self.receiverId = receiverId
-        self.receiverProxyName = receiverProxyName
-        self.senderId = senderId
-        self.senderProxyName = senderProxyName
-        self.collectionView = collectionView
-        self.navigationItem = navigationItem
-        nicknames[receiverId] = receiverProxyName
-        nicknames[senderId] = senderProxyName
-        receiverNicknameObserver.observe(senderId: senderId, key: key, manager: self)
-        senderNicknameObserver.observe(senderId: senderId, key: key, manager: self)
-    }
-
     var nicknames = [String : String]() {
         didSet {
             collectionView?.reloadData()
@@ -46,5 +27,24 @@ class ConvoNicknamesManager: ConvoNicknamesManaging {
         didSet {
             nicknames[senderId] = senderNickname == "" ? senderProxyName : senderNickname
         }
+    }
+
+    func load(receiverId: String,
+              receiverProxyName: String,
+              senderId: String,
+              senderProxyName: String,
+              key: String,
+              collectionView: UICollectionView,
+              navigationItem: UINavigationItem) {
+        self.receiverId = receiverId
+        self.receiverProxyName = receiverProxyName
+        self.senderId = senderId
+        self.senderProxyName = senderProxyName
+        self.collectionView = collectionView
+        self.navigationItem = navigationItem
+        nicknames[receiverId] = receiverProxyName
+        nicknames[senderId] = senderProxyName
+        receiverNicknameObserver.observe(senderId: senderId, key: key, manager: self)
+        senderNicknameObserver.observe(senderId: senderId, key: key, manager: self)
     }
 }

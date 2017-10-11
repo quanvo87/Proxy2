@@ -7,12 +7,15 @@ class ProxiesButtonManager: ButtonManaging {
     var makeNewMessageButton = UIBarButtonItem()
     var makeNewProxyButton = UIBarButtonItem()
     var itemsToDeleteManager: ItemsToDeleteManaging?
-    weak var controller: ProxiesTableViewController?
     weak var navigationItem: UINavigationItem?
     weak var tableView: UITableView?
 
-    func load(_ controller: ProxiesTableViewController) {
+    private weak var controller: ProxiesTableViewController?
+    private weak var proxiesManager: ProxiesManager?
+
+    func load(controller: ProxiesTableViewController, proxiesManager: ProxiesManager) {
         self.controller = controller
+        self.proxiesManager = proxiesManager
         itemsToDeleteManager = ItemsToDeleteManager()
         navigationItem = controller.navigationItem
         tableView = controller.tableView
@@ -30,7 +33,7 @@ class ProxiesButtonManager: ButtonManaging {
         alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
             guard let controller = self.controller else { return }
             self.disableButtons()
-            controller.proxiesManager.observer.stopObserving()
+            controller.proxiesManager.stopObserving()
             let key = AsyncWorkGroupKey()
             for (_, item) in itemsToDelete {
                 guard let proxy = item as? Proxy else { return }
@@ -45,7 +48,7 @@ class ProxiesButtonManager: ButtonManaging {
             key.notify {
                 key.finishWorkGroup()
                 self.enableButtons()
-                controller.proxiesManager.observer.observe(uid: Shared.shared.uid, manager: controller.proxiesManager)
+                controller.proxiesManager.load(uid: Shared.shared.uid, tableView: controller.tableView)
             }
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))

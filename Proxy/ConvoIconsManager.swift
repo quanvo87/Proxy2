@@ -7,18 +7,6 @@ class ConvoIconsManager: ConvoIconsManaging {
     private var senderId = String()
     private weak var collectionView: UICollectionView?
 
-    func load(receiverId: String,
-              receiverProxyKey: String,
-              senderId: String,
-              senderProxyKey: String,
-              collectionView: UICollectionView) {
-        self.receiverId = receiverId
-        self.senderId = senderId
-        self.collectionView = collectionView
-        receiverIconObserver.observe(receiverOwnerId: receiverId, receiverProxyKey: receiverProxyKey, manager: self)
-        senderIconObserver.observe(senderOwnerId: senderId, senderProxyKey: senderProxyKey, manager: self)
-    }
-
     var convoIcons = [String : JSQMessagesAvatarImage]() {
         didSet {
             DispatchQueue.main.async {
@@ -43,5 +31,17 @@ class ConvoIconsManager: ConvoIconsManaging {
                 self.convoIcons[self.senderId] = JSQMessagesAvatarImage(placeholder: image)
             }
         }
+    }
+
+    func load(receiverId: String,
+              receiverProxyKey: String,
+              senderId: String,
+              senderProxyKey: String,
+              collectionView: UICollectionView) {
+        self.receiverId = receiverId
+        self.senderId = senderId
+        self.collectionView = collectionView
+        receiverIconObserver.observe(receiverOwnerId: receiverId, receiverProxyKey: receiverProxyKey, manager: self)
+        senderIconObserver.observe(senderOwnerId: senderId, senderProxyKey: senderProxyKey, manager: self)
     }
 }

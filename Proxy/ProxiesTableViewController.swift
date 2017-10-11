@@ -9,7 +9,7 @@ class ProxiesTableViewController: UITableViewController, MakeNewMessageDelegate 
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        buttonManager.load(self)
+        buttonManager.load(controller: self, proxiesManager: proxiesManager)
         navigationItem.title = "Proxies"
         proxiesManager.load(uid: Shared.shared.uid, tableView: tableView)
         setupDataSource()
