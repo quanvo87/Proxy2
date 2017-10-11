@@ -1,9 +1,9 @@
 import UIKit
 
 class MeAuthManager: AuthManaging {
-    let observer = AuthObserver()
-    weak var controller: MeTableViewController?
-    weak var storyboard: UIStoryboard?
+    private let observer = AuthObserver()
+    private weak var controller: MeTableViewController?
+    private weak var storyboard: UIStoryboard?
 
     func load(_ controller: MeTableViewController) {
         self.controller = controller
@@ -14,9 +14,9 @@ class MeAuthManager: AuthManaging {
     func logIn() {
         guard let controller = controller else { return }
         controller.navigationItem.title = Shared.shared.userName
-        controller.messagesReceivedManager.load(tableView: controller.tableView, uid: Shared.shared.uid)
-        controller.messagesSentManager.load(tableView: controller.tableView, uid: Shared.shared.uid)
-        controller.proxiesInteractedWithManager.load(tableView: controller.tableView, uid: Shared.shared.uid)
+        controller.messagesReceivedManager.load(uid: Shared.shared.uid, tableView: controller.tableView)
+        controller.messagesSentManager.load(uid: Shared.shared.uid, tableView: controller.tableView)
+        controller.proxiesInteractedWithManager.load(uid: Shared.shared.uid, tableView: controller.tableView)
     }
 
     func logOut() {

@@ -37,7 +37,7 @@ extension MessagesTableViewController {
     }
 
     func setupButtonManager() {
-        buttonManager.controller = self
+        buttonManager.load(self)
     }
 
     func setupDataSource() {

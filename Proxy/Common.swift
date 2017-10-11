@@ -37,7 +37,7 @@ extension Int {
 
 extension MakeNewMessageDelegate where Self: UIViewController {
     func goToMakeNewMessageVC(_ sender: Proxy? = nil) {
-        guard let makeNewMessageVC = self.storyboard?.instantiateViewController(withIdentifier: Identifier.makeNewMessageViewController) as? MakeNewMessageViewController else { return }
+        guard let makeNewMessageVC = storyboard?.instantiateViewController(withIdentifier: Identifier.makeNewMessageViewController) as? MakeNewMessageViewController else { return }
         makeNewMessageVC.delegate = self
         makeNewMessageVC.sender = sender
         let navigationController = UINavigationController(rootViewController: makeNewMessageVC)

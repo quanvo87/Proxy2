@@ -11,7 +11,7 @@ class ProxiesTableViewController: UITableViewController, MakeNewMessageDelegate 
         super.viewDidLoad()
         buttonManager.load(self)
         navigationItem.title = "Proxies"
-        proxiesManager.load(tableView)
+        proxiesManager.load(uid: Shared.shared.uid, tableView: tableView)
         setupDataSource()
         setupDelegate()
         tableView.allowsMultipleSelectionDuringEditing = true

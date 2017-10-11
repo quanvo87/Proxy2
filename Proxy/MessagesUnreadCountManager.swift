@@ -1,21 +1,23 @@
 import UIKit
 
 class MessagesUnreadCountManager: UnreadCountManaging {
-    let observer = UnreadCountObserver()
-    weak var controller: UIViewController?
+    private let observer = UnreadCountObserver()
+    private weak var controller: UIViewController?
     
     func load(_ controller: UIViewController) {
         self.controller = controller
-        observer.observe(manager: self, uid: Shared.shared.uid)
+        observer.observe(uid: Shared.shared.uid, manager: self)
     }
-    
-    func setUnreadCount(_ count: Int?) {
-        if let count = count {
-            controller?.navigationItem.title = "Messages" + count.asLabelWithParens
-            controller?.tabBarController?.tabBar.items?.first?.badgeValue = count == 0 ? nil : String(count)
-        } else {
-            controller?.navigationItem.title = "Messages"
-            controller?.tabBarController?.tabBar.items?.first?.badgeValue = nil
+
+    var unreadCount: Int? {
+        didSet {
+            if let unreadCount = unreadCount {
+                controller?.navigationItem.title = "Messages" + unreadCount.asLabelWithParens
+                controller?.tabBarController?.tabBar.items?.first?.badgeValue = unreadCount == 0 ? nil : String(unreadCount)
+            } else {
+                controller?.navigationItem.title = "Messages"
+                controller?.tabBarController?.tabBar.items?.first?.badgeValue = nil
+            }
         }
     }
 }

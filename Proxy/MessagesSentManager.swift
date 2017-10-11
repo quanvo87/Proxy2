@@ -1,16 +1,17 @@
 import UIKit
 
 class MessagesSentManager: MessagesSentManaging {
-    let observer = MessagesSentObserver()
-    weak var tableView: UITableView?
+    private let observer = MessagesSentObserver()
+    private weak var tableView: UITableView?
+
+    func load(uid: String, tableView: UITableView) {
+        self.tableView = tableView
+        observer.observe(uid: uid, manager: self)
+    }
+
     var messagesSentCount = "-" {
         didSet {
             tableView?.reloadData()
         }
-    }
-
-    func load(tableView: UITableView, uid: String) {
-        self.tableView = tableView
-        observer.observe(manager: self, uid: uid)
     }
 }

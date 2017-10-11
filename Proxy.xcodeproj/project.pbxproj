@@ -15,9 +15,10 @@
 		591F9A4D1F866D1D00FDD294 /* SenderIconObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 591F9A4C1F866D1D00FDD294 /* SenderIconObserver.swift */; };
 		591F9A4F1F867A1800FDD294 /* ReceiverNicknameObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 591F9A4E1F867A1800FDD294 /* ReceiverNicknameObserver.swift */; };
 		5921CE631F85F7E600C9DDA5 /* ReceiverIconManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5921CE621F85F7E600C9DDA5 /* ReceiverIconManaging.swift */; };
+		592C0DE81F8E598B0023DB02 /* ItemsToDeleteManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592C0DE71F8E598B0023DB02 /* ItemsToDeleteManaging.swift */; };
+		592C0DEA1F8E59B50023DB02 /* ItemsToDeleteManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592C0DE91F8E59B50023DB02 /* ItemsToDeleteManager.swift */; };
 		592F2FF71F7BEB85001DC85C /* AuthManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592F2FF61F7BEB85001DC85C /* AuthManaging.swift */; };
 		592F2FF91F7BF01C001DC85C /* UnreadCountManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592F2FF81F7BF01C001DC85C /* UnreadCountManaging.swift */; };
-		5935D2B51F7B3CDE002B44B1 /* ItemsToDeleteManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5935D2B41F7B3CDE002B44B1 /* ItemsToDeleteManaging.swift */; };
 		593D7D421F851E6900D3FBD5 /* MessagesReceivedManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 593D7D411F851E6900D3FBD5 /* MessagesReceivedManaging.swift */; };
 		593D7D441F851F7D00D3FBD5 /* MessagesReceivedManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 593D7D431F851F7D00D3FBD5 /* MessagesReceivedManager.swift */; };
 		593D7D461F85246900D3FBD5 /* MessagesSentManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 593D7D451F85246900D3FBD5 /* MessagesSentManaging.swift */; };
@@ -120,7 +121,6 @@
 		59DCE5FC1F65FCC900AC9CEC /* ProxyTableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59DCE5FB1F65FCC900AC9CEC /* ProxyTableViewDelegate.swift */; };
 		59DDF43B1F6AB2F100D4E239 /* MessagesTableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59DDF43A1F6AB2F100D4E239 /* MessagesTableViewDelegate.swift */; };
 		59E75B2A1F846F140033A407 /* ConvosManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E75B291F846F140033A407 /* ConvosManager.swift */; };
-		59E75B2C1F846F380033A407 /* ItemsToDeleteManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E75B2B1F846F380033A407 /* ItemsToDeleteManager.swift */; };
 		59E75B2E1F846F550033A407 /* ProxiesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E75B2D1F846F550033A407 /* ProxiesManager.swift */; };
 		59E75B301F846F6B0033A407 /* ProxyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E75B2F1F846F6B0033A407 /* ProxyManager.swift */; };
 		9F0C2E94B3D2ACDB881894D0 /* Pods_ProxyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 677A1D9397BD6DC3C3277EF9 /* Pods_ProxyTests.framework */; };
@@ -155,9 +155,10 @@
 		591F9A4C1F866D1D00FDD294 /* SenderIconObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SenderIconObserver.swift; sourceTree = "<group>"; };
 		591F9A4E1F867A1800FDD294 /* ReceiverNicknameObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiverNicknameObserver.swift; sourceTree = "<group>"; };
 		5921CE621F85F7E600C9DDA5 /* ReceiverIconManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiverIconManaging.swift; sourceTree = "<group>"; };
+		592C0DE71F8E598B0023DB02 /* ItemsToDeleteManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsToDeleteManaging.swift; sourceTree = "<group>"; };
+		592C0DE91F8E59B50023DB02 /* ItemsToDeleteManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsToDeleteManager.swift; sourceTree = "<group>"; };
 		592F2FF61F7BEB85001DC85C /* AuthManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManaging.swift; sourceTree = "<group>"; };
 		592F2FF81F7BF01C001DC85C /* UnreadCountManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnreadCountManaging.swift; sourceTree = "<group>"; };
-		5935D2B41F7B3CDE002B44B1 /* ItemsToDeleteManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsToDeleteManaging.swift; sourceTree = "<group>"; };
 		593D7D411F851E6900D3FBD5 /* MessagesReceivedManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesReceivedManaging.swift; sourceTree = "<group>"; };
 		593D7D431F851F7D00D3FBD5 /* MessagesReceivedManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesReceivedManager.swift; sourceTree = "<group>"; };
 		593D7D451F85246900D3FBD5 /* MessagesSentManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesSentManaging.swift; sourceTree = "<group>"; };
@@ -266,7 +267,6 @@
 		59DCE5FB1F65FCC900AC9CEC /* ProxyTableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyTableViewDelegate.swift; sourceTree = "<group>"; };
 		59DDF43A1F6AB2F100D4E239 /* MessagesTableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesTableViewDelegate.swift; sourceTree = "<group>"; };
 		59E75B291F846F140033A407 /* ConvosManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvosManager.swift; sourceTree = "<group>"; };
-		59E75B2B1F846F380033A407 /* ItemsToDeleteManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsToDeleteManager.swift; sourceTree = "<group>"; };
 		59E75B2D1F846F550033A407 /* ProxiesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxiesManager.swift; sourceTree = "<group>"; };
 		59E75B2F1F846F6B0033A407 /* ProxyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyManager.swift; sourceTree = "<group>"; };
 		677A1D9397BD6DC3C3277EF9 /* Pods_ProxyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ProxyTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -325,7 +325,7 @@
 				597C8E6E1F8601B600637EAC /* ConvoIconsManaging.swift */,
 				5956AE591F87380E00F99ED0 /* ConvoNicknamesManaging.swift */,
 				59BAB2DB1F7A7FB200A2B581 /* ConvosManaging.swift */,
-				5935D2B41F7B3CDE002B44B1 /* ItemsToDeleteManaging.swift */,
+				592C0DE71F8E598B0023DB02 /* ItemsToDeleteManaging.swift */,
 				593D7D411F851E6900D3FBD5 /* MessagesReceivedManaging.swift */,
 				593D7D451F85246900D3FBD5 /* MessagesSentManaging.swift */,
 				593D7D491F8529EB00D3FBD5 /* ProxiesInteractedManaging.swift */,
@@ -487,7 +487,7 @@
 				597C8E701F8601FE00637EAC /* ConvoIconsManager.swift */,
 				5956AE571F872E4B00F99ED0 /* ConvoNicknamesManager.swift */,
 				59E75B291F846F140033A407 /* ConvosManager.swift */,
-				59E75B2B1F846F380033A407 /* ItemsToDeleteManager.swift */,
+				592C0DE91F8E59B50023DB02 /* ItemsToDeleteManager.swift */,
 				593D7D4D1F85330F00D3FBD5 /* MeAuthManager.swift */,
 				59155AB71F7B87F3001EDDD0 /* MessagesAuthManager.swift */,
 				59155AB51F7B7951001EDDD0 /* MessagesButtonManager.swift */,
@@ -959,13 +959,13 @@
 				5973C8591F608A2200647492 /* AsyncWorkGroupKey.swift in Sources */,
 				5973C8651F608A2200647492 /* Proxy.swift in Sources */,
 				595A25DC1F704F36005D82F1 /* ConvoIsActiveChecker.swift in Sources */,
-				5935D2B51F7B3CDE002B44B1 /* ItemsToDeleteManaging.swift in Sources */,
 				5958D50A1F6C18B600B07B0F /* MeTableViewDelegate.swift in Sources */,
 				59710E3E1F7237EB00C39857 /* SenderNicknameObserver.swift in Sources */,
 				59AC04B61F6BFCFD00DB580B /* MessagesReceivedObserver.swift in Sources */,
 				5973C8481F608A2200647492 /* ProxyObserver.swift in Sources */,
 				596D7FD41F62EC1100E6AF8D /* ProxiesTableViewDelegate.swift in Sources */,
 				594D2A521F6B167F00ECCF06 /* IconPickerCollectionViewDelegate.swift in Sources */,
+				592C0DE81F8E598B0023DB02 /* ItemsToDeleteManaging.swift in Sources */,
 				590F08E61F7BF21B00F3200F /* MessagesUnreadCountManager.swift in Sources */,
 				5973C84E1F608A2200647492 /* ConvoDetailTableViewController.swift in Sources */,
 				593D7D421F851E6900D3FBD5 /* MessagesReceivedManaging.swift in Sources */,
@@ -974,6 +974,7 @@
 				59E75B2E1F846F550033A407 /* ProxiesManager.swift in Sources */,
 				5973C86F1F608A2200647492 /* UnreadCountObserver.swift in Sources */,
 				5973C8521F608A2200647492 /* BlockedUser.swift in Sources */,
+				592C0DEA1F8E59B50023DB02 /* ItemsToDeleteManager.swift in Sources */,
 				5973C84C1F608A2200647492 /* NSDate+NVTimeAgo.m in Sources */,
 				5973C8641F608A2200647492 /* ProxiesTableViewController.swift in Sources */,
 				5949F5831F63331B004597A0 /* SenderPickerTableViewDelegate.swift in Sources */,
@@ -1008,7 +1009,6 @@
 				593D7D481F8528B800D3FBD5 /* MessagesSentManager.swift in Sources */,
 				593D7D461F85246900D3FBD5 /* MessagesSentManaging.swift in Sources */,
 				5973C8751F608A2200647492 /* loadProxyIconNames.swift in Sources */,
-				59E75B2C1F846F380033A407 /* ItemsToDeleteManager.swift in Sources */,
 				591F9A4F1F867A1800FDD294 /* ReceiverNicknameObserver.swift in Sources */,
 				59155AB61F7B7951001EDDD0 /* MessagesButtonManager.swift in Sources */,
 				59DDF43B1F6AB2F100D4E239 /* MessagesTableViewDelegate.swift in Sources */,

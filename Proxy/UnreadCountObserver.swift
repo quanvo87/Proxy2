@@ -4,11 +4,11 @@ class UnreadCountObserver: ReferenceObserving {
     var handle: DatabaseHandle?
     var ref: DatabaseReference?
 
-    func observe(manager: UnreadCountManaging, uid: String) {
+    func observe(uid: String, manager: UnreadCountManaging) {
         stopObserving()
         ref = DB.makeReference(Child.userInfo, uid, Child.unreadMessages)
         handle = ref?.observe(.value, with: { [weak manager = manager] (data) in
-            manager?.setUnreadCount(Int(data.childrenCount))
+            manager?.unreadCount = Int(data.childrenCount)
         })
     }
 

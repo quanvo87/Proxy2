@@ -15,8 +15,8 @@ class ConvoIconsManager: ConvoIconsManaging {
         self.receiverId = receiverId
         self.senderId = senderId
         self.collectionView = collectionView
-        receiverIconObserver.observe(ownerId: receiverId, proxyKey: receiverProxyKey, manager: self)
-        senderIconObserver.observe(ownerId: senderId, proxyKey: senderProxyKey, manager: self)
+        receiverIconObserver.observe(receiverOwnerId: receiverId, receiverProxyKey: receiverProxyKey, manager: self)
+        senderIconObserver.observe(senderOwnerId: senderId, senderProxyKey: senderProxyKey, manager: self)
     }
 
     var convoIcons = [String : JSQMessagesAvatarImage]() {
