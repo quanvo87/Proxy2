@@ -18,4 +18,13 @@ class MeAuthManager: AuthManaging {
         controller.messagesSentManager.load(tableView: controller.tableView, uid: Shared.shared.uid)
         controller.proxiesInteractedWithManager.load(tableView: controller.tableView, uid: Shared.shared.uid)
     }
+
+    func logOut() {
+        guard
+            let delegate = UIApplication.shared.delegate as? AppDelegate,
+            let loginController = storyboard?.instantiateViewController(withIdentifier: Identifier.loginViewController) as? LoginViewController else {
+                return
+        }
+        delegate.window?.rootViewController = loginController
+    }
 }

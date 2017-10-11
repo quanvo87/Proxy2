@@ -6,7 +6,7 @@ class MessagesUnreadCountManager: UnreadCountManaging {
     
     func load(_ controller: UIViewController) {
         self.controller = controller
-        observer.observe(manager: self)
+        observer.observe(manager: self, uid: Shared.shared.uid)
     }
     
     func setUnreadCount(_ count: Int?) {

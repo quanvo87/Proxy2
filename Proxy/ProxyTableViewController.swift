@@ -14,7 +14,7 @@ class ProxyTableViewController: UITableViewController, MakeNewMessageDelegate {
         convosManager.load(convosOwner: proxy.key, tableView: tableView)
         dataSource.load(self)
         delegate.load(self)
-        proxyManager.load(proxy: proxy, tableView: tableView)
+        proxyManager.load(ownerId: proxy.ownerId, key: proxy.key, tableView: tableView)
         navigationItem.rightBarButtonItems = [UIBarButtonItem.makeButton(target: self, action: #selector(goToMakeNewMessageVC), imageName: .makeNewMessage),
                                               UIBarButtonItem.makeButton(target: self, action: #selector(deleteProxy), imageName: .delete)]
         tableView.delaysContentTouches = false

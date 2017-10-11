@@ -2,8 +2,8 @@ import FirebaseAuth
 import UIKit
 
 class AuthObserver {
-    let auth = Auth.auth()
-    var handle: AuthStateDidChangeListenerHandle?
+    private let auth = Auth.auth()
+    private var handle: AuthStateDidChangeListenerHandle?
 
     func observe(_ manager: AuthManaging) {
         stopObserving()

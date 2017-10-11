@@ -1,19 +1,25 @@
 import JSQMessagesViewController
 
 class ConvoIconsManager: ConvoIconsManaging {
-    let receiverIconObserver = ReceiverIconObserver()
-    let senderIconObserver = SenderIconObserver()
-    var convo: Convo?
-    weak var collectionView: UICollectionView?
+    private let receiverIconObserver = ReceiverIconObserver()
+    private let senderIconObserver = SenderIconObserver()
+    private var receiverId = String()
+    private var senderId = String()
+    private weak var collectionView: UICollectionView?
 
-    func load(collectionView: UICollectionView, convo: Convo) {
+    func load(receiverId: String,
+              receiverProxyKey: String,
+              senderId: String,
+              senderProxyKey: String,
+              collectionView: UICollectionView) {
+        self.receiverId = receiverId
+        self.senderId = senderId
         self.collectionView = collectionView
-        self.convo = convo
-        receiverIconObserver.observe(convo: convo, manager: self)
-        senderIconObserver.observe(convo: convo, manager: self)
+        receiverIconObserver.observe(ownerId: receiverId, proxyKey: receiverProxyKey, manager: self)
+        senderIconObserver.observe(ownerId: senderId, proxyKey: senderProxyKey, manager: self)
     }
 
-    var icons = [String : JSQMessagesAvatarImage]() {
+    var convoIcons = [String : JSQMessagesAvatarImage]() {
         didSet {
             DispatchQueue.main.async {
                 self.collectionView?.reloadData()
@@ -23,20 +29,18 @@ class ConvoIconsManager: ConvoIconsManaging {
 
     var receiverIcon = String() {
         didSet {
-            guard let receiverId = convo?.receiverId else { return }
             UIImage.makeImage(named: receiverIcon) { (image) in
                 guard let image = image else { return }
-                self.icons[receiverId] = JSQMessagesAvatarImage(placeholder: image)
+                self.convoIcons[self.receiverId] = JSQMessagesAvatarImage(placeholder: image)
             }
         }
     }
 
     var senderIcon = String() {
         didSet {
-            guard let senderId = convo?.senderId else { return }
             UIImage.makeImage(named: senderIcon) { (image) in
                 guard let image = image else { return }
-                self.icons[senderId] = JSQMessagesAvatarImage(placeholder: image)
+                self.convoIcons[self.senderId] = JSQMessagesAvatarImage(placeholder: image)
             }
         }
     }

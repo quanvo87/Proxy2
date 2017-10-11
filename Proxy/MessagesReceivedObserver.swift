@@ -1,9 +1,8 @@
 import FirebaseDatabase
 
 class MessagesReceivedObserver: ReferenceObserving {
-    var handle: DatabaseHandle?
-    var ref: DatabaseReference?
-    weak var manager: MessagesReceivedManaging?
+    private (set) var handle: DatabaseHandle?
+    private (set) var ref: DatabaseReference?
 
     func observe(manager: MessagesReceivedManaging, uid: String) {
         stopObserving()

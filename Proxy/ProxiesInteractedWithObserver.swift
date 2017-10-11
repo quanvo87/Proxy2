@@ -1,8 +1,8 @@
 import FirebaseDatabase
 
 class ProxiesInteractedWithObserver: ReferenceObserving {
-    var handle: DatabaseHandle?
-    var ref: DatabaseReference?
+    private (set) var handle: DatabaseHandle?
+    private (set) var ref: DatabaseReference?
 
     func observe(manager: ProxiesInteractedWithManaging, uid: String) {
         stopObserving()

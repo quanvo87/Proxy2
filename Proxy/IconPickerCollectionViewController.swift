@@ -8,13 +8,13 @@ class IconPickerCollectionViewController: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let flowLayout = UICollectionViewFlowLayout()
-        flowLayout.itemSize = CGSize(width: 60, height: 90)
+        let layout = UICollectionViewFlowLayout()
+        layout.itemSize = CGSize(width: 60, height: 90)
 
         collectionView?.backgroundColor = UIColor.white
         collectionView?.delaysContentTouches = false
         collectionView?.reloadData()
-        collectionView?.setCollectionViewLayout(flowLayout, animated: true)
+        collectionView?.setCollectionViewLayout(layout, animated: true)
 
         navigationItem.rightBarButtonItem = UIBarButtonItem.makeButton(target: self, action: #selector(cancelPickingIcon), imageName: .cancel)
         navigationItem.title = "Select An Icon"

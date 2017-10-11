@@ -2,7 +2,6 @@ import UIKit
 
 class MessagesAuthManager: AuthManaging {
     let observer = AuthObserver()
-    weak var storyboard: UIStoryboard?
     weak var controller: MessagesTableViewController? {
         didSet {
             observer.observe(self)

@@ -45,7 +45,7 @@ class ProxiesButtonManager: ButtonManaging {
             key.notify {
                 key.finishWorkGroup()
                 self.enableButtons()
-                controller.proxiesManager.observer.observe(controller.proxiesManager)
+                controller.proxiesManager.observer.observe(manager: controller.proxiesManager, uid: Shared.shared.uid)
             }
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))

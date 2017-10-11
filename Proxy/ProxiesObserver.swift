@@ -1,13 +1,12 @@
 import FirebaseDatabase
 
 class ProxiesObserver: ReferenceObserving {
-    var handle: DatabaseHandle?
-    var ref: DatabaseReference?
+    private (set) var handle: DatabaseHandle?
+    private (set) var ref: DatabaseReference?
 
-    // TODO: make this take in uid var instead of hard code
-    func observe(_ manager: ProxiesManaging) {
+    func observe(manager: ProxiesManaging, uid: String) {
         stopObserving()
-        ref = DB.makeReference(Child.proxies, Shared.shared.uid)
+        ref = DB.makeReference(Child.proxies, uid)
         handle = ref?.queryOrdered(byChild: Child.timestamp).observe(.value, with: { [weak manager = manager] (data) in
             manager?.proxies = data.toProxiesArray().reversed()
         })
