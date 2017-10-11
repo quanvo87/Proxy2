@@ -1,7 +1,12 @@
 import UIKit
 
 class MessagesTableViewDataSource: NSObject {
-    weak var manager: ConvosManaging?
+    private weak var manager: ConvosManaging?
+
+    func load(manager: ConvosManaging, tableView: UITableView) {
+        self.manager = manager
+        tableView.dataSource = self
+    }
 }
 
 extension MessagesTableViewDataSource: UITableViewDataSource {

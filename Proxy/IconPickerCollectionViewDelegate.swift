@@ -1,8 +1,14 @@
 import UIKit
 
 class IconPickerCollectionViewDelegate: NSObject {
-    var proxy: Proxy?
-    weak var controller: UIViewController?
+    private var proxy: Proxy?
+    private weak var controller: UICollectionViewController?
+
+    func load(proxy: Proxy?, controller: UICollectionViewController) {
+        self.proxy = proxy
+        self.controller = controller
+        controller.collectionView?.delegate = self
+    }
 }
 
 extension IconPickerCollectionViewDelegate: UICollectionViewDelegate {

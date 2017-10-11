@@ -1,9 +1,16 @@
 import UIKit
 
 class MessagesTableViewDelegate: NSObject {
-    weak var controller: UIViewController?
-    weak var convosManager: ConvosManaging?
-    weak var itemsToDeleteManager: ItemsToDeleteManaging?
+    private weak var controller: UITableViewController?
+    private weak var convosManager: ConvosManaging?
+    private weak var itemsToDeleteManager: ItemsToDeleteManaging?
+
+    func load(controller: UITableViewController, convosManager: ConvosManaging, itemsToDeleteManager: ItemsToDeleteManaging) {
+        self.controller = controller
+        self.convosManager = convosManager
+        self.itemsToDeleteManager = itemsToDeleteManager
+        controller.tableView.delegate = self
+    }
 }
 
 extension MessagesTableViewDelegate: UITableViewDelegate {

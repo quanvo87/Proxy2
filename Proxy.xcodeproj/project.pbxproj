@@ -317,7 +317,7 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		590F08E41F7BF18800F3200F /* Managing */ = {
+		590F08E41F7BF18800F3200F /* Protocol */ = {
 			isa = PBXGroup;
 			children = (
 				5973C8451F608A2100647492 /* ButtonManaging.swift */,
@@ -333,11 +333,12 @@
 				59033F0B1F83BFD100F3062D /* ProxyManaging.swift */,
 				5921CE621F85F7E600C9DDA5 /* ReceiverIconManaging.swift */,
 				59D7B7DA1F87072E0082599A /* ReceiverNicknameManaging.swift */,
+				59B7CC6B1F638A2A0063D137 /* ReferenceObserving.swift */,
 				5912F0E61F708B770017D1EE /* SenderIconManaging.swift */,
 				59D7B7DC1F8707630082599A /* SenderNicknameManaging.swift */,
 				592F2FF81F7BF01C001DC85C /* UnreadCountManaging.swift */,
 			);
-			name = Managing;
+			name = Protocol;
 			sourceTree = "<group>";
 		};
 		598F06871F60ABCB0066B742 /* View */ = {
@@ -428,7 +429,6 @@
 				591F9A4E1F867A1800FDD294 /* ReceiverNicknameObserver.swift */,
 				591F9A4C1F866D1D00FDD294 /* SenderIconObserver.swift */,
 				59710E3D1F7237EB00C39857 /* SenderNicknameObserver.swift */,
-				59B7CC6B1F638A2A0063D137 /* ReferenceObserving.swift */,
 				5973C83C1F608A2000647492 /* UnreadCountObserver.swift */,
 			);
 			name = Observer;
@@ -552,8 +552,8 @@
 				59B500801F6A49E2002D4C29 /* Database */,
 				59B500811F6A49F8002D4C29 /* Data Source */,
 				59B500821F6A4A06002D4C29 /* Delegate */,
-				590F08E41F7BF18800F3200F /* Managing */,
 				59BAB2DD1F7A7FB800A2B581 /* Manager */,
+				590F08E41F7BF18800F3200F /* Protocol */,
 				59B5007E1F6A49C6002D4C29 /* Observer */,
 				59B5007F1F6A49D8002D4C29 /* Login */,
 				595A25DB1F704F36005D82F1 /* ConvoIsActiveChecker.swift */,

@@ -12,9 +12,12 @@ class IconPickerCollectionViewController: UICollectionViewController {
         layout.itemSize = CGSize(width: 60, height: 90)
 
         collectionView?.backgroundColor = UIColor.white
+        collectionView?.dataSource = dataSource
         collectionView?.delaysContentTouches = false
         collectionView?.reloadData()
         collectionView?.setCollectionViewLayout(layout, animated: true)
+
+        delegate.load(proxy: proxy, controller: self)
 
         navigationItem.rightBarButtonItem = UIBarButtonItem.makeButton(target: self, action: #selector(cancelPickingIcon), imageName: .cancel)
         navigationItem.title = "Select An Icon"
@@ -22,24 +25,9 @@ class IconPickerCollectionViewController: UICollectionViewController {
         for case let scrollView as UIScrollView in collectionView?.subviews ?? [] {
             scrollView.delaysContentTouches = false
         }
-
-        setupDataSource()
-        setupDelegate()
     }
     
     @objc func cancelPickingIcon() {
         dismiss(animated: true)
-    }
-}
-
-private extension IconPickerCollectionViewController {
-    func setupDataSource() {
-        collectionView?.dataSource = dataSource
-    }
-
-    func setupDelegate() {
-        collectionView?.delegate = delegate
-        delegate.controller = self
-        delegate.proxy = proxy
     }
 }

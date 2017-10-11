@@ -12,9 +12,9 @@ class MessagesButtonManager: ButtonManaging {
 
     private weak var controller: MessagesTableViewController?
 
-    func load(_ controller: MessagesTableViewController) {
+    func load(controller: MessagesTableViewController, itemsToDeleteManager: ItemsToDeleteManager) {
         self.controller = controller
-        itemsToDeleteManager = ItemsToDeleteManager()
+        self.itemsToDeleteManager = itemsToDeleteManager
         navigationItem = controller.navigationItem
         tableView = controller.tableView
         makeButtons()

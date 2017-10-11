@@ -7,7 +7,7 @@ class ConvoIconsManager: ConvoIconsManaging {
     private var senderId = String()
     private weak var collectionView: UICollectionView?
 
-    var convoIcons = [String : JSQMessagesAvatarImage]() {
+    var icons = [String : JSQMessagesAvatarImage]() {
         didSet {
             DispatchQueue.main.async {
                 self.collectionView?.reloadData()
@@ -19,7 +19,7 @@ class ConvoIconsManager: ConvoIconsManaging {
         didSet {
             UIImage.makeImage(named: receiverIcon) { (image) in
                 guard let image = image else { return }
-                self.convoIcons[self.receiverId] = JSQMessagesAvatarImage(placeholder: image)
+                self.icons[self.receiverId] = JSQMessagesAvatarImage(placeholder: image)
             }
         }
     }
@@ -28,7 +28,7 @@ class ConvoIconsManager: ConvoIconsManaging {
         didSet {
             UIImage.makeImage(named: senderIcon) { (image) in
                 guard let image = image else { return }
-                self.convoIcons[self.senderId] = JSQMessagesAvatarImage(placeholder: image)
+                self.icons[self.senderId] = JSQMessagesAvatarImage(placeholder: image)
             }
         }
     }

@@ -385,23 +385,23 @@ extension ConvoViewController {
         
         // Display an avatar for the first message of the convo.
         if indexPath.item == 0 {
-            return convoIconsManager.convoIcons[curr.senderId]
+            return convoIconsManager.icons[curr.senderId]
         }
         
         // Display an avatar for the last message of the convo.
         if indexPath.item == messages.count - 1 {
-            return convoIconsManager.convoIcons[curr.senderId]
+            return convoIconsManager.icons[curr.senderId]
         }
         
         // Display an avatar for each user on message chain breaks.
         let next = self.messages[indexPath.item + 1]
         if curr.senderId != next.senderId {
-            return convoIconsManager.convoIcons[curr.senderId]
+            return convoIconsManager.icons[curr.senderId]
         }
         
         let prev = self.messages[indexPath.item - 1]
         if prev.senderId != curr.senderId {
-            return convoIconsManager.convoIcons[curr.senderId]
+            return convoIconsManager.icons[curr.senderId]
         }
         
         return nil
