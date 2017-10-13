@@ -1,8 +1,8 @@
 import UIKit
 
 class ProxiesTableViewDataSource: NSObject {
-    private weak var manager: ProxiesManaging?
     private var showDisclosureIndicator = Bool()
+    private weak var manager: ProxiesManaging?
 
     func load(manager: ProxiesManaging, showDisclosureIndicator: Bool, tableView: UITableView) {
         self.manager = manager

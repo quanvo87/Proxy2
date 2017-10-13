@@ -2,10 +2,10 @@ import UIKit
 
 class MessagesTableViewController: UITableViewController, MakeNewMessageDelegate {
     private let authManager = MessagesAuthManager()
-    private let buttonManager = MessagesButtonManager()
-    private let convosManager = ConvosManager()
     private let dataSource = MessagesTableViewDataSource()
     private let delegate = MessagesTableViewDelegate()
+    private let buttonManager = MessagesButtonManager()
+    private let convosManager = ConvosManager()
     private let itemsToDeleteManager = ItemsToDeleteManager()
     private let unreadCountManager = MessagesUnreadCountManager()
     var newConvo: Convo?
@@ -29,16 +29,16 @@ class MessagesTableViewController: UITableViewController, MakeNewMessageDelegate
     }
 
     func logIn() {
-        buttonManager.load(controller: self, itemsToDeleteManager: itemsToDeleteManager)
-        convosManager.load(convosOwner: Shared.shared.uid, tableView: tableView)
         dataSource.load(manager: convosManager, tableView: tableView)
         delegate.load(controller: self, convosManager: convosManager, itemsToDeleteManager: itemsToDeleteManager)
-        tabBarController?.tabBar.items?.setupForTabBar()
+        buttonManager.load(controller: self, itemsToDeleteManager: itemsToDeleteManager)
+        convosManager.load(convosOwner: Shared.shared.uid, tableView: tableView)
+        unreadCountManager.load(self)
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.delegate = delegate
         tableView.rowHeight = 80
         tableView.separatorStyle = .none
-        unreadCountManager.load(self)
+        tabBarController?.tabBar.items?.setupForTabBar()
         Shared.shared.queue.async {
             DBProxy.fixConvoCounts { _ in }
         }
@@ -54,10 +54,10 @@ private extension Array where Element: UITabBarItem {
                 return
         }
         tab0.isEnabled = true
-        tab0.image = UIImage(named: "messages")
         tab1.isEnabled = true
-        tab1.image = UIImage(named: "proxies")
         tab2.isEnabled = true
+        tab0.image = UIImage(named: "messages")
+        tab1.image = UIImage(named: "proxies")
         tab2.image = UIImage(named: "me")
     }
 }

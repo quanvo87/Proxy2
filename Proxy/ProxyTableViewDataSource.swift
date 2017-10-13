@@ -1,21 +1,25 @@
 import UIKit
 
 class ProxyTableViewDataSource: NSObject {
-    weak var controller: ProxyTableViewController?
+    private weak var controller: UITableViewController?
+    private weak var convosManager: ConvosManaging?
+    private weak var proxyManager: ProxyManaging?
 
-    func load(_ controller: ProxyTableViewController) {
+    func load(controller: UITableViewController, convosManager: ConvosManaging, proxyManager: ProxyManaging) {
         self.controller = controller
+        self.convosManager = convosManager
+        self.proxyManager = proxyManager
         controller.tableView.dataSource = self
     }
 }
 
 extension ProxyTableViewDataSource: UITableViewDataSource {
     var convos: [Convo] {
-        return controller?.convosManager.convos ?? []
+        return convosManager?.convos ?? []
     }
 
     var proxy: Proxy? {
-        return controller?.proxyManager.proxy
+        return proxyManager?.proxy
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {

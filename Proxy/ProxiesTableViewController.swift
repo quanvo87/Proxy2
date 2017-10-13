@@ -1,19 +1,19 @@
 import UIKit
 
 class ProxiesTableViewController: UITableViewController, MakeNewMessageDelegate {
-    private let buttonManager = ProxiesButtonManager()
     private let dataSource = ProxiesTableViewDataSource()
     private let delegate = ProxiesTableViewDelegate()
+    private let buttonManager = ProxiesButtonManager()
     private let itemsToDeleteManager = ItemsToDeleteManager()
     private let proxiesManager = ProxiesManager()
     var newConvo: Convo?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        buttonManager.load(controller: self, itemsToDeleteManager: itemsToDeleteManager, proxiesManager: proxiesManager)
+        navigationItem.title = "Proxies"
         dataSource.load(manager: proxiesManager, showDisclosureIndicator: true, tableView: tableView)
         delegate.load(controller: self, itemsToDeleteManager: itemsToDeleteManager, proxiesManager: proxiesManager)
-        navigationItem.title = "Proxies"
+        buttonManager.load(controller: self, itemsToDeleteManager: itemsToDeleteManager, proxiesManager: proxiesManager)
         proxiesManager.load(uid: Shared.shared.uid, tableView: tableView)
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.rowHeight = 60

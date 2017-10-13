@@ -1,22 +1,22 @@
 import UIKit
 
 class ProxyTableViewController: UITableViewController, MakeNewMessageDelegate {
-    let convosManager = ConvosManager()
-    let dataSource = ProxyTableViewDataSource()
-    let delegate = ProxyTableViewDelegate()
-    let proxyManager = ProxyManager()
+    private let dataSource = ProxyTableViewDataSource()
+    private let delegate = ProxyTableViewDelegate()
+    private let convosManager = ConvosManager()
+    private let proxyManager = ProxyManager()
     var newConvo: Convo?
     var proxy: Proxy?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         guard let proxy = proxy else { return }
-        convosManager.load(convosOwner: proxy.key, tableView: tableView)
-        dataSource.load(self)
-        delegate.load(self)
-        proxyManager.load(ownerId: proxy.ownerId, key: proxy.key, tableView: tableView)
         navigationItem.rightBarButtonItems = [UIBarButtonItem.makeButton(target: self, action: #selector(goToMakeNewMessageVC), imageName: .makeNewMessage),
                                               UIBarButtonItem.makeButton(target: self, action: #selector(deleteProxy), imageName: .delete)]
+        dataSource.load(controller: self, convosManager: convosManager, proxyManager: proxyManager)
+        delegate.load(controller: self, manager: convosManager)
+        convosManager.load(convosOwner: proxy.key, tableView: tableView)
+        proxyManager.load(ownerId: proxy.ownerId, key: proxy.key, tableView: tableView)
         tableView.delaysContentTouches = false
         tableView.separatorStyle = .none
         for case let scrollView as UIScrollView in tableView.subviews {
