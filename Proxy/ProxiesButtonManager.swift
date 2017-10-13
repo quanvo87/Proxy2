@@ -9,7 +9,6 @@ class ProxiesButtonManager: ButtonManaging {
     var itemsToDeleteManager: ItemsToDeleteManaging?
     weak var navigationItem: UINavigationItem?
     weak var tableView: UITableView?
-
     private weak var controller: ProxiesTableViewController?
     private weak var proxiesManager: ProxiesManager?
 
