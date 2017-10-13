@@ -1,32 +1,19 @@
 import UIKit
 
 class SenderPickerTableViewController: UITableViewController {
-    let dataSource = ProxiesTableViewDataSource()
-    let delegate = SenderPickerTableViewDelegate()
-    let manager = ProxiesManager()
+    private let dataSource = ProxiesTableViewDataSource()
+    private let delegate = SenderPickerTableViewDelegate()
+    private let manager = ProxiesManager()
     weak var senderPickerDelegate: SenderPickerDelegate?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        delegate.load(self)
+        dataSource.load(manager: manager, showDisclosureIndicator: false, tableView: tableView)
+        delegate.load(controller: self, delegate: senderPickerDelegate, manager: manager)
         manager.load(uid: Shared.shared.uid, tableView: tableView)
         navigationItem.title = "Pick A Sender"
-        setupDataSource()
         tableView.rowHeight = 60
         tableView.separatorStyle = .none
-    }
-}
-
-private extension SenderPickerTableViewController {
-    func setupDataSource() {
-        dataSource.manager = manager
-        dataSource.showDisclosureIndicator = false
-        tableView.dataSource = dataSource
-    }
-
-    func setupDelegate() {
-        delegate.controller = self
-        tableView.delegate = delegate
     }
 }
 

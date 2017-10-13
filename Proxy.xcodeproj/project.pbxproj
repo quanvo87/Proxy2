@@ -320,8 +320,8 @@
 		590F08E41F7BF18800F3200F /* Protocol */ = {
 			isa = PBXGroup;
 			children = (
-				5973C8451F608A2100647492 /* ButtonManaging.swift */,
 				592F2FF61F7BEB85001DC85C /* AuthManaging.swift */,
+				5973C8451F608A2100647492 /* ButtonManaging.swift */,
 				597C8E6E1F8601B600637EAC /* ConvoIconsManaging.swift */,
 				5956AE591F87380E00F99ED0 /* ConvoNicknamesManaging.swift */,
 				59BAB2DB1F7A7FB200A2B581 /* ConvosManaging.swift */,

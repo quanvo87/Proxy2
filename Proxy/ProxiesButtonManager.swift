@@ -13,10 +13,10 @@ class ProxiesButtonManager: ButtonManaging {
     private weak var controller: ProxiesTableViewController?
     private weak var proxiesManager: ProxiesManager?
 
-    func load(controller: ProxiesTableViewController, proxiesManager: ProxiesManager) {
+    func load(controller: ProxiesTableViewController, itemsToDeleteManager: ItemsToDeleteManaging, proxiesManager: ProxiesManager) {
         self.controller = controller
+        self.itemsToDeleteManager = itemsToDeleteManager
         self.proxiesManager = proxiesManager
-        itemsToDeleteManager = ItemsToDeleteManager()
         navigationItem = controller.navigationItem
         tableView = controller.tableView
         makeButtons()
@@ -24,8 +24,7 @@ class ProxiesButtonManager: ButtonManaging {
     }
 
     func _deleteSelectedItems() {
-        guard let itemsToDelete = itemsToDeleteManager?.itemsToDelete else { return }
-        if itemsToDelete.isEmpty {
+        if itemsToDeleteManager?.itemsToDelete.isEmpty ?? true {
             toggleEditMode()
             return
         }
@@ -33,9 +32,9 @@ class ProxiesButtonManager: ButtonManaging {
         alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
             guard let controller = self.controller else { return }
             self.disableButtons()
-            controller.proxiesManager.stopObserving()
+            self.proxiesManager?.stopObserving()
             let key = AsyncWorkGroupKey()
-            for (_, item) in itemsToDelete {
+            for (_, item) in self.itemsToDeleteManager?.itemsToDelete ?? [:] {
                 guard let proxy = item as? Proxy else { return }
                 key.startWork()
                 DBProxy.deleteProxy(proxy) { _ in
@@ -48,7 +47,7 @@ class ProxiesButtonManager: ButtonManaging {
             key.notify {
                 key.finishWorkGroup()
                 self.enableButtons()
-                controller.proxiesManager.load(uid: Shared.shared.uid, tableView: controller.tableView)
+                self.proxiesManager?.load(uid: Shared.shared.uid, tableView: controller.tableView)
             }
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))

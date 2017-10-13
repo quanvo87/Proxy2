@@ -1,9 +1,16 @@
 import UIKit
 
 class ProxiesTableViewDelegate: NSObject {
-    weak var controller: UIViewController?
-    weak var itemsToDeleteManager: ItemsToDeleteManaging?
-    weak var proxiesManager: ProxiesManaging?
+    private weak var controller: UITableViewController?
+    private weak var itemsToDeleteManager: ItemsToDeleteManaging?
+    private weak var proxiesManager: ProxiesManaging?
+
+    func load(controller: UITableViewController, itemsToDeleteManager: ItemsToDeleteManaging, proxiesManager: ProxiesManaging) {
+        self.controller = controller
+        self.itemsToDeleteManager = itemsToDeleteManager
+        self.proxiesManager = proxiesManager
+        controller.tableView.delegate = self
+    }
 }
 
 extension ProxiesTableViewDelegate: UITableViewDelegate {

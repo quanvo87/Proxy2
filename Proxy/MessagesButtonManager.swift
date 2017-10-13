@@ -22,14 +22,13 @@ class MessagesButtonManager: ButtonManaging {
     }
     
     func _deleteSelectedItems() {
-        guard let itemsToDelete = itemsToDeleteManager?.itemsToDelete else { return }
-        if itemsToDelete.isEmpty {
+        if itemsToDeleteManager?.itemsToDelete.isEmpty ?? true {
             toggleEditMode()
             return
         }
         let alert = UIAlertController(title: "Leave Conversations?", message: "This will not delete the conversation.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Leave", style: .destructive) { _ in
-            for (_, item) in itemsToDelete {
+            for (_, item) in self.itemsToDeleteManager?.itemsToDelete ?? [:] {
                 guard let convo = item as? Convo else { return }
                 DBConvo.leaveConvo(convo) { _ in }
             }
@@ -46,9 +45,9 @@ class MessagesButtonManager: ButtonManaging {
     }
     
     func _makeNewProxy() {
-        controller?.navigationItem.toggleRightBarButtonItem(atIndex: 1)
+        navigationItem?.toggleRightBarButtonItem(atIndex: 1)
         DBProxy.makeProxy { (result) in
-            self.controller?.navigationItem.toggleRightBarButtonItem(atIndex: 1)
+            self.navigationItem?.toggleRightBarButtonItem(atIndex: 1)
             switch result {
             case .failure(let error):
                 self.controller?.showAlert("Error Creating Proxy", message: error.description)

@@ -1,31 +1,26 @@
 import UIKit
 
 class MeTableViewController: UITableViewController {
-    let authManager = MeAuthManager()
-    let dataSource = MeTableViewDataSource()
-    let delegate = MeTableViewDelegate()
-    let messagesReceivedManager = MessagesReceivedManager()
-    let messagesSentManager = MessagesSentManager()
-    let proxiesInteractedWithManager = ProxiesInteractedWithManager()
+    private let authManager = MeAuthManager()
+    private let dataSource = MeTableViewDataSource()
+    private let delegate = MeTableViewDelegate()
+    private let messagesReceivedManager = MessagesReceivedManager()
+    private let messagesSentManager = MessagesSentManager()
+    private let proxiesInteractedWithManager = ProxiesInteractedWithManager()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         authManager.load(self)
-        setupDatasource()
-        setupDelegate()
-    }
-}
-
-private extension MeTableViewController {
-    func setupDatasource() {
-        dataSource.messagesReceivedManager = messagesReceivedManager
-        dataSource.messagesSentManager = messagesSentManager
-        dataSource.proxiesInteractedWithManager = proxiesInteractedWithManager
-        tableView.dataSource = dataSource
+        dataSource.load(messagesReceivedManager: messagesReceivedManager,
+                        messagesSentManager: messagesSentManager,
+                        proxiesInteractedWithManager: proxiesInteractedWithManager,
+                        tableView: tableView)
+        delegate.load(self)
     }
 
-    func setupDelegate() {
-        delegate.controller = self
-        tableView.delegate = delegate
+    func logIn() {
+        messagesReceivedManager.load(uid: Shared.shared.uid, tableView: tableView)
+        messagesSentManager.load(uid: Shared.shared.uid, tableView: tableView)
+        proxiesInteractedWithManager.load(uid: Shared.shared.uid, tableView: tableView)
     }
 }
