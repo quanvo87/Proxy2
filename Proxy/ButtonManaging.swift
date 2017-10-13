@@ -58,8 +58,8 @@ extension ButtonEditing {
 
 @objc protocol ButtonMaking: ButtonOwning {
     func _deleteSelectedItems()
-    func _goToMakeNewMessageVC()
     func _makeNewProxy()
+    func _showMakeNewMessageController()
     func _toggleEditMode()
 }
 
@@ -68,7 +68,7 @@ extension ButtonMaking {
         cancelButton = UIBarButtonItem.makeButton(target: self, action: #selector(_toggleEditMode), imageName: .cancel)
         confirmButton = UIBarButtonItem.makeButton(target: self, action: #selector(_deleteSelectedItems), imageName: .confirm)
         deleteButton = UIBarButtonItem.makeButton(target: self, action: #selector(_toggleEditMode), imageName: .delete)
-        makeNewMessageButton = UIBarButtonItem.makeButton(target: self, action: #selector(_goToMakeNewMessageVC), imageName: .makeNewMessage)
+        makeNewMessageButton = UIBarButtonItem.makeButton(target: self, action: #selector(_showMakeNewMessageController), imageName: .makeNewMessage)
         makeNewProxyButton = UIBarButtonItem.makeButton(target: self, action: #selector(_makeNewProxy), imageName: .makeNewProxy)
     }
 }

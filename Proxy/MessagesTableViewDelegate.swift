@@ -26,7 +26,7 @@ extension MessagesTableViewDelegate: UITableViewDelegate {
             itemsToDeleteManager?.itemsToDelete[convo.key] = convo
         } else {
             tableView.deselectRow(at: indexPath, animated: true)
-            controller?.goToConvoVC(convo)
+            controller?.showConvoController(convo)
         }
     }
 

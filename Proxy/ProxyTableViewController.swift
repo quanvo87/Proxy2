@@ -11,7 +11,7 @@ class ProxyTableViewController: UITableViewController, MakeNewMessageDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         guard let proxy = proxy else { return }
-        navigationItem.rightBarButtonItems = [UIBarButtonItem.makeButton(target: self, action: #selector(goToMakeNewMessageVC), imageName: .makeNewMessage),
+        navigationItem.rightBarButtonItems = [UIBarButtonItem.makeButton(target: self, action: #selector(showMakeNewMessageController), imageName: .makeNewMessage),
                                               UIBarButtonItem.makeButton(target: self, action: #selector(deleteProxy), imageName: .delete)]
         dataSource.load(controller: self, convosManager: convosManager, proxyManager: proxyManager)
         delegate.load(controller: self, manager: convosManager)
@@ -27,7 +27,7 @@ class ProxyTableViewController: UITableViewController, MakeNewMessageDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         if let newConvo = newConvo {
-            goToConvoVC(newConvo)
+            showConvoController(newConvo)
             self.newConvo = nil
         }
     }
@@ -45,7 +45,7 @@ private extension ProxyTableViewController {
         present(alert, animated: true)
     }
 
-    @objc func goToMakeNewMessageVC() {
-        goToMakeNewMessageVC(proxy)
+    @objc func showMakeNewMessageController() {
+        showMakeNewMessageController(proxy)
     }
 }

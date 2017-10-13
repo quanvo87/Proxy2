@@ -39,10 +39,6 @@ class MessagesButtonManager: ButtonManaging {
         controller?.present(alert, animated: true)
     }
     
-    func _goToMakeNewMessageVC() {
-        controller?.goToMakeNewMessageVC()
-    }
-    
     func _makeNewProxy() {
         navigationItem?.toggleRightBarButtonItem(atIndex: 1)
         DBProxy.makeProxy { (result) in
@@ -65,5 +61,9 @@ class MessagesButtonManager: ButtonManaging {
     
     func _toggleEditMode() {
         toggleEditMode()
+    }
+
+    func _showMakeNewMessageController() {
+        controller?.showMakeNewMessageController()
     }
 }

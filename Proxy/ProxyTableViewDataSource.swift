@@ -35,7 +35,7 @@ extension ProxyTableViewDataSource: UITableViewDataSource {
                     return tableView.dequeueReusableCell(withIdentifier: Identifier.senderProxyTableViewCell, for: indexPath)
             }
             cell.configure(proxy)
-            cell.changeIconButton.addTarget(self, action: #selector(goToIconPickerVC), for: .touchUpInside)
+            cell.changeIconButton.addTarget(self, action: #selector(showIconPickerController), for: .touchUpInside)
             cell.nicknameButton.addTarget(self, action: #selector(editNickname), for: .touchUpInside)
             return cell
         case 1:
@@ -89,7 +89,7 @@ private extension ProxyTableViewDataSource {
         controller?.present(alert, animated: true, completion: nil)
     }
 
-    @objc func goToIconPickerVC() {
+    @objc func showIconPickerController() {
         guard
             let proxy = proxy,
             let iconPickerCollectionViewController = controller?.storyboard?.instantiateViewController(withIdentifier: Identifier.iconPickerCollectionViewController) as? IconPickerCollectionViewController else {

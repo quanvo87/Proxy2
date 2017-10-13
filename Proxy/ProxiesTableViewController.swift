@@ -23,7 +23,7 @@ class ProxiesTableViewController: UITableViewController, MakeNewMessageDelegate 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         if let newConvo = newConvo {
-            goToConvoVC(newConvo)
+            showConvoController(newConvo)
             self.newConvo = nil
         }
     }

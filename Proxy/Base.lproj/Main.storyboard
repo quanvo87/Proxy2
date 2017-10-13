@@ -691,7 +691,7 @@
                                 <rect key="frame" x="65" y="24" width="96" height="30"/>
                                 <state key="normal" title="Pick A Sender"/>
                                 <connections>
-                                    <action selector="showSenderPicker" destination="hJ2-7r-RNJ" eventType="touchUpInside" id="vUQ-fG-c8Y"/>
+                                    <action selector="showSenderPickerController" destination="hJ2-7r-RNJ" eventType="touchUpInside" id="vUQ-fG-c8Y"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="D4A-fT-4Nv" userLabel="New Proxy Button">
@@ -711,7 +711,7 @@
                                 <rect key="frame" x="65" y="67" width="106" height="30"/>
                                 <state key="normal" title="Pick A Receiver"/>
                                 <connections>
-                                    <action selector="showReceiverPicker" destination="hJ2-7r-RNJ" eventType="touchUpInside" id="hpX-a8-i8D"/>
+                                    <action selector="showReceiverPickerAlert" destination="hJ2-7r-RNJ" eventType="touchUpInside" id="hpX-a8-i8D"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Message:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IGm-Gk-l0I">
