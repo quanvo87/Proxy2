@@ -4,8 +4,6 @@ import UIKit
 class LoginVideoPlayer {
     private var player = AVPlayer()
 
-    init() {}
-
     func play(_ view: UIView) {
         let videos = ["arabiangulf", "beachpalm", "dragontailzipline", "hawaiiancoast"]
         let random = Int(arc4random_uniform(UInt32(videos.count)))

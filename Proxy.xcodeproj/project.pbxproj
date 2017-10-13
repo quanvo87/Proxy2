@@ -75,7 +75,7 @@
 		5973C8691F608A2200647492 /* loadProxyNameNouns.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8361F608A1F00647492 /* loadProxyNameNouns.swift */; };
 		5973C86A1F608A2200647492 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8371F608A1F00647492 /* Message.swift */; };
 		5973C86B1F608A2200647492 /* Convo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8381F608A1F00647492 /* Convo.swift */; };
-		5973C86C1F608A2200647492 /* LoginManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8391F608A1F00647492 /* LoginManager.swift */; };
+		5973C86C1F608A2200647492 /* LoginService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8391F608A1F00647492 /* LoginService.swift */; };
 		5973C86E1F608A2200647492 /* DBMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C83B1F608A2000647492 /* DBMessage.swift */; };
 		5973C86F1F608A2200647492 /* UnreadCountObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C83C1F608A2000647492 /* UnreadCountObserver.swift */; };
 		5973C8701F608A2200647492 /* ConvosObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C83D1F608A2000647492 /* ConvosObserver.swift */; };
@@ -214,7 +214,7 @@
 		5973C8361F608A1F00647492 /* loadProxyNameNouns.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = loadProxyNameNouns.swift; sourceTree = "<group>"; };
 		5973C8371F608A1F00647492 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		5973C8381F608A1F00647492 /* Convo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Convo.swift; sourceTree = "<group>"; };
-		5973C8391F608A1F00647492 /* LoginManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginManager.swift; sourceTree = "<group>"; };
+		5973C8391F608A1F00647492 /* LoginService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginService.swift; sourceTree = "<group>"; };
 		5973C83B1F608A2000647492 /* DBMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBMessage.swift; sourceTree = "<group>"; };
 		5973C83C1F608A2000647492 /* UnreadCountObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnreadCountObserver.swift; sourceTree = "<group>"; };
 		5973C83D1F608A2000647492 /* ConvosObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvosObserver.swift; sourceTree = "<group>"; };
@@ -437,7 +437,7 @@
 		59B5007F1F6A49D8002D4C29 /* Login */ = {
 			isa = PBXGroup;
 			children = (
-				5973C8391F608A1F00647492 /* LoginManager.swift */,
+				5973C8391F608A1F00647492 /* LoginService.swift */,
 				5973C8191F608A1B00647492 /* LoginVideoPlayer.swift */,
 			);
 			name = Login;
@@ -1017,7 +1017,7 @@
 				59D7B7DD1F8707630082599A /* SenderNicknameManaging.swift in Sources */,
 				5973C86A1F608A2200647492 /* Message.swift in Sources */,
 				5973C8691F608A2200647492 /* loadProxyNameNouns.swift in Sources */,
-				5973C86C1F608A2200647492 /* LoginManager.swift in Sources */,
+				5973C86C1F608A2200647492 /* LoginService.swift in Sources */,
 				5973C8761F608A2200647492 /* MeTableViewController.swift in Sources */,
 				59033F0C1F83BFD100F3062D /* ProxyManaging.swift in Sources */,
 				5973C8601F608A2200647492 /* MeTableViewCell.swift in Sources */,

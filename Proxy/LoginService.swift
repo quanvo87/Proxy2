@@ -2,11 +2,11 @@ import FacebookLogin
 import FBSDKCoreKit
 import FirebaseAuth
 
-struct LoginManager {
+struct LoginService {
     private static let auth = Auth.auth()
 }
 
-extension LoginManager {
+extension LoginService {
     static func emailLogin(email: String?, password: String?, completion: @escaping (Error?) -> Void) {
         guard
             let email = email, email != "",
@@ -41,7 +41,7 @@ extension LoginManager {
     }
 }
 
-extension LoginManager {
+extension LoginService {
     static func facebookLogin(viewController: UIViewController, completion: @escaping (Error?) -> Void) {
         let loginManager = FacebookLogin.LoginManager()
         loginManager.logIn([.publicProfile], viewController: viewController) { (loginResult) in
@@ -60,7 +60,7 @@ extension LoginManager {
     }
 }
 
-private extension LoginManager {
+private extension LoginService {
     static func finishLogin(user: User?, error: Error?, completion: (Error?) -> Void) {
         if let user = user {
             Shared.shared.uid = user.uid
