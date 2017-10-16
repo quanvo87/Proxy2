@@ -1,3 +1,3 @@
 protocol UnreadCountManaging: class {
-    func setUnreadCount(_ count: Int?)
+    var unreadCount: Int? { get set }
 }

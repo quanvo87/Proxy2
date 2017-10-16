@@ -1,21 +1,25 @@
 import UIKit
 
 class ProxyTableViewDataSource: NSObject {
-    weak var controller: ProxyTableViewController?
+    private weak var controller: UITableViewController?
+    private weak var convosManager: ConvosManaging?
+    private weak var proxyManager: ProxyManaging?
 
-    func load(_ controller: ProxyTableViewController) {
+    func load(controller: UITableViewController, convosManager: ConvosManaging, proxyManager: ProxyManaging) {
         self.controller = controller
+        self.convosManager = convosManager
+        self.proxyManager = proxyManager
         controller.tableView.dataSource = self
     }
 }
 
 extension ProxyTableViewDataSource: UITableViewDataSource {
     var convos: [Convo] {
-        return controller?.convosManager.convos ?? []
+        return convosManager?.convos ?? []
     }
 
     var proxy: Proxy? {
-        return controller?.proxyManager.proxy
+        return proxyManager?.proxy
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -31,7 +35,7 @@ extension ProxyTableViewDataSource: UITableViewDataSource {
                     return tableView.dequeueReusableCell(withIdentifier: Identifier.senderProxyTableViewCell, for: indexPath)
             }
             cell.configure(proxy)
-            cell.changeIconButton.addTarget(self, action: #selector(goToIconPickerVC), for: .touchUpInside)
+            cell.changeIconButton.addTarget(self, action: #selector(showIconPickerController), for: .touchUpInside)
             cell.nicknameButton.addTarget(self, action: #selector(editNickname), for: .touchUpInside)
             return cell
         case 1:
@@ -85,7 +89,7 @@ private extension ProxyTableViewDataSource {
         controller?.present(alert, animated: true, completion: nil)
     }
 
-    @objc func goToIconPickerVC() {
+    @objc func showIconPickerController() {
         guard
             let proxy = proxy,
             let iconPickerCollectionViewController = controller?.storyboard?.instantiateViewController(withIdentifier: Identifier.iconPickerCollectionViewController) as? IconPickerCollectionViewController else {

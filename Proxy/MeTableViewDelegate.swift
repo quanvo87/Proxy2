@@ -2,9 +2,9 @@ import FirebaseAuth
 import UIKit
 
 class MeTableViewDelegate: NSObject {
-    weak var controller: MeTableViewController?
+    private weak var controller: UITableViewController?
 
-    func load(_ controller: MeTableViewController) {
+    func load(_ controller: UITableViewController) {
         self.controller = controller
         controller.tableView.delegate = self
     }

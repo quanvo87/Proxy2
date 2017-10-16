@@ -63,8 +63,19 @@ class ConvoViewController: JSQMessagesViewController {
         collectionView?.collectionViewLayout.outgoingAvatarViewSize = CGSize(width: kJSQMessagesCollectionViewAvatarSizeDefault, height: kJSQMessagesCollectionViewAvatarSizeDefault)
         collectionView.contentInset.bottom = 0
 
-        convoIconsManager.load(collectionView: collectionView, convo: convo)
-        convoNicknamesManager.load(collectionView: collectionView, convo: convo, navigationItem: navigationItem)
+        convoIconsManager.load(receiverId: convo.receiverId,
+                               receiverProxyKey: convo.receiverProxyKey,
+                               senderId: convo.senderId,
+                               senderProxyKey: convo.senderProxyKey,
+                               collectionView: collectionView)
+
+        convoNicknamesManager.load(receiverId: convo.receiverId,
+                                   receiverProxyName: convo.receiverProxyName,
+                                   senderId: convo.senderId,
+                                   senderProxyName: convo.senderProxyName,
+                                   key: convo.key,
+                                   collectionView: collectionView,
+                                   navigationItem: navigationItem)
 
         navigationController?.view.backgroundColor = UIColor.white
         navigationItem.rightBarButtonItem = UIBarButtonItem.makeButton(target: self, action: #selector(showConvoInfoTableViewController), imageName: .info)

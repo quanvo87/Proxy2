@@ -1,12 +1,17 @@
 import UIKit
 
 class ConvosManager: ConvosManaging {
-    let observer = ConvosObserver()
-    weak var tableView: UITableView?
-    var convos = [Convo]() { didSet { tableView?.reloadData() } }
+    private let observer = ConvosObserver()
+    private weak var tableView: UITableView?
 
-    func load(convosOwner owner: String, tableView: UITableView) {
+    var convos = [Convo]() {
+        didSet {
+            tableView?.reloadData()
+        }
+    }
+    
+    func load(convosOwner: String, tableView: UITableView) {
         self.tableView = tableView
-        observer.observe(convosOwner: owner, manager: self)
+        observer.observe(convosOwner: convosOwner, manager: self)
     }
 }

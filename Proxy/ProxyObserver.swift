@@ -1,13 +1,12 @@
 import FirebaseDatabase
-import UIKit
 
 class ProxyObserver: ReferenceObserving {
-    var handle: DatabaseHandle?
-    var ref: DatabaseReference?
+    private (set) var handle: DatabaseHandle?
+    private (set) var ref: DatabaseReference?
 
-    func observe(manager: ProxyManaging, proxy: Proxy) {
+    func observe(ownerId: String, key: String, manager: ProxyManaging) {
         stopObserving()
-        ref = DB.makeReference(Child.proxies, proxy.ownerId, proxy.key)
+        ref = DB.makeReference(Child.proxies, ownerId, key)
         handle = ref?.observe(.value, with: { [weak manager = manager] (data) in
             guard let proxy = Proxy(data) else { return }
             manager?.proxy = proxy

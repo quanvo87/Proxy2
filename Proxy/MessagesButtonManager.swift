@@ -7,13 +7,13 @@ class MessagesButtonManager: ButtonManaging {
     var makeNewMessageButton = UIBarButtonItem()
     var makeNewProxyButton = UIBarButtonItem()
     var itemsToDeleteManager: ItemsToDeleteManaging?
-    weak var controller: MessagesTableViewController?
     weak var navigationItem: UINavigationItem?
     weak var tableView: UITableView?
-    
-    func load(_ controller: MessagesTableViewController) {
+    private weak var controller: MessagesTableViewController?
+
+    func load(controller: MessagesTableViewController, itemsToDeleteManager: ItemsToDeleteManager) {
         self.controller = controller
-        itemsToDeleteManager = ItemsToDeleteManager()
+        self.itemsToDeleteManager = itemsToDeleteManager
         navigationItem = controller.navigationItem
         tableView = controller.tableView
         makeButtons()
@@ -21,14 +21,13 @@ class MessagesButtonManager: ButtonManaging {
     }
     
     func _deleteSelectedItems() {
-        guard let itemsToDelete = itemsToDeleteManager?.itemsToDelete else { return }
-        if itemsToDelete.isEmpty {
+        if itemsToDeleteManager?.itemsToDelete.isEmpty ?? true {
             toggleEditMode()
             return
         }
         let alert = UIAlertController(title: "Leave Conversations?", message: "This will not delete the conversation.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Leave", style: .destructive) { _ in
-            for (_, item) in itemsToDelete {
+            for (_, item) in self.itemsToDeleteManager?.itemsToDelete ?? [:] {
                 guard let convo = item as? Convo else { return }
                 DBConvo.leaveConvo(convo) { _ in }
             }
@@ -40,14 +39,10 @@ class MessagesButtonManager: ButtonManaging {
         controller?.present(alert, animated: true)
     }
     
-    func _goToMakeNewMessageVC() {
-        controller?.goToMakeNewMessageVC()
-    }
-    
     func _makeNewProxy() {
-        controller?.navigationItem.toggleRightBarButtonItem(atIndex: 1)
+        navigationItem?.toggleRightBarButtonItem(atIndex: 1)
         DBProxy.makeProxy { (result) in
-            self.controller?.navigationItem.toggleRightBarButtonItem(atIndex: 1)
+            self.navigationItem?.toggleRightBarButtonItem(atIndex: 1)
             switch result {
             case .failure(let error):
                 self.controller?.showAlert("Error Creating Proxy", message: error.description)
@@ -66,5 +61,9 @@ class MessagesButtonManager: ButtonManaging {
     
     func _toggleEditMode() {
         toggleEditMode()
+    }
+
+    func _showMakeNewMessageController() {
+        controller?.showMakeNewMessageController()
     }
 }

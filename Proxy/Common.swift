@@ -36,11 +36,11 @@ extension Int {
 }
 
 extension MakeNewMessageDelegate where Self: UIViewController {
-    func goToMakeNewMessageVC(_ sender: Proxy? = nil) {
-        guard let makeNewMessageVC = self.storyboard?.instantiateViewController(withIdentifier: Identifier.makeNewMessageViewController) as? MakeNewMessageViewController else { return }
-        makeNewMessageVC.delegate = self
-        makeNewMessageVC.sender = sender
-        let navigationController = UINavigationController(rootViewController: makeNewMessageVC)
+    func showMakeNewMessageController(_ sender: Proxy? = nil) {
+        guard let makeNewMessageController = storyboard?.instantiateViewController(withIdentifier: Identifier.makeNewMessageViewController) as? MakeNewMessageViewController else { return }
+        makeNewMessageController.delegate = self
+        makeNewMessageController.sender = sender
+        let navigationController = UINavigationController(rootViewController: makeNewMessageController)
         present(navigationController, animated: true)
     }
 }
@@ -91,14 +91,6 @@ extension UInt {
     }
 }
 
-extension UITableViewController {
-    func goToConvoVC(_ convo: Convo) {
-        guard let convoVC = storyboard?.instantiateViewController(withIdentifier: Identifier.convoViewController) as? ConvoViewController else { return }
-        convoVC.convo = convo
-        navigationController?.pushViewController(convoVC, animated: true)
-    }
-}
-
 extension UINavigationItem {
     func toggleRightBarButtonItem(atIndex index: Int) {
         if let item = self.rightBarButtonItems?[safe: index] {
@@ -108,6 +100,12 @@ extension UINavigationItem {
 }
 
 extension UIViewController {
+    func showConvoController(_ convo: Convo) {
+        guard let convoViewController = storyboard?.instantiateViewController(withIdentifier: Identifier.convoViewController) as? ConvoViewController else { return }
+        convoViewController.convo = convo
+        navigationController?.pushViewController(convoViewController, animated: true)
+    }
+
     func showAlert(_ title: String?, message: String?) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))

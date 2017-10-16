@@ -13,10 +13,10 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate, Sender
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationItem.title = "New Message"
+        navigationItem.rightBarButtonItem = UIBarButtonItem.makeButton(target: self, action: #selector(cancelMakingNewMessage), imageName: .cancel)
         messageTextView.becomeFirstResponder()
         messageTextView.delegate = self
-        navigationItem.rightBarButtonItem = UIBarButtonItem.makeButton(target: self, action: #selector(cancelMakingNewMessage), imageName: .cancel)
-        navigationItem.title = "New Message"
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: view.window)
         setSenderButtonTitle()
     }
@@ -44,12 +44,6 @@ extension MakeNewMessageViewController {
 }
 
 private extension MakeNewMessageViewController {
-    @IBAction func goToSenderPickerVC() {
-        guard let senderPickerVC = storyboard?.instantiateViewController(withIdentifier: Identifier.senderPickerTableViewController) as? SenderPickerTableViewController else { return }
-        senderPickerVC.senderPickerDelegate = self
-        navigationController?.pushViewController(senderPickerVC, animated: true)
-    }
-
     @IBAction func makeNewProxy() {
         disableButtons()
         DBProxy.makeProxy { (result) in
@@ -71,6 +65,7 @@ private extension MakeNewMessageViewController {
         DBMessage.sendMessage(from: sender, to: receiver, withText: messageTextView.text) { (result) in
             guard let (_, convo) = result else {
                 self.enableButtons()
+                self.showAlert("Error Sending Message", message: "There was an error sending the message. Please try again.")
                 return
             }
             self.delegate?.newConvo = convo
@@ -81,6 +76,12 @@ private extension MakeNewMessageViewController {
     @IBAction func showReceiverPickerAlert() {
         let receiverPicker = ReceiverPicker()
         receiverPicker.load(self)
+    }
+
+    @IBAction func showSenderPickerController() {
+        guard let senderPicker = storyboard?.instantiateViewController(withIdentifier: Identifier.senderPickerTableViewController) as? SenderPickerTableViewController else { return }
+        senderPicker.senderPickerDelegate = self
+        navigationController?.pushViewController(senderPicker, animated: true)
     }
 }
 

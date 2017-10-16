@@ -7,63 +7,64 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var signUpButton: UIButton!
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
-
-    private var player = LoginVideoPlayer()
+    private let player = LoginVideoPlayer()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         player.play(view)
+        setup(button: facebookButton)
+        setup(button: loginButton)
+        setup(button: signUpButton)
         emailTextField.clearButtonMode = .whileEditing
         passwordTextField.clearButtonMode = .whileEditing
         passwordTextField.isSecureTextEntry = true
-        facebookButton.setupForLogin()
-        loginButton.setupForLogin()
-        signUpButton.setupForLogin()
     }
 
     @IBAction func login(_ sender: AnyObject) {
-        LoginManager.emailLogin(email: emailTextField.text?.lowercased(), password: passwordTextField.text) { (error) in
+        LoginService.emailLogin(email: emailTextField.text?.lowercased(), password: passwordTextField.text) { (error) in
             if let error = error {
                 self.showAlert("Error Logging In", message: error.description)
                 return
             }
-            self.goToHomeScreen()
+            self.showHome()
         }
     }
 
     @IBAction func signUp(_ sender: AnyObject) {
-        LoginManager.emailSignUp(email: emailTextField.text?.lowercased(), password: passwordTextField.text) { (error) in
+        LoginService.emailSignUp(email: emailTextField.text?.lowercased(), password: passwordTextField.text) { (error) in
             if let error = error {
                 self.showAlert("Error Signing Up", message: error.description)
                 return
             }
-            self.goToHomeScreen()
+            self.showHome()
         }
     }
 
     @IBAction func loginWithFacebook(_ sender: AnyObject) {
-        LoginManager.facebookLogin(viewController: self) { (error) in
+        LoginService.facebookLogin(viewController: self) { (error) in
             if let error = error {
                 self.showAlert("Error Logging In With Facebook", message: error.description)
                 return
             }
-            self.goToHomeScreen()
-        }
-    }
-
-    func goToHomeScreen() {
-        if  let tabBarController = storyboard?.instantiateViewController(withIdentifier: Identifier.tabBarController) as? UITabBarController,
-            let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-            appDelegate.window?.rootViewController = tabBarController
+            self.showHome()
         }
     }
 }
 
-private extension UIButton {
-    func setupForLogin() {
-        self.layer.borderColor = UIColor.white.cgColor
-        self.layer.borderWidth = 1
-        self.layer.cornerRadius = 5
-        self.setTitleColor(UIColor.white, for: UIControlState())
+private extension LoginViewController {
+    func showHome() {
+        guard
+            let delegate = UIApplication.shared.delegate as? AppDelegate,
+            let controller = storyboard?.instantiateViewController(withIdentifier: Identifier.tabBarController) as? UITabBarController else {
+                return
+        }
+        delegate.window?.rootViewController = controller
+    }
+
+    func setup(button: UIButton) {
+        button.layer.borderColor = UIColor.white.cgColor
+        button.layer.borderWidth = 1
+        button.layer.cornerRadius = 5
+        button.setTitleColor(UIColor.white, for: UIControlState())
     }
 }

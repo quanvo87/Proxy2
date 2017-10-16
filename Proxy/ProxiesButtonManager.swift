@@ -7,13 +7,15 @@ class ProxiesButtonManager: ButtonManaging {
     var makeNewMessageButton = UIBarButtonItem()
     var makeNewProxyButton = UIBarButtonItem()
     var itemsToDeleteManager: ItemsToDeleteManaging?
-    weak var controller: ProxiesTableViewController?
     weak var navigationItem: UINavigationItem?
     weak var tableView: UITableView?
+    private weak var controller: ProxiesTableViewController?
+    private weak var proxiesManager: ProxiesManager?
 
-    func load(_ controller: ProxiesTableViewController) {
+    func load(controller: ProxiesTableViewController, itemsToDeleteManager: ItemsToDeleteManaging, proxiesManager: ProxiesManager) {
         self.controller = controller
-        itemsToDeleteManager = ItemsToDeleteManager()
+        self.itemsToDeleteManager = itemsToDeleteManager
+        self.proxiesManager = proxiesManager
         navigationItem = controller.navigationItem
         tableView = controller.tableView
         makeButtons()
@@ -21,8 +23,7 @@ class ProxiesButtonManager: ButtonManaging {
     }
 
     func _deleteSelectedItems() {
-        guard let itemsToDelete = itemsToDeleteManager?.itemsToDelete else { return }
-        if itemsToDelete.isEmpty {
+        if itemsToDeleteManager?.itemsToDelete.isEmpty ?? true {
             toggleEditMode()
             return
         }
@@ -30,9 +31,9 @@ class ProxiesButtonManager: ButtonManaging {
         alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
             guard let controller = self.controller else { return }
             self.disableButtons()
-            controller.proxiesManager.observer.stopObserving()
+            self.proxiesManager?.stopObserving()
             let key = AsyncWorkGroupKey()
-            for (_, item) in itemsToDelete {
+            for (_, item) in self.itemsToDeleteManager?.itemsToDelete ?? [:] {
                 guard let proxy = item as? Proxy else { return }
                 key.startWork()
                 DBProxy.deleteProxy(proxy) { _ in
@@ -45,15 +46,11 @@ class ProxiesButtonManager: ButtonManaging {
             key.notify {
                 key.finishWorkGroup()
                 self.enableButtons()
-                controller.proxiesManager.observer.observe(controller.proxiesManager)
+                self.proxiesManager?.load(uid: Shared.shared.uid, tableView: controller.tableView)
             }
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         controller?.present(alert, animated: true)
-    }
-
-    func _goToMakeNewMessageVC() {
-        controller?.goToMakeNewMessageVC()
     }
 
     func _makeNewProxy() {
@@ -69,6 +66,10 @@ class ProxiesButtonManager: ButtonManaging {
         }
     }
 
+    func _showMakeNewMessageController() {
+        controller?.showMakeNewMessageController()
+    }
+    
     func _toggleEditMode() {
         toggleEditMode()
     }

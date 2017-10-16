@@ -1,12 +1,21 @@
 import UIKit
 
 class MessagesTableViewDelegate: NSObject {
-    weak var controller: MessagesTableViewController?
+    private weak var controller: UITableViewController?
+    private weak var convosManager: ConvosManaging?
+    private weak var itemsToDeleteManager: ItemsToDeleteManaging?
+
+    func load(controller: UITableViewController, convosManager: ConvosManaging, itemsToDeleteManager: ItemsToDeleteManaging) {
+        self.controller = controller
+        self.convosManager = convosManager
+        self.itemsToDeleteManager = itemsToDeleteManager
+        controller.tableView.delegate = self
+    }
 }
 
 extension MessagesTableViewDelegate: UITableViewDelegate {
     var convos: [Convo] {
-        return controller?.convosManager.convos ?? []
+        return convosManager?.convos ?? []
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -14,10 +23,10 @@ extension MessagesTableViewDelegate: UITableViewDelegate {
             return
         }
         if tableView.isEditing {
-            controller?.buttonManager.itemsToDeleteManager?.itemsToDelete[convo.key] = convo
+            itemsToDeleteManager?.itemsToDelete[convo.key] = convo
         } else {
             tableView.deselectRow(at: indexPath, animated: true)
-            controller?.goToConvoVC(convo)
+            controller?.showConvoController(convo)
         }
     }
 
@@ -27,7 +36,7 @@ extension MessagesTableViewDelegate: UITableViewDelegate {
             let convo = convos[safe: indexPath.row] else {
                 return
         }
-        controller?.buttonManager.itemsToDeleteManager?.itemsToDelete.removeValue(forKey: convo.key)
+        itemsToDeleteManager?.itemsToDelete.removeValue(forKey: convo.key)
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

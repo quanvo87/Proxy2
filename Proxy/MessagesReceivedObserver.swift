@@ -1,11 +1,10 @@
 import FirebaseDatabase
 
 class MessagesReceivedObserver: ReferenceObserving {
-    var handle: DatabaseHandle?
-    var ref: DatabaseReference?
-    weak var manager: MessagesReceivedManaging?
+    private (set) var handle: DatabaseHandle?
+    private (set) var ref: DatabaseReference?
 
-    func observe(manager: MessagesReceivedManaging, uid: String) {
+    func observe(uid: String, manager: MessagesReceivedManaging) {
         stopObserving()
         ref = DB.makeReference(Child.userInfo, uid, IncrementableUserProperty.messagesReceived.rawValue)
         handle = ref?.observe(.value, with: { [weak manager = manager] (data) in

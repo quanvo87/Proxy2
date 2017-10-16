@@ -1,3 +1,3 @@
 class ItemsToDeleteManager: ItemsToDeleteManaging {
-    var itemsToDelete = [String: Any]()
+    var itemsToDelete = [String : Any]()
 }

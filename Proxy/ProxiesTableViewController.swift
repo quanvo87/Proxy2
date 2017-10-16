@@ -1,19 +1,20 @@
 import UIKit
 
 class ProxiesTableViewController: UITableViewController, MakeNewMessageDelegate {
-    let buttonManager = ProxiesButtonManager()
-    let dataSource = ProxiesTableViewDataSource()
-    let delegate = ProxiesTableViewDelegate()
-    let proxiesManager = ProxiesManager()
+    private let dataSource = ProxiesTableViewDataSource()
+    private let delegate = ProxiesTableViewDelegate()
+    private let buttonManager = ProxiesButtonManager()
+    private let itemsToDeleteManager = ItemsToDeleteManager()
+    private let proxiesManager = ProxiesManager()
     var newConvo: Convo?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        buttonManager.load(self)
-        dataSource.load(manager: proxiesManager, tableView: tableView, showDisclosureIndicator: true)
-        delegate.load(self)
         navigationItem.title = "Proxies"
-        proxiesManager.load(tableView)
+        dataSource.load(manager: proxiesManager, showDisclosureIndicator: true, tableView: tableView)
+        delegate.load(controller: self, itemsToDeleteManager: itemsToDeleteManager, proxiesManager: proxiesManager)
+        buttonManager.load(controller: self, itemsToDeleteManager: itemsToDeleteManager, proxiesManager: proxiesManager)
+        proxiesManager.load(uid: Shared.shared.uid, tableView: tableView)
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.rowHeight = 60
         tableView.separatorStyle = .none
@@ -22,7 +23,7 @@ class ProxiesTableViewController: UITableViewController, MakeNewMessageDelegate 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         if let newConvo = newConvo {
-            goToConvoVC(newConvo)
+            showConvoController(newConvo)
             self.newConvo = nil
         }
     }

@@ -1,12 +1,17 @@
 import UIKit
 
 class ProxiesInteractedWithManager: ProxiesInteractedWithManaging {
-    let observer = ProxiesInteractedWithObserver()
-    weak var tableView: UITableView?
-    var proxiesInteractedWithCount = "-" { didSet { tableView?.reloadData() } }
+    private let observer = ProxiesInteractedWithObserver()
+    private weak var tableView: UITableView?
 
-    func load(tableView: UITableView, uid: String) {
+    var proxiesInteractedWithCount = "-" {
+        didSet {
+            tableView?.reloadData()
+        }
+    }
+    
+    func load(uid: String, tableView: UITableView) {
         self.tableView = tableView
-        observer.observe(manager: self, uid: uid)
+        observer.observe(uid: uid, manager: self)
     }
 }

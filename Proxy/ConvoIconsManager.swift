@@ -1,17 +1,11 @@
 import JSQMessagesViewController
 
 class ConvoIconsManager: ConvoIconsManaging {
-    let receiverIconObserver = ReceiverIconObserver()
-    let senderIconObserver = SenderIconObserver()
-    var convo: Convo?
-    weak var collectionView: UICollectionView?
-
-    func load(collectionView: UICollectionView, convo: Convo) {
-        self.collectionView = collectionView
-        self.convo = convo
-        receiverIconObserver.observe(convo: convo, manager: self)
-        senderIconObserver.observe(convo: convo, manager: self)
-    }
+    private let receiverIconObserver = ReceiverIconObserver()
+    private let senderIconObserver = SenderIconObserver()
+    private var receiverId = String()
+    private var senderId = String()
+    private weak var collectionView: UICollectionView?
 
     var icons = [String : JSQMessagesAvatarImage]() {
         didSet {
@@ -23,21 +17,31 @@ class ConvoIconsManager: ConvoIconsManaging {
 
     var receiverIcon = String() {
         didSet {
-            guard let receiverId = convo?.receiverId else { return }
             UIImage.makeImage(named: receiverIcon) { (image) in
                 guard let image = image else { return }
-                self.icons[receiverId] = JSQMessagesAvatarImage(placeholder: image)
+                self.icons[self.receiverId] = JSQMessagesAvatarImage(placeholder: image)
             }
         }
     }
 
     var senderIcon = String() {
         didSet {
-            guard let senderId = convo?.senderId else { return }
             UIImage.makeImage(named: senderIcon) { (image) in
                 guard let image = image else { return }
-                self.icons[senderId] = JSQMessagesAvatarImage(placeholder: image)
+                self.icons[self.senderId] = JSQMessagesAvatarImage(placeholder: image)
             }
         }
+    }
+
+    func load(receiverId: String,
+              receiverProxyKey: String,
+              senderId: String,
+              senderProxyKey: String,
+              collectionView: UICollectionView) {
+        self.receiverId = receiverId
+        self.senderId = senderId
+        self.collectionView = collectionView
+        receiverIconObserver.observe(receiverOwnerId: receiverId, receiverProxyKey: receiverProxyKey, manager: self)
+        senderIconObserver.observe(senderOwnerId: senderId, senderProxyKey: senderProxyKey, manager: self)
     }
 }
