@@ -1,3 +1,4 @@
+import FirebaseAuth
 import UIKit
 
 typealias Success = Bool
@@ -5,6 +6,12 @@ typealias Success = Bool
 enum Result<T, Error> {
     case success(T)
     case failure(Error)
+}
+
+extension Auth {
+    static let auth: Auth = {
+        Auth.auth()
+    }()
 }
 
 // https://stackoverflow.com/questions/25329186/safe-bounds-checked-array-lookup-in-swift-through-optional-bindings

@@ -52,8 +52,8 @@ struct DBProxy {
         }
     }
 
-    static func fixConvoCounts(forUser user: String = Shared.shared.uid, completion: @escaping (Success) -> Void) {
-        DBProxy.getProxies(forUser: user) { (proxies) in
+    static func fixConvoCounts(uid: String, completion: @escaping (Success) -> Void) {
+        DBProxy.getProxies(forUser: uid) { (proxies) in
             guard let proxies = proxies else {
                 completion(false)
                 return
@@ -122,7 +122,7 @@ struct DBProxy {
         })
     }
 
-    static func makeProxy(withName specificName: String? = nil, forUser uid: String = Shared.shared.uid, maxAllowedProxies: UInt = Setting.maxAllowedProxies, completion: @escaping MakeProxyCallback) {
+    static func makeProxy(withName specificName: String? = nil, forUser uid: String, maxAllowedProxies: UInt = Setting.maxAllowedProxies, completion: @escaping MakeProxyCallback) {
         getProxyCount(forUser: uid) { (proxyCount) in
             guard proxyCount < maxAllowedProxies else {
                 completion(.failure(.proxyLimitReached))
@@ -138,7 +138,7 @@ struct DBProxy {
         completion(result)
     }
 
-    private static func makeProxyHelper(withName specificName: String? = nil, forUser uid: String = Shared.shared.uid, completion: @escaping MakeProxyCallback) {
+    private static func makeProxyHelper(withName specificName: String? = nil, forUser uid: String, completion: @escaping MakeProxyCallback) {
         guard let proxyKeysRef = DB.makeReference(Child.proxyKeys) else {
             makeProxyDone(result: .failure(.unknown), completion: completion)
             return

@@ -23,7 +23,7 @@ class LoginVideoPlayer {
 
         player.play()
 
-        NotificationCenter.default.addObserver(self, selector: #selector(LoginVideoPlayer.loopVideo), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(loopVideo), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
     }
 
     deinit {

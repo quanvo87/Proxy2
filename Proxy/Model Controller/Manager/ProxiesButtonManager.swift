@@ -9,13 +9,15 @@ class ProxiesButtonManager: ButtonManaging {
     var itemsToDeleteManager: ItemsToDeleteManaging?
     weak var navigationItem: UINavigationItem?
     weak var tableView: UITableView?
+    private var uid = String()
     private weak var controller: ProxiesTableViewController?
     private weak var proxiesManager: ProxiesManager?
 
-    func load(controller: ProxiesTableViewController, itemsToDeleteManager: ItemsToDeleteManaging, proxiesManager: ProxiesManager) {
+    func load(controller: ProxiesTableViewController, itemsToDeleteManager: ItemsToDeleteManaging, proxiesManager: ProxiesManager, uid: String) {
         self.controller = controller
         self.itemsToDeleteManager = itemsToDeleteManager
         self.proxiesManager = proxiesManager
+        self.uid = uid
         navigationItem = controller.navigationItem
         tableView = controller.tableView
         makeButtons()
@@ -46,7 +48,7 @@ class ProxiesButtonManager: ButtonManaging {
             key.notify {
                 key.finishWorkGroup()
                 self.enableButtons()
-                self.proxiesManager?.load(uid: Shared.shared.uid, tableView: controller.tableView)
+                self.proxiesManager?.load(uid: self.uid, tableView: controller.tableView)
             }
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
@@ -55,7 +57,7 @@ class ProxiesButtonManager: ButtonManaging {
 
     func _makeNewProxy() {
         controller?.navigationItem.toggleRightBarButtonItem(atIndex: 1)
-        DBProxy.makeProxy { (result) in
+        DBProxy.makeProxy(forUser: uid) { (result) in
             self.controller?.navigationItem.toggleRightBarButtonItem(atIndex: 1)
             switch result {
             case .failure(let error):

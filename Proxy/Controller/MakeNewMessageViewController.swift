@@ -46,15 +46,15 @@ extension MakeNewMessageViewController {
 private extension MakeNewMessageViewController {
     @IBAction func makeNewProxy() {
         disableButtons()
-        DBProxy.makeProxy { (result) in
-            switch result {
-            case .failure(let error):
-                self.showAlert("Error Making New Proxy", message: error.description)
-                self.enableButtons()
-            case .success(let newProxy):
-                self.sender = newProxy
-            }
-        }
+//        DBProxy.makeProxy(forUser: uid) { (result) in
+//            switch result {
+//            case .failure(let error):
+//                self.showAlert("Error Making New Proxy", message: error.description)
+//                self.enableButtons()
+//            case .success(let newProxy):
+//                self.sender = newProxy
+//            }
+//        }
     }
 
     @IBAction func sendMessage() {

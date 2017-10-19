@@ -1,11 +1,12 @@
-import FirebaseAuth
 import UIKit
 
 class TabBarController: UITabBarController {
-    let user: User
+    let displayName: String
+    let uid: String
 
-    init(_ user: User) {
-        self.user = user
+    init(displayName: String, uid: String) {
+        self.displayName = displayName
+        self.uid = uid
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -15,9 +16,14 @@ class TabBarController: UITabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        let messagesController = MessagesTableViewController2(user.uid)
+
+        let messagesController = MessagesTableViewController(uid)
         messagesController.tabBarItem = UITabBarItem(title: "Messages", image: UIImage(named: "messages"), tag: 0)
-        viewControllers = [messagesController].map {
+
+        let proxiesController = ProxiesTableViewController(uid)
+        proxiesController.tabBarItem = UITabBarItem(title: "Proxies", image: UIImage(named: "proxies"), tag: 1)
+
+        viewControllers = [messagesController, proxiesController].map {
             UINavigationController(rootViewController: $0)
         }
     }

@@ -12,6 +12,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         authManager.load(self)
         window.makeKeyAndVisible()
 
+        // delete
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         window.rootViewController = storyboard.instantiateViewController(withIdentifier: Identifier.loginViewController) as! LoginViewController
 

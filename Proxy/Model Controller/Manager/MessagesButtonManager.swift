@@ -9,11 +9,13 @@ class MessagesButtonManager: ButtonManaging {
     var itemsToDeleteManager: ItemsToDeleteManaging?
     weak var navigationItem: UINavigationItem?
     weak var tableView: UITableView?
-    private weak var controller: MessagesTableViewController2?
+    private var uid = String()
+    private weak var controller: MessagesTableViewController?
 
-    func load(controller: MessagesTableViewController2, itemsToDeleteManager: ItemsToDeleteManager) {
+    func load(controller: MessagesTableViewController, itemsToDeleteManager: ItemsToDeleteManager, uid: String) {
         self.controller = controller
         self.itemsToDeleteManager = itemsToDeleteManager
+        self.uid = uid
         navigationItem = controller.navigationItem
         tableView = controller.tableView
         makeButtons()
@@ -41,7 +43,7 @@ class MessagesButtonManager: ButtonManaging {
 
     func _makeNewProxy() {
         navigationItem?.toggleRightBarButtonItem(atIndex: 1)
-        DBProxy.makeProxy { (result) in
+        DBProxy.makeProxy(forUser: uid) { (result) in
             self.navigationItem?.toggleRightBarButtonItem(atIndex: 1)
             switch result {
             case .failure(let error):
