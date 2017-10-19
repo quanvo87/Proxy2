@@ -9,9 +9,9 @@ class MessagesButtonManager: ButtonManaging {
     var itemsToDeleteManager: ItemsToDeleteManaging?
     weak var navigationItem: UINavigationItem?
     weak var tableView: UITableView?
-    private weak var controller: MessagesTableViewController?
+    private weak var controller: MessagesTableViewController2?
 
-    func load(controller: MessagesTableViewController, itemsToDeleteManager: ItemsToDeleteManager) {
+    func load(controller: MessagesTableViewController2, itemsToDeleteManager: ItemsToDeleteManager) {
         self.controller = controller
         self.itemsToDeleteManager = itemsToDeleteManager
         navigationItem = controller.navigationItem
@@ -19,7 +19,7 @@ class MessagesButtonManager: ButtonManaging {
         makeButtons()
         setDefaultButtons()
     }
-    
+
     func _deleteSelectedItems() {
         if itemsToDeleteManager?.itemsToDelete.isEmpty ?? true {
             toggleEditMode()
@@ -38,7 +38,7 @@ class MessagesButtonManager: ButtonManaging {
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         controller?.present(alert, animated: true)
     }
-    
+
     func _makeNewProxy() {
         navigationItem?.toggleRightBarButtonItem(atIndex: 1)
         DBProxy.makeProxy { (result) in
@@ -58,7 +58,7 @@ class MessagesButtonManager: ButtonManaging {
             }
         }
     }
-    
+
     func _toggleEditMode() {
         toggleEditMode()
     }

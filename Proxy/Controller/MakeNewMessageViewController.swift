@@ -13,10 +13,10 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate, Sender
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.title = "New Message"
-        navigationItem.rightBarButtonItem = UIBarButtonItem.makeButton(target: self, action: #selector(cancelMakingNewMessage), imageName: .cancel)
         messageTextView.becomeFirstResponder()
         messageTextView.delegate = self
+        navigationItem.rightBarButtonItem = UIBarButtonItem.makeButton(target: self, action: #selector(cancelMakingNewMessage), imageName: .cancel)
+        navigationItem.title = "New Message"
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: view.window)
         setSenderButtonTitle()
     }

@@ -3,12 +3,18 @@ import FBSDKCoreKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    var window: UIWindow?
+    let authManager = AuthManager()
+    let window = UIWindow(frame: UIScreen.main.bounds)
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
         Database.database().isPersistenceEnabled = true
-        launchUI()
+        authManager.load(self)
+        window.makeKeyAndVisible()
+
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        window.rootViewController = storyboard.instantiateViewController(withIdentifier: Identifier.loginViewController) as! LoginViewController
+
         return FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
     }
 
@@ -18,15 +24,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         FBSDKAppEvents.activateApp()
-    }
-}
-
-private extension AppDelegate {
-    func launchUI() {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        guard let tabBarController = storyboard.instantiateViewController(withIdentifier: Identifier.tabBarController) as? UITabBarController else { return }
-        window = UIWindow(frame: UIScreen.main.bounds)
-        window?.rootViewController = tabBarController
-        window?.makeKeyAndVisible()
     }
 }

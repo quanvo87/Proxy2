@@ -9,7 +9,7 @@ class ConvosManager: ConvosManaging {
             tableView?.reloadData()
         }
     }
-    
+
     func load(convosOwner: String, tableView: UITableView) {
         self.tableView = tableView
         observer.observe(convosOwner: convosOwner, manager: self)

@@ -27,7 +27,7 @@ extension ProxiesTableViewDelegate: UITableViewDelegate {
         } else {
             tableView.deselectRow(at: indexPath, animated: true)
             guard let proxyVC = controller?.storyboard?.instantiateViewController(withIdentifier: Identifier.proxyTableViewController) as? ProxyTableViewController else { return }
-            proxyVC.proxy = proxy
+//            proxyVC.proxy = proxy
             controller?.navigationController?.pushViewController(proxyVC, animated: true)
         }
     }

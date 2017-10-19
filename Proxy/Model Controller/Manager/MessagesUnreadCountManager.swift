@@ -16,8 +16,8 @@ class MessagesUnreadCountManager: UnreadCountManaging {
         }
     }
     
-    func load(_ controller: UIViewController) {
+    func load(uid: String, controller: UIViewController) {
         self.controller = controller
-        observer.observe(uid: Shared.shared.uid, manager: self)
+        observer.observe(uid: uid, manager: self)
     }
 }

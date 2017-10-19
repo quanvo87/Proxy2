@@ -1,7 +1,7 @@
 import UIKit
 
 class MeTableViewController: UITableViewController {
-    private let authManager = MeAuthManager()
+//    private let authManager = MeAuthManager()
     private let dataSource = MeTableViewDataSource()
     private let delegate = MeTableViewDelegate()
     private let messagesReceivedManager = MessagesReceivedManager()
@@ -10,7 +10,7 @@ class MeTableViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        authManager.load(self)
+//        authManager.load(self)
         dataSource.load(messagesReceivedManager: messagesReceivedManager,
                         messagesSentManager: messagesSentManager,
                         proxiesInteractedWithManager: proxiesInteractedWithManager,

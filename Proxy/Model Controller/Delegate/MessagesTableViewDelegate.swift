@@ -1,7 +1,7 @@
 import UIKit
 
 class MessagesTableViewDelegate: NSObject {
-    private weak var controller: UITableViewController?
+    private weak var controller: UIViewController?
     private weak var convosManager: ConvosManaging?
     private weak var itemsToDeleteManager: ItemsToDeleteManaging?
 
