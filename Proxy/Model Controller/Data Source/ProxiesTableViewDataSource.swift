@@ -8,6 +8,7 @@ class ProxiesTableViewDataSource: NSObject {
         self.manager = manager
         self.showDisclosureIndicator = showDisclosureIndicator
         tableView.dataSource = self
+        tableView.register(UINib(nibName: Name.proxiesTableViewCell, bundle: nil), forCellReuseIdentifier: Name.proxiesTableViewCell)
     }
 }
 
@@ -18,9 +19,9 @@ extension ProxiesTableViewDataSource: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard
-            let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.proxiesTableViewCell) as? ProxiesTableViewCell,
+            let cell = tableView.dequeueReusableCell(withIdentifier: Name.proxiesTableViewCell) as? ProxiesTableViewCell,
             let proxy = proxies[safe: indexPath.row] else {
-                return tableView.dequeueReusableCell(withIdentifier: Identifier.proxiesTableViewCell, for: indexPath)
+                return tableView.dequeueReusableCell(withIdentifier: Name.proxiesTableViewCell, for: indexPath)
         }
         cell.configure(proxy: proxy, showDisclosureIndicator: showDisclosureIndicator)
         return cell

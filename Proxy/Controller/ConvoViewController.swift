@@ -607,7 +607,7 @@ extension ConvoViewController {
     
     // MARK: - Navigation
     @objc func showConvoInfoTableViewController() {
-        let dest = storyboard?.instantiateViewController(withIdentifier: Identifier.convoDetailTableViewController) as! ConvoDetailTableViewController
+        let dest = storyboard?.instantiateViewController(withIdentifier: Name.convoDetailTableViewController) as! ConvoDetailTableViewController
         dest.convo = convo!
         navigationController?.pushViewController(dest, animated: true)
     }

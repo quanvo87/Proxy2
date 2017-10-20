@@ -6,6 +6,7 @@ class MessagesTableViewDataSource: NSObject {
     func load(manager: ConvosManaging, tableView: UITableView) {
         self.manager = manager
         tableView.dataSource = self
+        tableView.register(ConvosTableViewCell.self, forCellReuseIdentifier: Name.convosTableViewCell)
     }
 }
 
@@ -16,9 +17,9 @@ extension MessagesTableViewDataSource: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard
-            let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.convosTableViewCell) as? ConvosTableViewCell,
+            let cell = tableView.dequeueReusableCell(withIdentifier: Name.convosTableViewCell) as? ConvosTableViewCell,
             let convo = convos[safe: indexPath.row] else {
-                return tableView.dequeueReusableCell(withIdentifier: Identifier.convosTableViewCell, for: indexPath)
+                return tableView.dequeueReusableCell(withIdentifier: Name.convosTableViewCell, for: indexPath)
         }
         cell.configure(convo)
         return cell

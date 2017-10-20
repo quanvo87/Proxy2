@@ -7,9 +7,9 @@ class IconPickerCollectionViewDataSource: NSObject, UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifier.iconPickerCollectionViewCell, for: indexPath) as? IconPickerCollectionViewCell,
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Name.iconPickerCollectionViewCell, for: indexPath) as? IconPickerCollectionViewCell,
             let icon = icons[safe: indexPath.row] else {
-                return collectionView.dequeueReusableCell(withReuseIdentifier: Identifier.iconPickerCollectionViewCell, for: indexPath)
+                return collectionView.dequeueReusableCell(withReuseIdentifier: Name.iconPickerCollectionViewCell, for: indexPath)
         }
         cell.configure(icon)
         return cell

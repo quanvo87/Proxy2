@@ -16,7 +16,7 @@ extension ProxyTableViewDelegate: UITableViewDelegate {
         if  indexPath.section == 1,
             let row = tableView.indexPathForSelectedRow?.row,
             let convo = manager?.convos[safe: row],
-            let convoVC = controller?.storyboard?.instantiateViewController(withIdentifier: Identifier.convoViewController) as? ConvoViewController {
+            let convoVC = controller?.storyboard?.instantiateViewController(withIdentifier: Name.convoViewController) as? ConvoViewController {
             convoVC.convo = convo
             controller?.navigationController?.pushViewController(convoVC, animated: true)
         }

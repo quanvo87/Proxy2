@@ -30,9 +30,9 @@ extension ProxyTableViewDataSource: UITableViewDataSource {
         switch indexPath.section {
         case 0:
             guard
-                let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.senderProxyTableViewCell) as? SenderProxyTableViewCell,
+                let cell = tableView.dequeueReusableCell(withIdentifier: Name.senderProxyTableViewCell) as? SenderProxyTableViewCell,
                 let proxy = proxy else {
-                    return tableView.dequeueReusableCell(withIdentifier: Identifier.senderProxyTableViewCell, for: indexPath)
+                    return tableView.dequeueReusableCell(withIdentifier: Name.senderProxyTableViewCell, for: indexPath)
             }
             cell.configure(proxy)
             cell.changeIconButton.addTarget(self, action: #selector(showIconPickerController), for: .touchUpInside)
@@ -40,9 +40,9 @@ extension ProxyTableViewDataSource: UITableViewDataSource {
             return cell
         case 1:
             guard
-                let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.convosTableViewCell) as? ConvosTableViewCell,
+                let cell = tableView.dequeueReusableCell(withIdentifier: Name.convosTableViewCell) as? ConvosTableViewCell,
                 let convo = convos[safe: indexPath.row] else {
-                    return tableView.dequeueReusableCell(withIdentifier: Identifier.convosTableViewCell, for: indexPath)
+                    return tableView.dequeueReusableCell(withIdentifier: Name.convosTableViewCell, for: indexPath)
             }
             cell.configure(convo)
             return cell
@@ -92,7 +92,7 @@ private extension ProxyTableViewDataSource {
     @objc func showIconPickerController() {
         guard
             let proxy = proxy,
-            let iconPickerCollectionViewController = controller?.storyboard?.instantiateViewController(withIdentifier: Identifier.iconPickerCollectionViewController) as? IconPickerCollectionViewController else {
+            let iconPickerCollectionViewController = controller?.storyboard?.instantiateViewController(withIdentifier: Name.iconPickerCollectionViewController) as? IconPickerCollectionViewController else {
                 return
         }
         iconPickerCollectionViewController.proxy = proxy

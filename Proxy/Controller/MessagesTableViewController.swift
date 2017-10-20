@@ -23,7 +23,7 @@ class MessagesTableViewController: UITableViewController, MakeNewMessageDelegate
         super.viewDidLoad()
         buttonManager.load(controller: self, itemsToDeleteManager: itemsToDeleteManager, uid: uid)
         convosManager.load(convosOwner: uid, tableView: tableView)
-        dataSource.load(manager: convosManager, tableView: tableView)
+//        dataSource.load(manager: convosManager, tableView: tableView)
         delegate.load(controller: self, convosManager: convosManager, itemsToDeleteManager: itemsToDeleteManager)
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.rowHeight = 80

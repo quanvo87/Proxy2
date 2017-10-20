@@ -7,7 +7,7 @@ class ProxiesTableViewCell: UITableViewCell {
     @IBOutlet weak var newProxyBadgeImageView: UIImageView!
     @IBOutlet weak var nicknameLabel: UILabel!
     @IBOutlet weak var unreadLabel: UILabel!    // TODO: delete
-
+    
     func configure(proxy: Proxy, showDisclosureIndicator: Bool) {
         accessoryType = showDisclosureIndicator ? .disclosureIndicator : .none
         convoCountLabel.text = proxy.convoCount.asLabel

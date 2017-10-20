@@ -22,7 +22,7 @@ struct Child {
     static let userFiles = "userFiles"
 }
 
-struct Identifier {
+struct Name {
     static let blockedUsersTableViewCell = "BlockedUsersTableViewCell"
     static let blockedUsersTableViewController = "BlockedUsersTableViewController"
     static let convoDetailTableViewCell = "ConvoDetailTableViewCell"

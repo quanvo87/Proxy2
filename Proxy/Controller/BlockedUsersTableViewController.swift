@@ -38,7 +38,7 @@ extension BlockedUsersTableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let blockedUser = blockedUsers[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.blockedUsersTableViewCell, for: indexPath as IndexPath) as! BlockedUsersTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: Name.blockedUsersTableViewCell, for: indexPath as IndexPath) as! BlockedUsersTableViewCell
         
         cell.blockedUser = blockedUser
         

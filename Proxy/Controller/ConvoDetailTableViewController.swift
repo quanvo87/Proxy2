@@ -34,7 +34,7 @@ class ConvoDetailTableViewController: UITableViewController {
             scrollView.delaysContentTouches = false
         }
         tableView.delaysContentTouches = false
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: Identifier.convoDetailTableViewCell)
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: Name.convoDetailTableViewCell)
         
         api.getProxy(withKey: convo.senderProxyKey, belongingToUserId: convo.senderId) { (proxy) in
             self.senderProxy = proxy
@@ -180,7 +180,7 @@ class ConvoDetailTableViewController: UITableViewController {
             
         // Receiver proxy info
         case 0:
-            let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.receiverProxyTableViewCell, for: indexPath as IndexPath) as! ReceiverProxyTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: Name.receiverProxyTableViewCell, for: indexPath as IndexPath) as! ReceiverProxyTableViewCell
             cell.nameLabel.text = convo.receiverProxyName
             cell.nicknameButton.setTitle(receiverNickname == "" ? "Enter A Nickname" : receiverNickname, for: .normal)
             cell.nicknameButton.addTarget(self, action: #selector(ConvoDetailTableViewController.editReceiverNickname), for: .touchUpInside)
@@ -192,7 +192,7 @@ class ConvoDetailTableViewController: UITableViewController {
             
         // Sender proxy info
         case 1:
-            let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.senderProxyTableViewCell, for: indexPath as IndexPath) as! SenderProxyTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: Name.senderProxyTableViewCell, for: indexPath as IndexPath) as! SenderProxyTableViewCell
             cell.nameLabel.text = convo.senderProxyName
             cell.nicknameButton.setTitle(senderNickname == "" ? "Enter A Nickname" : senderNickname, for: .normal)
             cell.nicknameButton.addTarget(self, action: #selector(ConvoDetailTableViewController.editSenderNickname), for: .touchUpInside)
@@ -204,7 +204,7 @@ class ConvoDetailTableViewController: UITableViewController {
             return cell
             
         case 2:
-            let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.convoDetailTableViewCell, for: indexPath as IndexPath)
+            let cell = tableView.dequeueReusableCell(withIdentifier: Name.convoDetailTableViewCell, for: indexPath as IndexPath)
             switch indexPath.row {
                 
             // Leave convo
@@ -321,7 +321,7 @@ class ConvoDetailTableViewController: UITableViewController {
     
     @objc func showIconPickerController() {
         api.getConvos(for: senderProxy!) { (convos) in
-            let dest = self.storyboard?.instantiateViewController(withIdentifier: Identifier.iconPickerCollectionViewController) as! IconPickerCollectionViewController
+            let dest = self.storyboard?.instantiateViewController(withIdentifier: Name.iconPickerCollectionViewController) as! IconPickerCollectionViewController
             dest.proxy = self.senderProxy!
             self.navigationController?.pushViewController(dest, animated: true)
         }

@@ -14,7 +14,7 @@ extension MeTableViewDelegate: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch indexPath.section {
         case 1:
-            guard let blockedUsersVC = controller?.storyboard?.instantiateViewController(withIdentifier: Identifier.blockedUsersTableViewController) as? BlockedUsersTableViewController else { return }
+            guard let blockedUsersVC = controller?.storyboard?.instantiateViewController(withIdentifier: Name.blockedUsersTableViewController) as? BlockedUsersTableViewController else { return }
             controller?.navigationController?.pushViewController(blockedUsersVC, animated: true)
         case 2:
             tableView.deselectRow(at: indexPath, animated: true)

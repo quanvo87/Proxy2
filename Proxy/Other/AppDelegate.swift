@@ -14,7 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // delete
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        window.rootViewController = storyboard.instantiateViewController(withIdentifier: Identifier.loginViewController) as! LoginViewController
+        window.rootViewController = storyboard.instantiateViewController(withIdentifier: Name.loginViewController) as! LoginViewController
 
         return FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
     }

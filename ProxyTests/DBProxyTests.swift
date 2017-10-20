@@ -52,7 +52,7 @@ class DBProxyTests: DBTest {
             key.notify {
                 key.finishWorkGroup()
 
-                DBProxy.fixConvoCounts { (success) in
+                DBProxy.fixConvoCounts(uid: Shared.shared.uid) { (success) in
                     XCTAssert(success)
 
                     DBProxy.getConvoCount(forProxy: sender) { (convoCount) in
@@ -181,7 +181,7 @@ class DBProxyTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        DBProxy.makeProxy(maxAllowedProxies: 0) { (result) in
+        DBProxy.makeProxy(forUser: Shared.shared.uid, maxAllowedProxies: 0) { (result) in
             switch result {
             case .failure(let error):
                 XCTAssertEqual(error, ProxyError.proxyLimitReached)
@@ -196,11 +196,11 @@ class DBProxyTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
         
-        DBProxy.makeProxy(withName: "test") { (result) in
+        DBProxy.makeProxy(withName: "test", forUser: Shared.shared.uid) { (result) in
             switch result {
             case .failure: XCTFail()
             case .success:
-                DBProxy.makeProxy(withName: "test") { (result) in
+                DBProxy.makeProxy(withName: "test", forUser: Shared.shared.uid) { (result) in
                     switch result {
                     case .failure:
                         XCTAssertFalse(Shared.shared.isCreatingProxy)

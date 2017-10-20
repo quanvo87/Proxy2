@@ -45,7 +45,7 @@ extension Int {
 extension MakeNewMessageDelegate where Self: UIViewController {
     func showMakeNewMessageController(_ sender: Proxy? = nil) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        guard let makeNewMessageController = storyboard.instantiateViewController(withIdentifier: Identifier.makeNewMessageViewController) as? MakeNewMessageViewController else { return }
+        guard let makeNewMessageController = storyboard.instantiateViewController(withIdentifier: Name.makeNewMessageViewController) as? MakeNewMessageViewController else { return }
         makeNewMessageController.delegate = self
         makeNewMessageController.sender = sender
         let navigationController = UINavigationController(rootViewController: makeNewMessageController)
@@ -107,9 +107,15 @@ extension UINavigationItem {
     }
 }
 
+extension UIStoryboard {
+    static let storyboard: UIStoryboard = {
+        return UIStoryboard(name: "Main", bundle: nil)
+    }()
+}
+
 extension UIViewController {
     func showConvoController(_ convo: Convo) {
-        guard let convoViewController = storyboard?.instantiateViewController(withIdentifier: Identifier.convoViewController) as? ConvoViewController else { return }
+        guard let convoViewController = storyboard?.instantiateViewController(withIdentifier: Name.convoViewController) as? ConvoViewController else { return }
         convoViewController.convo = convo
         navigationController?.pushViewController(convoViewController, animated: true)
     }

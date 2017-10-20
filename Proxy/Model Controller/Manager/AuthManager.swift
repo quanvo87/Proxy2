@@ -36,7 +36,7 @@ extension AuthManager: AuthManaging {
 
         // delete
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        guard let loginController = storyboard.instantiateViewController(withIdentifier: Identifier.loginViewController) as? LoginViewController else { return }
+        guard let loginController = storyboard.instantiateViewController(withIdentifier: Name.loginViewController) as? LoginViewController else { return }
 
         delegate?.window.rootViewController = loginController
         loggedIn = false
