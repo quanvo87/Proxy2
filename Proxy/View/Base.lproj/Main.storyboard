@@ -356,10 +356,10 @@
             </objects>
             <point key="canvasLocation" x="-514" y="2898"/>
         </scene>
-        <!--Proxies Table View Controller-->
+        <!--Proxies View Controller-->
         <scene sceneID="xza-Lr-4gX">
             <objects>
-                <tableViewController id="7n5-fe-DbV" customClass="ProxiesTableViewController" customModule="Proxy" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="7n5-fe-DbV" customClass="ProxiesViewController" customModule="Proxy" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="duD-kn-ioV">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

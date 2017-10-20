@@ -20,7 +20,7 @@ class TabBarController: UITabBarController {
         let messagesController = MessagesViewController(uid)
         messagesController.tabBarItem = UITabBarItem(title: "Messages", image: UIImage(named: "messages"), tag: 0)
 
-        let proxiesController = ProxiesTableViewController(uid)
+        let proxiesController = ProxiesViewController(uid)
         proxiesController.tabBarItem = UITabBarItem(title: "Proxies", image: UIImage(named: "proxies"), tag: 1)
 
         let meController = MeViewController(displayName: displayName, uid: uid)

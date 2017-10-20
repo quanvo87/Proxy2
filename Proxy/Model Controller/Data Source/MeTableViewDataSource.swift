@@ -7,13 +7,10 @@ class MeTableViewDataSource: NSObject {
 
     func load(messagesReceivedManager: MessagesReceivedManaging,
               messagesSentManager: MessagesSentManaging,
-              proxiesInteractedWithManager: ProxiesInteractedWithManaging,
-              tableView: UITableView) {
+              proxiesInteractedWithManager: ProxiesInteractedWithManaging) {
         self.messagesReceivedManager = messagesReceivedManager
         self.messagesSentManager = messagesSentManager
         self.proxiesInteractedWithManager = proxiesInteractedWithManager
-        tableView.dataSource = self
-        tableView.register(UINib(nibName: Name.meTableViewCell, bundle: nil), forCellReuseIdentifier: Name.meTableViewCell)
     }
 }
 

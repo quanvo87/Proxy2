@@ -4,11 +4,9 @@ class ProxiesTableViewDataSource: NSObject {
     private var showDisclosureIndicator = Bool()
     private weak var manager: ProxiesManaging?
 
-    func load(manager: ProxiesManaging, showDisclosureIndicator: Bool, tableView: UITableView) {
+    func load(manager: ProxiesManaging, showDisclosureIndicator: Bool) {
         self.manager = manager
         self.showDisclosureIndicator = showDisclosureIndicator
-        tableView.dataSource = self
-        tableView.register(UINib(nibName: Name.proxiesTableViewCell, bundle: nil), forCellReuseIdentifier: Name.proxiesTableViewCell)
     }
 }
 

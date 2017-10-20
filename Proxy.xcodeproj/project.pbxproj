@@ -68,7 +68,7 @@
 		5973C8611F608A2200647492 /* DB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C82E1F608A1D00647492 /* DB.swift */; };
 		5973C8621F608A2200647492 /* ProxiesObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C82F1F608A1D00647492 /* ProxiesObserver.swift */; };
 		5973C8631F608A2200647492 /* ProxiesTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8301F608A1D00647492 /* ProxiesTableViewDataSource.swift */; };
-		5973C8641F608A2200647492 /* ProxiesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8311F608A1D00647492 /* ProxiesTableViewController.swift */; };
+		5973C8641F608A2200647492 /* ProxiesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8311F608A1D00647492 /* ProxiesViewController.swift */; };
 		5973C8651F608A2200647492 /* Proxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8321F608A1E00647492 /* Proxy.swift */; };
 		5973C8671F608A2200647492 /* IconPickerCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8341F608A1E00647492 /* IconPickerCollectionViewCell.swift */; };
 		5973C8681F608A2200647492 /* ProxyTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8351F608A1E00647492 /* ProxyTableViewController.swift */; };
@@ -211,7 +211,7 @@
 		5973C82E1F608A1D00647492 /* DB.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DB.swift; sourceTree = "<group>"; };
 		5973C82F1F608A1D00647492 /* ProxiesObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxiesObserver.swift; sourceTree = "<group>"; };
 		5973C8301F608A1D00647492 /* ProxiesTableViewDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxiesTableViewDataSource.swift; sourceTree = "<group>"; };
-		5973C8311F608A1D00647492 /* ProxiesTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxiesTableViewController.swift; sourceTree = "<group>"; };
+		5973C8311F608A1D00647492 /* ProxiesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxiesViewController.swift; sourceTree = "<group>"; };
 		5973C8321F608A1E00647492 /* Proxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Proxy.swift; sourceTree = "<group>"; };
 		5973C8341F608A1E00647492 /* IconPickerCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IconPickerCollectionViewCell.swift; sourceTree = "<group>"; };
 		5973C8351F608A1E00647492 /* ProxyTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyTableViewController.swift; sourceTree = "<group>"; };
@@ -336,7 +336,7 @@
 				5973C8231F608A1C00647492 /* MakeNewMessageViewController.swift */,
 				590441EA1F98351E0015CE16 /* MessagesViewController.swift */,
 				5973C8431F608A2100647492 /* MeViewController.swift */,
-				5973C8311F608A1D00647492 /* ProxiesTableViewController.swift */,
+				5973C8311F608A1D00647492 /* ProxiesViewController.swift */,
 				5973C8351F608A1E00647492 /* ProxyTableViewController.swift */,
 				5973C8441F608A2100647492 /* SenderPickerTableViewController.swift */,
 				59FF37411F97A6AA00FA1AF0 /* TabBarController.swift */,
@@ -987,7 +987,7 @@
 				5973C8521F608A2200647492 /* BlockedUser.swift in Sources */,
 				592C0DEA1F8E59B50023DB02 /* ItemsToDeleteManager.swift in Sources */,
 				5973C84C1F608A2200647492 /* NSDate+NVTimeAgo.m in Sources */,
-				5973C8641F608A2200647492 /* ProxiesTableViewController.swift in Sources */,
+				5973C8641F608A2200647492 /* ProxiesViewController.swift in Sources */,
 				5949F5831F63331B004597A0 /* SenderPickerTableViewDelegate.swift in Sources */,
 				5973C8491F608A2200647492 /* DBConvo.swift in Sources */,
 				5912F0E71F708B770017D1EE /* SenderIconManaging.swift in Sources */,

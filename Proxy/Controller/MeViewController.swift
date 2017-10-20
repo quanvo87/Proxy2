@@ -14,25 +14,23 @@ class MeViewController: UIViewController {
         self.displayName = displayName
         self.uid = uid
         super.init(nibName: nil, bundle: nil)
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
         dataSource.load(messagesReceivedManager: messagesReceivedManager,
                         messagesSentManager: messagesSentManager,
-                        proxiesInteractedWithManager: proxiesInteractedWithManager,
-                        tableView: tableView)
-        delegate.load(controller: self, tableView: tableView)
+                        proxiesInteractedWithManager: proxiesInteractedWithManager)
+        delegate.load(controller: self)
         messagesReceivedManager.load(uid: uid, tableView: tableView)
         messagesSentManager.load(uid: uid, tableView: tableView)
         navigationItem.title = displayName
         proxiesInteractedWithManager.load(uid: uid, tableView: tableView)
+        tableView.dataSource = dataSource
+        tableView.delegate = delegate
         tableView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
+        tableView.register(UINib(nibName: Name.meTableViewCell, bundle: nil), forCellReuseIdentifier: Name.meTableViewCell)
         tableView.rowHeight = 44
         view.addSubview(tableView)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }

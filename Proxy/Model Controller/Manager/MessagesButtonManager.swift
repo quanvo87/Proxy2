@@ -52,7 +52,7 @@ class MessagesButtonManager: ButtonManaging {
             case .success:
                 guard
                     let proxiesNavigationController = self.controller?.tabBarController?.viewControllers?[safe: 1] as? UINavigationController,
-                    let proxiesViewController = proxiesNavigationController.viewControllers[safe: 0] as? ProxiesTableViewController else {
+                    let proxiesViewController = proxiesNavigationController.viewControllers[safe: 0] as? ProxiesViewController else {
                         return
                 }
                 proxiesViewController.scrollToTop()

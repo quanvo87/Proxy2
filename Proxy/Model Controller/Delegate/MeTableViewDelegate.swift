@@ -4,9 +4,8 @@ import UIKit
 class MeTableViewDelegate: NSObject {
     private weak var controller: UIViewController?
 
-    func load(controller: UIViewController, tableView: UITableView) {
+    func load(controller: UIViewController) {
         self.controller = controller
-        tableView.delegate = self
     }
 }
 

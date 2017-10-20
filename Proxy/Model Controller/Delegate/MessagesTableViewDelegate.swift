@@ -5,11 +5,10 @@ class MessagesTableViewDelegate: NSObject {
     private weak var convosManager: ConvosManaging?
     private weak var itemsToDeleteManager: ItemsToDeleteManaging?
 
-    func load(controller: UIViewController, convosManager: ConvosManaging, itemsToDeleteManager: ItemsToDeleteManaging, tableView: UITableView) {
+    func load(controller: UIViewController, convosManager: ConvosManaging, itemsToDeleteManager: ItemsToDeleteManaging) {
         self.controller = controller
         self.convosManager = convosManager
         self.itemsToDeleteManager = itemsToDeleteManager
-        tableView.delegate = self
     }
 }
 

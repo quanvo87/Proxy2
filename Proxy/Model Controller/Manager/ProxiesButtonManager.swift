@@ -1,25 +1,25 @@
 import UIKit
 
 class ProxiesButtonManager: ButtonManaging {
+    private var uid = String()
     var cancelButton = UIBarButtonItem()
     var confirmButton = UIBarButtonItem()
     var deleteButton = UIBarButtonItem()
     var makeNewMessageButton = UIBarButtonItem()
     var makeNewProxyButton = UIBarButtonItem()
     var itemsToDeleteManager: ItemsToDeleteManaging?
+    private weak var controller: ProxiesViewController?
+    private weak var proxiesManager: ProxiesManager?
     weak var navigationItem: UINavigationItem?
     weak var tableView: UITableView?
-    private var uid = String()
-    private weak var controller: ProxiesTableViewController?
-    private weak var proxiesManager: ProxiesManager?
 
-    func load(controller: ProxiesTableViewController, itemsToDeleteManager: ItemsToDeleteManaging, proxiesManager: ProxiesManager, uid: String) {
+    func load(controller: ProxiesViewController, itemsToDeleteManager: ItemsToDeleteManaging, proxiesManager: ProxiesManager, tableView: UITableView, uid: String) {
         self.controller = controller
         self.itemsToDeleteManager = itemsToDeleteManager
         self.proxiesManager = proxiesManager
+        self.tableView = tableView
         self.uid = uid
         navigationItem = controller.navigationItem
-        tableView = controller.tableView
         makeButtons()
         setDefaultButtons()
     }
@@ -31,7 +31,7 @@ class ProxiesButtonManager: ButtonManaging {
         }
         let alert = UIAlertController(title: "Delete Proxies?", message: "You will not be able to view their conversations anymore.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
-            guard let controller = self.controller else { return }
+            guard let tableView = self.tableView else { return }
             self.disableButtons()
             self.proxiesManager?.stopObserving()
             let key = AsyncWorkGroupKey()
@@ -44,11 +44,11 @@ class ProxiesButtonManager: ButtonManaging {
             }
             self.itemsToDeleteManager?.itemsToDelete.removeAll()
             self.setDefaultButtons()
-            self.controller?.tableView.setEditing(false, animated: true)
+            tableView.setEditing(false, animated: true)
             key.notify {
                 key.finishWorkGroup()
                 self.enableButtons()
-                self.proxiesManager?.load(uid: self.uid, tableView: controller.tableView)
+                self.proxiesManager?.load(uid: self.uid, tableView: tableView)
             }
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))

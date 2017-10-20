@@ -3,10 +3,8 @@ import UIKit
 class MessagesTableViewDataSource: NSObject {
     private weak var manager: ConvosManaging?
 
-    func load(manager: ConvosManaging, tableView: UITableView) {
+    func load(manager: ConvosManaging) {
         self.manager = manager
-        tableView.dataSource = self
-        tableView.register(UINib(nibName: Name.convosTableViewCell, bundle: nil), forCellReuseIdentifier: Name.convosTableViewCell)
     }
 }
 
