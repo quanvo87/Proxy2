@@ -42,17 +42,6 @@ extension Int {
     }
 }
 
-extension MakeNewMessageDelegate where Self: UIViewController {
-    func showMakeNewMessageController(_ sender: Proxy? = nil) {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        guard let makeNewMessageController = storyboard.instantiateViewController(withIdentifier: Name.makeNewMessageViewController) as? MakeNewMessageViewController else { return }
-        makeNewMessageController.delegate = self
-        makeNewMessageController.sender = sender
-        let navigationController = UINavigationController(rootViewController: makeNewMessageController)
-        present(navigationController, animated: true)
-    }
-}
-
 extension String {
     func makeBold(withSize size: CGFloat) -> NSMutableAttributedString {
         let boldAttr = [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: size)]
@@ -107,6 +96,7 @@ extension UINavigationItem {
     }
 }
 
+// delete
 extension UIStoryboard {
     static let storyboard: UIStoryboard = {
         return UIStoryboard(name: "Main", bundle: nil)

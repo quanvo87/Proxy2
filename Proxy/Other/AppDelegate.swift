@@ -13,8 +13,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window.makeKeyAndVisible()
 
         // delete
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        window.rootViewController = storyboard.instantiateViewController(withIdentifier: Name.loginViewController) as! LoginViewController
+        window.rootViewController = UIStoryboard.storyboard.instantiateViewController(withIdentifier: Name.loginViewController) as! LoginViewController
 
         return FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
     }

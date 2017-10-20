@@ -120,7 +120,3 @@ private extension MakeNewMessageViewController {
         pickSenderButton?.setTitle(sender?.name ?? "Pick A Sender", for: .normal)
     }
 }
-
-protocol MakeNewMessageDelegate: class {
-    var newConvo: Convo? { get set }
-}

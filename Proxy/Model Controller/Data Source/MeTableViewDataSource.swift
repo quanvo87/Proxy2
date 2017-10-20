@@ -13,6 +13,7 @@ class MeTableViewDataSource: NSObject {
         self.messagesSentManager = messagesSentManager
         self.proxiesInteractedWithManager = proxiesInteractedWithManager
         tableView.dataSource = self
+        tableView.register(UINib(nibName: Name.meTableViewCell, bundle: nil), forCellReuseIdentifier: Name.meTableViewCell)
     }
 }
 

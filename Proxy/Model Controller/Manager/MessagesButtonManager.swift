@@ -1,23 +1,23 @@
 import UIKit
 
 class MessagesButtonManager: ButtonManaging {
+    private var uid = String()
     var cancelButton = UIBarButtonItem()
     var confirmButton = UIBarButtonItem()
     var deleteButton = UIBarButtonItem()
     var makeNewMessageButton = UIBarButtonItem()
     var makeNewProxyButton = UIBarButtonItem()
     var itemsToDeleteManager: ItemsToDeleteManaging?
+    private weak var controller: MessagesViewController?
     weak var navigationItem: UINavigationItem?
     weak var tableView: UITableView?
-    private var uid = String()
-    private weak var controller: MessagesTableViewController?
 
-    func load(controller: MessagesTableViewController, itemsToDeleteManager: ItemsToDeleteManager, uid: String) {
+    func load(controller: MessagesViewController, itemsToDeleteManager: ItemsToDeleteManager, tableView: UITableView, uid: String) {
         self.controller = controller
         self.itemsToDeleteManager = itemsToDeleteManager
+        self.tableView = tableView
         self.uid = uid
         navigationItem = controller.navigationItem
-        tableView = controller.tableView
         makeButtons()
         setDefaultButtons()
     }
@@ -27,7 +27,7 @@ class MessagesButtonManager: ButtonManaging {
             toggleEditMode()
             return
         }
-        let alert = UIAlertController(title: "Leave Conversations?", message: "This will not delete the conversation.", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Leave Conversations?", message: "This will not delete the conversations.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Leave", style: .destructive) { _ in
             for (_, item) in self.itemsToDeleteManager?.itemsToDelete ?? [:] {
                 guard let convo = item as? Convo else { return }

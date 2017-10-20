@@ -6,7 +6,7 @@ class MessagesTableViewDataSource: NSObject {
     func load(manager: ConvosManaging, tableView: UITableView) {
         self.manager = manager
         tableView.dataSource = self
-        tableView.register(ConvosTableViewCell.self, forCellReuseIdentifier: Name.convosTableViewCell)
+        tableView.register(UINib(nibName: Name.convosTableViewCell, bundle: nil), forCellReuseIdentifier: Name.convosTableViewCell)
     }
 }
 

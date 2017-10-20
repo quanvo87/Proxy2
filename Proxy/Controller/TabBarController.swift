@@ -17,13 +17,16 @@ class TabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let messagesController = MessagesTableViewController(uid)
+        let messagesController = MessagesViewController(uid)
         messagesController.tabBarItem = UITabBarItem(title: "Messages", image: UIImage(named: "messages"), tag: 0)
 
         let proxiesController = ProxiesTableViewController(uid)
         proxiesController.tabBarItem = UITabBarItem(title: "Proxies", image: UIImage(named: "proxies"), tag: 1)
 
-        viewControllers = [messagesController, proxiesController].map {
+        let meController = MeViewController(displayName: displayName, uid: uid)
+        meController.tabBarItem = UITabBarItem(title: "Me", image: UIImage(named: "me"), tag: 2)
+
+        viewControllers = [messagesController, proxiesController, meController].map {
             UINavigationController(rootViewController: $0)
         }
     }
