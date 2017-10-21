@@ -35,39 +35,32 @@ extension ButtonEditing {
     }
 
     func setDefaultButtons() {
+        itemsToDeleteManager?.itemsToDelete.removeAll()
         navigationItem?.leftBarButtonItem = deleteButton
         navigationItem?.rightBarButtonItems = [makeNewMessageButton, makeNewProxyButton]
+        tableView?.setEditing(false, animated: true)
     }
 
     func setEditModeButtons() {
         navigationItem?.leftBarButtonItem = cancelButton
         navigationItem?.rightBarButtonItems = [confirmButton]
-    }
-
-    func toggleEditMode() {
-        guard let tableView = tableView else { return }
-        tableView.setEditing(!tableView.isEditing, animated: true)
-        if tableView.isEditing {
-            setEditModeButtons()
-        } else {
-            setDefaultButtons()
-            itemsToDeleteManager?.itemsToDelete.removeAll()
-        }
+        tableView?.setEditing(true, animated: true)
     }
 }
 
 @objc protocol ButtonMaking: ButtonOwning {
     func _deleteSelectedItems()
     func _makeNewProxy()
+    func _setDefaultButtons()
+    func _setEditModeButtons()
     func _showMakeNewMessageController()
-    func _toggleEditMode()
 }
 
 extension ButtonMaking {
     func makeButtons() {
-        cancelButton = UIBarButtonItem.makeButton(target: self, action: #selector(_toggleEditMode), imageName: .cancel)
+        cancelButton = UIBarButtonItem.makeButton(target: self, action: #selector(_setDefaultButtons), imageName: .cancel)
         confirmButton = UIBarButtonItem.makeButton(target: self, action: #selector(_deleteSelectedItems), imageName: .confirm)
-        deleteButton = UIBarButtonItem.makeButton(target: self, action: #selector(_toggleEditMode), imageName: .delete)
+        deleteButton = UIBarButtonItem.makeButton(target: self, action: #selector(_setEditModeButtons), imageName: .delete)
         makeNewMessageButton = UIBarButtonItem.makeButton(target: self, action: #selector(_showMakeNewMessageController), imageName: .makeNewMessage)
         makeNewProxyButton = UIBarButtonItem.makeButton(target: self, action: #selector(_makeNewProxy), imageName: .makeNewProxy)
     }

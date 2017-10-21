@@ -84,7 +84,7 @@
 		5973C8741F608A2200647492 /* Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8411F608A2100647492 /* Shared.swift */; };
 		5973C8751F608A2200647492 /* loadProxyIconNames.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8421F608A2100647492 /* loadProxyIconNames.swift */; };
 		5973C8761F608A2200647492 /* MeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8431F608A2100647492 /* MeViewController.swift */; };
-		5973C8771F608A2200647492 /* SenderPickerTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8441F608A2100647492 /* SenderPickerTableViewController.swift */; };
+		5973C8771F608A2200647492 /* SenderPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8441F608A2100647492 /* SenderPickerViewController.swift */; };
 		5973C8781F608A2200647492 /* ButtonManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8451F608A2100647492 /* ButtonManaging.swift */; };
 		5973C8791F608A2200647492 /* loadProxyNameAdjectives.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8461F608A2100647492 /* loadProxyNameAdjectives.swift */; };
 		5973C87A1F608A2200647492 /* AuthObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8471F608A2200647492 /* AuthObserver.swift */; };
@@ -227,7 +227,7 @@
 		5973C8411F608A2100647492 /* Shared.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shared.swift; sourceTree = "<group>"; };
 		5973C8421F608A2100647492 /* loadProxyIconNames.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = loadProxyIconNames.swift; sourceTree = "<group>"; };
 		5973C8431F608A2100647492 /* MeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeViewController.swift; sourceTree = "<group>"; };
-		5973C8441F608A2100647492 /* SenderPickerTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SenderPickerTableViewController.swift; sourceTree = "<group>"; };
+		5973C8441F608A2100647492 /* SenderPickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SenderPickerViewController.swift; sourceTree = "<group>"; };
 		5973C8451F608A2100647492 /* ButtonManaging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonManaging.swift; sourceTree = "<group>"; };
 		5973C8461F608A2100647492 /* loadProxyNameAdjectives.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = loadProxyNameAdjectives.swift; sourceTree = "<group>"; };
 		5973C8471F608A2200647492 /* AuthObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthObserver.swift; sourceTree = "<group>"; };
@@ -338,7 +338,7 @@
 				5973C8431F608A2100647492 /* MeViewController.swift */,
 				5973C8311F608A1D00647492 /* ProxiesViewController.swift */,
 				5973C8351F608A1E00647492 /* ProxyTableViewController.swift */,
-				5973C8441F608A2100647492 /* SenderPickerTableViewController.swift */,
+				5973C8441F608A2100647492 /* SenderPickerViewController.swift */,
 				59FF37411F97A6AA00FA1AF0 /* TabBarController.swift */,
 			);
 			path = Controller;
@@ -1010,7 +1010,7 @@
 				5973C85A1F608A2200647492 /* ProxiesTableViewCell.swift in Sources */,
 				5956AE581F872E4B00F99ED0 /* ConvoNicknamesManager.swift in Sources */,
 				593D7D4C1F852A5000D3FBD5 /* ProxiesInteractedWithManager.swift in Sources */,
-				5973C8771F608A2200647492 /* SenderPickerTableViewController.swift in Sources */,
+				5973C8771F608A2200647492 /* SenderPickerViewController.swift in Sources */,
 				5973C86B1F608A2200647492 /* Convo.swift in Sources */,
 				5973C8631F608A2200647492 /* ProxiesTableViewDataSource.swift in Sources */,
 				5973C84D1F608A2200647492 /* LoginVideoPlayer.swift in Sources */,

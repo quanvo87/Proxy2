@@ -18,26 +18,20 @@ extension AuthManager: AuthManaging {
             let changeRequest = user.createProfileChangeRequest()
             changeRequest.displayName = email
             changeRequest.commitChanges()
-            logIn(displayName: email, uid: user.uid)
         }
-        logIn(displayName: user.displayName ?? "", uid: user.uid)
-    }
-
-    private func logIn(displayName: String, uid: String) {
-        delegate?.window.rootViewController = TabBarController(displayName: displayName, uid: uid)
+        delegate?.window.rootViewController = TabBarController(displayName: user.displayName ?? user.email ?? "", uid: user.uid)
         loggedIn = true
         Shared.shared.queue.async {
-            DBProxy.fixConvoCounts(uid: uid) { _ in }
+            DBProxy.fixConvoCounts(uid: user.uid) { _ in }
         }
     }
 
     func logOut() {
-        guard loggedIn else { return }
-
-        // delete
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        guard let loginController = storyboard.instantiateViewController(withIdentifier: Name.loginViewController) as? LoginViewController else { return }
-
+        guard
+            loggedIn,
+            let loginController = UIStoryboard.storyboard.instantiateViewController(withIdentifier: Name.loginViewController) as? LoginViewController else {
+                return
+        }
         delegate?.window.rootViewController = loginController
         loggedIn = false
     }

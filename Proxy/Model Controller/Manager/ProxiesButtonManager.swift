@@ -26,7 +26,7 @@ class ProxiesButtonManager: ButtonManaging {
 
     func _deleteSelectedItems() {
         if itemsToDeleteManager?.itemsToDelete.isEmpty ?? true {
-            toggleEditMode()
+            setDefaultButtons()
             return
         }
         let alert = UIAlertController(title: "Delete Proxies?", message: "You will not be able to view their conversations anymore.", preferredStyle: .alert)
@@ -42,9 +42,7 @@ class ProxiesButtonManager: ButtonManaging {
                     key.finishWork()
                 }
             }
-            self.itemsToDeleteManager?.itemsToDelete.removeAll()
             self.setDefaultButtons()
-            tableView.setEditing(false, animated: true)
             key.notify {
                 key.finishWorkGroup()
                 self.enableButtons()
@@ -56,9 +54,9 @@ class ProxiesButtonManager: ButtonManaging {
     }
 
     func _makeNewProxy() {
-        controller?.navigationItem.toggleRightBarButtonItem(atIndex: 1)
+        controller?.navigationItem.disableRightBarButtonItem(atIndex: 1)
         DBProxy.makeProxy(forUser: uid) { (result) in
-            self.controller?.navigationItem.toggleRightBarButtonItem(atIndex: 1)
+            self.controller?.navigationItem.enableRightBarButtonItem(atIndex: 1)
             switch result {
             case .failure(let error):
                 self.controller?.showAlert("Error Creating Proxy", message: error.description)
@@ -68,11 +66,15 @@ class ProxiesButtonManager: ButtonManaging {
         }
     }
 
+    func _setDefaultButtons() {
+        setDefaultButtons()
+    }
+
+    func _setEditModeButtons() {
+        setEditModeButtons()
+    }
+
     func _showMakeNewMessageController() {
         controller?.showMakeNewMessageController(controller: controller, sender: nil, uid: uid)
-    }
-    
-    func _toggleEditMode() {
-        toggleEditMode()
     }
 }

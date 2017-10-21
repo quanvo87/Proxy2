@@ -8,12 +8,14 @@ class MessagesButtonManager: ButtonManaging {
     var makeNewMessageButton = UIBarButtonItem()
     var makeNewProxyButton = UIBarButtonItem()
     var itemsToDeleteManager: ItemsToDeleteManaging?
-    private weak var controller: MessagesViewController?
+    private weak var controller: UIViewController?
+    private weak var delegate: MakeNewMessageDelegate?
     weak var navigationItem: UINavigationItem?
     weak var tableView: UITableView?
 
-    func load(controller: MessagesViewController, itemsToDeleteManager: ItemsToDeleteManager, tableView: UITableView, uid: String) {
+    func load(controller: UIViewController, delegate: MakeNewMessageDelegate, itemsToDeleteManager: ItemsToDeleteManager, tableView: UITableView, uid: String) {
         self.controller = controller
+        self.delegate = delegate
         self.itemsToDeleteManager = itemsToDeleteManager
         self.tableView = tableView
         self.uid = uid
@@ -24,7 +26,7 @@ class MessagesButtonManager: ButtonManaging {
 
     func _deleteSelectedItems() {
         if itemsToDeleteManager?.itemsToDelete.isEmpty ?? true {
-            toggleEditMode()
+            setDefaultButtons()
             return
         }
         let alert = UIAlertController(title: "Leave Conversations?", message: "This will not delete the conversations.", preferredStyle: .alert)
@@ -33,18 +35,16 @@ class MessagesButtonManager: ButtonManaging {
                 guard let convo = item as? Convo else { return }
                 DBConvo.leaveConvo(convo) { _ in }
             }
-            self.itemsToDeleteManager?.itemsToDelete.removeAll()
             self.setDefaultButtons()
-            self.tableView?.setEditing(false, animated: true)
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         controller?.present(alert, animated: true)
     }
 
     func _makeNewProxy() {
-        navigationItem?.toggleRightBarButtonItem(atIndex: 1)
+        navigationItem?.disableRightBarButtonItem(atIndex: 1)
         DBProxy.makeProxy(forUser: uid) { (result) in
-            self.navigationItem?.toggleRightBarButtonItem(atIndex: 1)
+            self.navigationItem?.enableRightBarButtonItem(atIndex: 1)
             switch result {
             case .failure(let error):
                 self.controller?.showAlert("Error Creating Proxy", message: error.description)
@@ -61,11 +61,15 @@ class MessagesButtonManager: ButtonManaging {
         }
     }
 
-    func _toggleEditMode() {
-        toggleEditMode()
+    func _setDefaultButtons() {
+        setDefaultButtons()
+    }
+
+    func _setEditModeButtons() {
+        setEditModeButtons()
     }
 
     func _showMakeNewMessageController() {
-        controller?.showMakeNewMessageController(controller: controller, sender: nil, uid: uid)
+        delegate?.showMakeNewMessageController(controller: controller, sender: nil, uid: uid)
     }
 }

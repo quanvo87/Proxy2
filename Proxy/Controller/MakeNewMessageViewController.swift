@@ -87,9 +87,7 @@ private extension MakeNewMessageViewController {
     }
 
     @IBAction func showSenderPickerController() {
-        guard let senderPicker = storyboard?.instantiateViewController(withIdentifier: Name.senderPickerTableViewController) as? SenderPickerTableViewController else { return }
-        senderPicker.senderPickerDelegate = self
-        navigationController?.pushViewController(senderPicker, animated: true)
+        navigationController?.pushViewController(SenderPickerViewController(senderPickerDelegate: self, uid: uid), animated: true)
     }
 }
 

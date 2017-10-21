@@ -21,7 +21,7 @@ class MessagesViewController: UIViewController, MakeNewMessageDelegate {
         dataSource.load(manager: convosManager)
         delegate.load(controller: self, convosManager: convosManager, itemsToDeleteManager: itemsToDeleteManager)
 
-        buttonManager.load(controller: self, itemsToDeleteManager: itemsToDeleteManager, tableView: tableView, uid: uid)
+        buttonManager.load(controller: self, delegate: self, itemsToDeleteManager: itemsToDeleteManager, tableView: tableView, uid: uid)
         convosManager.load(convosOwner: uid, tableView: tableView)
         unreadCountManager.load(uid: uid, controller: self)
 

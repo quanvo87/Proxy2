@@ -89,14 +89,17 @@ extension UInt {
 }
 
 extension UINavigationItem {
-    func toggleRightBarButtonItem(atIndex index: Int) {
-        if let item = self.rightBarButtonItems?[safe: index] {
-            item.isEnabled = !item.isEnabled
-        }
+    func disableRightBarButtonItem(atIndex index: Int) {
+        guard let item = self.rightBarButtonItems?[safe: index] else { return }
+        item.isEnabled = false
+    }
+
+    func enableRightBarButtonItem(atIndex index: Int) {
+        guard let item = self.rightBarButtonItems?[safe: index] else { return }
+        item.isEnabled = false
     }
 }
 
-// delete
 extension UIStoryboard {
     static let storyboard: UIStoryboard = {
         return UIStoryboard(name: "Main", bundle: nil)
