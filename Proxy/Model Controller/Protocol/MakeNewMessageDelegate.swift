@@ -4,12 +4,11 @@ protocol MakeNewMessageDelegate: class {
     var newConvo: Convo? { get set }
 }
 
-extension MakeNewMessageDelegate where Self: UIViewController {
-    func showMakeNewMessageController(_ sender: Proxy? = nil) {
-        guard let makeNewMessageController = UIStoryboard.storyboard.instantiateViewController(withIdentifier: Name.makeNewMessageViewController) as? MakeNewMessageViewController else { return }
-        makeNewMessageController.delegate = self
-        makeNewMessageController.sender = sender
-        let navigationController = UINavigationController(rootViewController: makeNewMessageController)
-        present(navigationController, animated: true)
+extension MakeNewMessageDelegate {
+    func showMakeNewMessageController(controller: UIViewController?, sender: Proxy?, uid: String) {
+        guard let viewController = UIStoryboard.storyboard.instantiateViewController(withIdentifier: Name.makeNewMessageViewController) as? MakeNewMessageViewController else { return }
+        viewController.load(delegate: self, sender: sender, uid: uid)
+        let navigationController = UINavigationController(rootViewController: viewController)
+        controller?.present(navigationController, animated: true)
     }
 }

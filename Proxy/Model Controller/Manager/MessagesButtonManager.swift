@@ -66,6 +66,6 @@ class MessagesButtonManager: ButtonManaging {
     }
 
     func _showMakeNewMessageController() {
-        controller?.showMakeNewMessageController()
+        controller?.showMakeNewMessageController(controller: controller, sender: nil, uid: uid)
     }
 }

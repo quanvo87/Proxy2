@@ -12,12 +12,17 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
 
     init(_ uid: String) {
         self.uid = uid
+        
         super.init(nibName: nil, bundle: nil)
-        buttonManager.load(controller: self, itemsToDeleteManager: itemsToDeleteManager, proxiesManager: proxiesManager, tableView: tableView, uid: uid)
+
+        navigationItem.title = "Proxies"
+
         dataSource.load(manager: proxiesManager, showDisclosureIndicator: true)
         delegate.load(controller: self, itemsToDeleteManager: itemsToDeleteManager, proxiesManager: proxiesManager)
-        navigationItem.title = "Proxies"
+
+        buttonManager.load(controller: self, itemsToDeleteManager: itemsToDeleteManager, proxiesManager: proxiesManager, tableView: tableView, uid: uid)
         proxiesManager.load(uid: uid, tableView: tableView)
+
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.dataSource = dataSource
         tableView.delegate = delegate
@@ -25,9 +30,10 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
         tableView.register(UINib(nibName: Name.proxiesTableViewCell, bundle: nil), forCellReuseIdentifier: Name.proxiesTableViewCell)
         tableView.rowHeight = 60
         tableView.separatorStyle = .none
+
         view.addSubview(tableView)
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         if let newConvo = newConvo {

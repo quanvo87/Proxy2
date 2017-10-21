@@ -17,18 +17,18 @@ extension AuthManager: AuthManaging {
         if (user.displayName == nil || user.displayName == ""), let email = user.email, email != "" {
             let changeRequest = user.createProfileChangeRequest()
             changeRequest.displayName = email
-            changeRequest.commitChanges { (error) in
-                guard error == nil else { return }
-                user.reload { (error) in
-                    guard error == nil, let user = Auth.auth.currentUser else { return }
-                    self.delegate?.window.rootViewController = TabBarController(displayName: user.displayName ?? "", uid: user.uid)
-                    self.loggedIn = true
-                    return
-                }
-            }
+            changeRequest.commitChanges()
+            logIn(displayName: email, uid: user.uid)
         }
-        delegate?.window.rootViewController = TabBarController(displayName: user.displayName ?? "", uid: user.uid)
+        logIn(displayName: user.displayName ?? "", uid: user.uid)
+    }
+
+    private func logIn(displayName: String, uid: String) {
+        delegate?.window.rootViewController = TabBarController(displayName: displayName, uid: uid)
         loggedIn = true
+        Shared.shared.queue.async {
+            DBProxy.fixConvoCounts(uid: uid) { _ in }
+        }
     }
 
     func logOut() {

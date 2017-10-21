@@ -13,12 +13,18 @@ class MessagesViewController: UIViewController, MakeNewMessageDelegate {
 
     init(_ uid: String) {
         self.uid = uid
+        
         super.init(nibName: nil, bundle: nil)
-        buttonManager.load(controller: self, itemsToDeleteManager: itemsToDeleteManager, tableView: tableView, uid: uid)
-        convosManager.load(convosOwner: uid, tableView: tableView)
+
+        navigationItem.title = "Messages"
+
         dataSource.load(manager: convosManager)
         delegate.load(controller: self, convosManager: convosManager, itemsToDeleteManager: itemsToDeleteManager)
-        navigationItem.title = "Messages"
+
+        buttonManager.load(controller: self, itemsToDeleteManager: itemsToDeleteManager, tableView: tableView, uid: uid)
+        convosManager.load(convosOwner: uid, tableView: tableView)
+        unreadCountManager.load(uid: uid, controller: self)
+
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.dataSource = dataSource
         tableView.delegate = delegate
@@ -26,11 +32,8 @@ class MessagesViewController: UIViewController, MakeNewMessageDelegate {
         tableView.register(UINib(nibName: Name.convosTableViewCell, bundle: nil), forCellReuseIdentifier: Name.convosTableViewCell)
         tableView.rowHeight = 80
         tableView.separatorStyle = .none
-        unreadCountManager.load(uid: uid, controller: self)
+
         view.addSubview(tableView)
-        Shared.shared.queue.async {
-            DBProxy.fixConvoCounts(uid: self.uid) { _ in }
-        }
     }
 
     override func viewWillAppear(_ animated: Bool) {

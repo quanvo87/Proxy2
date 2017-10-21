@@ -2,23 +2,33 @@ import UIKit
 
 class MakeNewMessageViewController: UIViewController, UITextViewDelegate, SenderPickerDelegate {
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
-    @IBOutlet weak var makeNewProxyButton: UIButton?
+    @IBOutlet weak var makeNewProxyButton: UIButton!
     @IBOutlet weak var messageTextView: UITextView!
-    @IBOutlet weak var pickReceiverButton: UIButton?
-    @IBOutlet weak var pickSenderButton: UIButton?
-    @IBOutlet weak var sendMessageButton: UIButton?
-    weak var delegate: MakeNewMessageDelegate?
+    @IBOutlet weak var pickReceiverButton: UIButton!
+    @IBOutlet weak var pickSenderButton: UIButton!
+    @IBOutlet weak var sendMessageButton: UIButton!
+    private var uid = String()
     var receiver: Proxy? { didSet { setReceiverButtonTitle() } }
     var sender: Proxy? { didSet { setSenderButtonTitle() } }
+    private weak var delegate: MakeNewMessageDelegate?
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        navigationItem.title = "New Message"
+        navigationItem.rightBarButtonItem = UIBarButtonItem.makeButton(target: self, action: #selector(cancelMakingNewMessage), imageName: .cancel)
+
         messageTextView.becomeFirstResponder()
         messageTextView.delegate = self
-        navigationItem.rightBarButtonItem = UIBarButtonItem.makeButton(target: self, action: #selector(cancelMakingNewMessage), imageName: .cancel)
-        navigationItem.title = "New Message"
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: view.window)
+
         setSenderButtonTitle()
+    }
+
+    func load(delegate: MakeNewMessageDelegate, sender: Proxy?, uid: String) {
+        self.delegate = delegate
+        self.sender = sender
+        self.uid = uid
     }
 
     deinit {
@@ -46,21 +56,19 @@ extension MakeNewMessageViewController {
 private extension MakeNewMessageViewController {
     @IBAction func makeNewProxy() {
         disableButtons()
-//        DBProxy.makeProxy(forUser: uid) { (result) in
-//            switch result {
-//            case .failure(let error):
-//                self.showAlert("Error Making New Proxy", message: error.description)
-//                self.enableButtons()
-//            case .success(let newProxy):
-//                self.sender = newProxy
-//            }
-//        }
+        DBProxy.makeProxy(forUser: uid) { (result) in
+            switch result {
+            case .failure(let error):
+                self.showAlert("Error Making New Proxy", message: error.description)
+                self.enableButtons()
+            case .success(let newProxy):
+                self.sender = newProxy
+            }
+        }
     }
 
     @IBAction func sendMessage() {
-        guard let sender = sender, let receiver = receiver else {
-            return
-        }
+        guard let sender = sender, let receiver = receiver else { return }
         disableButtons()
         DBMessage.sendMessage(from: sender, to: receiver, withText: messageTextView.text) { (result) in
             guard let (_, convo) = result else {
@@ -74,8 +82,8 @@ private extension MakeNewMessageViewController {
     }
 
     @IBAction func showReceiverPickerAlert() {
-        let receiverPicker = ReceiverPicker()
-        receiverPicker.load(self)
+        let receiverPicker = ReceiverPicker(self)
+        receiverPicker.load()
     }
 
     @IBAction func showSenderPickerController() {
