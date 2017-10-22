@@ -8,9 +8,19 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate, Sender
     @IBOutlet weak var pickSenderButton: UIButton!
     @IBOutlet weak var sendMessageButton: UIButton!
     private var uid = String()
+    private weak var delegate: MakeNewMessageDelegate?
     var receiver: Proxy? { didSet { setReceiverButtonTitle() } }
     var sender: Proxy? { didSet { setSenderButtonTitle() } }
-    private weak var delegate: MakeNewMessageDelegate?
+
+    static func make(delegate: MakeNewMessageDelegate, sender: Proxy?, uid: String) -> MakeNewMessageViewController? {
+        guard let controller = MakeNewMessageViewController.make() else {
+            return nil
+        }
+        controller.delegate = delegate
+        controller.sender = sender
+        controller.uid = uid
+        return controller
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,15 +35,13 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate, Sender
         setSenderButtonTitle()
     }
 
-    func load(delegate: MakeNewMessageDelegate, sender: Proxy?, uid: String) {
-        self.delegate = delegate
-        self.sender = sender
-        self.uid = uid
-    }
-
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
+}
+
+extension MakeNewMessageViewController: StoryboardMakable {
+    static var identifier: String { return Name.makeNewMessageViewController }
 }
 
 extension MakeNewMessageViewController {

@@ -6,8 +6,8 @@ protocol MakeNewMessageDelegate: class {
 
 extension MakeNewMessageDelegate {
     func showMakeNewMessageController(controller: UIViewController?, sender: Proxy?, uid: String) {
-        guard let viewController = UIStoryboard.storyboard.instantiateViewController(withIdentifier: Name.makeNewMessageViewController) as? MakeNewMessageViewController else { return }
-        viewController.load(delegate: self, sender: sender, uid: uid)
-        controller?.present(UINavigationController(rootViewController: viewController), animated: true)
+        guard let viewController = MakeNewMessageViewController.make(delegate: self, sender: sender, uid: uid) else { return }
+        let navigationController = UINavigationController(rootViewController: viewController)
+        controller?.present(navigationController, animated: true)
     }
 }

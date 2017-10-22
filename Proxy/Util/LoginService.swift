@@ -37,7 +37,7 @@ struct LoginService {
             switch loginResult {
             case .success:
                 let credential = FacebookAuthProvider.credential(withAccessToken: FBSDKAccessToken.current().tokenString)
-                Auth.auth.signIn(with: credential) { (user, error) in
+                Auth.auth.signIn(with: credential) { (_, error) in
                     if let error = error {
                         completion(error)
                     }

@@ -34,7 +34,3 @@ class SenderPickerViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 }
-
-protocol SenderPickerDelegate: class {
-    var sender: Proxy? { get set }
-}

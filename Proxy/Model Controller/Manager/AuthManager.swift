@@ -29,7 +29,7 @@ extension AuthManager: AuthManaging {
     func logOut() {
         guard
             loggedIn,
-            let loginController = UIStoryboard.storyboard.instantiateViewController(withIdentifier: Name.loginViewController) as? LoginViewController else {
+            let loginController = LoginViewController.make() else {
                 return
         }
         delegate?.window.rootViewController = loginController

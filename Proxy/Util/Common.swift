@@ -96,7 +96,7 @@ extension UINavigationItem {
 
     func enableRightBarButtonItem(atIndex index: Int) {
         guard let item = self.rightBarButtonItems?[safe: index] else { return }
-        item.isEnabled = false
+        item.isEnabled = true
     }
 }
 
