@@ -15,8 +15,9 @@ class ConvoIconsManager: ConvoIconsManaging {
         }
     }
 
-    var receiverIcon = String() {
+    var receiverIcon: String? {
         didSet {
+            guard let receiverIcon = receiverIcon else { return }
             UIImage.makeImage(named: receiverIcon) { (image) in
                 guard let image = image else { return }
                 self.icons[self.receiverId] = JSQMessagesAvatarImage(placeholder: image)
@@ -24,8 +25,9 @@ class ConvoIconsManager: ConvoIconsManaging {
         }
     }
 
-    var senderIcon = String() {
+    var senderIcon: String? {
         didSet {
+            guard let senderIcon = senderIcon else { return }
             UIImage.makeImage(named: senderIcon) { (image) in
                 guard let image = image else { return }
                 self.icons[self.senderId] = JSQMessagesAvatarImage(placeholder: image)

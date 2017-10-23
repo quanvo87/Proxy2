@@ -35,6 +35,7 @@
 		5958D5061F6C140100B07B0F /* MessagesSentObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5958D5051F6C140100B07B0F /* MessagesSentObserver.swift */; };
 		5958D5081F6C15EA00B07B0F /* ProxiesInteractedWithObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5958D5071F6C15EA00B07B0F /* ProxiesInteractedWithObserver.swift */; };
 		5958D50A1F6C18B600B07B0F /* MeTableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5958D5091F6C18B600B07B0F /* MeTableViewDelegate.swift */; };
+		5958E34A1F9D5E8D00CC0560 /* SenderProxyTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5958E3491F9D5E8D00CC0560 /* SenderProxyTableViewCell.xib */; };
 		595A25DC1F704F36005D82F1 /* ConvoIsActiveChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 595A25DB1F704F36005D82F1 /* ConvoIsActiveChecker.swift */; };
 		596D7FD41F62EC1100E6AF8D /* ProxiesTableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596D7FD31F62EC1100E6AF8D /* ProxiesTableViewDelegate.swift */; };
 		59710E3E1F7237EB00C39857 /* SenderNicknameObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59710E3D1F7237EB00C39857 /* SenderNicknameObserver.swift */; };
@@ -71,7 +72,7 @@
 		5973C8641F608A2200647492 /* ProxiesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8311F608A1D00647492 /* ProxiesViewController.swift */; };
 		5973C8651F608A2200647492 /* Proxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8321F608A1E00647492 /* Proxy.swift */; };
 		5973C8671F608A2200647492 /* IconPickerCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8341F608A1E00647492 /* IconPickerCollectionViewCell.swift */; };
-		5973C8681F608A2200647492 /* ProxyTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8351F608A1E00647492 /* ProxyTableViewController.swift */; };
+		5973C8681F608A2200647492 /* ProxyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8351F608A1E00647492 /* ProxyViewController.swift */; };
 		5973C8691F608A2200647492 /* loadProxyNameNouns.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8361F608A1F00647492 /* loadProxyNameNouns.swift */; };
 		5973C86A1F608A2200647492 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8371F608A1F00647492 /* Message.swift */; };
 		5973C86B1F608A2200647492 /* Convo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8381F608A1F00647492 /* Convo.swift */; };
@@ -181,6 +182,7 @@
 		5958D5051F6C140100B07B0F /* MessagesSentObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesSentObserver.swift; sourceTree = "<group>"; };
 		5958D5071F6C15EA00B07B0F /* ProxiesInteractedWithObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxiesInteractedWithObserver.swift; sourceTree = "<group>"; };
 		5958D5091F6C18B600B07B0F /* MeTableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeTableViewDelegate.swift; sourceTree = "<group>"; };
+		5958E3491F9D5E8D00CC0560 /* SenderProxyTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SenderProxyTableViewCell.xib; sourceTree = "<group>"; };
 		595A25DB1F704F36005D82F1 /* ConvoIsActiveChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoIsActiveChecker.swift; sourceTree = "<group>"; };
 		596D7FD31F62EC1100E6AF8D /* ProxiesTableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxiesTableViewDelegate.swift; sourceTree = "<group>"; };
 		59710E3D1F7237EB00C39857 /* SenderNicknameObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SenderNicknameObserver.swift; sourceTree = "<group>"; };
@@ -216,7 +218,7 @@
 		5973C8311F608A1D00647492 /* ProxiesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxiesViewController.swift; sourceTree = "<group>"; };
 		5973C8321F608A1E00647492 /* Proxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Proxy.swift; sourceTree = "<group>"; };
 		5973C8341F608A1E00647492 /* IconPickerCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IconPickerCollectionViewCell.swift; sourceTree = "<group>"; };
-		5973C8351F608A1E00647492 /* ProxyTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyTableViewController.swift; sourceTree = "<group>"; };
+		5973C8351F608A1E00647492 /* ProxyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyViewController.swift; sourceTree = "<group>"; };
 		5973C8361F608A1F00647492 /* loadProxyNameNouns.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = loadProxyNameNouns.swift; sourceTree = "<group>"; };
 		5973C8371F608A1F00647492 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		5973C8381F608A1F00647492 /* Convo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Convo.swift; sourceTree = "<group>"; };
@@ -341,7 +343,7 @@
 				590441EA1F98351E0015CE16 /* MessagesViewController.swift */,
 				5973C8431F608A2100647492 /* MeViewController.swift */,
 				5973C8311F608A1D00647492 /* ProxiesViewController.swift */,
-				5973C8351F608A1E00647492 /* ProxyTableViewController.swift */,
+				5973C8351F608A1E00647492 /* ProxyViewController.swift */,
 				5973C8441F608A2100647492 /* SenderPickerViewController.swift */,
 				59FF37411F97A6AA00FA1AF0 /* TabBarController.swift */,
 			);
@@ -562,6 +564,7 @@
 				5954AE171F9A4E95004A351F /* ProxiesTableViewCell.xib */,
 				5973C81F1F608A1B00647492 /* ReceiverProxyTableViewCell.swift */,
 				5973C82B1F608A1D00647492 /* SenderProxyTableViewCell.swift */,
+				5958E3491F9D5E8D00CC0560 /* SenderProxyTableViewCell.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -744,6 +747,7 @@
 				59C171B11F60C64500EDE032 /* arabiangulf.mp4 in Resources */,
 				59B432E51F60648400622DEA /* Main.storyboard in Resources */,
 				5988E8321F9A5A7E002C8C95 /* ConvosTableViewCell.xib in Resources */,
+				5958E34A1F9D5E8D00CC0560 /* SenderProxyTableViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1045,7 +1049,7 @@
 				5921CE631F85F7E600C9DDA5 /* ReceiverIconManaging.swift in Sources */,
 				5973C84A1F608A2200647492 /* ConvosTableViewCell.swift in Sources */,
 				5973C8561F608A2200647492 /* LoginViewController.swift in Sources */,
-				5973C8681F608A2200647492 /* ProxyTableViewController.swift in Sources */,
+				5973C8681F608A2200647492 /* ProxyViewController.swift in Sources */,
 				5973C8781F608A2200647492 /* ButtonManaging.swift in Sources */,
 				593D7D441F851F7D00D3FBD5 /* MessagesReceivedManager.swift in Sources */,
 				5973C8611F608A2200647492 /* DB.swift in Sources */,

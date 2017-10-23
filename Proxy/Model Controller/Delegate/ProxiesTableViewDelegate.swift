@@ -25,9 +25,8 @@ extension ProxiesTableViewDelegate: UITableViewDelegate {
             itemsToDeleteManager?.itemsToDelete[proxy.key] = proxy
         } else {
             tableView.deselectRow(at: indexPath, animated: true)
-            guard let proxyVC = UIStoryboard.storyboard.instantiateViewController(withIdentifier: Name.proxyTableViewController) as? ProxyTableViewController else { return }
-//            proxyVC.proxy = proxy
-            controller?.navigationController?.pushViewController(proxyVC, animated: true)
+            let proxyController = ProxyViewController(proxy)
+            controller?.navigationController?.pushViewController(proxyController, animated: true)
         }
     }
 

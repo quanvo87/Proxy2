@@ -1,15 +1,14 @@
 import UIKit
 
 class ProxyTableViewDataSource: NSObject {
-    private weak var controller: UITableViewController?
+    private weak var controller: UIViewController?
     private weak var convosManager: ConvosManaging?
     private weak var proxyManager: ProxyManaging?
 
-    func load(controller: UITableViewController, convosManager: ConvosManaging, proxyManager: ProxyManaging) {
+    func load(controller: UIViewController, convosManager: ConvosManaging, proxyManager: ProxyManaging) {
         self.controller = controller
         self.convosManager = convosManager
         self.proxyManager = proxyManager
-        controller.tableView.dataSource = self
     }
 }
 

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13174"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="SenderProxyTableViewCell" rowHeight="140" id="UWR-DI-jdj" userLabel="Sender Proxy Cell" customClass="SenderProxyTableViewCell" customModule="Proxy" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="140"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="UWR-DI-jdj" id="Lse-gE-3B6">
+                <rect key="frame" x="0.0" y="0.0" width="375" height="139.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Aa1-93-vLA">
+                        <rect key="frame" x="18" y="8" width="96" height="96"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="96" id="9HS-9N-1IC"/>
+                            <constraint firstAttribute="width" constant="96" id="MbN-Tx-vBg"/>
+                        </constraints>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="12" translatesAutoresizingMaskIntoConstraints="NO" id="DOh-hd-EB3">
+                        <rect key="frame" x="124" y="18" width="233" height="46"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="38"/>
+                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Fyx-pn-mfd" userLabel="Change Icon Button">
+                        <rect key="frame" x="31" y="104" width="71" height="27"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                        <state key="normal" title="Change Icon"/>
+                    </button>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FSi-6G-NZ9">
+                        <rect key="frame" x="124" y="69" width="233" height="39"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="22"/>
+                        <state key="normal" title="Enter A Nickname"/>
+                    </button>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="DOh-hd-EB3" firstAttribute="leading" secondItem="Aa1-93-vLA" secondAttribute="trailing" constant="10" id="5ec-TN-DH9"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="FSi-6G-NZ9" secondAttribute="trailing" constant="10" id="9gf-SD-jIv"/>
+                    <constraint firstItem="FSi-6G-NZ9" firstAttribute="top" secondItem="DOh-hd-EB3" secondAttribute="bottom" constant="5" id="Byp-aJ-gSH"/>
+                    <constraint firstItem="Fyx-pn-mfd" firstAttribute="top" secondItem="Aa1-93-vLA" secondAttribute="bottom" id="FcA-2G-fZa"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="DOh-hd-EB3" secondAttribute="trailing" constant="10" id="azF-8F-Ssh"/>
+                    <constraint firstItem="Aa1-93-vLA" firstAttribute="top" secondItem="Lse-gE-3B6" secondAttribute="topMargin" id="ekM-p5-JYp"/>
+                    <constraint firstItem="Aa1-93-vLA" firstAttribute="leading" secondItem="Lse-gE-3B6" secondAttribute="leadingMargin" constant="10" id="hrl-Io-9tm"/>
+                    <constraint firstItem="DOh-hd-EB3" firstAttribute="top" secondItem="Lse-gE-3B6" secondAttribute="topMargin" constant="10" id="jzw-zM-0av"/>
+                    <constraint firstItem="FSi-6G-NZ9" firstAttribute="leading" secondItem="DOh-hd-EB3" secondAttribute="leading" id="pbx-Qw-tBb"/>
+                    <constraint firstItem="Fyx-pn-mfd" firstAttribute="centerX" secondItem="Aa1-93-vLA" secondAttribute="centerX" id="wZB-HH-TZe"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="changeIconButton" destination="Fyx-pn-mfd" id="SCE-Fg-ggu"/>
+                <outlet property="iconImageView" destination="Aa1-93-vLA" id="B6z-am-EU9"/>
+                <outlet property="nameLabel" destination="DOh-hd-EB3" id="Rmh-RW-8tv"/>
+                <outlet property="nicknameButton" destination="FSi-6G-NZ9" id="9HZ-IN-P5B"/>
+            </connections>
+        </tableViewCell>
+    </objects>
+</document>

@@ -16,14 +16,14 @@ class ConvoNicknamesManager: ConvoNicknamesManaging {
         }
     }
 
-    var receiverNickname = String() {
+    var receiverNickname = "" {
         didSet {
             nicknames[receiverId] = receiverNickname == "" ? receiverProxyName : receiverNickname
             navigationItem?.title = nicknames[receiverId]
         }
     }
 
-    var senderNickname = String() {
+    var senderNickname = "" {
         didSet {
             nicknames[senderId] = senderNickname == "" ? senderProxyName : senderNickname
         }
