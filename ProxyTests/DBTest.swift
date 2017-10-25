@@ -1,15 +1,14 @@
+import Firebase
 import FirebaseAuth
 import FirebaseDatabase
 import XCTest
 @testable import Proxy
 
 class DBTest: XCTestCase {
-    private let auth = Auth.auth(app: Shared.shared.firebase!)
-    private var handle: AuthStateDidChangeListenerHandle?
-
+    private let auth = Auth.auth(app: FirebaseApp.app!)
     private let email = "ahettisele-0083@yopmail.com"
     private let password = "BGbN92GY6_W+rR!Q"
-
+    
     static let uid = "bKx62eEMy9gbynfbxvVsAr3nXQJ2"
     static let testUser = "test user"
     static let text = "🤤"
@@ -23,34 +22,24 @@ class DBTest: XCTestCase {
                 expectation.fulfill()
             }
         } else {
-            do {
-                try auth.signOut()
-            }
-            catch {
-                XCTFail()
-            }
-
-            handle = auth.addStateDidChangeListener { (auth, user) in
-                if user != nil {
+            auth.addStateDidChangeListener { (auth, user) in
+                if user?.uid == DBTest.uid {
                     DBTest.clearDB {
                         expectation.fulfill()
                     }
                 } else {
+                    do {
+                        try auth.signOut()
+                    }
+                    catch {
+                        XCTFail()
+                    }
                     auth.signIn(withEmail: self.email, password: self.password) { (_, error) in
                         XCTAssertNil(error)
                     }
                 }
             }
         }
-    }
-
-    private static func clearCache() {
-        Shared.shared.cache.removeAllObjects()
-    }
-
-    private static func clearWorkGroups() {
-        XCTAssert(Shared.shared.asyncWorkGroups.isEmpty)
-        Shared.shared.asyncWorkGroups.removeAll()
     }
 
     private static func clearDB(completion: @escaping () -> Void) {

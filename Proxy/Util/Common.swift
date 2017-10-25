@@ -1,3 +1,4 @@
+import Firebase
 import FirebaseAuth
 import UIKit
 
@@ -21,6 +22,12 @@ extension Collection {
     }
 }
 
+extension DispatchQueue {
+    static let queue: DispatchQueue = {
+        return DispatchQueue(label: "proxyQueue")
+    }()
+}
+
 extension Double {
     var asTimeAgo: String {
         return NSDate(timeIntervalSince1970: self).formattedAsTimeAgo()
@@ -30,6 +37,12 @@ extension Double {
         let secondsAgo = -Date(timeIntervalSince1970: self).timeIntervalSinceNow
         return secondsAgo < Setting.newProxyBadgeDuration
     }
+}
+
+extension FirebaseApp {
+    static let app: FirebaseApp? = {
+        return FirebaseApp.app()
+    }()
 }
 
 extension Int {
@@ -75,7 +88,7 @@ extension UIColor {
 
 extension UIImage {
     static func makeImage(named image: String, completion: @escaping (UIImage?) -> Void) {
-        Shared.shared.queue.async {
+        DispatchQueue.queue.async {
             completion(UIImage(named: image))
         }
     }

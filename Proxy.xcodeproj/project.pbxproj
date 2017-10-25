@@ -107,6 +107,7 @@
 		5988E8341F9A5EF9002C8C95 /* MeTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5988E8331F9A5EF9002C8C95 /* MeTableViewCell.xib */; };
 		598F068A1F60AF060066B742 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598F06891F60AF060066B742 /* API.swift */; };
 		599B8D411F98610C002F394A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599B8D401F98610C002F394A /* AppDelegate.swift */; };
+		59A0D5431FA0ED4B00B930B4 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59A0D5421FA0ED4B00B930B4 /* Cache.swift */; };
 		59AC04B61F6BFCFD00DB580B /* MessagesReceivedObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59AC04B51F6BFCFD00DB580B /* MessagesReceivedObserver.swift */; };
 		59AC04B81F6C049100DB580B /* MeTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59AC04B71F6C049100DB580B /* MeTableViewDataSource.swift */; };
 		59AF0E7C1F7B5129009F6F38 /* ProxiesButtonManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59AF0E7B1F7B5129009F6F38 /* ProxiesButtonManager.swift */; };
@@ -255,6 +256,7 @@
 		5988E8331F9A5EF9002C8C95 /* MeTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MeTableViewCell.xib; sourceTree = "<group>"; };
 		598F06891F60AF060066B742 /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		599B8D401F98610C002F394A /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		59A0D5421FA0ED4B00B930B4 /* Cache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
 		59AC04B51F6BFCFD00DB580B /* MessagesReceivedObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesReceivedObserver.swift; sourceTree = "<group>"; };
 		59AC04B71F6C049100DB580B /* MeTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeTableViewDataSource.swift; sourceTree = "<group>"; };
 		59AF0E7B1F7B5129009F6F38 /* ProxiesButtonManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxiesButtonManager.swift; sourceTree = "<group>"; };
@@ -591,6 +593,7 @@
 				59C6138E1F9F7EFE0014F414 /* Proxy Service */,
 				598F06891F60AF060066B742 /* API.swift */,
 				5973C8251F608A1C00647492 /* AsyncWorkGroupKey.swift */,
+				59A0D5421FA0ED4B00B930B4 /* Cache.swift */,
 				5973C8291F608A1C00647492 /* Common.swift */,
 				5973C83F1F608A2000647492 /* Constant.swift */,
 				595A25DB1F704F36005D82F1 /* ConvoIsActiveChecker.swift */,
@@ -986,6 +989,7 @@
 				5973C8571F608A2200647492 /* MakeNewMessageViewController.swift in Sources */,
 				594D2A501F6B0CDD00ECCF06 /* IconPickerCollectionViewDataSource.swift in Sources */,
 				5973C8531F608A2200647492 /* ReceiverProxyTableViewCell.swift in Sources */,
+				59A0D5431FA0ED4B00B930B4 /* Cache.swift in Sources */,
 				5958D5081F6C15EA00B07B0F /* ProxiesInteractedWithObserver.swift in Sources */,
 				591F9A4D1F866D1D00FDD294 /* SenderIconObserver.swift in Sources */,
 				59B5007D1F6A3469002D4C29 /* ReceiverPicker.swift in Sources */,

@@ -21,7 +21,7 @@ extension AuthManager: AuthManaging {
         }
         delegate?.window?.rootViewController = TabBarController(displayName: user.displayName ?? user.email ?? "", uid: user.uid)
         loggedIn = true
-        Shared.shared.queue.async {
+        DispatchQueue.queue.async {
             DBProxy.fixConvoCounts(uid: user.uid) { _ in }
         }
     }
