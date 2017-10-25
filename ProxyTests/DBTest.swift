@@ -5,12 +5,12 @@ import XCTest
 
 class DBTest: XCTestCase {
     private let auth = Auth.auth(app: Shared.shared.firebase!)
-    private weak var handle: AuthStateDidChangeListenerHandle?
-    
-    private let uid = "bKx62eEMy9gbynfbxvVsAr3nXQJ2"
+    private var handle: AuthStateDidChangeListenerHandle?
+
     private let email = "ahettisele-0083@yopmail.com"
     private let password = "BGbN92GY6_W+rR!Q"
-    
+
+    static let uid = "bKx62eEMy9gbynfbxvVsAr3nXQJ2"
     static let testUser = "test user"
     static let text = "🤤"
 
@@ -18,17 +18,20 @@ class DBTest: XCTestCase {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        if Shared.shared.uid == uid {
+        if auth.currentUser?.uid == DBTest.uid {
             DBTest.clearDB {
                 expectation.fulfill()
             }
-            
         } else {
-            try! auth.signOut()
-            
+            do {
+                try auth.signOut()
+            }
+            catch {
+                XCTFail()
+            }
+
             handle = auth.addStateDidChangeListener { (auth, user) in
-                if let uid = user?.uid {
-                    Shared.shared.uid = uid
+                if user != nil {
                     DBTest.clearDB {
                         expectation.fulfill()
                     }
@@ -40,16 +43,6 @@ class DBTest: XCTestCase {
             }
         }
     }
-    
-//    override func tearDown() {
-//        let expectation = self.expectation(description: #function)
-//        defer { waitForExpectations(timeout: 10) }
-//        DBTest.clearCache()
-//        DBTest.clearWorkGroups()
-//        DBTest.clearDB {
-//            expectation.fulfill()
-//        }
-//    }
 
     private static func clearCache() {
         Shared.shared.cache.removeAllObjects()
@@ -83,7 +76,7 @@ extension DBTest {
         }
     }
 
-    static func makeProxy(withName name: String? = nil, forUser uid: String = Shared.shared.uid, completion: @escaping (Proxy) -> Void) {
+    static func makeProxy(withName name: String? = nil, forUser uid: String = DBTest.uid, completion: @escaping (Proxy) -> Void) {
         DBProxy.makeProxy(withName: name, forUser: uid) { (result) in
             switch result {
             case .failure: XCTFail()

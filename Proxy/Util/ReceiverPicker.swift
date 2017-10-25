@@ -1,11 +1,13 @@
 import UIKit
 
 class ReceiverPicker {
+    private let uid: String
     weak var okAction: UIAlertAction?
     weak var controller: MakeNewMessageViewController?
 
-    init(_ controller: MakeNewMessageViewController) {
+    init(controller: MakeNewMessageViewController, uid: String) {
         self.controller = controller
+        self.uid = uid
     }
 
     func load() {
@@ -32,7 +34,7 @@ private extension ReceiverPicker {
                 self.showErrorAlert(title: "Receiver Not Found", message: "Please try again.")
                 return
             }
-            guard proxy.ownerId != Shared.shared.uid else {
+            guard proxy.ownerId != self.uid else {
                 self.showErrorAlert(title: "Cannot Send Message To Your Own Proxy", message: "Please try again.")
                 return
             }

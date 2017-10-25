@@ -19,7 +19,7 @@ extension AuthManager: AuthManaging {
             changeRequest.displayName = email
             changeRequest.commitChanges()
         }
-        delegate?.window.rootViewController = TabBarController(displayName: user.displayName ?? user.email ?? "", uid: user.uid)
+        delegate?.window?.rootViewController = TabBarController(displayName: user.displayName ?? user.email ?? "", uid: user.uid)
         loggedIn = true
         Shared.shared.queue.async {
             DBProxy.fixConvoCounts(uid: user.uid) { _ in }
@@ -32,7 +32,7 @@ extension AuthManager: AuthManaging {
             let loginController = LoginViewController.make() else {
                 return
         }
-        delegate?.window.rootViewController = loginController
+        delegate?.window?.rootViewController = loginController
         loggedIn = false
     }
 }

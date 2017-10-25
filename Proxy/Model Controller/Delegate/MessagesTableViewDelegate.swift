@@ -18,14 +18,12 @@ extension MessagesTableViewDelegate: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let convo = convos[safe: indexPath.row] else {
-            return
-        }
+        guard let convo = convos[safe: indexPath.row] else { return }
         if tableView.isEditing {
             itemsToDeleteManager?.itemsToDelete[convo.key] = convo
         } else {
             tableView.deselectRow(at: indexPath, animated: true)
-            controller?.showConvoController(convo)
+            controller?.showConvo(convo)
         }
     }
 

@@ -33,8 +33,8 @@ extension ProxyTableViewDataSource: UITableViewDataSource {
                 let proxy = proxy else {
                     return tableView.dequeueReusableCell(withIdentifier: Name.senderProxyTableViewCell, for: indexPath)
             }
-            cell.configure(proxy)
-            cell.changeIconButton.addTarget(self, action: #selector(showIconPickerController), for: .touchUpInside)
+            cell.load(proxy)
+            cell.changeIconButton.addTarget(self, action: #selector(showIconPicker), for: .touchUpInside)
             cell.nicknameButton.addTarget(self, action: #selector(editNickname), for: .touchUpInside)
             return cell
         case 1:
@@ -43,7 +43,7 @@ extension ProxyTableViewDataSource: UITableViewDataSource {
                 let convo = convos[safe: indexPath.row] else {
                     return tableView.dequeueReusableCell(withIdentifier: Name.convosTableViewCell, for: indexPath)
             }
-            cell.configure(convo)
+            cell.load(convo)
             return cell
         default:
             return UITableViewCell()
@@ -88,14 +88,8 @@ private extension ProxyTableViewDataSource {
         controller?.present(alert, animated: true, completion: nil)
     }
 
-    @objc func showIconPickerController() {
-        guard
-            let proxy = proxy,
-            let iconPickerCollectionViewController = controller?.storyboard?.instantiateViewController(withIdentifier: Name.iconPickerCollectionViewController) as? IconPickerCollectionViewController else {
-                return
-        }
-        iconPickerCollectionViewController.proxy = proxy
-        let navigationController = UINavigationController(rootViewController: iconPickerCollectionViewController)
-        controller?.present(navigationController, animated: true)
+    @objc func showIconPicker() {
+        guard let proxy = proxy else { return }
+        controller?.showIconPicker(proxy)
     }
 }

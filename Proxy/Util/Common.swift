@@ -40,6 +40,10 @@ extension Int {
     var asLabelWithParens: String {
         return self == 0 ? "" : " (\(self))"
     }
+
+    var random: Int {
+        return Int(arc4random_uniform(UInt32(self)))
+    }
 }
 
 extension String {
@@ -107,16 +111,22 @@ extension UIStoryboard {
 }
 
 extension UIViewController {
-    func showConvoController(_ convo: Convo) {
+    func showAlert(_ title: String?, message: String?) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
+    }
+
+    func showConvo(_ convo: Convo) {
         guard let convoViewController = storyboard?.instantiateViewController(withIdentifier: Name.convoViewController) as? ConvoViewController else { return }
         convoViewController.convo = convo
         navigationController?.pushViewController(convoViewController, animated: true)
     }
 
-    func showAlert(_ title: String?, message: String?) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-        present(alert, animated: true)
+    func showIconPicker(_ proxy: Proxy) {
+        let viewController = IconPickerViewController(proxy)
+        let navigationController = UINavigationController(rootViewController: viewController)
+        present(navigationController, animated: true)
     }
 }
 

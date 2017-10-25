@@ -7,7 +7,7 @@ class ConvosTableViewCell: UITableViewCell {
     @IBOutlet weak var timestampLabel: UILabel!
     @IBOutlet weak var unreadLabel: UILabel!    // delete
 
-    func configure(_ convo: Convo) {
+    func load(_ convo: Convo) {
         iconImageView.image = nil
         lastMessageLabel.text = convo.lastMessage
         timestampLabel.text = convo.timestamp.asTimeAgo

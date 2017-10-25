@@ -199,7 +199,7 @@ class ConvoDetailTableViewController: UITableViewController {
             cell.iconImageView.image = nil
 //            cell.iconImageView.kf.indicatorType = .activity
 //            cell.iconImageView.kf.setImage(with: senderIconURL, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
-            cell.changeIconButton.addTarget(self, action: #selector(ConvoDetailTableViewController.showIconPickerController), for: .touchUpInside)
+//            cell.changeIconButton.addTarget(self, action: #selector(ConvoDetailTableViewController.showIconPicker), for: .touchUpInside)
             cell.accessoryType = .disclosureIndicator
             return cell
             
@@ -320,10 +320,10 @@ class ConvoDetailTableViewController: UITableViewController {
     }
     
     @objc func showIconPickerController() {
-        api.getConvos(for: senderProxy!) { (convos) in
-            let dest = self.storyboard?.instantiateViewController(withIdentifier: Name.iconPickerCollectionViewController) as! IconPickerCollectionViewController
-            dest.proxy = self.senderProxy!
-            self.navigationController?.pushViewController(dest, animated: true)
-        }
+//        api.getConvos(for: senderProxy!) { (convos) in
+//            let dest = self.storyboard?.instantiateViewController(withIdentifier: Name.iconPickerCollectionViewController) as! IconPickerCollectionViewController
+//            dest.proxy = self.senderProxy!
+//            self.navigationController?.pushViewController(dest, animated: true)
+//        }
     }
 }

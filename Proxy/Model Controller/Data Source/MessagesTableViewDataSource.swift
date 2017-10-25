@@ -19,7 +19,7 @@ extension MessagesTableViewDataSource: UITableViewDataSource {
             let convo = convos[safe: indexPath.row] else {
                 return tableView.dequeueReusableCell(withIdentifier: Name.convosTableViewCell, for: indexPath)
         }
-        cell.configure(convo)
+        cell.load(convo)
         return cell
     }
 

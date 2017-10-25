@@ -27,7 +27,7 @@ class DBConvoTests: DBTest {
         defer { waitForExpectations(timeout: 10) }
 
         DBTest.makeConvo { (convo, _, _) in
-            DBConvo.getConvo(withKey: convo.key, belongingTo: Shared.shared.uid) { (retrievedConvo) in
+            DBConvo.getConvo(withKey: convo.key, belongingTo: DBTest.uid) { (retrievedConvo) in
                 XCTAssertEqual(retrievedConvo, convo)
                 expectation.fulfill()
             }
@@ -52,7 +52,7 @@ class DBConvoTests: DBTest {
         defer { waitForExpectations(timeout: 10) }
 
         DBTest.makeConvo { (convo, _, _) in
-            DBConvo.getConvos(forUser: Shared.shared.uid, filtered: false) { (convos) in
+            DBConvo.getConvos(forUser: DBTest.uid, filtered: false) { (convos) in
                 XCTAssertEqual(convos?.count, 1)
                 XCTAssertEqual(convos?[0], convo)
                 expectation.fulfill()
@@ -189,7 +189,7 @@ class DBConvoTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        DB.set(true, at: Child.userInfo, DBTest.testUser, Child.blockedUsers, Shared.shared.uid) { (success) in
+        DB.set(true, at: Child.userInfo, DBTest.testUser, Child.blockedUsers, DBTest.uid) { (success) in
             XCTAssert(success)
 
             DBTest.makeConvo { (convo, _, _) in
@@ -275,7 +275,7 @@ class DBConvoTests: DBTest {
             DB.set(true, at: Child.userInfo, convo.senderId, Child.isPresent, convo.key, Child.isPresent) { (success) in
                 XCTAssert(success)
 
-                DBConvo.userIsPresent(user: Shared.shared.uid, inConvoWithKey: convo.key) { (isPresent) in
+                DBConvo.userIsPresent(user: DBTest.uid, inConvoWithKey: convo.key) { (isPresent) in
                     XCTAssert(isPresent)
                     expectation.fulfill()
                 }

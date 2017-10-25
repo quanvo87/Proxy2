@@ -21,7 +21,7 @@ extension ProxiesTableViewDataSource: UITableViewDataSource {
             let proxy = proxies[safe: indexPath.row] else {
                 return tableView.dequeueReusableCell(withIdentifier: Name.proxiesTableViewCell, for: indexPath)
         }
-        cell.configure(proxy: proxy, showDisclosureIndicator: showDisclosureIndicator)
+        cell.load(proxy: proxy, showDisclosureIndicator: showDisclosureIndicator)
         return cell
     }
 

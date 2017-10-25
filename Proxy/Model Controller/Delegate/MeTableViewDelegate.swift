@@ -11,12 +11,12 @@ class MeTableViewDelegate: NSObject {
 
 extension MeTableViewDelegate: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
         switch indexPath.section {
         case 1:
             guard let blockedUsersVC = UIStoryboard.storyboard.instantiateViewController(withIdentifier: Name.blockedUsersTableViewController) as? BlockedUsersTableViewController else { return }
             controller?.navigationController?.pushViewController(blockedUsersVC, animated: true)
         case 2:
-            tableView.deselectRow(at: indexPath, animated: true)
             switch indexPath.row {
             case 0:
                 let alert = UIAlertController(title: "Log Out", message: "Are you sure you want to log out?", preferredStyle: .alert)
@@ -30,7 +30,8 @@ extension MeTableViewDelegate: UITableViewDelegate {
                 alert.addAction(UIAlertAction(title: "OK", style: .cancel) { action in
                 })
                 controller?.present(alert, animated: true)
-            default: return
+            default:
+                return
             }
         default:
             return

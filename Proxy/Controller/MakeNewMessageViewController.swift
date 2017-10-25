@@ -7,7 +7,7 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate, Sender
     @IBOutlet weak var pickReceiverButton: UIButton!
     @IBOutlet weak var pickSenderButton: UIButton!
     @IBOutlet weak var sendMessageButton: UIButton!
-    private var uid = String()
+    private var uid = ""
     private weak var delegate: MakeNewMessageDelegate?
     var receiver: Proxy? { didSet { setReceiverButtonTitle() } }
     var sender: Proxy? { didSet { setSenderButtonTitle() } }
@@ -26,7 +26,7 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate, Sender
         super.viewDidLoad()
 
         navigationItem.title = "New Message"
-        navigationItem.rightBarButtonItem = UIBarButtonItem.makeButton(target: self, action: #selector(cancelMakingNewMessage), imageName: .cancel)
+        navigationItem.rightBarButtonItem = UIBarButtonItem.makeButton(target: self, action: #selector(closeMakeNewMessageController), imageName: .cancel)
 
         messageTextView.becomeFirstResponder()
         messageTextView.delegate = self
@@ -89,8 +89,8 @@ private extension MakeNewMessageViewController {
         }
     }
 
-    @IBAction func showReceiverPickerAlert() {
-        let receiverPicker = ReceiverPicker(self)
+    @IBAction func showReceiverPickerController() {
+        let receiverPicker = ReceiverPicker(controller: self, uid: uid)
         receiverPicker.load()
     }
 
@@ -100,8 +100,7 @@ private extension MakeNewMessageViewController {
 }
 
 private extension MakeNewMessageViewController {
-    @objc func cancelMakingNewMessage() {
-        DBProxy.cancelCreatingProxy()
+    @objc func closeMakeNewMessageController() {
         disableButtons()
         dismiss(animated: true)
     }

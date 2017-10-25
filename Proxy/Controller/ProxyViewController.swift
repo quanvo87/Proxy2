@@ -42,7 +42,7 @@ class ProxyViewController: UIViewController, MakeNewMessageDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         if let newConvo = newConvo {
-            showConvoController(newConvo)
+            showConvo(newConvo)
             self.newConvo = nil
         }
     }

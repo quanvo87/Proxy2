@@ -15,7 +15,7 @@ class MeViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
 
         navigationItem.title = displayName
-
+        
         dataSource.load(messagesReceivedManager: messagesReceivedManager,
                         messagesSentManager: messagesSentManager,
                         proxiesInteractedWithManager: proxiesInteractedWithManager)
