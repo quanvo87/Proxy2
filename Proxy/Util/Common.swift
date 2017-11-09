@@ -98,7 +98,7 @@ extension UInt {
     var asStringWithCommas: String {
         var num = Double(self)
         num = fabs(num)
-        if let string = NumberFormatter.numberFormatter.string(from: NSNumber(integerLiteral: Int(num))) {
+        if let string = NumberFormatter.decimal.string(from: NSNumber(integerLiteral: Int(num))) {
             return string
         }
         return "-"
@@ -118,7 +118,7 @@ extension UINavigationItem {
 }
 
 extension UIStoryboard {
-    static let storyboard: UIStoryboard = {
+    static let main: UIStoryboard = {
         return UIStoryboard(name: "Main", bundle: nil)
     }()
 }
@@ -131,7 +131,7 @@ extension UIViewController {
     }
 
     func showConvo(_ convo: Convo) {
-        guard let convoViewController = storyboard?.instantiateViewController(withIdentifier: Name.convoViewController) as? ConvoViewController else { return }
+        guard let convoViewController = UIStoryboard.main.instantiateViewController(withIdentifier: Name.convoViewController) as? ConvoViewController else { return }
         convoViewController.convo = convo
         navigationController?.pushViewController(convoViewController, animated: true)
     }
@@ -144,7 +144,7 @@ extension UIViewController {
 }
 
 private extension NumberFormatter {
-    static let numberFormatter: NumberFormatter = {
+    static let decimal: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
         return formatter

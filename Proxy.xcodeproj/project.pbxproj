@@ -121,6 +121,7 @@
 		59C171B21F60C64500EDE032 /* beachpalm.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 59C171AE1F60C64400EDE032 /* beachpalm.mp4 */; };
 		59C171B31F60C64500EDE032 /* dragontailzipline.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 59C171AF1F60C64500EDE032 /* dragontailzipline.mp4 */; };
 		59C171B41F60C64500EDE032 /* hawaiiancoast.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 59C171B01F60C64500EDE032 /* hawaiiancoast.mp4 */; };
+		59D3AE501FA1A4FF009F18A5 /* ReceiverProxyTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 59D3AE4F1FA1A4FF009F18A5 /* ReceiverProxyTableViewCell.xib */; };
 		59D5F9351F7B173800FD5670 /* ProxiesManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D5F9341F7B173800FD5670 /* ProxiesManaging.swift */; };
 		59D7B7DB1F87072E0082599A /* ReceiverNicknameManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D7B7DA1F87072E0082599A /* ReceiverNicknameManaging.swift */; };
 		59D7B7DD1F8707630082599A /* SenderNicknameManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D7B7DC1F8707630082599A /* SenderNicknameManaging.swift */; };
@@ -277,6 +278,7 @@
 		59C171AE1F60C64400EDE032 /* beachpalm.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = beachpalm.mp4; sourceTree = "<group>"; };
 		59C171AF1F60C64500EDE032 /* dragontailzipline.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = dragontailzipline.mp4; sourceTree = "<group>"; };
 		59C171B01F60C64500EDE032 /* hawaiiancoast.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = hawaiiancoast.mp4; sourceTree = "<group>"; };
+		59D3AE4F1FA1A4FF009F18A5 /* ReceiverProxyTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ReceiverProxyTableViewCell.xib; sourceTree = "<group>"; };
 		59D5F9341F7B173800FD5670 /* ProxiesManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxiesManaging.swift; sourceTree = "<group>"; };
 		59D7B7DA1F87072E0082599A /* ReceiverNicknameManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiverNicknameManaging.swift; sourceTree = "<group>"; };
 		59D7B7DC1F8707630082599A /* SenderNicknameManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SenderNicknameManaging.swift; sourceTree = "<group>"; };
@@ -581,6 +583,7 @@
 				5973C8261F608A1C00647492 /* ProxiesTableViewCell.swift */,
 				5954AE171F9A4E95004A351F /* ProxiesTableViewCell.xib */,
 				5973C81F1F608A1B00647492 /* ReceiverProxyTableViewCell.swift */,
+				59D3AE4F1FA1A4FF009F18A5 /* ReceiverProxyTableViewCell.xib */,
 				5973C82B1F608A1D00647492 /* SenderProxyTableViewCell.swift */,
 				5958E3491F9D5E8D00CC0560 /* SenderProxyTableViewCell.xib */,
 			);
@@ -762,6 +765,7 @@
 				5954AE181F9A4E95004A351F /* ProxiesTableViewCell.xib in Resources */,
 				59C171B31F60C64500EDE032 /* dragontailzipline.mp4 in Resources */,
 				59B432E71F60648400622DEA /* Assets.xcassets in Resources */,
+				59D3AE501FA1A4FF009F18A5 /* ReceiverProxyTableViewCell.xib in Resources */,
 				59C171B11F60C64500EDE032 /* arabiangulf.mp4 in Resources */,
 				59B432E51F60648400622DEA /* Main.storyboard in Resources */,
 				5988E8321F9A5A7E002C8C95 /* ConvosTableViewCell.xib in Resources */,

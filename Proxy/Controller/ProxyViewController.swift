@@ -17,7 +17,7 @@ class ProxyViewController: UIViewController, MakeNewMessageDelegate {
         navigationItem.rightBarButtonItems = [UIBarButtonItem.makeButton(target: self, action: #selector(showMakeNewMessageController), imageName: .makeNewMessage),
                                               UIBarButtonItem.makeButton(target: self, action: #selector(deleteProxy), imageName: .delete)]
 
-        dataSource.load(controller: self, convosManager: convosManager, proxyManager: proxyManager)
+        dataSource.load(convosManager: convosManager, proxyManager: proxyManager, controller: self)
         delegate.load(controller: self, manager: convosManager)
 
         convosManager.load(convosOwner: proxy.key, tableView: tableView)

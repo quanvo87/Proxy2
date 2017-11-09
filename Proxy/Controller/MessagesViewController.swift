@@ -1,10 +1,10 @@
 import UIKit
 
 class MessagesViewController: UIViewController, MakeNewMessageDelegate {
-    private let buttonManager = MessagesButtonManager()
-    private let convosManager = ConvosManager()
     private let dataSource = MessagesTableViewDataSource()
     private let delegate = MessagesTableViewDelegate()
+    private let buttonManager = MessagesButtonManager()
+    private let convosManager = ConvosManager()
     private let itemsToDeleteManager = ItemsToDeleteManager()
     private let unreadCountManager = MessagesUnreadCountManager()
     private let tableView = UITableView()

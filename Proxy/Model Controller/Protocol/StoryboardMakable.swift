@@ -6,7 +6,7 @@ protocol StoryboardMakable {
 
 extension StoryboardMakable {
     static func make() -> Self? {
-        guard let controller = UIStoryboard.storyboard.instantiateViewController(withIdentifier: identifier) as? Self else {
+        guard let controller = UIStoryboard.main.instantiateViewController(withIdentifier: identifier) as? Self else {
             return nil
         }
         return controller

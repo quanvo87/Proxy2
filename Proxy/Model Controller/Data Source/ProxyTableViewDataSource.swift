@@ -1,14 +1,14 @@
 import UIKit
 
 class ProxyTableViewDataSource: NSObject {
-    private weak var controller: UIViewController?
     private weak var convosManager: ConvosManaging?
     private weak var proxyManager: ProxyManaging?
+    private weak var controller: UIViewController?
 
-    func load(controller: UIViewController, convosManager: ConvosManaging, proxyManager: ProxyManaging) {
-        self.controller = controller
+    func load(convosManager: ConvosManaging, proxyManager: ProxyManaging, controller: UIViewController) {
         self.convosManager = convosManager
         self.proxyManager = proxyManager
+        self.controller = controller
     }
 }
 
@@ -52,23 +52,30 @@ extension ProxyTableViewDataSource: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
-        case 0: return 1
-        case 1: return convos.count
-        default: return 0
+        case 0:
+            return 1
+        case 1:
+            return convos.count
+        default:
+            return 0
         }
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
-        case 1: return "CONVERSATIONS"
-        default: return nil
+        case 1:
+            return "CONVERSATIONS"
+        default:
+            return nil
         }
     }
 }
 
 private extension ProxyTableViewDataSource {
     @objc func editNickname() {
-        guard let proxy = proxy else { return }
+        guard let proxy = proxy else {
+            return
+        }
         let alert = UIAlertController(title: "Edit Nickname", message: "Only you see your nickname.", preferredStyle: .alert)
         alert.addTextField { (textField) in
             textField.autocapitalizationType = .sentences
@@ -89,7 +96,9 @@ private extension ProxyTableViewDataSource {
     }
 
     @objc func showIconPicker() {
-        guard let proxy = proxy else { return }
+        guard let proxy = proxy else {
+            return
+        }
         controller?.showIconPicker(proxy)
     }
 }

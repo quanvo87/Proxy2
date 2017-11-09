@@ -1,9 +1,9 @@
 import UIKit
 
 class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
-    private let buttonManager = ProxiesButtonManager()
     private let dataSource = ProxiesTableViewDataSource()
     private let delegate = ProxiesTableViewDelegate()
+    private let buttonManager = ProxiesButtonManager()
     private let itemsToDeleteManager = ItemsToDeleteManager()
     private let proxiesManager = ProxiesManager()
     private let tableView = UITableView()

@@ -14,7 +14,9 @@ class SenderPickerTableViewDelegate: NSObject {
 
 extension SenderPickerTableViewDelegate: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let proxy = manager?.proxies[safe: indexPath.row] else { return }
+        guard let proxy = manager?.proxies[safe: indexPath.row] else {
+            return
+        }
         delegate?.sender = proxy
         _ = controller?.navigationController?.popViewController(animated: true)
     }

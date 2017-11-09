@@ -18,7 +18,9 @@ extension ProxiesTableViewDelegate: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let proxy = proxies[safe: indexPath.row] else { return }
+        guard let proxy = proxies[safe: indexPath.row] else {
+            return
+        }
         if tableView.isEditing {
             itemsToDeleteManager?.itemsToDelete[proxy.key] = proxy
         } else {

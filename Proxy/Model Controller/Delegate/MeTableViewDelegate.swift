@@ -14,7 +14,9 @@ extension MeTableViewDelegate: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         switch indexPath.section {
         case 1:
-            guard let blockedUsersVC = UIStoryboard.storyboard.instantiateViewController(withIdentifier: Name.blockedUsersTableViewController) as? BlockedUsersTableViewController else { return }
+            guard let blockedUsersVC = UIStoryboard.main.instantiateViewController(withIdentifier: Name.blockedUsersTableViewController) as? BlockedUsersTableViewController else {
+                return
+            }
             controller?.navigationController?.pushViewController(blockedUsersVC, animated: true)
         case 2:
             switch indexPath.row {
@@ -27,8 +29,7 @@ extension MeTableViewDelegate: UITableViewDelegate {
                 controller?.present(alert, animated: true)
             case 1:
                 let alert = UIAlertController(title: "Proxy v0.0.1", message: "Contact: qvo1987@gmail.com\n\nIcons from icons8.com", preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "OK", style: .cancel) { action in
-                })
+                alert.addAction(UIAlertAction(title: "OK", style: .cancel) { _ in })
                 controller?.present(alert, animated: true)
             default:
                 return

@@ -57,10 +57,14 @@ extension MeTableViewDataSource: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
-        case 0: return 3
-        case 1: return 1
-        case 2: return 2
-        default: return 0
+        case 0:
+            return 3
+        case 1:
+            return 1
+        case 2:
+            return 2
+        default:
+            return 0
         }
     }
 }

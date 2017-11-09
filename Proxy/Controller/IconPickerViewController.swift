@@ -13,10 +13,6 @@ class IconPickerViewController: UIViewController {
         layout.itemSize = CGSize(width: 60, height: 90)
 
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = UIColor.white
-        collectionView.dataSource = dataSource
-        collectionView.delegate = delegate
-        collectionView.register(UINib(nibName: Name.iconPickerCollectionViewCell, bundle: nil), forCellWithReuseIdentifier: Name.iconPickerCollectionViewCell)
 
         super.init(nibName: nil, bundle: nil)
 
@@ -24,9 +20,13 @@ class IconPickerViewController: UIViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem.makeButton(target: self, action: #selector(closeIconPicker), imageName: .cancel)
 
         dataSource.load(ProxyService.iconNames)
-        delegate.load(iconNames: ProxyService.iconNames, proxy: proxy, controller: self)
+        delegate.load(controller: self, iconNames: ProxyService.iconNames, proxy: proxy)
 
+        collectionView.backgroundColor = UIColor.white
+        collectionView.dataSource = dataSource
+        collectionView.delegate = delegate
         collectionView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
+        collectionView.register(UINib(nibName: Name.iconPickerCollectionViewCell, bundle: nil), forCellWithReuseIdentifier: Name.iconPickerCollectionViewCell)
         collectionView.reloadData()
 
         view.addSubview(collectionView)

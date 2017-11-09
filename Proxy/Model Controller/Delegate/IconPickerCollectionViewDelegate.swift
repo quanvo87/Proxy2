@@ -5,10 +5,10 @@ class IconPickerCollectionViewDelegate: NSObject {
     private var proxy: Proxy?
     private weak var controller: UIViewController?
 
-    func load(iconNames: [String], proxy: Proxy, controller: UIViewController) {
+    func load(controller: UIViewController, iconNames: [String], proxy: Proxy) {
+        self.controller = controller
         self.iconNames = iconNames
         self.proxy = proxy
-        self.controller = controller
     }
 }
 
