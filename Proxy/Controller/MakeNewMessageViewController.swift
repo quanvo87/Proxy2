@@ -26,7 +26,7 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate, Sender
         super.viewDidLoad()
 
         navigationItem.title = "New Message"
-        navigationItem.rightBarButtonItem = UIBarButtonItem.makeButton(target: self, action: #selector(closeMakeNewMessageController), imageName: .cancel)
+        navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self, action: #selector(close), imageName: .cancel)
 
         messageTextView.becomeFirstResponder()
         messageTextView.delegate = self
@@ -76,7 +76,9 @@ private extension MakeNewMessageViewController {
     }
 
     @IBAction func sendMessage() {
-        guard let sender = sender, let receiver = receiver else { return }
+        guard let sender = sender, let receiver = receiver else {
+            return
+        }
         disableButtons()
         DBMessage.sendMessage(from: sender, to: receiver, withText: messageTextView.text) { (result) in
             guard let (_, convo) = result else {
@@ -100,7 +102,7 @@ private extension MakeNewMessageViewController {
 }
 
 private extension MakeNewMessageViewController {
-    @objc func closeMakeNewMessageController() {
+    @objc func close() {
         disableButtons()
         dismiss(animated: true)
     }

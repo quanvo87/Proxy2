@@ -1,14 +1,14 @@
 import UIKit
 
 class ProxyTableViewDataSource: NSObject {
+    private weak var controller: UIViewController?
     private weak var convosManager: ConvosManaging?
     private weak var proxyManager: ProxyManaging?
-    private weak var controller: UIViewController?
 
-    func load(convosManager: ConvosManaging, proxyManager: ProxyManaging, controller: UIViewController) {
+    func load(controller: UIViewController, convosManager: ConvosManaging, proxyManager: ProxyManaging) {
+        self.controller = controller
         self.convosManager = convosManager
         self.proxyManager = proxyManager
-        self.controller = controller
     }
 }
 
@@ -34,7 +34,7 @@ extension ProxyTableViewDataSource: UITableViewDataSource {
                     return tableView.dequeueReusableCell(withIdentifier: Name.senderProxyTableViewCell, for: indexPath)
             }
             cell.load(proxy)
-            cell.changeIconButton.addTarget(self, action: #selector(showIconPicker), for: .touchUpInside)
+            cell.changeIconButton.addTarget(self, action: #selector(showIconPickerController), for: .touchUpInside)
             cell.nicknameButton.addTarget(self, action: #selector(editNickname), for: .touchUpInside)
             return cell
         case 1:
@@ -95,7 +95,7 @@ private extension ProxyTableViewDataSource {
         controller?.present(alert, animated: true, completion: nil)
     }
 
-    @objc func showIconPicker() {
+    @objc func showIconPickerController() {
         guard let proxy = proxy else {
             return
         }

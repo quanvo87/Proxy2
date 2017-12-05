@@ -1,25 +1,25 @@
 import UIKit
 
 class ProxiesButtonManager: ButtonManaging {
-    private var uid = String()
+    private var uid = ""
+    private weak var proxiesViewController: ProxiesViewController?
+    private weak var proxiesManager: ProxiesManager?
+    var itemsToDeleteManager: ItemsToDeleteManaging?
     var cancelButton = UIBarButtonItem()
     var confirmButton = UIBarButtonItem()
     var deleteButton = UIBarButtonItem()
     var makeNewMessageButton = UIBarButtonItem()
     var makeNewProxyButton = UIBarButtonItem()
-    var itemsToDeleteManager: ItemsToDeleteManaging?
-    private weak var controller: ProxiesViewController?
-    private weak var proxiesManager: ProxiesManager?
     weak var navigationItem: UINavigationItem?
     weak var tableView: UITableView?
 
-    func load(controller: ProxiesViewController, itemsToDeleteManager: ItemsToDeleteManaging, proxiesManager: ProxiesManager, tableView: UITableView, uid: String) {
-        self.controller = controller
+    func load(itemsToDeleteManager: ItemsToDeleteManaging, proxiesViewController: ProxiesViewController, proxiesManager: ProxiesManager, uid: String, tableView: UITableView) {
         self.itemsToDeleteManager = itemsToDeleteManager
+        self.proxiesViewController = proxiesViewController
         self.proxiesManager = proxiesManager
-        self.tableView = tableView
         self.uid = uid
-        navigationItem = controller.navigationItem
+        self.tableView = tableView
+        navigationItem = proxiesViewController.navigationItem
         makeButtons()
         setDefaultButtons()
     }
@@ -31,12 +31,16 @@ class ProxiesButtonManager: ButtonManaging {
         }
         let alert = UIAlertController(title: "Delete Proxies?", message: "You will not be able to view their conversations anymore.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
-            guard let tableView = self.tableView else { return }
+            guard let tableView = self.tableView else {
+                return
+            }
             self.disableButtons()
             self.proxiesManager?.stopObserving()
             let key = AsyncWorkGroupKey()
             for (_, item) in self.itemsToDeleteManager?.itemsToDelete ?? [:] {
-                guard let proxy = item as? Proxy else { return }
+                guard let proxy = item as? Proxy else {
+                    return
+                }
                 key.startWork()
                 DBProxy.deleteProxy(proxy) { _ in
                     key.finishWork()
@@ -50,18 +54,18 @@ class ProxiesButtonManager: ButtonManaging {
             }
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        controller?.present(alert, animated: true)
+        proxiesViewController?.present(alert, animated: true)
     }
 
     func _makeNewProxy() {
-        controller?.navigationItem.disableRightBarButtonItem(atIndex: 1)
+        proxiesViewController?.navigationItem.disableRightBarButtonItem(atIndex: 1)
         DBProxy.makeProxy(forUser: uid) { (result) in
-            self.controller?.navigationItem.enableRightBarButtonItem(atIndex: 1)
+            self.proxiesViewController?.navigationItem.enableRightBarButtonItem(atIndex: 1)
             switch result {
             case .failure(let error):
-                self.controller?.showAlert("Error Creating Proxy", message: error.description)
+                self.proxiesViewController?.showAlert("Error Creating Proxy", message: error.description)
             case .success:
-                self.controller?.scrollToTop()
+                self.proxiesViewController?.scrollToTop()
             }
         }
     }
@@ -75,6 +79,6 @@ class ProxiesButtonManager: ButtonManaging {
     }
 
     func _showMakeNewMessageController() {
-        controller?.showMakeNewMessageController(controller: controller, sender: nil, uid: uid)
+        proxiesViewController?.showMakeNewMessageController(sender: nil, uid: uid, viewController: proxiesViewController)
     }
 }

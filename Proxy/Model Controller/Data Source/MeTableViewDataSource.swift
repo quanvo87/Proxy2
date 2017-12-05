@@ -1,13 +1,13 @@
 import UIKit
 
 class MeTableViewDataSource: NSObject {
-    private weak var messagesReceivedManager: MessagesReceivedManaging?
-    private weak var messagesSentManager: MessagesSentManaging?
-    private weak var proxiesInteractedWithManager: ProxiesInteractedWithManaging?
+    private weak var messagesReceivedManager: MessagesReceivedCountManaging?
+    private weak var messagesSentManager: MessagesSentCountManaging?
+    private weak var proxiesInteractedWithManager: ProxiesInteractedWithCountManaging?
 
-    func load(messagesReceivedManager: MessagesReceivedManaging,
-              messagesSentManager: MessagesSentManaging,
-              proxiesInteractedWithManager: ProxiesInteractedWithManaging) {
+    func load(messagesReceivedManager: MessagesReceivedCountManaging,
+              messagesSentManager: MessagesSentCountManaging,
+              proxiesInteractedWithManager: ProxiesInteractedWithCountManaging) {
         self.messagesReceivedManager = messagesReceivedManager
         self.messagesSentManager = messagesSentManager
         self.proxiesInteractedWithManager = proxiesInteractedWithManager

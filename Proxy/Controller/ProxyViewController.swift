@@ -14,14 +14,14 @@ class ProxyViewController: UIViewController, MakeNewMessageDelegate {
 
         super.init(nibName: nil, bundle: nil)
 
-        navigationItem.rightBarButtonItems = [UIBarButtonItem.makeButton(target: self, action: #selector(showMakeNewMessageController), imageName: .makeNewMessage),
-                                              UIBarButtonItem.makeButton(target: self, action: #selector(deleteProxy), imageName: .delete)]
+        navigationItem.rightBarButtonItems = [UIBarButtonItem.make(target: self, action: #selector(showMakeNewMessageController), imageName: .makeNewMessage),
+                                              UIBarButtonItem.make(target: self, action: #selector(deleteProxy), imageName: .delete)]
 
-        dataSource.load(convosManager: convosManager, proxyManager: proxyManager, controller: self)
+        dataSource.load(controller: self, convosManager: convosManager, proxyManager: proxyManager)
         delegate.load(controller: self, manager: convosManager)
 
         convosManager.load(convosOwner: proxy.key, tableView: tableView)
-        proxyManager.load(ownerId: proxy.ownerId, key: proxy.key, tableView: tableView)
+        proxyManager.load(ownerId: proxy.ownerId, proxyKey: proxy.key, tableView: tableView)
 
         tableView.dataSource = dataSource
         tableView.delaysContentTouches = false
@@ -42,7 +42,7 @@ class ProxyViewController: UIViewController, MakeNewMessageDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         if let newConvo = newConvo {
-            showConvo(newConvo)
+            showConvoController(newConvo)
             self.newConvo = nil
         }
     }
@@ -64,6 +64,6 @@ private extension ProxyViewController {
     }
 
     @objc func showMakeNewMessageController() {
-        showMakeNewMessageController(controller: self, sender: proxy, uid: proxy.ownerId)
+        showMakeNewMessageController(sender: proxy, uid: proxy.ownerId, viewController: self)
     }
 }

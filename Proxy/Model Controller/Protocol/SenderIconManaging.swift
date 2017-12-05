@@ -1,3 +1,3 @@
 protocol SenderIconManaging: class {
-    var senderIcon: String? { get set }
+    var senderIcon: String { get set }
 }

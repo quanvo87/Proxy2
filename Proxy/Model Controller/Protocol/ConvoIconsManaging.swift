@@ -1,5 +1,5 @@
 import JSQMessagesViewController
 
 protocol ConvoIconsManaging: ReceiverIconManaging, SenderIconManaging {
-    var icons: [String : JSQMessagesAvatarImage] { get set }
+    var convoIcons: [String : JSQMessagesAvatarImage] { get set }
 }

@@ -67,7 +67,7 @@ extension String {
 }
 
 extension UIBarButtonItem {
-    static func makeButton(target: Any?, action: Selector, imageName: ButtonName) -> UIBarButtonItem {
+    static func make(target: Any?, action: Selector, imageName: ButtonName) -> UIBarButtonItem {
         let button = UIButton(type: .custom)
         button.addTarget(target, action: action, for: .touchUpInside)
         button.frame = Setting.navBarButtonCGRect
@@ -130,7 +130,7 @@ extension UIViewController {
         present(alert, animated: true)
     }
 
-    func showConvo(_ convo: Convo) {
+    func showConvoController(_ convo: Convo) {
         guard let convoViewController = UIStoryboard.main.instantiateViewController(withIdentifier: Name.convoViewController) as? ConvoViewController else { return }
         convoViewController.convo = convo
         navigationController?.pushViewController(convoViewController, animated: true)

@@ -13,7 +13,9 @@ class ReceiverPicker {
     func load() {
         let alert = UIAlertController(title: "Enter Receiver Name", message: "Proxy names only. Nicknames do not work.", preferredStyle: .alert)
         let okAction = UIAlertAction(title: "OK", style: .default) { [weak alert = alert] _ in
-            guard let text = alert?.textFields?[safe: 0]?.text?.lowercased() else { return }
+            guard let text = alert?.textFields?[safe: 0]?.text?.lowercased() else {
+                return
+            }
             self.setReceiver(text)
         }
         self.okAction = okAction

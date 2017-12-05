@@ -21,9 +21,9 @@ class MessagesViewController: UIViewController, MakeNewMessageDelegate {
         dataSource.load(manager: convosManager)
         delegate.load(controller: self, convosManager: convosManager, itemsToDeleteManager: itemsToDeleteManager)
 
-        buttonManager.load(controller: self, delegate: self, itemsToDeleteManager: itemsToDeleteManager, tableView: tableView, uid: uid)
+        buttonManager.load(itemsToDeleteManager: itemsToDeleteManager, makeNewMessageDelegate: self, uid: uid, viewController: self, tableView: tableView)
         convosManager.load(convosOwner: uid, tableView: tableView)
-        unreadCountManager.load(uid: uid, controller: self)
+        unreadCountManager.load(uid: uid, viewController: self)
 
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.dataSource = dataSource
@@ -39,7 +39,7 @@ class MessagesViewController: UIViewController, MakeNewMessageDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         if let newConvo = newConvo {
-            showConvo(newConvo)
+            showConvoController(newConvo)
             self.newConvo = nil
         }
     }

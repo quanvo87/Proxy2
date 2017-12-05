@@ -1,3 +1,3 @@
 protocol UnreadCountManaging: class {
-    var unreadCount: Int? { get set }
+    var unreadCount: Int { get set }
 }

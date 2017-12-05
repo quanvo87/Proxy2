@@ -18,7 +18,7 @@ extension ProxyTableViewDelegate: UITableViewDelegate {
             let convo = manager?.convos[safe: row]
         {
             tableView.deselectRow(at: indexPath, animated: true)
-            controller?.showConvo(convo)
+            controller?.showConvoController(convo)
         }
     }
 

@@ -1,3 +1,3 @@
-protocol MessagesSentManaging: class {
+protocol MessagesSentCountManaging: class {
     var messagesSentCount: String { get set }
 }

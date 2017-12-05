@@ -3,9 +3,9 @@ import UIKit
 class MeViewController: UIViewController {
     private let dataSource = MeTableViewDataSource()
     private let delegate = MeTableViewDelegate()
-    private let messagesReceivedManager = MessagesReceivedManager()
-    private let messagesSentManager = MessagesSentManager()
-    private let proxiesInteractedWithManager = ProxiesInteractedWithManager()
+    private let messagesReceivedManager = MessagesReceivedCountManager()
+    private let messagesSentManager = MessagesSentCountManager()
+    private let proxiesInteractedWithManager = ProxiesInteractedWithCountManager()
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
 

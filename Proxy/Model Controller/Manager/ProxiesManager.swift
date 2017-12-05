@@ -1,7 +1,7 @@
 import UIKit
 
 class ProxiesManager: ProxiesManaging {
-    private let observer = ProxiesObserver()
+    private let proxiesObserver = ProxiesObserver()
     private weak var tableView: UITableView?
 
     var proxies = [Proxy]() {
@@ -12,10 +12,10 @@ class ProxiesManager: ProxiesManaging {
     
     func load(uid: String, tableView: UITableView) {
         self.tableView = tableView
-        observer.observe(uid: uid, manager: self)
+        proxiesObserver.observe(proxiesManager: self, uid: uid)
     }
 
     func stopObserving() {
-        observer.stopObserving()
+        proxiesObserver.stopObserving()
     }
 }

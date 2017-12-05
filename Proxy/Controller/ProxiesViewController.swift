@@ -20,7 +20,7 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
         dataSource.load(manager: proxiesManager, showDisclosureIndicator: true)
         delegate.load(controller: self, itemsToDeleteManager: itemsToDeleteManager, proxiesManager: proxiesManager)
 
-        buttonManager.load(controller: self, itemsToDeleteManager: itemsToDeleteManager, proxiesManager: proxiesManager, tableView: tableView, uid: uid)
+        buttonManager.load(itemsToDeleteManager: itemsToDeleteManager, proxiesViewController: self, proxiesManager: proxiesManager, uid: uid, tableView: tableView)
         proxiesManager.load(uid: uid, tableView: tableView)
 
         tableView.allowsMultipleSelectionDuringEditing = true
@@ -37,7 +37,7 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         if let newConvo = newConvo {
-            showConvo(newConvo)
+            showConvoController(newConvo)
             self.newConvo = nil
         }
     }

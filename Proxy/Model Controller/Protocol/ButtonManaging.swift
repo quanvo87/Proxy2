@@ -58,11 +58,11 @@ extension ButtonEditing {
 
 extension ButtonMaking {
     func makeButtons() {
-        cancelButton = UIBarButtonItem.makeButton(target: self, action: #selector(_setDefaultButtons), imageName: .cancel)
-        confirmButton = UIBarButtonItem.makeButton(target: self, action: #selector(_deleteSelectedItems), imageName: .confirm)
-        deleteButton = UIBarButtonItem.makeButton(target: self, action: #selector(_setEditModeButtons), imageName: .delete)
-        makeNewMessageButton = UIBarButtonItem.makeButton(target: self, action: #selector(_showMakeNewMessageController), imageName: .makeNewMessage)
-        makeNewProxyButton = UIBarButtonItem.makeButton(target: self, action: #selector(_makeNewProxy), imageName: .makeNewProxy)
+        cancelButton = UIBarButtonItem.make(target: self, action: #selector(_setDefaultButtons), imageName: .cancel)
+        confirmButton = UIBarButtonItem.make(target: self, action: #selector(_deleteSelectedItems), imageName: .confirm)
+        deleteButton = UIBarButtonItem.make(target: self, action: #selector(_setEditModeButtons), imageName: .delete)
+        makeNewMessageButton = UIBarButtonItem.make(target: self, action: #selector(_showMakeNewMessageController), imageName: .makeNewMessage)
+        makeNewProxyButton = UIBarButtonItem.make(target: self, action: #selector(_makeNewProxy), imageName: .makeNewProxy)
     }
 }
 

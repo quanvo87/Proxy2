@@ -1,7 +1,7 @@
 import UIKit
 
 class ConvosManager: ConvosManaging {
-    private let observer = ConvosObserver()
+    private let convosObserver = ConvosObserver()
     private weak var tableView: UITableView?
 
     var convos = [Convo]() {
@@ -12,6 +12,6 @@ class ConvosManager: ConvosManaging {
 
     func load(convosOwner: String, tableView: UITableView) {
         self.tableView = tableView
-        observer.observe(convosOwner: convosOwner, manager: self)
+        convosObserver.observe(convosManager: self, convosOwner: convosOwner)
     }
 }

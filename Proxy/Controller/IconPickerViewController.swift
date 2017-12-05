@@ -17,7 +17,7 @@ class IconPickerViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
 
         navigationItem.title = "Select An Icon"
-        navigationItem.rightBarButtonItem = UIBarButtonItem.makeButton(target: self, action: #selector(closeIconPicker), imageName: .cancel)
+        navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self, action: #selector(close), imageName: .cancel)
 
         dataSource.load(ProxyService.iconNames)
         delegate.load(controller: self, iconNames: ProxyService.iconNames, proxy: proxy)
@@ -32,7 +32,7 @@ class IconPickerViewController: UIViewController {
         view.addSubview(collectionView)
     }
     
-    @objc func closeIconPicker() {
+    @objc func close() {
         dismiss(animated: true)
     }
 

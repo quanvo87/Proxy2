@@ -4,12 +4,13 @@ class ReceiverIconObserver: ReferenceObserving {
     private (set) var handle: DatabaseHandle?
     private (set) var ref: DatabaseReference?
 
-    func observe(receiverOwnerId: String, receiverProxyKey: String, manager: ReceiverIconManaging) {
+    func observe(receiverIconManager: ReceiverIconManaging, receiverOwnerId: String, receiverProxyKey: String) {
         stopObserving()
         ref = DB.makeReference(Child.proxies, receiverOwnerId, receiverProxyKey, Child.icon)
-        handle = ref?.observe(.value, with: { [weak manager = manager] (data) in
-            guard let icon = data.value as? String else { return }
-            manager?.receiverIcon = icon
+        handle = ref?.observe(.value, with: { [weak receiverIconManager = receiverIconManager] (data) in
+            if let icon = data.value as? String {
+                receiverIconManager?.receiverIcon = icon
+            }
         })
     }
 

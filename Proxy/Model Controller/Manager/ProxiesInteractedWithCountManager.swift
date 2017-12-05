@@ -1,7 +1,7 @@
 import UIKit
 
-class ProxiesInteractedWithManager: ProxiesInteractedWithManaging {
-    private let observer = ProxiesInteractedWithObserver()
+class ProxiesInteractedWithCountManager: ProxiesInteractedWithCountManaging {
+    private let proxiesInteractedWithObserver = ProxiesInteractedWithObserver()
     private weak var tableView: UITableView?
 
     var proxiesInteractedWithCount = "-" {
@@ -12,6 +12,6 @@ class ProxiesInteractedWithManager: ProxiesInteractedWithManaging {
     
     func load(uid: String, tableView: UITableView) {
         self.tableView = tableView
-        observer.observe(uid: uid, manager: self)
+        proxiesInteractedWithObserver.observe(proxiesInteractedWithManager: self, uid: uid)
     }
 }

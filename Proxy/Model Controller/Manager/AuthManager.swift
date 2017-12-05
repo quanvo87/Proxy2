@@ -2,13 +2,13 @@ import FirebaseAuth
 import UIKit
 
 class AuthManager {
-    private let observer = AuthObserver()
+    private let authObserver = AuthObserver()
     private var loggedIn = false
-    private weak var delegate: AppDelegate?
+    private weak var appDelegate: AppDelegate?
 
-    func load(_ delegate: AppDelegate) {
-        self.delegate = delegate
-        observer.load(self)
+    func load(_ appDelegate: AppDelegate) {
+        self.appDelegate = appDelegate
+        authObserver.load(self)
     }
 }
 
@@ -19,7 +19,7 @@ extension AuthManager: AuthManaging {
             changeRequest.displayName = email
             changeRequest.commitChanges()
         }
-        delegate?.window?.rootViewController = TabBarController(displayName: user.displayName ?? user.email ?? "", uid: user.uid)
+        appDelegate?.window?.rootViewController = TabBarController(displayName: user.displayName ?? user.email ?? "", uid: user.uid)
         loggedIn = true
         DispatchQueue.queue.async {
             DBProxy.fixConvoCounts(uid: user.uid) { _ in }
@@ -32,7 +32,7 @@ extension AuthManager: AuthManaging {
             let loginController = LoginViewController.make() else {
                 return
         }
-        delegate?.window?.rootViewController = loginController
+        appDelegate?.window?.rootViewController = loginController
         loggedIn = false
     }
 }

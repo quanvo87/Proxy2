@@ -1,7 +1,7 @@
 import UIKit
 
-class MessagesSentManager: MessagesSentManaging {
-    private let observer = MessagesSentObserver()
+class MessagesSentCountManager: MessagesSentCountManaging {
+    private let messagesSentObserver = MessagesSentObserver()
     private weak var tableView: UITableView?
 
     var messagesSentCount = "-" {
@@ -12,6 +12,6 @@ class MessagesSentManager: MessagesSentManaging {
     
     func load(uid: String, tableView: UITableView) {
         self.tableView = tableView
-        observer.observe(uid: uid, manager: self)
+        messagesSentObserver.observe(messagesSentCountManager: self, uid: uid)
     }
 }

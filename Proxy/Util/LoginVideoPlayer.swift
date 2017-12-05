@@ -8,7 +8,9 @@ class LoginVideoPlayer {
         let videos = ["arabiangulf", "beachpalm", "dragontailzipline", "hawaiiancoast"]
         let random = Int(arc4random_uniform(UInt32(videos.count)))
 
-        guard let path = Bundle.main.path(forResource: videos[random], ofType: "mp4") else { return }
+        guard let path = Bundle.main.path(forResource: videos[random], ofType: "mp4") else {
+            return
+        }
 
         let url = URL(fileURLWithPath: path)
         player = AVPlayer(url: url)
