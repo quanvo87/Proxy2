@@ -1,14 +1,15 @@
 import UIKit
 
 class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
+    var newConvo: Convo?
+
+    private let uid: String
+    private let proxiesManager = ProxiesManager()
     private let dataSource = ProxiesTableViewDataSource()
     private let delegate = ProxiesTableViewDelegate()
     private let buttonManager = ProxiesButtonManager()
     private let itemsToDeleteManager = ItemsToDeleteManager()
-    private let proxiesManager = ProxiesManager()
     private let tableView = UITableView()
-    private let uid: String
-    var newConvo: Convo?
 
     init(_ uid: String) {
         self.uid = uid
@@ -17,11 +18,13 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
 
         navigationItem.title = "Proxies"
 
+        proxiesManager.load(uid: uid, tableView: tableView)
+
         dataSource.load(manager: proxiesManager, showDisclosureIndicator: true)
+
         delegate.load(controller: self, itemsToDeleteManager: itemsToDeleteManager, proxiesManager: proxiesManager)
 
         buttonManager.load(itemsToDeleteManager: itemsToDeleteManager, proxiesViewController: self, proxiesManager: proxiesManager, uid: uid, tableView: tableView)
-        proxiesManager.load(uid: uid, tableView: tableView)
 
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.dataSource = dataSource
@@ -30,7 +33,6 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
         tableView.register(UINib(nibName: Name.proxiesTableViewCell, bundle: nil), forCellReuseIdentifier: Name.proxiesTableViewCell)
         tableView.rowHeight = 60
         tableView.separatorStyle = .none
-
         view.addSubview(tableView)
     }
 
@@ -43,7 +45,9 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
     }
 
     func scrollToTop() {
-        guard tableView.numberOfRows(inSection: 0) > 0 else { return }
+        guard tableView.numberOfRows(inSection: 0) > 0 else {
+            return
+        }
         tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
     }
 

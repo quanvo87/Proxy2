@@ -7,15 +7,22 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var signUpButton: UIButton!
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
+
     private let player = LoginVideoPlayer()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
         player.play(view)
+
         facebookButton.setupForLoginViewController()
+
         loginButton.setupForLoginViewController()
+
         signUpButton.setupForLoginViewController()
+
         emailTextField.clearButtonMode = .whileEditing
+
         passwordTextField.clearButtonMode = .whileEditing
         passwordTextField.isSecureTextEntry = true
     }
@@ -26,21 +33,23 @@ class LoginViewController: UIViewController {
         }
     }
 
-    @IBAction func signUp(_ sender: AnyObject) {
-        LoginService.emailSignUp(email: emailTextField.text?.lowercased(), password: passwordTextField.text) { (error) in
-            self.showAlert("Error Signing Up", message: error.description)
-        }
-    }
-
     @IBAction func loginWithFacebook(_ sender: AnyObject) {
         LoginService.facebookLogin { (error) in
             self.showAlert("Error Logging In With Facebook", message: error.description)
         }
     }
+
+    @IBAction func signUp(_ sender: AnyObject) {
+        LoginService.emailSignUp(email: emailTextField.text?.lowercased(), password: passwordTextField.text) { (error) in
+            self.showAlert("Error Signing Up", message: error.description)
+        }
+    }
 }
 
 extension LoginViewController: StoryboardMakable {
-    static var identifier: String { return Name.loginViewController }
+    static var identifier: String {
+        return Name.loginViewController
+    }
 }
 
 private extension UIButton {

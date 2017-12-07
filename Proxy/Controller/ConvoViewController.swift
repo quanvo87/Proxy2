@@ -68,7 +68,7 @@ class ConvoViewController: JSQMessagesViewController {
         convoNicknamesManager.load(convo: convo, collectionView: collectionView, navigationItem: navigationItem)
 
         navigationController?.view.backgroundColor = UIColor.white
-        navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self, action: #selector(showConvoInfoTableViewController), imageName: .info)
+        navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self, action: #selector(showConvoInfoTableViewController), imageName: ButtonName.info)
 
         //
 

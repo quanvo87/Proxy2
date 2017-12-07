@@ -1,15 +1,16 @@
 import UIKit
 
 class MessagesViewController: UIViewController, MakeNewMessageDelegate {
+    var newConvo: Convo?
+
+    private let uid: String
+    private let convosManager = ConvosManager()
     private let dataSource = MessagesTableViewDataSource()
     private let delegate = MessagesTableViewDelegate()
     private let buttonManager = MessagesButtonManager()
-    private let convosManager = ConvosManager()
     private let itemsToDeleteManager = ItemsToDeleteManager()
     private let unreadCountManager = MessagesUnreadCountManager()
     private let tableView = UITableView()
-    private let uid: String
-    var newConvo: Convo?
 
     init(_ uid: String) {
         self.uid = uid
@@ -18,11 +19,14 @@ class MessagesViewController: UIViewController, MakeNewMessageDelegate {
 
         navigationItem.title = "Messages"
 
+        convosManager.load(convosOwner: uid, tableView: tableView)
+
         dataSource.load(manager: convosManager)
+
         delegate.load(controller: self, convosManager: convosManager, itemsToDeleteManager: itemsToDeleteManager)
 
         buttonManager.load(itemsToDeleteManager: itemsToDeleteManager, makeNewMessageDelegate: self, uid: uid, viewController: self, tableView: tableView)
-        convosManager.load(convosOwner: uid, tableView: tableView)
+
         unreadCountManager.load(uid: uid, viewController: self)
 
         tableView.allowsMultipleSelectionDuringEditing = true
@@ -32,7 +36,6 @@ class MessagesViewController: UIViewController, MakeNewMessageDelegate {
         tableView.register(UINib(nibName: Name.convosTableViewCell, bundle: nil), forCellReuseIdentifier: Name.convosTableViewCell)
         tableView.rowHeight = 80
         tableView.separatorStyle = .none
-
         view.addSubview(tableView)
     }
 

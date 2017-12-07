@@ -1,28 +1,35 @@
 import UIKit
 
 class ProxyViewController: UIViewController, MakeNewMessageDelegate {
+    var newConvo: Convo?
+
+    private let proxy: Proxy
+    private let proxyManager = ProxyManager()
+    private let convosManager = ConvosManager()
     private let dataSource = ProxyTableViewDataSource()
     private let delegate = ProxyTableViewDelegate()
-    private let convosManager = ConvosManager()
-    private let proxyManager = ProxyManager()
     private let tableView = UITableView(frame: .zero, style: .grouped)
-    private let proxy: Proxy
-    var newConvo: Convo?
 
     init(_ proxy: Proxy) {
         self.proxy = proxy
 
         super.init(nibName: nil, bundle: nil)
 
-        navigationItem.rightBarButtonItems = [UIBarButtonItem.make(target: self, action: #selector(showMakeNewMessageController), imageName: .makeNewMessage),
-                                              UIBarButtonItem.make(target: self, action: #selector(deleteProxy), imageName: .delete)]
+        navigationItem.rightBarButtonItems = [UIBarButtonItem.make(target: self, action: #selector(showMakeNewMessageController), imageName: ButtonName.makeNewMessage),
+                                              UIBarButtonItem.make(target: self, action: #selector(deleteProxy), imageName: ButtonName.delete)]
 
-        dataSource.load(controller: self, convosManager: convosManager, proxyManager: proxyManager)
-        delegate.load(controller: self, manager: convosManager)
-
-        convosManager.load(convosOwner: proxy.key, tableView: tableView)
         proxyManager.load(ownerId: proxy.ownerId, proxyKey: proxy.key, tableView: tableView)
 
+        convosManager.load(convosOwner: proxy.key, tableView: tableView)
+
+        dataSource.load(controller: self, convosManager: convosManager, proxyManager: proxyManager)
+
+        delegate.load(controller: self, manager: convosManager)
+
+        for case let scrollView as UIScrollView in tableView.subviews {
+            scrollView.delaysContentTouches = false
+        }
+        
         tableView.dataSource = dataSource
         tableView.delaysContentTouches = false
         tableView.delegate = delegate
@@ -31,11 +38,6 @@ class ProxyViewController: UIViewController, MakeNewMessageDelegate {
         tableView.register(UINib(nibName: Name.senderProxyTableViewCell, bundle: nil), forCellReuseIdentifier: Name.senderProxyTableViewCell)
         tableView.sectionHeaderHeight = 0
         tableView.separatorStyle = .none
-
-        for case let scrollView as UIScrollView in tableView.subviews {
-            scrollView.delaysContentTouches = false
-        }
-
         view.addSubview(tableView)
     }
 

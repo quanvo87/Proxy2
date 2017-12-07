@@ -67,11 +67,11 @@ extension String {
 }
 
 extension UIBarButtonItem {
-    static func make(target: Any?, action: Selector, imageName: ButtonName) -> UIBarButtonItem {
+    static func make(target: Any?, action: Selector, imageName: String) -> UIBarButtonItem {
         let button = UIButton(type: .custom)
         button.addTarget(target, action: action, for: .touchUpInside)
         button.frame = Setting.navBarButtonCGRect
-        button.setImage(UIImage(named: imageName.rawValue), for: .normal)
+        button.setImage(UIImage(named: imageName), for: .normal)
         return UIBarButtonItem(customView: button)
     }
 }

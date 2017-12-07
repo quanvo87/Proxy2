@@ -3,45 +3,60 @@ import UIKit
 class MakeNewMessageViewController: UIViewController, UITextViewDelegate, SenderPickerDelegate {
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var makeNewProxyButton: UIButton!
-    @IBOutlet weak var messageTextView: UITextView!
     @IBOutlet weak var pickReceiverButton: UIButton!
     @IBOutlet weak var pickSenderButton: UIButton!
     @IBOutlet weak var sendMessageButton: UIButton!
-    private var uid = ""
-    private weak var delegate: MakeNewMessageDelegate?
-    var receiver: Proxy? { didSet { setReceiverButtonTitle() } }
-    var sender: Proxy? { didSet { setSenderButtonTitle() } }
+    @IBOutlet weak var messageTextView: UITextView!
 
-    static func make(delegate: MakeNewMessageDelegate, sender: Proxy?, uid: String) -> MakeNewMessageViewController? {
-        guard let controller = MakeNewMessageViewController.make() else {
-            return nil
+    var receiver: Proxy? {
+        didSet {
+            setReceiverButtonTitle()
         }
-        controller.delegate = delegate
-        controller.sender = sender
-        controller.uid = uid
-        return controller
     }
+
+    var sender: Proxy? {
+        didSet {
+            setSenderButtonTitle()
+        }
+    }
+
+    private var uid = ""
+
+    private weak var delegate: MakeNewMessageDelegate?
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         navigationItem.title = "New Message"
-        navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self, action: #selector(close), imageName: .cancel)
+        navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self, action: #selector(close), imageName: ButtonName.cancel)
 
         messageTextView.becomeFirstResponder()
         messageTextView.delegate = self
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: view.window)
 
         setSenderButtonTitle()
+
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: view.window)
     }
 
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
+
+    static func make(delegate: MakeNewMessageDelegate, sender: Proxy?, uid: String) -> MakeNewMessageViewController? {
+        guard let controller = MakeNewMessageViewController.make() else {
+            return nil
+        }
+        controller.sender = sender
+        controller.uid = uid
+        controller.delegate = delegate
+        return controller
+    }
 }
 
 extension MakeNewMessageViewController: StoryboardMakable {
-    static var identifier: String { return Name.makeNewMessageViewController }
+    static var identifier: String {
+        return Name.makeNewMessageViewController
+    }
 }
 
 extension MakeNewMessageViewController {
@@ -97,7 +112,7 @@ private extension MakeNewMessageViewController {
     }
 
     @IBAction func showSenderPickerController() {
-        navigationController?.pushViewController(SenderPickerViewController(senderPickerDelegate: self, uid: uid), animated: true)
+        navigationController?.pushViewController(SenderPickerViewController(uid: uid, senderPickerDelegate: self), animated: true)
     }
 }
 

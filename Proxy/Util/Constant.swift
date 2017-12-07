@@ -1,5 +1,14 @@
 import UIKit
 
+struct ButtonName {
+    static let cancel = "cancel"
+    static let confirm = "confirm"
+    static let delete = "delete"
+    static let info = "info"
+    static let makeNewMessage = "makeNewMessage"
+    static let makeNewProxy = "makeNewProxy"
+}
+
 struct Child {
     static let blockedUsers = "blockedUsers"
     static let convos = "convos"
