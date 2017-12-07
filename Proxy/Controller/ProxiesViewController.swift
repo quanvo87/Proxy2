@@ -5,11 +5,11 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
 
     private let uid: String
     private let proxiesManager = ProxiesManager()
+    private let itemsToDeleteManager = ItemsToDeleteManager()
     private let dataSource = ProxiesTableViewDataSource()
     private let delegate = ProxiesTableViewDelegate()
-    private let buttonManager = ProxiesButtonManager()
-    private let itemsToDeleteManager = ItemsToDeleteManager()
     private let tableView = UITableView()
+    private let buttonManager = ProxiesButtonManager()
 
     init(_ uid: String) {
         self.uid = uid
@@ -22,24 +22,24 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
 
         dataSource.load(manager: proxiesManager, showDisclosureIndicator: true)
 
-        delegate.load(controller: self, itemsToDeleteManager: itemsToDeleteManager, proxiesManager: proxiesManager)
-
-        buttonManager.load(itemsToDeleteManager: itemsToDeleteManager, proxiesViewController: self, proxiesManager: proxiesManager, uid: uid, tableView: tableView)
+        delegate.load(proxiesManager: proxiesManager, itemsToDeleteManager: itemsToDeleteManager, controller: navigationController)
 
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.dataSource = dataSource
         tableView.delegate = delegate
         tableView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
-        tableView.register(UINib(nibName: Name.proxiesTableViewCell, bundle: nil), forCellReuseIdentifier: Name.proxiesTableViewCell)
+        tableView.register(UINib(nibName: Identifier.proxiesTableViewCell, bundle: nil), forCellReuseIdentifier: Identifier.proxiesTableViewCell)
         tableView.rowHeight = 60
         tableView.separatorStyle = .none
         view.addSubview(tableView)
+
+        buttonManager.load(uid: uid, proxiesManager: proxiesManager, itemsToDeleteManager: itemsToDeleteManager, tableView: tableView, proxiesViewController: self)
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         if let newConvo = newConvo {
-            showConvoController(newConvo)
+            navigationController?.showConvoViewController(newConvo)
             self.newConvo = nil
         }
     }

@@ -22,9 +22,9 @@ class ProxyViewController: UIViewController, MakeNewMessageDelegate {
 
         convosManager.load(convosOwner: proxy.key, tableView: tableView)
 
-        dataSource.load(controller: self, convosManager: convosManager, proxyManager: proxyManager)
+        dataSource.load(proxyManager: proxyManager, convosManager: convosManager, controller: self)
 
-        delegate.load(controller: self, manager: convosManager)
+        delegate.load(manager: convosManager, controller: navigationController)
 
         for case let scrollView as UIScrollView in tableView.subviews {
             scrollView.delaysContentTouches = false
@@ -34,8 +34,8 @@ class ProxyViewController: UIViewController, MakeNewMessageDelegate {
         tableView.delaysContentTouches = false
         tableView.delegate = delegate
         tableView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
-        tableView.register(UINib(nibName: Name.convosTableViewCell, bundle: nil), forCellReuseIdentifier: Name.convosTableViewCell)
-        tableView.register(UINib(nibName: Name.senderProxyTableViewCell, bundle: nil), forCellReuseIdentifier: Name.senderProxyTableViewCell)
+        tableView.register(UINib(nibName: Identifier.convosTableViewCell, bundle: nil), forCellReuseIdentifier: Identifier.convosTableViewCell)
+        tableView.register(UINib(nibName: Identifier.senderProxyTableViewCell, bundle: nil), forCellReuseIdentifier: Identifier.senderProxyTableViewCell)
         tableView.sectionHeaderHeight = 0
         tableView.separatorStyle = .none
         view.addSubview(tableView)
@@ -44,7 +44,7 @@ class ProxyViewController: UIViewController, MakeNewMessageDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         if let newConvo = newConvo {
-            showConvoController(newConvo)
+            navigationController?.showConvoViewController(newConvo)
             self.newConvo = nil
         }
     }
@@ -66,6 +66,6 @@ private extension ProxyViewController {
     }
 
     @objc func showMakeNewMessageController() {
-        showMakeNewMessageController(sender: proxy, uid: proxy.ownerId, viewController: self)
+        showMakeNewMessageController(uid: proxy.ownerId, sender: proxy, viewController: self)
     }
 }

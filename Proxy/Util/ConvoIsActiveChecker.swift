@@ -1,9 +1,9 @@
 import UIKit
 
 class ConvoIsActiveChecker {
-    weak var controller: UIViewController?
+    weak var controller: UINavigationController?
 
-    func check(controller: UIViewController, convo: Convo) {
+    func check(convo: Convo, controller: UINavigationController?) {
         self.controller = controller
         checkIfReceiverIsBlocked(convo)
         checkIfSenderDeletedProxy(convo)
@@ -37,6 +37,6 @@ private extension ConvoIsActiveChecker {
     }
 
     func close() {
-        _ = controller?.navigationController?.popViewController(animated: true)
+        _ = controller?.popViewController(animated: true)
     }
 }

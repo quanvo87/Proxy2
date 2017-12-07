@@ -5,13 +5,14 @@ class IconPickerCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var iconNameLabel: UILabel!
 
     func load(_ icon: String) {
+        layer.cornerRadius = 5
         iconImageView.image = nil
         iconNameLabel.text = icon
-        layer.cornerRadius = 5
         UIImage.makeImage(named: icon) { (image) in
-            guard let image = image else { return }
-            DispatchQueue.main.async {
-                self.iconImageView.image = image
+            if let image = image {
+                DispatchQueue.main.async {
+                    self.iconImageView.image = image
+                }
             }
         }
     }

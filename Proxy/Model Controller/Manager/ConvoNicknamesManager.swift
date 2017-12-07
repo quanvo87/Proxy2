@@ -1,15 +1,6 @@
 import UIKit
 
 class ConvoNicknamesManager: ConvoNicknamesManaging {
-    private let receiverNicknameObserver = ReceiverNicknameObserver()
-    private let senderNicknameObserver = SenderNicknameObserver()
-    private var receiverId = ""
-    private var receiverProxyName = ""
-    private var senderId = ""
-    private var senderProxyName = ""
-    private weak var collectionView: UICollectionView?
-    private weak var navigationItem: UINavigationItem?
-
     var convoNicknames = [String : String]() {
         didSet {
             collectionView?.reloadData()
@@ -29,6 +20,15 @@ class ConvoNicknamesManager: ConvoNicknamesManaging {
         }
     }
 
+    private let receiverNicknameObserver = ReceiverNicknameObserver()
+    private let senderNicknameObserver = SenderNicknameObserver()
+    private var receiverId = ""
+    private var receiverProxyName = ""
+    private var senderId = ""
+    private var senderProxyName = ""
+    private weak var collectionView: UICollectionView?
+    private weak var navigationItem: UINavigationItem?
+
     func load(convo: Convo, collectionView: UICollectionView, navigationItem: UINavigationItem) {
         receiverId = convo.receiverId
         receiverProxyName = convo.receiverProxyName
@@ -38,7 +38,7 @@ class ConvoNicknamesManager: ConvoNicknamesManaging {
         self.navigationItem = navigationItem
         convoNicknames[receiverId] = receiverProxyName
         convoNicknames[senderId] = senderProxyName
-        receiverNicknameObserver.observe(receiverNicknameManager: self, convoKey: convo.key, senderId: senderId)
-        senderNicknameObserver.observe(senderNicknameManager: self, convoKey: convo.key, senderId: senderId)
+        receiverNicknameObserver.observe(senderId: senderId, convoKey: convo.key, manager: self)
+        senderNicknameObserver.observe(senderId: senderId, convoKey: convo.key, manager: self)
     }
 }

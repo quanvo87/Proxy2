@@ -9,6 +9,23 @@ struct ButtonName {
     static let makeNewProxy = "makeNewProxy"
 }
 
+struct Identifier {
+    static let blockedUsersTableViewCell = "BlockedUsersTableViewCell"
+    static let blockedUsersTableViewController = "BlockedUsersTableViewController"
+    static let convoDetailTableViewCell = "ConvoDetailTableViewCell"
+    static let convoDetailTableViewController = "ConvoDetailTableViewController"
+    static let convosTableViewCell = "ConvosTableViewCell"
+    static let convoViewController = "ConvoViewController"
+    static let iconPickerCollectionViewCell = "IconPickerCollectionViewCell"
+    static let makeNewMessageViewController = "MakeNewMessageViewController"
+    static let meTableViewCell = "MeTableViewCell"
+    static let loginViewController = "LoginViewController"
+    static let proxiesTableViewCell = "ProxiesTableViewCell"
+    static let receiverProxyTableViewCell = "ReceiverProxyTableViewCell"
+    static let senderProxyTableViewCell = "SenderProxyTableViewCell"
+    static let tabBarController = "TabBarController"
+}
+
 struct Child {
     static let blockedUsers = "blockedUsers"
     static let convos = "convos"
@@ -29,23 +46,6 @@ struct Child {
     static let unreadMessages = "unreadMessages"
     static let userInfo = "userInfo"
     static let userFiles = "userFiles"
-}
-
-struct Name {
-    static let blockedUsersTableViewCell = "BlockedUsersTableViewCell"
-    static let blockedUsersTableViewController = "BlockedUsersTableViewController"
-    static let convoDetailTableViewCell = "ConvoDetailTableViewCell"
-    static let convoDetailTableViewController = "ConvoDetailTableViewController"
-    static let convosTableViewCell = "ConvosTableViewCell"
-    static let convoViewController = "ConvoViewController"
-    static let iconPickerCollectionViewCell = "IconPickerCollectionViewCell"
-    static let makeNewMessageViewController = "MakeNewMessageViewController"
-    static let meTableViewCell = "MeTableViewCell"
-    static let loginViewController = "LoginViewController"
-    static let proxiesTableViewCell = "ProxiesTableViewCell"
-    static let receiverProxyTableViewCell = "ReceiverProxyTableViewCell"
-    static let senderProxyTableViewCell = "SenderProxyTableViewCell"
-    static let tabBarController = "TabBarController"
 }
 
 struct Setting {

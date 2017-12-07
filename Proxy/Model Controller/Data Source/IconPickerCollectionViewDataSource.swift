@@ -11,9 +11,9 @@ class IconPickerCollectionViewDataSource: NSObject {
 extension IconPickerCollectionViewDataSource: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Name.iconPickerCollectionViewCell, for: indexPath) as? IconPickerCollectionViewCell,
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifier.iconPickerCollectionViewCell, for: indexPath) as? IconPickerCollectionViewCell,
             let iconName = iconNames[safe: indexPath.row] else {
-                return collectionView.dequeueReusableCell(withReuseIdentifier: Name.iconPickerCollectionViewCell, for: indexPath)
+                return collectionView.dequeueReusableCell(withReuseIdentifier: Identifier.iconPickerCollectionViewCell, for: indexPath)
         }
         cell.load(iconName)
         return cell

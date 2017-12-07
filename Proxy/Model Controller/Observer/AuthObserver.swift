@@ -3,9 +3,9 @@ import FirebaseAuth
 class AuthObserver {
     private var handle: AuthStateDidChangeListenerHandle?
 
-    func load(_ authManager: AuthManaging) {
+    func load(_ manager: AuthManaging) {
         stopObserving()
-        handle = Auth.auth.addStateDidChangeListener { [weak manager = authManager] (_, user) in
+        handle = Auth.auth.addStateDidChangeListener { [weak manager = manager] (_, user) in
             if let user = user {
                 manager?.logIn(user)
             } else {
