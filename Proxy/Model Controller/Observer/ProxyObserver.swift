@@ -4,12 +4,13 @@ class ProxyObserver: ReferenceObserving {
     private (set) var handle: DatabaseHandle?
     private (set) var ref: DatabaseReference?
 
-    func observe(ownerId: String, key: String, manager: ProxyManaging) {
+    func observe(proxyManager: ProxyManaging, ownerId: String, proxyKey: String) {
         stopObserving()
-        ref = DB.makeReference(Child.proxies, ownerId, key)
-        handle = ref?.observe(.value, with: { [weak manager = manager] (data) in
-            guard let proxy = Proxy(data) else { return }
-            manager?.proxy = proxy
+        ref = DB.makeReference(Child.proxies, ownerId, proxyKey)
+        handle = ref?.observe(.value, with: { [weak proxyManager = proxyManager] (data) in
+            if let proxy = Proxy(data) {
+                proxyManager?.proxy = proxy
+            }
         })
     }
 

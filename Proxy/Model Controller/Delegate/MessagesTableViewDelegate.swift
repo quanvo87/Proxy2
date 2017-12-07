@@ -1,15 +1,14 @@
 import UIKit
 
 class MessagesTableViewDelegate: NSObject {
-    private weak var controller: UITableViewController?
+    private weak var controller: UIViewController?
     private weak var convosManager: ConvosManaging?
     private weak var itemsToDeleteManager: ItemsToDeleteManaging?
 
-    func load(controller: UITableViewController, convosManager: ConvosManaging, itemsToDeleteManager: ItemsToDeleteManaging) {
+    func load(controller: UIViewController, convosManager: ConvosManaging, itemsToDeleteManager: ItemsToDeleteManaging) {
         self.controller = controller
         self.convosManager = convosManager
         self.itemsToDeleteManager = itemsToDeleteManager
-        controller.tableView.delegate = self
     }
 }
 

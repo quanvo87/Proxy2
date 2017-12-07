@@ -3,11 +3,11 @@ import JSQMessagesViewController
 class ConvoIconsManager: ConvoIconsManaging {
     private let receiverIconObserver = ReceiverIconObserver()
     private let senderIconObserver = SenderIconObserver()
-    private var receiverId = String()
-    private var senderId = String()
+    private var receiverId = ""
+    private var senderId = ""
     private weak var collectionView: UICollectionView?
 
-    var icons = [String : JSQMessagesAvatarImage]() {
+    var convoIcons = [String : JSQMessagesAvatarImage]() {
         didSet {
             DispatchQueue.main.async {
                 self.collectionView?.reloadData()
@@ -15,33 +15,33 @@ class ConvoIconsManager: ConvoIconsManaging {
         }
     }
 
-    var receiverIcon = String() {
+    var receiverIcon: String = "" {
         didSet {
             UIImage.makeImage(named: receiverIcon) { (image) in
-                guard let image = image else { return }
-                self.icons[self.receiverId] = JSQMessagesAvatarImage(placeholder: image)
+                guard let image = image else {
+                    return
+                }
+                self.convoIcons[self.receiverId] = JSQMessagesAvatarImage(placeholder: image)
             }
         }
     }
 
-    var senderIcon = String() {
+    var senderIcon: String = "" {
         didSet {
             UIImage.makeImage(named: senderIcon) { (image) in
-                guard let image = image else { return }
-                self.icons[self.senderId] = JSQMessagesAvatarImage(placeholder: image)
+                guard let image = image else {
+                    return
+                }
+                self.convoIcons[self.senderId] = JSQMessagesAvatarImage(placeholder: image)
             }
         }
     }
 
-    func load(receiverId: String,
-              receiverProxyKey: String,
-              senderId: String,
-              senderProxyKey: String,
-              collectionView: UICollectionView) {
-        self.receiverId = receiverId
-        self.senderId = senderId
+    func load(convo: Convo, collectionView: UICollectionView) {
+        self.receiverId = convo.receiverId
+        self.senderId = convo.senderId
         self.collectionView = collectionView
-        receiverIconObserver.observe(receiverOwnerId: receiverId, receiverProxyKey: receiverProxyKey, manager: self)
-        senderIconObserver.observe(senderOwnerId: senderId, senderProxyKey: senderProxyKey, manager: self)
+        receiverIconObserver.observe(receiverIconManager: self, receiverOwnerId: convo.receiverId, receiverProxyKey: convo.receiverProxyKey)
+        senderIconObserver.observe(senderIconManager: self, senderOwnerId: convo.senderId, senderProxyKey: convo.senderProxyKey)
     }
 }

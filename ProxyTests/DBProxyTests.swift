@@ -3,12 +3,6 @@ import XCTest
 @testable import Proxy
 
 class DBProxyTests: DBTest {
-    func testCancelMakingProxy() {
-        Shared.shared.isCreatingProxy = true
-        DBProxy.cancelCreatingProxy()
-        XCTAssertFalse(Shared.shared.isCreatingProxy)
-    }
-
     func testDeleteProxy() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
@@ -52,7 +46,7 @@ class DBProxyTests: DBTest {
             key.notify {
                 key.finishWorkGroup()
 
-                DBProxy.fixConvoCounts { (success) in
+                DBProxy.fixConvoCounts(uid: DBTest.uid) { (success) in
                     XCTAssert(success)
 
                     DBProxy.getConvoCount(forProxy: sender) { (convoCount) in
@@ -66,14 +60,14 @@ class DBProxyTests: DBTest {
     }
     
     func testGetImageForIcon() {
-        XCTAssertEqual(Shared.shared.proxyIconNames.count, 101)
+        XCTAssertEqual(ProxyService.iconNames.count, 101)
 
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
         let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
 
-        for icon in Shared.shared.proxyIconNames {
+        for icon in ProxyService.iconNames {
             key.startWork()
             UIImage.makeImage(named: icon) { (image) in
                 XCTAssertNotNil(image)
@@ -138,7 +132,7 @@ class DBProxyTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
         
-        DBProxy.getProxy(withKey: "invalid key", belongingTo: Shared.shared.uid) { (proxy) in
+        DBProxy.getProxy(withKey: "invalid key", belongingTo: DBTest.uid) { (proxy) in
             XCTAssertNil(proxy)
             expectation.fulfill()
         }
@@ -163,7 +157,6 @@ class DBProxyTests: DBTest {
         defer { waitForExpectations(timeout: 10) }
         
         DBTest.makeProxy { (proxy) in
-            XCTAssertFalse(Shared.shared.isCreatingProxy)
             XCTAssertNotEqual(proxy.icon, "")
             
             let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
@@ -181,7 +174,7 @@ class DBProxyTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        DBProxy.makeProxy(maxAllowedProxies: 0) { (result) in
+        DBProxy.makeProxy(forUser: DBTest.uid, maxAllowedProxies: 0) { (result) in
             switch result {
             case .failure(let error):
                 XCTAssertEqual(error, ProxyError.proxyLimitReached)
@@ -196,14 +189,13 @@ class DBProxyTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
         
-        DBProxy.makeProxy(withName: "test") { (result) in
+        DBProxy.makeProxy(withName: "test", forUser: DBTest.uid) { (result) in
             switch result {
             case .failure: XCTFail()
             case .success:
-                DBProxy.makeProxy(withName: "test") { (result) in
+                DBProxy.makeProxy(withName: "test", forUser: DBTest.uid) { (result) in
                     switch result {
                     case .failure:
-                        XCTAssertFalse(Shared.shared.isCreatingProxy)
                         expectation.fulfill()
                     case .success:
                         XCTFail()
@@ -259,7 +251,7 @@ class DBProxyTests: DBTest {
 extension AsyncWorkGroupKey {
     func checkProxyCreated(_ proxy: Proxy) {
         startWork()
-        DB.get(Child.proxies, Shared.shared.uid, proxy.key) { (data) in
+        DB.get(Child.proxies, DBTest.uid, proxy.key) { (data) in
             XCTAssertEqual(Proxy(data?.value as AnyObject), proxy)
             self.finishWork()
         }
@@ -276,7 +268,7 @@ extension AsyncWorkGroupKey {
     func checkProxyOwnerCreated(forProxy proxy: Proxy) {
         startWork()
         DB.get(Child.proxyOwners, proxy.key) { (data) in
-            XCTAssertEqual(ProxyOwner(data?.value as AnyObject), ProxyOwner(key: proxy.key, ownerId: Shared.shared.uid))
+            XCTAssertEqual(ProxyOwner(data?.value as AnyObject), ProxyOwner(key: proxy.key, ownerId: DBTest.uid))
             self.finishWork()
         }
     }

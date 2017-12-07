@@ -2,15 +2,6 @@ import UIKit
 
 typealias ButtonManaging = ButtonEditing & ButtonMaking & ButtonOwning
 
-enum ButtonName: String {
-    case cancel
-    case confirm
-    case delete
-    case info
-    case makeNewMessage
-    case makeNewProxy
-}
-
 protocol ButtonEditing: ButtonOwning {
     var itemsToDeleteManager: ItemsToDeleteManaging? { get }
     var navigationItem: UINavigationItem? { get }
@@ -35,41 +26,34 @@ extension ButtonEditing {
     }
 
     func setDefaultButtons() {
+        itemsToDeleteManager?.itemsToDelete.removeAll()
         navigationItem?.leftBarButtonItem = deleteButton
         navigationItem?.rightBarButtonItems = [makeNewMessageButton, makeNewProxyButton]
+        tableView?.setEditing(false, animated: true)
     }
 
     func setEditModeButtons() {
         navigationItem?.leftBarButtonItem = cancelButton
         navigationItem?.rightBarButtonItems = [confirmButton]
-    }
-
-    func toggleEditMode() {
-        guard let tableView = tableView else { return }
-        tableView.setEditing(!tableView.isEditing, animated: true)
-        if tableView.isEditing {
-            setEditModeButtons()
-        } else {
-            setDefaultButtons()
-            itemsToDeleteManager?.itemsToDelete.removeAll()
-        }
+        tableView?.setEditing(true, animated: true)
     }
 }
 
 @objc protocol ButtonMaking: ButtonOwning {
     func _deleteSelectedItems()
     func _makeNewProxy()
+    func _setDefaultButtons()
+    func _setEditModeButtons()
     func _showMakeNewMessageController()
-    func _toggleEditMode()
 }
 
 extension ButtonMaking {
     func makeButtons() {
-        cancelButton = UIBarButtonItem.makeButton(target: self, action: #selector(_toggleEditMode), imageName: .cancel)
-        confirmButton = UIBarButtonItem.makeButton(target: self, action: #selector(_deleteSelectedItems), imageName: .confirm)
-        deleteButton = UIBarButtonItem.makeButton(target: self, action: #selector(_toggleEditMode), imageName: .delete)
-        makeNewMessageButton = UIBarButtonItem.makeButton(target: self, action: #selector(_showMakeNewMessageController), imageName: .makeNewMessage)
-        makeNewProxyButton = UIBarButtonItem.makeButton(target: self, action: #selector(_makeNewProxy), imageName: .makeNewProxy)
+        cancelButton = UIBarButtonItem.make(target: self, action: #selector(_setDefaultButtons), imageName: ButtonName.cancel)
+        confirmButton = UIBarButtonItem.make(target: self, action: #selector(_deleteSelectedItems), imageName: ButtonName.confirm)
+        deleteButton = UIBarButtonItem.make(target: self, action: #selector(_setEditModeButtons), imageName: ButtonName.delete)
+        makeNewMessageButton = UIBarButtonItem.make(target: self, action: #selector(_showMakeNewMessageController), imageName: ButtonName.makeNewMessage)
+        makeNewProxyButton = UIBarButtonItem.make(target: self, action: #selector(_makeNewProxy), imageName: ButtonName.makeNewProxy)
     }
 }
 

@@ -63,22 +63,12 @@ class ConvoViewController: JSQMessagesViewController {
         collectionView?.collectionViewLayout.outgoingAvatarViewSize = CGSize(width: kJSQMessagesCollectionViewAvatarSizeDefault, height: kJSQMessagesCollectionViewAvatarSizeDefault)
         collectionView.contentInset.bottom = 0
 
-        convoIconsManager.load(receiverId: convo.receiverId,
-                               receiverProxyKey: convo.receiverProxyKey,
-                               senderId: convo.senderId,
-                               senderProxyKey: convo.senderProxyKey,
-                               collectionView: collectionView)
+        convoIconsManager.load(convo: convo, collectionView: collectionView)
 
-        convoNicknamesManager.load(receiverId: convo.receiverId,
-                                   receiverProxyName: convo.receiverProxyName,
-                                   senderId: convo.senderId,
-                                   senderProxyName: convo.senderProxyName,
-                                   key: convo.key,
-                                   collectionView: collectionView,
-                                   navigationItem: navigationItem)
+        convoNicknamesManager.load(convo: convo, collectionView: collectionView, navigationItem: navigationItem)
 
         navigationController?.view.backgroundColor = UIColor.white
-        navigationItem.rightBarButtonItem = UIBarButtonItem.makeButton(target: self, action: #selector(showConvoInfoTableViewController), imageName: .info)
+        navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self, action: #selector(showConvoInfoTableViewController), imageName: ButtonName.info)
 
         //
 
@@ -385,23 +375,23 @@ extension ConvoViewController {
         
         // Display an avatar for the first message of the convo.
         if indexPath.item == 0 {
-            return convoIconsManager.icons[curr.senderId]
+            return convoIconsManager.convoIcons[curr.senderId]
         }
         
         // Display an avatar for the last message of the convo.
         if indexPath.item == messages.count - 1 {
-            return convoIconsManager.icons[curr.senderId]
+            return convoIconsManager.convoIcons[curr.senderId]
         }
         
         // Display an avatar for each user on message chain breaks.
         let next = self.messages[indexPath.item + 1]
         if curr.senderId != next.senderId {
-            return convoIconsManager.icons[curr.senderId]
+            return convoIconsManager.convoIcons[curr.senderId]
         }
         
         let prev = self.messages[indexPath.item - 1]
         if prev.senderId != curr.senderId {
-            return convoIconsManager.icons[curr.senderId]
+            return convoIconsManager.convoIcons[curr.senderId]
         }
         
         return nil
@@ -430,7 +420,7 @@ extension ConvoViewController {
         
         // Show names/nicknames for last message by either user.
         if indexPath.item == messages.count - 1 {
-            guard let nickname = convoNicknamesManager.nicknames[curr.senderId] else {
+            guard let nickname = convoNicknamesManager.convoNicknames[curr.senderId] else {
                 return NSAttributedString()
             }
             return NSAttributedString(string: nickname)
@@ -438,7 +428,7 @@ extension ConvoViewController {
         
         let next = self.messages[indexPath.item + 1]
         if curr.senderId != next.senderId {
-            guard let nickname = convoNicknamesManager.nicknames[curr.senderId] else {
+            guard let nickname = convoNicknamesManager.convoNicknames[curr.senderId] else {
                 return NSAttributedString()
             }
             return NSAttributedString(string: nickname)
@@ -607,7 +597,7 @@ extension ConvoViewController {
     
     // MARK: - Navigation
     @objc func showConvoInfoTableViewController() {
-        let dest = storyboard?.instantiateViewController(withIdentifier: Identifier.convoDetailTableViewController) as! ConvoDetailTableViewController
+        let dest = storyboard?.instantiateViewController(withIdentifier: Name.convoDetailTableViewController) as! ConvoDetailTableViewController
         dest.convo = convo!
         navigationController?.pushViewController(dest, animated: true)
     }

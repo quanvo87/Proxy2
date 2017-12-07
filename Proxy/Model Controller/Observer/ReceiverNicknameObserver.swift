@@ -4,12 +4,13 @@ class ReceiverNicknameObserver: ReferenceObserving {
     private (set) var handle: DatabaseHandle?
     private (set) var ref: DatabaseReference?
 
-    func observe(senderId: String, key: String, manager: ReceiverNicknameManaging) {
+    func observe(receiverNicknameManager: ReceiverNicknameManaging, convoKey: String, senderId: String) {
         stopObserving()
-        ref = DB.makeReference(Child.convos, senderId, key, Child.receiverNickname)
-        handle = ref?.observe(.value, with: { [weak manager = manager] (data) in
-            guard let nickname = data.value as? String else { return }
-            manager?.receiverNickname = nickname
+        ref = DB.makeReference(Child.convos, senderId, convoKey, Child.receiverNickname)
+        handle = ref?.observe(.value, with: { [weak receiverNicknameManager = receiverNicknameManager] (data) in
+            if let nickname = data.value as? String {
+                receiverNicknameManager?.receiverNickname = nickname
+            }
         })
     }
 

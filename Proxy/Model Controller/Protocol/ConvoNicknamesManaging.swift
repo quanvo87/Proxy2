@@ -1,3 +1,3 @@
 protocol ConvoNicknamesManaging: ReceiverNicknameManaging, SenderNicknameManaging {
-    var nicknames: [String : String] { get set }
+    var convoNicknames: [String : String] { get set }
 }

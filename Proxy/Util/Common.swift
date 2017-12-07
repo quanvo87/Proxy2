@@ -1,3 +1,5 @@
+import Firebase
+import FirebaseAuth
 import UIKit
 
 typealias Success = Bool
@@ -7,11 +9,23 @@ enum Result<T, Error> {
     case failure(Error)
 }
 
+extension Auth {
+    static let auth: Auth = {
+        Auth.auth()
+    }()
+}
+
 // https://stackoverflow.com/questions/25329186/safe-bounds-checked-array-lookup-in-swift-through-optional-bindings
 extension Collection {
     subscript(safe index: Index) -> Element? {
         return indices.contains(index) ? self[index] : nil
     }
+}
+
+extension DispatchQueue {
+    static let queue: DispatchQueue = {
+        return DispatchQueue(label: "proxyQueue")
+    }()
 }
 
 extension Double {
@@ -25,6 +39,12 @@ extension Double {
     }
 }
 
+extension FirebaseApp {
+    static let app: FirebaseApp? = {
+        return FirebaseApp.app()
+    }()
+}
+
 extension Int {
     var asLabel: String {
         return self == 0 ? "" : String(self)
@@ -33,15 +53,9 @@ extension Int {
     var asLabelWithParens: String {
         return self == 0 ? "" : " (\(self))"
     }
-}
 
-extension MakeNewMessageDelegate where Self: UIViewController {
-    func showMakeNewMessageController(_ sender: Proxy? = nil) {
-        guard let makeNewMessageController = storyboard?.instantiateViewController(withIdentifier: Identifier.makeNewMessageViewController) as? MakeNewMessageViewController else { return }
-        makeNewMessageController.delegate = self
-        makeNewMessageController.sender = sender
-        let navigationController = UINavigationController(rootViewController: makeNewMessageController)
-        present(navigationController, animated: true)
+    var random: Int {
+        return Int(arc4random_uniform(UInt32(self)))
     }
 }
 
@@ -53,11 +67,11 @@ extension String {
 }
 
 extension UIBarButtonItem {
-    static func makeButton(target: Any?, action: Selector, imageName: ButtonName) -> UIBarButtonItem {
+    static func make(target: Any?, action: Selector, imageName: String) -> UIBarButtonItem {
         let button = UIButton(type: .custom)
         button.addTarget(target, action: action, for: .touchUpInside)
         button.frame = Setting.navBarButtonCGRect
-        button.setImage(UIImage(named: imageName.rawValue), for: .normal)
+        button.setImage(UIImage(named: imageName), for: .normal)
         return UIBarButtonItem(customView: button)
     }
 }
@@ -74,7 +88,7 @@ extension UIColor {
 
 extension UIImage {
     static func makeImage(named image: String, completion: @escaping (UIImage?) -> Void) {
-        Shared.shared.queue.async {
+        DispatchQueue.queue.async {
             completion(UIImage(named: image))
         }
     }
@@ -84,7 +98,7 @@ extension UInt {
     var asStringWithCommas: String {
         var num = Double(self)
         num = fabs(num)
-        if let string = NumberFormatter.numberFormatter.string(from: NSNumber(integerLiteral: Int(num))) {
+        if let string = NumberFormatter.decimal.string(from: NSNumber(integerLiteral: Int(num))) {
             return string
         }
         return "-"
@@ -92,29 +106,45 @@ extension UInt {
 }
 
 extension UINavigationItem {
-    func toggleRightBarButtonItem(atIndex index: Int) {
-        if let item = self.rightBarButtonItems?[safe: index] {
-            item.isEnabled = !item.isEnabled
-        }
+    func disableRightBarButtonItem(atIndex index: Int) {
+        guard let item = self.rightBarButtonItems?[safe: index] else { return }
+        item.isEnabled = false
+    }
+
+    func enableRightBarButtonItem(atIndex index: Int) {
+        guard let item = self.rightBarButtonItems?[safe: index] else { return }
+        item.isEnabled = true
     }
 }
 
-extension UIViewController {
-    func showConvoController(_ convo: Convo) {
-        guard let convoViewController = storyboard?.instantiateViewController(withIdentifier: Identifier.convoViewController) as? ConvoViewController else { return }
-        convoViewController.convo = convo
-        navigationController?.pushViewController(convoViewController, animated: true)
-    }
+extension UIStoryboard {
+    static let main: UIStoryboard = {
+        return UIStoryboard(name: "Main", bundle: nil)
+    }()
+}
 
+extension UIViewController {
     func showAlert(_ title: String?, message: String?) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
     }
+
+    func showConvoController(_ convo: Convo) {
+        guard let convoViewController = UIStoryboard.main.instantiateViewController(withIdentifier: Name.convoViewController) as? ConvoViewController else { return }
+        convoViewController.convo = convo
+        navigationController?.pushViewController(convoViewController, animated: true)
+    }
+
+    func showIconPicker(_ proxy: Proxy) {
+        let viewController = IconPickerViewController(proxy)
+        let navigationController = UINavigationController(rootViewController: viewController)
+        present(navigationController, animated: true)
+    }
 }
 
 private extension NumberFormatter {
-    static let numberFormatter: NumberFormatter = {
+    static let decimal: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
         return formatter

@@ -1,16 +1,15 @@
+import Firebase
 import FirebaseAuth
 import FirebaseDatabase
 import XCTest
 @testable import Proxy
 
 class DBTest: XCTestCase {
-    private let auth = Auth.auth(app: Shared.shared.firebase!)
-    private weak var handle: AuthStateDidChangeListenerHandle?
-    
-    private let uid = "bKx62eEMy9gbynfbxvVsAr3nXQJ2"
+    private let auth = Auth.auth(app: FirebaseApp.app!)
     private let email = "ahettisele-0083@yopmail.com"
     private let password = "BGbN92GY6_W+rR!Q"
     
+    static let uid = "bKx62eEMy9gbynfbxvVsAr3nXQJ2"
     static let testUser = "test user"
     static let text = "🤤"
 
@@ -18,46 +17,29 @@ class DBTest: XCTestCase {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        if Shared.shared.uid == uid {
+        if auth.currentUser?.uid == DBTest.uid {
             DBTest.clearDB {
                 expectation.fulfill()
             }
-            
         } else {
-            try! auth.signOut()
-            
-            handle = auth.addStateDidChangeListener { (auth, user) in
-                if let uid = user?.uid {
-                    Shared.shared.uid = uid
+            auth.addStateDidChangeListener { (auth, user) in
+                if user?.uid == DBTest.uid {
                     DBTest.clearDB {
                         expectation.fulfill()
                     }
                 } else {
+                    do {
+                        try auth.signOut()
+                    }
+                    catch {
+                        XCTFail()
+                    }
                     auth.signIn(withEmail: self.email, password: self.password) { (_, error) in
                         XCTAssertNil(error)
                     }
                 }
             }
         }
-    }
-    
-//    override func tearDown() {
-//        let expectation = self.expectation(description: #function)
-//        defer { waitForExpectations(timeout: 10) }
-//        DBTest.clearCache()
-//        DBTest.clearWorkGroups()
-//        DBTest.clearDB {
-//            expectation.fulfill()
-//        }
-//    }
-
-    private static func clearCache() {
-        Shared.shared.cache.removeAllObjects()
-    }
-
-    private static func clearWorkGroups() {
-        XCTAssert(Shared.shared.asyncWorkGroups.isEmpty)
-        Shared.shared.asyncWorkGroups.removeAll()
     }
 
     private static func clearDB(completion: @escaping () -> Void) {
@@ -83,7 +65,7 @@ extension DBTest {
         }
     }
 
-    static func makeProxy(withName name: String? = nil, forUser uid: String = Shared.shared.uid, completion: @escaping (Proxy) -> Void) {
+    static func makeProxy(withName name: String? = nil, forUser uid: String = DBTest.uid, completion: @escaping (Proxy) -> Void) {
         DBProxy.makeProxy(withName: name, forUser: uid) { (result) in
             switch result {
             case .failure: XCTFail()

@@ -36,7 +36,7 @@ extension DBStorage {
                 completion(nil)
                 return
             }
-            Shared.shared.cache.setObject(image, forKey: url as AnyObject)
+            Cache.cache.setObject(image, forKey: url as AnyObject)
             completion(url)
         }
     }

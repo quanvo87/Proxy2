@@ -304,7 +304,7 @@ class API {
         let autoId = ref.child(Child.proxies).childByAutoId().key
         let name = "a"
         let key = name.lowercased()
-        let proxy = Proxy(name: name, ownerId: self.uid)
+        let proxy = Proxy()
         ref.child(Child.proxies).child(autoId).setValue(proxy.toDictionary()) { (error, proxyRef) in
             
             // Get all global proxies with this name.

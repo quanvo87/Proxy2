@@ -4,30 +4,6 @@ import UIKit
 struct DBProxy {
     typealias MakeProxyCallback = (Result<Proxy, ProxyError>) -> Void
 
-    private static var randomIcon: String {
-        let randomIconIndex = Int(arc4random_uniform(UInt32(Shared.shared.proxyIconNames.count)))
-        guard let randomIcon = Shared.shared.proxyIconNames[safe: randomIconIndex] else {
-            return ""
-        }
-        return randomIcon
-    }
-
-    private static var randomName: String {
-        let randomAdjectiveIndex = Int(arc4random_uniform(UInt32(Shared.shared.proxyNameWords.adjectives.count)))
-        let randomNounIndex = Int(arc4random_uniform(UInt32(Shared.shared.proxyNameWords.nouns.count)))
-        guard
-            let randomAdjective = Shared.shared.proxyNameWords.adjectives[safe: randomAdjectiveIndex]?.lowercased().capitalized,
-            let noun = Shared.shared.proxyNameWords.nouns[safe: randomNounIndex]?.lowercased().capitalized else {
-                return ""
-        }
-        let randomNumber = Int(arc4random_uniform(9)) + 1
-        return randomAdjective + noun + String(randomNumber)
-    }
-
-    static func cancelCreatingProxy() {
-        Shared.shared.isCreatingProxy = false
-    }
-
     static func deleteProxy(_ proxy: Proxy, completion: @escaping (Success) -> Void) {
         DBConvo.getConvos(forProxy: proxy, filtered: false) { (convos) in
             guard let convos = convos else {
@@ -52,8 +28,8 @@ struct DBProxy {
         }
     }
 
-    static func fixConvoCounts(forUser user: String = Shared.shared.uid, completion: @escaping (Success) -> Void) {
-        DBProxy.getProxies(forUser: user) { (proxies) in
+    static func fixConvoCounts(uid: String, completion: @escaping (Success) -> Void) {
+        DBProxy.getProxies(forUser: uid) { (proxies) in
             guard let proxies = proxies else {
                 completion(false)
                 return
@@ -122,25 +98,19 @@ struct DBProxy {
         })
     }
 
-    static func makeProxy(withName specificName: String? = nil, forUser uid: String = Shared.shared.uid, maxAllowedProxies: UInt = Setting.maxAllowedProxies, completion: @escaping MakeProxyCallback) {
+    static func makeProxy(withName specificName: String? = nil, forUser uid: String, maxAllowedProxies: UInt = Setting.maxAllowedProxies, completion: @escaping MakeProxyCallback) {
         getProxyCount(forUser: uid) { (proxyCount) in
             guard proxyCount < maxAllowedProxies else {
                 completion(.failure(.proxyLimitReached))
                 return
             }
-            Shared.shared.isCreatingProxy = true
             makeProxyHelper(withName: specificName, forUser: uid, completion: completion)
         }
     }
 
-    private static func makeProxyDone(result: Result<Proxy, ProxyError>, completion: MakeProxyCallback) {
-        Shared.shared.isCreatingProxy = false
-        completion(result)
-    }
-
-    private static func makeProxyHelper(withName specificName: String? = nil, forUser uid: String = Shared.shared.uid, completion: @escaping MakeProxyCallback) {
+    private static func makeProxyHelper(withName specificName: String? = nil, forUser uid: String, completion: @escaping MakeProxyCallback) {
         guard let proxyKeysRef = DB.makeReference(Child.proxyKeys) else {
-            makeProxyDone(result: .failure(.unknown), completion: completion)
+            completion(.failure(.unknown))
             return
         }
 
@@ -149,7 +119,7 @@ struct DBProxy {
         if let specificName = specificName {
             name = specificName
         } else {
-            name = DBProxy.randomName
+            name = DBProxy.makeRandomProxyName()
         }
 
         let proxyKey = name.lowercased()
@@ -158,23 +128,19 @@ struct DBProxy {
 
         DB.set(proxyKeyDictionary, at: Child.proxyKeys, autoId) { (success) in
             guard success else {
-                makeProxyDone(result: .failure(.unknown), completion: completion)
+                completion(.failure(.unknown))
                 return
             }
 
             proxyKeysRef.queryOrdered(byChild: Child.key).queryEqual(toValue: proxyKey).observeSingleEvent(of: .value, with: { (data) in
                 DB.delete(Child.proxyKeys, autoId) { (success) in
                     guard success else {
-                        makeProxyDone(result: .failure(.unknown), completion: completion)
-                        return
-                    }
-
-                    guard Shared.shared.isCreatingProxy else {
+                        completion(.failure(.unknown))
                         return
                     }
 
                     if data.childrenCount == 1 {
-                        let proxy = Proxy(icon: DBProxy.randomIcon, name: name, ownerId: uid)
+                        let proxy = Proxy(icon: DBProxy.makeRandomIconName(), name: name, ownerId: uid)
                         let proxyOwner = ProxyOwner(key: proxyKey, ownerId: uid)
 
                         let key = AsyncWorkGroupKey()
@@ -182,7 +148,7 @@ struct DBProxy {
                         key.set(proxyKeyDictionary, at: Child.proxyKeys, proxy.key)
                         key.set(proxyOwner.toDictionary(), at: Child.proxyOwners, proxy.key)
                         key.notify {
-                            makeProxyDone(result: key.workResult ? .success(proxy) : .failure(.unknown), completion: completion)
+                            completion(key.workResult ? .success(proxy) : .failure(.unknown))
                             key.finishWorkGroup()
                         }
 
@@ -190,12 +156,29 @@ struct DBProxy {
                         if specificName == nil {
                             makeProxyHelper(forUser: uid, completion: completion)
                         } else {
-                            makeProxyDone(result: .failure(.unknown), completion: completion)
+                            completion(.failure(.unknown))
                         }
                     }
                 }
             })
         }
+    }
+
+    static func makeRandomIconName(iconNames: [String] = ProxyService.iconNames) -> String {
+        guard let name = iconNames[safe: iconNames.count.random] else {
+            return ""
+        }
+        return name
+    }
+
+    static func makeRandomProxyName(adjectives: [String] = ProxyService.words.adjectives, nouns: [String] = ProxyService.words.nouns, numberRange: Int = 9) -> String {
+        guard
+            let adjective = adjectives[safe: adjectives.count.random]?.lowercased().capitalized,
+            let noun = nouns[safe: nouns.count.random]?.lowercased().capitalized else {
+                return ""
+        }
+        let number = numberRange.random + 1
+        return adjective + noun + String(number)
     }
 
     static func setIcon(to icon: String, forProxy proxy: Proxy, completion: @escaping (Success) -> Void) {

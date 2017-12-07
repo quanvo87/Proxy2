@@ -1,76 +1,84 @@
 import UIKit
 
 class ProxiesButtonManager: ButtonManaging {
+    private var uid = ""
+    private weak var proxiesViewController: ProxiesViewController?
+    private weak var proxiesManager: ProxiesManager?
+    var itemsToDeleteManager: ItemsToDeleteManaging?
     var cancelButton = UIBarButtonItem()
     var confirmButton = UIBarButtonItem()
     var deleteButton = UIBarButtonItem()
     var makeNewMessageButton = UIBarButtonItem()
     var makeNewProxyButton = UIBarButtonItem()
-    var itemsToDeleteManager: ItemsToDeleteManaging?
     weak var navigationItem: UINavigationItem?
     weak var tableView: UITableView?
-    private weak var controller: ProxiesTableViewController?
-    private weak var proxiesManager: ProxiesManager?
 
-    func load(controller: ProxiesTableViewController, itemsToDeleteManager: ItemsToDeleteManaging, proxiesManager: ProxiesManager) {
-        self.controller = controller
+    func load(itemsToDeleteManager: ItemsToDeleteManaging, proxiesViewController: ProxiesViewController, proxiesManager: ProxiesManager, uid: String, tableView: UITableView) {
         self.itemsToDeleteManager = itemsToDeleteManager
+        self.proxiesViewController = proxiesViewController
         self.proxiesManager = proxiesManager
-        navigationItem = controller.navigationItem
-        tableView = controller.tableView
+        self.uid = uid
+        self.tableView = tableView
+        navigationItem = proxiesViewController.navigationItem
         makeButtons()
         setDefaultButtons()
     }
 
     func _deleteSelectedItems() {
         if itemsToDeleteManager?.itemsToDelete.isEmpty ?? true {
-            toggleEditMode()
+            setDefaultButtons()
             return
         }
         let alert = UIAlertController(title: "Delete Proxies?", message: "You will not be able to view their conversations anymore.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
-            guard let controller = self.controller else { return }
+            guard let tableView = self.tableView else {
+                return
+            }
             self.disableButtons()
             self.proxiesManager?.stopObserving()
             let key = AsyncWorkGroupKey()
             for (_, item) in self.itemsToDeleteManager?.itemsToDelete ?? [:] {
-                guard let proxy = item as? Proxy else { return }
+                guard let proxy = item as? Proxy else {
+                    return
+                }
                 key.startWork()
                 DBProxy.deleteProxy(proxy) { _ in
                     key.finishWork()
                 }
             }
-            self.itemsToDeleteManager?.itemsToDelete.removeAll()
             self.setDefaultButtons()
-            self.controller?.tableView.setEditing(false, animated: true)
             key.notify {
                 key.finishWorkGroup()
                 self.enableButtons()
-                self.proxiesManager?.load(uid: Shared.shared.uid, tableView: controller.tableView)
+                self.proxiesManager?.load(uid: self.uid, tableView: tableView)
             }
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        controller?.present(alert, animated: true)
+        proxiesViewController?.present(alert, animated: true)
     }
 
     func _makeNewProxy() {
-        controller?.navigationItem.toggleRightBarButtonItem(atIndex: 1)
-        DBProxy.makeProxy { (result) in
-            self.controller?.navigationItem.toggleRightBarButtonItem(atIndex: 1)
+        proxiesViewController?.navigationItem.disableRightBarButtonItem(atIndex: 1)
+        DBProxy.makeProxy(forUser: uid) { (result) in
+            self.proxiesViewController?.navigationItem.enableRightBarButtonItem(atIndex: 1)
             switch result {
             case .failure(let error):
-                self.controller?.showAlert("Error Creating Proxy", message: error.description)
+                self.proxiesViewController?.showAlert("Error Creating Proxy", message: error.description)
             case .success:
-                self.controller?.scrollToTop()
+                self.proxiesViewController?.scrollToTop()
             }
         }
     }
 
-    func _showMakeNewMessageController() {
-        controller?.showMakeNewMessageController()
+    func _setDefaultButtons() {
+        setDefaultButtons()
     }
-    
-    func _toggleEditMode() {
-        toggleEditMode()
+
+    func _setEditModeButtons() {
+        setEditModeButtons()
+    }
+
+    func _showMakeNewMessageController() {
+        proxiesViewController?.showMakeNewMessageController(sender: nil, uid: uid, viewController: proxiesViewController)
     }
 }

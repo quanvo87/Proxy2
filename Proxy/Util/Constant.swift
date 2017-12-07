@@ -1,5 +1,14 @@
 import UIKit
 
+struct ButtonName {
+    static let cancel = "cancel"
+    static let confirm = "confirm"
+    static let delete = "delete"
+    static let info = "info"
+    static let makeNewMessage = "makeNewMessage"
+    static let makeNewProxy = "makeNewProxy"
+}
+
 struct Child {
     static let blockedUsers = "blockedUsers"
     static let convos = "convos"
@@ -22,7 +31,7 @@ struct Child {
     static let userFiles = "userFiles"
 }
 
-struct Identifier {
+struct Name {
     static let blockedUsersTableViewCell = "BlockedUsersTableViewCell"
     static let blockedUsersTableViewController = "BlockedUsersTableViewController"
     static let convoDetailTableViewCell = "ConvoDetailTableViewCell"
@@ -30,14 +39,11 @@ struct Identifier {
     static let convosTableViewCell = "ConvosTableViewCell"
     static let convoViewController = "ConvoViewController"
     static let iconPickerCollectionViewCell = "IconPickerCollectionViewCell"
-    static let iconPickerCollectionViewController = "IconPickerCollectionViewController"
     static let makeNewMessageViewController = "MakeNewMessageViewController"
     static let meTableViewCell = "MeTableViewCell"
     static let loginViewController = "LoginViewController"
     static let proxiesTableViewCell = "ProxiesTableViewCell"
-    static let proxyTableViewController = "ProxyTableViewController"
     static let receiverProxyTableViewCell = "ReceiverProxyTableViewCell"
-    static let senderPickerTableViewController = "SenderPickerTableViewController"
     static let senderProxyTableViewCell = "SenderProxyTableViewCell"
     static let tabBarController = "TabBarController"
 }
