@@ -1,12 +1,6 @@
 import JSQMessagesViewController
 
 class ConvoIconsManager: ConvoIconsManaging {
-    private let receiverIconObserver = ReceiverIconObserver()
-    private let senderIconObserver = SenderIconObserver()
-    private var receiverId = ""
-    private var senderId = ""
-    private weak var collectionView: UICollectionView?
-
     var convoIcons = [String : JSQMessagesAvatarImage]() {
         didSet {
             DispatchQueue.main.async {
@@ -37,11 +31,17 @@ class ConvoIconsManager: ConvoIconsManaging {
         }
     }
 
+    private let receiverIconObserver = ReceiverIconObserver()
+    private let senderIconObserver = SenderIconObserver()
+    private var receiverId = ""
+    private var senderId = ""
+    private weak var collectionView: UICollectionView?
+
     func load(convo: Convo, collectionView: UICollectionView) {
         self.receiverId = convo.receiverId
         self.senderId = convo.senderId
         self.collectionView = collectionView
-        receiverIconObserver.observe(receiverIconManager: self, receiverOwnerId: convo.receiverId, receiverProxyKey: convo.receiverProxyKey)
-        senderIconObserver.observe(senderIconManager: self, senderOwnerId: convo.senderId, senderProxyKey: convo.senderProxyKey)
+        receiverIconObserver.observe(receiverOwnerId: convo.receiverId, receiverProxyKey: convo.receiverProxyKey, manager: self)
+        senderIconObserver.observe(senderOwnerId: convo.senderId, senderProxyKey: convo.senderProxyKey, manager: self)
     }
 }

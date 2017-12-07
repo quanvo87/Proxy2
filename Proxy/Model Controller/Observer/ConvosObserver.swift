@@ -1,14 +1,14 @@
 import FirebaseDatabase
 
 class ConvosObserver: ReferenceObserving {
-    private (set) var handle: DatabaseHandle?
     private (set) var ref: DatabaseReference?
+    private (set) var handle: DatabaseHandle?
 
-    func observe(convosManager: ConvosManaging, convosOwner: String) {
+    func observe(convosOwner: String, manager: ConvosManaging) {
         stopObserving()
         ref = DB.makeReference(Child.convos, convosOwner)
-        handle = ref?.queryOrdered(byChild: Child.timestamp).observe(.value, with: { [weak convosManager = convosManager] (data) in
-            convosManager?.convos = data.toConvosArray(filtered: true).reversed()
+        handle = ref?.queryOrdered(byChild: Child.timestamp).observe(.value, with: { [weak manager = manager] (data) in
+            manager?.convos = data.toConvosArray(filtered: true).reversed()
         })
     }
 

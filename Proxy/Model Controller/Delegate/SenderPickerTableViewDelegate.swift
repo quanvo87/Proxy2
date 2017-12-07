@@ -1,14 +1,14 @@
 import UIKit
 
 class SenderPickerTableViewDelegate: NSObject {
-    private weak var controller: UIViewController?
-    private weak var delegate: SenderPickerDelegate?
     private weak var manager: ProxiesManaging?
+    private weak var delegate: SenderPickerDelegate?
+    private weak var controller: UIViewController?
 
-    func load(controller: UIViewController, delegate: SenderPickerDelegate?, manager: ProxiesManaging) {
-        self.controller = controller
-        self.delegate = delegate
+    func load(manager: ProxiesManaging, delegate: SenderPickerDelegate?, controller: UIViewController) {
         self.manager = manager
+        self.delegate = delegate
+        self.controller = controller
     }
 }
 

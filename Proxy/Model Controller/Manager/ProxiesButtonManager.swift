@@ -1,9 +1,6 @@
 import UIKit
 
 class ProxiesButtonManager: ButtonManaging {
-    private var uid = ""
-    private weak var proxiesViewController: ProxiesViewController?
-    private weak var proxiesManager: ProxiesManager?
     var itemsToDeleteManager: ItemsToDeleteManaging?
     var cancelButton = UIBarButtonItem()
     var confirmButton = UIBarButtonItem()
@@ -13,12 +10,16 @@ class ProxiesButtonManager: ButtonManaging {
     weak var navigationItem: UINavigationItem?
     weak var tableView: UITableView?
 
-    func load(itemsToDeleteManager: ItemsToDeleteManaging, proxiesViewController: ProxiesViewController, proxiesManager: ProxiesManager, uid: String, tableView: UITableView) {
-        self.itemsToDeleteManager = itemsToDeleteManager
-        self.proxiesViewController = proxiesViewController
-        self.proxiesManager = proxiesManager
+    private var uid = ""
+    private weak var proxiesViewController: ProxiesViewController?
+    private weak var proxiesManager: ProxiesManager?
+
+    func load(uid: String, proxiesManager: ProxiesManager, itemsToDeleteManager: ItemsToDeleteManaging, tableView: UITableView, proxiesViewController: ProxiesViewController) {
         self.uid = uid
+        self.proxiesManager = proxiesManager
+        self.itemsToDeleteManager = itemsToDeleteManager
         self.tableView = tableView
+        self.proxiesViewController = proxiesViewController
         navigationItem = proxiesViewController.navigationItem
         makeButtons()
         setDefaultButtons()
@@ -79,6 +80,6 @@ class ProxiesButtonManager: ButtonManaging {
     }
 
     func _showMakeNewMessageController() {
-        proxiesViewController?.showMakeNewMessageController(sender: nil, uid: uid, viewController: proxiesViewController)
+        proxiesViewController?.showMakeNewMessageController(uid: uid, sender: nil, viewController: proxiesViewController)
     }
 }

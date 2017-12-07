@@ -1,9 +1,6 @@
 import UIKit
 
 class MessagesButtonManager: ButtonManaging {
-    private var uid = ""
-    private weak var makeNewMessageDelegate: MakeNewMessageDelegate?
-    private weak var viewController: UIViewController?
     var itemsToDeleteManager: ItemsToDeleteManaging?
     var cancelButton = UIBarButtonItem()
     var confirmButton = UIBarButtonItem()
@@ -13,12 +10,16 @@ class MessagesButtonManager: ButtonManaging {
     weak var navigationItem: UINavigationItem?
     weak var tableView: UITableView?
 
-    func load(itemsToDeleteManager: ItemsToDeleteManaging, makeNewMessageDelegate: MakeNewMessageDelegate, uid: String, viewController: UIViewController, tableView: UITableView) {
+    private var uid = ""
+    private weak var makeNewMessageDelegate: MakeNewMessageDelegate?
+    private weak var viewController: UIViewController?
+
+    func load(uid: String, itemsToDeleteManager: ItemsToDeleteManaging, makeNewMessageDelegate: MakeNewMessageDelegate, tableView: UITableView, viewController: UIViewController) {
+        self.uid = uid
         self.itemsToDeleteManager = itemsToDeleteManager
         self.makeNewMessageDelegate = makeNewMessageDelegate
-        self.uid = uid
-        self.viewController = viewController
         self.tableView = tableView
+        self.viewController = viewController
         navigationItem = viewController.navigationItem
         makeButtons()
         setDefaultButtons()
@@ -72,6 +73,6 @@ class MessagesButtonManager: ButtonManaging {
     }
 
     func _showMakeNewMessageController() {
-        makeNewMessageDelegate?.showMakeNewMessageController(sender: nil, uid: uid, viewController: viewController)
+        makeNewMessageDelegate?.showMakeNewMessageController(uid: uid, sender: nil, viewController: viewController)
     }
 }

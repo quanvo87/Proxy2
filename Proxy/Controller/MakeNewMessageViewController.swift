@@ -21,7 +21,6 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate, Sender
     }
 
     private var uid = ""
-
     private weak var delegate: MakeNewMessageDelegate?
 
     override func viewDidLoad() {
@@ -42,20 +41,20 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate, Sender
         NotificationCenter.default.removeObserver(self)
     }
 
-    static func make(delegate: MakeNewMessageDelegate, sender: Proxy?, uid: String) -> MakeNewMessageViewController? {
+    static func make(uid: String, delegate: MakeNewMessageDelegate, sender: Proxy?) -> MakeNewMessageViewController? {
         guard let controller = MakeNewMessageViewController.make() else {
             return nil
         }
-        controller.sender = sender
         controller.uid = uid
         controller.delegate = delegate
+        controller.sender = sender
         return controller
     }
 }
 
 extension MakeNewMessageViewController: StoryboardMakable {
     static var identifier: String {
-        return Name.makeNewMessageViewController
+        return Identifier.makeNewMessageViewController
     }
 }
 
@@ -107,7 +106,7 @@ private extension MakeNewMessageViewController {
     }
 
     @IBAction func showReceiverPickerController() {
-        let receiverPicker = ReceiverPicker(controller: self, uid: uid)
+        let receiverPicker = ReceiverPicker(uid: uid, controller: self)
         receiverPicker.load()
     }
 

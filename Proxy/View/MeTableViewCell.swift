@@ -10,9 +10,10 @@ class MeTableViewCell: UITableViewCell {
         titleLabel.text = title
         subtitleLabel.text = subtitle
         UIImage.makeImage(named: icon) { (image) in
-            guard let image = image else { return }
-            DispatchQueue.main.async {
-                self.iconImageView.image = image
+            if let image = image {
+                DispatchQueue.main.async {
+                    self.iconImageView.image = image
+                }
             }
         }
     }

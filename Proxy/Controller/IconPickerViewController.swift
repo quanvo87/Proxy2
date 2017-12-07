@@ -2,9 +2,9 @@ import UIKit
 
 class IconPickerViewController: UIViewController {
     private let proxy: Proxy
-    private let collectionView: UICollectionView
     private let dataSource = IconPickerCollectionViewDataSource()
     private let delegate = IconPickerCollectionViewDelegate()
+    private let collectionView: UICollectionView
 
     init(_ proxy: Proxy) {
         self.proxy = proxy
@@ -20,13 +20,13 @@ class IconPickerViewController: UIViewController {
 
         dataSource.load(ProxyService.iconNames)
 
-        delegate.load(controller: self, iconNames: ProxyService.iconNames, proxy: proxy)
+        delegate.load(proxy: proxy, iconNames: ProxyService.iconNames, controller: self)
 
         collectionView.backgroundColor = UIColor.white
         collectionView.dataSource = dataSource
         collectionView.delegate = delegate
         collectionView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
-        collectionView.register(UINib(nibName: Name.iconPickerCollectionViewCell, bundle: nil), forCellWithReuseIdentifier: Name.iconPickerCollectionViewCell)
+        collectionView.register(UINib(nibName: Identifier.iconPickerCollectionViewCell, bundle: nil), forCellWithReuseIdentifier: Identifier.iconPickerCollectionViewCell)
         collectionView.reloadData()
         view.addSubview(collectionView)
     }

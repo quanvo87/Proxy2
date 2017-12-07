@@ -5,10 +5,10 @@ class MessagesViewController: UIViewController, MakeNewMessageDelegate {
 
     private let uid: String
     private let convosManager = ConvosManager()
+    private let itemsToDeleteManager = ItemsToDeleteManager()
     private let dataSource = MessagesTableViewDataSource()
     private let delegate = MessagesTableViewDelegate()
     private let buttonManager = MessagesButtonManager()
-    private let itemsToDeleteManager = ItemsToDeleteManager()
     private let unreadCountManager = MessagesUnreadCountManager()
     private let tableView = UITableView()
 
@@ -23,9 +23,9 @@ class MessagesViewController: UIViewController, MakeNewMessageDelegate {
 
         dataSource.load(manager: convosManager)
 
-        delegate.load(controller: self, convosManager: convosManager, itemsToDeleteManager: itemsToDeleteManager)
+        delegate.load(convosManager: convosManager, itemsToDeleteManager: itemsToDeleteManager, controller: self)
 
-        buttonManager.load(itemsToDeleteManager: itemsToDeleteManager, makeNewMessageDelegate: self, uid: uid, viewController: self, tableView: tableView)
+        buttonManager.load(uid: uid, itemsToDeleteManager: itemsToDeleteManager, makeNewMessageDelegate: self, tableView: tableView, viewController: self)
 
         unreadCountManager.load(uid: uid, viewController: self)
 
@@ -33,7 +33,7 @@ class MessagesViewController: UIViewController, MakeNewMessageDelegate {
         tableView.dataSource = dataSource
         tableView.delegate = delegate
         tableView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
-        tableView.register(UINib(nibName: Name.convosTableViewCell, bundle: nil), forCellReuseIdentifier: Name.convosTableViewCell)
+        tableView.register(UINib(nibName: Identifier.convosTableViewCell, bundle: nil), forCellReuseIdentifier: Identifier.convosTableViewCell)
         tableView.rowHeight = 80
         tableView.separatorStyle = .none
         view.addSubview(tableView)
@@ -42,7 +42,7 @@ class MessagesViewController: UIViewController, MakeNewMessageDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         if let newConvo = newConvo {
-            showConvoController(newConvo)
+            showConvoViewController(newConvo)
             self.newConvo = nil
         }
     }

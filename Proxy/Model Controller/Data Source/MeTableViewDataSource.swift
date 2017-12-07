@@ -20,8 +20,8 @@ extension MeTableViewDataSource: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: Name.meTableViewCell) as? MeTableViewCell else {
-            return tableView.dequeueReusableCell(withIdentifier: Name.meTableViewCell, for: indexPath)
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.meTableViewCell) as? MeTableViewCell else {
+            return tableView.dequeueReusableCell(withIdentifier: Identifier.meTableViewCell, for: indexPath)
         }
         switch indexPath.section {
         case 0:

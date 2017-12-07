@@ -10,26 +10,31 @@ class ProxiesTableViewCell: UITableViewCell {
     
     func load(proxy: Proxy, showDisclosureIndicator: Bool) {
         accessoryType = showDisclosureIndicator ? .disclosureIndicator : .none
-        convoCountLabel.text = proxy.convoCount.asLabel
+        
         iconImageView.image = nil
-        nameLabel.text = proxy.name
         newProxyBadgeImageView.image = nil
         newProxyBadgeImageView.isHidden = true
+        nameLabel.text = proxy.name
         nicknameLabel.text = proxy.nickname
+        convoCountLabel.text = proxy.convoCount.asLabel
         unreadLabel.text = nil // TODO: delete
 
         UIImage.makeImage(named: proxy.icon) { (image) in
-            DispatchQueue.main.async {
-                self.iconImageView.image = image
+            if let image = image {
+                DispatchQueue.main.async {
+                    self.iconImageView.image = image
+                }
             }
         }
 
         if proxy.dateCreated.isNewProxyDate {
             UIImage.makeImage(named: "newProxyBadge") { (image) in
-                DispatchQueue.main.async {
-                    self.contentView.bringSubview(toFront: self.newProxyBadgeImageView)
-                    self.newProxyBadgeImageView.image = image
-                    self.newProxyBadgeImageView.isHidden = false
+                if let image = image {
+                    DispatchQueue.main.async {
+                        self.contentView.bringSubview(toFront: self.newProxyBadgeImageView)
+                        self.newProxyBadgeImageView.image = image
+                        self.newProxyBadgeImageView.isHidden = false
+                    }
                 }
             }
         }

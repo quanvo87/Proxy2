@@ -122,7 +122,6 @@ enum SettableConvoProperty {
     case receiverNickname(String)
     case senderNickname(String)
 
-
     var properties: (name: String, value: Any) {
         switch self {
         case .hasUnreadMessage(let value): return ("hasUnreadMessage", value)
