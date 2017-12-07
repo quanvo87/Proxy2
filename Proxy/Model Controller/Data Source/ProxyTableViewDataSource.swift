@@ -1,14 +1,14 @@
 import UIKit
 
 class ProxyTableViewDataSource: NSObject {
-    private weak var controller: UIViewController?
     private weak var convosManager: ConvosManaging?
     private weak var proxyManager: ProxyManaging?
+    private weak var controller: UIViewController?
 
-    func load(controller: UIViewController, convosManager: ConvosManaging, proxyManager: ProxyManaging) {
-        self.controller = controller
+    func load(convosManager: ConvosManaging, proxyManager: ProxyManaging, controller: UIViewController) {
         self.convosManager = convosManager
         self.proxyManager = proxyManager
+        self.controller = controller
     }
 }
 
@@ -29,9 +29,9 @@ extension ProxyTableViewDataSource: UITableViewDataSource {
         switch indexPath.section {
         case 0:
             guard
-                let cell = tableView.dequeueReusableCell(withIdentifier: Name.senderProxyTableViewCell) as? SenderProxyTableViewCell,
+                let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.senderProxyTableViewCell) as? SenderProxyTableViewCell,
                 let proxy = proxy else {
-                    return tableView.dequeueReusableCell(withIdentifier: Name.senderProxyTableViewCell, for: indexPath)
+                    return tableView.dequeueReusableCell(withIdentifier: Identifier.senderProxyTableViewCell, for: indexPath)
             }
             cell.load(proxy)
             cell.changeIconButton.addTarget(self, action: #selector(showIconPickerController), for: .touchUpInside)
@@ -39,9 +39,9 @@ extension ProxyTableViewDataSource: UITableViewDataSource {
             return cell
         case 1:
             guard
-                let cell = tableView.dequeueReusableCell(withIdentifier: Name.convosTableViewCell) as? ConvosTableViewCell,
+                let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.convosTableViewCell) as? ConvosTableViewCell,
                 let convo = convos[safe: indexPath.row] else {
-                    return tableView.dequeueReusableCell(withIdentifier: Name.convosTableViewCell, for: indexPath)
+                    return tableView.dequeueReusableCell(withIdentifier: Identifier.convosTableViewCell, for: indexPath)
             }
             cell.load(convo)
             return cell

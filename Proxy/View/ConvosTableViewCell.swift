@@ -9,13 +9,15 @@ class ConvosTableViewCell: UITableViewCell {
 
     func load(_ convo: Convo) {
         iconImageView.image = nil
+        titleLabel.attributedText = DBConvo.makeConvoTitle(convo)
         lastMessageLabel.text = convo.lastMessage
         timestampLabel.text = convo.timestamp.asTimeAgo
-        titleLabel.attributedText = DBConvo.makeConvoTitle(convo)
         unreadLabel.text = nil // TODO: delete
         UIImage.makeImage(named: convo.receiverIcon) { (image) in
-            DispatchQueue.main.async {
-                self.iconImageView.image = image
+            if let image = image {
+                DispatchQueue.main.async {
+                    self.iconImageView.image = image
+                }
             }
         }
     }

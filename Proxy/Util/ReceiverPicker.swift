@@ -1,13 +1,14 @@
 import UIKit
 
 class ReceiverPicker {
-    private let uid: String
     weak var okAction: UIAlertAction?
     weak var controller: MakeNewMessageViewController?
 
-    init(controller: MakeNewMessageViewController, uid: String) {
-        self.controller = controller
+    private let uid: String
+
+    init(uid: String, controller: MakeNewMessageViewController) {
         self.uid = uid
+        self.controller = controller
     }
 
     func load() {

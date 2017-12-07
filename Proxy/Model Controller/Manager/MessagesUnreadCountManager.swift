@@ -1,9 +1,6 @@
 import UIKit
 
 class MessagesUnreadCountManager: UnreadCountManaging {
-    private let unreadCountObserver = UnreadCountObserver()
-    private weak var viewController: UIViewController?
-
     var unreadCount: Int = 0 {
         didSet {
             if unreadCount == 0 {
@@ -15,9 +12,12 @@ class MessagesUnreadCountManager: UnreadCountManaging {
             }
         }
     }
+
+    private let unreadCountObserver = UnreadCountObserver()
+    private weak var viewController: UIViewController?
     
     func load(uid: String, viewController: UIViewController) {
         self.viewController = viewController
-        unreadCountObserver.observe(uid: uid, unreadCountManager: self)
+        unreadCountObserver.observe(uid: uid, manager: self)
     }
 }

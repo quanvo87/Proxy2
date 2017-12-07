@@ -48,7 +48,7 @@ class LoginViewController: UIViewController {
 
 extension LoginViewController: StoryboardMakable {
     static var identifier: String {
-        return Name.loginViewController
+        return Identifier.loginViewController
     }
 }
 

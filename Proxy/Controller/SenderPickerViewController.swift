@@ -20,12 +20,12 @@ class SenderPickerViewController: UIViewController {
 
         dataSource.load(manager: manager, showDisclosureIndicator: false)
         
-        delegate.load(controller: self, delegate: senderPickerDelegate, manager: manager)
+        delegate.load(manager: manager, delegate: senderPickerDelegate, controller: self)
 
         tableView.dataSource = dataSource
         tableView.delegate = delegate
         tableView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
-        tableView.register(UINib(nibName: Name.proxiesTableViewCell, bundle: nil), forCellReuseIdentifier: Name.proxiesTableViewCell)
+        tableView.register(UINib(nibName: Identifier.proxiesTableViewCell, bundle: nil), forCellReuseIdentifier: Identifier.proxiesTableViewCell)
         tableView.rowHeight = 60
         tableView.separatorStyle = .none
         view.addSubview(tableView)

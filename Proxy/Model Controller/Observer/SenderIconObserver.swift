@@ -1,15 +1,15 @@
 import FirebaseDatabase
 
 class SenderIconObserver: ReferenceObserving {
-    private (set) var handle: DatabaseHandle?
     private (set) var ref: DatabaseReference?
+    private (set) var handle: DatabaseHandle?
 
-    func observe(senderIconManager: SenderIconManaging, senderOwnerId: String, senderProxyKey: String) {
+    func observe(senderOwnerId: String, senderProxyKey: String, manager: SenderIconManaging) {
         stopObserving()
         ref = DB.makeReference(Child.proxies, senderOwnerId, senderProxyKey, Child.icon)
-        handle = ref?.observe(.value, with: { [weak senderIconManager = senderIconManager] (data) in
+        handle = ref?.observe(.value, with: { [weak manager = manager] (data) in
             if let icon = data.value as? String {
-                senderIconManager?.senderIcon = icon
+                manager?.senderIcon = icon
             }
         })
     }

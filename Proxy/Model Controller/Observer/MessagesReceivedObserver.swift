@@ -1,15 +1,15 @@
 import FirebaseDatabase
 
 class MessagesReceivedObserver: ReferenceObserving {
-    private (set) var handle: DatabaseHandle?
     private (set) var ref: DatabaseReference?
+    private (set) var handle: DatabaseHandle?
 
-    func observe(messagesReceivedCountManager: MessagesReceivedCountManaging, uid: String) {
+    func observe(uid: String, manager: MessagesReceivedCountManaging) {
         stopObserving()
         ref = DB.makeReference(Child.userInfo, uid, IncrementableUserProperty.messagesReceived.rawValue)
-        handle = ref?.observe(.value, with: { [weak messagesReceivedCountManager = messagesReceivedCountManager] (data) in
+        handle = ref?.observe(.value, with: { [weak manager = manager] (data) in
             if let count = data.value as? UInt {
-                messagesReceivedCountManager?.messagesReceivedCount = count.asStringWithCommas
+                manager?.messagesReceivedCount = count.asStringWithCommas
             }
         })
     }

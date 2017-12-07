@@ -88,8 +88,10 @@ class ConvoViewController: JSQMessagesViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         tabBarController?.tabBar.isHidden = true
-        guard let convo = convo else { return }
-        convoIsActiveChecker.check(controller: self, convo: convo)
+        guard let convo = convo else {
+            return
+        }
+        convoIsActiveChecker.check(convo: convo, controller: navigationController)
         readMessages()
     }
     
@@ -597,7 +599,7 @@ extension ConvoViewController {
     
     // MARK: - Navigation
     @objc func showConvoInfoTableViewController() {
-        let dest = storyboard?.instantiateViewController(withIdentifier: Name.convoDetailTableViewController) as! ConvoDetailTableViewController
+        let dest = storyboard?.instantiateViewController(withIdentifier: Identifier.convoDetailTableViewController) as! ConvoDetailTableViewController
         dest.convo = convo!
         navigationController?.pushViewController(dest, animated: true)
     }

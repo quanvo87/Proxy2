@@ -1,8 +1,8 @@
 import FirebaseDatabase
 
 protocol ReferenceObserving {
-    var handle: DatabaseHandle? { get }
     var ref: DatabaseReference? { get }
+    var handle: DatabaseHandle? { get }
 }
 
 extension ReferenceObserving {

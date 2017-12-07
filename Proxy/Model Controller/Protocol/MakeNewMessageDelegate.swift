@@ -5,8 +5,8 @@ protocol MakeNewMessageDelegate: class {
 }
 
 extension MakeNewMessageDelegate {
-    func showMakeNewMessageController(sender: Proxy?, uid: String, viewController: UIViewController?) {
-        guard let makeNewMessageViewController = MakeNewMessageViewController.make(delegate: self, sender: sender, uid: uid) else {
+    func showMakeNewMessageController(uid: String, sender: Proxy?, viewController: UIViewController?) {
+        guard let makeNewMessageViewController = MakeNewMessageViewController.make(uid: uid, delegate: self, sender: sender) else {
             return
         }
         let navigationController = UINavigationController(rootViewController: makeNewMessageViewController)

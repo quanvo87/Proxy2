@@ -1,15 +1,15 @@
 import FirebaseDatabase
 
 class SenderNicknameObserver: ReferenceObserving {
-    private (set) var handle: DatabaseHandle?
     private (set) var ref: DatabaseReference?
+    private (set) var handle: DatabaseHandle?
 
-    func observe(senderNicknameManager: SenderNicknameManaging, convoKey: String, senderId: String) {
+    func observe(senderId: String, convoKey: String, manager: SenderNicknameManaging) {
         stopObserving()
         ref = DB.makeReference(Child.convos, senderId, convoKey, Child.senderNickname)
-        handle = ref?.observe(.value, with: { [weak senderNicknameManager = senderNicknameManager] (data) in
+        handle = ref?.observe(.value, with: { [weak manager = manager] (data) in
             if let nickname = data.value as? String {
-                senderNicknameManager?.senderNickname = nickname
+                manager?.senderNickname = nickname
             }
         })
     }
