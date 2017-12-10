@@ -15,7 +15,7 @@ class LoginViewController: UIViewController {
 
         let videos = ["arabiangulf", "beachpalm", "dragontailzipline", "hawaiiancoast"]
         let random = Int(arc4random_uniform(UInt32(videos.count)))
-//
+
         backgroundVideo.play(view: view, videoName: videos[random], videoType: "mp4", opacity: 0.95)
 
         facebookButton.setupForLoginViewController()
