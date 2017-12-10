@@ -8,12 +8,15 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
 
-    private let player = LoginVideoPlayer()
+    private let backgroundVideo = BackgroundVideo()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        player.play(view)
+        let videos = ["arabiangulf", "beachpalm", "dragontailzipline", "hawaiiancoast"]
+        let random = Int(arc4random_uniform(UInt32(videos.count)))
+
+        backgroundVideo.play(view: view, videoName: videos[random], videoType: "mp4", opacity: 0.95)
 
         facebookButton.setupForLoginViewController()
 

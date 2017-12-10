@@ -13,7 +13,6 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate, Sender
             setReceiverButtonTitle()
         }
     }
-
     var sender: Proxy? {
         didSet {
             setSenderButtonTitle()

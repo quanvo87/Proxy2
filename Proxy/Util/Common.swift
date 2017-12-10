@@ -105,6 +105,16 @@ extension UInt {
     }
 }
 
+extension UINavigationController {
+    func showConvoViewController(_ convo: Convo) {
+        guard let viewController = UIStoryboard.main.instantiateViewController(withIdentifier: Identifier.convoViewController) as? ConvoViewController else {
+            return
+        }
+        viewController.convo = convo
+        pushViewController(viewController, animated: true)
+    }
+}
+
 extension UINavigationItem {
     func disableRightBarButtonItem(atIndex index: Int) {
         guard let item = self.rightBarButtonItems?[safe: index] else {
@@ -132,14 +142,6 @@ extension UIViewController {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
-    }
-
-    func showConvoViewController(_ convo: Convo) {
-        guard let viewController = UIStoryboard.main.instantiateViewController(withIdentifier: Identifier.convoViewController) as? ConvoViewController else {
-            return
-        }
-        viewController.convo = convo
-        navigationController?.pushViewController(viewController, animated: true)
     }
 
     func showIconPicker(_ proxy: Proxy) {

@@ -22,9 +22,9 @@ class ProxyViewController: UIViewController, MakeNewMessageDelegate {
 
         convosManager.load(convosOwner: proxy.key, tableView: tableView)
 
-        dataSource.load(convosManager: convosManager, proxyManager: proxyManager, controller: self)
+        dataSource.load(proxyManager: proxyManager, convosManager: convosManager, controller: self)
 
-        delegate.load(manager: convosManager, controller: self)
+        delegate.load(manager: convosManager, controller: navigationController)
 
         for case let scrollView as UIScrollView in tableView.subviews {
             scrollView.delaysContentTouches = false
@@ -44,7 +44,7 @@ class ProxyViewController: UIViewController, MakeNewMessageDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         if let newConvo = newConvo {
-            showConvoViewController(newConvo)
+            navigationController?.showConvoViewController(newConvo)
             self.newConvo = nil
         }
     }

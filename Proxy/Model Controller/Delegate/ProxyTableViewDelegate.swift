@@ -2,9 +2,9 @@ import UIKit
 
 class ProxyTableViewDelegate: NSObject {
     private weak var manager: ConvosManaging?
-    private weak var controller: UIViewController?
+    private weak var controller: UINavigationController?
 
-    func load(manager: ConvosManaging, controller: UIViewController) {
+    func load(manager: ConvosManaging, controller: UINavigationController?) {
         self.manager = manager
         self.controller = controller
     }

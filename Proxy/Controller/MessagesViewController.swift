@@ -8,9 +8,9 @@ class MessagesViewController: UIViewController, MakeNewMessageDelegate {
     private let itemsToDeleteManager = ItemsToDeleteManager()
     private let dataSource = MessagesTableViewDataSource()
     private let delegate = MessagesTableViewDelegate()
+    private let tableView = UITableView()
     private let buttonManager = MessagesButtonManager()
     private let unreadCountManager = MessagesUnreadCountManager()
-    private let tableView = UITableView()
 
     init(_ uid: String) {
         self.uid = uid
@@ -23,11 +23,7 @@ class MessagesViewController: UIViewController, MakeNewMessageDelegate {
 
         dataSource.load(manager: convosManager)
 
-        delegate.load(convosManager: convosManager, itemsToDeleteManager: itemsToDeleteManager, controller: self)
-
-        buttonManager.load(uid: uid, itemsToDeleteManager: itemsToDeleteManager, makeNewMessageDelegate: self, tableView: tableView, viewController: self)
-
-        unreadCountManager.load(uid: uid, viewController: self)
+        delegate.load(convosManager: convosManager, itemsToDeleteManager: itemsToDeleteManager, controller: navigationController)
 
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.dataSource = dataSource
@@ -37,12 +33,16 @@ class MessagesViewController: UIViewController, MakeNewMessageDelegate {
         tableView.rowHeight = 80
         tableView.separatorStyle = .none
         view.addSubview(tableView)
+
+        buttonManager.load(uid: uid, itemsToDeleteManager: itemsToDeleteManager, makeNewMessageDelegate: self, tableView: tableView, viewController: self)
+
+        unreadCountManager.load(uid: uid, viewController: self)
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         if let newConvo = newConvo {
-            showConvoViewController(newConvo)
+            navigationController?.showConvoViewController(newConvo)
             self.newConvo = nil
         }
     }
