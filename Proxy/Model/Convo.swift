@@ -88,7 +88,7 @@ struct Convo {
 
 extension Convo: Equatable {
     static func ==(_ lhs: Convo, _ rhs: Convo) -> Bool {
-        return  lhs.hasUnreadMessage == rhs.hasUnreadMessage &&
+        return lhs.hasUnreadMessage == rhs.hasUnreadMessage &&
             lhs.receiverDeletedProxy == rhs.receiverDeletedProxy &&
             lhs.receiverIsBlocked == rhs.receiverIsBlocked &&
             lhs.receiverLeftConvo == lhs.receiverLeftConvo &&

@@ -36,7 +36,7 @@ struct DBConvo {
             return
         }
 
-        ref.queryOrdered(byChild: "parentConvo").queryEqual(toValue: convo.key).observeSingleEvent(of: .value, with: { (data) in
+        ref.queryOrdered(byChild: Child.parentConvoKey).queryEqual(toValue: convo.key).observeSingleEvent(of: .value, with: { (data) in
             completion(data.toMessagesArray())
         })
     }
@@ -189,7 +189,7 @@ extension GroupWork {
             }
 
             for message in messages {
-                self.delete(at: Child.userInfo, convo.senderId, Child.unreadMessages, message.key)
+                self.delete(at: Child.userInfo, convo.senderId, Child.unreadMessages, message.messageId)
             }
 
             self.finish(withResult: true)

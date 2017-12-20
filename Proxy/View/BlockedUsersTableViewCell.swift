@@ -6,12 +6,12 @@ class BlockedUsersTableViewCell: UITableViewCell {
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var nicknameLabel: UILabel!
     
-    let api = API.sharedInstance
+//    let api = API.sharedInstance
     var blockedUser: BlockedUser?
     
     @IBAction func unblock(_ sender: AnyObject) {
-        if let blockedUser = blockedUser {
-            api.unblock(blockedUserId: blockedUser.id)
-        }
+//        if let blockedUser = blockedUser {
+//            api.unblock(blockedUserId: blockedUser.id)
+//        }
     }
 }

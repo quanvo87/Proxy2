@@ -8,9 +8,9 @@ def pods
   pod 'FirebaseAuth'
   pod 'Firebase/Database'
   pod 'Firebase/Storage'
-  pod 'SwiftVideoBackground', '~> 2.0'
   pod 'GroupWork', '~> 0.0'
-  pod 'JSQMessagesViewController'
+  pod 'MessageKit'
+  pod 'SwiftVideoBackground', '~> 2.0'
 end
 
 target 'Proxy' do

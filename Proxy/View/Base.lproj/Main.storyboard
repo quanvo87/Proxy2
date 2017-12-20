@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="mti-JT-f0N">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="mti-JT-f0N">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
         <capability name="Alignment constraints to the first baseline" minToolsVersion="6.0"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
@@ -162,29 +162,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dMy-OI-bMz" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1230" y="2185"/>
-        </scene>
-        <!--Convo View Controller-->
-        <scene sceneID="zTB-3Y-1fk">
-            <objects>
-                <viewController storyboardIdentifier="ConvoViewController" id="qft-ic-0R9" customClass="ConvoViewController" customModule="Proxy" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="VIo-Gq-Bem"/>
-                        <viewControllerLayoutGuide type="bottom" id="gBO-Oe-A3e"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="sw9-mI-fUi">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <viewLayoutGuide key="safeArea" id="Hh5-mT-X2x"/>
-                    </view>
-                    <toolbarItems/>
-                    <navigationItem key="navigationItem" id="pcY-fZ-i92"/>
-                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="qqX-V1-gu5" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-1943" y="2872"/>
+            <point key="canvasLocation" x="-538" y="2185"/>
         </scene>
         <!--Convo Detail Table View Controller-->
         <scene sceneID="4Xu-0x-N0F">
@@ -306,7 +284,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="YYp-ah-u0e" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1942" y="2185"/>
+            <point key="canvasLocation" x="-1249" y="2185"/>
         </scene>
         <!--Make New Message View Controller-->
         <scene sceneID="1fM-QD-uNF">
@@ -415,7 +393,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RyA-jA-m5k" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2644" y="2872"/>
+            <point key="canvasLocation" x="-1945" y="2185"/>
         </scene>
     </scenes>
 </document>

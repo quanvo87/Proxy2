@@ -1,15 +1,15 @@
 import FirebaseDatabase
 import GroupWork
+import MessageKit
 
 struct DBMessage {
     typealias SendMessageCallback = ((message: Message, convo: Convo)?) -> Void
 
-    static func read(_ message: Message, atDate date: Double = Date().timeIntervalSince1970, completion: @escaping (Success) -> Void) {
+    static func read(_ message: Message, atDate date: Date = Date(), completion: @escaping (Success) -> Void) {
         let work = GroupWork()
-        work.delete(at: Child.userInfo, message.receiverId, Child.unreadMessages, message.key)
+        work.delete(at: Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
         work.set(.dateRead(date), forMessage: message)
-        work.set(.hasUnreadMessage(false), forConvoWithKey: message.parentConvo, ownerId: message.receiverId, proxyKey: message.receiverProxyKey)
-        work.set(.read(true), forMessage: message)
+        work.set(.hasUnreadMessage(false), forConvoWithKey: message.parentConvoKey, ownerId: message.receiverId, proxyKey: message.receiverProxyKey)
         work.allDone {
             work.setHasUnreadMessageForProxy(key: message.receiverProxyKey, ownerId: message.receiverId)
             work.allDone {
@@ -23,43 +23,44 @@ struct DBMessage {
 
         DBConvo.getConvo(withKey: convoKey, belongingTo: senderProxy.ownerId) { (senderConvo) in
             if let senderConvo = senderConvo {
-                sendMessage(text: text, mediaType: "", senderConvo: senderConvo, completion: completion)
+                sendMessage(text: text, senderConvo: senderConvo, completion: completion)
             } else {
                 DBConvo.makeConvo(sender: senderProxy, receiver: receiverProxy) { (convo) in
                     guard let senderConvo = convo else {
                         completion(nil)
                         return
                     }
-                    sendMessage(text: text, mediaType: "", senderConvo: senderConvo, completion: completion)
+                    sendMessage(text: text, senderConvo: senderConvo, completion: completion)
                 }
             }
         }
     }
 
-    private static func sendMessage(text: String, mediaType: String, senderConvo: Convo, completion: @escaping SendMessageCallback) {
+    private static func sendMessage(text: String, senderConvo: Convo, completion: @escaping SendMessageCallback) {
         guard let ref = DB.makeReference(Child.messages, senderConvo.key) else {
             completion(nil)
             return
         }
 
         DBConvo.userIsPresent(user: senderConvo.receiverId, inConvoWithKey: senderConvo.key) { (receiverIsPresent) in
-            let work = GroupWork()
+
             let currentTime = Date().timeIntervalSince1970
 
             // Write message
-            let dateRead = receiverIsPresent ? currentTime : 0.0
-            let messageKey = ref.childByAutoId().key
-            let message = Message(dateCreated: currentTime,
-                                  dateRead: dateRead,
-                                  key: messageKey,
-                                  mediaType: mediaType,
-                                  parentConvo: senderConvo.key,
-                                  read: receiverIsPresent,
-                                  receiverId: senderConvo.receiverId,
-                                  receiverProxyKey: senderConvo.receiverProxyKey,
-                                  senderId: senderConvo.senderId,
-                                  text: text)
-            work.set(message.toDictionary(), at: Child.messages, message.parentConvo, message.key)
+            let messageId = ref.childByAutoId().key
+            let dateRead = receiverIsPresent ? Date() : Date.distantPast
+
+            let message = Message(sender: Sender(id: senderConvo.senderId,
+                                                  displayName: senderConvo.senderProxyName),
+                                   messageId: messageId,
+                                   data: .text(text),
+                                   dateRead: dateRead,
+                                   parentConvoKey: senderConvo.key,
+                                   receiverId: senderConvo.receiverId,
+                                   receiverProxyKey: senderConvo.receiverProxyKey)
+
+            let work = GroupWork()
+            work.set(message.toDictionary(), at: Child.messages, message.parentConvoKey, message.messageId)
 
             // Receiver updates
             work.increment(by: 1, forProperty: .messagesReceived, forUser: senderConvo.receiverId)
@@ -70,7 +71,7 @@ struct DBMessage {
 
                 if !receiverIsPresent {
                     work.set(.hasUnreadMessage(true), forProxyWithKey: message.receiverProxyKey, proxyOwner: message.receiverId)
-                    work.set(message.toDictionary(), at: Child.userInfo, message.receiverId, Child.unreadMessages, message.key)
+                    work.set(message.toDictionary(), at: Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
                 }
             }
 
@@ -118,15 +119,6 @@ struct DBMessage {
             }
         }
     }
-
-    static func setMedia(for message: Message, mediaType: String, mediaURL: String, completion: @escaping (Success) -> Void) {
-        let work = GroupWork()
-        work.set(.mediaType(mediaType), forMessage: message)
-        work.set(.mediaURL(mediaURL), forMessage: message)
-        work.allDone {
-            completion(work.result)
-        }
-    }
 }
 
 extension DataSnapshot {
@@ -143,17 +135,18 @@ extension DataSnapshot {
 
 extension GroupWork {
     func set(_ property: SettableMessageProperty, forMessage message: Message) {
-        set(property.properties.value, at: Child.messages, message.parentConvo, message.key, property.properties.name)
+        switch property {
+        case .dateRead(let date):
+            set(date.timeIntervalSince1970, at: Child.messages, message.parentConvoKey, message.messageId, property.properties.name)
+        }
     }
 
     func setHasUnreadMessageForProxy(key: String, ownerId: String) {
         start()
-
         DBProxy.getUnreadMessagesForProxy(owner: ownerId, key: key) { (messages) in
             if let messageCount = messages?.count, messageCount <= 0 {
                 self.set(.hasUnreadMessage(false), forProxyWithKey: key, proxyOwner: ownerId)
             }
-
             self.finish(withResult: true)
         }
     }

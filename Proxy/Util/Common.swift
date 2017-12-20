@@ -113,11 +113,11 @@ extension UInt {
 
 extension UINavigationController {
     func showConvoViewController(_ convo: Convo) {
-        guard let viewController = UIStoryboard.main.instantiateViewController(withIdentifier: Identifier.convoViewController) as? ConvoViewController else {
-            return
-        }
-        viewController.convo = convo
-        pushViewController(viewController, animated: true)
+//        guard let viewController = UIStoryboard.main.instantiateViewController(withIdentifier: Identifier.convoViewController) as? ConvoViewController else {
+//            return
+//        }
+//        viewController.convo = convo
+//        pushViewController(viewController, animated: true)
     }
 }
 

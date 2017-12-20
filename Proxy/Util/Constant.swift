@@ -34,6 +34,7 @@ struct Child {
     static let isTyping = "isTyping"
     static let key = "key"
     static let messages = "messages"
+    static let parentConvoKey = "parentConvoKey"
     static let proxies = "proxies"
     static let proxyKeys = "proxyKeys"
     static let proxyOwners = "proxyOwners"

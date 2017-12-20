@@ -10,7 +10,7 @@ class TabBarController: UITabBarController {
 
         super.init(nibName: nil, bundle: nil)
 
-        let messagesController = MessagesViewController(uid)
+        let messagesController = ConvosViewController(uid)
         messagesController.tabBarItem = UITabBarItem(title: "Messages", image: UIImage(named: "messages"), tag: 0)
 
         let proxiesController = ProxiesViewController(uid)

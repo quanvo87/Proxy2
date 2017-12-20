@@ -5,7 +5,7 @@ import UIKit
 
 class ConvoDetailTableViewController: UITableViewController {
     
-    let api = API.sharedInstance
+//    let api = API.sharedInstance
     var convo = Convo()
     var senderProxy: Proxy?
     
@@ -36,10 +36,10 @@ class ConvoDetailTableViewController: UITableViewController {
         tableView.delaysContentTouches = false
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: Identifier.convoDetailTableViewCell)
         
-        api.getProxy(withKey: convo.senderProxyKey, belongingToUserId: convo.senderId) { (proxy) in
-            self.senderProxy = proxy
-        }
-        
+//        api.getProxy(withKey: convo.senderProxyKey, belongingToUserId: convo.senderId) { (proxy) in
+//            self.senderProxy = proxy
+//        }
+
 //        receiverIconRef = api.ref.child(Child.proxies).child(convo.receiverId).child(convo.receiverProxyKey).child(Child.Icon)
 //        receiverNicknameRef = api.ref.child(Child.convos).child(convo.senderId).child(convo.key).child(Child.ReceiverNickname)
 //        senderIconRef = api.ref.child(Child.proxies).child(convo.senderId).child(convo.senderProxyKey).child(Child.Icon)
@@ -248,7 +248,7 @@ class ConvoDetailTableViewController: UITableViewController {
             case 0:
                 let alert = UIAlertController(title: "Leave Conversation?", message: "The other user will not be notified.", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "Leave", style: .destructive, handler: { (void) in
-                    self.api.leaveConvo(self.convo)
+//                    self.api.leaveConvo(self.convo)
                     _ = self.navigationController?.popViewController(animated: true)
                 }))
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -258,7 +258,7 @@ class ConvoDetailTableViewController: UITableViewController {
             case 1:
                 let alert = UIAlertController(title: "Block User?", message: "You will no longer see any conversations with this user. You can unblock users in the 'Me' tab.", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "Block", style: .destructive, handler: { (void) in
-                    self.api.blockReceiver(in: self.convo)
+//                    self.api.blockReceiver(in: self.convo)
                     _ = self.navigationController?.popViewController(animated: true)
                 }))
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -288,7 +288,7 @@ class ConvoDetailTableViewController: UITableViewController {
             let nickname = alert.textFields![0].text
             let trim = nickname!.trimmingCharacters(in: NSCharacterSet(charactersIn: " ") as CharacterSet)
             if !(nickname != "" && trim == "") {
-                self.api.setNickname(nickname!, forReceiverInConvo: self.convo)
+//                self.api.setNickname(nickname!, forReceiverInConvo: self.convo)
             }
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -312,7 +312,7 @@ class ConvoDetailTableViewController: UITableViewController {
             let nickname = alert.textFields![0].text
             let trim = nickname!.trimmingCharacters(in: NSCharacterSet(charactersIn: " ") as CharacterSet)
             if !(nickname != "" && trim == "") {
-                self.api.setNickname(nickname!, for: self.senderProxy!)
+//                self.api.setNickname(nickname!, for: self.senderProxy!)
             }
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
