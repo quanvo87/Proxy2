@@ -79,7 +79,7 @@ extension DBTest {
     static func sendMessage(completion: @escaping (_ message: Message, _ convo: Convo, _ sender: Proxy, _ receiver: Proxy) -> Void) {
         makeProxy { (sender) in
             makeProxy (forUser: testUser) { (receiver) in
-                DBMessage.sendMessage(from: sender, to: receiver, withText: text) { (result) in
+                DBMessage.sendMessage(senderProxy: sender, receiverProxy: receiver, text: text) { (result) in
                     guard let (message, convo) = result else {
                         XCTFail()
                         return

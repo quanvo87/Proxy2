@@ -1,6 +1,6 @@
 import UIKit
 
-class MessagesButtonManager: ButtonManaging {
+class ConvosButtonManager: ButtonManaging {
     var itemsToDeleteManager: ItemsToDeleteManaging?
     var cancelButton = UIBarButtonItem()
     var confirmButton = UIBarButtonItem()

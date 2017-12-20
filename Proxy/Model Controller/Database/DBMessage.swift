@@ -18,7 +18,7 @@ struct DBMessage {
         }
     }
 
-    static func sendMessage(from senderProxy: Proxy, to receiverProxy: Proxy, withText text: String, completion: @escaping SendMessageCallback) {
+    static func sendMessage(senderProxy: Proxy, receiverProxy: Proxy, text: String, completion: @escaping SendMessageCallback) {
         let convoKey = DBConvo.makeConvoKey(senderProxy: senderProxy, receiverProxy: receiverProxy)
 
         DBConvo.getConvo(withKey: convoKey, belongingTo: senderProxy.ownerId) { (senderConvo) in
@@ -36,7 +36,7 @@ struct DBMessage {
         }
     }
 
-    private static func sendMessage(text: String, senderConvo: Convo, completion: @escaping SendMessageCallback) {
+    static func sendMessage(text: String, senderConvo: Convo, completion: @escaping SendMessageCallback) {
         guard let ref = DB.makeReference(Child.messages, senderConvo.key) else {
             completion(nil)
             return

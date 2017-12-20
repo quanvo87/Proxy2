@@ -7,11 +7,11 @@ class ProxiesInteractedWithCountManager: ProxiesInteractedWithCountManaging {
         }
     }
 
-    private let proxiesInteractedWithObserver = ProxiesInteractedWithObserver()
+    private let observer = ProxiesInteractedWithObserver()
     private weak var tableView: UITableView?
     
     func load(uid: String, tableView: UITableView) {
         self.tableView = tableView
-        proxiesInteractedWithObserver.observe(uid: uid, manager: self)
+        observer.observe(uid: uid, manager: self)
     }
 }

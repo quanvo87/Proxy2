@@ -1,6 +1,6 @@
 import MessageKit
 
-class ConvoCollectionViewDataSource {
+class ConvoDataSource {
     private var sender = Sender(id: "", displayName: "")
     private weak var manager: MessagesManaging?
 
@@ -10,7 +10,7 @@ class ConvoCollectionViewDataSource {
     }
 }
 
-extension ConvoCollectionViewDataSource: MessagesDataSource {
+extension ConvoDataSource: MessagesDataSource {
     func currentSender() -> Sender {
         return sender
     }

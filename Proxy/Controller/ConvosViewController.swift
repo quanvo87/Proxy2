@@ -9,8 +9,8 @@ class ConvosViewController: UIViewController, MakeNewMessageDelegate {
     private let dataSource = ConvosTableViewDataSource()
     private let delegate = ConvosTableViewDelegate()
     private let tableView = UITableView()
-    private let buttonManager = MessagesButtonManager()
-    private let unreadCountManager = MessagesUnreadCountManager()
+    private let buttonManager = ConvosButtonManager()
+    private let unreadCountManager = ConvosUnreadCountManager()
 
     init(_ uid: String) {
         self.uid = uid

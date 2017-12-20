@@ -5,14 +5,15 @@ class MessagesManager: MessagesManaging {
     var messages = [MessageType]() {
         didSet {
             collectionView?.reloadData()
+            collectionView?.scrollToBottom()
         }
     }
 
-    private let messagesObserver = MessagesObserver()
-    private weak var collectionView: UICollectionView?
+    private let observer = MessagesObserver()
+    private weak var collectionView: MessagesCollectionView?
 
-    func load(convoKey: String, collectionView: UICollectionView) {
+    func load(convoKey: String, collectionView: MessagesCollectionView) {
         self.collectionView = collectionView
-        messagesObserver.observe(convoKey: convoKey, manager: self)
+        observer.observe(convoKey: convoKey, manager: self)
     }
 }

@@ -11,9 +11,9 @@
 		590441EB1F98351E0015CE16 /* ConvosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 590441EA1F98351E0015CE16 /* ConvosViewController.swift */; };
 		590823C31F9EED6A00A3B6A9 /* IconPickerCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 590823C21F9EED6A00A3B6A9 /* IconPickerCollectionViewCell.xib */; };
 		590823C51F9EF6DA00A3B6A9 /* ProxyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 590823C41F9EF6DA00A3B6A9 /* ProxyService.swift */; };
-		590F08E61F7BF21B00F3200F /* MessagesUnreadCountManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 590F08E51F7BF21B00F3200F /* MessagesUnreadCountManager.swift */; };
+		590F08E61F7BF21B00F3200F /* ConvosUnreadCountManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 590F08E51F7BF21B00F3200F /* ConvosUnreadCountManager.swift */; };
 		5912F0E71F708B770017D1EE /* SenderIconManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5912F0E61F708B770017D1EE /* SenderIconManaging.swift */; };
-		59155AB61F7B7951001EDDD0 /* MessagesButtonManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59155AB51F7B7951001EDDD0 /* MessagesButtonManager.swift */; };
+		59155AB61F7B7951001EDDD0 /* ConvosButtonManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59155AB51F7B7951001EDDD0 /* ConvosButtonManager.swift */; };
 		591F9A4D1F866D1D00FDD294 /* SenderIconObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 591F9A4C1F866D1D00FDD294 /* SenderIconObserver.swift */; };
 		591F9A4F1F867A1800FDD294 /* ReceiverNicknameObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 591F9A4E1F867A1800FDD294 /* ReceiverNicknameObserver.swift */; };
 		5921CE631F85F7E600C9DDA5 /* ReceiverIconManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5921CE621F85F7E600C9DDA5 /* ReceiverIconManaging.swift */; };
@@ -100,10 +100,11 @@
 		598420511FEA598300855647 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598420501FEA598300855647 /* Message.swift */; };
 		5988E8321F9A5A7E002C8C95 /* ConvosTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5988E8311F9A5A7E002C8C95 /* ConvosTableViewCell.xib */; };
 		5988E8341F9A5EF9002C8C95 /* MeTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5988E8331F9A5EF9002C8C95 /* MeTableViewCell.xib */; };
-		598F89EA1FEB120600CCF024 /* ConvoCollectionViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598F89E91FEB120600CCF024 /* ConvoCollectionViewDataSource.swift */; };
+		598F89EA1FEB120600CCF024 /* ConvoDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598F89E91FEB120600CCF024 /* ConvoDataSource.swift */; };
 		598F89EC1FEB12E000CCF024 /* MessagesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598F89EB1FEB12E000CCF024 /* MessagesManager.swift */; };
 		598F89EE1FEB131600CCF024 /* MessagesManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598F89ED1FEB131600CCF024 /* MessagesManaging.swift */; };
 		598F89F01FEB141800CCF024 /* MessagesObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598F89EF1FEB141800CCF024 /* MessagesObserver.swift */; };
+		598F89F21FEB273200CCF024 /* ConvoInputBarDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598F89F11FEB273200CCF024 /* ConvoInputBarDelegate.swift */; };
 		599B8D411F98610C002F394A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599B8D401F98610C002F394A /* AppDelegate.swift */; };
 		59AC04B61F6BFCFD00DB580B /* MessagesReceivedObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59AC04B51F6BFCFD00DB580B /* MessagesReceivedObserver.swift */; };
 		59AC04B81F6C049100DB580B /* MeTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59AC04B71F6C049100DB580B /* MeTableViewDataSource.swift */; };
@@ -160,9 +161,9 @@
 		590441EA1F98351E0015CE16 /* ConvosViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvosViewController.swift; sourceTree = "<group>"; };
 		590823C21F9EED6A00A3B6A9 /* IconPickerCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IconPickerCollectionViewCell.xib; sourceTree = "<group>"; };
 		590823C41F9EF6DA00A3B6A9 /* ProxyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyService.swift; sourceTree = "<group>"; };
-		590F08E51F7BF21B00F3200F /* MessagesUnreadCountManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesUnreadCountManager.swift; sourceTree = "<group>"; };
+		590F08E51F7BF21B00F3200F /* ConvosUnreadCountManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvosUnreadCountManager.swift; sourceTree = "<group>"; };
 		5912F0E61F708B770017D1EE /* SenderIconManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SenderIconManaging.swift; sourceTree = "<group>"; };
-		59155AB51F7B7951001EDDD0 /* MessagesButtonManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesButtonManager.swift; sourceTree = "<group>"; };
+		59155AB51F7B7951001EDDD0 /* ConvosButtonManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvosButtonManager.swift; sourceTree = "<group>"; };
 		591F9A4C1F866D1D00FDD294 /* SenderIconObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SenderIconObserver.swift; sourceTree = "<group>"; };
 		591F9A4E1F867A1800FDD294 /* ReceiverNicknameObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiverNicknameObserver.swift; sourceTree = "<group>"; };
 		5921CE621F85F7E600C9DDA5 /* ReceiverIconManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiverIconManaging.swift; sourceTree = "<group>"; };
@@ -248,10 +249,11 @@
 		598420501FEA598300855647 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		5988E8311F9A5A7E002C8C95 /* ConvosTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConvosTableViewCell.xib; sourceTree = "<group>"; };
 		5988E8331F9A5EF9002C8C95 /* MeTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MeTableViewCell.xib; sourceTree = "<group>"; };
-		598F89E91FEB120600CCF024 /* ConvoCollectionViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoCollectionViewDataSource.swift; sourceTree = "<group>"; };
+		598F89E91FEB120600CCF024 /* ConvoDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoDataSource.swift; sourceTree = "<group>"; };
 		598F89EB1FEB12E000CCF024 /* MessagesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesManager.swift; sourceTree = "<group>"; };
 		598F89ED1FEB131600CCF024 /* MessagesManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesManaging.swift; sourceTree = "<group>"; };
 		598F89EF1FEB141800CCF024 /* MessagesObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesObserver.swift; sourceTree = "<group>"; };
+		598F89F11FEB273200CCF024 /* ConvoInputBarDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoInputBarDelegate.swift; sourceTree = "<group>"; };
 		599B8D401F98610C002F394A /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		59AC04B51F6BFCFD00DB580B /* MessagesReceivedObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesReceivedObserver.swift; sourceTree = "<group>"; };
 		59AC04B71F6C049100DB580B /* MeTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeTableViewDataSource.swift; sourceTree = "<group>"; };
@@ -476,6 +478,7 @@
 		59D896A21F977D2B008B3A05 /* Delegate */ = {
 			isa = PBXGroup;
 			children = (
+				598F89F11FEB273200CCF024 /* ConvoInputBarDelegate.swift */,
 				59DDF43A1F6AB2F100D4E239 /* ConvosTableViewDelegate.swift */,
 				594D2A511F6B167F00ECCF06 /* IconPickerCollectionViewDelegate.swift */,
 				5958D5091F6C18B600B07B0F /* MeTableViewDelegate.swift */,
@@ -489,7 +492,7 @@
 		59D896A31F977D44008B3A05 /* Data Source */ = {
 			isa = PBXGroup;
 			children = (
-				598F89E91FEB120600CCF024 /* ConvoCollectionViewDataSource.swift */,
+				598F89E91FEB120600CCF024 /* ConvoDataSource.swift */,
 				5973C8241F608A1C00647492 /* ConvosTableViewDataSource.swift */,
 				594D2A4F1F6B0CDD00ECCF06 /* IconPickerCollectionViewDataSource.swift */,
 				59AC04B71F6C049100DB580B /* MeTableViewDataSource.swift */,
@@ -503,13 +506,13 @@
 			isa = PBXGroup;
 			children = (
 				59FF373C1F97984200FA1AF0 /* AuthManager.swift */,
-				598F89EB1FEB12E000CCF024 /* MessagesManager.swift */,
+				59155AB51F7B7951001EDDD0 /* ConvosButtonManager.swift */,
 				597C8E701F8601FE00637EAC /* ConvoIconsManager.swift */,
 				5956AE571F872E4B00F99ED0 /* ConvoNicknamesManager.swift */,
 				59E75B291F846F140033A407 /* ConvosManager.swift */,
+				590F08E51F7BF21B00F3200F /* ConvosUnreadCountManager.swift */,
 				592C0DE91F8E59B50023DB02 /* ItemsToDeleteManager.swift */,
-				59155AB51F7B7951001EDDD0 /* MessagesButtonManager.swift */,
-				590F08E51F7BF21B00F3200F /* MessagesUnreadCountManager.swift */,
+				598F89EB1FEB12E000CCF024 /* MessagesManager.swift */,
 				593D7D431F851F7D00D3FBD5 /* MessagesReceivedCountManager.swift */,
 				593D7D471F8528B700D3FBD5 /* MessagesSentCountManager.swift */,
 				59AF0E7B1F7B5129009F6F38 /* ProxiesButtonManager.swift */,
@@ -1004,9 +1007,9 @@
 				5973C8481F608A2200647492 /* ProxyObserver.swift in Sources */,
 				596D7FD41F62EC1100E6AF8D /* ProxiesTableViewDelegate.swift in Sources */,
 				594D2A521F6B167F00ECCF06 /* IconPickerCollectionViewDelegate.swift in Sources */,
-				598F89EA1FEB120600CCF024 /* ConvoCollectionViewDataSource.swift in Sources */,
+				598F89EA1FEB120600CCF024 /* ConvoDataSource.swift in Sources */,
 				592C0DE81F8E598B0023DB02 /* ItemsToDeleteManaging.swift in Sources */,
-				590F08E61F7BF21B00F3200F /* MessagesUnreadCountManager.swift in Sources */,
+				590F08E61F7BF21B00F3200F /* ConvosUnreadCountManager.swift in Sources */,
 				599B8D411F98610C002F394A /* AppDelegate.swift in Sources */,
 				5973C84E1F608A2200647492 /* ConvoDetailTableViewController.swift in Sources */,
 				59FF373D1F97984200FA1AF0 /* AuthManager.swift in Sources */,
@@ -1054,7 +1057,7 @@
 				593D7D461F85246900D3FBD5 /* MessagesSentCountManaging.swift in Sources */,
 				5973C8751F608A2200647492 /* makeIconNames.swift in Sources */,
 				591F9A4F1F867A1800FDD294 /* ReceiverNicknameObserver.swift in Sources */,
-				59155AB61F7B7951001EDDD0 /* MessagesButtonManager.swift in Sources */,
+				59155AB61F7B7951001EDDD0 /* ConvosButtonManager.swift in Sources */,
 				59DDF43B1F6AB2F100D4E239 /* ConvosTableViewDelegate.swift in Sources */,
 				5973C8701F608A2200647492 /* ConvosObserver.swift in Sources */,
 				59E75B301F846F6B0033A407 /* ProxyManager.swift in Sources */,
@@ -1069,6 +1072,7 @@
 				5973C8511F608A2200647492 /* ProxyError.swift in Sources */,
 				5958D5061F6C140100B07B0F /* MessagesSentObserver.swift in Sources */,
 				5973C85D1F608A2200647492 /* Common.swift in Sources */,
+				598F89F21FEB273200CCF024 /* ConvoInputBarDelegate.swift in Sources */,
 				5921CE631F85F7E600C9DDA5 /* ReceiverIconManaging.swift in Sources */,
 				5973C84A1F608A2200647492 /* ConvosTableViewCell.swift in Sources */,
 				5973C8561F608A2200647492 /* LoginViewController.swift in Sources */,

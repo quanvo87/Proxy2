@@ -8,12 +8,16 @@ class ConvoViewController: MessageKit.MessagesViewController {
 
     private let messagesManager = MessagesManager()
 
-    private let dataSource = ConvoCollectionViewDataSource()
+    private let dataSource = ConvoDataSource()
+
+    private let inputBarDelegate = ConvoInputBarDelegate()
 
     init(_ convo: Convo) {
         self.convo = convo
 
         super.init(nibName: nil, bundle: nil)
+
+        maintainPositionOnKeyboardFrameChanged = true
 
         messagesManager.load(convoKey: convo.key, collectionView: messagesCollectionView)
 
@@ -23,10 +27,9 @@ class ConvoViewController: MessageKit.MessagesViewController {
 
         messagesCollectionView.messagesLayoutDelegate = self
         messagesCollectionView.messagesDisplayDelegate = self
-    }
 
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        inputBarDelegate.load(convo)
+        messageInputBar.delegate = inputBarDelegate
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -37,6 +40,10 @@ class ConvoViewController: MessageKit.MessagesViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
         tabBarController?.tabBar.isHidden = false
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
 

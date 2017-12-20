@@ -90,7 +90,7 @@ class DBMessageTests: DBTest {
             DBConvo.leaveConvo(senderConvo) { (success) in
                 XCTAssert(success)
 
-                DBMessage.sendMessage(from: receiver, to: sender, withText: "") { (result) in
+                DBMessage.sendMessage(senderProxy: receiver, receiverProxy: sender, text: "") { (result) in
                     guard let (_, convo) = result else {
                         XCTFail()
                         return
@@ -116,7 +116,7 @@ class DBMessageTests: DBTest {
             DBConvo.leaveConvo(senderConvo) { (success) in
                 XCTAssert(success)
                 
-                DBMessage.sendMessage(from: sender, to: receiver, withText: "") { (result) in
+                DBMessage.sendMessage(senderProxy: sender, receiverProxy: receiver, text: "") { (result) in
                     guard let (_, convo) = result else {
                         XCTFail()
                         return

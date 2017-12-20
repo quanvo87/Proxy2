@@ -7,11 +7,11 @@ class MessagesReceivedCountManager: MessagesReceivedCountManaging {
         }
     }
 
-    private let messagesReceivedObserver = MessagesReceivedObserver()
+    private let observer = MessagesReceivedObserver()
     private weak var tableView: UITableView?
     
     func load(uid: String, tableView: UITableView) {
         self.tableView = tableView
-        messagesReceivedObserver.observe(uid: uid, manager: self)
+        observer.observe(uid: uid, manager: self)
     }
 }

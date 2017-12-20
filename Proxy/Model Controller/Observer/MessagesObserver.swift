@@ -8,7 +8,7 @@ class MessagesObserver: ReferenceObserving {
         stopObserving()
         ref = DB.makeReference(Child.messages, convoKey)
         handle = ref?.queryOrdered(byChild: Child.timestamp).observe(.value, with: { [weak manager = manager] (data) in
-            manager?.messages = data.toMessagesArray().reversed()
+            manager?.messages = data.toMessagesArray()
         })
     }
 

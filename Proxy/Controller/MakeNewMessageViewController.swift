@@ -93,7 +93,7 @@ private extension MakeNewMessageViewController {
             return
         }
         disableButtons()
-        DBMessage.sendMessage(from: sender, to: receiver, withText: messageTextView.text) { (result) in
+        DBMessage.sendMessage(senderProxy: sender, receiverProxy: receiver, text: messageTextView.text) { (result) in
             guard let (_, convo) = result else {
                 self.enableButtons()
                 self.showAlert("Error Sending Message", message: "There was an error sending the message. Please try again.")
