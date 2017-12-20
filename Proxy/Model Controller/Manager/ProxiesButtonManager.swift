@@ -49,7 +49,7 @@ class ProxiesButtonManager: ButtonManaging {
             }
             self.setDefaultButtons()
             key.notify {
-                key.finishWorkGroup()
+                key.removeWorkGroup()
                 self.enableButtons()
                 self.proxiesManager?.load(uid: self.uid, tableView: tableView)
             }

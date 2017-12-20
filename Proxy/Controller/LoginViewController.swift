@@ -1,4 +1,5 @@
 import UIKit
+import SwiftVideoBackground
 
 // TODO: Add phone number sign up
 class LoginViewController: UIViewController {
@@ -8,7 +9,7 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
 
-    private let backgroundVideo = BackgroundVideo()
+    private let videoBackground = VideoBackground()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -16,7 +17,7 @@ class LoginViewController: UIViewController {
         let videos = ["arabiangulf", "beachpalm", "dragontailzipline", "hawaiiancoast"]
         let random = Int(arc4random_uniform(UInt32(videos.count)))
 
-        backgroundVideo.play(view: view, videoName: videos[random], videoType: "mp4", opacity: 0.95)
+        videoBackground.play(view: view, videoName: videos[random], videoType: "mp4", alpha: 0.1)
 
         facebookButton.setupForLoginViewController()
 

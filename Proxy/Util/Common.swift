@@ -9,6 +9,12 @@ enum Result<T, Error> {
     case failure(Error)
 }
 
+struct Cache {
+    static let cache: NSCache = {
+        return NSCache<AnyObject, AnyObject>()
+    }()
+}
+
 extension Auth {
     static let auth: Auth = {
         Auth.auth()

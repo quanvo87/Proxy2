@@ -8,7 +8,7 @@ struct DBConvo {
         key.increment(by: -1, forProperty: .convoCount, forProxyInConvo: convo, asSender: true)
         key.notify {
             completion(key.workResult)
-            key.finishWorkGroup()
+            key.removeWorkGroup()
         }
     }
 
@@ -52,7 +52,7 @@ struct DBConvo {
             key.setHasUnreadMessageForProxy(key: convo.receiverProxyKey, ownerId: convo.receiverId)
             key.notify {
                 completion(key.workResult)
-                key.finishWorkGroup()
+                key.removeWorkGroup()
             }
         }
     }
@@ -93,7 +93,7 @@ struct DBConvo {
             key.set(senderConvo, asSender: true)
             key.notify {
                 completion(key.workResult ? senderConvo : nil)
-                key.finishWorkGroup()
+                key.removeWorkGroup()
             }
         }
     }
@@ -127,7 +127,7 @@ struct DBConvo {
         key.set(.receiverNickname(nickname), forConvo: convo, asSender: true)
         key.notify {
             completion(key.workResult)
-            key.finishWorkGroup()
+            key.removeWorkGroup()
         }
     }
 

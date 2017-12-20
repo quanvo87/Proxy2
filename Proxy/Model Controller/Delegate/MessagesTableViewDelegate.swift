@@ -3,9 +3,9 @@ import UIKit
 class MessagesTableViewDelegate: NSObject {
     private weak var convosManager: ConvosManaging?
     private weak var itemsToDeleteManager: ItemsToDeleteManaging?
-    private weak var controller: UINavigationController?
+    private weak var controller: UIViewController?
   
-    func load(convosManager: ConvosManaging, itemsToDeleteManager: ItemsToDeleteManaging, controller: UINavigationController?) {
+    func load(convosManager: ConvosManaging, itemsToDeleteManager: ItemsToDeleteManaging, controller: UIViewController?) {
         self.convosManager = convosManager
         self.itemsToDeleteManager = itemsToDeleteManager
         self.controller = controller
@@ -25,7 +25,7 @@ extension MessagesTableViewDelegate: UITableViewDelegate {
             itemsToDeleteManager?.itemsToDelete[convo.key] = convo
         } else {
             tableView.deselectRow(at: indexPath, animated: true)
-            controller?.showConvoViewController(convo)
+            controller?.navigationController?.showConvoViewController(convo)
         }
     }
 

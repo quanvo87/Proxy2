@@ -9,7 +9,7 @@ class AsyncWorkGroupKeyTests: XCTestCase {
     }
     
     override func tearDown() {
-        key.finishWorkGroup()
+        key.removeWorkGroup()
     }
     
     func testWorkResult() {
@@ -19,26 +19,26 @@ class AsyncWorkGroupKeyTests: XCTestCase {
     func testMake() {
         let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
         XCTAssertGreaterThan(key.count, 0)
-        XCTAssertNotNil(Shared.shared.asyncWorkGroups[key])
-        key.finishWorkGroup()
+        XCTAssertNotNil(WorkGroup.workGroup[key])
+        key.removeWorkGroup()
     }
     
     func testFinishWork() {
         key.startWork()
         key.finishWork(withResult: false)
-        XCTAssertFalse(Shared.shared.asyncWorkGroups[key]?.result ?? true)
+        XCTAssertFalse(WorkGroup.workGroup[key]?.result ?? true)
     }
     
     func testFinishWorkGroup() {
         let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
         key.startWork()
         key.finishWork(withResult: true)
-        key.finishWorkGroup()
-        XCTAssertNil(Shared.shared.asyncWorkGroups[key])
+        key.removeWorkGroup()
+        XCTAssertNil(WorkGroup.workGroup[key])
     }
     
     func testSetWorkResult() {
         key.setWorkResult(false)
-        XCTAssertFalse(Shared.shared.asyncWorkGroups[key]?.result ?? true)
+        XCTAssertFalse(WorkGroup.workGroup[key]?.result ?? true)
     }
 }

@@ -15,7 +15,7 @@ class DBConvoTests: DBTest {
                 key.check(.convoCount(0), forProxyInConvo: convo, asSender: true)
                 key.checkConvoDeleted(convo, asSender: true)
                 key.notify {
-                    key.finishWorkGroup()
+                    key.removeWorkGroup()
                     expectation.fulfill()
                 }
             }
@@ -100,7 +100,7 @@ class DBConvoTests: DBTest {
                 key.check(.senderLeftConvo(true), forConvo: convo, asSender: true)
                 key.checkUnreadMessagesDeleted(for: convo)
                 key.notify {
-                    key.finishWorkGroup()
+                    key.removeWorkGroup()
                     expectation.fulfill()
                 }
             }
@@ -131,7 +131,7 @@ class DBConvoTests: DBTest {
                                 key.check(.hasUnreadMessage(true), forProxy: sender)
 
                                 key.notify {
-                                    key.finishWorkGroup()
+                                    key.removeWorkGroup()
 
                                     expectation.fulfill()
                                 }
@@ -179,7 +179,7 @@ class DBConvoTests: DBTest {
             key.checkConvoCreated(receiverConvo, asSender: true)
             key.checkConvoCreated(senderConvo, asSender: true)
             key.notify {
-                key.finishWorkGroup()
+                key.removeWorkGroup()
                 expectation.fulfill()
             }
         }
@@ -197,7 +197,7 @@ class DBConvoTests: DBTest {
                 key.check(.receiverIsBlocked(true), forConvo: convo, asSender: false)
                 key.check(.senderIsBlocked(true), forConvo: convo, asSender: true)
                 key.notify {
-                    key.finishWorkGroup()
+                    key.removeWorkGroup()
                     expectation.fulfill()
                 }
             }
@@ -246,7 +246,7 @@ class DBConvoTests: DBTest {
                 let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
                 key.check(.receiverNickname(testNickname), forConvo: convo, asSender: true)
                 key.notify {
-                    key.finishWorkGroup()
+                    key.removeWorkGroup()
                     expectation.fulfill()
                 }
             }

@@ -13,7 +13,7 @@ struct DBMessage {
             key.setHasUnreadMessageForProxy(key: message.receiverProxyKey, ownerId: message.receiverId)
             key.notify {
                 completion(key.workResult)
-                key.finishWorkGroup()
+                key.removeWorkGroup()
             }
         }
     }
@@ -104,7 +104,7 @@ struct DBMessage {
 
             key.notify {
                 defer {
-                    key.finishWorkGroup()
+                    key.removeWorkGroup()
                 }
 
                 guard key.workResult else {
@@ -129,7 +129,7 @@ struct DBMessage {
         key.set(.mediaURL(mediaURL), forMessage: message)
         key.notify {
             completion(key.workResult)
-            key.finishWorkGroup()
+            key.removeWorkGroup()
         }
     }
 }

@@ -30,7 +30,7 @@ class DBTests: DBTest {
                 DB.get("test") { (data) in
                     XCTAssertEqual(data?.value as? Int, rand1 - rand2)
 
-                    key.finishWorkGroup()
+                    key.removeWorkGroup()
 
                     expectation.fulfill()
                 }

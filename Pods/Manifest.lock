@@ -68,6 +68,7 @@ PODS:
     - nanopb/encode (= 0.3.8)
   - nanopb/decode (0.3.8)
   - nanopb/encode (0.3.8)
+  - SwiftVideoBackground (2.0.0)
 
 DEPENDENCIES:
   - FacebookCore
@@ -77,6 +78,7 @@ DEPENDENCIES:
   - Firebase/Storage
   - FirebaseAuth
   - JSQMessagesViewController
+  - SwiftVideoBackground (~> 2.0.0)
 
 SPEC CHECKSUMS:
   Bolts: 8a7995239dbe724f9cba2248b766d48b7ebdd322
@@ -97,7 +99,8 @@ SPEC CHECKSUMS:
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
   leveldb-library: 08cba283675b7ed2d99629a4bc5fd052cd2bb6a5
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
+  SwiftVideoBackground: 41d030c232284482973e46959de6398a116c6b58
 
-PODFILE CHECKSUM: 4d5aebf1c2aa935fb0fc30f645d854cc922b26d6
+PODFILE CHECKSUM: 86873754c357be1de2af92f0dbee5f419f38efb5
 
 COCOAPODS: 1.3.1

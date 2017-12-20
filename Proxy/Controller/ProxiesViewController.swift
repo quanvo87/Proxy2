@@ -22,7 +22,7 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
 
         dataSource.load(manager: proxiesManager, showDisclosureIndicator: true)
 
-        delegate.load(proxiesManager: proxiesManager, itemsToDeleteManager: itemsToDeleteManager, controller: navigationController)
+        delegate.load(proxiesManager: proxiesManager, itemsToDeleteManager: itemsToDeleteManager, controller: self)
 
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.dataSource = dataSource

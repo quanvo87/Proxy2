@@ -1,18 +1,27 @@
 typealias AsyncWorkGroupKey = String
 
+struct WorkGroup {
+    static var workGroup: [AsyncWorkGroupKey: (group: DispatchGroup, result: Bool)] = {
+        return [AsyncWorkGroupKey: (group: DispatchGroup, result: Bool)]()
+    }()
+}
+
 extension AsyncWorkGroupKey {
     var workResult: Success {
-        return Shared.shared.asyncWorkGroups[self]?.result ?? false
+        return WorkGroup.workGroup[self]?.result ?? false
     }
 
     init() {
-        let key = UUID().uuidString
-        Shared.shared.asyncWorkGroups[key] = (DispatchGroup(), true)
-        self = key
+        self = UUID().uuidString
+        WorkGroup.workGroup[self] = (DispatchGroup(), true)
     }
 
     static func makeAsyncWorkGroupKey() -> AsyncWorkGroupKey {
         return AsyncWorkGroupKey()
+    }
+
+    func startWork() {
+        WorkGroup.workGroup[self]?.group.enter()
     }
 
     func finishWork(withResult result: Success = true) {
@@ -20,28 +29,24 @@ extension AsyncWorkGroupKey {
         leaveWorkGroup()
     }
 
-    func finishWorkGroup() {
-        Shared.shared.asyncWorkGroups.removeValue(forKey: self)
+    @discardableResult
+    func setWorkResult(_ result: Success) -> Success {
+        let result = WorkGroup.workGroup[self]?.result ?? false && result
+        WorkGroup.workGroup[self]?.result = result
+        return result
+    }
+
+    func leaveWorkGroup() {
+        WorkGroup.workGroup[self]?.group.leave()
     }
 
     func notify(completion: @escaping () -> Void) {
-        Shared.shared.asyncWorkGroups[self]?.group.notify(queue: .main) {
+        WorkGroup.workGroup[self]?.group.notify(queue: .main) {
             completion()
         }
     }
 
-    @discardableResult
-    func setWorkResult(_ result: Success) -> Success {
-        let result = Shared.shared.asyncWorkGroups[self]?.result ?? false && result
-        Shared.shared.asyncWorkGroups[self]?.result = result
-        return result
-    }
-
-    func startWork() {
-        Shared.shared.asyncWorkGroups[self]?.group.enter()
-    }
-
-    private func leaveWorkGroup() {
-        Shared.shared.asyncWorkGroups[self]?.group.leave()
+    func removeWorkGroup() {
+        WorkGroup.workGroup.removeValue(forKey: self)
     }
 }
