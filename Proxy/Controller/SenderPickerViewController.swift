@@ -20,7 +20,7 @@ class SenderPickerViewController: UIViewController {
 
         dataSource.load(manager: manager, showDisclosureIndicator: false)
      
-        delegate.load(manager: manager, delegate: senderPickerDelegate, controller: navigationController)
+        delegate.load(manager: manager, delegate: senderPickerDelegate, controller: self)
 
         tableView.dataSource = dataSource
         tableView.delegate = delegate

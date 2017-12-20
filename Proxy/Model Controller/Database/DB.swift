@@ -123,7 +123,9 @@ extension Path {
         var children = rest
         children.insert(first, at: 0)
 
-        let trimmed = children.map { $0.trimmingCharacters(in: CharacterSet(charactersIn: "/")) }
+        let trimmed = children.map {
+            $0.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+        }
 
         for child in trimmed where child == "" || child.contains("//") {
             return nil

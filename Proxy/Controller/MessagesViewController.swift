@@ -23,7 +23,7 @@ class MessagesViewController: UIViewController, MakeNewMessageDelegate {
 
         dataSource.load(manager: convosManager)
 
-        delegate.load(convosManager: convosManager, itemsToDeleteManager: itemsToDeleteManager, controller: navigationController)
+        delegate.load(convosManager: convosManager, itemsToDeleteManager: itemsToDeleteManager, controller: self)
 
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.dataSource = dataSource

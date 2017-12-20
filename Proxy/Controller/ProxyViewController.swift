@@ -24,7 +24,7 @@ class ProxyViewController: UIViewController, MakeNewMessageDelegate {
 
         dataSource.load(proxyManager: proxyManager, convosManager: convosManager, controller: self)
 
-        delegate.load(manager: convosManager, controller: navigationController)
+        delegate.load(manager: convosManager, controller: self)
 
         for case let scrollView as UIScrollView in tableView.subviews {
             scrollView.delaysContentTouches = false

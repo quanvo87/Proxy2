@@ -24,7 +24,7 @@ struct DBProxy {
         key.setReceiverDeletedProxy(to: true, forReceiverInConvos: convos)
         key.notify {
             completion(key.workResult)
-            key.finishWorkGroup()
+            key.removeWorkGroup()
         }
     }
 
@@ -48,7 +48,7 @@ struct DBProxy {
             }
             key.notify {
                 completion(key.workResult)
-                key.finishWorkGroup()
+                key.removeWorkGroup()
             }
         }
     }
@@ -149,7 +149,7 @@ struct DBProxy {
                         key.set(proxyOwner.toDictionary(), at: Child.proxyOwners, proxy.key)
                         key.notify {
                             completion(key.workResult ? .success(proxy) : .failure(.unknown))
-                            key.finishWorkGroup()
+                            key.removeWorkGroup()
                         }
 
                     } else {
@@ -197,7 +197,7 @@ struct DBProxy {
         key.setReceiverIcon(to: icon, forConvos: convos)
         key.notify {
             completion(key.workResult)
-            key.finishWorkGroup()
+            key.removeWorkGroup()
         }
     }
 
@@ -217,7 +217,7 @@ struct DBProxy {
         key.setSenderNickname(to: nickname, forConvos: convos)
         key.notify {
             completion(key.workResult)
-            key.finishWorkGroup()
+            key.removeWorkGroup()
         }
     }
 }

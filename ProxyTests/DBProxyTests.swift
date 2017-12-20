@@ -26,7 +26,7 @@ class DBProxyTests: DBTest {
                         key.checkDeleted(at: Child.proxyKeys, sender.key)
                         key.checkDeleted(at: Child.proxyOwners, sender.key)
                         key.notify {
-                            key.finishWorkGroup()
+                            key.removeWorkGroup()
                             expectation.fulfill()
                         }
                     }
@@ -44,7 +44,7 @@ class DBProxyTests: DBTest {
             let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
             key.set(.convoCount(0), forProxy: sender)
             key.notify {
-                key.finishWorkGroup()
+                key.removeWorkGroup()
 
                 DBProxy.fixConvoCounts(uid: DBTest.uid) { (success) in
                     XCTAssert(success)
@@ -76,7 +76,7 @@ class DBProxyTests: DBTest {
         }
 
         key.notify {
-            key.finishWorkGroup()
+            key.removeWorkGroup()
             expectation.fulfill()
         }
     }
@@ -164,7 +164,7 @@ class DBProxyTests: DBTest {
             key.checkProxyKeyCreated(forProxy: proxy)
             key.checkProxyOwnerCreated(forProxy: proxy)
             key.notify {
-                key.finishWorkGroup()
+                key.removeWorkGroup()
                 expectation.fulfill()
             }
         }
@@ -219,7 +219,7 @@ class DBProxyTests: DBTest {
                 key.check(.icon(newIcon), forProxy: proxy)
                 key.check(.receiverIcon(newIcon), forConvo: convo, asSender: false)
                 key.notify {
-                    key.finishWorkGroup()
+                    key.removeWorkGroup()
                     expectation.fulfill()
                 }
             }
@@ -240,7 +240,7 @@ class DBProxyTests: DBTest {
                 key.check(.nickname(newNickname), forProxy: sender)
                 key.check(.senderNickname(newNickname), forConvo: convo, asSender: true)
                 key.notify {
-                    key.finishWorkGroup()
+                    key.removeWorkGroup()
                     expectation.fulfill()
                 }
             }

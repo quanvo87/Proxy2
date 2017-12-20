@@ -21,7 +21,7 @@ class DBMessageTests: DBTest {
                 key.check(.read(true), forMessage: message)
                 key.checkUnreadMessageDeleted(message)
                 key.notify {
-                    key.finishWorkGroup()
+                    key.removeWorkGroup()
                     expectation.fulfill()
                 }
             }
@@ -44,7 +44,7 @@ class DBMessageTests: DBTest {
                     key.check(.hasUnreadMessage(true), forProxy: receiver)
 
                     key.notify {
-                        key.finishWorkGroup()
+                        key.removeWorkGroup()
 
                         expectation.fulfill()
                     }
@@ -81,7 +81,7 @@ class DBMessageTests: DBTest {
             key.check(.timestamp(convo.timestamp), forProxy: sender)
 
             key.notify {
-                key.finishWorkGroup()
+                key.removeWorkGroup()
                 expectation.fulfill()
             }
         }
@@ -106,7 +106,7 @@ class DBMessageTests: DBTest {
                     key.check(.receiverLeftConvo(false), forConvo: convo, asSender: true)
                     key.check(.senderLeftConvo(false), forConvo: convo, asSender: false)
                     key.notify {
-                        key.finishWorkGroup()
+                        key.removeWorkGroup()
                         expectation.fulfill()
                     }
                 }
@@ -133,7 +133,7 @@ class DBMessageTests: DBTest {
                     key.check(.receiverLeftConvo(false), forConvo: convo, asSender: false)
                     key.check(.senderLeftConvo(false), forConvo: convo, asSender: true)
                     key.notify {
-                        key.finishWorkGroup()
+                        key.removeWorkGroup()
                         expectation.fulfill()
                     }
                 }
@@ -156,7 +156,7 @@ class DBMessageTests: DBTest {
                 key.check(.mediaType(mediaType), forMessage: message)
                 key.check(.mediaURL(mediaURL), forMessage: message)
                 key.notify {
-                    key.finishWorkGroup()
+                    key.removeWorkGroup()
                     expectation.fulfill()
                 }
             }

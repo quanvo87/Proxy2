@@ -2,9 +2,9 @@ import UIKit
 
 class ProxyTableViewDelegate: NSObject {
     private weak var manager: ConvosManaging?
-    private weak var controller: UINavigationController?
+    private weak var controller: UIViewController?
 
-    func load(manager: ConvosManaging, controller: UINavigationController?) {
+    func load(manager: ConvosManaging, controller: UIViewController?) {
         self.manager = manager
         self.controller = controller
     }
@@ -18,7 +18,7 @@ extension ProxyTableViewDelegate: UITableViewDelegate {
             let convo = manager?.convos[safe: row]
         {
             tableView.deselectRow(at: indexPath, animated: true)
-            controller?.showConvoViewController(convo)
+            controller?.navigationController?.showConvoViewController(convo)
         }
     }
 
