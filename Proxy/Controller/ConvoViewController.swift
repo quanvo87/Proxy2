@@ -8,6 +8,8 @@ class ConvoViewController: MessageKit.MessagesViewController {
 
     private let messagesManager = MessagesManager()
 
+    private let dataSource = ConvoCollectionViewDataSource()
+
     init(_ convo: Convo) {
         self.convo = convo
 
@@ -15,7 +17,10 @@ class ConvoViewController: MessageKit.MessagesViewController {
 
         messagesManager.load(convoKey: convo.key, collectionView: messagesCollectionView)
 
-        messagesCollectionView.messagesDataSource = self
+        dataSource.load(sender: Sender(id: convo.senderId, displayName: convo.senderProxyName), manager: messagesManager)
+
+        messagesCollectionView.messagesDataSource = dataSource
+
         messagesCollectionView.messagesLayoutDelegate = self
         messagesCollectionView.messagesDisplayDelegate = self
     }
@@ -32,20 +37,6 @@ class ConvoViewController: MessageKit.MessagesViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
         tabBarController?.tabBar.isHidden = false
-    }
-}
-
-extension ConvoViewController: MessagesDataSource {
-    func currentSender() -> Sender {
-        return Sender(id: convo.senderId, displayName: senderProxyName)
-    }
-
-    func messageForItem(at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageType {
-        return messagesManager.messages[indexPath.section]
-    }
-
-    func numberOfMessages(in messagesCollectionView: MessagesCollectionView) -> Int {
-        return messagesManager.messages.count
     }
 }
 
