@@ -3,12 +3,11 @@ import UIKit
 
 struct DBConvo {
     static func deleteConvo(_ convo: Convo, completion: @escaping (Success) -> Void) {
-        let key = AsyncWorkGroupKey()
-        key.delete(convo, asSender: true)
-        key.increment(by: -1, forProperty: .convoCount, forProxyInConvo: convo, asSender: true)
-        key.notify {
-            completion(key.workResult)
-            key.removeWorkGroup()
+        let work = GroupWork()
+        work.delete(convo, asSender: true)
+        work.increment(by: -1, forProperty: .convoCount, forProxyInConvo: convo, asSender: true)
+        work.allDone {
+            completion(work.result)
         }
     }
 
@@ -43,16 +42,15 @@ struct DBConvo {
 
     // TODO: have to mark all the messages as read?
     static func leaveConvo(_ convo: Convo, completion: @escaping (Success) -> Void) {
-        let key = AsyncWorkGroupKey()
-        key.deleteUnreadMessages(for: convo)
-        key.increment(by: -1, forProperty: .convoCount, forProxyInConvo: convo, asSender: true)
-        key.set(.receiverLeftConvo(true), forConvo: convo, asSender: false)
-        key.set(.senderLeftConvo(true), forConvo: convo, asSender: true)
-        key.notify {
-            key.setHasUnreadMessageForProxy(key: convo.receiverProxyKey, ownerId: convo.receiverId)
-            key.notify {
-                completion(key.workResult)
-                key.removeWorkGroup()
+        let work = GroupWork()
+        work.deleteUnreadMessages(for: convo)
+        work.increment(by: -1, forProperty: .convoCount, forProxyInConvo: convo, asSender: true)
+        work.set(.receiverLeftConvo(true), forConvo: convo, asSender: false)
+        work.set(.senderLeftConvo(true), forConvo: convo, asSender: true)
+        work.allDone {
+            work.setHasUnreadMessageForProxy(key: convo.receiverProxyKey, ownerId: convo.receiverId)
+            work.allDone {
+                completion(work.result)
             }
         }
     }
@@ -84,16 +82,15 @@ struct DBConvo {
             receiverConvo.senderProxyKey = receiver.key
             receiverConvo.senderProxyName = receiver.name
 
-            let key = AsyncWorkGroupKey()
-            key.increment(by: 1, forProperty: .convoCount, forProxy: receiver)
-            key.increment(by: 1, forProperty: .convoCount, forProxy: sender)
-            key.increment(by: 1, forProperty: .proxiesInteractedWith, forUser: receiver.ownerId)
-            key.increment(by: 1, forProperty: .proxiesInteractedWith, forUser: sender.ownerId)
-            key.set(receiverConvo, asSender: true)
-            key.set(senderConvo, asSender: true)
-            key.notify {
-                completion(key.workResult ? senderConvo : nil)
-                key.removeWorkGroup()
+            let work = GroupWork()
+            work.increment(by: 1, forProperty: .convoCount, forProxy: receiver)
+            work.increment(by: 1, forProperty: .convoCount, forProxy: sender)
+            work.increment(by: 1, forProperty: .proxiesInteractedWith, forUser: receiver.ownerId)
+            work.increment(by: 1, forProperty: .proxiesInteractedWith, forUser: sender.ownerId)
+            work.set(receiverConvo, asSender: true)
+            work.set(senderConvo, asSender: true)
+            work.allDone {
+                completion(work.result ? senderConvo : nil)
             }
         }
     }
@@ -123,11 +120,10 @@ struct DBConvo {
     }
 
     static func setReceiverNickname(to nickname: String, forConvo convo: Convo, completion: @escaping (Success) -> Void) {
-        let key = AsyncWorkGroupKey()
-        key.set(.receiverNickname(nickname), forConvo: convo, asSender: true)
-        key.notify {
-            completion(key.workResult)
-            key.removeWorkGroup()
+        let work = GroupWork()
+        work.set(.receiverNickname(nickname), forConvo: convo, asSender: true)
+        work.allDone {
+            completion(work.result)
         }
     }
 
@@ -156,21 +152,21 @@ extension DataSnapshot {
     }
 }
 
-extension AsyncWorkGroupKey {
+extension GroupWork {
     func delete(_ convo: Convo, asSender: Bool) {
-        let (ownerId, proxyKey) = AsyncWorkGroupKey.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
+        let (ownerId, proxyKey) = GroupWork.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
         delete(at: Child.convos, ownerId, convo.key)
         delete(at: Child.convos, proxyKey, convo.key)
     }
 
     func set(_ convo: Convo, asSender: Bool) {
-        let (ownerId, proxyKey) = AsyncWorkGroupKey.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
+        let (ownerId, proxyKey) = GroupWork.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
         set(convo.toDictionary(), at: Child.convos, ownerId, convo.key)
         set(convo.toDictionary(), at: Child.convos, proxyKey, convo.key)
     }
 
     func set(_ property: SettableConvoProperty, forConvo convo: Convo, asSender: Bool) {
-        let (ownerId, proxyKey) = AsyncWorkGroupKey.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
+        let (ownerId, proxyKey) = GroupWork.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
         set(property.properties.value, at: Child.convos, ownerId, convo.key, property.properties.name)
         set(property.properties.value, at: Child.convos, proxyKey, convo.key, property.properties.name)
     }
@@ -181,13 +177,13 @@ extension AsyncWorkGroupKey {
     }
 }
 
-extension AsyncWorkGroupKey {
+extension GroupWork {
     func deleteUnreadMessages(for convo: Convo) {
-        startWork()
+        start()
 
         DBConvo.getUnreadMessages(for: convo) { (messages) in
             guard let messages = messages else {
-                self.finishWork(withResult: false)
+                self.finish(withResult: false)
                 return
             }
 
@@ -195,7 +191,7 @@ extension AsyncWorkGroupKey {
                 self.delete(at: Child.userInfo, convo.senderId, Child.unreadMessages, message.key)
             }
 
-            self.finishWork()
+            self.finish(withResult: true)
         }
     }
 }

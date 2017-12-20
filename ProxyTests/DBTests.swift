@@ -13,24 +13,22 @@ class DBTests: DBTest {
         DB.set(rand1, at: "test") { (success) in
             XCTAssert(success)
 
-            let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
+            let key = GroupWork()
 
             for _ in 1...rand2 {
 
-                key.startWork()
+                key.start()
 
                 DB.increment(by: -1, at: "test") { (success) in
                     XCTAssert(success)
 
-                    key.finishWork()
+                    key.finish(withResult: true)
                 }
             }
 
-            key.notify {
+            key.allDone {
                 DB.get("test") { (data) in
                     XCTAssertEqual(data?.value as? Int, rand1 - rand2)
-
-                    key.removeWorkGroup()
 
                     expectation.fulfill()
                 }

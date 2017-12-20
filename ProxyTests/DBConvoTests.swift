@@ -11,11 +11,10 @@ class DBConvoTests: DBTest {
             DBConvo.deleteConvo(convo) { (success) in
                 XCTAssert(success)
 
-                let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-                key.check(.convoCount(0), forProxyInConvo: convo, asSender: true)
-                key.checkConvoDeleted(convo, asSender: true)
-                key.notify {
-                    key.removeWorkGroup()
+                let work = GroupWork()
+                work.check(.convoCount(0), forProxyInConvo: convo, asSender: true)
+                work.checkConvoDeleted(convo, asSender: true)
+                work.allDone {
                     expectation.fulfill()
                 }
             }
@@ -93,14 +92,13 @@ class DBConvoTests: DBTest {
             DBConvo.leaveConvo(convo) { (success) in
                 XCTAssert(success)
 
-                let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-                key.check(.convoCount(0), forProxy: sender)
-                key.check(.hasUnreadMessage(false), forProxy: sender)
-                key.check(.receiverLeftConvo(true), forConvo: convo, asSender: false)
-                key.check(.senderLeftConvo(true), forConvo: convo, asSender: true)
-                key.checkUnreadMessagesDeleted(for: convo)
-                key.notify {
-                    key.removeWorkGroup()
+                let work = GroupWork()
+                work.check(.convoCount(0), forProxy: sender)
+                work.check(.hasUnreadMessage(false), forProxy: sender)
+                work.check(.receiverLeftConvo(true), forConvo: convo, asSender: false)
+                work.check(.senderLeftConvo(true), forConvo: convo, asSender: true)
+                work.checkUnreadMessagesDeleted(for: convo)
+                work.allDone {
                     expectation.fulfill()
                 }
             }
@@ -126,13 +124,11 @@ class DBConvoTests: DBTest {
                             DBConvo.leaveConvo(convo) { (success) in
                                 XCTAssert(success)
 
-                                let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
+                                let work = GroupWork()
 
-                                key.check(.hasUnreadMessage(true), forProxy: sender)
+                                work.check(.hasUnreadMessage(true), forProxy: sender)
 
-                                key.notify {
-                                    key.removeWorkGroup()
-
+                                work.allDone {
                                     expectation.fulfill()
                                 }
                             }
@@ -171,15 +167,14 @@ class DBConvoTests: DBTest {
             receiverConvo.senderProxyKey = receiver.key
             receiverConvo.senderProxyName = receiver.name
 
-            let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-            key.check(.convoCount(1), forProxy: receiver)
-            key.check(.convoCount(1), forProxy: sender)
-            key.check(.proxiesInteractedWith, 1, forUser: receiver.ownerId)
-            key.check(.proxiesInteractedWith, 1, forUser: sender.ownerId)
-            key.checkConvoCreated(receiverConvo, asSender: true)
-            key.checkConvoCreated(senderConvo, asSender: true)
-            key.notify {
-                key.removeWorkGroup()
+            let work = GroupWork()
+            work.check(.convoCount(1), forProxy: receiver)
+            work.check(.convoCount(1), forProxy: sender)
+            work.check(.proxiesInteractedWith, 1, forUser: receiver.ownerId)
+            work.check(.proxiesInteractedWith, 1, forUser: sender.ownerId)
+            work.checkConvoCreated(receiverConvo, asSender: true)
+            work.checkConvoCreated(senderConvo, asSender: true)
+            work.allDone {
                 expectation.fulfill()
             }
         }
@@ -193,11 +188,10 @@ class DBConvoTests: DBTest {
             XCTAssert(success)
 
             DBTest.makeConvo { (convo, _, _) in
-                let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-                key.check(.receiverIsBlocked(true), forConvo: convo, asSender: false)
-                key.check(.senderIsBlocked(true), forConvo: convo, asSender: true)
-                key.notify {
-                    key.removeWorkGroup()
+                let work = GroupWork()
+                work.check(.receiverIsBlocked(true), forConvo: convo, asSender: false)
+                work.check(.senderIsBlocked(true), forConvo: convo, asSender: true)
+                work.allDone {
                     expectation.fulfill()
                 }
             }
@@ -243,10 +237,9 @@ class DBConvoTests: DBTest {
             DBConvo.setReceiverNickname(to: testNickname, forConvo: convo) { (success) in
                 XCTAssert(success)
 
-                let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-                key.check(.receiverNickname(testNickname), forConvo: convo, asSender: true)
-                key.notify {
-                    key.removeWorkGroup()
+                let work = GroupWork()
+                work.check(.receiverNickname(testNickname), forConvo: convo, asSender: true)
+                work.allDone {
                     expectation.fulfill()
                 }
             }
@@ -284,34 +277,34 @@ class DBConvoTests: DBTest {
     }
 }
 
-extension AsyncWorkGroupKey {
+extension GroupWork {
     func checkUnreadMessagesDeleted(for convo: Convo) {
-        startWork()
+        start()
         DBConvo.getUnreadMessages(for: convo) { (messages) in
             XCTAssertEqual(messages?.count, 0)
-            self.finishWork()
+            self.finish(withResult: true)
         }
     }
 
     func checkConvoDeleted(_ convo: Convo, asSender: Bool) {
-        let (ownerId, proxyKey) = AsyncWorkGroupKey.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
+        let (ownerId, proxyKey) = GroupWork.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
         checkDeleted(at: Child.convos, ownerId, convo.key)
         checkDeleted(at: Child.convos, proxyKey, convo.key)
     }
 
     func checkConvoCreated(_ convo: Convo, asSender: Bool) {
-        let (ownerId, proxyKey) = AsyncWorkGroupKey.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
+        let (ownerId, proxyKey) = GroupWork.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
 
-        startWork()
+        start()
         DB.get(Child.convos, ownerId, convo.key) { (data) in
             XCTAssertEqual(Convo(data?.value as AnyObject), convo)
-            self.finishWork()
+            self.finish(withResult: true)
         }
 
-        startWork()
+        start()
         DB.get(Child.convos, proxyKey, convo.key) { (data) in
             XCTAssertEqual(Convo(data?.value as AnyObject), convo)
-            self.finishWork()
+            self.finish(withResult: true)
         }
     }
 }
