@@ -1,4 +1,5 @@
 import XCTest
+import GroupWork
 @testable import Proxy
 
 class DBMessageTests: DBTest {

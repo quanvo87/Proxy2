@@ -1,3 +1,5 @@
+import GroupWork
+
 enum IncrementableUserProperty: String {
     case messagesReceived
     case messagesSent

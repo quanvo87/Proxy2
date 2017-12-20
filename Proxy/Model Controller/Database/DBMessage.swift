@@ -1,4 +1,5 @@
 import FirebaseDatabase
+import GroupWork
 
 struct DBMessage {
     typealias SendMessageCallback = ((message: Message, convo: Convo)?) -> Void
