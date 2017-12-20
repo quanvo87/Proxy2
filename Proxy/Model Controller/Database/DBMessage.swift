@@ -1,19 +1,19 @@
 import FirebaseDatabase
+import GroupWork
 
 struct DBMessage {
     typealias SendMessageCallback = ((message: Message, convo: Convo)?) -> Void
 
     static func read(_ message: Message, atDate date: Double = Date().timeIntervalSince1970, completion: @escaping (Success) -> Void) {
-        let key = AsyncWorkGroupKey()
-        key.delete(at: Child.userInfo, message.receiverId, Child.unreadMessages, message.key)
-        key.set(.dateRead(date), forMessage: message)
-        key.set(.hasUnreadMessage(false), forConvoWithKey: message.parentConvo, ownerId: message.receiverId, proxyKey: message.receiverProxyKey)
-        key.set(.read(true), forMessage: message)
-        key.notify {
-            key.setHasUnreadMessageForProxy(key: message.receiverProxyKey, ownerId: message.receiverId)
-            key.notify {
-                completion(key.workResult)
-                key.removeWorkGroup()
+        let work = GroupWork()
+        work.delete(at: Child.userInfo, message.receiverId, Child.unreadMessages, message.key)
+        work.set(.dateRead(date), forMessage: message)
+        work.set(.hasUnreadMessage(false), forConvoWithKey: message.parentConvo, ownerId: message.receiverId, proxyKey: message.receiverProxyKey)
+        work.set(.read(true), forMessage: message)
+        work.allDone {
+            work.setHasUnreadMessageForProxy(key: message.receiverProxyKey, ownerId: message.receiverId)
+            work.allDone {
+                completion(work.result)
             }
         }
     }
@@ -43,7 +43,7 @@ struct DBMessage {
         }
 
         DBConvo.userIsPresent(user: senderConvo.receiverId, inConvoWithKey: senderConvo.key) { (receiverIsPresent) in
-            let key = AsyncWorkGroupKey()
+            let work = GroupWork()
             let currentTime = Date().timeIntervalSince1970
 
             // Write message
@@ -59,55 +59,51 @@ struct DBMessage {
                                   receiverProxyKey: senderConvo.receiverProxyKey,
                                   senderId: senderConvo.senderId,
                                   text: text)
-            key.set(message.toDictionary(), at: Child.messages, message.parentConvo, message.key)
+            work.set(message.toDictionary(), at: Child.messages, message.parentConvo, message.key)
 
             // Receiver updates
-            key.increment(by: 1, forProperty: .messagesReceived, forUser: senderConvo.receiverId)
+            work.increment(by: 1, forProperty: .messagesReceived, forUser: senderConvo.receiverId)
 
             if !senderConvo.receiverDeletedProxy && !senderConvo.senderIsBlocked {
-                key.set(.lastMessage(text), forProxyInConvo: senderConvo, asSender: false)
-                key.set(.timestamp(currentTime), forProxyInConvo: senderConvo, asSender: false)
+                work.set(.lastMessage(text), forProxyInConvo: senderConvo, asSender: false)
+                work.set(.timestamp(currentTime), forProxyInConvo: senderConvo, asSender: false)
 
                 if !receiverIsPresent {
-                    key.set(.hasUnreadMessage(true), forProxyWithKey: message.receiverProxyKey, proxyOwner: message.receiverId)
-                    key.set(message.toDictionary(), at: Child.userInfo, message.receiverId, Child.unreadMessages, message.key)
+                    work.set(.hasUnreadMessage(true), forProxyWithKey: message.receiverProxyKey, proxyOwner: message.receiverId)
+                    work.set(message.toDictionary(), at: Child.userInfo, message.receiverId, Child.unreadMessages, message.key)
                 }
             }
 
             if !senderConvo.receiverDeletedProxy {
-                key.set(.lastMessage(text), forConvo: senderConvo, asSender: false)
-                key.set(.timestamp(currentTime), forConvo: senderConvo, asSender: false)
+                work.set(.lastMessage(text), forConvo: senderConvo, asSender: false)
+                work.set(.timestamp(currentTime), forConvo: senderConvo, asSender: false)
 
                 if !receiverIsPresent {
-                    key.set(.hasUnreadMessage(true), forConvo: senderConvo, asSender: false)
+                    work.set(.hasUnreadMessage(true), forConvo: senderConvo, asSender: false)
                 }
             }
 
             if senderConvo.receiverLeftConvo {
-                key.increment(by: 1, forProperty: .convoCount, forProxyInConvo: senderConvo, asSender: false)
-                key.set(.receiverLeftConvo(false), forConvo: senderConvo, asSender: true)
-                key.set(.senderLeftConvo(false), forConvo: senderConvo, asSender: false)
+                work.increment(by: 1, forProperty: .convoCount, forProxyInConvo: senderConvo, asSender: false)
+                work.set(.receiverLeftConvo(false), forConvo: senderConvo, asSender: true)
+                work.set(.senderLeftConvo(false), forConvo: senderConvo, asSender: false)
             }
             
             // Sender updates
-            key.increment(by: 1, forProperty: .messagesSent, forUser: senderConvo.senderId)
-            key.set(.lastMessage("You: \(text)"), forConvo: senderConvo, asSender: true)
-            key.set(.lastMessage("You: \(text)"), forProxyInConvo: senderConvo, asSender: true)
-            key.set(.timestamp(currentTime), forConvo: senderConvo, asSender: true)
-            key.set(.timestamp(currentTime), forProxyInConvo: senderConvo, asSender: true)
+            work.increment(by: 1, forProperty: .messagesSent, forUser: senderConvo.senderId)
+            work.set(.lastMessage("You: \(text)"), forConvo: senderConvo, asSender: true)
+            work.set(.lastMessage("You: \(text)"), forProxyInConvo: senderConvo, asSender: true)
+            work.set(.timestamp(currentTime), forConvo: senderConvo, asSender: true)
+            work.set(.timestamp(currentTime), forProxyInConvo: senderConvo, asSender: true)
 
             if senderConvo.senderLeftConvo {
-                key.increment(by: 1, forProperty: .convoCount, forProxyInConvo: senderConvo, asSender: true)
-                key.set(.receiverLeftConvo(false), forConvo: senderConvo, asSender: false)
-                key.set(.senderLeftConvo(false), forConvo: senderConvo, asSender: true)
+                work.increment(by: 1, forProperty: .convoCount, forProxyInConvo: senderConvo, asSender: true)
+                work.set(.receiverLeftConvo(false), forConvo: senderConvo, asSender: false)
+                work.set(.senderLeftConvo(false), forConvo: senderConvo, asSender: true)
             }
 
-            key.notify {
-                defer {
-                    key.removeWorkGroup()
-                }
-
-                guard key.workResult else {
+            work.allDone {
+                guard work.result else {
                     completion(nil)
                     return
                 }
@@ -124,12 +120,11 @@ struct DBMessage {
     }
 
     static func setMedia(for message: Message, mediaType: String, mediaURL: String, completion: @escaping (Success) -> Void) {
-        let key = AsyncWorkGroupKey()
-        key.set(.mediaType(mediaType), forMessage: message)
-        key.set(.mediaURL(mediaURL), forMessage: message)
-        key.notify {
-            completion(key.workResult)
-            key.removeWorkGroup()
+        let work = GroupWork()
+        work.set(.mediaType(mediaType), forMessage: message)
+        work.set(.mediaURL(mediaURL), forMessage: message)
+        work.allDone {
+            completion(work.result)
         }
     }
 }
@@ -146,20 +141,20 @@ extension DataSnapshot {
     }
 }
 
-extension AsyncWorkGroupKey {
+extension GroupWork {
     func set(_ property: SettableMessageProperty, forMessage message: Message) {
         set(property.properties.value, at: Child.messages, message.parentConvo, message.key, property.properties.name)
     }
 
     func setHasUnreadMessageForProxy(key: String, ownerId: String) {
-        startWork()
+        start()
 
         DBProxy.getUnreadMessagesForProxy(owner: ownerId, key: key) { (messages) in
             if let messageCount = messages?.count, messageCount <= 0 {
                 self.set(.hasUnreadMessage(false), forProxyWithKey: key, proxyOwner: ownerId)
             }
 
-            self.finishWork()
+            self.finish(withResult: true)
         }
     }
 }

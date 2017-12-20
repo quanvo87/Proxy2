@@ -1,4 +1,5 @@
 import XCTest
+import GroupWork
 @testable import Proxy
 
 class DBMessageTests: DBTest {
@@ -14,14 +15,13 @@ class DBMessageTests: DBTest {
             DBMessage.read(message, atDate: currentTime) { (success) in
                 XCTAssert(success)
 
-                let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-                key.check(.dateRead(currentTime), forMessage: message)
-                key.check(.hasUnreadMessage(false), forConvoWithKey: message.parentConvo, ownerId: message.receiverId, proxyKey: message.receiverProxyKey)
-                key.check(.hasUnreadMessage(false), forProxy: receiver)
-                key.check(.read(true), forMessage: message)
-                key.checkUnreadMessageDeleted(message)
-                key.notify {
-                    key.removeWorkGroup()
+                let work = GroupWork()
+                work.check(.dateRead(currentTime), forMessage: message)
+                work.check(.hasUnreadMessage(false), forConvoWithKey: message.parentConvo, ownerId: message.receiverId, proxyKey: message.receiverProxyKey)
+                work.check(.hasUnreadMessage(false), forProxy: receiver)
+                work.check(.read(true), forMessage: message)
+                work.checkUnreadMessageDeleted(message)
+                work.allDone {
                     expectation.fulfill()
                 }
             }
@@ -39,13 +39,11 @@ class DBMessageTests: DBTest {
                 DBMessage.read(message1) { (success) in
                     XCTAssert(success)
 
-                    let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
+                    let work = GroupWork()
 
-                    key.check(.hasUnreadMessage(true), forProxy: receiver)
+                    work.check(.hasUnreadMessage(true), forProxy: receiver)
 
-                    key.notify {
-                        key.removeWorkGroup()
-
+                    work.allDone {
                         expectation.fulfill()
                     }
                 }
@@ -58,30 +56,29 @@ class DBMessageTests: DBTest {
         defer { waitForExpectations(timeout: 10) }
 
         DBTest.sendMessage { (message, convo, sender, receiver) in
-            let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
+            let work = GroupWork()
 
             // Check message updates
-            key.checkMessageCreated(message)
+            work.checkMessageCreated(message)
 
             // Check receiver updates
-            key.check(.lastMessage(DBTest.text), forConvo: convo, asSender: false)
-            key.check(.lastMessage(DBTest.text), forProxy: receiver)
-            key.check(.messagesReceived, 1, forUser: convo.receiverId)
-            key.check(.timestamp(convo.timestamp), forConvo: convo, asSender: false)
-            key.check(.timestamp(convo.timestamp), forProxy: receiver)
-            key.check(.hasUnreadMessage(true), forConvo: convo, asSender: false)
-            key.check(.hasUnreadMessage(true), forProxy: receiver)
-            key.checkUnreadMessageCreated(message)
+            work.check(.lastMessage(DBTest.text), forConvo: convo, asSender: false)
+            work.check(.lastMessage(DBTest.text), forProxy: receiver)
+            work.check(.messagesReceived, 1, forUser: convo.receiverId)
+            work.check(.timestamp(convo.timestamp), forConvo: convo, asSender: false)
+            work.check(.timestamp(convo.timestamp), forProxy: receiver)
+            work.check(.hasUnreadMessage(true), forConvo: convo, asSender: false)
+            work.check(.hasUnreadMessage(true), forProxy: receiver)
+            work.checkUnreadMessageCreated(message)
             
             // Check sender updates
-            key.check(.lastMessage(DBMessageTests.senderText), forConvo: convo, asSender: true)
-            key.check(.lastMessage(DBMessageTests.senderText), forProxy: sender)
-            key.check(.messagesSent, 1, forUser: sender.ownerId)
-            key.check(.timestamp(convo.timestamp), forConvo: convo, asSender: true)
-            key.check(.timestamp(convo.timestamp), forProxy: sender)
+            work.check(.lastMessage(DBMessageTests.senderText), forConvo: convo, asSender: true)
+            work.check(.lastMessage(DBMessageTests.senderText), forProxy: sender)
+            work.check(.messagesSent, 1, forUser: sender.ownerId)
+            work.check(.timestamp(convo.timestamp), forConvo: convo, asSender: true)
+            work.check(.timestamp(convo.timestamp), forProxy: sender)
 
-            key.notify {
-                key.removeWorkGroup()
+            work.allDone {
                 expectation.fulfill()
             }
         }
@@ -101,12 +98,11 @@ class DBMessageTests: DBTest {
                         return
                     }
 
-                    let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-                    key.check(.convoCount(1), forProxy: sender)
-                    key.check(.receiverLeftConvo(false), forConvo: convo, asSender: true)
-                    key.check(.senderLeftConvo(false), forConvo: convo, asSender: false)
-                    key.notify {
-                        key.removeWorkGroup()
+                    let work = GroupWork()
+                    work.check(.convoCount(1), forProxy: sender)
+                    work.check(.receiverLeftConvo(false), forConvo: convo, asSender: true)
+                    work.check(.senderLeftConvo(false), forConvo: convo, asSender: false)
+                    work.allDone {
                         expectation.fulfill()
                     }
                 }
@@ -128,12 +124,11 @@ class DBMessageTests: DBTest {
                         return
                     }
                     
-                    let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-                    key.check(.convoCount(1), forProxy: sender)
-                    key.check(.receiverLeftConvo(false), forConvo: convo, asSender: false)
-                    key.check(.senderLeftConvo(false), forConvo: convo, asSender: true)
-                    key.notify {
-                        key.removeWorkGroup()
+                    let work = GroupWork()
+                    work.check(.convoCount(1), forProxy: sender)
+                    work.check(.receiverLeftConvo(false), forConvo: convo, asSender: false)
+                    work.check(.senderLeftConvo(false), forConvo: convo, asSender: true)
+                    work.allDone {
                         expectation.fulfill()
                     }
                 }
@@ -152,11 +147,10 @@ class DBMessageTests: DBTest {
             DBMessage.setMedia(for: message, mediaType: mediaType, mediaURL: mediaURL) { (success) in
                 XCTAssert(success)
 
-                let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
+                let key = GroupWork()
                 key.check(.mediaType(mediaType), forMessage: message)
                 key.check(.mediaURL(mediaURL), forMessage: message)
-                key.notify {
-                    key.removeWorkGroup()
+                key.allDone {
                     expectation.fulfill()
                 }
             }
@@ -178,28 +172,28 @@ class DBMessageTests: DBTest {
     }
 }
 
-extension AsyncWorkGroupKey {
+extension GroupWork {
     func checkMessageCreated(_ message: Message) {
-        startWork()
+        start()
         DB.get(Child.messages, message.parentConvo, message.key) { (data) in
             XCTAssertEqual(Message(data?.value as AnyObject), message)
-            self.finishWork()
+            self.finish(withResult: true)
         }
     }
 
     func checkUnreadMessageCreated(_ message: Message) {
-        startWork()
+        start()
         DB.get(Child.userInfo, message.receiverId, Child.unreadMessages, message.key) { (data) in
             XCTAssertEqual(Message(data?.value as AnyObject), message)
-            self.finishWork()
+            self.finish(withResult: true)
         }
     }
 
     func checkUnreadMessageDeleted(_ message: Message) {
-        startWork()
+        start()
         DB.get(Child.userInfo, message.receiverId, Child.unreadMessages, message.key) { (data) in
             XCTAssertFalse(data?.exists() ?? true)
-            self.finishWork()
+            self.finish(withResult: true)
         }
     }
 }

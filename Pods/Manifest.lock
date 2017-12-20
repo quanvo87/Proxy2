@@ -17,34 +17,35 @@ PODS:
     - Bolts (~> 1.7)
   - FBSDKLoginKit (4.29.0):
     - FBSDKCoreKit
-  - Firebase (4.7.0):
-    - Firebase/Core (= 4.7.0)
-  - Firebase/Core (4.7.0):
+  - Firebase (4.8.0):
+    - Firebase/Core (= 4.8.0)
+  - Firebase/Core (4.8.0):
     - FirebaseAnalytics (= 4.0.5)
-    - FirebaseCore (= 4.0.12)
-  - Firebase/Database (4.7.0):
+    - FirebaseCore (= 4.0.13)
+  - Firebase/Database (4.8.0):
     - Firebase/Core
-    - FirebaseDatabase (= 4.1.2)
-  - Firebase/Storage (4.7.0):
+    - FirebaseDatabase (= 4.1.3)
+  - Firebase/Storage (4.8.0):
     - Firebase/Core
-    - FirebaseStorage (= 2.1.0)
+    - FirebaseStorage (= 2.1.1)
   - FirebaseAnalytics (4.0.5):
     - FirebaseCore (~> 4.0)
     - FirebaseInstanceID (~> 2.0)
     - GoogleToolboxForMac/NSData+zlib (~> 2.1)
     - nanopb (~> 0.3)
-  - FirebaseAuth (4.4.0):
+  - FirebaseAuth (4.4.1):
     - FirebaseAnalytics (~> 4.0)
     - GoogleToolboxForMac/NSDictionary+URLArguments (~> 2.1)
     - GTMSessionFetcher/Core (~> 1.1)
-  - FirebaseCore (4.0.12):
+  - FirebaseCore (4.0.13):
     - GoogleToolboxForMac/NSData+zlib (~> 2.1)
-  - FirebaseDatabase (4.1.2):
+  - FirebaseDatabase (4.1.3):
     - FirebaseAnalytics (~> 4.0)
     - FirebaseCore (~> 4.0)
     - leveldb-library (~> 1.18)
-  - FirebaseInstanceID (2.0.7)
-  - FirebaseStorage (2.1.0):
+  - FirebaseInstanceID (2.0.8):
+    - FirebaseCore (~> 4.0)
+  - FirebaseStorage (2.1.1):
     - FirebaseAnalytics (~> 4.0)
     - FirebaseCore (~> 4.0)
     - GTMSessionFetcher/Core (~> 1.1)
@@ -58,6 +59,7 @@ PODS:
     - GoogleToolboxForMac/Defines (= 2.1.3)
     - GoogleToolboxForMac/NSString+URLArguments (= 2.1.3)
   - GoogleToolboxForMac/NSString+URLArguments (2.1.3)
+  - GroupWork (0.0.3)
   - GTMSessionFetcher/Core (1.1.12)
   - JSQMessagesViewController (7.3.5):
     - JSQSystemSoundPlayer (~> 2.0.1)
@@ -77,8 +79,9 @@ DEPENDENCIES:
   - Firebase/Database
   - Firebase/Storage
   - FirebaseAuth
+  - GroupWork (~> 0.0)
   - JSQMessagesViewController
-  - SwiftVideoBackground (~> 2.0.0)
+  - SwiftVideoBackground (~> 2.0)
 
 SPEC CHECKSUMS:
   Bolts: 8a7995239dbe724f9cba2248b766d48b7ebdd322
@@ -86,14 +89,15 @@ SPEC CHECKSUMS:
   FacebookLogin: 0af839ea858faef99550d16596b87b4a8e8906e6
   FBSDKCoreKit: 6f139173dc63a1deaff4430a55f2fe5bb222d2af
   FBSDKLoginKit: 56a057ca6822535ea0faa25f57a7c41edb697fd4
-  Firebase: dbfb98ccec2dcfcd21ab9cc1b4981a3f3c8c5e26
+  Firebase: 710decbbc6d9d48530e9a5dba3209740c3532e05
   FirebaseAnalytics: 5b02a63ead2c3f0259cfc7f15e053e440587ecf8
-  FirebaseAuth: cdeee95b528958dbb7dcf220ad0fb804d3a284b0
-  FirebaseCore: 6cf108b63997bc08c04a1ffa55a3ac0d71a59ffc
-  FirebaseDatabase: 18ecb23e15c7f58bb0c4527e9cace06897cc40ca
-  FirebaseInstanceID: 148c25c986c8699e67304b114e365713dce467f2
-  FirebaseStorage: 0930e97994dc79b404179bdfafb6b16f59433a82
+  FirebaseAuth: dc0dd403beca5b2b016aac89c2d0b8dad1c81926
+  FirebaseCore: 3c02ec652db3d03fdc8bc6d9154af3e20d64b6f5
+  FirebaseDatabase: 7088bfc4af2cc00231bb36e1404fc2d7509eb4dc
+  FirebaseInstanceID: 81df5805a08001e69138664bdd02c6719a9ac80f
+  FirebaseStorage: ab08d1c93a2feffa038fdd6693088b310ab1e6c6
   GoogleToolboxForMac: 2501e2ad72a52eb3dfe7bd9aee7dad11b858bd20
+  GroupWork: 92604e537e152e3ac06655eaabda60dadf9e6005
   GTMSessionFetcher: ebaa1f79a5366922c1735f1566901f50beba23b7
   JSQMessagesViewController: 6587f56aedbcb150a8ba1d968e1ef58b1bc758b7
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
@@ -101,6 +105,6 @@ SPEC CHECKSUMS:
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
   SwiftVideoBackground: 41d030c232284482973e46959de6398a116c6b58
 
-PODFILE CHECKSUM: 86873754c357be1de2af92f0dbee5f419f38efb5
+PODFILE CHECKSUM: a30924551d3104a3229cecb6a3e5b7698453a3d4
 
 COCOAPODS: 1.3.1

@@ -1,3 +1,4 @@
+import GroupWork
 import UIKit
 
 class ProxiesButtonManager: ButtonManaging {
@@ -37,19 +38,18 @@ class ProxiesButtonManager: ButtonManaging {
             }
             self.disableButtons()
             self.proxiesManager?.stopObserving()
-            let key = AsyncWorkGroupKey()
+            let key = GroupWork()
             for (_, item) in self.itemsToDeleteManager?.itemsToDelete ?? [:] {
                 guard let proxy = item as? Proxy else {
                     return
                 }
-                key.startWork()
+                key.start()
                 DBProxy.deleteProxy(proxy) { _ in
-                    key.finishWork()
+                    key.finish(withResult: true)
                 }
             }
             self.setDefaultButtons()
-            key.notify {
-                key.removeWorkGroup()
+            key.allDone {
                 self.enableButtons()
                 self.proxiesManager?.load(uid: self.uid, tableView: tableView)
             }

@@ -1,4 +1,5 @@
 import FirebaseDatabase
+import GroupWork
 import XCTest
 @testable import Proxy
 
@@ -18,15 +19,14 @@ class DBProxyTests: DBTest {
                     DBProxy.deleteProxy(sender) { (success) in
                         XCTAssert(success)
                         
-                        let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-                        key.check(.receiverDeletedProxy(true), forConvo: convo, asSender: true)
-                        key.checkUnreadMessagesDeleted(for: sender)
-                        key.checkConvoDeleted(convo, asSender: false)
-                        key.checkDeleted(at: Child.proxies, sender.ownerId, sender.key)
-                        key.checkDeleted(at: Child.proxyKeys, sender.key)
-                        key.checkDeleted(at: Child.proxyOwners, sender.key)
-                        key.notify {
-                            key.removeWorkGroup()
+                        let work = GroupWork()
+                        work.check(.receiverDeletedProxy(true), forConvo: convo, asSender: true)
+                        work.checkUnreadMessagesDeleted(for: sender)
+                        work.checkConvoDeleted(convo, asSender: false)
+                        work.checkDeleted(at: Child.proxies, sender.ownerId, sender.key)
+                        work.checkDeleted(at: Child.proxyKeys, sender.key)
+                        work.checkDeleted(at: Child.proxyOwners, sender.key)
+                        work.allDone {
                             expectation.fulfill()
                         }
                     }
@@ -41,11 +41,9 @@ class DBProxyTests: DBTest {
 
         DBTest.makeConvo { (_, sender, _) in
 
-            let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-            key.set(.convoCount(0), forProxy: sender)
-            key.notify {
-                key.removeWorkGroup()
-
+            let work = GroupWork()
+            work.set(.convoCount(0), forProxy: sender)
+            work.allDone {
                 DBProxy.fixConvoCounts(uid: DBTest.uid) { (success) in
                     XCTAssert(success)
 
@@ -65,18 +63,17 @@ class DBProxyTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
+        let work = GroupWork()
 
         for icon in ProxyService.iconNames {
-            key.startWork()
+            work.start()
             UIImage.makeImage(named: icon) { (image) in
                 XCTAssertNotNil(image)
-                key.finishWork()
+                work.finish(withResult: true)
             }
         }
 
-        key.notify {
-            key.removeWorkGroup()
+        work.allDone {
             expectation.fulfill()
         }
     }
@@ -159,12 +156,11 @@ class DBProxyTests: DBTest {
         DBTest.makeProxy { (proxy) in
             XCTAssertNotEqual(proxy.icon, "")
             
-            let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-            key.checkProxyCreated(proxy)
-            key.checkProxyKeyCreated(forProxy: proxy)
-            key.checkProxyOwnerCreated(forProxy: proxy)
-            key.notify {
-                key.removeWorkGroup()
+            let work = GroupWork()
+            work.checkProxyCreated(proxy)
+            work.checkProxyKeyCreated(forProxy: proxy)
+            work.checkProxyOwnerCreated(forProxy: proxy)
+            work.allDone {
                 expectation.fulfill()
             }
         }
@@ -215,11 +211,10 @@ class DBProxyTests: DBTest {
             DBProxy.setIcon(to: newIcon, forProxy: proxy) { (success) in
                 XCTAssert(success)
                 
-                let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-                key.check(.icon(newIcon), forProxy: proxy)
-                key.check(.receiverIcon(newIcon), forConvo: convo, asSender: false)
-                key.notify {
-                    key.removeWorkGroup()
+                let work = GroupWork()
+                work.check(.icon(newIcon), forProxy: proxy)
+                work.check(.receiverIcon(newIcon), forConvo: convo, asSender: false)
+                work.allDone {
                     expectation.fulfill()
                 }
             }
@@ -236,11 +231,10 @@ class DBProxyTests: DBTest {
             DBProxy.setNickname(to: newNickname, forProxy: sender) { (success) in
                 XCTAssert(success)
                 
-                let key = AsyncWorkGroupKey.makeAsyncWorkGroupKey()
-                key.check(.nickname(newNickname), forProxy: sender)
-                key.check(.senderNickname(newNickname), forConvo: convo, asSender: true)
-                key.notify {
-                    key.removeWorkGroup()
+                let work = GroupWork()
+                work.check(.nickname(newNickname), forProxy: sender)
+                work.check(.senderNickname(newNickname), forConvo: convo, asSender: true)
+                work.allDone {
                     expectation.fulfill()
                 }
             }
@@ -248,36 +242,36 @@ class DBProxyTests: DBTest {
     }
 }
 
-extension AsyncWorkGroupKey {
+extension GroupWork {
     func checkProxyCreated(_ proxy: Proxy) {
-        startWork()
+        start()
         DB.get(Child.proxies, DBTest.uid, proxy.key) { (data) in
             XCTAssertEqual(Proxy(data?.value as AnyObject), proxy)
-            self.finishWork()
+            self.finish(withResult: true)
         }
     }
     
     func checkProxyKeyCreated(forProxy proxy: Proxy) {
-        startWork()
+        start()
         DB.get(Child.proxyKeys, proxy.key) { (data) in
             XCTAssertEqual(data?.value as? [String: String] ?? [:], [Child.key: proxy.key])
-            self.finishWork()
+            self.finish(withResult: true)
         }
     }
     
     func checkProxyOwnerCreated(forProxy proxy: Proxy) {
-        startWork()
+        start()
         DB.get(Child.proxyOwners, proxy.key) { (data) in
             XCTAssertEqual(ProxyOwner(data?.value as AnyObject), ProxyOwner(key: proxy.key, ownerId: DBTest.uid))
-            self.finishWork()
+            self.finish(withResult: true)
         }
     }
 
     func checkUnreadMessagesDeleted(for proxy: Proxy) {
-        startWork()
+        start()
         DBProxy.getUnreadMessagesForProxy(owner: proxy.ownerId, key: proxy.key) { (messages) in
             XCTAssertEqual(messages?.count, 0)
-            self.finishWork()
+            self.finish(withResult: true)
         }
     }
 }
