@@ -1,6 +1,6 @@
 import UIKit
 
-class MessagesTableViewDataSource: NSObject {
+class ConvosTableViewDataSource: NSObject {
     private weak var manager: ConvosManaging?
 
     func load(manager: ConvosManaging) {
@@ -8,7 +8,7 @@ class MessagesTableViewDataSource: NSObject {
     }
 }
 
-extension MessagesTableViewDataSource: UITableViewDataSource {
+extension ConvosTableViewDataSource: UITableViewDataSource {
     var convos: [Convo] {
         return manager?.convos ?? []
     }

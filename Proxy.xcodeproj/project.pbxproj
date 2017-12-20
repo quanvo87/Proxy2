@@ -59,7 +59,7 @@
 		5973C8551F608A2200647492 /* BlockedUsersTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8211F608A1B00647492 /* BlockedUsersTableViewController.swift */; };
 		5973C8561F608A2200647492 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8221F608A1B00647492 /* LoginViewController.swift */; };
 		5973C8571F608A2200647492 /* MakeNewMessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8231F608A1C00647492 /* MakeNewMessageViewController.swift */; };
-		5973C8581F608A2200647492 /* MessagesTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8241F608A1C00647492 /* MessagesTableViewDataSource.swift */; };
+		5973C8581F608A2200647492 /* ConvosTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8241F608A1C00647492 /* ConvosTableViewDataSource.swift */; };
 		5973C85A1F608A2200647492 /* ProxiesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8261F608A1C00647492 /* ProxiesTableViewCell.swift */; };
 		5973C85B1F608A2200647492 /* DBProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8271F608A1C00647492 /* DBProxy.swift */; };
 		5973C85D1F608A2200647492 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8291F608A1C00647492 /* Common.swift */; };
@@ -100,6 +100,10 @@
 		598420511FEA598300855647 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598420501FEA598300855647 /* Message.swift */; };
 		5988E8321F9A5A7E002C8C95 /* ConvosTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5988E8311F9A5A7E002C8C95 /* ConvosTableViewCell.xib */; };
 		5988E8341F9A5EF9002C8C95 /* MeTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5988E8331F9A5EF9002C8C95 /* MeTableViewCell.xib */; };
+		598F89EA1FEB120600CCF024 /* ConvoCollectionViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598F89E91FEB120600CCF024 /* ConvoCollectionViewDataSource.swift */; };
+		598F89EC1FEB12E000CCF024 /* MessagesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598F89EB1FEB12E000CCF024 /* MessagesManager.swift */; };
+		598F89EE1FEB131600CCF024 /* MessagesManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598F89ED1FEB131600CCF024 /* MessagesManaging.swift */; };
+		598F89F01FEB141800CCF024 /* MessagesObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598F89EF1FEB141800CCF024 /* MessagesObserver.swift */; };
 		599B8D411F98610C002F394A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599B8D401F98610C002F394A /* AppDelegate.swift */; };
 		59AC04B61F6BFCFD00DB580B /* MessagesReceivedObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59AC04B51F6BFCFD00DB580B /* MessagesReceivedObserver.swift */; };
 		59AC04B81F6C049100DB580B /* MeTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59AC04B71F6C049100DB580B /* MeTableViewDataSource.swift */; };
@@ -119,7 +123,7 @@
 		59D7B7DB1F87072E0082599A /* ReceiverNicknameManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D7B7DA1F87072E0082599A /* ReceiverNicknameManaging.swift */; };
 		59D7B7DD1F8707630082599A /* SenderNicknameManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D7B7DC1F8707630082599A /* SenderNicknameManaging.swift */; };
 		59DCE5FC1F65FCC900AC9CEC /* ProxyTableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59DCE5FB1F65FCC900AC9CEC /* ProxyTableViewDelegate.swift */; };
-		59DDF43B1F6AB2F100D4E239 /* MessagesTableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59DDF43A1F6AB2F100D4E239 /* MessagesTableViewDelegate.swift */; };
+		59DDF43B1F6AB2F100D4E239 /* ConvosTableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59DDF43A1F6AB2F100D4E239 /* ConvosTableViewDelegate.swift */; };
 		59DECF5F1FEA56AD009ABB36 /* ConvoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59DECF5E1FEA56AD009ABB36 /* ConvoViewController.swift */; };
 		59E75B2A1F846F140033A407 /* ConvosManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E75B291F846F140033A407 /* ConvosManager.swift */; };
 		59E75B2E1F846F550033A407 /* ProxiesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E75B2D1F846F550033A407 /* ProxiesManager.swift */; };
@@ -203,7 +207,7 @@
 		5973C8211F608A1B00647492 /* BlockedUsersTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockedUsersTableViewController.swift; sourceTree = "<group>"; };
 		5973C8221F608A1B00647492 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		5973C8231F608A1C00647492 /* MakeNewMessageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MakeNewMessageViewController.swift; sourceTree = "<group>"; };
-		5973C8241F608A1C00647492 /* MessagesTableViewDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesTableViewDataSource.swift; sourceTree = "<group>"; };
+		5973C8241F608A1C00647492 /* ConvosTableViewDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvosTableViewDataSource.swift; sourceTree = "<group>"; };
 		5973C8261F608A1C00647492 /* ProxiesTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxiesTableViewCell.swift; sourceTree = "<group>"; };
 		5973C8271F608A1C00647492 /* DBProxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBProxy.swift; sourceTree = "<group>"; };
 		5973C8291F608A1C00647492 /* Common.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
@@ -244,6 +248,10 @@
 		598420501FEA598300855647 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		5988E8311F9A5A7E002C8C95 /* ConvosTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConvosTableViewCell.xib; sourceTree = "<group>"; };
 		5988E8331F9A5EF9002C8C95 /* MeTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MeTableViewCell.xib; sourceTree = "<group>"; };
+		598F89E91FEB120600CCF024 /* ConvoCollectionViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoCollectionViewDataSource.swift; sourceTree = "<group>"; };
+		598F89EB1FEB12E000CCF024 /* MessagesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesManager.swift; sourceTree = "<group>"; };
+		598F89ED1FEB131600CCF024 /* MessagesManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesManaging.swift; sourceTree = "<group>"; };
+		598F89EF1FEB141800CCF024 /* MessagesObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesObserver.swift; sourceTree = "<group>"; };
 		599B8D401F98610C002F394A /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		59AC04B51F6BFCFD00DB580B /* MessagesReceivedObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesReceivedObserver.swift; sourceTree = "<group>"; };
 		59AC04B71F6C049100DB580B /* MeTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeTableViewDataSource.swift; sourceTree = "<group>"; };
@@ -270,7 +278,7 @@
 		59D7B7DA1F87072E0082599A /* ReceiverNicknameManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiverNicknameManaging.swift; sourceTree = "<group>"; };
 		59D7B7DC1F8707630082599A /* SenderNicknameManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SenderNicknameManaging.swift; sourceTree = "<group>"; };
 		59DCE5FB1F65FCC900AC9CEC /* ProxyTableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyTableViewDelegate.swift; sourceTree = "<group>"; };
-		59DDF43A1F6AB2F100D4E239 /* MessagesTableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesTableViewDelegate.swift; sourceTree = "<group>"; };
+		59DDF43A1F6AB2F100D4E239 /* ConvosTableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvosTableViewDelegate.swift; sourceTree = "<group>"; };
 		59DECF5E1FEA56AD009ABB36 /* ConvoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoViewController.swift; sourceTree = "<group>"; };
 		59E75B291F846F140033A407 /* ConvosManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvosManager.swift; sourceTree = "<group>"; };
 		59E75B2D1F846F550033A407 /* ProxiesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxiesManager.swift; sourceTree = "<group>"; };
@@ -468,8 +476,8 @@
 		59D896A21F977D2B008B3A05 /* Delegate */ = {
 			isa = PBXGroup;
 			children = (
+				59DDF43A1F6AB2F100D4E239 /* ConvosTableViewDelegate.swift */,
 				594D2A511F6B167F00ECCF06 /* IconPickerCollectionViewDelegate.swift */,
-				59DDF43A1F6AB2F100D4E239 /* MessagesTableViewDelegate.swift */,
 				5958D5091F6C18B600B07B0F /* MeTableViewDelegate.swift */,
 				596D7FD31F62EC1100E6AF8D /* ProxiesTableViewDelegate.swift */,
 				59DCE5FB1F65FCC900AC9CEC /* ProxyTableViewDelegate.swift */,
@@ -481,9 +489,10 @@
 		59D896A31F977D44008B3A05 /* Data Source */ = {
 			isa = PBXGroup;
 			children = (
+				598F89E91FEB120600CCF024 /* ConvoCollectionViewDataSource.swift */,
+				5973C8241F608A1C00647492 /* ConvosTableViewDataSource.swift */,
 				594D2A4F1F6B0CDD00ECCF06 /* IconPickerCollectionViewDataSource.swift */,
 				59AC04B71F6C049100DB580B /* MeTableViewDataSource.swift */,
-				5973C8241F608A1C00647492 /* MessagesTableViewDataSource.swift */,
 				5973C8301F608A1D00647492 /* ProxiesTableViewDataSource.swift */,
 				5973C8201F608A1B00647492 /* ProxyTableViewDataSource.swift */,
 			);
@@ -494,6 +503,7 @@
 			isa = PBXGroup;
 			children = (
 				59FF373C1F97984200FA1AF0 /* AuthManager.swift */,
+				598F89EB1FEB12E000CCF024 /* MessagesManager.swift */,
 				597C8E701F8601FE00637EAC /* ConvoIconsManager.swift */,
 				5956AE571F872E4B00F99ED0 /* ConvoNicknamesManager.swift */,
 				59E75B291F846F140033A407 /* ConvosManager.swift */,
@@ -520,6 +530,7 @@
 				59BAB2DB1F7A7FB200A2B581 /* ConvosManaging.swift */,
 				592C0DE71F8E598B0023DB02 /* ItemsToDeleteManaging.swift */,
 				5926A3781F9A7D83004544AE /* MakeNewMessageDelegate.swift */,
+				598F89ED1FEB131600CCF024 /* MessagesManaging.swift */,
 				593D7D411F851E6900D3FBD5 /* MessagesReceivedCountManaging.swift */,
 				593D7D451F85246900D3FBD5 /* MessagesSentCountManaging.swift */,
 				593D7D491F8529EB00D3FBD5 /* ProxiesInteractedManaging.swift */,
@@ -542,6 +553,7 @@
 			children = (
 				5973C8471F608A2200647492 /* AuthObserver.swift */,
 				5973C83D1F608A2000647492 /* ConvosObserver.swift */,
+				598F89EF1FEB141800CCF024 /* MessagesObserver.swift */,
 				59AC04B51F6BFCFD00DB580B /* MessagesReceivedObserver.swift */,
 				5958D5051F6C140100B07B0F /* MessagesSentObserver.swift */,
 				5958D5071F6C15EA00B07B0F /* ProxiesInteractedWithObserver.swift */,
@@ -982,6 +994,7 @@
 				5958D5081F6C15EA00B07B0F /* ProxiesInteractedWithObserver.swift in Sources */,
 				591F9A4D1F866D1D00FDD294 /* SenderIconObserver.swift in Sources */,
 				59B5007D1F6A3469002D4C29 /* ReceiverPicker.swift in Sources */,
+				598F89F01FEB141800CCF024 /* MessagesObserver.swift in Sources */,
 				5973C8651F608A2200647492 /* Proxy.swift in Sources */,
 				595A25DC1F704F36005D82F1 /* ConvoIsActiveChecker.swift in Sources */,
 				5958D50A1F6C18B600B07B0F /* MeTableViewDelegate.swift in Sources */,
@@ -991,6 +1004,7 @@
 				5973C8481F608A2200647492 /* ProxyObserver.swift in Sources */,
 				596D7FD41F62EC1100E6AF8D /* ProxiesTableViewDelegate.swift in Sources */,
 				594D2A521F6B167F00ECCF06 /* IconPickerCollectionViewDelegate.swift in Sources */,
+				598F89EA1FEB120600CCF024 /* ConvoCollectionViewDataSource.swift in Sources */,
 				592C0DE81F8E598B0023DB02 /* ItemsToDeleteManaging.swift in Sources */,
 				590F08E61F7BF21B00F3200F /* MessagesUnreadCountManager.swift in Sources */,
 				599B8D411F98610C002F394A /* AppDelegate.swift in Sources */,
@@ -999,6 +1013,7 @@
 				593D7D421F851E6900D3FBD5 /* MessagesReceivedCountManaging.swift in Sources */,
 				5973C84F1F608A2200647492 /* DBStorage.swift in Sources */,
 				59BAB2DC1F7A7FB200A2B581 /* ConvosManaging.swift in Sources */,
+				598F89EE1FEB131600CCF024 /* MessagesManaging.swift in Sources */,
 				59E75B2E1F846F550033A407 /* ProxiesManager.swift in Sources */,
 				5973C86F1F608A2200647492 /* UnreadCountObserver.swift in Sources */,
 				5973C8521F608A2200647492 /* BlockedUser.swift in Sources */,
@@ -1009,7 +1024,7 @@
 				5973C8491F608A2200647492 /* DBConvo.swift in Sources */,
 				590823C51F9EF6DA00A3B6A9 /* ProxyService.swift in Sources */,
 				5912F0E71F708B770017D1EE /* SenderIconManaging.swift in Sources */,
-				5973C8581F608A2200647492 /* MessagesTableViewDataSource.swift in Sources */,
+				5973C8581F608A2200647492 /* ConvosTableViewDataSource.swift in Sources */,
 				598420511FEA598300855647 /* Message.swift in Sources */,
 				5973C8671F608A2200647492 /* IconPickerCollectionViewCell.swift in Sources */,
 				592F2FF71F7BEB85001DC85C /* AuthManaging.swift in Sources */,
@@ -1040,13 +1055,14 @@
 				5973C8751F608A2200647492 /* makeIconNames.swift in Sources */,
 				591F9A4F1F867A1800FDD294 /* ReceiverNicknameObserver.swift in Sources */,
 				59155AB61F7B7951001EDDD0 /* MessagesButtonManager.swift in Sources */,
-				59DDF43B1F6AB2F100D4E239 /* MessagesTableViewDelegate.swift in Sources */,
+				59DDF43B1F6AB2F100D4E239 /* ConvosTableViewDelegate.swift in Sources */,
 				5973C8701F608A2200647492 /* ConvosObserver.swift in Sources */,
 				59E75B301F846F6B0033A407 /* ProxyManager.swift in Sources */,
 				59D7B7DD1F8707630082599A /* SenderNicknameManaging.swift in Sources */,
 				5973C8691F608A2200647492 /* makeNouns.swift in Sources */,
 				5973C86C1F608A2200647492 /* LoginService.swift in Sources */,
 				5973C8761F608A2200647492 /* MeViewController.swift in Sources */,
+				598F89EC1FEB12E000CCF024 /* MessagesManager.swift in Sources */,
 				59033F0C1F83BFD100F3062D /* ProxyManaging.swift in Sources */,
 				5962575A1FD6ED7E00C87E2A /* ProxyOwner.swift in Sources */,
 				5973C8601F608A2200647492 /* MeTableViewCell.swift in Sources */,

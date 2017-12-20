@@ -1,19 +1,19 @@
 import MessageKit
 
 class ConvoViewController: MessageKit.MessagesViewController {
-
-    private let uid: String
+    
     private let convo: Convo
 
     private var senderProxyName = ""
 
-    private var messages = [MessageType]()
+    private let messagesManager = MessagesManager()
 
-    init(uid: String, convo: Convo) {
-        self.uid = uid
+    init(_ convo: Convo) {
         self.convo = convo
 
         super.init(nibName: nil, bundle: nil)
+
+        messagesManager.load(convoKey: convo.key, collectionView: messagesCollectionView)
 
         messagesCollectionView.messagesDataSource = self
         messagesCollectionView.messagesLayoutDelegate = self
@@ -23,19 +23,29 @@ class ConvoViewController: MessageKit.MessagesViewController {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        tabBarController?.tabBar.isHidden = true
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(true)
+        tabBarController?.tabBar.isHidden = false
+    }
 }
 
 extension ConvoViewController: MessagesDataSource {
     func currentSender() -> Sender {
-        return Sender(id: uid, displayName: senderProxyName)
+        return Sender(id: convo.senderId, displayName: senderProxyName)
     }
 
     func messageForItem(at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageType {
-        return messages[indexPath.section]
+        return messagesManager.messages[indexPath.section]
     }
 
     func numberOfMessages(in messagesCollectionView: MessagesCollectionView) -> Int {
-        return messages.count
+        return messagesManager.messages.count
     }
 }
 

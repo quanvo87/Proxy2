@@ -1,6 +1,6 @@
 import UIKit
 
-class MessagesTableViewDelegate: NSObject {
+class ConvosTableViewDelegate: NSObject {
     private weak var convosManager: ConvosManaging?
     private weak var itemsToDeleteManager: ItemsToDeleteManaging?
     private weak var controller: UIViewController?
@@ -12,7 +12,7 @@ class MessagesTableViewDelegate: NSObject {
     }
 }
 
-extension MessagesTableViewDelegate: UITableViewDelegate {
+extension ConvosTableViewDelegate: UITableViewDelegate {
     var convos: [Convo] {
         return convosManager?.convos ?? []
     }

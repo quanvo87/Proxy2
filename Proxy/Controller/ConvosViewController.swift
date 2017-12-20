@@ -6,8 +6,8 @@ class ConvosViewController: UIViewController, MakeNewMessageDelegate {
     private let uid: String
     private let convosManager = ConvosManager()
     private let itemsToDeleteManager = ItemsToDeleteManager()
-    private let dataSource = MessagesTableViewDataSource()
-    private let delegate = MessagesTableViewDelegate()
+    private let dataSource = ConvosTableViewDataSource()
+    private let delegate = ConvosTableViewDelegate()
     private let tableView = UITableView()
     private let buttonManager = MessagesButtonManager()
     private let unreadCountManager = MessagesUnreadCountManager()
