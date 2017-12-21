@@ -8,8 +8,8 @@ class ProxiesTableViewCell: UITableViewCell {
     @IBOutlet weak var nicknameLabel: UILabel!
     @IBOutlet weak var unreadLabel: UILabel!    // TODO: delete
     
-    func load(proxy: Proxy, showDisclosureIndicator: Bool) {
-        accessoryType = showDisclosureIndicator ? .disclosureIndicator : .none
+    func load(proxy: Proxy, accessoryType: UITableViewCellAccessoryType) {
+        self.accessoryType = accessoryType
         
         iconImageView.image = nil
         newProxyBadgeImageView.image = nil
@@ -19,22 +19,21 @@ class ProxiesTableViewCell: UITableViewCell {
         convoCountLabel.text = proxy.convoCount.asLabel
         unreadLabel.text = nil // TODO: delete
 
-        UIImage.makeImage(named: proxy.icon) { (image) in
-            if let image = image {
-                DispatchQueue.main.async {
-                    self.iconImageView.image = image
-                }
+        UIImage.make(named: proxy.icon) { (image) in
+            DispatchQueue.main.async {
+                self.iconImageView.image = image
             }
         }
 
         if proxy.dateCreated.isNewProxyDate {
-            UIImage.makeImage(named: "newProxyBadge") { (image) in
-                if let image = image {
-                    DispatchQueue.main.async {
-                        self.contentView.bringSubview(toFront: self.newProxyBadgeImageView)
-                        self.newProxyBadgeImageView.image = image
-                        self.newProxyBadgeImageView.isHidden = false
-                    }
+            UIImage.make(named: "newProxyBadge") { (image) in
+                guard let image = image else {
+                    return
+                }
+                DispatchQueue.main.async {
+                    self.contentView.bringSubview(toFront: self.newProxyBadgeImageView)
+                    self.newProxyBadgeImageView.image = image
+                    self.newProxyBadgeImageView.isHidden = false
                 }
             }
         }

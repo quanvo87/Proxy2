@@ -93,7 +93,7 @@ extension UIColor {
 }
 
 extension UIImage {
-    static func makeImage(named image: String, completion: @escaping (UIImage?) -> Void) {
+    static func make(named image: String, completion: @escaping (UIImage?) -> Void) {
         DispatchQueue.queue.async {
             completion(UIImage(named: image))
         }
@@ -137,6 +137,14 @@ extension UIStoryboard {
     static let main: UIStoryboard = {
         return UIStoryboard(name: "Main", bundle: nil)
     }()
+}
+
+extension UITableView {
+    func setDelaysContentTouchesForScrollViews(value: Bool = false) {
+        for case let scrollView as UIScrollView in self.subviews {
+            scrollView.delaysContentTouches = value
+        }
+    }
 }
 
 extension UIViewController {

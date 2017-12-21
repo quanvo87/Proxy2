@@ -1,3 +1,5 @@
+import FirebaseDatabase
+
 struct Convo {
     var hasUnreadMessage = false
     var receiverDeletedProxy = false
@@ -19,6 +21,10 @@ struct Convo {
     var senderProxyName = ""
 
     init() {}
+
+    init?(_ data: DataSnapshot) {
+        self.init(data.value as AnyObject)
+    }
 
     init?(_ dictionary: AnyObject) {
         guard

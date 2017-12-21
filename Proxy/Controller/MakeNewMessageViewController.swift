@@ -13,6 +13,7 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate, Sender
             setReceiverButtonTitle()
         }
     }
+
     var sender: Proxy? {
         didSet {
             setSenderButtonTitle()
@@ -20,6 +21,7 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate, Sender
     }
 
     private var uid = ""
+
     private weak var delegate: MakeNewMessageDelegate?
 
     override func viewDidLoad() {

@@ -57,9 +57,6 @@ class ConvoViewController: MessageKit.MessagesViewController {
     }
 
     @objc private func showConvoDetailView() {
-        guard let controller = UIStoryboard.main.instantiateViewController(withIdentifier: Identifier.convoDetailViewController) as? ConvoDetailViewController else {
-            return
-        }
-        navigationController?.pushViewController(controller, animated: true)
+        navigationController?.pushViewController(ConvoDetailViewController2(convo), animated: true)
     }
 }

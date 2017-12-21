@@ -25,10 +25,6 @@ class ProxyViewController: UIViewController, MakeNewMessageDelegate {
         dataSource.load(proxyManager: proxyManager, convosManager: convosManager, controller: self)
 
         delegate.load(manager: convosManager, controller: self)
-
-        for case let scrollView as UIScrollView in tableView.subviews {
-            scrollView.delaysContentTouches = false
-        }
         
         tableView.dataSource = dataSource
         tableView.delaysContentTouches = false
@@ -38,6 +34,8 @@ class ProxyViewController: UIViewController, MakeNewMessageDelegate {
         tableView.register(UINib(nibName: Identifier.senderProxyTableViewCell, bundle: nil), forCellReuseIdentifier: Identifier.senderProxyTableViewCell)
         tableView.sectionHeaderHeight = 0
         tableView.separatorStyle = .none
+        tableView.setDelaysContentTouchesForScrollViews()
+
         view.addSubview(tableView)
     }
 

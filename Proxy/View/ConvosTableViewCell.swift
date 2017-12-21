@@ -13,11 +13,10 @@ class ConvosTableViewCell: UITableViewCell {
         lastMessageLabel.text = convo.lastMessage
         timestampLabel.text = convo.timestamp.asTimeAgo
         unreadLabel.text = nil // TODO: delete
-        UIImage.makeImage(named: convo.receiverIcon) { (image) in
-            if let image = image {
-                DispatchQueue.main.async {
-                    self.iconImageView.image = image
-                }
+        
+        UIImage.make(named: convo.receiverIcon) { (image) in
+            DispatchQueue.main.async {
+                self.iconImageView.image = image
             }
         }
     }

@@ -13,6 +13,14 @@ class ProxyTableViewDataSource: NSObject {
 }
 
 extension ProxyTableViewDataSource: UITableViewDataSource {
+    var convos: [Convo] {
+        return convosManager?.convos ?? []
+    }
+
+    var proxy: Proxy? {
+        return proxyManager?.proxy
+    }
+    
     func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
@@ -22,18 +30,17 @@ extension ProxyTableViewDataSource: UITableViewDataSource {
         case 0:
             guard
                 let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.senderProxyTableViewCell) as? SenderProxyTableViewCell,
-                let proxy = proxyManager?.proxy else {
+                let proxy = proxy else {
                     return tableView.dequeueReusableCell(withIdentifier: Identifier.senderProxyTableViewCell, for: indexPath)
             }
             cell.load(proxy)
-            cell.selectionStyle = .none
             cell.changeIconButton.addTarget(self, action: #selector(showIconPickerController), for: .touchUpInside)
             cell.nicknameButton.addTarget(self, action: #selector(editNickname), for: .touchUpInside)
             return cell
         case 1:
             guard
                 let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.convosTableViewCell) as? ConvosTableViewCell,
-                let convo = convosManager?.convos[safe: indexPath.row] else {
+                let convo = convos[safe: indexPath.row] else {
                     return tableView.dequeueReusableCell(withIdentifier: Identifier.convosTableViewCell, for: indexPath)
             }
             cell.load(convo)
@@ -48,7 +55,7 @@ extension ProxyTableViewDataSource: UITableViewDataSource {
         case 0:
             return 1
         case 1:
-            return convosManager?.convos.count ?? 0
+            return convos.count
         default:
             return 0
         }
@@ -66,7 +73,7 @@ extension ProxyTableViewDataSource: UITableViewDataSource {
 
 private extension ProxyTableViewDataSource {
     @objc func editNickname() {
-        guard let proxy = proxyManager?.proxy else {
+        guard let proxy = proxy else {
             return
         }
         let alert = UIAlertController(title: "Edit Nickname", message: "Only you see your nickname.", preferredStyle: .alert)
@@ -89,7 +96,7 @@ private extension ProxyTableViewDataSource {
     }
 
     @objc func showIconPickerController() {
-        guard let proxy = proxyManager?.proxy else {
+        guard let proxy = proxy else {
             return
         }
         controller?.showIconPicker(proxy)

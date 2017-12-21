@@ -13,12 +13,8 @@ class ConvosTableViewDelegate: NSObject {
 }
 
 extension ConvosTableViewDelegate: UITableViewDelegate {
-    var convos: [Convo] {
-        return convosManager?.convos ?? []
-    }
-
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let convo = convos[safe: indexPath.row] else {
+        guard let convo = convosManager?.convos[safe: indexPath.row] else {
             return
         }
         if tableView.isEditing {
@@ -32,7 +28,7 @@ extension ConvosTableViewDelegate: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         guard
             tableView.isEditing,
-            let convo = convos[safe: indexPath.row] else {
+            let convo = convosManager?.convos[safe: indexPath.row] else {
                 return
         }
         itemsToDeleteManager?.itemsToDelete.removeValue(forKey: convo.key)

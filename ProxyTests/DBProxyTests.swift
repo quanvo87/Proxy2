@@ -67,7 +67,7 @@ class DBProxyTests: DBTest {
 
         for icon in ProxyService.iconNames {
             work.start()
-            UIImage.makeImage(named: icon) { (image) in
+            UIImage.make(named: icon) { (image) in
                 XCTAssertNotNil(image)
                 work.finish(withResult: true)
             }

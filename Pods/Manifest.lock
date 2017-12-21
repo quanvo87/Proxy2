@@ -59,7 +59,7 @@ PODS:
     - GoogleToolboxForMac/Defines (= 2.1.3)
     - GoogleToolboxForMac/NSString+URLArguments (= 2.1.3)
   - GoogleToolboxForMac/NSString+URLArguments (2.1.3)
-  - GroupWork (0.0.3)
+  - GroupWork (0.0.5)
   - GTMSessionFetcher/Core (1.1.12)
   - leveldb-library (1.20)
   - MessageKit (0.12.0)
@@ -95,13 +95,13 @@ SPEC CHECKSUMS:
   FirebaseInstanceID: 81df5805a08001e69138664bdd02c6719a9ac80f
   FirebaseStorage: ab08d1c93a2feffa038fdd6693088b310ab1e6c6
   GoogleToolboxForMac: 2501e2ad72a52eb3dfe7bd9aee7dad11b858bd20
-  GroupWork: 92604e537e152e3ac06655eaabda60dadf9e6005
+  GroupWork: b45b832a214c3b7ea560eb289241b7484301fed5
   GTMSessionFetcher: ebaa1f79a5366922c1735f1566901f50beba23b7
   leveldb-library: 08cba283675b7ed2d99629a4bc5fd052cd2bb6a5
   MessageKit: 9455b04be28eb7c50a00962e6168672cd3d403ae
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
   SwiftVideoBackground: 41d030c232284482973e46959de6398a116c6b58
 
-PODFILE CHECKSUM: facac261b33db18ffc3141adc87a2d5919222c68
+PODFILE CHECKSUM: fbbc0a39de8210bff4e5f389ebbfc89022d69c33
 
 COCOAPODS: 1.3.1
