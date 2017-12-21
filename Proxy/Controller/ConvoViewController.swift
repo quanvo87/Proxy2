@@ -4,11 +4,13 @@ class ConvoViewController: MessageKit.MessagesViewController {
     
     private let convo: Convo
 
-    private var senderProxyName = ""
-
     private let messagesManager = MessagesManager()
 
     private let dataSource = ConvoDataSource()
+
+    private let displayDelegate = ConvoDisplayDelegate()
+
+    private let layoutDelegate = ConvoLayoutDelegate()
 
     private let inputBarDelegate = ConvoInputBarDelegate()
 
@@ -17,18 +19,24 @@ class ConvoViewController: MessageKit.MessagesViewController {
 
         super.init(nibName: nil, bundle: nil)
 
+        navigationItem.title = convo.receiverProxyName
+
         maintainPositionOnKeyboardFrameChanged = true
 
         messagesManager.load(convoKey: convo.key, collectionView: messagesCollectionView)
 
         dataSource.load(sender: Sender(id: convo.senderId, displayName: convo.senderProxyName), manager: messagesManager)
 
-        messagesCollectionView.messagesDataSource = dataSource
-
-        messagesCollectionView.messagesLayoutDelegate = self
-        messagesCollectionView.messagesDisplayDelegate = self
+        displayDelegate.load(dataSource)
 
         inputBarDelegate.load(convo)
+
+        messagesCollectionView.messagesDataSource = dataSource
+
+        messagesCollectionView.messagesDisplayDelegate = displayDelegate
+
+        messagesCollectionView.messagesLayoutDelegate = layoutDelegate
+
         messageInputBar.delegate = inputBarDelegate
     }
 
@@ -46,11 +54,3 @@ class ConvoViewController: MessageKit.MessagesViewController {
         fatalError("init(coder:) has not been implemented")
     }
 }
-
-extension ConvoViewController: MessagesLayoutDelegate {
-    func heightForLocation(message: MessageType, at indexPath: IndexPath, with maxWidth: CGFloat, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
-        return 200
-    }
-}
-
-extension ConvoViewController: MessagesDisplayDelegate {}
