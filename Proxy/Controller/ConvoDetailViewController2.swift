@@ -23,7 +23,7 @@ class ConvoDetailViewController2: UIViewController {
 
         proxyManager.load(ownerId: convo.senderId, proxyKey: convo.senderProxyKey, tableView: tableView)
 
-        dataSource.load(convoManager: convoManager, proxyManger: proxyManager, controller: self)
+        dataSource.load(convoManager: convoManager, proxyManager: proxyManager, controller: self)
 
         tableView.dataSource = dataSource
 

@@ -2,12 +2,12 @@ import UIKit
 
 class ConvoDetailTableViewDataSource: NSObject {
     private weak var convoManager: ConvoManaging?
-    private weak var proxyManger: ProxyManaging?
+    private weak var proxyManager: ProxyManaging?
     private weak var controller: UIViewController?
 
-    func load(convoManager: ConvoManaging, proxyManger: ProxyManaging, controller: UIViewController) {
+    func load(convoManager: ConvoManaging, proxyManager: ProxyManaging, controller: UIViewController) {
         self.convoManager = convoManager
-        self.proxyManger = proxyManger
+        self.proxyManager = proxyManager
         self.controller = controller
     }
 }
@@ -26,15 +26,18 @@ extension ConvoDetailTableViewDataSource: UITableViewDataSource {
                     return tableView.dequeueReusableCell(withIdentifier: Identifier.convoDetailReceiverProxyTableViewCell, for: indexPath)
             }
             cell.load(convo)
+            cell.nicknameButton.addTarget(self, action: #selector(showEditReceiverNicknameAlert), for: .touchUpInside)
             return cell
         case 1:
             guard
                 let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.convoDetailSenderProxyTableViewCell) as? SenderProxyTableViewCell,
-                let proxy = proxyManger?.proxy else {
+                let proxy = proxyManager?.proxy else {
                     return tableView.dequeueReusableCell(withIdentifier: Identifier.convoDetailSenderProxyTableViewCell, for: indexPath)
             }
-            cell.load(proxy)
             cell.accessoryType = .disclosureIndicator
+            cell.load(proxy)
+            cell.nicknameButton.addTarget(self, action: #selector(showEditSenderNicknameAlert), for: .touchUpInside)
+            cell.changeIconButton.addTarget(self, action: #selector(showIconPickerController), for: .touchUpInside)
             return cell
         case 2:
             let cell = UITableViewCell()
@@ -78,5 +81,64 @@ extension ConvoDetailTableViewDataSource: UITableViewDataSource {
         default:
             return nil
         }
+    }
+}
+
+private extension ConvoDetailTableViewDataSource {
+    @objc func showEditReceiverNicknameAlert() {
+        guard let convo = convoManager?.convo else {
+            return
+        }
+        let alert = UIAlertController(title: "Edit Receiver's Nickname", message: "Only you see this nickname.", preferredStyle: .alert)
+        alert.addTextField { (textField) in
+            textField.autocapitalizationType = .sentences
+            textField.autocorrectionType = .yes
+            textField.clearButtonMode = .whileEditing
+            textField.placeholder = "Enter A Nickname"
+            textField.text = convo.receiverNickname
+        }
+        alert.addAction(UIAlertAction(title: "Save", style: .default) { (action) in
+            guard let nickname = alert.textFields?[0].text else {
+                return
+            }
+            let trim = nickname.trimmingCharacters(in: CharacterSet(charactersIn: " "))
+            if !(nickname != "" && trim == "") {
+                DBConvo.setReceiverNickname(to: nickname, forConvo: convo) { (_) in }
+            }
+        })
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        controller?.present(alert, animated: true)
+    }
+
+    @objc func showEditSenderNicknameAlert() {
+        guard let proxy = proxyManager?.proxy else {
+            return
+        }
+        let alert = UIAlertController(title: "Edit Nickname", message: "Only you see your nickname.", preferredStyle: .alert)
+        alert.addTextField { (textField) in
+            textField.autocapitalizationType = .sentences
+            textField.autocorrectionType = .yes
+            textField.clearButtonMode = .whileEditing
+            textField.placeholder = "Enter A Nickname"
+            textField.text = proxy.nickname
+        }
+        alert.addAction(UIAlertAction(title: "Save", style: .default) { (action) in
+            guard let nickname = alert.textFields?[0].text else {
+                return
+            }
+            let trim = nickname.trimmingCharacters(in: CharacterSet(charactersIn: " "))
+            if !(nickname != "" && trim == "") {
+                DBProxy.setNickname(to: nickname, forProxy: proxy) { _ in }
+            }
+        })
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        controller?.present(alert, animated: true)
+    }
+
+    @objc func showIconPickerController() {
+        guard let proxy = proxyManager?.proxy else {
+            return
+        }
+        controller?.showIconPicker(proxy)
     }
 }

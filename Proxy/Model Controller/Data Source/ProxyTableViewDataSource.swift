@@ -78,14 +78,16 @@ private extension ProxyTableViewDataSource {
             textField.text = proxy.nickname
         }
         alert.addAction(UIAlertAction(title: "Save", style: .default) { (action) in
-            guard let nickname = alert.textFields?[0].text else { return }
+            guard let nickname = alert.textFields?[0].text else {
+                return
+            }
             let trim = nickname.trimmingCharacters(in: CharacterSet(charactersIn: " "))
             if !(nickname != "" && trim == "") {
                 DBProxy.setNickname(to: nickname, forProxy: proxy) { _ in }
             }
         })
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        controller?.present(alert, animated: true, completion: nil)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        controller?.present(alert, animated: true)
     }
 
     @objc func showIconPickerController() {
