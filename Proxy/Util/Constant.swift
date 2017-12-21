@@ -11,10 +11,8 @@ struct ButtonName {
 
 struct Identifier {
     static let blockedUsersTableViewCell = "BlockedUsersTableViewCell"
-    static let blockedUsersTableViewController = "BlockedUsersTableViewController"
     static let convoDetailReceiverProxyTableViewCell = "ConvoDetailReceiverProxyTableViewCell"
     static let convoDetailSenderProxyTableViewCell = "ConvoDetailSenderProxyTableViewCell"
-    static let convoDetailViewController = "ConvoDetailTableViewController"
     static let convosTableViewCell = "ConvosTableViewCell"
     static let iconPickerCollectionViewCell = "IconPickerCollectionViewCell"
     static let makeNewMessageViewController = "MakeNewMessageViewController"

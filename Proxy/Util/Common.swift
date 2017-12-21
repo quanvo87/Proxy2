@@ -154,10 +154,14 @@ extension UIViewController {
         present(alert, animated: true)
     }
 
-    func showIconPicker(_ proxy: Proxy) {
+    func showIconPickerController(_ proxy: Proxy) {
         let viewController = IconPickerViewController(proxy)
         let navigationController = UINavigationController(rootViewController: viewController)
         present(navigationController, animated: true)
+    }
+
+    func showProxyController(_ proxy: Proxy) {
+        navigationController?.pushViewController(ProxyViewController(proxy), animated: true)
     }
 }
 

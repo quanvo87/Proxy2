@@ -57,6 +57,6 @@ class ConvoViewController: MessageKit.MessagesViewController {
     }
 
     @objc private func showConvoDetailView() {
-        navigationController?.pushViewController(ConvoDetailViewController2(convo), animated: true)
+        navigationController?.pushViewController(ConvoDetailViewController(convo), animated: true)
     }
 }

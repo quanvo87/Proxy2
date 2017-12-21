@@ -139,6 +139,6 @@ private extension ConvoDetailTableViewDataSource {
         guard let proxy = proxyManager?.proxy else {
             return
         }
-        controller?.showIconPicker(proxy)
+        controller?.showIconPickerController(proxy)
     }
 }
