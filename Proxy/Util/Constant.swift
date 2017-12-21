@@ -13,9 +13,8 @@ struct Identifier {
     static let blockedUsersTableViewCell = "BlockedUsersTableViewCell"
     static let blockedUsersTableViewController = "BlockedUsersTableViewController"
     static let convoDetailTableViewCell = "ConvoDetailTableViewCell"
-    static let convoDetailTableViewController = "ConvoDetailTableViewController"
+    static let convoDetailViewController = "ConvoDetailTableViewController"
     static let convosTableViewCell = "ConvosTableViewCell"
-    static let convoViewController = "ConvoViewController"
     static let iconPickerCollectionViewCell = "IconPickerCollectionViewCell"
     static let makeNewMessageViewController = "MakeNewMessageViewController"
     static let meTableViewCell = "MeTableViewCell"
@@ -23,7 +22,6 @@ struct Identifier {
     static let proxiesTableViewCell = "ProxiesTableViewCell"
     static let receiverProxyTableViewCell = "ReceiverProxyTableViewCell"
     static let senderProxyTableViewCell = "SenderProxyTableViewCell"
-    static let tabBarController = "TabBarController"
 }
 
 struct Child {

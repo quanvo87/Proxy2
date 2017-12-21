@@ -3,7 +3,7 @@
 import FirebaseDatabase
 import UIKit
 
-class ConvoDetailTableViewController: UITableViewController {
+class ConvoDetailViewController: UITableViewController {
     
 //    let api = API.sharedInstance
     var convo = Convo()
@@ -183,7 +183,7 @@ class ConvoDetailTableViewController: UITableViewController {
             let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.receiverProxyTableViewCell, for: indexPath as IndexPath) as! ReceiverProxyTableViewCell
             cell.nameLabel.text = convo.receiverProxyName
             cell.nicknameButton.setTitle(receiverNickname == "" ? "Enter A Nickname" : receiverNickname, for: .normal)
-            cell.nicknameButton.addTarget(self, action: #selector(ConvoDetailTableViewController.editReceiverNickname), for: .touchUpInside)
+            cell.nicknameButton.addTarget(self, action: #selector(ConvoDetailViewController.editReceiverNickname), for: .touchUpInside)
             cell.iconImageView.image = nil
 //            cell.iconImageView.kf.indicatorType = .activity
 //            cell.iconImageView.kf.setImage(with: receiverIconURL, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
@@ -195,7 +195,7 @@ class ConvoDetailTableViewController: UITableViewController {
             let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.senderProxyTableViewCell, for: indexPath as IndexPath) as! SenderProxyTableViewCell
             cell.nameLabel.text = convo.senderProxyName
             cell.nicknameButton.setTitle(senderNickname == "" ? "Enter A Nickname" : senderNickname, for: .normal)
-            cell.nicknameButton.addTarget(self, action: #selector(ConvoDetailTableViewController.editSenderNickname), for: .touchUpInside)
+            cell.nicknameButton.addTarget(self, action: #selector(ConvoDetailViewController.editSenderNickname), for: .touchUpInside)
             cell.iconImageView.image = nil
 //            cell.iconImageView.kf.indicatorType = .activity
 //            cell.iconImageView.kf.setImage(with: senderIconURL, placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)

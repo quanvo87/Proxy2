@@ -164,10 +164,10 @@
             </objects>
             <point key="canvasLocation" x="-538" y="2185"/>
         </scene>
-        <!--Convo Detail Table View Controller-->
+        <!--Convo Detail View Controller-->
         <scene sceneID="4Xu-0x-N0F">
             <objects>
-                <tableViewController storyboardIdentifier="ConvoDetailTableViewController" id="o3I-cl-y3O" customClass="ConvoDetailTableViewController" customModule="Proxy" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="ConvoDetailTableViewController" id="o3I-cl-y3O" customClass="ConvoDetailViewController" customModule="Proxy" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="YxD-46-N7k">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

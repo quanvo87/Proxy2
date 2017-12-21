@@ -21,6 +21,8 @@ class ConvoViewController: MessageKit.MessagesViewController {
 
         navigationItem.title = convo.receiverProxyName
 
+        navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self, action: #selector(showConvoDetailView), imageName: ButtonName.info)
+
         maintainPositionOnKeyboardFrameChanged = true
 
         messagesManager.load(convoKey: convo.key, collectionView: messagesCollectionView)
@@ -52,5 +54,12 @@ class ConvoViewController: MessageKit.MessagesViewController {
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    @objc private func showConvoDetailView() {
+        guard let controller = UIStoryboard.main.instantiateViewController(withIdentifier: Identifier.convoDetailViewController) as? ConvoDetailViewController else {
+            return
+        }
+        navigationController?.pushViewController(controller, animated: true)
     }
 }
