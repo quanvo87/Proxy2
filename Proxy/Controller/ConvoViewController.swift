@@ -17,7 +17,7 @@ class ConvoViewController: MessagesViewController {
 
         maintainPositionOnKeyboardFrameChanged = true
 
-        convoManager.load(convoOwnerId: convo.senderId, convoKey: convo.key, collectionView: messagesCollectionView)
+        convoManager.load(convoOwnerId: convo.senderId, convoKey: convo.key, navigationItem: navigationItem, collectionView: messagesCollectionView)
 
         iconManager.load(convo: convo, collectionView: messagesCollectionView)
 
