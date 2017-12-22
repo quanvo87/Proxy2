@@ -28,8 +28,6 @@ class DBStorageTests: DBTest {
                     return
                 }
 
-                XCTAssertNotNil(Cache.cache.object(forKey: url as AnyObject))
-
                 URLSession.shared.dataTask(with: url) { (_, _, error) in
                     XCTAssertNil(error)
 

@@ -20,6 +20,14 @@ struct Convo {
     var senderProxyKey = ""
     var senderProxyName = ""
 
+    var senderDisplayName: String {
+        return senderNickname != "" ? senderNickname : senderProxyName
+    }
+
+    var receiverDisplayName: String {
+        return receiverNickname != "" ? receiverNickname : receiverProxyName
+    }
+
     init() {}
 
     init?(_ data: DataSnapshot) {

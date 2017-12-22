@@ -35,4 +35,8 @@ class CommonTests: XCTestCase {
         XCTAssertEqual(UInt(100000).asStringWithCommas, "100,000")
         XCTAssertEqual(UInt(1000000).asStringWithCommas, "1,000,000")
     }
+
+    func testGetFirstNChars() {
+        XCTAssertEqual("cat".getFirstNChars(2), "ca")
+    }
 }

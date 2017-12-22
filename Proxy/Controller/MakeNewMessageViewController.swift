@@ -102,7 +102,7 @@ private extension MakeNewMessageViewController {
                 return
             }
             self.delegate?.newConvo = convo
-            _ = self.navigationController?.popViewController(animated: true)
+            self.navigationController?.dismiss(animated: true)
         }
     }
 

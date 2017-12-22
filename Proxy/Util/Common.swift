@@ -9,12 +9,6 @@ enum Result<T, Error> {
     case failure(Error)
 }
 
-struct Cache {
-    static let cache: NSCache = {
-        return NSCache<AnyObject, AnyObject>()
-    }()
-}
-
 extension Auth {
     static let auth: Auth = {
         Auth.auth()
@@ -66,6 +60,13 @@ extension Int {
 }
 
 extension String {
+    func getFirstNChars(_ n: Int) -> String {
+        guard self.count >= n else {
+            return ""
+        }
+        return String(self[..<self.index(self.startIndex, offsetBy: n)])
+    }
+
     func makeBold(withSize size: CGFloat) -> NSMutableAttributedString {
         let boldAttr = [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: size)]
         return NSMutableAttributedString(string: self, attributes: boldAttr)
@@ -151,6 +152,28 @@ extension UIViewController {
     func showAlert(_ title: String?, message: String?) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
+    }
+
+    func showEditProxyNicknameAlert(_ proxy: Proxy) {
+        let alert = UIAlertController(title: "Edit Nickname", message: "Only you see your nickname.", preferredStyle: .alert)
+        alert.addTextField { (textField) in
+            textField.autocapitalizationType = .sentences
+            textField.autocorrectionType = .yes
+            textField.clearButtonMode = .whileEditing
+            textField.placeholder = "Enter A Nickname"
+            textField.text = proxy.nickname
+        }
+        alert.addAction(UIAlertAction(title: "Save", style: .default) { (action) in
+            guard let nickname = alert.textFields?[0].text else {
+                return
+            }
+            let trim = nickname.trimmingCharacters(in: CharacterSet(charactersIn: " "))
+            if !(nickname != "" && trim == "") {
+                DBProxy.setNickname(to: nickname, forProxy: proxy) { _ in }
+            }
+        })
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         present(alert, animated: true)
     }
 

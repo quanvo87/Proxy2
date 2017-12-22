@@ -64,6 +64,6 @@ private extension ProxyViewController {
     }
 
     @objc func showMakeNewMessageController() {
-        showMakeNewMessageController(uid: proxy.ownerId, sender: proxy, viewController: self)
+        showMakeNewMessageController(uid: proxy.ownerId, sender: proxy, controller: self)
     }
 }

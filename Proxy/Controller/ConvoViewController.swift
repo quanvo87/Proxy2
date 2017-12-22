@@ -1,42 +1,36 @@
 import MessageKit
 
-class ConvoViewController: MessageKit.MessagesViewController {
-    
-    private let convo: Convo
-
+class ConvoViewController: MessagesViewController {
+    private let convoManager = ConvoManager()
+    private let iconManager = IconManager()
     private let messagesManager = MessagesManager()
-
     private let dataSource = ConvoDataSource()
-
     private let displayDelegate = ConvoDisplayDelegate()
-
     private let layoutDelegate = ConvoLayoutDelegate()
-
     private let inputBarDelegate = ConvoInputBarDelegate()
 
     init(_ convo: Convo) {
-        self.convo = convo
-
         super.init(nibName: nil, bundle: nil)
 
         navigationItem.title = convo.receiverProxyName
-
         navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self, action: #selector(showConvoDetailView), imageName: ButtonName.info)
 
         maintainPositionOnKeyboardFrameChanged = true
 
+        convoManager.load(convoOwnerId: convo.senderId, convoKey: convo.key, collectionView: messagesCollectionView)
+
+        iconManager.load(convo: convo, collectionView: messagesCollectionView)
+
         messagesManager.load(convoKey: convo.key, collectionView: messagesCollectionView)
 
-        dataSource.load(sender: Sender(id: convo.senderId, displayName: convo.senderProxyName), manager: messagesManager)
+        dataSource.load(convoManager: convoManager, iconManager: iconManager, messagesManager: messagesManager)
 
         displayDelegate.load(dataSource)
 
         inputBarDelegate.load(convo)
 
         messagesCollectionView.messagesDataSource = dataSource
-
         messagesCollectionView.messagesDisplayDelegate = displayDelegate
-
         messagesCollectionView.messagesLayoutDelegate = layoutDelegate
 
         messageInputBar.delegate = inputBarDelegate
@@ -55,8 +49,13 @@ class ConvoViewController: MessageKit.MessagesViewController {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+}
 
+private extension ConvoViewController {
     @objc private func showConvoDetailView() {
+        guard let convo = convoManager.convo else {
+            return
+        }
         navigationController?.pushViewController(ConvoDetailViewController(convo), animated: true)
     }
 }

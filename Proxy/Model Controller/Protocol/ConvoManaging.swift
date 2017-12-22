@@ -1,3 +1,3 @@
 protocol ConvoManaging: class {
-    var convo: Convo { get set }
+    var convo: Convo? { get set }
 }

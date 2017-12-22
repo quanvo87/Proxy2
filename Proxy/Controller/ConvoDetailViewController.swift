@@ -1,7 +1,6 @@
 import UIKit
 
 class ConvoDetailViewController: UIViewController {
-    private let convo: Convo
     private let convoManager = ConvoManager()
     private let proxyManager = ProxyManager()
     private let dataSource = ConvoDetailTableViewDataSource()
@@ -9,8 +8,6 @@ class ConvoDetailViewController: UIViewController {
     private let tableView = UITableView(frame: .zero, style: .grouped)
 
     init(_ convo: Convo) {
-        self.convo = convo
-
         super.init(nibName: nil, bundle: nil)
 
         convoManager.load(convoOwnerId: convo.senderId, convoKey: convo.key, tableView: tableView)

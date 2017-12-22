@@ -28,7 +28,7 @@ extension ProxyTableViewDataSource: UITableViewDataSource {
             cell.load(proxy)
             cell.selectionStyle = .none
             cell.changeIconButton.addTarget(self, action: #selector(showIconPickerController), for: .touchUpInside)
-            cell.nicknameButton.addTarget(self, action: #selector(editNickname), for: .touchUpInside)
+            cell.nicknameButton.addTarget(self, action: #selector(showEditProxyNicknameAlert), for: .touchUpInside)
             return cell
         case 1:
             guard
@@ -65,29 +65,11 @@ extension ProxyTableViewDataSource: UITableViewDataSource {
 }
 
 private extension ProxyTableViewDataSource {
-    @objc func editNickname() {
+    @objc func showEditProxyNicknameAlert() {
         guard let proxy = proxyManager?.proxy else {
             return
         }
-        let alert = UIAlertController(title: "Edit Nickname", message: "Only you see your nickname.", preferredStyle: .alert)
-        alert.addTextField { (textField) in
-            textField.autocapitalizationType = .sentences
-            textField.autocorrectionType = .yes
-            textField.clearButtonMode = .whileEditing
-            textField.placeholder = "Enter A Nickname"
-            textField.text = proxy.nickname
-        }
-        alert.addAction(UIAlertAction(title: "Save", style: .default) { (action) in
-            guard let nickname = alert.textFields?[0].text else {
-                return
-            }
-            let trim = nickname.trimmingCharacters(in: CharacterSet(charactersIn: " "))
-            if !(nickname != "" && trim == "") {
-                DBProxy.setNickname(to: nickname, forProxy: proxy) { _ in }
-            }
-        })
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        controller?.present(alert, animated: true)
+        controller?.showEditProxyNicknameAlert(proxy)
     }
 
     @objc func showIconPickerController() {

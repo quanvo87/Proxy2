@@ -114,25 +114,7 @@ private extension ConvoDetailTableViewDataSource {
         guard let proxy = proxyManager?.proxy else {
             return
         }
-        let alert = UIAlertController(title: "Edit Nickname", message: "Only you see your nickname.", preferredStyle: .alert)
-        alert.addTextField { (textField) in
-            textField.autocapitalizationType = .sentences
-            textField.autocorrectionType = .yes
-            textField.clearButtonMode = .whileEditing
-            textField.placeholder = "Enter A Nickname"
-            textField.text = proxy.nickname
-        }
-        alert.addAction(UIAlertAction(title: "Save", style: .default) { (action) in
-            guard let nickname = alert.textFields?[0].text else {
-                return
-            }
-            let trim = nickname.trimmingCharacters(in: CharacterSet(charactersIn: " "))
-            if !(nickname != "" && trim == "") {
-                DBProxy.setNickname(to: nickname, forProxy: proxy) { _ in }
-            }
-        })
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        controller?.present(alert, animated: true)
+        controller?.showEditProxyNicknameAlert(proxy)
     }
 
     @objc func showIconPickerController() {

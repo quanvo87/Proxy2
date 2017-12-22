@@ -12,6 +12,9 @@
 		590823C31F9EED6A00A3B6A9 /* IconPickerCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 590823C21F9EED6A00A3B6A9 /* IconPickerCollectionViewCell.xib */; };
 		590823C51F9EF6DA00A3B6A9 /* ProxyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 590823C41F9EF6DA00A3B6A9 /* ProxyService.swift */; };
 		590F08E61F7BF21B00F3200F /* ConvosUnreadCountManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 590F08E51F7BF21B00F3200F /* ConvosUnreadCountManager.swift */; };
+		591413161FEC5873001A2A70 /* IconManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 591413151FEC5873001A2A70 /* IconManaging.swift */; };
+		591413181FEC58C1001A2A70 /* IconManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 591413171FEC58C1001A2A70 /* IconManager.swift */; };
+		5914131A1FEC622E001A2A70 /* IconObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 591413191FEC622E001A2A70 /* IconObserver.swift */; };
 		59155AB61F7B7951001EDDD0 /* ConvosButtonManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59155AB51F7B7951001EDDD0 /* ConvosButtonManager.swift */; };
 		5926A3791F9A7D83004544AE /* MakeNewMessageDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5926A3781F9A7D83004544AE /* MakeNewMessageDelegate.swift */; };
 		592C0DE81F8E598B0023DB02 /* ItemsToDeleteManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592C0DE71F8E598B0023DB02 /* ItemsToDeleteManaging.swift */; };
@@ -159,6 +162,9 @@
 		590823C21F9EED6A00A3B6A9 /* IconPickerCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IconPickerCollectionViewCell.xib; sourceTree = "<group>"; };
 		590823C41F9EF6DA00A3B6A9 /* ProxyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyService.swift; sourceTree = "<group>"; };
 		590F08E51F7BF21B00F3200F /* ConvosUnreadCountManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvosUnreadCountManager.swift; sourceTree = "<group>"; };
+		591413151FEC5873001A2A70 /* IconManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconManaging.swift; sourceTree = "<group>"; };
+		591413171FEC58C1001A2A70 /* IconManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconManager.swift; sourceTree = "<group>"; };
+		591413191FEC622E001A2A70 /* IconObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconObserver.swift; sourceTree = "<group>"; };
 		59155AB51F7B7951001EDDD0 /* ConvosButtonManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvosButtonManager.swift; sourceTree = "<group>"; };
 		5926A3781F9A7D83004544AE /* MakeNewMessageDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MakeNewMessageDelegate.swift; sourceTree = "<group>"; };
 		592C0DE71F8E598B0023DB02 /* ItemsToDeleteManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsToDeleteManaging.swift; sourceTree = "<group>"; };
@@ -416,9 +422,9 @@
 				5966076A1F977C1500874741 /* Controller */,
 				5966076B1F977C3100874741 /* Model */,
 				5966076C1F977CA300874741 /* Model Controller */,
-				59D8D2B31F977F3500909572 /* Other */,
 				59D896A81F977EEA008B3A05 /* Util */,
 				59D896A71F977EC7008B3A05 /* View */,
+				59D8D2B31F977F3500909572 /* Other */,
 			);
 			path = Proxy;
 			sourceTree = "<group>";
@@ -508,6 +514,7 @@
 				59E75B291F846F140033A407 /* ConvosManager.swift */,
 				59155AB51F7B7951001EDDD0 /* ConvosButtonManager.swift */,
 				590F08E51F7BF21B00F3200F /* ConvosUnreadCountManager.swift */,
+				591413171FEC58C1001A2A70 /* IconManager.swift */,
 				592C0DE91F8E59B50023DB02 /* ItemsToDeleteManager.swift */,
 				598F89EB1FEB12E000CCF024 /* MessagesManager.swift */,
 				593D7D431F851F7D00D3FBD5 /* MessagesReceivedCountManager.swift */,
@@ -527,6 +534,7 @@
 				5973C8451F608A2100647492 /* ButtonManaging.swift */,
 				598F8A631FEB9ADD00CCF024 /* ConvoManaging.swift */,
 				59BAB2DB1F7A7FB200A2B581 /* ConvosManaging.swift */,
+				591413151FEC5873001A2A70 /* IconManaging.swift */,
 				592C0DE71F8E598B0023DB02 /* ItemsToDeleteManaging.swift */,
 				5926A3781F9A7D83004544AE /* MakeNewMessageDelegate.swift */,
 				598F89ED1FEB131600CCF024 /* MessagesManaging.swift */,
@@ -549,6 +557,7 @@
 				5973C8471F608A2200647492 /* AuthObserver.swift */,
 				598F8A611FEB9A9700CCF024 /* ConvoObserver.swift */,
 				5973C83D1F608A2000647492 /* ConvosObserver.swift */,
+				591413191FEC622E001A2A70 /* IconObserver.swift */,
 				598F89EF1FEB141800CCF024 /* MessagesObserver.swift */,
 				59AC04B51F6BFCFD00DB580B /* MessagesReceivedObserver.swift */,
 				5958D5051F6C140100B07B0F /* MessagesSentObserver.swift */,
@@ -999,6 +1008,7 @@
 				594D2A521F6B167F00ECCF06 /* IconPickerCollectionViewDelegate.swift in Sources */,
 				598F89EA1FEB120600CCF024 /* ConvoDataSource.swift in Sources */,
 				592C0DE81F8E598B0023DB02 /* ItemsToDeleteManaging.swift in Sources */,
+				5914131A1FEC622E001A2A70 /* IconObserver.swift in Sources */,
 				598F8A5E1FEB624A00CCF024 /* ConvoDetailTableViewDelegate.swift in Sources */,
 				590F08E61F7BF21B00F3200F /* ConvosUnreadCountManager.swift in Sources */,
 				599B8D411F98610C002F394A /* AppDelegate.swift in Sources */,
@@ -1036,8 +1046,10 @@
 				59EC6F5D1F9D22EA009D7A6C /* StoryboardMakable.swift in Sources */,
 				59DECF5F1FEA56AD009ABB36 /* ConvoViewController.swift in Sources */,
 				5973C8721F608A2200647492 /* Constant.swift in Sources */,
+				591413161FEC5873001A2A70 /* IconManaging.swift in Sources */,
 				598F89F61FEB345400CCF024 /* ConvoLayoutDelegate.swift in Sources */,
 				5973C8791F608A2200647492 /* makeAdjectives.swift in Sources */,
+				591413181FEC58C1001A2A70 /* IconManager.swift in Sources */,
 				5973C85A1F608A2200647492 /* ProxiesTableViewCell.swift in Sources */,
 				593D7D4C1F852A5000D3FBD5 /* ProxiesInteractedWithCountManager.swift in Sources */,
 				5973C8771F608A2200647492 /* SenderPickerViewController.swift in Sources */,

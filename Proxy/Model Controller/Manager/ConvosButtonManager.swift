@@ -10,7 +10,7 @@ class ConvosButtonManager: ButtonManaging {
     weak var navigationItem: UINavigationItem?
     weak var tableView: UITableView?
 
-    private var uid = ""
+    private var uid: String?
     private weak var makeNewMessageDelegate: MakeNewMessageDelegate?
     private weak var viewController: UIViewController?
 
@@ -26,7 +26,10 @@ class ConvosButtonManager: ButtonManaging {
     }
 
     func _deleteSelectedItems() {
-        if itemsToDeleteManager?.itemsToDelete.isEmpty ?? true {
+        guard let itemsToDeleteManager = itemsToDeleteManager else {
+            return
+        }
+        if itemsToDeleteManager.itemsToDelete.isEmpty {
             setDefaultButtons()
             return
         }
@@ -45,6 +48,9 @@ class ConvosButtonManager: ButtonManaging {
     }
 
     func _makeNewProxy() {
+        guard let uid = uid else {
+            return
+        }
         navigationItem?.disableRightBarButtonItem(atIndex: 1)
         DBProxy.makeProxy(forUser: uid) { (result) in
             self.navigationItem?.enableRightBarButtonItem(atIndex: 1)
@@ -73,6 +79,9 @@ class ConvosButtonManager: ButtonManaging {
     }
 
     func _showMakeNewMessageController() {
-        makeNewMessageDelegate?.showMakeNewMessageController(uid: uid, sender: nil, viewController: viewController)
+        guard let uid = uid else {
+            return
+        }
+        makeNewMessageDelegate?.showMakeNewMessageController(uid: uid, sender: nil, controller: viewController)
     }
 }
