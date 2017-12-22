@@ -26,25 +26,25 @@ class ConvoDataSource {
 
 extension ConvoDataSource: MessagesDataSource {
     func avatar(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> Avatar {
-        if indexPath.section == 0 {
-            return makeAvatar(message)
-        }
-
         if indexPath.section == messages.count - 1 {
             return makeAvatar(message)
         }
-
         if let nextMessage = messages[safe: indexPath.section + 1],
             nextMessage.sender != message.sender {
             return makeAvatar(message)
         }
+        return Avatar(image: icons["blank"], initials: "")
+    }
 
+    func cellTopLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
+        if indexPath.section == 0 {
+            return makeDisplayName(message)
+        }
         if let previousMessage = messages[safe: indexPath.section - 1],
             previousMessage.sender != message.sender {
-            return makeAvatar(message)
+            return makeDisplayName(message)
         }
-
-        return Avatar(image: UIImage.make(color: .white), initials: "")
+        return nil
     }
 
     func currentSender() -> Sender {
@@ -70,20 +70,9 @@ private extension ConvoDataSource {
                           initials: convo.receiverDisplayName.getFirstNChars(2).capitalized)
         }
     }
-}
 
-// modified from https://stackoverflow.com/questions/26542035/create-uiimage-with-solid-color-in-swift
-private extension UIImage {
-    static func make(color: UIColor, size: CGSize = CGSize(width: 1, height: 1)) -> UIImage {
-        let rect = CGRect(origin: .zero, size: size)
-        UIGraphicsBeginImageContextWithOptions(rect.size, false, 0.0)
-        color.setFill()
-        UIRectFill(rect)
-        let image = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        guard let cgImage = image?.cgImage else {
-            return UIImage()
-        }
-        return UIImage(cgImage: cgImage)
+    func makeDisplayName(_ message: MessageType) -> NSAttributedString {
+        return NSAttributedString(string: isFromCurrentSender(message: message) ? convo.senderDisplayName : convo.receiverDisplayName,
+                                  attributes: [NSAttributedStringKey.font: UIFont.preferredFont(forTextStyle: .caption1)])
     }
 }

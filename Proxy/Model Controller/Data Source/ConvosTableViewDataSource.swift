@@ -3,16 +3,16 @@ import UIKit
 class ConvosTableViewDataSource: NSObject {
     private weak var manager: ConvosManaging?
 
+    private var convos: [Convo] {
+        return manager?.convos ?? []
+    }
+
     func load(manager: ConvosManaging) {
         self.manager = manager
     }
 }
 
 extension ConvosTableViewDataSource: UITableViewDataSource {
-    var convos: [Convo] {
-        return manager?.convos ?? []
-    }
-
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard
             let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.convosTableViewCell) as? ConvosTableViewCell,
