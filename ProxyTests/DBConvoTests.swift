@@ -65,7 +65,7 @@ class DBConvoTests: DBTest {
         defer { waitForExpectations(timeout: 10) }
 
         DBTest.makeConvo { (senderConvo, sender, receiver) in
-            DBMessage.sendMessage(from: receiver, to: sender, withText: "") { (result) in
+            DBMessage.sendMessage(senderProxy: receiver, receiverProxy: sender, text: "") { (result) in
                 guard let (message, convo) = result else {
                     XCTFail()
                     return
@@ -113,10 +113,10 @@ class DBConvoTests: DBTest {
         DBTest.makeProxy { (sender) in
             DBTest.makeProxy(forUser: DBTest.testUser) { (receiver1) in
                 DBTest.makeProxy(forUser: DBTest.testUser) { (receiver2) in
-                    DBMessage.sendMessage(from: receiver1, to: sender, withText: DBTest.text) { (result) in
+                    DBMessage.sendMessage(senderProxy: receiver1, receiverProxy: sender, text: DBTest.text) { (result) in
                         XCTAssertNotNil(result)
 
-                        DBMessage.sendMessage(from: receiver2, to: sender, withText: DBTest.text) { (result) in
+                        DBMessage.sendMessage(senderProxy: receiver2, receiverProxy: sender, text: DBTest.text) { (result) in
                             guard let (_, convo) = result else {
                                 XCTFail()
                                 return

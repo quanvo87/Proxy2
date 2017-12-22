@@ -36,7 +36,6 @@ extension DBStorage {
                 completion(nil)
                 return
             }
-            Cache.cache.setObject(image, forKey: url as AnyObject)
             completion(url)
         }
     }
@@ -51,7 +50,6 @@ extension DBStorage {
             switch session.status {
             case .completed:
                 ref.child(Child.userFiles).child(key).putFile(from: compressedVideoURL, metadata: nil) { (metadata, _) in
-                    // TODO: Cache
                     completion(metadata?.downloadURL())
                     return
                 }

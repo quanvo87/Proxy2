@@ -18,7 +18,7 @@ class SenderPickerViewController: UIViewController {
 
         manager.load(uid: uid, tableView: tableView)
 
-        dataSource.load(manager: manager, showDisclosureIndicator: false)
+        dataSource.load(manager: manager, accessoryType: .none)
      
         delegate.load(manager: manager, delegate: senderPickerDelegate, controller: self)
 

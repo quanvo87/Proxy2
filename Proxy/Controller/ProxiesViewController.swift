@@ -20,7 +20,7 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
 
         proxiesManager.load(uid: uid, tableView: tableView)
 
-        dataSource.load(manager: proxiesManager, showDisclosureIndicator: true)
+        dataSource.load(manager: proxiesManager, accessoryType: .disclosureIndicator)
 
         delegate.load(proxiesManager: proxiesManager, itemsToDeleteManager: itemsToDeleteManager, controller: self)
 

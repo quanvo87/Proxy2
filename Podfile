@@ -1,6 +1,8 @@
 # Uncomment the next line to define a global platform for your project
 platform :ios, '11.0'
 
+inhibit_all_warnings!
+
 def pods
   pod 'FacebookCore'
   pod 'FacebookLogin'
@@ -8,9 +10,9 @@ def pods
   pod 'FirebaseAuth'
   pod 'Firebase/Database'
   pod 'Firebase/Storage'
-  pod 'SwiftVideoBackground', '~> 2.0'
   pod 'GroupWork', '~> 0.0'
-  pod 'JSQMessagesViewController'
+  pod 'MessageKit'
+  pod 'SwiftVideoBackground', '~> 2.0'
 end
 
 target 'Proxy' do

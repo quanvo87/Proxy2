@@ -1,3 +1,5 @@
+import FirebaseDatabase
+
 struct Convo {
     var hasUnreadMessage = false
     var receiverDeletedProxy = false
@@ -18,7 +20,19 @@ struct Convo {
     var senderProxyKey = ""
     var senderProxyName = ""
 
+    var senderDisplayName: String {
+        return senderNickname != "" ? senderNickname : senderProxyName
+    }
+
+    var receiverDisplayName: String {
+        return receiverNickname != "" ? receiverNickname : receiverProxyName
+    }
+
     init() {}
+
+    init?(_ data: DataSnapshot) {
+        self.init(data.value as AnyObject)
+    }
 
     init?(_ dictionary: AnyObject) {
         guard
@@ -88,7 +102,7 @@ struct Convo {
 
 extension Convo: Equatable {
     static func ==(_ lhs: Convo, _ rhs: Convo) -> Bool {
-        return  lhs.hasUnreadMessage == rhs.hasUnreadMessage &&
+        return lhs.hasUnreadMessage == rhs.hasUnreadMessage &&
             lhs.receiverDeletedProxy == rhs.receiverDeletedProxy &&
             lhs.receiverIsBlocked == rhs.receiverIsBlocked &&
             lhs.receiverLeftConvo == lhs.receiverLeftConvo &&

@@ -9,11 +9,10 @@ class MeTableViewCell: UITableViewCell {
         iconImageView.image = nil
         titleLabel.text = title
         subtitleLabel.text = subtitle
-        UIImage.makeImage(named: icon) { (image) in
-            if let image = image {
-                DispatchQueue.main.async {
-                    self.iconImageView.image = image
-                }
+
+        UIImage.make(named: icon) { (image) in
+            DispatchQueue.main.async {
+                self.iconImageView.image = image
             }
         }
     }

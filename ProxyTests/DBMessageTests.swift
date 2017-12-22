@@ -10,16 +10,14 @@ class DBMessageTests: DBTest {
         defer { waitForExpectations(timeout: 10) }
 
         DBTest.sendMessage { (message, _, _, receiver) in
-            let currentTime = Date().timeIntervalSince1970.rounded()
 
-            DBMessage.read(message, atDate: currentTime) { (success) in
+            DBMessage.read(message) { (success) in
                 XCTAssert(success)
 
                 let work = GroupWork()
-                work.check(.dateRead(currentTime), forMessage: message)
-                work.check(.hasUnreadMessage(false), forConvoWithKey: message.parentConvo, ownerId: message.receiverId, proxyKey: message.receiverProxyKey)
+                work.check(.dateRead(Date()), forMessage: message)
+                work.check(.hasUnreadMessage(false), forConvoWithKey: message.parentConvoKey, ownerId: message.receiverId, proxyKey: message.receiverProxyKey)
                 work.check(.hasUnreadMessage(false), forProxy: receiver)
-                work.check(.read(true), forMessage: message)
                 work.checkUnreadMessageDeleted(message)
                 work.allDone {
                     expectation.fulfill()
@@ -92,7 +90,7 @@ class DBMessageTests: DBTest {
             DBConvo.leaveConvo(senderConvo) { (success) in
                 XCTAssert(success)
 
-                DBMessage.sendMessage(from: receiver, to: sender, withText: "") { (result) in
+                DBMessage.sendMessage(senderProxy: receiver, receiverProxy: sender, text: "") { (result) in
                     guard let (_, convo) = result else {
                         XCTFail()
                         return
@@ -118,7 +116,7 @@ class DBMessageTests: DBTest {
             DBConvo.leaveConvo(senderConvo) { (success) in
                 XCTAssert(success)
                 
-                DBMessage.sendMessage(from: sender, to: receiver, withText: "") { (result) in
+                DBMessage.sendMessage(senderProxy: sender, receiverProxy: receiver, text: "") { (result) in
                     guard let (_, convo) = result else {
                         XCTFail()
                         return
@@ -136,34 +134,13 @@ class DBMessageTests: DBTest {
         }
     }
 
-    func testSetMedia() {
-        let expectation = self.expectation(description: #function)
-        defer { waitForExpectations(timeout: 10) }
-
-        DBTest.sendMessage { (message, _, _, _) in
-            let mediaType = "media type"
-            let mediaURL = "media URL"
-
-            DBMessage.setMedia(for: message, mediaType: mediaType, mediaURL: mediaURL) { (success) in
-                XCTAssert(success)
-
-                let key = GroupWork()
-                key.check(.mediaType(mediaType), forMessage: message)
-                key.check(.mediaURL(mediaURL), forMessage: message)
-                key.allDone {
-                    expectation.fulfill()
-                }
-            }
-        }
-    }
-
     func testToMessagesArray() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
         DBTest.sendMessage { (message, _, _, _) in
 
-            DB.get(Child.messages, message.parentConvo) { (data) in
+            DB.get(Child.messages, message.parentConvoKey) { (data) in
                 XCTAssertEqual(data?.toMessagesArray()[safe: 0], message)
 
                 expectation.fulfill()
@@ -175,7 +152,7 @@ class DBMessageTests: DBTest {
 extension GroupWork {
     func checkMessageCreated(_ message: Message) {
         start()
-        DB.get(Child.messages, message.parentConvo, message.key) { (data) in
+        DB.get(Child.messages, message.parentConvoKey, message.messageId) { (data) in
             XCTAssertEqual(Message(data?.value as AnyObject), message)
             self.finish(withResult: true)
         }
@@ -183,7 +160,7 @@ extension GroupWork {
 
     func checkUnreadMessageCreated(_ message: Message) {
         start()
-        DB.get(Child.userInfo, message.receiverId, Child.unreadMessages, message.key) { (data) in
+        DB.get(Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId) { (data) in
             XCTAssertEqual(Message(data?.value as AnyObject), message)
             self.finish(withResult: true)
         }
@@ -191,7 +168,7 @@ extension GroupWork {
 
     func checkUnreadMessageDeleted(_ message: Message) {
         start()
-        DB.get(Child.userInfo, message.receiverId, Child.unreadMessages, message.key) { (data) in
+        DB.get(Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId) { (data) in
             XCTAssertFalse(data?.exists() ?? true)
             self.finish(withResult: true)
         }

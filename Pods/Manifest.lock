@@ -59,12 +59,10 @@ PODS:
     - GoogleToolboxForMac/Defines (= 2.1.3)
     - GoogleToolboxForMac/NSString+URLArguments (= 2.1.3)
   - GoogleToolboxForMac/NSString+URLArguments (2.1.3)
-  - GroupWork (0.0.3)
+  - GroupWork (0.0.5)
   - GTMSessionFetcher/Core (1.1.12)
-  - JSQMessagesViewController (7.3.5):
-    - JSQSystemSoundPlayer (~> 2.0.1)
-  - JSQSystemSoundPlayer (2.0.1)
   - leveldb-library (1.20)
+  - MessageKit (0.12.0)
   - nanopb (0.3.8):
     - nanopb/decode (= 0.3.8)
     - nanopb/encode (= 0.3.8)
@@ -80,7 +78,7 @@ DEPENDENCIES:
   - Firebase/Storage
   - FirebaseAuth
   - GroupWork (~> 0.0)
-  - JSQMessagesViewController
+  - MessageKit
   - SwiftVideoBackground (~> 2.0)
 
 SPEC CHECKSUMS:
@@ -97,14 +95,13 @@ SPEC CHECKSUMS:
   FirebaseInstanceID: 81df5805a08001e69138664bdd02c6719a9ac80f
   FirebaseStorage: ab08d1c93a2feffa038fdd6693088b310ab1e6c6
   GoogleToolboxForMac: 2501e2ad72a52eb3dfe7bd9aee7dad11b858bd20
-  GroupWork: 92604e537e152e3ac06655eaabda60dadf9e6005
+  GroupWork: b45b832a214c3b7ea560eb289241b7484301fed5
   GTMSessionFetcher: ebaa1f79a5366922c1735f1566901f50beba23b7
-  JSQMessagesViewController: 6587f56aedbcb150a8ba1d968e1ef58b1bc758b7
-  JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
   leveldb-library: 08cba283675b7ed2d99629a4bc5fd052cd2bb6a5
+  MessageKit: 9455b04be28eb7c50a00962e6168672cd3d403ae
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
   SwiftVideoBackground: 41d030c232284482973e46959de6398a116c6b58
 
-PODFILE CHECKSUM: a30924551d3104a3229cecb6a3e5b7698453a3d4
+PODFILE CHECKSUM: fbbc0a39de8210bff4e5f389ebbfc89022d69c33
 
 COCOAPODS: 1.3.1

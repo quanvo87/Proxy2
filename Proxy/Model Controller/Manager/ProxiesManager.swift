@@ -7,15 +7,15 @@ class ProxiesManager: ProxiesManaging {
         }
     }
 
-    private let proxiesObserver = ProxiesObserver()
+    private let observer = ProxiesObserver()
     private weak var tableView: UITableView?
 
     func load(uid: String, tableView: UITableView) {
         self.tableView = tableView
-        proxiesObserver.observe(uid: uid, manager: self)
+        observer.observe(uid: uid, manager: self)
     }
 
     func stopObserving() {
-        proxiesObserver.stopObserving()
+        observer.stopObserving()
     }
 }

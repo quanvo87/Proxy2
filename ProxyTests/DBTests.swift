@@ -14,20 +14,20 @@ class DBTests: DBTest {
         DB.set(rand1, at: "test") { (success) in
             XCTAssert(success)
 
-            let key = GroupWork()
+            let work = GroupWork()
 
             for _ in 1...rand2 {
 
-                key.start()
+                work.start()
 
                 DB.increment(by: -1, at: "test") { (success) in
                     XCTAssert(success)
 
-                    key.finish(withResult: true)
+                    work.finish(withResult: true)
                 }
             }
 
-            key.allDone {
+            work.allDone {
                 DB.get("test") { (data) in
                     XCTAssertEqual(data?.value as? Int, rand1 - rand2)
 

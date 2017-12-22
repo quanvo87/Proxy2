@@ -1,125 +1,113 @@
-import JSQMessagesViewController
+import MessageKit
 
-class Message: JSQMessage {
-    var dateRead = 0.0
-    var key = ""
-    var mediaType = ""  // TODO: make enum?
-    var mediaURL = ""
-    var parentConvo = ""
-    var read = false
-    var receiverId = ""
-    var receiverProxyKey = ""
+struct Message: MessageType {
+    let sender: Sender
+    let messageId: String
+    let sentDate: Date
+    let data: MessageData
 
-    init(dateCreated: Double, dateRead: Double, key: String, mediaType: String, parentConvo: String, read: Bool, receiverId: String, receiverProxyKey: String, senderId: String, text: String) {
+    let dateRead: Date
+    let parentConvoKey: String
+    let receiverId: String
+    let receiverProxyKey: String
+
+    init() {
+        sender = Sender(id: "", displayName: "")
+        messageId = ""
+        sentDate = Date()
+        data = .text("")
+        dateRead = Date()
+        parentConvoKey = ""
+        receiverId = ""
+        receiverProxyKey = ""
+    }
+
+    init(sender: Sender, messageId: String, data: MessageData, dateRead: Date, parentConvoKey: String, receiverId: String, receiverProxyKey: String) {
+        self.sender = sender
+        self.messageId = messageId
+        self.sentDate = Date()
+        self.data = data
         self.dateRead = dateRead
-        self.key = key
-        self.mediaType = mediaType
-        self.parentConvo = parentConvo
-        self.read = read
+        self.parentConvoKey = parentConvoKey
         self.receiverId = receiverId
         self.receiverProxyKey = receiverProxyKey
-        super.init(senderId: senderId, senderDisplayName: "", date: Date(timeIntervalSince1970: dateCreated), text: text)
     }
-    
-    init(dateCreated: Double, dateRead: Double, key: String, mediaData: JSQMessageMediaData, mediaType: String, mediaURL: String, parentConvo: String, read: Bool, receiverId: String, receiverProxyKey: String, senderId: String, text: String) {
-        self.dateRead = dateRead
-        self.key = key
-        self.mediaType = mediaType
-        self.mediaURL = mediaURL
-        self.parentConvo = parentConvo
-        self.read = read
-        self.receiverId = receiverId
-        self.receiverProxyKey = receiverProxyKey
-        super.init(senderId: senderId, senderDisplayName: "", date: Date(timeIntervalSince1970: dateCreated), media: mediaData)
-    }
-    
+
     init?(_ dictionary: AnyObject) {
         guard
-            let dateCreated = dictionary["dateCreated"] as? Double,
-            let dateRead = dictionary["dateRead"] as? Double,
-            let key = dictionary["key"] as? String,
-            let mediaType = dictionary["mediaType"] as? String,
-            let mediaURL = dictionary["mediaURL"] as? String,
-            let parentConvo = dictionary["parentConvo"] as? String,
-            let read = dictionary["read"] as? Bool,
-            let receiverId = dictionary["receiverId"] as? String,
-            let receiverProxyKey = dictionary["receiverProxyKey"] as? String,
-            let senderDisplayName = dictionary["senderDisplayName"] as? String,
             let senderId = dictionary["senderId"] as? String,
-            let text = dictionary["text"] as? String else {
-                return nil
-        }
-        self.dateRead = dateRead
-        self.key = key
-        self.mediaType = mediaType
-        self.mediaURL = mediaURL
-        self.parentConvo = parentConvo
-        self.read = read
-        self.receiverId = receiverId
-        self.receiverProxyKey = receiverProxyKey
-        super.init(senderId: senderId, senderDisplayName: senderDisplayName, date: Date(timeIntervalSince1970: dateCreated), text: text)
-    }
-    
-    init?(dictionary: AnyObject, media: JSQMessageMediaData) {
-        guard
-            let dateCreated = dictionary["dateCreated"] as? Double,
-            let dateRead = dictionary["dateRead"] as? Double,
-            let key = dictionary["key"] as? String,
-            let mediaType = dictionary["mediaType"] as? String,
-            let mediaURL = dictionary["mediaURL"] as? String,
-            let parentConvo = dictionary["parentConvo"] as? String,
-            let read = dictionary["read"] as? Bool,
-            let receiverId = dictionary["receiverId"] as? String,
-            let receiverProxyKey = dictionary["receiverProxyKey"] as? String,
             let senderDisplayName = dictionary["senderDisplayName"] as? String,
-            let senderId = dictionary["senderId"] as? String else {
+            let messageId = dictionary["messageId"] as? String,
+            let sentDate = dictionary["sentDate"] as? Double,
+            let text = dictionary["text"] as? String,
+            let dateRead = dictionary["dateRead"] as? Double,
+            let parentConvoKey = dictionary["parentConvoKey"] as? String,
+            let receiverId = dictionary["receiverId"] as? String,
+            let receiverProxyKey = dictionary["receiverProxyKey"] as? String else {
                 return nil
         }
-        self.dateRead = dateRead
-        self.key = key
-        self.mediaType = mediaType
-        self.mediaURL = mediaURL
-        self.parentConvo = parentConvo
-        self.read = read
+        self.sender = Sender(id: senderId, displayName: senderDisplayName)
+        self.messageId = messageId
+        self.sentDate = Date(timeIntervalSince1970: sentDate)
+        self.data = .text(text)
+        self.dateRead = Date(timeIntervalSince1970: dateRead)
+        self.parentConvoKey = parentConvoKey
         self.receiverId = receiverId
         self.receiverProxyKey = receiverProxyKey
-        super.init(senderId: senderId, senderDisplayName: senderDisplayName, date: Date(timeIntervalSince1970: dateCreated), media: media)
     }
 
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     func toDictionary() -> Any {
+        var text: String
+        switch data {
+        case .text(let t):
+            text = t
+        default:
+            text = ""
+        }
         return [
-            "dateCreated": date.timeIntervalSince1970,
-            "dateRead": dateRead,
-            "key": key,
-            "mediaType": mediaType,
-            "mediaURL": mediaURL,
-            "parentConvo": parentConvo,
-            "read": read,
+            "senderId": sender.id,
+            "senderDisplayName": sender.displayName,
+            "messageId": messageId,
+            "sentDate": sentDate.timeIntervalSince1970,
+            "text": text,
+            "dateRead": dateRead.timeIntervalSince1970,
+            "parentConvoKey": parentConvoKey,
             "receiverId": receiverId,
-            "receiverProxyKey": receiverProxyKey,
-            "senderDisplayName": senderDisplayName,
-            "senderId": senderId,
-            "text": text
+            "receiverProxyKey": receiverProxyKey
         ]
     }
 }
 
+extension Message: Equatable {
+    static func ==(_ lhs: Message, _ rhs: Message) -> Bool {
+        return lhs.sender == rhs.sender &&
+            lhs.messageId == rhs.messageId &&
+            lhs.sentDate.timeIntervalSince1970.rounded() == rhs.sentDate.timeIntervalSince1970.rounded() &&
+            lhs.data == rhs.data &&
+            lhs.dateRead.timeIntervalSince1970.rounded() == rhs.dateRead.timeIntervalSince1970.rounded() &&
+            lhs.parentConvoKey == rhs.parentConvoKey &&
+            lhs.receiverId == rhs.receiverId &&
+            lhs.receiverProxyKey == rhs.receiverProxyKey
+    }
+}
+
+extension MessageData: Equatable {
+    public static func ==(_ lhs: MessageData, _ rhs: MessageData) -> Bool {
+        switch (lhs, rhs) {
+        case (let .text(l), let .text(r)):
+            return l == r
+        default:
+            return false
+        }
+    }
+}
+
 enum SettableMessageProperty {
-    case dateRead(Double)
-    case mediaType(String)
-    case mediaURL(String)
-    case read(Bool)
+    case dateRead(Date)
 
     var properties: (name: String, value: Any) {
         switch self {
         case .dateRead(let value): return ("dateRead", value)
-        case .mediaType(let value): return ("mediaType", value)
-        case .mediaURL(let value): return ("mediaURL", value)
-        case .read(let value): return ("read", value)
         }
     }
 }

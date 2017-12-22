@@ -10,7 +10,7 @@ class DBProxyTests: DBTest {
 
         DBTest.makeProxy { (sender) in
             DBTest.makeProxy(forUser: DBTest.testUser) { (receiver) in
-                DBMessage.sendMessage(from: receiver, to: sender, withText: DBTest.text) { (result) in
+                DBMessage.sendMessage(senderProxy: receiver, receiverProxy: sender, text: DBTest.text) { (result) in
                     guard let (_, convo) = result else {
                         XCTFail()
                         return
@@ -67,7 +67,7 @@ class DBProxyTests: DBTest {
 
         for icon in ProxyService.iconNames {
             work.start()
-            UIImage.makeImage(named: icon) { (image) in
+            UIImage.make(named: icon) { (image) in
                 XCTAssertNotNil(image)
                 work.finish(withResult: true)
             }

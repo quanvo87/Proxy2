@@ -7,11 +7,11 @@ class ProxyManager: ProxyManaging {
         }
     }
 
-    private let proxyObserver = ProxyObserver()
+    private let observer = ProxyObserver()
     private weak var tableView: UITableView?
 
     func load(ownerId: String, proxyKey: String, tableView: UITableView) {
         self.tableView = tableView
-        proxyObserver.observe(ownerId: ownerId, proxyKey: proxyKey, manager: self)
+        observer.observe(ownerId: ownerId, proxyKey: proxyKey, manager: self)
     }
 }

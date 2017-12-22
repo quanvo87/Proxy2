@@ -12,14 +12,14 @@ class ProxyTableViewDelegate: NSObject {
 
 extension ProxyTableViewDelegate: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if
+        guard
             indexPath.section == 1,
             let row = tableView.indexPathForSelectedRow?.row,
-            let convo = manager?.convos[safe: row]
-        {
-            tableView.deselectRow(at: indexPath, animated: true)
-            controller?.navigationController?.showConvoViewController(convo)
+            let convo = manager?.convos[safe: row] else {
+                return
         }
+        tableView.deselectRow(at: indexPath, animated: true)
+        controller?.navigationController?.showConvoViewController(convo)
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

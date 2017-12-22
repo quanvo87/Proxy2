@@ -79,7 +79,7 @@ extension DBTest {
     static func sendMessage(completion: @escaping (_ message: Message, _ convo: Convo, _ sender: Proxy, _ receiver: Proxy) -> Void) {
         makeProxy { (sender) in
             makeProxy (forUser: testUser) { (receiver) in
-                DBMessage.sendMessage(from: sender, to: receiver, withText: text) { (result) in
+                DBMessage.sendMessage(senderProxy: sender, receiverProxy: receiver, text: text) { (result) in
                     guard let (message, convo) = result else {
                         XCTFail()
                         return
@@ -98,7 +98,7 @@ extension GroupWork {
         case let value as Bool:
             XCTAssertEqual(data?.value as? Bool, value, errorMessage)
         case let value as Double:
-            XCTAssertEqual(data?.value as? Double, value, errorMessage)
+            XCTAssertEqual((data?.value as? Double)?.rounded(), value.rounded(), errorMessage)
         case let value as Int:
             XCTAssertEqual(data?.value as? Int, value, errorMessage)
         case let value as String:
@@ -145,8 +145,11 @@ extension GroupWork {
 extension GroupWork {
     func check(_ property: SettableMessageProperty, forMessage message: Message, function: String = #function, line: Int = #line) {
         start()
-        DB.get(Child.messages, message.parentConvo, message.key, property.properties.name) { (data) in
-            GroupWork.checkEquals(data, property.properties.value, function: function, line: line)
+        DB.get(Child.messages, message.parentConvoKey, message.messageId, property.properties.name) { (data) in
+            switch property {
+            case .dateRead(let date):
+                GroupWork.checkEquals(data, date.timeIntervalSince1970, function: function, line: line)
+            }
             self.finish(withResult: true)
         }
     }
@@ -161,7 +164,7 @@ extension GroupWork {
         let (ownerId, proxyKey) = GroupWork.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
         check(property, forProxyWithKey: proxyKey, ownerId: ownerId, function: function, line: line)
     }
-    
+
     func check(_ property: SettableProxyProperty, forProxyWithKey proxyKey: String, ownerId: String, function: String = #function, line: Int = #line) {
         start()
         DB.get(Child.proxies, ownerId, proxyKey, property.properties.name) { (data) in

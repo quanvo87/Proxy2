@@ -7,11 +7,11 @@ class ConvosManager: ConvosManaging {
         }
     }
 
-    private let convosObserver = ConvosObserver()
+    private let observer = ConvosObserver()
     private weak var tableView: UITableView?
 
     func load(convosOwner: String, tableView: UITableView) {
         self.tableView = tableView
-        convosObserver.observe(convosOwner: convosOwner, manager: self)
+        observer.observe(convosOwner: convosOwner, manager: self)
     }
 }

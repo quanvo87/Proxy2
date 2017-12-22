@@ -274,7 +274,7 @@ extension GroupWork {
             }
 
             for message in messages {
-                self.delete(at: Child.userInfo, message.receiverId, Child.unreadMessages, message.key)
+                self.delete(at: Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
             }
 
             self.finish(withResult: true)

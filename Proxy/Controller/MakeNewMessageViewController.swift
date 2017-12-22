@@ -13,6 +13,7 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate, Sender
             setReceiverButtonTitle()
         }
     }
+
     var sender: Proxy? {
         didSet {
             setSenderButtonTitle()
@@ -20,6 +21,7 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate, Sender
     }
 
     private var uid = ""
+
     private weak var delegate: MakeNewMessageDelegate?
 
     override func viewDidLoad() {
@@ -93,14 +95,14 @@ private extension MakeNewMessageViewController {
             return
         }
         disableButtons()
-        DBMessage.sendMessage(from: sender, to: receiver, withText: messageTextView.text) { (result) in
+        DBMessage.sendMessage(senderProxy: sender, receiverProxy: receiver, text: messageTextView.text) { (result) in
             guard let (_, convo) = result else {
                 self.enableButtons()
                 self.showAlert("Error Sending Message", message: "There was an error sending the message. Please try again.")
                 return
             }
             self.delegate?.newConvo = convo
-            _ = self.navigationController?.popViewController(animated: true)
+            self.navigationController?.dismiss(animated: true)
         }
     }
 
