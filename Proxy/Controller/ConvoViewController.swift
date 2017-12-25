@@ -27,7 +27,7 @@ class ConvoViewController: MessagesViewController {
 
         displayDelegate.load(messagesManager: messagesManager, dataSource: dataSource)
 
-        inputBarDelegate.load(convo)
+        inputBarDelegate.load(convo: convo, controller: self)
 
         messagesCollectionView.messagesDataSource = dataSource
         messagesCollectionView.messagesDisplayDelegate = displayDelegate
