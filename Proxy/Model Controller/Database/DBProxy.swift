@@ -98,6 +98,10 @@ struct DBProxy {
     }
 
     static func makeProxy(withName proxyName: String = DBProxy.makeRandomProxyName(), forUser uid: String, maxAllowedProxies: Int = Setting.maxAllowedProxies, completion: @escaping MakeProxyCallback) {
+        guard proxyName.count < Setting.maxNameSize else {
+            completion(.failure(.inputTooLong))
+            return
+        }
         getProxyCount(forUser: uid) { (proxyCount) in
             guard proxyCount < maxAllowedProxies else {
                 completion(.failure(.proxyLimitReached))
@@ -190,22 +194,27 @@ struct DBProxy {
         }
     }
 
-    static func setNickname(to nickname: String, forProxy proxy: Proxy, completion: @escaping (Success) -> Void) {
+    static func setNickname(to nickname: String, forProxy proxy: Proxy, completion: @escaping (ProxyError?) -> Void) {
+        guard nickname.count < Setting.maxNameSize else {
+            completion(.inputTooLong)
+            return
+        }
+
         DBConvo.getConvos(forProxy: proxy, filtered: false) { (convos) in
             guard let convos = convos else {
-                completion(false)
+                completion(.unknown)
                 return
             }
             setNickname(to: nickname, forProxy: proxy, withConvos: convos, completion: completion)
         }
     }
 
-    static func setNickname(to nickname: String, forProxy proxy: Proxy, withConvos convos: [Convo], completion: @escaping (Success) -> Void) {
+    static func setNickname(to nickname: String, forProxy proxy: Proxy, withConvos convos: [Convo], completion: @escaping (ProxyError?) -> Void) {
         let work = GroupWork()
         work.set(.nickname(nickname), forProxy: proxy)
         work.setSenderNickname(to: nickname, forConvos: convos)
         work.allDone {
-            completion(work.result)
+            completion(work.result ? nil : .unknown)
         }
     }
 }

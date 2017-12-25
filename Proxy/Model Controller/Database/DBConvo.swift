@@ -120,11 +120,15 @@ struct DBConvo {
         }
     }
 
-    static func setReceiverNickname(to nickname: String, forConvo convo: Convo, completion: @escaping (Success) -> Void) {
+    static func setReceiverNickname(to nickname: String, forConvo convo: Convo, completion: @escaping (ProxyError?) -> Void) {
+        guard nickname.count < Setting.maxNameSize else {
+            completion(.inputTooLong)
+            return
+        }
         let work = GroupWork()
         work.set(.receiverNickname(nickname), forConvo: convo, asSender: true)
         work.allDone {
-            completion(work.result)
+            completion(work.result ? nil : .unknown)
         }
     }
 
