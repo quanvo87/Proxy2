@@ -149,7 +149,7 @@ extension UITableView {
 }
 
 extension UIViewController {
-    func showAlert(_ title: String?, message: String?) {
+    func showAlert(_ title: String?, message: String?, completion: (() -> Void)? = nil) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
@@ -168,9 +168,17 @@ extension UIViewController {
             guard let nickname = alert.textFields?[0].text else {
                 return
             }
-            let trim = nickname.trimmingCharacters(in: CharacterSet(charactersIn: " "))
-            if !(nickname != "" && trim == "") {
-                DBProxy.setNickname(to: nickname, forProxy: proxy) { _ in }
+            let trimmed = nickname.trimmingCharacters(in: CharacterSet(charactersIn: " "))
+            if !(nickname != "" && trimmed == "") {
+                DBProxy.setNickname(to: nickname, forProxy: proxy) { (error) in
+                    if let error = error, case .inputTooLong = error {
+                        let alert = UIAlertController(title: "Nickname Too Long", message: "Please try a shorter nickname.", preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: "OK", style: .default) { _ in
+                            self.showEditProxyNicknameAlert(proxy)
+                        })
+                        self.present(alert, animated: true)
+                    }
+                }
             }
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))

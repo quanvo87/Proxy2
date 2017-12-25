@@ -230,8 +230,8 @@ class DBProxyTests: DBTest {
         DBTest.makeConvo { (convo, sender, _) in
             let newNickname = "new nickname"
             
-            DBProxy.setNickname(to: newNickname, forProxy: sender) { (success) in
-                XCTAssert(success)
+            DBProxy.setNickname(to: newNickname, forProxy: sender) { (error) in
+                XCTAssertNil(error)
                 
                 let work = GroupWork()
                 work.check(.nickname(newNickname), forProxy: sender)
