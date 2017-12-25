@@ -3,7 +3,7 @@ import GroupWork
 import MessageKit
 
 struct DBMessage {
-    typealias SendMessageCallback = ((message: Message, convo: Convo)?) -> Void
+    typealias SendMessageCallback = (Result<(message: Message, convo: Convo), ProxyError>) -> Void
 
     static func read(_ message: Message, atDate date: Date = Date(), completion: @escaping (Success) -> Void) {
         let work = GroupWork()
@@ -19,6 +19,11 @@ struct DBMessage {
     }
 
     static func sendMessage(senderProxy: Proxy, receiverProxy: Proxy, text: String, completion: @escaping SendMessageCallback) {
+        guard text.count < Setting.maxMessageSize else {
+            completion(.failure(.inputTooLong))
+            return
+        }
+
         let convoKey = DBConvo.makeConvoKey(senderProxy: senderProxy, receiverProxy: receiverProxy)
 
         DBConvo.getConvo(withKey: convoKey, belongingTo: senderProxy.ownerId) { (senderConvo) in
@@ -27,7 +32,7 @@ struct DBMessage {
             } else {
                 DBConvo.makeConvo(sender: senderProxy, receiver: receiverProxy) { (convo) in
                     guard let senderConvo = convo else {
-                        completion(nil)
+                        completion(.failure(.unknown))
                         return
                     }
                     sendMessage(text: text, senderConvo: senderConvo, completion: completion)
@@ -37,8 +42,13 @@ struct DBMessage {
     }
 
     static func sendMessage(text: String, senderConvo: Convo, completion: @escaping SendMessageCallback) {
+        guard text.count < Setting.maxMessageSize else {
+            completion(.failure(.inputTooLong))
+            return
+        }
+
         guard let ref = DB.makeReference(Child.messages, senderConvo.key) else {
-            completion(nil)
+            completion(.failure(.unknown))
             return
         }
 
@@ -105,16 +115,16 @@ struct DBMessage {
 
             work.allDone {
                 guard work.result else {
-                    completion(nil)
+                    completion(.failure(.unknown))
                     return
                 }
 
                 DBConvo.getConvo(withKey: senderConvo.key, belongingTo: senderConvo.senderId) { (convo) in
                     guard let convo = convo else {
-                        completion(nil)
+                        completion(.failure(.unknown))
                         return
                     }
-                    completion((message, convo))
+                    completion(.success((message, convo)))
                 }
             }
         }

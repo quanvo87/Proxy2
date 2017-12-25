@@ -96,13 +96,19 @@ private extension MakeNewMessageViewController {
         }
         disableButtons()
         DBMessage.sendMessage(senderProxy: sender, receiverProxy: receiver, text: messageTextView.text) { (result) in
-            guard let (_, convo) = result else {
-                self.enableButtons()
-                self.showAlert("Error Sending Message", message: "There was an error sending the message. Please try again.")
-                return
+            self.enableButtons()
+            switch result {
+            case .failure(let error):
+                switch error {
+                case .inputTooLong:
+                    self.showAlert("Message Too Long", message: "Please try shortening the message.")
+                default:
+                    self.showAlert("Error Sending Message", message: "There was an error sending the message. Please try again.")
+                }
+            case .success(let tuple):
+                self.delegate?.newConvo = tuple.convo
+                self.navigationController?.dismiss(animated: true)
             }
-            self.delegate?.newConvo = convo
-            self.navigationController?.dismiss(animated: true)
         }
     }
 
