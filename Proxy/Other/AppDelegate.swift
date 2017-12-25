@@ -8,7 +8,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow? = UIWindow(frame: UIScreen.main.bounds)
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        setAudioSessionToAmbient()
+        setAudioSession()
         FirebaseApp.configure()
         Database.database().isPersistenceEnabled = true
         authManager.load(self)
@@ -23,18 +23,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         FBSDKAppEvents.activateApp()
     }
 
-    func setAudioSessionToAmbient() {
-        // Access the shared, singleton audio session instance
-        let session = AVAudioSession.sharedInstance()
+    func setAudioSession(_ session: AVAudioSession = AVAudioSession.sharedInstance(),
+                         category: String = AVAudioSessionCategoryAmbient,
+                         mode: String = AVAudioSessionModeDefault) {
         do {
-            // Configure the audio session for movie playback
             if #available(iOS 10.0, *) {
-                try session.setCategory(AVAudioSessionCategoryAmbient,
-                                        mode: AVAudioSessionModeDefault,
-                                        options: [])
+                try session.setCategory(category, mode: mode)
                 try session.setActive(true)
-            } else {
-                // Fallback on earlier versions
             }
         } catch let error as NSError {
             print("Failed to set the audio session category and mode: \(error.localizedDescription)")
