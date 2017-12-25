@@ -66,10 +66,11 @@ extension DBTest {
         }
     }
 
-    static func makeProxy(withName name: String? = nil, forUser uid: String = DBTest.uid, completion: @escaping (Proxy) -> Void) {
+    static func makeProxy(withName name: String = DBProxy.makeRandomProxyName(), forUser uid: String = DBTest.uid, completion: @escaping (Proxy) -> Void) {
         DBProxy.makeProxy(withName: name, forUser: uid) { (result) in
             switch result {
-            case .failure: XCTFail()
+            case .failure:
+                XCTFail()
             case .success(let proxy):
                 completion(proxy)
             }

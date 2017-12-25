@@ -134,15 +134,25 @@ class DBMessageTests: DBTest {
         }
     }
 
+    func testSendMessageWithSenderConvo() {
+        let expectation = self.expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
+
+        DBTest.makeConvo { (convo, _, _) in
+            DBMessage.sendMessage(text: DBTest.text, senderConvo: convo) { (result) in
+                XCTAssertNotNil(result)
+                expectation.fulfill()
+            }
+        }
+    }
+
     func testToMessagesArray() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
         DBTest.sendMessage { (message, _, _, _) in
-
             DB.get(Child.messages, message.parentConvoKey) { (data) in
                 XCTAssertEqual(data?.toMessagesArray()[safe: 0], message)
-
                 expectation.fulfill()
             }
         }

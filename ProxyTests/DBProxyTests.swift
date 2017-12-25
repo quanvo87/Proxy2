@@ -187,14 +187,16 @@ class DBProxyTests: DBTest {
         
         DBProxy.makeProxy(withName: "test", forUser: DBTest.uid) { (result) in
             switch result {
-            case .failure: XCTFail()
+            case .failure:
+                XCTFail()
             case .success:
                 DBProxy.makeProxy(withName: "test", forUser: DBTest.uid) { (result) in
                     switch result {
                     case .failure:
-                        expectation.fulfill()
-                    case .success:
                         XCTFail()
+                    case .success(let proxy):
+                        XCTAssert(proxy.name != "test")
+                        expectation.fulfill()
                     }
                 }
             }

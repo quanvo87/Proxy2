@@ -97,31 +97,23 @@ struct DBProxy {
         })
     }
 
-    static func makeProxy(withName specificName: String? = nil, forUser uid: String, maxAllowedProxies: UInt = Setting.maxAllowedProxies, completion: @escaping MakeProxyCallback) {
+    static func makeProxy(withName proxyName: String = DBProxy.makeRandomProxyName(), forUser uid: String, maxAllowedProxies: Int = Setting.maxAllowedProxies, completion: @escaping MakeProxyCallback) {
         getProxyCount(forUser: uid) { (proxyCount) in
             guard proxyCount < maxAllowedProxies else {
                 completion(.failure(.proxyLimitReached))
                 return
             }
-            makeProxyHelper(withName: specificName, forUser: uid, completion: completion)
+            makeProxyHelper(withName: proxyName, forUser: uid, completion: completion)
         }
     }
 
-    private static func makeProxyHelper(withName specificName: String? = nil, forUser uid: String, completion: @escaping MakeProxyCallback) {
+    private static func makeProxyHelper(withName proxyName: String, forUser uid: String, attempts: Int = 0, completion: @escaping MakeProxyCallback) {
         guard let proxyKeysRef = DB.makeReference(Child.proxyKeys) else {
             completion(.failure(.unknown))
             return
         }
 
-        let name: String
-
-        if let specificName = specificName {
-            name = specificName
-        } else {
-            name = DBProxy.makeRandomProxyName()
-        }
-
-        let proxyKey = name.lowercased()
+        let proxyKey = proxyName.lowercased()
         let proxyKeyDictionary = [Child.key: proxyKey]
         let autoId = proxyKeysRef.childByAutoId().key
 
@@ -139,7 +131,7 @@ struct DBProxy {
                     }
 
                     if data.childrenCount == 1 {
-                        let proxy = Proxy(icon: DBProxy.makeRandomIconName(), name: name, ownerId: uid)
+                        let proxy = Proxy(icon: DBProxy.makeRandomIconName(), name: proxyName, ownerId: uid)
                         let proxyOwner = ProxyOwner(key: proxyKey, ownerId: uid)
 
                         let work = GroupWork()
@@ -151,8 +143,8 @@ struct DBProxy {
                         }
 
                     } else {
-                        if specificName == nil {
-                            makeProxyHelper(forUser: uid, completion: completion)
+                        if attempts < Setting.maxMakeProxyAttempts {
+                            makeProxyHelper(withName: DBProxy.makeRandomProxyName(), forUser: uid, attempts: attempts + 1, completion: completion)
                         } else {
                             completion(.failure(.unknown))
                         }
