@@ -11,7 +11,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setAudioSession()
         FirebaseApp.configure()
         Database.database().isPersistenceEnabled = true
-        authManager.load(self)
+        authManager.load(window)
         return FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
     }
 
@@ -22,7 +22,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidBecomeActive(_ application: UIApplication) {
         FBSDKAppEvents.activateApp()
     }
+}
 
+private extension AppDelegate {
     func setAudioSession(_ session: AVAudioSession = AVAudioSession.sharedInstance(),
                          category: String = AVAudioSessionCategoryAmbient,
                          mode: String = AVAudioSessionModeDefault) {

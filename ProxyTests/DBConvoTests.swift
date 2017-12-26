@@ -66,20 +66,18 @@ class DBConvoTests: DBTest {
 
         DBTest.makeConvo { (senderConvo, sender, receiver) in
             DBMessage.sendMessage(senderProxy: receiver, receiverProxy: sender, text: "") { (result) in
-                guard let (message, convo) = result else {
+                switch result {
+                case .failure:
                     XCTFail()
-                    return
-                }
-
-                DBConvo.getUnreadMessages(for: convo) { (messages) in
-                    guard let messages = messages else {
-                        XCTFail()
-                        return
+                case .success(let tuple):
+                    DBConvo.getUnreadMessages(for: tuple.convo) { (messages) in
+                        guard let messages = messages else {
+                            XCTFail()
+                            return
+                        }
+                        XCTAssertEqual(messages[safe: 0], tuple.message)
+                        expectation.fulfill()
                     }
-
-                    XCTAssertEqual(messages[safe: 0], message)
-
-                    expectation.fulfill()
                 }
             }
         }
@@ -92,7 +90,6 @@ class DBConvoTests: DBTest {
         DBTest.makeConvo { (convo, sender, _) in
             DBConvo.leaveConvo(convo) { (success) in
                 XCTAssert(success)
-
                 let work = GroupWork()
                 work.check(.convoCount(0), forProxy: sender)
                 work.check(.hasUnreadMessage(false), forProxy: sender)
@@ -115,22 +112,18 @@ class DBConvoTests: DBTest {
                 DBTest.makeProxy(forUser: DBTest.testUser) { (receiver2) in
                     DBMessage.sendMessage(senderProxy: receiver1, receiverProxy: sender, text: DBTest.text) { (result) in
                         XCTAssertNotNil(result)
-
                         DBMessage.sendMessage(senderProxy: receiver2, receiverProxy: sender, text: DBTest.text) { (result) in
-                            guard let (_, convo) = result else {
+                            switch result {
+                            case .failure:
                                 XCTFail()
-                                return
-                            }
-
-                            DBConvo.leaveConvo(convo) { (success) in
-                                XCTAssert(success)
-
-                                let work = GroupWork()
-
-                                work.check(.hasUnreadMessage(true), forProxy: sender)
-
-                                work.allDone {
-                                    expectation.fulfill()
+                            case .success(let tuple):
+                                DBConvo.leaveConvo(tuple.convo) { (success) in
+                                    XCTAssert(success)
+                                    let work = GroupWork()
+                                    work.check(.hasUnreadMessage(true), forProxy: sender)
+                                    work.allDone {
+                                        expectation.fulfill()
+                                    }
                                 }
                             }
                         }
@@ -146,7 +139,6 @@ class DBConvoTests: DBTest {
 
         DBTest.makeConvo { (senderConvo, sender, receiver) in
             let convoKey = DBConvo.makeConvoKey(senderProxy: sender, receiverProxy: receiver)
-
             XCTAssertEqual(senderConvo.receiverIcon, receiver.icon)
             XCTAssertEqual(senderConvo.key, convoKey)
             XCTAssertEqual(senderConvo.receiverId, receiver.ownerId)
@@ -156,7 +148,6 @@ class DBConvoTests: DBTest {
             XCTAssertEqual(senderConvo.senderIsBlocked, false)
             XCTAssertEqual(senderConvo.senderProxyKey, sender.key)
             XCTAssertEqual(senderConvo.senderProxyName, sender.name)
-
             var receiverConvo = Convo()
             receiverConvo.receiverIcon = sender.icon
             receiverConvo.key = convoKey
@@ -167,7 +158,6 @@ class DBConvoTests: DBTest {
             receiverConvo.senderId = receiver.ownerId
             receiverConvo.senderProxyKey = receiver.key
             receiverConvo.senderProxyName = receiver.name
-
             let work = GroupWork()
             work.check(.convoCount(1), forProxy: receiver)
             work.check(.convoCount(1), forProxy: sender)
@@ -187,7 +177,6 @@ class DBConvoTests: DBTest {
 
         DB.set(true, at: Child.userInfo, DBTest.testUser, Child.blockedUsers, DBTest.uid) { (success) in
             XCTAssert(success)
-
             DBTest.makeConvo { (convo, _, _) in
                 let work = GroupWork()
                 work.check(.receiverIsBlocked(true), forConvo: convo, asSender: false)
@@ -203,11 +192,9 @@ class DBConvoTests: DBTest {
         var sender = Proxy()
         sender.key = "a"
         sender.ownerId = "b"
-
         var receiver = Proxy()
         receiver.key = "c"
         receiver.ownerId = "d"
-
         XCTAssertEqual(DBConvo.makeConvoKey(senderProxy: sender, receiverProxy: receiver), "abcd")
     }
 
@@ -218,10 +205,8 @@ class DBConvoTests: DBTest {
         DBTest.makeConvo { (convo, _, _) in
             DBConvo.leaveConvo(convo) { (success) in
                 XCTAssert(success)
-
                 DBConvo.senderLeftConvo(convo) { (senderLeftConvo) in
                     XCTAssert(senderLeftConvo)
-
                     expectation.fulfill()
                 }
             }
@@ -234,10 +219,8 @@ class DBConvoTests: DBTest {
 
         DBTest.makeConvo { (convo, _, _) in
             let testNickname = "test nickname"
-
-            DBConvo.setReceiverNickname(to: testNickname, forConvo: convo) { (success) in
-                XCTAssert(success)
-
+            DBConvo.setReceiverNickname(to: testNickname, forConvo: convo) { (error) in
+                XCTAssertNil(error)
                 let work = GroupWork()
                 work.check(.receiverNickname(testNickname), forConvo: convo, asSender: true)
                 work.allDone {
@@ -261,14 +244,46 @@ class DBConvoTests: DBTest {
         }
     }
 
+    func testSetPresentTrue() {
+        let expectation = self.expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
+
+        DBTest.makeConvo { (convo, _, _) in
+            DBConvo.setPresent(present: true, uid: convo.senderId, convoKey: convo.key) { (success) in
+                XCTAssert(success)
+                DBConvo.userIsPresent(user: convo.senderId, inConvoWithKey: convo.key) { (userIsPresent) in
+                    XCTAssert(userIsPresent)
+                    expectation.fulfill()
+                }
+            }
+        }
+    }
+
+    func testSetPresentFalse() {
+        let expectation = self.expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
+
+        DBTest.makeConvo { (convo, _, _) in
+            DBConvo.setPresent(present: true, uid: convo.senderId, convoKey: convo.key) { (success) in
+                XCTAssert(success)
+                DBConvo.setPresent(present: false, uid: convo.senderId, convoKey: convo.key) { (success) in
+                    XCTAssert(success)
+                    DBConvo.userIsPresent(user: convo.senderId, inConvoWithKey: convo.key) { (userIsPresent) in
+                        XCTAssertFalse(userIsPresent)
+                        expectation.fulfill()
+                    }
+                }
+            }
+        }
+    }
+
     func testUserIsPresent() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
         DBTest.makeConvo { (convo, _, _) in
-            DB.set(true, at: Child.userInfo, convo.senderId, Child.isPresent, convo.key, Child.isPresent) { (success) in
+            DB.set(true, at: Child.userInfo, convo.senderId, Child.isPresent, convo.key) { (success) in
                 XCTAssert(success)
-
                 DBConvo.userIsPresent(user: DBTest.uid, inConvoWithKey: convo.key) { (isPresent) in
                     XCTAssert(isPresent)
                     expectation.fulfill()

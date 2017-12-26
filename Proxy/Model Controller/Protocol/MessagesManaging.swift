@@ -1,5 +1,5 @@
 import MessageKit
 
 protocol MessagesManaging: class {
-    var messages: [MessageType] { get set }
+    var messages: [Message] { get set }
 }

@@ -10,11 +10,9 @@ struct DBMessage {
         work.delete(at: Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
         work.set(.dateRead(date), forMessage: message)
         work.set(.hasUnreadMessage(false), forConvoWithKey: message.parentConvoKey, ownerId: message.receiverId, proxyKey: message.receiverProxyKey)
+        work.setHasUnreadMessageForProxy(key: message.receiverProxyKey, ownerId: message.receiverId)
         work.allDone {
-            work.setHasUnreadMessageForProxy(key: message.receiverProxyKey, ownerId: message.receiverId)
-            work.allDone {
-                completion(work.result)
-            }
+            completion(work.result)
         }
     }
 
@@ -53,7 +51,6 @@ struct DBMessage {
         }
 
         DBConvo.userIsPresent(user: senderConvo.receiverId, inConvoWithKey: senderConvo.key) { (receiverIsPresent) in
-
             let currentTime = Date().timeIntervalSince1970
 
             // Write message
