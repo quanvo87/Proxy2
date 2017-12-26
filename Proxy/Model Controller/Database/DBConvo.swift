@@ -132,8 +132,20 @@ struct DBConvo {
         }
     }
 
+    static func setPresent(present: Bool, uid: String, convoKey: String, completion: @escaping (Bool) -> Void) {
+        if present {
+            DB.set(present, at: Child.userInfo, uid, Child.isPresent, convoKey) { (success) in
+                completion(success)
+            }
+        } else {
+            DB.delete(Child.userInfo, uid, Child.isPresent, convoKey) { (success) in
+                completion(success)
+            }
+        }
+    }
+
     static func userIsPresent(user uid: String, inConvoWithKey convoKey: String, completion: @escaping (Bool) -> Void) {
-        DB.get(Child.userInfo, uid, Child.isPresent, convoKey, Child.isPresent) { (data) in
+        DB.get(Child.userInfo, uid, Child.isPresent, convoKey) { (data) in
             completion(data?.value as? Bool ?? false)
         }
     }

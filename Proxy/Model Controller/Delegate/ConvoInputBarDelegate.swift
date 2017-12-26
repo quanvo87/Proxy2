@@ -12,6 +12,9 @@ class ConvoInputBarDelegate {
 
 extension ConvoInputBarDelegate: MessageInputBarDelegate {
     func messageInputBar(_ inputBar: MessageInputBar, didPressSendButtonWith text: String) {
+        guard text.count > 0 else {
+            return
+        }
         DBMessage.sendMessage(text: text, senderConvo: convo) { (result) in
             switch result {
             case .failure(let error):

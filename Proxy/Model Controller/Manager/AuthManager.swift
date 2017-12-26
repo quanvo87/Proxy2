@@ -3,11 +3,12 @@ import UIKit
 
 class AuthManager {
     private let authObserver = AuthObserver()
+    private let presenceManager = PresenceManager()
     private var loggedIn = false
-    private weak var appDelegate: AppDelegate?
+    private weak var window: UIWindow?
 
-    func load(_ appDelegate: AppDelegate) {
-        self.appDelegate = appDelegate
+    func load(_ window: UIWindow?) {
+        self.window = window
         authObserver.load(self)
     }
 }
@@ -19,7 +20,8 @@ extension AuthManager: AuthManaging {
             changeRequest.displayName = email
             changeRequest.commitChanges()
         }
-        appDelegate?.window?.rootViewController = TabBarController(displayName: user.displayName ?? user.email ?? "", uid: user.uid)
+        presenceManager.load(user.uid)
+        window?.rootViewController = TabBarController(displayName: user.displayName ?? user.email ?? "", uid: user.uid)
         loggedIn = true
         DispatchQueue.queue.async {
             DBProxy.fixConvoCounts(uid: user.uid) { _ in }
@@ -32,7 +34,7 @@ extension AuthManager: AuthManaging {
             let loginController = LoginViewController.make() else {
                 return
         }
-        appDelegate?.window?.rootViewController = loginController
+        window?.rootViewController = loginController
         loggedIn = false
     }
 }

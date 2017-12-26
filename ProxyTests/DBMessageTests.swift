@@ -10,10 +10,8 @@ class DBMessageTests: DBTest {
         defer { waitForExpectations(timeout: 10) }
 
         DBTest.sendMessage { (message, _, _, receiver) in
-
             DBMessage.read(message) { (success) in
                 XCTAssert(success)
-
                 let work = GroupWork()
                 work.check(.dateRead(Date()), forMessage: message)
                 work.check(.hasUnreadMessage(false), forConvoWithKey: message.parentConvoKey, ownerId: message.receiverId, proxyKey: message.receiverProxyKey)
@@ -31,16 +29,11 @@ class DBMessageTests: DBTest {
         defer { waitForExpectations(timeout: 10) }
 
         DBTest.sendMessage { (message1, _, _, _) in
-
             DBTest.sendMessage { (message2, _, _, receiver) in
-
                 DBMessage.read(message1) { (success) in
                     XCTAssert(success)
-
                     let work = GroupWork()
-
                     work.check(.hasUnreadMessage(true), forProxy: receiver)
-
                     work.allDone {
                         expectation.fulfill()
                     }
@@ -91,17 +84,17 @@ class DBMessageTests: DBTest {
                 XCTAssert(success)
 
                 DBMessage.sendMessage(senderProxy: receiver, receiverProxy: sender, text: "") { (result) in
-                    guard let (_, convo) = result else {
+                    switch result {
+                    case .failure:
                         XCTFail()
-                        return
-                    }
-
-                    let work = GroupWork()
-                    work.check(.convoCount(1), forProxy: sender)
-                    work.check(.receiverLeftConvo(false), forConvo: convo, asSender: true)
-                    work.check(.senderLeftConvo(false), forConvo: convo, asSender: false)
-                    work.allDone {
-                        expectation.fulfill()
+                    case .success(let tuple):
+                        let work = GroupWork()
+                        work.check(.convoCount(1), forProxy: sender)
+                        work.check(.receiverLeftConvo(false), forConvo: tuple.convo, asSender: true)
+                        work.check(.senderLeftConvo(false), forConvo: tuple.convo, asSender: false)
+                        work.allDone {
+                            expectation.fulfill()
+                        }
                     }
                 }
             }
@@ -115,19 +108,18 @@ class DBMessageTests: DBTest {
         DBTest.makeConvo { (senderConvo, sender, receiver) in
             DBConvo.leaveConvo(senderConvo) { (success) in
                 XCTAssert(success)
-                
                 DBMessage.sendMessage(senderProxy: sender, receiverProxy: receiver, text: "") { (result) in
-                    guard let (_, convo) = result else {
+                    switch result {
+                    case .failure:
                         XCTFail()
-                        return
-                    }
-                    
-                    let work = GroupWork()
-                    work.check(.convoCount(1), forProxy: sender)
-                    work.check(.receiverLeftConvo(false), forConvo: convo, asSender: false)
-                    work.check(.senderLeftConvo(false), forConvo: convo, asSender: true)
-                    work.allDone {
-                        expectation.fulfill()
+                    case .success(let tuple):
+                        let work = GroupWork()
+                        work.check(.convoCount(1), forProxy: sender)
+                        work.check(.receiverLeftConvo(false), forConvo: tuple.convo, asSender: false)
+                        work.check(.senderLeftConvo(false), forConvo: tuple.convo, asSender: true)
+                        work.allDone {
+                            expectation.fulfill()
+                        }
                     }
                 }
             }

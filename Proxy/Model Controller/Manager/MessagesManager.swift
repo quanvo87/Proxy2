@@ -2,7 +2,7 @@ import MessageKit
 import UIKit
 
 class MessagesManager: MessagesManaging {
-    var messages = [MessageType]() {
+    var messages = [Message]() {
         didSet {
             collectionView?.reloadData()
             collectionView?.scrollToBottom()

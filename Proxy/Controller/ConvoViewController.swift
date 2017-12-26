@@ -1,6 +1,7 @@
 import MessageKit
 
 class ConvoViewController: MessagesViewController {
+    private let convo: Convo
     private let convoManager = ConvoManager()
     private let iconManager = IconManager()
     private let messagesManager = MessagesManager()
@@ -10,6 +11,8 @@ class ConvoViewController: MessagesViewController {
     private let inputBarDelegate = ConvoInputBarDelegate()
 
     init(_ convo: Convo) {
+        self.convo = convo
+
         super.init(nibName: nil, bundle: nil)
 
         navigationItem.title = convo.receiverProxyName
@@ -36,9 +39,25 @@ class ConvoViewController: MessagesViewController {
         messageInputBar.delegate = inputBarDelegate
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(true)
+        DBConvo.setPresent(present: true, uid: convo.senderId, convoKey: convo.key) { (success) in
+            if success {
+                for message in self.messagesManager.messages {
+                    DBMessage.read(message) { (_) in }
+                }
+            }
+        }
+    }
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         tabBarController?.tabBar.isHidden = true
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(true)
+        DBConvo.setPresent(present: false, uid: convo.senderId, convoKey: convo.key) { (_) in }
     }
 
     override func viewWillDisappear(_ animated: Bool) {

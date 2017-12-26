@@ -11,23 +11,22 @@ class DBProxyTests: DBTest {
         DBTest.makeProxy { (sender) in
             DBTest.makeProxy(forUser: DBTest.testUser) { (receiver) in
                 DBMessage.sendMessage(senderProxy: receiver, receiverProxy: sender, text: DBTest.text) { (result) in
-                    guard let (_, convo) = result else {
+                    switch result {
+                    case .failure:
                         XCTFail()
-                        return
-                    }
-
-                    DBProxy.deleteProxy(sender) { (success) in
-                        XCTAssert(success)
-                        
-                        let work = GroupWork()
-                        work.check(.receiverDeletedProxy(true), forConvo: convo, asSender: true)
-                        work.checkUnreadMessagesDeleted(for: sender)
-                        work.checkConvoDeleted(convo, asSender: false)
-                        work.checkDeleted(at: Child.proxies, sender.ownerId, sender.key)
-                        work.checkDeleted(at: Child.proxyKeys, sender.key)
-                        work.checkDeleted(at: Child.proxyOwners, sender.key)
-                        work.allDone {
-                            expectation.fulfill()
+                    case .success(let tuple):
+                        DBProxy.deleteProxy(sender) { (success) in
+                            XCTAssert(success)
+                            let work = GroupWork()
+                            work.check(.receiverDeletedProxy(true), forConvo: tuple.convo, asSender: true)
+                            work.checkUnreadMessagesDeleted(for: sender)
+                            work.checkConvoDeleted(tuple.convo, asSender: false)
+                            work.checkDeleted(at: Child.proxies, sender.ownerId, sender.key)
+                            work.checkDeleted(at: Child.proxyKeys, sender.key)
+                            work.checkDeleted(at: Child.proxyOwners, sender.key)
+                            work.allDone {
+                                expectation.fulfill()
+                            }
                         }
                     }
                 }
@@ -67,7 +66,7 @@ class DBProxyTests: DBTest {
 
         for icon in ProxyService.iconNames {
             work.start()
-            UIImage.make(named: icon) { (image) in
+            UIImage.make(name: icon) { (image) in
                 XCTAssertNotNil(image)
                 work.finish(withResult: true)
             }

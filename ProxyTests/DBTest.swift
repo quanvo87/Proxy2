@@ -81,11 +81,12 @@ extension DBTest {
         makeProxy { (sender) in
             makeProxy (forUser: testUser) { (receiver) in
                 DBMessage.sendMessage(senderProxy: sender, receiverProxy: receiver, text: text) { (result) in
-                    guard let (message, convo) = result else {
+                    switch result {
+                    case .failure:
                         XCTFail()
-                        return
+                    case .success(let tuple):
+                        completion(tuple.message, tuple.convo, sender, receiver)
                     }
-                    completion(message, convo, sender, receiver)
                 }
             }
         }
