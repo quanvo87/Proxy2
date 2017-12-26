@@ -12,7 +12,7 @@ class IconObserver: ReferenceObserving {
             guard let proxy = Proxy(data) else {
                 return
             }
-            UIImage.make(named: proxy.icon) { (image) in
+            UIImage.make(name: proxy.icon) { (image) in
                 manager?.icons[proxy.key] = image
             }
         })

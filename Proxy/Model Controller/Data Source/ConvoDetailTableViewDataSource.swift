@@ -105,11 +105,9 @@ private extension ConvoDetailTableViewDataSource {
             if !(nickname != "" && trimmed == "") {
                 DBConvo.setReceiverNickname(to: nickname, forConvo: convo) { (error) in
                     if let error = error, case .inputTooLong = error {
-                        let alert = UIAlertController(title: "Nickname Too Long", message: "Please try a shorter nickname.", preferredStyle: .alert)
-                        alert.addAction(UIAlertAction(title: "OK", style: .default) { _ in
+                        self.controller?.showAlert("Nickname Too Long", message: "Please try a shorter nickname.") {
                             self.showEditReceiverNicknameAlert()
-                        })
-                        self.controller?.present(alert, animated: true)
+                        }
                     }
                 }
             }

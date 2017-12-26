@@ -1,7 +1,6 @@
 import UIKit
 import SwiftVideoBackground
 
-// TODO: Add phone number sign up
 class LoginViewController: UIViewController {
     @IBOutlet weak var facebookButton: UIButton!
     @IBOutlet weak var loginButton: UIButton!

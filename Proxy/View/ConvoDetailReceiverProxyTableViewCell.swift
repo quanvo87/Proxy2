@@ -8,11 +8,11 @@ class ConvoDetailReceiverProxyTableViewCell: UITableViewCell {
     func load(_ convo: Convo) {
         selectionStyle = .none
 
-        iconImageView.image = nil
         nameLabel.text = convo.receiverProxyName
         nicknameButton.setTitle(convo.receiverNickname == "" ? "Enter A Nickname" : convo.receiverNickname, for: .normal)
 
-        UIImage.make(named: convo.receiverIcon) { (image) in
+        iconImageView.image = nil
+        UIImage.make(name: convo.receiverIcon) { (image) in
             DispatchQueue.main.async {
                 self.iconImageView.image = image
             }

@@ -36,7 +36,6 @@ extension ConvoDetailTableViewDelegate: UITableViewDelegate {
             case 1:
                 let alert = UIAlertController(title: "Block User?", message: "You will no longer see any conversations with this user. You can unblock users in the 'Me' tab.", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "Block", style: .destructive) { (_) in
-                    // todo: implement blocking
                 })
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
                 controller?.present(alert, animated: true)

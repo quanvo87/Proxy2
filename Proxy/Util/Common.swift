@@ -94,10 +94,23 @@ extension UIColor {
 }
 
 extension UIImage {
-    static func make(named image: String, completion: @escaping (UIImage?) -> Void) {
-        DispatchQueue.queue.async {
-            completion(UIImage(named: image))
+    static func make(name: String, completion: @escaping (UIImage) -> Void) {
+        if let image = UIImage(named: name) {
+            completion(image)
         }
+    }
+
+    static func makeCircle(diameter: CGFloat, color: UIColor = .blue) -> UIImage? {
+        UIGraphicsBeginImageContextWithOptions(CGSize(width: diameter, height: diameter), false, 0)
+        let context = UIGraphicsGetCurrentContext()
+        context?.saveGState()
+        let rect = CGRect(x: 0, y: 0, width: diameter, height: diameter)
+        context?.setFillColor(color.cgColor)
+        context?.fillEllipse(in: rect)
+        context?.restoreGState()
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return image
     }
 }
 
@@ -151,7 +164,9 @@ extension UITableView {
 extension UIViewController {
     func showAlert(_ title: String?, message: String?, completion: (() -> Void)? = nil) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        alert.addAction(UIAlertAction(title: "OK", style: .default) { (_) in
+            completion?()
+        })
         present(alert, animated: true)
     }
 
@@ -172,11 +187,9 @@ extension UIViewController {
             if !(nickname != "" && trimmed == "") {
                 DBProxy.setNickname(to: nickname, forProxy: proxy) { (error) in
                     if let error = error, case .inputTooLong = error {
-                        let alert = UIAlertController(title: "Nickname Too Long", message: "Please try a shorter nickname.", preferredStyle: .alert)
-                        alert.addAction(UIAlertAction(title: "OK", style: .default) { _ in
+                        self.showAlert("Nickname Too Long", message: "Please try a shorter nickname.") {
                             self.showEditProxyNicknameAlert(proxy)
-                        })
-                        self.present(alert, animated: true)
+                        }
                     }
                 }
             }
