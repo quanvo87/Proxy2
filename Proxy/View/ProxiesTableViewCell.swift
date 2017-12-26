@@ -6,36 +6,34 @@ class ProxiesTableViewCell: UITableViewCell {
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var newProxyBadgeImageView: UIImageView!
     @IBOutlet weak var nicknameLabel: UILabel!
-    @IBOutlet weak var unreadLabel: UILabel!    // TODO: delete
-    
+    @IBOutlet weak var unreadMessagesIndicatorImageView: UIImageView!
+
     func load(proxy: Proxy, accessoryType: UITableViewCellAccessoryType) {
         self.accessoryType = accessoryType
-        
-        iconImageView.image = nil
-        newProxyBadgeImageView.image = nil
-        newProxyBadgeImageView.isHidden = true
+
         nameLabel.text = proxy.name
         nicknameLabel.text = proxy.nickname
         convoCountLabel.text = proxy.convoCount.asLabel
-        unreadLabel.text = nil // TODO: delete
 
-        UIImage.make(named: proxy.icon) { (image) in
+        iconImageView.image = nil
+        UIImage.make(name: proxy.icon) { (image) in
             DispatchQueue.main.async {
                 self.iconImageView.image = image
             }
         }
 
+        newProxyBadgeImageView.image = nil
         if proxy.dateCreated.isNewProxyDate {
-            UIImage.make(named: "newProxyBadge") { (image) in
-                guard let image = image else {
-                    return
-                }
+            UIImage.make(name: "newProxyBadge") { (image) in
                 DispatchQueue.main.async {
-                    self.contentView.bringSubview(toFront: self.newProxyBadgeImageView)
                     self.newProxyBadgeImageView.image = image
-                    self.newProxyBadgeImageView.isHidden = false
                 }
             }
+        }
+
+        unreadMessagesIndicatorImageView.image = nil
+        if proxy.hasUnreadMessage {
+            unreadMessagesIndicatorImageView.image = UIImage.makeCircle(diameter: unreadMessagesIndicatorImageView.frame.width)
         }
     }
 }

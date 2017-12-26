@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13174"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -15,53 +15,53 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="80"/>
             <autoresizingMask key="autoresizingMask"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="jDH-8k-XPg" id="fZw-eS-pyO">
-                <rect key="frame" x="0.0" y="0.0" width="342" height="79.5"/>
+                <rect key="frame" x="0.0" y="0.0" width="341" height="79.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5WO-li-iEk">
-                        <rect key="frame" x="8" y="16" width="48" height="48"/>
+                        <rect key="frame" x="16" y="16" width="48" height="48"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="48" id="X6m-Us-bih"/>
                             <constraint firstAttribute="height" constant="48" id="pyq-k5-bwg"/>
                         </constraints>
                     </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="248" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AUb-Mi-txn">
-                        <rect key="frame" x="61" y="16" width="191" height="21"/>
+                        <rect key="frame" x="69" y="16" width="182" height="21"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="249" text="Last Message" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="z2m-eW-yEp">
-                        <rect key="frame" x="61" y="42" width="217" height="18"/>
+                        <rect key="frame" x="69" y="42" width="95" height="18"/>
                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                         <color key="textColor" red="0.50196081400000003" green="0.50196081400000003" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" horizontalCompressionResistancePriority="752" text="Timestamp" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="w2k-F5-bLY">
-                        <rect key="frame" x="257" y="18" width="77" height="18"/>
+                        <rect key="frame" x="256" y="18" width="77" height="18"/>
                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                         <color key="textColor" red="0.50196081400000003" green="0.50196081400000003" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Unread" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bJ7-1n-NDi">
-                        <rect key="frame" x="283" y="41" width="51" height="18"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                        <color key="textColor" red="0.0" green="0.50196081400000003" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <nil key="highlightedColor"/>
-                    </label>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ARQ-Ic-t8U" userLabel="Unread Messages Indicator Image View">
+                        <rect key="frame" x="326" y="41" width="10" height="10"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="10" id="KYB-7e-Jlz"/>
+                            <constraint firstAttribute="height" constant="10" id="Mmx-zg-GmX"/>
+                        </constraints>
+                    </imageView>
                 </subviews>
                 <constraints>
                     <constraint firstItem="w2k-F5-bLY" firstAttribute="baseline" secondItem="AUb-Mi-txn" secondAttribute="baseline" id="1bp-tf-GGU"/>
-                    <constraint firstItem="bJ7-1n-NDi" firstAttribute="top" secondItem="w2k-F5-bLY" secondAttribute="bottom" constant="5" id="5VA-R9-eOx"/>
-                    <constraint firstAttribute="trailingMargin" secondItem="bJ7-1n-NDi" secondAttribute="trailing" id="D37-hI-Xl1"/>
+                    <constraint firstAttribute="trailing" secondItem="ARQ-Ic-t8U" secondAttribute="trailing" constant="5" id="99g-ex-dEU"/>
                     <constraint firstItem="AUb-Mi-txn" firstAttribute="top" secondItem="5WO-li-iEk" secondAttribute="top" id="MZM-1u-eX3"/>
                     <constraint firstItem="5WO-li-iEk" firstAttribute="centerY" secondItem="fZw-eS-pyO" secondAttribute="centerY" id="NW8-34-UOd"/>
                     <constraint firstAttribute="trailingMargin" secondItem="w2k-F5-bLY" secondAttribute="trailing" id="T7f-Av-Rx9"/>
                     <constraint firstAttribute="leadingMargin" secondItem="5WO-li-iEk" secondAttribute="leading" id="X3w-qH-oSQ"/>
+                    <constraint firstItem="ARQ-Ic-t8U" firstAttribute="top" secondItem="w2k-F5-bLY" secondAttribute="bottom" constant="5" id="XwI-lf-ymW"/>
                     <constraint firstItem="AUb-Mi-txn" firstAttribute="leading" secondItem="5WO-li-iEk" secondAttribute="trailing" constant="5" id="a0o-PZ-vFE"/>
                     <constraint firstItem="z2m-eW-yEp" firstAttribute="leading" secondItem="5WO-li-iEk" secondAttribute="trailing" constant="5" id="h9Q-0V-YMd"/>
                     <constraint firstItem="z2m-eW-yEp" firstAttribute="top" secondItem="AUb-Mi-txn" secondAttribute="bottom" constant="5" id="hLJ-gv-3c4"/>
-                    <constraint firstItem="bJ7-1n-NDi" firstAttribute="leading" secondItem="z2m-eW-yEp" secondAttribute="trailing" constant="5" id="xO7-X1-Ugc"/>
                     <constraint firstItem="w2k-F5-bLY" firstAttribute="leading" secondItem="AUb-Mi-txn" secondAttribute="trailing" constant="5" id="zpf-eD-HUu"/>
                 </constraints>
             </tableViewCellContentView>
@@ -70,8 +70,9 @@
                 <outlet property="lastMessageLabel" destination="z2m-eW-yEp" id="0Ud-er-InN"/>
                 <outlet property="timestampLabel" destination="w2k-F5-bLY" id="oLd-tY-wSd"/>
                 <outlet property="titleLabel" destination="AUb-Mi-txn" id="4lh-vN-hPI"/>
-                <outlet property="unreadLabel" destination="bJ7-1n-NDi" id="MNq-bb-33X"/>
+                <outlet property="unreadMessagesIndicatorImageView" destination="ARQ-Ic-t8U" id="zgX-Oh-wVW"/>
             </connections>
+            <point key="canvasLocation" x="25.5" y="52"/>
         </tableViewCell>
     </objects>
 </document>

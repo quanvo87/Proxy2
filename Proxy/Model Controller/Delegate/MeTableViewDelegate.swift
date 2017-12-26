@@ -14,7 +14,6 @@ extension MeTableViewDelegate: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         switch indexPath.section {
         case 1:
-            // todo: show blocked users controller
             break
         case 2:
             switch indexPath.row {

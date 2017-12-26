@@ -7,10 +7,10 @@ class IconPickerCollectionViewCell: UICollectionViewCell {
     func load(_ icon: String) {
         layer.cornerRadius = 5
 
-        iconImageView.image = nil
         iconNameLabel.text = icon
 
-        UIImage.make(named: icon) { (image) in
+        iconImageView.image = nil
+        UIImage.make(name: icon) { (image) in
             DispatchQueue.main.async {
                 self.iconImageView.image = image
             }
