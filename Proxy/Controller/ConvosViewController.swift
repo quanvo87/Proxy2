@@ -7,7 +7,7 @@ class ConvosViewController: UIViewController, MakeNewMessageDelegate {
     private let itemsToDeleteManager = ItemsToDeleteManager()
     private let dataSource = ConvosTableViewDataSource()
     private let delegate = ConvosTableViewDelegate()
-    private let tableView = UITableView()
+    private let tableView = UITableView(frame: .zero, style: .grouped)
     private let buttonManager = ConvosButtonManager()
     private weak var unreadMessagesManager: UnreadMessagesManaging?
 
@@ -30,7 +30,7 @@ class ConvosViewController: UIViewController, MakeNewMessageDelegate {
         tableView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
         tableView.register(UINib(nibName: Identifier.convosTableViewCell, bundle: nil), forCellReuseIdentifier: Identifier.convosTableViewCell)
         tableView.rowHeight = 80
-        tableView.separatorStyle = .none
+        tableView.sectionHeaderHeight = 0
         view.addSubview(tableView)
 
         buttonManager.load(uid: uid, itemsToDeleteManager: itemsToDeleteManager, makeNewMessageDelegate: self, tableView: tableView, viewController: self)
