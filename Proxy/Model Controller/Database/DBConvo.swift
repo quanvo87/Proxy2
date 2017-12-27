@@ -42,27 +42,8 @@ struct DBConvo {
 
     static func makeConvo(sender: Proxy, receiver: Proxy, completion: @escaping (Convo?) -> Void) {
         let convoKey = makeConvoKey(senderProxy: sender, receiverProxy: receiver)
-
-        var senderConvo = Convo()
-        senderConvo.key = convoKey
-        senderConvo.receiverIcon = receiver.icon
-        senderConvo.receiverId = receiver.ownerId
-        senderConvo.receiverProxyKey = receiver.key
-        senderConvo.receiverProxyName = receiver.name
-        senderConvo.senderId = sender.ownerId
-        senderConvo.senderProxyKey = sender.key
-        senderConvo.senderProxyName = sender.name
-
-        var receiverConvo = Convo()
-        receiverConvo.key = convoKey
-        receiverConvo.receiverIcon = sender.icon
-        receiverConvo.receiverId = sender.ownerId
-        receiverConvo.receiverProxyKey = sender.key
-        receiverConvo.receiverProxyName = sender.name
-        receiverConvo.senderId = receiver.ownerId
-        receiverConvo.senderProxyKey = receiver.key
-        receiverConvo.senderProxyName = receiver.name
-
+        let senderConvo = Convo(key: convoKey, receiverId: receiver.ownerId, receiverProxyKey: receiver.key, receiverProxyName: receiver.name, senderId: sender.ownerId, senderProxyKey: sender.key, senderProxyName: sender.name, receiverIcon: receiver.icon)
+        let receiverConvo = Convo(key: convoKey, receiverId: sender.ownerId, receiverProxyKey: sender.key, receiverProxyName: sender.name, senderId: receiver.ownerId, senderProxyKey: receiver.key, senderProxyName: receiver.name, receiverIcon: sender.icon)
         let work = GroupWork()
         work.increment(by: 1, forProperty: .convoCount, forProxy: receiver)
         work.increment(by: 1, forProperty: .convoCount, forProxy: sender)

@@ -1,19 +1,19 @@
 import FirebaseDatabase
 
 struct Convo {
-    var hasUnreadMessage = false
-    var timestamp = Date().timeIntervalSince1970
-    var key = ""
-    var lastMessage = ""
-    var receiverIcon = ""
-    var receiverId = ""
-    var receiverNickname = ""
-    var receiverProxyKey = ""
-    var receiverProxyName = ""
-    var senderId = ""
-    var senderNickname = ""
-    var senderProxyKey = ""
-    var senderProxyName = ""
+    let hasUnreadMessage: Bool
+    let timestamp: Double
+    let key: String
+    let lastMessage: String
+    let receiverIcon: String
+    let receiverId: String
+    let receiverNickname: String
+    let receiverProxyKey: String
+    let receiverProxyName: String
+    let senderId: String
+    let senderNickname: String
+    let senderProxyKey: String
+    let senderProxyName: String
 
     var senderDisplayName: String {
         return senderNickname != "" ? senderNickname : senderProxyName
@@ -23,7 +23,33 @@ struct Convo {
         return receiverNickname != "" ? receiverNickname : receiverProxyName
     }
 
-    init() {}
+    init(key: String,
+         receiverId: String,
+         receiverProxyKey: String,
+         receiverProxyName: String,
+         senderId: String,
+         senderProxyKey: String,
+         senderProxyName: String,
+         hasUnreadMessage: Bool = false,
+         timestamp: Double = Date().timeIntervalSince1970,
+         lastMessage: String = "",
+         receiverIcon: String = "",
+         receiverNickname: String = "",
+         senderNickname: String = "") {
+        self.key = key
+        self.receiverId = receiverId
+        self.receiverProxyKey = receiverProxyKey
+        self.receiverProxyName = receiverProxyName
+        self.senderId = senderId
+        self.senderProxyKey = senderProxyKey
+        self.senderProxyName = senderProxyName
+        self.hasUnreadMessage = hasUnreadMessage
+        self.timestamp = timestamp
+        self.lastMessage = lastMessage
+        self.receiverIcon = receiverIcon
+        self.receiverNickname = receiverNickname
+        self.senderNickname = senderNickname
+    }
 
     init?(_ data: DataSnapshot) {
         self.init(data.value as AnyObject)
@@ -108,12 +134,18 @@ enum SettableConvoProperty {
 
     var properties: (name: String, value: Any) {
         switch self {
-        case .hasUnreadMessage(let value): return ("hasUnreadMessage", value)
-        case .timestamp(let value): return ("timestamp", value)
-        case .lastMessage(let value): return ("lastMessage", value)
-        case .receiverIcon(let value): return ("receiverIcon", value)
-        case .receiverNickname(let value): return ("receiverNickname", value)
-        case .senderNickname(let value): return ("senderNickname", value)
+        case .hasUnreadMessage(let value):
+            return ("hasUnreadMessage", value)
+        case .timestamp(let value):
+            return ("timestamp", value)
+        case .lastMessage(let value):
+            return ("lastMessage", value)
+        case .receiverIcon(let value):
+            return ("receiverIcon", value)
+        case .receiverNickname(let value):
+            return ("receiverNickname", value)
+        case .senderNickname(let value):
+            return ("senderNickname", value)
         }
     }
 }

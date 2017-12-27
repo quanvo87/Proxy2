@@ -97,15 +97,7 @@ class DBConvoTests: DBTest {
             XCTAssertEqual(senderConvo.senderId, sender.ownerId)
             XCTAssertEqual(senderConvo.senderProxyKey, sender.key)
             XCTAssertEqual(senderConvo.senderProxyName, sender.name)
-            var receiverConvo = Convo()
-            receiverConvo.receiverIcon = sender.icon
-            receiverConvo.key = convoKey
-            receiverConvo.receiverId = sender.ownerId
-            receiverConvo.receiverProxyKey = sender.key
-            receiverConvo.receiverProxyName = sender.name
-            receiverConvo.senderId = receiver.ownerId
-            receiverConvo.senderProxyKey = receiver.key
-            receiverConvo.senderProxyName = receiver.name
+            let receiverConvo = Convo(key: convoKey, receiverId: sender.ownerId, receiverProxyKey: sender.key, receiverProxyName: sender.name, senderId: receiver.ownerId, senderProxyKey: receiver.key, senderProxyName: receiver.name, receiverIcon: sender.icon)
             let work = GroupWork()
             work.check(.convoCount(1), forProxy: receiver)
             work.check(.convoCount(1), forProxy: sender)
@@ -120,12 +112,8 @@ class DBConvoTests: DBTest {
     }
 
     func testMakeConvoKey() {
-        var sender = Proxy()
-        sender.key = "a"
-        sender.ownerId = "b"
-        var receiver = Proxy()
-        receiver.key = "c"
-        receiver.ownerId = "d"
+        let sender = Proxy(icon: "", name: "a", ownerId: "b")
+        let receiver = Proxy(icon: "", name: "c", ownerId: "d")
         XCTAssertEqual(DBConvo.makeConvoKey(senderProxy: sender, receiverProxy: receiver), "abcd")
     }
 
