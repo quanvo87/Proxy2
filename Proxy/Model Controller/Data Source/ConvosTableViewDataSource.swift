@@ -14,6 +14,7 @@ class ConvosTableViewDataSource: NSObject {
 
 extension ConvosTableViewDataSource: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
         guard
             let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.convosTableViewCell) as? ConvosTableViewCell,
             let convo = convos[safe: indexPath.row] else {

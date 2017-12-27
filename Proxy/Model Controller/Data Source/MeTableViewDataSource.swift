@@ -40,9 +40,9 @@ extension MeTableViewDataSource: UITableViewDataSource {
             cell.subtitleLabel.text = ""
             switch indexPath.row {
             case 0:
-                cell.load(icon: "logout", title: "Log Out", subtitle: "")
-            case 1:
                 cell.load(icon: "info", title: "About", subtitle: "")
+            case 1:
+                cell.load(icon: "logout", title: "Log Out", subtitle: "")
             default:
                 break
             }

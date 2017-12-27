@@ -7,7 +7,7 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
     private let itemsToDeleteManager = ItemsToDeleteManager()
     private let dataSource = ProxiesTableViewDataSource()
     private let delegate = ProxiesTableViewDelegate()
-    private let tableView = UITableView()
+    private let tableView = UITableView(frame: .zero, style: .grouped)
     private let buttonManager = ProxiesButtonManager()
     private weak var unreadMessagesManager: UnreadMessagesManaging?
 
@@ -30,7 +30,7 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
         tableView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
         tableView.register(UINib(nibName: Identifier.proxiesTableViewCell, bundle: nil), forCellReuseIdentifier: Identifier.proxiesTableViewCell)
         tableView.rowHeight = 60
-        tableView.separatorStyle = .none
+        tableView.sectionHeaderHeight = 0
         view.addSubview(tableView)
 
         buttonManager.load(uid: uid, proxiesManager: proxiesManager, itemsToDeleteManager: itemsToDeleteManager, tableView: tableView, proxiesViewController: self)

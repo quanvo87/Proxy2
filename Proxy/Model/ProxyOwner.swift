@@ -25,8 +25,7 @@ struct ProxyOwner: Equatable {
     }
 
     static func ==(_ lhs: ProxyOwner, _ rhs: ProxyOwner) -> Bool {
-        return
-            lhs.key == rhs.key &&
-                lhs.ownerId == rhs.ownerId
+        return lhs.key == rhs.key &&
+            lhs.ownerId == rhs.ownerId
     }
 }
