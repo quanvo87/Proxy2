@@ -1,7 +1,7 @@
 import MessageKit
 
 class ConvoInputBarDelegate {
-    private var convo = Convo()
+    private var convo = Convo([] as AnyObject)
     private weak var controller: UIViewController?
 
     func load(convo: Convo, controller: UIViewController) {
@@ -12,7 +12,7 @@ class ConvoInputBarDelegate {
 
 extension ConvoInputBarDelegate: MessageInputBarDelegate {
     func messageInputBar(_ inputBar: MessageInputBar, didPressSendButtonWith text: String) {
-        guard text.count > 0 else {
+        guard text.count > 0, let convo = convo else {
             return
         }
         DBMessage.sendMessage(text: text, senderConvo: convo) { (result) in

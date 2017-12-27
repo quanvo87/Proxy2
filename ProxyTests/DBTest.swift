@@ -85,7 +85,13 @@ extension DBTest {
                     case .failure:
                         XCTFail()
                     case .success(let tuple):
-                        completion(tuple.message, tuple.convo, sender, receiver)
+                        DBConvo.getConvo(withKey: tuple.convo.key, belongingTo: tuple.convo.senderId) { (convo) in
+                            guard let convo = convo else {
+                                XCTFail()
+                                return
+                            }
+                            completion(tuple.message, convo, sender, receiver)
+                        }
                     }
                 }
             }

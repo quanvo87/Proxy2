@@ -1,23 +1,35 @@
 import FirebaseDatabase
 
 struct Proxy {
-    var hasUnreadMessage = false
-    var dateCreated = Date().timeIntervalSince1970
-    var timestamp = Date().timeIntervalSince1970
-    var convoCount = 0
-    var icon = ""
-    var key = ""
-    var lastMessage = ""
-    var name = ""
-    var nickname = ""
-    var ownerId = ""
+    let hasUnreadMessage: Bool
+    let dateCreated: Double
+    let timestamp: Double
+    let convoCount: Int
+    let icon: String
+    let key: String
+    let lastMessage: String
+    let name: String
+    let nickname: String
+    let ownerId: String
 
-    init() {}
-
-    init(icon: String, name: String, ownerId: String) {
+    init(hasUnreadMessage: Bool = false,
+         dateCreated: Double = Date().timeIntervalSince1970,
+         timestamp: Double = Date().timeIntervalSince1970,
+         convoCount: Int = 0,
+         icon: String,
+         lastMessage: String = "",
+         name: String,
+         nickname: String = "",
+         ownerId: String) {
+        self.hasUnreadMessage = hasUnreadMessage
+        self.dateCreated = dateCreated
+        self.timestamp = timestamp
+        self.convoCount = convoCount
         self.icon = icon
         self.key = name.lowercased()
+        self.lastMessage = lastMessage
         self.name = name
+        self.nickname = nickname
         self.ownerId = ownerId
     }
 
@@ -96,12 +108,18 @@ enum SettableProxyProperty {
 
     var properties: (name: String, value: Any) {
         switch self {
-        case .hasUnreadMessage(let value): return ("hasUnreadMessage", value)
-        case .timestamp(let value): return ("timestamp", value)
-        case .convoCount(let value): return ("convoCount", value)
-        case .icon(let value): return ("icon", value)
-        case .lastMessage(let value): return ("lastMessage", value)
-        case .nickname(let value): return ("nickname", value)
+        case .hasUnreadMessage(let value):
+            return ("hasUnreadMessage", value)
+        case .timestamp(let value):
+            return ("timestamp", value)
+        case .convoCount(let value):
+            return ("convoCount", value)
+        case .icon(let value):
+            return ("icon", value)
+        case .lastMessage(let value):
+            return ("lastMessage", value)
+        case .nickname(let value):
+            return ("nickname", value)
         }
     }
 }

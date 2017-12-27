@@ -84,7 +84,6 @@ struct DBMessage {
 
         work.allDone {
             if work.result {
-//                DBConvo.getConvo(withKey: senderConvo.key, belongingTo: sed, completion: <#T##(Convo?) -> Void#>)
                 completion(.success((message, senderConvo)))
             } else {
                 completion(.failure(.unknown))

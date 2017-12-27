@@ -1,12 +1,12 @@
 struct ProxyOwner: Equatable {
-    var key = ""
-    var ownerId = ""
-
+    let key: String
+    let ownerId: String
+    
     init(key: String, ownerId: String) {
         self.key = key
         self.ownerId = ownerId
     }
-
+    
     init?(_ dictionary: AnyObject) {
         guard
             let key = dictionary["key"] as? String,
@@ -16,14 +16,14 @@ struct ProxyOwner: Equatable {
         self.key = key
         self.ownerId = ownerId
     }
-
+    
     func toDictionary() -> Any {
         return [
             "key": key,
             "ownerId": ownerId
         ]
     }
-
+    
     static func ==(_ lhs: ProxyOwner, _ rhs: ProxyOwner) -> Bool {
         return lhs.key == rhs.key &&
             lhs.ownerId == rhs.ownerId

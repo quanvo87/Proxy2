@@ -5,10 +5,6 @@ class ConvoDataSource {
     private weak var iconManager: IconManaging?
     private weak var messagesManager: MessagesManaging?
 
-    private var convo: Convo {
-        return convoManager?.convo ?? Convo()
-    }
-
     private var icons: [String: UIImage] {
         return iconManager?.icons ?? [:]
     }
@@ -48,11 +44,20 @@ extension ConvoDataSource: MessagesDataSource {
     }
 
     func currentSender() -> Sender {
+        guard let convo = convoManager?.convo else {
+            return Sender(id: "", displayName: "")
+        }
         return Sender(id: convo.senderId, displayName: convo.senderDisplayName)
     }
 
     func messageForItem(at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageType {
-        return messagesManager?.messages[safe: indexPath.section] ?? Message()
+        return messagesManager?.messages[safe: indexPath.section] ?? Message(sender: currentSender(),
+                                                                             messageId: "",
+                                                                             data: .text(""),
+                                                                             dateRead: Date(),
+                                                                             parentConvoKey: "",
+                                                                             receiverId: "",
+                                                                             receiverProxyKey: "")
     }
 
     func numberOfMessages(in messagesCollectionView: MessagesCollectionView) -> Int {
@@ -62,6 +67,9 @@ extension ConvoDataSource: MessagesDataSource {
 
 private extension ConvoDataSource {
     func makeAvatar(_ message: MessageType) -> Avatar {
+        guard let convo = convoManager?.convo else {
+            return Avatar()
+        }
         if isFromCurrentSender(message: message) {
             return Avatar(image: icons[convo.senderProxyKey],
                           initials: convo.senderDisplayName.getFirstNChars(2).capitalized)
@@ -72,6 +80,9 @@ private extension ConvoDataSource {
     }
 
     func makeDisplayName(_ message: MessageType) -> NSAttributedString {
+        guard let convo = convoManager?.convo else {
+            return NSAttributedString()
+        }
         return NSAttributedString(string: isFromCurrentSender(message: message) ? convo.senderDisplayName : convo.receiverDisplayName,
                                   attributes: [NSAttributedStringKey.font: UIFont.preferredFont(forTextStyle: .caption1)])
     }

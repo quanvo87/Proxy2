@@ -12,17 +12,6 @@ struct Message: MessageType {
     let receiverId: String
     let receiverProxyKey: String
 
-    init() {
-        sender = Sender(id: "", displayName: "")
-        messageId = ""
-        sentDate = Date()
-        data = .text("")
-        dateRead = Date()
-        parentConvoKey = ""
-        receiverId = ""
-        receiverProxyKey = ""
-    }
-
     init(sender: Sender, messageId: String, data: MessageData, dateRead: Date, parentConvoKey: String, receiverId: String, receiverProxyKey: String) {
         self.sender = sender
         self.messageId = messageId
@@ -112,7 +101,8 @@ enum SettableMessageProperty {
 
     var properties: (name: String, value: Any) {
         switch self {
-        case .dateRead(let value): return ("dateRead", value)
+        case .dateRead(let value):
+            return ("dateRead", value)
         }
     }
 }
