@@ -45,28 +45,27 @@ struct DBMessage {
             completion(.failure(.inputTooLong))
             return
         }
-
         guard let ref = DB.makeReference(Child.messages, senderConvo.key) else {
             completion(.failure(.unknown))
             return
         }
-
-        let messageId = ref.childByAutoId().key
-
         let message = Message(sender: Sender(id: senderConvo.senderId,
                                              displayName: senderConvo.senderProxyName),
-                              messageId: messageId,
+                              messageId: ref.childByAutoId().key,
                               data: .text(text),
                               dateRead: Date.distantPast,
                               parentConvoKey: senderConvo.key,
                               receiverId: senderConvo.receiverId,
                               receiverProxyKey: senderConvo.receiverProxyKey)
-
         let work = GroupWork()
         work.set(message.toDictionary(), at: Child.messages, message.parentConvoKey, message.messageId)
         work.set(message.toDictionary(), at: Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
         work.allDone {
-
+            if work.result {
+                completion(.success((message, senderConvo)))
+            } else {
+                completion(.failure(.unknown))
+            }
         }
 
 //        DBConvo.userIsPresent(user: senderConvo.receiverId, inConvoWithKey: senderConvo.key) { (receiverIsPresent) in

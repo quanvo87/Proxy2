@@ -6,13 +6,15 @@ protocol UnreadMessagesManaging: class {
 extension UnreadMessagesManaging {
     func enterConvo(_ convoKey: String) {
         convosPresentIn[convoKey] = true
-        for message in unreadMessages where message.parentConvoKey == convoKey {
-            DBMessage.read(message) { (success) in
-                if success, let index = self.unreadMessages.index(of: message) {
-                    self.unreadMessages.remove(at: index)
-                }
+        var untouchedMessages = [Message]()
+        for message in unreadMessages {
+            if message.parentConvoKey == convoKey {
+                DBMessage.read(message) { _ in }
+            } else {
+                untouchedMessages.append(message)
             }
         }
+        unreadMessages = untouchedMessages
     }
 
     func leaveConvo(_ convoKey: String) {
