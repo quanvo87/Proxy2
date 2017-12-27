@@ -17,27 +17,18 @@ class ConvoDetailTableViewDelegate: NSObject {
 extension ConvoDetailTableViewDelegate: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        guard let proxy = proxyManager?.proxy else {
+            return
+        }
         switch indexPath.section {
         case 1:
-            guard let proxy = proxyManager?.proxy else {
-                return
-            }
             controller?.showProxyController(proxy: proxy, unreadMessagesManager: unreadMessagesManager)
         case 2:
             switch indexPath.row {
             case 0:
-                guard let convo = convoManager?.convo else {
-                    return
-                }
-                let alert = UIAlertController(title: "Leave Conversation?", message: "The other user will not be notified.", preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "Leave", style: .destructive) { (void) in
-                    DBConvo.leaveConvo(convo) { (_) in }
-                })
-                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-                controller?.present(alert, animated: true)
-            case 1:
-                let alert = UIAlertController(title: "Block User?", message: "You will no longer see any conversations with this user. You can unblock users in the 'Me' tab.", preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "Block", style: .destructive) { (_) in
+                let alert = UIAlertController(title: "Delete Proxy?", message: "All conversations for this proxy will also be deleted.", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
+                    DBProxy.deleteProxy(proxy) { _ in }
                 })
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
                 controller?.present(alert, animated: true)

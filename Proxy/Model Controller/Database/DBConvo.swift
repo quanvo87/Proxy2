@@ -18,15 +18,15 @@ struct DBConvo {
         }
     }
 
-    static func getConvos(forProxy proxy: Proxy, filtered: Bool, completion: @escaping ([Convo]?) -> Void) {
+    static func getConvos(forProxy proxy: Proxy, completion: @escaping ([Convo]?) -> Void) {
         DB.get(Child.convos, proxy.key) { (data) in
-            completion(data?.toConvosArray(filtered: filtered))
+            completion(data?.toConvosArray())
         }
     }
 
-    static func getConvos(forUser uid: String, filtered: Bool, completion: @escaping ([Convo]?) -> Void) {
+    static func getConvos(forUser uid: String, completion: @escaping ([Convo]?) -> Void) {
         DB.get(Child.convos, uid) { (data) in
-            completion(data?.toConvosArray(filtered: filtered))
+            completion(data?.toConvosArray())
         }
     }
 
@@ -41,58 +41,38 @@ struct DBConvo {
         })
     }
 
-    // TODO: have to mark all the messages as read?
-    static func leaveConvo(_ convo: Convo, completion: @escaping (Success) -> Void) {
-        let work = GroupWork()
-        work.deleteUnreadMessages(for: convo)
-        work.increment(by: -1, forProperty: .convoCount, forProxyInConvo: convo, asSender: true)
-        work.set(.receiverLeftConvo(true), forConvo: convo, asSender: false)
-        work.set(.senderLeftConvo(true), forConvo: convo, asSender: true)
-        work.allDone {
-            work.setHasUnreadMessageForProxy(key: convo.receiverProxyKey, ownerId: convo.receiverId)
-            work.allDone {
-                completion(work.result)
-            }
-        }
-    }
-
     static func makeConvo(sender: Proxy, receiver: Proxy, completion: @escaping (Convo?) -> Void) {
-        DB.get(Child.userInfo, receiver.ownerId, Child.blockedUsers, sender.ownerId) { (data) in
-            let senderIsBlocked = data?.value as? Bool ?? false
-            let convoKey = makeConvoKey(senderProxy: sender, receiverProxy: receiver)
+        let convoKey = makeConvoKey(senderProxy: sender, receiverProxy: receiver)
 
-            var senderConvo = Convo()
-            senderConvo.key = convoKey
-            senderConvo.receiverIcon = receiver.icon
-            senderConvo.receiverId = receiver.ownerId
-            senderConvo.receiverProxyKey = receiver.key
-            senderConvo.receiverProxyName = receiver.name
-            senderConvo.senderId = sender.ownerId
-            senderConvo.senderProxyKey = sender.key
-            senderConvo.senderProxyName = sender.name
-            senderConvo.senderIsBlocked = senderIsBlocked
+        var senderConvo = Convo()
+        senderConvo.key = convoKey
+        senderConvo.receiverIcon = receiver.icon
+        senderConvo.receiverId = receiver.ownerId
+        senderConvo.receiverProxyKey = receiver.key
+        senderConvo.receiverProxyName = receiver.name
+        senderConvo.senderId = sender.ownerId
+        senderConvo.senderProxyKey = sender.key
+        senderConvo.senderProxyName = sender.name
 
-            var receiverConvo = Convo()
-            receiverConvo.key = convoKey
-            receiverConvo.receiverIcon = sender.icon
-            receiverConvo.receiverId = sender.ownerId
-            receiverConvo.receiverProxyKey = sender.key
-            receiverConvo.receiverProxyName = sender.name
-            receiverConvo.receiverIsBlocked = senderIsBlocked
-            receiverConvo.senderId = receiver.ownerId
-            receiverConvo.senderProxyKey = receiver.key
-            receiverConvo.senderProxyName = receiver.name
+        var receiverConvo = Convo()
+        receiverConvo.key = convoKey
+        receiverConvo.receiverIcon = sender.icon
+        receiverConvo.receiverId = sender.ownerId
+        receiverConvo.receiverProxyKey = sender.key
+        receiverConvo.receiverProxyName = sender.name
+        receiverConvo.senderId = receiver.ownerId
+        receiverConvo.senderProxyKey = receiver.key
+        receiverConvo.senderProxyName = receiver.name
 
-            let work = GroupWork()
-            work.increment(by: 1, forProperty: .convoCount, forProxy: receiver)
-            work.increment(by: 1, forProperty: .convoCount, forProxy: sender)
-            work.increment(by: 1, forProperty: .proxiesInteractedWith, forUser: receiver.ownerId)
-            work.increment(by: 1, forProperty: .proxiesInteractedWith, forUser: sender.ownerId)
-            work.set(receiverConvo, asSender: true)
-            work.set(senderConvo, asSender: true)
-            work.allDone {
-                completion(work.result ? senderConvo : nil)
-            }
+        let work = GroupWork()
+        work.increment(by: 1, forProperty: .convoCount, forProxy: receiver)
+        work.increment(by: 1, forProperty: .convoCount, forProxy: sender)
+        work.increment(by: 1, forProperty: .proxiesInteractedWith, forUser: receiver.ownerId)
+        work.increment(by: 1, forProperty: .proxiesInteractedWith, forUser: sender.ownerId)
+        work.set(receiverConvo, asSender: true)
+        work.set(senderConvo, asSender: true)
+        work.allDone {
+            completion(work.result ? senderConvo : nil)
         }
     }
 
@@ -108,18 +88,6 @@ struct DBConvo {
         return receiver
     }
 
-    static func receiverIsBlocked(_ convo: Convo, completion: @escaping (Bool) -> Void) {
-        DB.get(Child.convos, convo.senderId, convo.key, Child.receiverIsBlocked) { (data) in
-            completion(data?.value as? Bool ?? false)
-        }
-    }
-
-    static func senderLeftConvo(_ convo: Convo, completion: @escaping (Bool) -> Void) {
-        DB.get(Child.convos, convo.senderId, convo.key, Child.senderLeftConvo) { (data) in
-            completion(data?.value as? Bool ?? false)
-        }
-    }
-
     static func setReceiverNickname(to nickname: String, forConvo convo: Convo, completion: @escaping (ProxyError?) -> Void) {
         guard nickname.count < Setting.maxNameSize else {
             completion(.inputTooLong)
@@ -131,38 +99,14 @@ struct DBConvo {
             completion(work.result ? nil : .unknown)
         }
     }
-
-    static func setPresent(_ present: Bool, uid: String, convoKey: String, completion: @escaping (Bool) -> Void) {
-        if present {
-            DB.set(present, at: Child.userInfo, uid, Child.isPresent, convoKey) { (success) in
-                completion(success)
-            }
-        } else {
-            DB.delete(Child.userInfo, uid, Child.isPresent, convoKey) { (success) in
-                completion(success)
-            }
-        }
-    }
-
-    static func userIsPresent(user uid: String, inConvoWithKey convoKey: String, completion: @escaping (Bool) -> Void) {
-        DB.get(Child.userInfo, uid, Child.isPresent, convoKey) { (data) in
-            completion(data?.value as? Bool ?? false)
-        }
-    }
 }
 
 extension DataSnapshot {
-    func toConvosArray(filtered: Bool) -> [Convo] {
+    func toConvosArray() -> [Convo] {
         var convos = [Convo]()
         for child in self.children {
             if let convo = Convo((child as? DataSnapshot)?.value as AnyObject) {
-                if filtered {
-                    if !convo.senderLeftConvo && !convo.receiverIsBlocked {
-                        convos.append(convo)
-                    }
-                } else {
-                    convos.append(convo)
-                }
+                convos.append(convo)
             }
         }
         return convos

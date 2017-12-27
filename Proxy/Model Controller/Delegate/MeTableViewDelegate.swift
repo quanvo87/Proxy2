@@ -14,8 +14,6 @@ extension MeTableViewDelegate: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         switch indexPath.section {
         case 1:
-            break
-        case 2:
             switch indexPath.row {
             case 0:
                 let alert = UIAlertController(title: "Log Out", message: "Are you sure you want to log out?", preferredStyle: .alert)

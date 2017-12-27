@@ -16,7 +16,7 @@ class MeTableViewDataSource: NSObject {
 
 extension MeTableViewDataSource: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 3
+        return 2
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -37,9 +37,6 @@ extension MeTableViewDataSource: UITableViewDataSource {
                 break
             }
         case 1:
-            cell.accessoryType = .disclosureIndicator
-            cell.load(icon: "blockedUsers", title: "Blocked Users", subtitle: "")
-        case 2:
             cell.subtitleLabel.text = ""
             switch indexPath.row {
             case 0:
@@ -60,8 +57,6 @@ extension MeTableViewDataSource: UITableViewDataSource {
         case 0:
             return 3
         case 1:
-            return 1
-        case 2:
             return 2
         default:
             return 0

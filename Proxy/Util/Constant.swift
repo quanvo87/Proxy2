@@ -10,7 +10,6 @@ struct ButtonName {
 }
 
 struct Identifier {
-    static let blockedUsersTableViewCell = "BlockedUsersTableViewCell"
     static let convoDetailReceiverProxyTableViewCell = "ConvoDetailReceiverProxyTableViewCell"
     static let convoDetailSenderProxyTableViewCell = "ConvoDetailSenderProxyTableViewCell"
     static let convosTableViewCell = "ConvosTableViewCell"
@@ -23,26 +22,21 @@ struct Identifier {
 }
 
 struct Child {
-    static let blockedUsers = "blockedUsers"
     static let convos = "convos"
     static let icon = "icon"
-    static let isPresent = "isPresent"
-    static let isTyping = "isTyping"
     static let key = "key"
     static let messages = "messages"
     static let parentConvoKey = "parentConvoKey"
     static let proxies = "proxies"
     static let proxyKeys = "proxyKeys"
     static let proxyOwners = "proxyOwners"
-    static let receiverIsBlocked = "receiverIsBlocked"
     static let receiverNickname = "receiverNickname"
-    static let senderLeftConvo = "senderLeftConvo"
     static let senderNickname = "senderNickname"
     static let timestamp = "timestamp"
     static let unreadCount = "unreadCount"
     static let unreadMessages = "unreadMessages"
-    static let userInfo = "userInfo"
     static let userFiles = "userFiles"
+    static let userInfo = "userInfo"
 }
 
 struct Setting {
