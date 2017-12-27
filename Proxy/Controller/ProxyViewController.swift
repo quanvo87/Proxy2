@@ -9,9 +9,11 @@ class ProxyViewController: UIViewController, MakeNewMessageDelegate {
     private let dataSource = ProxyTableViewDataSource()
     private let delegate = ProxyTableViewDelegate()
     private let tableView = UITableView(frame: .zero, style: .grouped)
+    private let unreadMessagesManager: UnreadMessagesManaging?
 
-    init(_ proxy: Proxy) {
+    init(proxy: Proxy, unreadMessagesManager: UnreadMessagesManaging?) {
         self.proxy = proxy
+        self.unreadMessagesManager = unreadMessagesManager
 
         super.init(nibName: nil, bundle: nil)
 
@@ -24,7 +26,7 @@ class ProxyViewController: UIViewController, MakeNewMessageDelegate {
 
         dataSource.load(proxyManager: proxyManager, convosManager: convosManager, controller: self)
 
-        delegate.load(manager: convosManager, controller: self)
+        delegate.load(convosManager: convosManager, unreadMessagesManager: unreadMessagesManager, controller: self)
         
         tableView.dataSource = dataSource
         tableView.delaysContentTouches = false
@@ -42,7 +44,7 @@ class ProxyViewController: UIViewController, MakeNewMessageDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         if let newConvo = newConvo {
-            navigationController?.showConvoViewController(newConvo)
+            navigationController?.showConvoViewController(convo: newConvo, unreadMessagesManager: unreadMessagesManager)
             self.newConvo = nil
         }
     }

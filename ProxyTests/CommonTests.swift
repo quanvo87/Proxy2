@@ -23,8 +23,8 @@ class CommonTests: XCTestCase {
     }
     
     func testIntAsLabelWithParens() {
-        XCTAssertEqual(0.asLabelWithParens, "")
-        XCTAssertEqual(1.asLabelWithParens, " (1)")
+        XCTAssertEqual(0.asStringWithParens, "")
+        XCTAssertEqual(1.asStringWithParens, " (1)")
     }
     
     func testShortForm() {

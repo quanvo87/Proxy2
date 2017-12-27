@@ -28,7 +28,7 @@ struct DBProxy {
         }
     }
 
-    static func fixConvoCounts(uid: String, completion: @escaping (Success) -> Void) {
+    static func fixConvoCounts(_ uid: String, completion: @escaping (Success) -> Void) {
         DBProxy.getProxies(forUser: uid) { (proxies) in
             guard let proxies = proxies else {
                 completion(false)

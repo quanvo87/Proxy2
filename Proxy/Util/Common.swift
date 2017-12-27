@@ -50,7 +50,7 @@ extension Int {
         return self == 0 ? "" : String(self)
     }
 
-    var asLabelWithParens: String {
+    var asStringWithParens: String {
         return self == 0 ? "" : " (\(self))"
     }
 
@@ -126,8 +126,8 @@ extension UInt {
 }
 
 extension UINavigationController {
-    func showConvoViewController(_ convo: Convo) {
-        pushViewController(ConvoViewController(convo), animated: true)
+    func showConvoViewController(convo: Convo, unreadMessagesManager: UnreadMessagesManaging?) {
+        pushViewController(ConvoViewController(convo: convo, unreadMessagesManager: unreadMessagesManager), animated: true)
     }
 }
 
@@ -204,8 +204,8 @@ extension UIViewController {
         present(navigationController, animated: true)
     }
 
-    func showProxyController(_ proxy: Proxy) {
-        navigationController?.pushViewController(ProxyViewController(proxy), animated: true)
+    func showProxyController(proxy: Proxy, unreadMessagesManager: UnreadMessagesManaging?) {
+        navigationController?.pushViewController(ProxyViewController(proxy: proxy, unreadMessagesManager: unreadMessagesManager), animated: true)
     }
 }
 

@@ -3,16 +3,16 @@ import UIKit
 class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
     var newConvo: Convo?
 
-    private let uid: String
     private let proxiesManager = ProxiesManager()
     private let itemsToDeleteManager = ItemsToDeleteManager()
     private let dataSource = ProxiesTableViewDataSource()
     private let delegate = ProxiesTableViewDelegate()
     private let tableView = UITableView()
     private let buttonManager = ProxiesButtonManager()
+    private weak var unreadMessagesManager: UnreadMessagesManaging?
 
-    init(_ uid: String) {
-        self.uid = uid
+    init(uid: String, unreadMessagesManager: UnreadMessagesManaging) {
+        self.unreadMessagesManager = unreadMessagesManager
         
         super.init(nibName: nil, bundle: nil)
 
@@ -22,7 +22,7 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
 
         dataSource.load(manager: proxiesManager, accessoryType: .disclosureIndicator)
 
-        delegate.load(proxiesManager: proxiesManager, itemsToDeleteManager: itemsToDeleteManager, controller: self)
+        delegate.load(proxiesManager: proxiesManager, itemsToDeleteManager: itemsToDeleteManager, unreadMessagesManager: unreadMessagesManager, controller: self)
 
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.dataSource = dataSource
@@ -39,7 +39,7 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         if let newConvo = newConvo {
-            navigationController?.showConvoViewController(newConvo)
+            navigationController?.showConvoViewController(convo: newConvo, unreadMessagesManager: unreadMessagesManager)
             self.newConvo = nil
         }
     }

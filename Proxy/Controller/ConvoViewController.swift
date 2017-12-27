@@ -9,9 +9,11 @@ class ConvoViewController: MessagesViewController {
     private let displayDelegate = ConvoDisplayDelegate()
     private let layoutDelegate = ConvoLayoutDelegate()
     private let inputBarDelegate = ConvoInputBarDelegate()
+    private weak var unreadMessagesManager: UnreadMessagesManaging?
 
-    init(_ convo: Convo) {
+    init(convo: Convo, unreadMessagesManager: UnreadMessagesManaging?) {
         self.convo = convo
+        self.unreadMessagesManager = unreadMessagesManager
 
         super.init(nibName: nil, bundle: nil)
 
@@ -39,30 +41,16 @@ class ConvoViewController: MessagesViewController {
         messageInputBar.delegate = inputBarDelegate
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(true)
-        DBConvo.setPresent(present: true, uid: convo.senderId, convoKey: convo.key) { (success) in
-            if success {
-                for message in self.messagesManager.messages {
-                    DBMessage.read(message) { (_) in }
-                }
-            }
-        }
-    }
-
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         tabBarController?.tabBar.isHidden = true
-    }
-
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(true)
-        DBConvo.setPresent(present: false, uid: convo.senderId, convoKey: convo.key) { (_) in }
+        unreadMessagesManager?.enterConvo(convo.key)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
         tabBarController?.tabBar.isHidden = false
+        unreadMessagesManager?.leaveConvo(convo.key)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -75,6 +63,6 @@ private extension ConvoViewController {
         guard let convo = convoManager.convo else {
             return
         }
-        navigationController?.pushViewController(ConvoDetailViewController(convo), animated: true)
+        navigationController?.pushViewController(ConvoDetailViewController(convo: convo, unreadMessagesManager: unreadMessagesManager), animated: true)
     }
 }

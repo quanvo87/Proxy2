@@ -3,17 +3,16 @@ import UIKit
 class ConvosViewController: UIViewController, MakeNewMessageDelegate {
     var newConvo: Convo?
 
-    private let uid: String
     private let convosManager = ConvosManager()
     private let itemsToDeleteManager = ItemsToDeleteManager()
     private let dataSource = ConvosTableViewDataSource()
     private let delegate = ConvosTableViewDelegate()
     private let tableView = UITableView()
     private let buttonManager = ConvosButtonManager()
-    private let unreadCountManager = ConvosUnreadCountManager()
+    private weak var unreadMessagesManager: UnreadMessagesManaging?
 
-    init(_ uid: String) {
-        self.uid = uid
+    init(uid: String, unreadMessagesManager: UnreadMessagesManaging) {
+        self.unreadMessagesManager = unreadMessagesManager
         
         super.init(nibName: nil, bundle: nil)
 
@@ -23,7 +22,7 @@ class ConvosViewController: UIViewController, MakeNewMessageDelegate {
 
         dataSource.load(manager: convosManager)
 
-        delegate.load(convosManager: convosManager, itemsToDeleteManager: itemsToDeleteManager, controller: self)
+        delegate.load(convosManager: convosManager, itemsToDeleteManager: itemsToDeleteManager, unreadMessagesManager: unreadMessagesManager, controller: self)
 
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.dataSource = dataSource
@@ -35,14 +34,12 @@ class ConvosViewController: UIViewController, MakeNewMessageDelegate {
         view.addSubview(tableView)
 
         buttonManager.load(uid: uid, itemsToDeleteManager: itemsToDeleteManager, makeNewMessageDelegate: self, tableView: tableView, viewController: self)
-
-        unreadCountManager.load(uid: uid, viewController: self)
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         if let newConvo = newConvo {
-            navigationController?.showConvoViewController(newConvo)
+            navigationController?.showConvoViewController(convo: newConvo, unreadMessagesManager: unreadMessagesManager)
             self.newConvo = nil
         }
     }

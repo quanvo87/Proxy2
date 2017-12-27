@@ -132,7 +132,7 @@ struct DBConvo {
         }
     }
 
-    static func setPresent(present: Bool, uid: String, convoKey: String, completion: @escaping (Bool) -> Void) {
+    static func setPresent(_ present: Bool, uid: String, convoKey: String, completion: @escaping (Bool) -> Void) {
         if present {
             DB.set(present, at: Child.userInfo, uid, Child.isPresent, convoKey) { (success) in
                 completion(success)
