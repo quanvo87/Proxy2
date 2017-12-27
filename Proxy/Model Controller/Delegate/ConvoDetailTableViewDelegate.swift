@@ -3,11 +3,13 @@ import UIKit
 class ConvoDetailTableViewDelegate: NSObject {
     private weak var convoManager: ConvoManaging?
     private weak var proxyManager: ProxyManaging?
+    private weak var unreadMessagesManager: UnreadMessagesManaging?
     private weak var controller: UIViewController?
 
-    func load(convoManager: ConvoManaging, proxyManager: ProxyManaging, controller: UIViewController) {
+    func load(convoManager: ConvoManaging, proxyManager: ProxyManaging, unreadMessagesManager: UnreadMessagesManaging?, controller: UIViewController) {
         self.convoManager = convoManager
         self.proxyManager = proxyManager
+        self.unreadMessagesManager = unreadMessagesManager
         self.controller = controller
     }
 }
@@ -20,7 +22,7 @@ extension ConvoDetailTableViewDelegate: UITableViewDelegate {
             guard let proxy = proxyManager?.proxy else {
                 return
             }
-            controller?.showProxyController(proxy)
+            controller?.showProxyController(proxy: proxy, unreadMessagesManager: unreadMessagesManager)
         case 2:
             switch indexPath.row {
             case 0:

@@ -1,11 +1,13 @@
 import UIKit
 
 class ProxyTableViewDelegate: NSObject {
-    private weak var manager: ConvosManaging?
+    private weak var convosManager: ConvosManaging?
+    private weak var unreadMessagesManager: UnreadMessagesManaging?
     private weak var controller: UIViewController?
 
-    func load(manager: ConvosManaging, controller: UIViewController?) {
-        self.manager = manager
+    func load(convosManager: ConvosManaging, unreadMessagesManager: UnreadMessagesManaging?, controller: UIViewController?) {
+        self.convosManager = convosManager
+        self.unreadMessagesManager = unreadMessagesManager
         self.controller = controller
     }
 }
@@ -15,11 +17,11 @@ extension ProxyTableViewDelegate: UITableViewDelegate {
         guard
             indexPath.section == 1,
             let row = tableView.indexPathForSelectedRow?.row,
-            let convo = manager?.convos[safe: row] else {
+            let convo = convosManager?.convos[safe: row] else {
                 return
         }
         tableView.deselectRow(at: indexPath, animated: true)
-        controller?.navigationController?.showConvoViewController(convo)
+        controller?.navigationController?.showConvoViewController(convo: convo, unreadMessagesManager: unreadMessagesManager)
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

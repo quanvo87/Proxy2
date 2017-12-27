@@ -3,7 +3,6 @@ import UIKit
 
 class AuthManager {
     private let authObserver = AuthObserver()
-    private let presenceManager = PresenceManager()
     private var loggedIn = false
     private weak var window: UIWindow?
 
@@ -15,17 +14,16 @@ class AuthManager {
 
 extension AuthManager: AuthManaging {
     func logIn(_ user: User) {
+        var displayName = user.displayName
         if (user.displayName == nil || user.displayName == ""), let email = user.email, email != "" {
+            displayName = email
             let changeRequest = user.createProfileChangeRequest()
             changeRequest.displayName = email
             changeRequest.commitChanges()
         }
-        presenceManager.load(user.uid)
-        window?.rootViewController = TabBarController(displayName: user.displayName ?? user.email ?? "", uid: user.uid)
+        window?.rootViewController = TabBarController(displayName: displayName, uid: user.uid)
         loggedIn = true
-        DispatchQueue.queue.async {
-            DBProxy.fixConvoCounts(uid: user.uid) { _ in }
-        }
+        DBProxy.fixConvoCounts(user.uid) { _ in }
     }
 
     func logOut() {

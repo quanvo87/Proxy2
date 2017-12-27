@@ -5,6 +5,7 @@ import MessageKit
 struct DBMessage {
     typealias SendMessageCallback = (Result<(message: Message, convo: Convo), ProxyError>) -> Void
 
+    // todo: fix
     static func read(_ message: Message, atDate date: Date = Date(), completion: @escaping (Success) -> Void) {
         let work = GroupWork()
         work.delete(at: Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
@@ -50,81 +51,100 @@ struct DBMessage {
             return
         }
 
-        DBConvo.userIsPresent(user: senderConvo.receiverId, inConvoWithKey: senderConvo.key) { (receiverIsPresent) in
-            let currentTime = Date().timeIntervalSince1970
+        let messageId = ref.childByAutoId().key
+
+        let message = Message(sender: Sender(id: senderConvo.senderId,
+                                             displayName: senderConvo.senderProxyName),
+                              messageId: messageId,
+                              data: .text(text),
+                              dateRead: Date.distantPast,
+                              parentConvoKey: senderConvo.key,
+                              receiverId: senderConvo.receiverId,
+                              receiverProxyKey: senderConvo.receiverProxyKey)
+
+        let work = GroupWork()
+        work.set(message.toDictionary(), at: Child.messages, message.parentConvoKey, message.messageId)
+        work.set(message.toDictionary(), at: Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
+        work.allDone {
+
+        }
+
+//        DBConvo.userIsPresent(user: senderConvo.receiverId, inConvoWithKey: senderConvo.key) { (receiverIsPresent) in
+//            let currentTime = Date().timeIntervalSince1970
 
             // Write message
-            let messageId = ref.childByAutoId().key
-            let dateRead = receiverIsPresent ? Date() : Date.distantPast
+//            let messageId = ref.childByAutoId().key
+//            let dateRead = receiverIsPresent ? Date() : Date.distantPast
+//
+//            let message = Message(sender: Sender(id: senderConvo.senderId,
+//                                                  displayName: senderConvo.senderProxyName),
+//                                   messageId: messageId,
+//                                   data: .text(text),
+//                                   dateRead: dateRead,
+//                                   parentConvoKey: senderConvo.key,
+//                                   receiverId: senderConvo.receiverId,
+//                                   receiverProxyKey: senderConvo.receiverProxyKey)
+//
+//            let work = GroupWork()
+//            work.set(message.toDictionary(), at: Child.messages, message.parentConvoKey, message.messageId)
+//            work.set(message.toDictionary(), at: Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
 
-            let message = Message(sender: Sender(id: senderConvo.senderId,
-                                                  displayName: senderConvo.senderProxyName),
-                                   messageId: messageId,
-                                   data: .text(text),
-                                   dateRead: dateRead,
-                                   parentConvoKey: senderConvo.key,
-                                   receiverId: senderConvo.receiverId,
-                                   receiverProxyKey: senderConvo.receiverProxyKey)
+//            // Receiver updates
+//            work.increment(by: 1, forProperty: .messagesReceived, forUser: senderConvo.receiverId)
+//
+//            if !senderConvo.receiverDeletedProxy && !senderConvo.senderIsBlocked {
+//                work.set(.lastMessage(text), forProxyInConvo: senderConvo, asSender: false)
+//                work.set(.timestamp(currentTime), forProxyInConvo: senderConvo, asSender: false)
+//
+//                if !receiverIsPresent {
+//                    work.set(.hasUnreadMessage(true), forProxyWithKey: message.receiverProxyKey, proxyOwner: message.receiverId)
+//                    work.set(message.toDictionary(), at: Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
+//                }
+//            }
+//
+//            if !senderConvo.receiverDeletedProxy {
+//                work.set(.lastMessage(text), forConvo: senderConvo, asSender: false)
+//                work.set(.timestamp(currentTime), forConvo: senderConvo, asSender: false)
+//
+//                if !receiverIsPresent {
+//                    work.set(.hasUnreadMessage(true), forConvo: senderConvo, asSender: false)
+//                }
+//            }
+//
+//            if senderConvo.receiverLeftConvo {
+//                work.increment(by: 1, forProperty: .convoCount, forProxyInConvo: senderConvo, asSender: false)
+//                work.set(.receiverLeftConvo(false), forConvo: senderConvo, asSender: true)
+//                work.set(.senderLeftConvo(false), forConvo: senderConvo, asSender: false)
+//            }
+//
+//            // Sender updates
+//            work.increment(by: 1, forProperty: .messagesSent, forUser: senderConvo.senderId)
+//            work.set(.lastMessage("You: \(text)"), forConvo: senderConvo, asSender: true)
+//            work.set(.lastMessage("You: \(text)"), forProxyInConvo: senderConvo, asSender: true)
+//            work.set(.timestamp(currentTime), forConvo: senderConvo, asSender: true)
+//            work.set(.timestamp(currentTime), forProxyInConvo: senderConvo, asSender: true)
+//
+//            if senderConvo.senderLeftConvo {
+//                work.increment(by: 1, forProperty: .convoCount, forProxyInConvo: senderConvo, asSender: true)
+//                work.set(.receiverLeftConvo(false), forConvo: senderConvo, asSender: false)
+//                work.set(.senderLeftConvo(false), forConvo: senderConvo, asSender: true)
+//            }
 
-            let work = GroupWork()
-            work.set(message.toDictionary(), at: Child.messages, message.parentConvoKey, message.messageId)
-
-            // Receiver updates
-            work.increment(by: 1, forProperty: .messagesReceived, forUser: senderConvo.receiverId)
-
-            if !senderConvo.receiverDeletedProxy && !senderConvo.senderIsBlocked {
-                work.set(.lastMessage(text), forProxyInConvo: senderConvo, asSender: false)
-                work.set(.timestamp(currentTime), forProxyInConvo: senderConvo, asSender: false)
-
-                if !receiverIsPresent {
-                    work.set(.hasUnreadMessage(true), forProxyWithKey: message.receiverProxyKey, proxyOwner: message.receiverId)
-                    work.set(message.toDictionary(), at: Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
-                }
-            }
-
-            if !senderConvo.receiverDeletedProxy {
-                work.set(.lastMessage(text), forConvo: senderConvo, asSender: false)
-                work.set(.timestamp(currentTime), forConvo: senderConvo, asSender: false)
-
-                if !receiverIsPresent {
-                    work.set(.hasUnreadMessage(true), forConvo: senderConvo, asSender: false)
-                }
-            }
-
-            if senderConvo.receiverLeftConvo {
-                work.increment(by: 1, forProperty: .convoCount, forProxyInConvo: senderConvo, asSender: false)
-                work.set(.receiverLeftConvo(false), forConvo: senderConvo, asSender: true)
-                work.set(.senderLeftConvo(false), forConvo: senderConvo, asSender: false)
-            }
-            
-            // Sender updates
-            work.increment(by: 1, forProperty: .messagesSent, forUser: senderConvo.senderId)
-            work.set(.lastMessage("You: \(text)"), forConvo: senderConvo, asSender: true)
-            work.set(.lastMessage("You: \(text)"), forProxyInConvo: senderConvo, asSender: true)
-            work.set(.timestamp(currentTime), forConvo: senderConvo, asSender: true)
-            work.set(.timestamp(currentTime), forProxyInConvo: senderConvo, asSender: true)
-
-            if senderConvo.senderLeftConvo {
-                work.increment(by: 1, forProperty: .convoCount, forProxyInConvo: senderConvo, asSender: true)
-                work.set(.receiverLeftConvo(false), forConvo: senderConvo, asSender: false)
-                work.set(.senderLeftConvo(false), forConvo: senderConvo, asSender: true)
-            }
-
-            work.allDone {
-                guard work.result else {
-                    completion(.failure(.unknown))
-                    return
-                }
-
-                DBConvo.getConvo(withKey: senderConvo.key, belongingTo: senderConvo.senderId) { (convo) in
-                    guard let convo = convo else {
-                        completion(.failure(.unknown))
-                        return
-                    }
-                    completion(.success((message, convo)))
-                }
-            }
-        }
+//            work.allDone {
+//                guard work.result else {
+//                    completion(.failure(.unknown))
+//                    return
+//                }
+//
+//                DBConvo.getConvo(withKey: senderConvo.key, belongingTo: senderConvo.senderId) { (convo) in
+//                    guard let convo = convo else {
+//                        completion(.failure(.unknown))
+//                        return
+//                    }
+//                    completion(.success((message, convo)))
+//                }
+//            }
+//        }
     }
 }
 

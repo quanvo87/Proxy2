@@ -1,7 +1,6 @@
 import UIKit
 
 class MeViewController: UIViewController {
-    private let uid: String
     private let messagesReceivedManager = MessagesReceivedCountManager()
     private let messagesSentManager = MessagesSentCountManager()
     private let proxiesInteractedWithManager = ProxiesInteractedWithCountManager()
@@ -9,9 +8,7 @@ class MeViewController: UIViewController {
     private let delegate = MeTableViewDelegate()
     private let tableView = UITableView(frame: .zero, style: .grouped)
 
-    init(uid: String, displayName: String) {
-        self.uid = uid
-        
+    init(uid: String, displayName: String?) {
         super.init(nibName: nil, bundle: nil)
 
         navigationItem.title = displayName

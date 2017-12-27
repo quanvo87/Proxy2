@@ -1,3 +1,4 @@
+import FirebaseDatabase
 import MessageKit
 
 struct Message: MessageType {
@@ -31,6 +32,10 @@ struct Message: MessageType {
         self.parentConvoKey = parentConvoKey
         self.receiverId = receiverId
         self.receiverProxyKey = receiverProxyKey
+    }
+
+    init?(_ data: DataSnapshot) {
+        self.init(data.value as AnyObject)
     }
 
     init?(_ dictionary: AnyObject) {

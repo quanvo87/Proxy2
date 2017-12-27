@@ -3,11 +3,13 @@ import UIKit
 class ProxiesTableViewDelegate: NSObject {
     private weak var proxiesManager: ProxiesManaging?
     private weak var itemsToDeleteManager: ItemsToDeleteManaging?
+    private weak var unreadMessagesManager: UnreadMessagesManaging?
     private weak var controller: UIViewController?
 
-    func load(proxiesManager: ProxiesManaging, itemsToDeleteManager: ItemsToDeleteManaging, controller: UIViewController?) {
+    func load(proxiesManager: ProxiesManaging, itemsToDeleteManager: ItemsToDeleteManaging, unreadMessagesManager: UnreadMessagesManaging?, controller: UIViewController?) {
         self.proxiesManager = proxiesManager
         self.itemsToDeleteManager = itemsToDeleteManager
+        self.unreadMessagesManager = unreadMessagesManager
         self.controller = controller
     }
 }
@@ -21,7 +23,7 @@ extension ProxiesTableViewDelegate: UITableViewDelegate {
             itemsToDeleteManager?.itemsToDelete[proxy.key] = proxy
         } else {
             tableView.deselectRow(at: indexPath, animated: true)
-            controller?.showProxyController(proxy)
+            controller?.showProxyController(proxy: proxy, unreadMessagesManager: unreadMessagesManager)
         }
     }
 

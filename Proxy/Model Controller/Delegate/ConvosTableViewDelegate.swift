@@ -3,11 +3,13 @@ import UIKit
 class ConvosTableViewDelegate: NSObject {
     private weak var convosManager: ConvosManaging?
     private weak var itemsToDeleteManager: ItemsToDeleteManaging?
+    private weak var unreadMessagesManager: UnreadMessagesManaging?
     private weak var controller: UIViewController?
   
-    func load(convosManager: ConvosManaging, itemsToDeleteManager: ItemsToDeleteManaging, controller: UIViewController?) {
+    func load(convosManager: ConvosManaging, itemsToDeleteManager: ItemsToDeleteManaging, unreadMessagesManager: UnreadMessagesManaging, controller: UIViewController?) {
         self.convosManager = convosManager
         self.itemsToDeleteManager = itemsToDeleteManager
+        self.unreadMessagesManager = unreadMessagesManager
         self.controller = controller
     }
 }
@@ -21,7 +23,7 @@ extension ConvosTableViewDelegate: UITableViewDelegate {
             itemsToDeleteManager?.itemsToDelete[convo.key] = convo
         } else {
             tableView.deselectRow(at: indexPath, animated: true)
-            controller?.navigationController?.showConvoViewController(convo)
+            controller?.navigationController?.showConvoViewController(convo: convo, unreadMessagesManager: unreadMessagesManager)
         }
     }
 

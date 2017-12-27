@@ -4,8 +4,8 @@ import UIKit
 class MessagesManager: MessagesManaging {
     var messages = [Message]() {
         didSet {
-            collectionView?.reloadData()
-            collectionView?.scrollToBottom()
+            self.collectionView?.reloadData()
+            self.collectionView?.scrollToBottom()
         }
     }
 
