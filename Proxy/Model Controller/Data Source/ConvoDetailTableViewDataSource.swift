@@ -44,12 +44,7 @@ extension ConvoDetailTableViewDataSource: UITableViewDataSource {
             switch indexPath.row {
             case 0:
                 cell.textLabel?.font = UIFont.systemFont(ofSize: 17, weight: UIFont.Weight.regular)
-                cell.textLabel?.text = "Leave conversation"
-                cell.textLabel?.textColor = UIColor.red
-                return cell
-            case 1:
-                cell.textLabel?.font = UIFont.systemFont(ofSize: 17, weight: UIFont.Weight.regular)
-                cell.textLabel?.text = "Block user"
+                cell.textLabel?.text = "Delete Proxy"
                 cell.textLabel?.textColor = UIColor.red
                 return cell
             default:
@@ -68,18 +63,9 @@ extension ConvoDetailTableViewDataSource: UITableViewDataSource {
         case 1:
             return 1
         case 2:
-            return 2
+            return 1
         default:
             return 0
-        }
-    }
-
-    func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        switch section {
-        case 2:
-            return "Users are not notified when you take these actions."
-        default:
-            return nil
         }
     }
 }

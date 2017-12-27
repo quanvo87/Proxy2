@@ -2,11 +2,6 @@ import FirebaseDatabase
 
 struct Convo {
     var hasUnreadMessage = false
-    var receiverDeletedProxy = false
-    var receiverIsBlocked = false
-    var receiverLeftConvo = false
-    var senderIsBlocked = false
-    var senderLeftConvo = false
     var timestamp = 0.0
     var key = ""
     var lastMessage = ""
@@ -37,11 +32,6 @@ struct Convo {
     init?(_ dictionary: AnyObject) {
         guard
             let hasUnreadMessage = dictionary["hasUnreadMessage"] as? Bool,
-            let receiverDeletedProxy = dictionary["receiverDeletedProxy"] as? Bool,
-            let receiverIsBlocked = dictionary["receiverIsBlocked"] as? Bool,
-            let receiverLeftConvo = dictionary["receiverLeftConvo"] as? Bool,
-            let senderIsBlocked = dictionary["senderIsBlocked"] as? Bool,
-            let senderLeftConvo = dictionary["senderLeftConvo"] as? Bool,
             let timestamp = dictionary["timestamp"] as? Double,
             let key = dictionary["key"] as? String,
             let lastMessage = dictionary["lastMessage"] as? String,
@@ -57,11 +47,6 @@ struct Convo {
                 return nil
         }
         self.hasUnreadMessage = hasUnreadMessage
-        self.receiverDeletedProxy = receiverDeletedProxy
-        self.receiverIsBlocked = receiverIsBlocked
-        self.receiverLeftConvo = receiverLeftConvo
-        self.senderIsBlocked = senderIsBlocked
-        self.senderLeftConvo = senderLeftConvo
         self.timestamp = timestamp
         self.key = key
         self.lastMessage = lastMessage
@@ -79,11 +64,6 @@ struct Convo {
     func toDictionary() -> Any {
         return [
             "hasUnreadMessage": hasUnreadMessage,
-            "receiverDeletedProxy": receiverDeletedProxy,
-            "receiverIsBlocked": receiverIsBlocked,
-            "receiverLeftConvo": receiverLeftConvo,
-            "senderIsBlocked": senderIsBlocked,
-            "senderLeftConvo": senderLeftConvo,
             "timestamp": timestamp,
             "key": key,
             "lastMessage": lastMessage,
@@ -103,11 +83,6 @@ struct Convo {
 extension Convo: Equatable {
     static func ==(_ lhs: Convo, _ rhs: Convo) -> Bool {
         return lhs.hasUnreadMessage == rhs.hasUnreadMessage &&
-            lhs.receiverDeletedProxy == rhs.receiverDeletedProxy &&
-            lhs.receiverIsBlocked == rhs.receiverIsBlocked &&
-            lhs.receiverLeftConvo == lhs.receiverLeftConvo &&
-            lhs.senderIsBlocked == rhs.senderIsBlocked &&
-            lhs.senderLeftConvo == rhs.senderLeftConvo &&
             lhs.timestamp.rounded() == rhs.timestamp.rounded() &&
             lhs.key == rhs.key &&
             lhs.lastMessage == rhs.lastMessage &&
@@ -125,11 +100,6 @@ extension Convo: Equatable {
 
 enum SettableConvoProperty {
     case hasUnreadMessage(Bool)
-    case receiverDeletedProxy(Bool)
-    case receiverIsBlocked(Bool)
-    case receiverLeftConvo(Bool)
-    case senderIsBlocked(Bool)
-    case senderLeftConvo(Bool)
     case timestamp(Double)
     case lastMessage(String)
     case receiverIcon(String)
@@ -139,11 +109,6 @@ enum SettableConvoProperty {
     var properties: (name: String, value: Any) {
         switch self {
         case .hasUnreadMessage(let value): return ("hasUnreadMessage", value)
-        case .receiverDeletedProxy(let value): return ("receiverDeletedProxy", value)
-        case .receiverIsBlocked(let value): return ("receiverIsBlocked", value)
-        case .receiverLeftConvo(let value): return ("receiverLeftConvo", value)
-        case .senderIsBlocked(let value): return ("senderIsBlocked", value)
-        case .senderLeftConvo(let value): return ("senderLeftConvo", value)
         case .timestamp(let value): return ("timestamp", value)
         case .lastMessage(let value): return ("lastMessage", value)
         case .receiverIcon(let value): return ("receiverIcon", value)

@@ -6,7 +6,7 @@ struct DBProxy {
     typealias MakeProxyCallback = (Result<Proxy, ProxyError>) -> Void
 
     static func deleteProxy(_ proxy: Proxy, completion: @escaping (Success) -> Void) {
-        DBConvo.getConvos(forProxy: proxy, filtered: false) { (convos) in
+        DBConvo.getConvos(forProxy: proxy) { (convos) in
             guard let convos = convos else {
                 completion(false)
                 return
@@ -22,7 +22,6 @@ struct DBProxy {
         work.delete(at: Child.proxyOwners, proxy.key)
         work.deleteConvos(convos)
         work.deleteUnreadMessages(for: proxy)
-        work.setReceiverDeletedProxy(to: true, forReceiverInConvos: convos)
         work.allDone {
             completion(work.result)
         }
@@ -176,7 +175,7 @@ struct DBProxy {
     }
 
     static func setIcon(to icon: String, forProxy proxy: Proxy, completion: @escaping (Success) -> Void) {
-        DBConvo.getConvos(forProxy: proxy, filtered: false) { (convos) in
+        DBConvo.getConvos(forProxy: proxy) { (convos) in
             guard let convos = convos else {
                 completion(false)
                 return
@@ -200,7 +199,7 @@ struct DBProxy {
             return
         }
 
-        DBConvo.getConvos(forProxy: proxy, filtered: false) { (convos) in
+        DBConvo.getConvos(forProxy: proxy) { (convos) in
             guard let convos = convos else {
                 completion(.unknown)
                 return
@@ -291,18 +290,6 @@ extension GroupWork {
     func setSenderNickname(to nickname: String, forConvos convos: [Convo]) {
         for convo in convos {
             self.set(.senderNickname(nickname), forConvo: convo, asSender: true)
-        }
-    }
-
-    func setReceiverDeletedProxy(to value: Bool, forReceiverInConvos convos: [Convo]) {
-        for convo in convos {
-            start()
-            DBConvo.getConvo(withKey: convo.key, belongingTo: convo.receiverId) { (convo) in
-                if let convo = convo {
-                    self.set(.receiverDeletedProxy(value), forConvo: convo, asSender: true)
-                }
-                self.finish(withResult: true)
-            }
         }
     }
 }

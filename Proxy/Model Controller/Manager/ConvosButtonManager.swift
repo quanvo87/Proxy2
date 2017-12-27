@@ -35,12 +35,12 @@ class ConvosButtonManager: ButtonManaging {
         }
         let alert = UIAlertController(title: "Leave Conversations?", message: "This will not delete the conversations.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Leave", style: .destructive) { _ in
-            for (_, item) in self.itemsToDeleteManager?.itemsToDelete ?? [:] {
-                guard let convo = item as? Convo else {
-                    return
-                }
-                DBConvo.leaveConvo(convo) { _ in }
-            }
+//            for (_, item) in self.itemsToDeleteManager?.itemsToDelete ?? [:] {
+//                guard let convo = item as? Convo else {
+//                    return
+//                }
+//                DBConvo.leaveConvo(convo) { _ in }
+//            }
             self.setDefaultButtons()
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))

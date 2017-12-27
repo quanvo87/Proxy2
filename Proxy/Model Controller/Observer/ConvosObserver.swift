@@ -8,7 +8,7 @@ class ConvosObserver: ReferenceObserving {
         stopObserving()
         ref = DB.makeReference(Child.convos, convosOwner)
         handle = ref?.queryOrdered(byChild: Child.timestamp).observe(.value, with: { [weak manager = manager] (data) in
-            manager?.convos = data.toConvosArray(filtered: true).reversed()
+            manager?.convos = data.toConvosArray().reversed()
         })
     }
 
