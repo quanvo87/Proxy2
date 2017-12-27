@@ -75,57 +75,6 @@ class DBMessageTests: DBTest {
         }
     }
 
-    func testSendMessageWhileReceiverLeftConvo() {
-        let expectation = self.expectation(description: #function)
-        defer { waitForExpectations(timeout: 10) }
-
-        DBTest.makeConvo { (senderConvo, sender, receiver) in
-            DBConvo.leaveConvo(senderConvo) { (success) in
-                XCTAssert(success)
-
-                DBMessage.sendMessage(senderProxy: receiver, receiverProxy: sender, text: "") { (result) in
-                    switch result {
-                    case .failure:
-                        XCTFail()
-                    case .success(let tuple):
-                        let work = GroupWork()
-                        work.check(.convoCount(1), forProxy: sender)
-                        work.check(.receiverLeftConvo(false), forConvo: tuple.convo, asSender: true)
-                        work.check(.senderLeftConvo(false), forConvo: tuple.convo, asSender: false)
-                        work.allDone {
-                            expectation.fulfill()
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    func testSendMessageWhileSenderLeftConvo() {
-        let expectation = self.expectation(description: #function)
-        defer { waitForExpectations(timeout: 10) }
-        
-        DBTest.makeConvo { (senderConvo, sender, receiver) in
-            DBConvo.leaveConvo(senderConvo) { (success) in
-                XCTAssert(success)
-                DBMessage.sendMessage(senderProxy: sender, receiverProxy: receiver, text: "") { (result) in
-                    switch result {
-                    case .failure:
-                        XCTFail()
-                    case .success(let tuple):
-                        let work = GroupWork()
-                        work.check(.convoCount(1), forProxy: sender)
-                        work.check(.receiverLeftConvo(false), forConvo: tuple.convo, asSender: false)
-                        work.check(.senderLeftConvo(false), forConvo: tuple.convo, asSender: true)
-                        work.allDone {
-                            expectation.fulfill()
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     func testSendMessageWithSenderConvo() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }

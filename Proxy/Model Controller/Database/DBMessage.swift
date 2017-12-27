@@ -68,12 +68,12 @@ struct DBMessage {
 
         // Receiver updates
         work.increment(by: 1, forProperty: .messagesReceived, forUser: senderConvo.receiverId)
-        work.set(.lastMessage(text), forProxyInConvo: senderConvo, asSender: false)
-        work.set(.timestamp(currentTime), forProxyInConvo: senderConvo, asSender: false)
+        work.set(.hasUnreadMessage(true), forConvo: senderConvo, asSender: false)
         work.set(.hasUnreadMessage(true), forProxyWithKey: message.receiverProxyKey, proxyOwner: message.receiverId)
         work.set(.lastMessage(text), forConvo: senderConvo, asSender: false)
+        work.set(.lastMessage(text), forProxyInConvo: senderConvo, asSender: false)
         work.set(.timestamp(currentTime), forConvo: senderConvo, asSender: false)
-        work.set(.hasUnreadMessage(true), forConvo: senderConvo, asSender: false)
+        work.set(.timestamp(currentTime), forProxyInConvo: senderConvo, asSender: false)
 
         // Sender updates
         work.increment(by: 1, forProperty: .messagesSent, forUser: senderConvo.senderId)
@@ -84,6 +84,7 @@ struct DBMessage {
 
         work.allDone {
             if work.result {
+//                DBConvo.getConvo(withKey: senderConvo.key, belongingTo: sed, completion: <#T##(Convo?) -> Void#>)
                 completion(.success((message, senderConvo)))
             } else {
                 completion(.failure(.unknown))

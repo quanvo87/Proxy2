@@ -18,7 +18,6 @@ class DBProxyTests: DBTest {
                         DBProxy.deleteProxy(sender) { (success) in
                             XCTAssert(success)
                             let work = GroupWork()
-                            work.check(.receiverDeletedProxy(true), forConvo: tuple.convo, asSender: true)
                             work.checkUnreadMessagesDeleted(for: sender)
                             work.checkConvoDeleted(tuple.convo, asSender: false)
                             work.checkDeleted(at: Child.proxies, sender.ownerId, sender.key)
@@ -43,7 +42,7 @@ class DBProxyTests: DBTest {
             let work = GroupWork()
             work.set(.convoCount(0), forProxy: sender)
             work.allDone {
-                DBProxy.fixConvoCounts(uid: DBTest.uid) { (success) in
+                DBProxy.fixConvoCounts(DBTest.uid) { (success) in
                     XCTAssert(success)
 
                     DBProxy.getConvoCount(forProxy: sender) { (convoCount) in
