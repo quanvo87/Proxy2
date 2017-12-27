@@ -35,7 +35,6 @@ struct DBConvo {
             completion(nil)
             return
         }
-
         ref.queryOrdered(byChild: Child.parentConvoKey).queryEqual(toValue: convo.key).observeSingleEvent(of: .value, with: { (data) in
             completion(data.toMessagesArray())
         })

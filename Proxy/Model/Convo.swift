@@ -2,7 +2,7 @@ import FirebaseDatabase
 
 struct Convo {
     var hasUnreadMessage = false
-    var timestamp = 0.0
+    var timestamp = Date().timeIntervalSince1970
     var key = ""
     var lastMessage = ""
     var receiverIcon = ""
