@@ -28,13 +28,7 @@ struct DBMessage {
             if let senderConvo = senderConvo {
                 sendMessage(text: text, senderConvo: senderConvo, completion: completion)
             } else {
-                DBConvo.makeConvo(sender: senderProxy, receiver: receiverProxy) { (convo) in
-                    guard let senderConvo = convo else {
-                        completion(.failure(.unknown))
-                        return
-                    }
-                    sendMessage(text: text, senderConvo: senderConvo, completion: completion)
-                }
+                sendFirstMessage(senderProxy: senderProxy, receiverProxy: receiverProxy, convoKey: convoKey, text: text, completion: completion)
             }
         }
     }
@@ -59,6 +53,36 @@ struct DBMessage {
                               receiverId: senderConvo.receiverId,
                               receiverProxyKey: senderConvo.receiverProxyKey)
 
+        setMessage(message: message, senderConvo: senderConvo, completion: completion)
+    }
+
+    private static func sendFirstMessage(senderProxy: Proxy, receiverProxy: Proxy, convoKey: String, text: String, completion: @escaping SendMessageCallback) {
+        guard let ref = DB.makeReference(Child.messages, convoKey) else {
+            completion(.failure(.unknown))
+            return
+        }
+
+        let messageId = ref.childByAutoId().key
+
+        let message = Message(sender: Sender(id: senderProxy.ownerId,
+                                             displayName: senderProxy.nickname != "" ? senderProxy.nickname : senderProxy.name),
+                              messageId: messageId,
+                              data: .text(text),
+                              dateRead: Date.distantPast,
+                              parentConvoKey: convoKey,
+                              receiverId: receiverProxy.ownerId,
+                              receiverProxyKey: receiverProxy.key)
+
+        DBConvo.makeConvo(sender: senderProxy, receiver: receiverProxy, firstMessageId: messageId) { (convo) in
+            guard let convo = convo else {
+                completion(.failure(.unknown))
+                return
+            }
+            setMessage(message: message, senderConvo: convo, completion: completion)
+        }
+    }
+
+    private static func setMessage(message: Message, senderConvo: Convo, completion: @escaping SendMessageCallback) {
         let work = GroupWork()
 
         work.set(message.toDictionary(), at: Child.messages, message.parentConvoKey, message.messageId)
@@ -70,17 +94,23 @@ struct DBMessage {
         work.increment(by: 1, forProperty: .messagesReceived, forUser: senderConvo.receiverId)
         work.set(.hasUnreadMessage(true), forConvo: senderConvo, asSender: false)
         work.set(.hasUnreadMessage(true), forProxyWithKey: message.receiverProxyKey, proxyOwner: message.receiverId)
-        work.set(.lastMessage(text), forConvo: senderConvo, asSender: false)
-        work.set(.lastMessage(text), forProxyInConvo: senderConvo, asSender: false)
         work.set(.timestamp(currentTime), forConvo: senderConvo, asSender: false)
         work.set(.timestamp(currentTime), forProxyInConvo: senderConvo, asSender: false)
 
         // Sender updates
         work.increment(by: 1, forProperty: .messagesSent, forUser: senderConvo.senderId)
-        work.set(.lastMessage("You: \(text)"), forConvo: senderConvo, asSender: true)
-        work.set(.lastMessage("You: \(text)"), forProxyInConvo: senderConvo, asSender: true)
         work.set(.timestamp(currentTime), forConvo: senderConvo, asSender: true)
         work.set(.timestamp(currentTime), forProxyInConvo: senderConvo, asSender: true)
+
+        switch message.data {
+        case .text(let s):
+            work.set(.lastMessage(s), forConvo: senderConvo, asSender: false)
+            work.set(.lastMessage(s), forProxyInConvo: senderConvo, asSender: false)
+            work.set(.lastMessage("You: \(s)"), forConvo: senderConvo, asSender: true)
+            work.set(.lastMessage("You: \(s)"), forProxyInConvo: senderConvo, asSender: true)
+        default:
+            break
+        }
 
         work.allDone {
             if work.result {

@@ -12,6 +12,7 @@ class ConvoInputBarDelegate {
 
 extension ConvoInputBarDelegate: MessageInputBarDelegate {
     func messageInputBar(_ inputBar: MessageInputBar, didPressSendButtonWith text: String) {
+        inputBar.inputTextView.text = ""
         guard text.count > 0, let convo = convo else {
             return
         }
@@ -24,8 +25,8 @@ extension ConvoInputBarDelegate: MessageInputBarDelegate {
                 default:
                     self.controller?.showAlert("Error Sending Message", message: "There was an error sending the message. Please try again.")
                 }
-            case .success:
-                inputBar.inputTextView.text = ""
+            default:
+                break
             }
         }
     }

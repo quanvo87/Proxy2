@@ -56,13 +56,26 @@ class ConvoViewController: MessagesViewController {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        guard indexPath.section == 0 else {
+            return
+        }
+        guard messagesManager.messages.count >= Setting.messagesPageSize else {
+            return
+        }
+        guard let message = messagesManager.messages[safe: indexPath.section] else {
+            return
+        }
+        guard message.messageId != convo.firstMessageId else {
+            return
+        }
+        messagesManager.observer.getMessages(startingAtMessageWithId: message.messageId)
+    }
 }
 
 private extension ConvoViewController {
     @objc private func showConvoDetailView() {
-        guard let convo = convoManager.convo else {
-            return
-        }
         navigationController?.pushViewController(ConvoDetailViewController(convo: convo, unreadMessagesManager: unreadMessagesManager), animated: true)
     }
 }
