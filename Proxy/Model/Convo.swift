@@ -3,6 +3,7 @@ import FirebaseDatabase
 struct Convo {
     let hasUnreadMessage: Bool
     let timestamp: Double
+    let firstMessageId: String
     let key: String
     let lastMessage: String
     let receiverIcon: String
@@ -23,32 +24,34 @@ struct Convo {
         return receiverNickname != "" ? receiverNickname : receiverProxyName
     }
 
-    init(key: String,
+    init(hasUnreadMessage: Bool = false,
+         timestamp: Double = Date().timeIntervalSince1970,
+         firstMessageId: String,
+         key: String,
+         lastMessage: String = "",
+         receiverIcon: String = "",
          receiverId: String,
+         receiverNickname: String = "",
          receiverProxyKey: String,
          receiverProxyName: String,
          senderId: String,
+         senderNickname: String = "",
          senderProxyKey: String,
-         senderProxyName: String,
-         hasUnreadMessage: Bool = false,
-         timestamp: Double = Date().timeIntervalSince1970,
-         lastMessage: String = "",
-         receiverIcon: String = "",
-         receiverNickname: String = "",
-         senderNickname: String = "") {
+         senderProxyName: String) {
+        self.hasUnreadMessage = hasUnreadMessage
+        self.timestamp = timestamp
+        self.firstMessageId = firstMessageId
         self.key = key
+        self.lastMessage = lastMessage
+        self.receiverIcon = receiverIcon
         self.receiverId = receiverId
+        self.receiverNickname = receiverNickname
         self.receiverProxyKey = receiverProxyKey
         self.receiverProxyName = receiverProxyName
         self.senderId = senderId
+        self.senderNickname = senderNickname
         self.senderProxyKey = senderProxyKey
         self.senderProxyName = senderProxyName
-        self.hasUnreadMessage = hasUnreadMessage
-        self.timestamp = timestamp
-        self.lastMessage = lastMessage
-        self.receiverIcon = receiverIcon
-        self.receiverNickname = receiverNickname
-        self.senderNickname = senderNickname
     }
 
     init?(_ data: DataSnapshot) {
@@ -59,6 +62,7 @@ struct Convo {
         guard
             let hasUnreadMessage = dictionary["hasUnreadMessage"] as? Bool,
             let timestamp = dictionary["timestamp"] as? Double,
+            let firstMessageId = dictionary["firstMessageId"] as? String,
             let key = dictionary["key"] as? String,
             let lastMessage = dictionary["lastMessage"] as? String,
             let receiverIcon = dictionary["receiverIcon"] as? String,
@@ -74,6 +78,7 @@ struct Convo {
         }
         self.hasUnreadMessage = hasUnreadMessage
         self.timestamp = timestamp
+        self.firstMessageId = firstMessageId
         self.key = key
         self.lastMessage = lastMessage
         self.receiverIcon = receiverIcon
@@ -91,6 +96,7 @@ struct Convo {
         return [
             "hasUnreadMessage": hasUnreadMessage,
             "timestamp": timestamp,
+            "firstMessageId": firstMessageId,
             "key": key,
             "lastMessage": lastMessage,
             "receiverIcon": receiverIcon,
@@ -110,6 +116,7 @@ extension Convo: Equatable {
     static func ==(_ lhs: Convo, _ rhs: Convo) -> Bool {
         return lhs.hasUnreadMessage == rhs.hasUnreadMessage &&
             lhs.timestamp.rounded() == rhs.timestamp.rounded() &&
+            lhs.firstMessageId == rhs.firstMessageId &&
             lhs.key == rhs.key &&
             lhs.lastMessage == rhs.lastMessage &&
             lhs.receiverIcon == rhs.receiverIcon &&
