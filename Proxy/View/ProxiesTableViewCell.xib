@@ -49,23 +49,14 @@
                             <constraint firstAttribute="height" constant="48" id="P2O-ud-e6n"/>
                         </constraints>
                     </imageView>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="def-su-uPR">
-                        <rect key="frame" x="316" y="0.0" width="25" height="25"/>
-                        <constraints>
-                            <constraint firstAttribute="height" constant="25" id="vM0-6O-8LV"/>
-                            <constraint firstAttribute="width" constant="25" id="xxc-dw-fHC"/>
-                        </constraints>
-                    </imageView>
                 </subviews>
                 <constraints>
                     <constraint firstItem="TiZ-8h-NKQ" firstAttribute="leading" secondItem="jsM-yg-bft" secondAttribute="trailing" constant="5" id="5eR-Xr-jOv"/>
                     <constraint firstAttribute="trailing" secondItem="TiZ-8h-NKQ" secondAttribute="trailing" constant="5" id="9U6-F8-4VP"/>
                     <constraint firstItem="Q0C-u2-VO6" firstAttribute="leading" secondItem="u1I-oI-ZQC" secondAttribute="trailing" constant="5" id="EYa-6u-gOi"/>
                     <constraint firstItem="u1I-oI-ZQC" firstAttribute="centerY" secondItem="2BP-nl-bA0" secondAttribute="centerY" id="Hb7-09-nrw"/>
-                    <constraint firstItem="def-su-uPR" firstAttribute="top" secondItem="2BP-nl-bA0" secondAttribute="top" id="N7F-lf-0HS"/>
                     <constraint firstItem="jsM-yg-bft" firstAttribute="top" secondItem="TiZ-8h-NKQ" secondAttribute="top" id="R3L-3S-Ac8"/>
                     <constraint firstItem="TiZ-8h-NKQ" firstAttribute="leading" secondItem="m0K-DA-DZ3" secondAttribute="trailing" constant="5" id="SHi-yG-rX3"/>
-                    <constraint firstAttribute="trailing" secondItem="def-su-uPR" secondAttribute="trailing" id="SfK-wW-lsV"/>
                     <constraint firstItem="Q0C-u2-VO6" firstAttribute="centerY" secondItem="2BP-nl-bA0" secondAttribute="centerY" id="Uwu-th-7Uh"/>
                     <constraint firstItem="m0K-DA-DZ3" firstAttribute="leading" secondItem="2BP-nl-bA0" secondAttribute="leading" constant="5" id="foS-eM-uen"/>
                     <constraint firstItem="u1I-oI-ZQC" firstAttribute="leading" secondItem="2BP-nl-bA0" secondAttribute="leading" constant="5" id="jxX-QY-Fa5"/>
@@ -77,7 +68,6 @@
                 <outlet property="convoCountLabel" destination="Q0C-u2-VO6" id="Al7-5a-04b"/>
                 <outlet property="iconImageView" destination="TiZ-8h-NKQ" id="HOX-kT-Nwg"/>
                 <outlet property="nameLabel" destination="jsM-yg-bft" id="Sww-Qy-RY9"/>
-                <outlet property="newProxyBadgeImageView" destination="def-su-uPR" id="Hwy-EN-TZb"/>
                 <outlet property="nicknameLabel" destination="m0K-DA-DZ3" id="mRW-Za-Eai"/>
                 <outlet property="unreadMessagesIndicatorImageView" destination="u1I-oI-ZQC" id="az0-Y2-IKw"/>
             </connections>

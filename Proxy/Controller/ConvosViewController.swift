@@ -4,7 +4,6 @@ class ConvosViewController: UIViewController, MakeNewMessageDelegate {
     var newConvo: Convo?
 
     private let convosManager = ConvosManager()
-    private let itemsToDeleteManager = ItemsToDeleteManager()
     private let dataSource = ConvosTableViewDataSource()
     private let delegate = ConvosTableViewDelegate()
     private let tableView = UITableView(frame: .zero, style: .grouped)
@@ -22,7 +21,7 @@ class ConvosViewController: UIViewController, MakeNewMessageDelegate {
 
         dataSource.load(manager: convosManager)
 
-        delegate.load(convosManager: convosManager, itemsToDeleteManager: itemsToDeleteManager, unreadMessagesManager: unreadMessagesManager, controller: self)
+        delegate.load(convosManager: convosManager, unreadMessagesManager: unreadMessagesManager, controller: self)
 
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.dataSource = dataSource
@@ -33,7 +32,7 @@ class ConvosViewController: UIViewController, MakeNewMessageDelegate {
         tableView.sectionHeaderHeight = 0
         view.addSubview(tableView)
 
-        buttonManager.load(uid: uid, itemsToDeleteManager: itemsToDeleteManager, makeNewMessageDelegate: self, tableView: tableView, viewController: self)
+        buttonManager.load(uid: uid, makeNewMessageDelegate: self, viewController: self)
     }
 
     override func viewWillAppear(_ animated: Bool) {

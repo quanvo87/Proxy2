@@ -9,11 +9,11 @@ class UnreadMessagesManager: UnreadMessagesManaging {
             if count == 0 {
                 convosViewController?.navigationItem.title = "Messages"
                 convosViewController?.tabBarController?.tabBar.items?.first?.badgeValue = nil
-                proxiesViewController?.navigationItem.title = "Proxies"
+                proxiesViewController?.navigationItem.title = "My Proxies"
             } else {
                 convosViewController?.navigationItem.title = "Messages" + count.asStringWithParens
                 convosViewController?.tabBarController?.tabBar.items?.first?.badgeValue = count == 0 ? nil : String(count)
-                proxiesViewController?.navigationItem.title = "Proxies" + count.asStringWithParens
+                proxiesViewController?.navigationItem.title = "My Proxies" + count.asStringWithParens
             }
         }
     }

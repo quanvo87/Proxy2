@@ -14,38 +14,25 @@ class ConvosButtonManager: ButtonManaging {
     private weak var makeNewMessageDelegate: MakeNewMessageDelegate?
     private weak var viewController: UIViewController?
 
-    func load(uid: String, itemsToDeleteManager: ItemsToDeleteManaging, makeNewMessageDelegate: MakeNewMessageDelegate, tableView: UITableView, viewController: UIViewController) {
+    func load(uid: String, makeNewMessageDelegate: MakeNewMessageDelegate, viewController: UIViewController) {
         self.uid = uid
-        self.itemsToDeleteManager = itemsToDeleteManager
         self.makeNewMessageDelegate = makeNewMessageDelegate
-        self.tableView = tableView
         self.viewController = viewController
         navigationItem = viewController.navigationItem
         makeButtons()
         setDefaultButtons()
     }
 
-    func _deleteSelectedItems() {
-        guard let itemsToDeleteManager = itemsToDeleteManager else {
-            return
-        }
-        if itemsToDeleteManager.itemsToDelete.isEmpty {
-            setDefaultButtons()
-            return
-        }
-        let alert = UIAlertController(title: "Leave Conversations?", message: "This will not delete the conversations.", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Leave", style: .destructive) { _ in
-//            for (_, item) in self.itemsToDeleteManager?.itemsToDelete ?? [:] {
-//                guard let convo = item as? Convo else {
-//                    return
-//                }
-//                DBConvo.leaveConvo(convo) { _ in }
-//            }
-            self.setDefaultButtons()
-        })
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        viewController?.present(alert, animated: true)
+    func makeButtons() {
+        makeNewMessageButton = UIBarButtonItem.make(target: self, action: #selector(_showMakeNewMessageController), imageName: ButtonName.makeNewMessage)
+        makeNewProxyButton = UIBarButtonItem.make(target: self, action: #selector(_makeNewProxy), imageName: ButtonName.makeNewProxy)
     }
+
+    func setDefaultButtons() {
+        navigationItem?.rightBarButtonItems = [makeNewMessageButton, makeNewProxyButton]
+    }
+
+    func _deleteSelectedItems() {}
 
     func _makeNewProxy() {
         guard let uid = uid else {
@@ -70,13 +57,9 @@ class ConvosButtonManager: ButtonManaging {
         }
     }
 
-    func _setDefaultButtons() {
-        setDefaultButtons()
-    }
+    func _setDefaultButtons() {}
 
-    func _setEditModeButtons() {
-        setEditModeButtons()
-    }
+    func _setEditModeButtons() {}
 
     func _showMakeNewMessageController() {
         guard let uid = uid else {

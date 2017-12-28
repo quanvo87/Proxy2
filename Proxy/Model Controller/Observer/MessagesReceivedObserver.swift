@@ -8,9 +8,7 @@ class MessagesReceivedObserver: ReferenceObserving {
         stopObserving()
         ref = DB.makeReference(Child.userInfo, uid, IncrementableUserProperty.messagesReceived.rawValue)
         handle = ref?.observe(.value, with: { [weak manager = manager] (data) in
-            if let count = data.value as? UInt {
-                manager?.messagesReceivedCount = count.asStringWithCommas
-            }
+            manager?.messagesReceivedCount = data.asNumberLabel
         })
     }
 

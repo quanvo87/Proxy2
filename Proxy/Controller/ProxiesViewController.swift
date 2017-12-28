@@ -16,7 +16,7 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
         
         super.init(nibName: nil, bundle: nil)
 
-        navigationItem.title = "Proxies"
+        navigationItem.title = "My Proxies"
 
         proxiesManager.load(uid: uid, tableView: tableView)
 

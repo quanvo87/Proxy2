@@ -2,13 +2,11 @@ import UIKit
 
 class ConvosTableViewDelegate: NSObject {
     private weak var convosManager: ConvosManaging?
-    private weak var itemsToDeleteManager: ItemsToDeleteManaging?
     private weak var unreadMessagesManager: UnreadMessagesManaging?
     private weak var controller: UIViewController?
   
-    func load(convosManager: ConvosManaging, itemsToDeleteManager: ItemsToDeleteManaging, unreadMessagesManager: UnreadMessagesManaging, controller: UIViewController?) {
+    func load(convosManager: ConvosManaging, unreadMessagesManager: UnreadMessagesManaging, controller: UIViewController?) {
         self.convosManager = convosManager
-        self.itemsToDeleteManager = itemsToDeleteManager
         self.unreadMessagesManager = unreadMessagesManager
         self.controller = controller
     }
@@ -19,21 +17,8 @@ extension ConvosTableViewDelegate: UITableViewDelegate {
         guard let convo = convosManager?.convos[safe: indexPath.row] else {
             return
         }
-        if tableView.isEditing {
-            itemsToDeleteManager?.itemsToDelete[convo.key] = convo
-        } else {
-            tableView.deselectRow(at: indexPath, animated: true)
-            controller?.navigationController?.showConvoViewController(convo: convo, unreadMessagesManager: unreadMessagesManager)
-        }
-    }
-
-    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        guard
-            tableView.isEditing,
-            let convo = convosManager?.convos[safe: indexPath.row] else {
-                return
-        }
-        itemsToDeleteManager?.itemsToDelete.removeValue(forKey: convo.key)
+        tableView.deselectRow(at: indexPath, animated: true)
+        controller?.navigationController?.showConvoViewController(convo: convo, unreadMessagesManager: unreadMessagesManager)
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
