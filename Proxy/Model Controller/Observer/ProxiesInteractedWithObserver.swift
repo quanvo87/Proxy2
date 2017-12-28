@@ -8,9 +8,7 @@ class ProxiesInteractedWithObserver: ReferenceObserving {
         stopObserving()
         ref = DB.makeReference(Child.userInfo, uid, IncrementableUserProperty.proxiesInteractedWith.rawValue)
         handle = ref?.observe(.value, with: { [weak manager = manager] (data) in
-            if let count = data.value as? UInt {
-                manager?.proxiesInteractedWithCount = count.asStringWithCommas
-            }
+            manager?.proxiesInteractedWithCount = data.asNumberLabel
         })
     }
 

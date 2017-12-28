@@ -47,6 +47,5 @@ struct Setting {
     static let navBarButtonCGDouble = 30.0
     static let navBarButtonCGRect = CGRect(x: 0, y: 0, width: Setting.navBarButtonCGDouble, height: Setting.navBarButtonCGDouble)
     static let navBarButtonCGSize = CGSize(width: Setting.navBarButtonCGDouble, height: Setting.navBarButtonCGDouble)
-    static let newProxyBadgeDuration: Double = 60 * 5
     static let timeBetweenTimestamps = 30.0
 }

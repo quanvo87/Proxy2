@@ -1,5 +1,4 @@
 import Firebase
-import FirebaseAuth
 import UIKit
 
 typealias Success = Bool
@@ -32,17 +31,22 @@ extension Double {
     var asTimeAgo: String {
         return NSDate(timeIntervalSince1970: self).formattedAsTimeAgo()
     }
-
-    var isNewProxyDate: Bool {
-        let secondsAgo = -Date(timeIntervalSince1970: self).timeIntervalSinceNow
-        return secondsAgo < Setting.newProxyBadgeDuration
-    }
 }
 
 extension FirebaseApp {
     static let app: FirebaseApp? = {
         return FirebaseApp.app()
     }()
+}
+
+extension DataSnapshot {
+    var asNumberLabel: String {
+        if let number = self.value as? UInt {
+            return number.asStringWithCommas
+        } else {
+            return "-"
+        }
+    }
 }
 
 extension Int {

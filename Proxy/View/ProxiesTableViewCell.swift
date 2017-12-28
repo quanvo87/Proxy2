@@ -4,7 +4,6 @@ class ProxiesTableViewCell: UITableViewCell {
     @IBOutlet weak var convoCountLabel: UILabel!
     @IBOutlet weak var iconImageView: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
-    @IBOutlet weak var newProxyBadgeImageView: UIImageView!
     @IBOutlet weak var nicknameLabel: UILabel!
     @IBOutlet weak var unreadMessagesIndicatorImageView: UIImageView!
 
@@ -19,15 +18,6 @@ class ProxiesTableViewCell: UITableViewCell {
         UIImage.make(name: proxy.icon) { (image) in
             DispatchQueue.main.async {
                 self.iconImageView.image = image
-            }
-        }
-
-        newProxyBadgeImageView.image = nil
-        if proxy.dateCreated.isNewProxyDate {
-            UIImage.make(name: "newProxyBadge") { (image) in
-                DispatchQueue.main.async {
-                    self.newProxyBadgeImageView.image = image
-                }
             }
         }
 
