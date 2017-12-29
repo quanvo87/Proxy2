@@ -8,7 +8,7 @@ class ConvosTableViewCell: UITableViewCell {
     @IBOutlet weak var unreadMessagesIndicatorImageView: UIImageView!
 
     func load(_ convo: Convo) {
-        titleLabel.attributedText = DBConvo.makeConvoTitle(convo)
+        titleLabel.attributedText = NSAttributedString.makeConvoTitle(convo)
         lastMessageLabel.text = convo.lastMessage
         timestampLabel.text = convo.timestamp.asTimeAgo
 

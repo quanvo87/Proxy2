@@ -23,7 +23,6 @@ extension AuthManager: AuthManaging {
         }
         window?.rootViewController = TabBarController(displayName: displayName, uid: user.uid)
         loggedIn = true
-        DBProxy.fixConvoCounts(user.uid) { _ in }
     }
 
     func logOut() {

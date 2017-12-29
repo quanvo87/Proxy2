@@ -47,6 +47,36 @@ extension DataSnapshot {
             return "-"
         }
     }
+
+    func toConvosArray() -> [Convo] {
+        var convos = [Convo]()
+        for child in self.children {
+            if let convo = Convo((child as? DataSnapshot)?.value as AnyObject) {
+                convos.append(convo)
+            }
+        }
+        return convos
+    }
+    
+    func toMessagesArray() -> [Message] {
+        var messages = [Message]()
+        for child in self.children {
+            if let message = Message((child as? DataSnapshot)?.value as AnyObject) {
+                messages.append(message)
+            }
+        }
+        return messages
+    }
+
+    func toProxiesArray() -> [Proxy] {
+        var proxies = [Proxy]()
+        for child in self.children {
+            if let proxy = Proxy((child as? DataSnapshot)?.value as AnyObject) {
+                proxies.append(proxy)
+            }
+        }
+        return proxies
+    }
 }
 
 extension Int {
@@ -60,6 +90,16 @@ extension Int {
 
     var random: Int {
         return Int(arc4random_uniform(UInt32(self)))
+    }
+}
+
+extension NSAttributedString {
+    static func makeConvoTitle(_ convo: Convo) -> NSAttributedString {
+        let grayAttribute = [NSAttributedStringKey.foregroundColor: UIColor.gray]
+        let receiver = NSMutableAttributedString(string: (convo.receiverNickname == "" ? convo.receiverProxyName : convo.receiverNickname) + ", ")
+        let sender = NSMutableAttributedString(string: convo.senderNickname == "" ? convo.senderProxyName : convo.senderNickname, attributes: grayAttribute)
+        receiver.append(sender)
+        return receiver
     }
 }
 

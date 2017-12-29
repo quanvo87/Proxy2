@@ -19,7 +19,7 @@ class TabBarController: UITabBarController {
             UINavigationController(rootViewController: $0)
         }
 
-        unreadMessagesManager.load(uid: uid, convosViewController: convosController, proxiesViewController: proxiesController)
+        unreadMessagesManager.load(uid: uid, convosViewController: convosController)
     }
 
     required init?(coder aDecoder: NSCoder) {

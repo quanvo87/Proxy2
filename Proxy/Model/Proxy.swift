@@ -4,7 +4,6 @@ struct Proxy {
     let hasUnreadMessage: Bool
     let dateCreated: Double
     let timestamp: Double
-    let convoCount: Int
     let icon: String
     let key: String
     let lastMessage: String
@@ -15,7 +14,6 @@ struct Proxy {
     init(hasUnreadMessage: Bool = false,
          dateCreated: Double = Date().timeIntervalSince1970,
          timestamp: Double = Date().timeIntervalSince1970,
-         convoCount: Int = 0,
          icon: String,
          lastMessage: String = "",
          name: String,
@@ -24,7 +22,6 @@ struct Proxy {
         self.hasUnreadMessage = hasUnreadMessage
         self.dateCreated = dateCreated
         self.timestamp = timestamp
-        self.convoCount = convoCount
         self.icon = icon
         self.key = name.lowercased()
         self.lastMessage = lastMessage
@@ -42,7 +39,6 @@ struct Proxy {
             let hasUnreadMessage = dictionary["hasUnreadMessage"] as? Bool,
             let dateCreated = dictionary["dateCreated"] as? Double,
             let timestamp = dictionary["timestamp"] as? Double,
-            let convoCount = dictionary["convoCount"] as? Int,
             let icon = dictionary["icon"] as? String,
             let key = dictionary["key"] as? String,
             let lastMessage = dictionary["lastMessage"] as? String,
@@ -54,7 +50,6 @@ struct Proxy {
         self.hasUnreadMessage = hasUnreadMessage
         self.dateCreated = dateCreated
         self.timestamp = timestamp
-        self.convoCount = convoCount
         self.icon = icon
         self.key = key
         self.lastMessage = lastMessage
@@ -68,7 +63,6 @@ struct Proxy {
             "hasUnreadMessage": hasUnreadMessage,
             "dateCreated": dateCreated,
             "timestamp": timestamp,
-            "convoCount": convoCount,
             "icon": icon,
             "key": key,
             "lastMessage": lastMessage,
@@ -84,7 +78,6 @@ extension Proxy: Equatable {
         return lhs.hasUnreadMessage == rhs.hasUnreadMessage &&
             lhs.dateCreated.rounded() == rhs.dateCreated.rounded() &&
             lhs.timestamp.rounded() == rhs.timestamp.rounded() &&
-            lhs.convoCount == rhs.convoCount &&
             lhs.icon == rhs.icon &&
             lhs.key == rhs.key &&
             lhs.lastMessage == rhs.lastMessage &&
@@ -94,14 +87,9 @@ extension Proxy: Equatable {
     }
 }
 
-enum IncrementableProxyProperty: String {
-    case convoCount
-}
-
 enum SettableProxyProperty {
     case hasUnreadMessage(Bool)
     case timestamp(Double)
-    case convoCount(Int)
     case icon(String)
     case lastMessage(String)
     case nickname(String)
@@ -112,8 +100,6 @@ enum SettableProxyProperty {
             return ("hasUnreadMessage", value)
         case .timestamp(let value):
             return ("timestamp", value)
-        case .convoCount(let value):
-            return ("convoCount", value)
         case .icon(let value):
             return ("icon", value)
         case .lastMessage(let value):

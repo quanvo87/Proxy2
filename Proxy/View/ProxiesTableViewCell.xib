@@ -24,12 +24,6 @@
                             <constraint firstAttribute="height" constant="10" id="ytF-WN-Esl"/>
                         </constraints>
                     </imageView>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" horizontalCompressionResistancePriority="752" text="Convo Count" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Q0C-u2-VO6">
-                        <rect key="frame" x="20" y="21" width="89" height="18"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                        <color key="textColor" red="0.50196081400000003" green="0.50196081400000003" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
-                        <nil key="highlightedColor"/>
-                    </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" text="Nickname" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="m0K-DA-DZ3">
                         <rect key="frame" x="5" y="31" width="278" height="20"/>
                         <fontDescription key="fontDescription" type="system" pointSize="16"/>
@@ -53,11 +47,9 @@
                 <constraints>
                     <constraint firstItem="TiZ-8h-NKQ" firstAttribute="leading" secondItem="jsM-yg-bft" secondAttribute="trailing" constant="5" id="5eR-Xr-jOv"/>
                     <constraint firstAttribute="trailing" secondItem="TiZ-8h-NKQ" secondAttribute="trailing" constant="5" id="9U6-F8-4VP"/>
-                    <constraint firstItem="Q0C-u2-VO6" firstAttribute="leading" secondItem="u1I-oI-ZQC" secondAttribute="trailing" constant="5" id="EYa-6u-gOi"/>
                     <constraint firstItem="u1I-oI-ZQC" firstAttribute="centerY" secondItem="2BP-nl-bA0" secondAttribute="centerY" id="Hb7-09-nrw"/>
                     <constraint firstItem="jsM-yg-bft" firstAttribute="top" secondItem="TiZ-8h-NKQ" secondAttribute="top" id="R3L-3S-Ac8"/>
                     <constraint firstItem="TiZ-8h-NKQ" firstAttribute="leading" secondItem="m0K-DA-DZ3" secondAttribute="trailing" constant="5" id="SHi-yG-rX3"/>
-                    <constraint firstItem="Q0C-u2-VO6" firstAttribute="centerY" secondItem="2BP-nl-bA0" secondAttribute="centerY" id="Uwu-th-7Uh"/>
                     <constraint firstItem="m0K-DA-DZ3" firstAttribute="leading" secondItem="2BP-nl-bA0" secondAttribute="leading" constant="5" id="foS-eM-uen"/>
                     <constraint firstItem="u1I-oI-ZQC" firstAttribute="leading" secondItem="2BP-nl-bA0" secondAttribute="leading" constant="5" id="jxX-QY-Fa5"/>
                     <constraint firstItem="TiZ-8h-NKQ" firstAttribute="centerY" secondItem="2BP-nl-bA0" secondAttribute="centerY" id="nzY-Yj-jFe"/>
@@ -65,7 +57,6 @@
                 </constraints>
             </tableViewCellContentView>
             <connections>
-                <outlet property="convoCountLabel" destination="Q0C-u2-VO6" id="Al7-5a-04b"/>
                 <outlet property="iconImageView" destination="TiZ-8h-NKQ" id="HOX-kT-Nwg"/>
                 <outlet property="nameLabel" destination="jsM-yg-bft" id="Sww-Qy-RY9"/>
                 <outlet property="nicknameLabel" destination="m0K-DA-DZ3" id="mRW-Za-Eai"/>
