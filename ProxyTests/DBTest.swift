@@ -55,7 +55,7 @@ extension DBTest {
     static func makeConvo(completion: @escaping (_ convo: Convo, _ sender: Proxy, _ receiver: Proxy) -> Void) {
         makeProxy { (senderProxy) in
             makeProxy(forUser: testUser) { (receiverProxy) in
-                DB.makeConvo(convoKey: "key", sender: senderProxy, receiver: receiverProxy, firstMessageId: "id") { (convo) in
+                DB.makeConvo(convoKey: "key", sender: senderProxy, receiver: receiverProxy) { (convo) in
                     guard let convo = convo else {
                         XCTFail()
                         return

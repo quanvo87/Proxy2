@@ -6,7 +6,7 @@ extension DB {
     typealias MakeProxyCallback = (Result<Proxy, ProxyError>) -> Void
 
     static func deleteProxy(_ proxy: Proxy, completion: @escaping (Success) -> Void) {
-        DB.getConvos(forProxy: proxy) { (convos) in
+        getConvos(forProxy: proxy) { (convos) in
             guard let convos = convos else {
                 completion(false)
                 return
@@ -28,7 +28,7 @@ extension DB {
     }
 
     static func getProxy(withKey key: String, completion: @escaping (Proxy?) -> Void) {
-        DB.get(Child.proxyOwners, key) { (data) in
+        get(Child.proxyOwners, key) { (data) in
             guard let proxyOwner = ProxyOwner(data?.value as AnyObject) else {
                 completion(nil)
                 return
@@ -38,19 +38,19 @@ extension DB {
     }
 
     static func getProxy(withKey key: String, belongingTo uid: String, completion: @escaping (Proxy?) -> Void) {
-        DB.get(Child.proxies, uid, key) { (data) in
+        get(Child.proxies, uid, key) { (data) in
             completion(Proxy(data?.value as AnyObject))
         }
     }
 
     private static func getProxyCount(forUser uid: String, completion: @escaping (UInt) -> Void) {
-        DB.get(Child.proxies, uid) { (data) in
+        get(Child.proxies, uid) { (data) in
             completion(data?.childrenCount ?? 0)
         }
     }
 
     static func getUnreadMessagesForProxy(owner: String, key: String, completion: @escaping ([Message]?) -> Void) {
-        guard let ref = DB.makeReference(Child.userInfo, owner, Child.unreadMessages) else {
+        guard let ref = makeReference(Child.userInfo, owner, Child.unreadMessages) else {
             completion(nil)
             return
         }
@@ -74,7 +74,7 @@ extension DB {
     }
 
     private static func makeProxyHelper(withName proxyName: String, forUser uid: String, attempts: Int = 0, completion: @escaping MakeProxyCallback) {
-        guard let proxyKeysRef = DB.makeReference(Child.proxyKeys) else {
+        guard let proxyKeysRef = makeReference(Child.proxyKeys) else {
             completion(.failure(.unknown))
             return
         }
@@ -83,14 +83,14 @@ extension DB {
         let proxyKeyDictionary = [Child.key: proxyKey]
         let autoId = proxyKeysRef.childByAutoId().key
 
-        DB.set(proxyKeyDictionary, at: Child.proxyKeys, autoId) { (success) in
+        set(proxyKeyDictionary, at: Child.proxyKeys, autoId) { (success) in
             guard success else {
                 completion(.failure(.unknown))
                 return
             }
 
             proxyKeysRef.queryOrdered(byChild: Child.key).queryEqual(toValue: proxyKey).observeSingleEvent(of: .value, with: { (data) in
-                DB.delete(Child.proxyKeys, autoId) { (success) in
+                delete(Child.proxyKeys, autoId) { (success) in
                     guard success else {
                         completion(.failure(.unknown))
                         return
@@ -121,7 +121,7 @@ extension DB {
     }
 
     static func setIcon(to icon: String, forProxy proxy: Proxy, completion: @escaping (Success) -> Void) {
-        DB.getConvos(forProxy: proxy) { (convos) in
+        getConvos(forProxy: proxy) { (convos) in
             guard let convos = convos else {
                 completion(false)
                 return
@@ -144,7 +144,7 @@ extension DB {
             completion(.inputTooLong)
             return
         }
-        DB.getConvos(forProxy: proxy) { (convos) in
+        getConvos(forProxy: proxy) { (convos) in
             guard let convos = convos else {
                 completion(.unknown)
                 return

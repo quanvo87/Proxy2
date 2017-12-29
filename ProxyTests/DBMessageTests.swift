@@ -81,7 +81,7 @@ class DBMessageTests: DBTest {
         defer { waitForExpectations(timeout: 10) }
 
         DBTest.makeConvo { (convo, _, _) in
-            DB.sendMessage(text: DBTest.text, senderConvo: convo) { (result) in
+            DB.sendMessage(senderConvo: convo, text: DBTest.text) { (result) in
                 XCTAssertNotNil(result)
                 expectation.fulfill()
             }

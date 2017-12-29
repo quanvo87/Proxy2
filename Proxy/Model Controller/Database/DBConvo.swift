@@ -12,20 +12,20 @@ extension DB {
     }
 
     static func getConvo(withKey key: String, belongingTo uid: String, completion: @escaping (Convo?) -> Void) {
-        DB.get(Child.convos, uid, key) { (data) in
+        get(Child.convos, uid, key) { (data) in
             completion(Convo(data?.value as AnyObject))
         }
     }
 
     static func getConvos(forProxy proxy: Proxy, completion: @escaping ([Convo]?) -> Void) {
-        DB.get(Child.convos, proxy.key) { (data) in
+        get(Child.convos, proxy.key) { (data) in
             completion(data?.toConvosArray())
         }
     }
 
-    static func makeConvo(convoKey: String, sender: Proxy, receiver: Proxy, firstMessageId: String, completion: @escaping (Convo?) -> Void) {
-        let senderConvo = Convo(firstMessageId: firstMessageId, key: convoKey, receiverIcon: receiver.icon, receiverId: receiver.ownerId, receiverProxyKey: receiver.key, receiverProxyName: receiver.name, senderId: sender.ownerId, senderProxyKey: sender.key, senderProxyName: sender.name)
-        let receiverConvo = Convo(firstMessageId: firstMessageId, key: convoKey, receiverIcon: sender.icon, receiverId: sender.ownerId, receiverProxyKey: sender.key, receiverProxyName: sender.name, senderId: receiver.ownerId, senderProxyKey: receiver.key, senderProxyName: receiver.name)
+    static func makeConvo(convoKey: String, sender: Proxy, receiver: Proxy, completion: @escaping (Convo?) -> Void) {
+        let senderConvo = Convo(key: convoKey, receiverIcon: receiver.icon, receiverId: receiver.ownerId, receiverProxyKey: receiver.key, receiverProxyName: receiver.name, senderId: sender.ownerId, senderProxyKey: sender.key, senderProxyName: sender.name)
+        let receiverConvo = Convo(key: convoKey, receiverIcon: sender.icon, receiverId: sender.ownerId, receiverProxyKey: sender.key, receiverProxyName: sender.name, senderId: receiver.ownerId, senderProxyKey: receiver.key, senderProxyName: receiver.name)
         let work = GroupWork()
         work.increment(by: 1, forProperty: .proxiesInteractedWith, forUser: receiver.ownerId)
         work.increment(by: 1, forProperty: .proxiesInteractedWith, forUser: sender.ownerId)
