@@ -39,7 +39,7 @@ class ConvosButtonManager: ButtonManaging {
             return
         }
         navigationItem?.disableRightBarButtonItem(atIndex: 1)
-        DBProxy.makeProxy(forUser: uid) { (result) in
+        DB.makeProxy(forUser: uid) { (result) in
             self.navigationItem?.enableRightBarButtonItem(atIndex: 1)
             switch result {
             case .failure(let error):

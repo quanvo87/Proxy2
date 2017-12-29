@@ -43,7 +43,6 @@
 		5973C84A1F608A2200647492 /* ConvosTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8161F608A1A00647492 /* ConvosTableViewCell.swift */; };
 		5973C84B1F608A2200647492 /* DBUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8171F608A1A00647492 /* DBUser.swift */; };
 		5973C84C1F608A2200647492 /* NSDate+NVTimeAgo.m in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8181F608A1A00647492 /* NSDate+NVTimeAgo.m */; };
-		5973C84F1F608A2200647492 /* DBStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C81B1F608A1B00647492 /* DBStorage.swift */; };
 		5973C8511F608A2200647492 /* ProxyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C81D1F608A1B00647492 /* ProxyError.swift */; };
 		5973C8531F608A2200647492 /* ConvoDetailReceiverProxyTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C81F1F608A1B00647492 /* ConvoDetailReceiverProxyTableViewCell.swift */; };
 		5973C8541F608A2200647492 /* ProxyTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8201F608A1B00647492 /* ProxyTableViewDataSource.swift */; };
@@ -76,7 +75,6 @@
 		5973C8791F608A2200647492 /* makeAdjectives.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8461F608A2100647492 /* makeAdjectives.swift */; };
 		5973C87A1F608A2200647492 /* AuthObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8471F608A2200647492 /* AuthObserver.swift */; };
 		5973C8841F608A4E00647492 /* DBTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C87B1F608A4D00647492 /* DBTests.swift */; };
-		5973C8851F608A4E00647492 /* DBStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C87C1F608A4D00647492 /* DBStorageTests.swift */; };
 		5973C8861F608A4E00647492 /* DBConvoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C87D1F608A4D00647492 /* DBConvoTests.swift */; };
 		5973C8871F608A4E00647492 /* DBMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C87E1F608A4D00647492 /* DBMessageTests.swift */; };
 		5973C8891F608A4E00647492 /* CommonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8801F608A4E00647492 /* CommonTests.swift */; };
@@ -187,7 +185,6 @@
 		5973C8161F608A1A00647492 /* ConvosTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvosTableViewCell.swift; sourceTree = "<group>"; };
 		5973C8171F608A1A00647492 /* DBUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBUser.swift; sourceTree = "<group>"; };
 		5973C8181F608A1A00647492 /* NSDate+NVTimeAgo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+NVTimeAgo.m"; sourceTree = "<group>"; };
-		5973C81B1F608A1B00647492 /* DBStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBStorage.swift; sourceTree = "<group>"; };
 		5973C81D1F608A1B00647492 /* ProxyError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyError.swift; sourceTree = "<group>"; };
 		5973C81F1F608A1B00647492 /* ConvoDetailReceiverProxyTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvoDetailReceiverProxyTableViewCell.swift; sourceTree = "<group>"; };
 		5973C8201F608A1B00647492 /* ProxyTableViewDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyTableViewDataSource.swift; sourceTree = "<group>"; };
@@ -220,7 +217,6 @@
 		5973C8461F608A2100647492 /* makeAdjectives.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = makeAdjectives.swift; sourceTree = "<group>"; };
 		5973C8471F608A2200647492 /* AuthObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthObserver.swift; sourceTree = "<group>"; };
 		5973C87B1F608A4D00647492 /* DBTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBTests.swift; sourceTree = "<group>"; };
-		5973C87C1F608A4D00647492 /* DBStorageTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBStorageTests.swift; sourceTree = "<group>"; };
 		5973C87D1F608A4D00647492 /* DBConvoTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBConvoTests.swift; sourceTree = "<group>"; };
 		5973C87E1F608A4D00647492 /* DBMessageTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBMessageTests.swift; sourceTree = "<group>"; };
 		5973C8801F608A4E00647492 /* CommonTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonTests.swift; sourceTree = "<group>"; };
@@ -376,7 +372,6 @@
 				5973C8151F608A1A00647492 /* DBConvo.swift */,
 				5973C83B1F608A2000647492 /* DBMessage.swift */,
 				5973C8271F608A1C00647492 /* DBProxy.swift */,
-				5973C81B1F608A1B00647492 /* DBStorage.swift */,
 				5973C8171F608A1A00647492 /* DBUser.swift */,
 			);
 			path = Database;
@@ -424,7 +419,6 @@
 				5973C87D1F608A4D00647492 /* DBConvoTests.swift */,
 				5973C87E1F608A4D00647492 /* DBMessageTests.swift */,
 				5973C8831F608A4E00647492 /* DBProxyTests.swift */,
-				5973C87C1F608A4D00647492 /* DBStorageTests.swift */,
 				5973C8811F608A4E00647492 /* DBTest.swift */,
 				5973C87B1F608A4D00647492 /* DBTests.swift */,
 				59B432F61F60648400622DEA /* Info.plist */,
@@ -997,7 +991,6 @@
 				59FF373D1F97984200FA1AF0 /* AuthManager.swift in Sources */,
 				598F8A621FEB9A9700CCF024 /* ConvoObserver.swift in Sources */,
 				593D7D421F851E6900D3FBD5 /* MessagesReceivedCountManaging.swift in Sources */,
-				5973C84F1F608A2200647492 /* DBStorage.swift in Sources */,
 				59BAB2DC1F7A7FB200A2B581 /* ConvosManaging.swift in Sources */,
 				598F89EE1FEB131600CCF024 /* MessagesManaging.swift in Sources */,
 				59E75B2E1F846F550033A407 /* ProxiesManager.swift in Sources */,
@@ -1085,7 +1078,6 @@
 				5973C8891F608A4E00647492 /* CommonTests.swift in Sources */,
 				5973C88A1F608A4E00647492 /* DBTest.swift in Sources */,
 				5973C88C1F608A4E00647492 /* DBProxyTests.swift in Sources */,
-				5973C8851F608A4E00647492 /* DBStorageTests.swift in Sources */,
 				5973C8861F608A4E00647492 /* DBConvoTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

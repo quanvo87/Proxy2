@@ -2,7 +2,7 @@ import FirebaseDatabase
 import GroupWork
 import UIKit
 
-struct DBProxy {
+extension DB {
     typealias MakeProxyCallback = (Result<Proxy, ProxyError>) -> Void
 
     static func deleteProxy(_ proxy: Proxy, completion: @escaping (Success) -> Void) {
@@ -187,7 +187,7 @@ extension GroupWork {
 
     func deleteUnreadMessages(for proxy: Proxy) {
         start()
-        DBProxy.getUnreadMessagesForProxy(owner: proxy.ownerId, key: proxy.key) { (messages) in
+        DB.getUnreadMessagesForProxy(owner: proxy.ownerId, key: proxy.key) { (messages) in
             guard let messages = messages else {
                 self.finish(withResult: false)
                 return

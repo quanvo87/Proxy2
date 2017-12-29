@@ -67,7 +67,7 @@ extension DBTest {
     }
 
     static func makeProxy(withName name: String = ProxyService.makeRandomProxyName(), forUser uid: String = DBTest.uid, completion: @escaping (Proxy) -> Void) {
-        DBProxy.makeProxy(withName: name, forUser: uid) { (result) in
+        DB.makeProxy(withName: name, forUser: uid) { (result) in
             switch result {
             case .failure:
                 XCTFail()
@@ -80,7 +80,7 @@ extension DBTest {
     static func sendMessage(completion: @escaping (_ message: Message, _ convo: Convo, _ sender: Proxy, _ receiver: Proxy) -> Void) {
         makeProxy { (sender) in
             makeProxy (forUser: testUser) { (receiver) in
-                DBMessage.sendMessage(senderProxy: sender, receiverProxy: receiver, text: text) { (result) in
+                DB.sendMessage(senderProxy: sender, receiverProxy: receiver, text: text) { (result) in
                     switch result {
                     case .failure:
                         XCTFail()

@@ -2,7 +2,7 @@ import FirebaseDatabase
 import GroupWork
 import MessageKit
 
-struct DBMessage {
+extension DB {
     typealias SendMessageCallback = (Result<(message: Message, convo: Convo), ProxyError>) -> Void
 
     static func read(_ message: Message, atDate date: Date = Date(), completion: @escaping (Success) -> Void) {
@@ -134,7 +134,7 @@ extension GroupWork {
 
     func setHasUnreadMessageForProxy(key: String, ownerId: String) {
         start()
-        DBProxy.getUnreadMessagesForProxy(owner: ownerId, key: key) { (messages) in
+        DB.getUnreadMessagesForProxy(owner: ownerId, key: key) { (messages) in
             if let messageCount = messages?.count, messageCount <= 0 {
                 self.set(.hasUnreadMessage(false), forProxyWithKey: key, proxyOwner: ownerId)
             }

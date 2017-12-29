@@ -20,7 +20,7 @@ extension IconPickerCollectionViewDelegate: UICollectionViewDelegate {
                 return
         }
         collectionView.cellForItem(at: indexPath)?.backgroundColor = UIColor.blue
-        DBProxy.setIcon(to: iconName, forProxy: proxy) { _ in }
+        DB.setIcon(to: iconName, forProxy: proxy) { _ in }
         controller?.dismiss(animated: true)
     }
 }

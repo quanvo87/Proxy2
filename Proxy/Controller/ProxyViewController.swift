@@ -58,7 +58,7 @@ private extension ProxyViewController {
     @objc func deleteProxy() {
         let alert = UIAlertController(title: "Delete Proxy?", message: "You will not be able to see this proxy or its conversations again.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
-            DBProxy.deleteProxy(self.proxy) { _ in }
+            DB.deleteProxy(self.proxy) { _ in }
             _ = self.navigationController?.popViewController(animated: true)
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
