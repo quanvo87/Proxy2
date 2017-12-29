@@ -9,7 +9,7 @@ extension UnreadMessagesManaging {
         var untouchedMessages = [Message]()
         for message in unreadMessages {
             if message.parentConvoKey == convoKey {
-                DBMessage.read(message) { _ in }
+                DB.read(message) { _ in }
             } else {
                 untouchedMessages.append(message)
             }

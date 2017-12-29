@@ -229,7 +229,7 @@ extension UIViewController {
             }
             let trimmed = nickname.trimmingCharacters(in: CharacterSet(charactersIn: " "))
             if !(nickname != "" && trimmed == "") {
-                DBProxy.setNickname(to: nickname, forProxy: proxy) { (error) in
+                DB.setNickname(to: nickname, forProxy: proxy) { (error) in
                     if let error = error, case .inputTooLong = error {
                         self.showAlert("Nickname Too Long", message: "Please try a shorter nickname.") {
                             self.showEditProxyNicknameAlert(proxy)

@@ -10,10 +10,11 @@ class DBMessageTests: DBTest {
         defer { waitForExpectations(timeout: 10) }
 
         DBTest.sendMessage { (message, _, _, receiver) in
-            DBMessage.read(message) { (success) in
+            let date = Date()
+            DB.read(message, atDate: date) { (success) in
                 XCTAssert(success)
                 let work = GroupWork()
-                work.check(.dateRead(Date()), forMessage: message)
+                work.check(.dateRead(date), forMessage: message)
                 work.check(.hasUnreadMessage(false), forConvoWithKey: message.parentConvoKey, ownerId: message.receiverId, proxyKey: message.receiverProxyKey)
                 work.check(.hasUnreadMessage(false), forProxy: receiver)
                 work.checkUnreadMessageDeleted(message)
@@ -30,7 +31,7 @@ class DBMessageTests: DBTest {
 
         DBTest.sendMessage { (message1, _, _, _) in
             DBTest.sendMessage { (message2, _, _, receiver) in
-                DBMessage.read(message1) { (success) in
+                DB.read(message1) { (success) in
                     XCTAssert(success)
                     let work = GroupWork()
                     work.check(.hasUnreadMessage(true), forProxy: receiver)
@@ -80,7 +81,7 @@ class DBMessageTests: DBTest {
         defer { waitForExpectations(timeout: 10) }
 
         DBTest.makeConvo { (convo, _, _) in
-            DBMessage.sendMessage(text: DBTest.text, senderConvo: convo) { (result) in
+            DB.sendMessage(text: DBTest.text, senderConvo: convo) { (result) in
                 XCTAssertNotNil(result)
                 expectation.fulfill()
             }

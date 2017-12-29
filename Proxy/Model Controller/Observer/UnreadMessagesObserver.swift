@@ -12,7 +12,7 @@ class UnreadMessagesObserver: ReferenceObserving {
                 return
             }
             if manager?.convosPresentIn[message.parentConvoKey] != nil {
-                DBMessage.read(message) { _ in }
+                DB.read(message) { _ in }
             } else {
                 manager?.unreadMessages.append(message)
             }

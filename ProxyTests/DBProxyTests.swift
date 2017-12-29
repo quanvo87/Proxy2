@@ -10,12 +10,12 @@ class DBProxyTests: DBTest {
 
         DBTest.makeProxy { (sender) in
             DBTest.makeProxy(forUser: DBTest.testUser) { (receiver) in
-                DBMessage.sendMessage(senderProxy: receiver, receiverProxy: sender, text: DBTest.text) { (result) in
+                DB.sendMessage(senderProxy: receiver, receiverProxy: sender, text: DBTest.text) { (result) in
                     switch result {
                     case .failure:
                         XCTFail()
                     case .success(let tuple):
-                        DBProxy.deleteProxy(sender) { (success) in
+                        DB.deleteProxy(sender) { (success) in
                             XCTAssert(success)
                             let work = GroupWork()
                             work.checkUnreadMessagesDeleted(for: sender)
@@ -59,7 +59,7 @@ class DBProxyTests: DBTest {
         defer { waitForExpectations(timeout: 10) }
         
         DBTest.makeProxy { (proxy) in
-            DBProxy.getProxy(withKey: proxy.key) { (retrievedProxy) in
+            DB.getProxy(withKey: proxy.key) { (retrievedProxy) in
                 XCTAssertEqual(retrievedProxy, proxy)
                 expectation.fulfill()
             }
@@ -70,7 +70,7 @@ class DBProxyTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
         
-        DBProxy.getProxy(withKey: "invalid key") { (proxy) in
+        DB.getProxy(withKey: "invalid key") { (proxy) in
             XCTAssertNil(proxy)
             expectation.fulfill()
         }
@@ -81,7 +81,7 @@ class DBProxyTests: DBTest {
         defer { waitForExpectations(timeout: 10) }
         
         DBTest.makeProxy { (proxy) in
-            DBProxy.getProxy(withKey: proxy.key, belongingTo: proxy.ownerId) { (retrievedProxy) in
+            DB.getProxy(withKey: proxy.key, belongingTo: proxy.ownerId) { (retrievedProxy) in
                 XCTAssertEqual(retrievedProxy, proxy)
                 expectation.fulfill()
             }
@@ -92,7 +92,7 @@ class DBProxyTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
         
-        DBProxy.getProxy(withKey: "invalid key", belongingTo: DBTest.uid) { (proxy) in
+        DB.getProxy(withKey: "invalid key", belongingTo: DBTest.uid) { (proxy) in
             XCTAssertNil(proxy)
             expectation.fulfill()
         }
@@ -104,7 +104,7 @@ class DBProxyTests: DBTest {
 
         DBTest.sendMessage { (message, _, _, _) in
 
-            DBProxy.getUnreadMessagesForProxy(owner: message.receiverId, key: message.receiverProxyKey) { (messages) in
+            DB.getUnreadMessagesForProxy(owner: message.receiverId, key: message.receiverProxyKey) { (messages) in
                 XCTAssertEqual(messages?[safe: 0], message)
 
                 expectation.fulfill()
@@ -133,7 +133,7 @@ class DBProxyTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        DBProxy.makeProxy(forUser: DBTest.uid, maxAllowedProxies: 0) { (result) in
+        DB.makeProxy(forUser: DBTest.uid, maxAllowedProxies: 0) { (result) in
             switch result {
             case .failure(let error):
                 XCTAssertEqual(error, ProxyError.proxyLimitReached)
@@ -148,12 +148,12 @@ class DBProxyTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
         
-        DBProxy.makeProxy(withName: "test", forUser: DBTest.uid) { (result) in
+        DB.makeProxy(withName: "test", forUser: DBTest.uid) { (result) in
             switch result {
             case .failure:
                 XCTFail()
             case .success:
-                DBProxy.makeProxy(withName: "test", forUser: DBTest.uid) { (result) in
+                DB.makeProxy(withName: "test", forUser: DBTest.uid) { (result) in
                     switch result {
                     case .failure:
                         XCTFail()
@@ -173,7 +173,7 @@ class DBProxyTests: DBTest {
         DBTest.makeConvo { (convo, proxy, _) in
             let newIcon = "new icon"
             
-            DBProxy.setIcon(to: newIcon, forProxy: proxy) { (success) in
+            DB.setIcon(to: newIcon, forProxy: proxy) { (success) in
                 XCTAssert(success)
                 
                 let work = GroupWork()
@@ -193,7 +193,7 @@ class DBProxyTests: DBTest {
         DBTest.makeConvo { (convo, sender, _) in
             let newNickname = "new nickname"
             
-            DBProxy.setNickname(to: newNickname, forProxy: sender) { (error) in
+            DB.setNickname(to: newNickname, forProxy: sender) { (error) in
                 XCTAssertNil(error)
                 
                 let work = GroupWork()
@@ -234,7 +234,7 @@ extension GroupWork {
 
     func checkUnreadMessagesDeleted(for proxy: Proxy) {
         start()
-        DBProxy.getUnreadMessagesForProxy(owner: proxy.ownerId, key: proxy.key) { (messages) in
+        DB.getUnreadMessagesForProxy(owner: proxy.ownerId, key: proxy.key) { (messages) in
             XCTAssertEqual(messages?.count, 0)
             self.finish(withResult: true)
         }

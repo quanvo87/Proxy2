@@ -47,7 +47,7 @@ class ProxiesButtonManager: ButtonManaging {
                     return
                 }
                 key.start()
-                DBProxy.deleteProxy(proxy) { _ in
+                DB.deleteProxy(proxy) { _ in
                     key.finish(withResult: true)
                 }
             }
@@ -66,7 +66,7 @@ class ProxiesButtonManager: ButtonManaging {
             return
         }
         proxiesViewController?.navigationItem.disableRightBarButtonItem(atIndex: 1)
-        DBProxy.makeProxy(forUser: uid) { (result) in
+        DB.makeProxy(forUser: uid) { (result) in
             self.proxiesViewController?.navigationItem.enableRightBarButtonItem(atIndex: 1)
             switch result {
             case .failure(let error):
