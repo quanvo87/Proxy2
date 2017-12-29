@@ -2,9 +2,8 @@ import MessageKit
 import UIKit
 
 class MessagesManager: MessagesManaging {
-    var messages = [Message]()
-
     let observer = MessagesObserver()
+    var messages = [Message]()
     weak var collectionView: MessagesCollectionView?
 
     func load(convoKey: String, collectionView: MessagesCollectionView) {

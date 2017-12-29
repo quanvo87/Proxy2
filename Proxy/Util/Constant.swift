@@ -44,7 +44,7 @@ struct Setting {
     static let maxMessageSize = 20000
     static let maxNameSize = 50
     static let maxMakeProxyAttempts = 50
-    static let messagesPageSize: UInt = 30
+    static let querySize: UInt = 30
     static let navBarButtonCGDouble = 30.0
     static let navBarButtonCGRect = CGRect(x: 0, y: 0, width: Setting.navBarButtonCGDouble, height: Setting.navBarButtonCGDouble)
     static let navBarButtonCGSize = CGSize(width: Setting.navBarButtonCGDouble, height: Setting.navBarButtonCGDouble)

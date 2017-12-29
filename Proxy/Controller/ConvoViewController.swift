@@ -61,7 +61,7 @@ class ConvoViewController: MessagesViewController {
         guard indexPath.section == 0 else {
             return
         }
-        guard messagesManager.messages.count >= Setting.messagesPageSize else {
+        guard messagesManager.messages.count > 1 else {
             return
         }
         guard let message = messagesManager.messages[safe: indexPath.section] else {
