@@ -7,11 +7,11 @@ class MessagesObserver: ReferenceObserving {
     private var loading = true
     private var loadedAll = false
 
-    func observe(convoKey: String, manager: MessagesManaging) {
+    func observe(convoKey: String, manager: MessagesManaging, querySize: UInt = Setting.querySize) {
         stopObserving()
         loading = true
         ref = DB.makeReference(Child.messages, convoKey)
-        handle = ref?.queryOrdered(byChild: Child.timestamp).queryLimited(toLast: Setting.querySize).observe(.value, with: { (data) in
+        handle = ref?.queryOrdered(byChild: Child.timestamp).queryLimited(toLast: querySize).observe(.value, with: { (data) in
             self.manager?.messages = data.toMessagesArray()
             self.manager?.collectionView?.reloadData()
             self.manager?.collectionView?.scrollToBottom()
@@ -30,16 +30,14 @@ class MessagesObserver: ReferenceObserving {
                 self.loading = false
             }
             var olderMessages = data.toMessagesArray()
-            if olderMessages.count == 1 {
+            guard olderMessages.count > 1 else {
                 self.loadedAll = true
                 return
             }
             olderMessages.removeLast(1)
             let currentMessages = self.manager?.messages ?? []
-            if !olderMessages.isEmpty {
-                self.manager?.messages = olderMessages + currentMessages
-                self.manager?.collectionView?.reloadDataAndKeepOffset()
-            }
+            self.manager?.messages = olderMessages + currentMessages
+            self.manager?.collectionView?.reloadDataAndKeepOffset()
         })
     }
 

@@ -59,13 +59,13 @@ extension DB {
         })
     }
 
-    static func makeProxy(withName proxyName: String = ProxyService.makeRandomProxyName(), forUser uid: String, maxAllowedProxies: Int = Setting.maxAllowedProxies, completion: @escaping MakeProxyCallback) {
+    static func makeProxy(withName proxyName: String = ProxyService.makeRandomProxyName(), forUser uid: String, maxProxyCount: Int = Setting.maxProxyCount, completion: @escaping MakeProxyCallback) {
         guard proxyName.count < Setting.maxNameSize else {
             completion(.failure(.inputTooLong))
             return
         }
         getProxyCount(forUser: uid) { (proxyCount) in
-            guard proxyCount < maxAllowedProxies else {
+            guard proxyCount < maxProxyCount else {
                 completion(.failure(.proxyLimitReached))
                 return
             }
