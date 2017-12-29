@@ -27,11 +27,8 @@ class ProxiesButtonManager: ButtonManaging {
     }
 
     func _deleteSelectedItems() {
-        guard
-            let uid = uid,
-            let tableView = tableView,
-            let itemsToDeleteManager = itemsToDeleteManager else {
-                return
+        guard let itemsToDeleteManager = itemsToDeleteManager else {
+            return
         }
         if itemsToDeleteManager.itemsToDelete.isEmpty {
             setDefaultButtons()
@@ -40,7 +37,7 @@ class ProxiesButtonManager: ButtonManaging {
         let alert = UIAlertController(title: "Delete Proxies?", message: "You will not be able to view their conversations anymore.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
             self.disableButtons()
-            self.proxiesManager?.stopObserving()
+            self.proxiesManager?.observer.stopObserving()
             let key = GroupWork()
             for (_, item) in itemsToDeleteManager.itemsToDelete {
                 guard let proxy = item as? Proxy else {
@@ -54,7 +51,7 @@ class ProxiesButtonManager: ButtonManaging {
             self.setDefaultButtons()
             key.allDone {
                 self.enableButtons()
-                self.proxiesManager?.load(uid: uid, tableView: tableView)
+                self.proxiesManager?.observer.observe()
             }
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
