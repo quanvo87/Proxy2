@@ -58,19 +58,10 @@ class ConvoViewController: MessagesViewController {
     }
 
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        guard indexPath.section == 0 else {
+        guard indexPath.section == 0, let message = messagesManager.messages[safe: indexPath.section] else {
             return
         }
-        guard messagesManager.messages.count > 1 else {
-            return
-        }
-        guard let message = messagesManager.messages[safe: indexPath.section] else {
-            return
-        }
-        guard message.messageId != convo.firstMessageId else {
-            return
-        }
-        messagesManager.observer.getMessages(startingAtMessageWithId: message.messageId)
+        messagesManager.observer.getMessages(endingAtMessageWithId: message.messageId)
     }
 }
 

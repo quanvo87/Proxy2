@@ -22,88 +22,52 @@ extension DB {
             return
         }
         let convoKey = makeConvoKey(senderProxy: senderProxy, receiverProxy: receiverProxy)
-        DB.getConvo(withKey: convoKey, belongingTo: senderProxy.ownerId) { (senderConvo) in
+        getConvo(withKey: convoKey, belongingTo: senderProxy.ownerId) { (senderConvo) in
             if let senderConvo = senderConvo {
-                sendMessage(text: text, senderConvo: senderConvo, completion: completion)
+                sendMessage(senderConvo: senderConvo, text: text, completion: completion)
             } else {
-                sendFirstMessage(senderProxy: senderProxy, receiverProxy: receiverProxy, convoKey: convoKey, text: text, completion: completion)
+                makeConvo(convoKey: convoKey, sender: senderProxy, receiver: receiverProxy, completion: { (convo) in
+                    guard let convo = convo else {
+                        completion(.failure(.unknown))
+                        return
+                    }
+                    sendMessage(senderConvo: convo, text: text, completion: completion)
+                })
             }
         }
     }
 
-    static func sendMessage(text: String, senderConvo: Convo, completion: @escaping SendMessageCallback) {
+    static func sendMessage(senderConvo: Convo, text: String, completion: @escaping SendMessageCallback) {
         guard text.count < Setting.maxMessageSize else {
             completion(.failure(.inputTooLong))
             return
         }
-        guard let messageId = makeMessageId(senderConvo.key) else {
+        guard let ref = makeReference(Child.messages, senderConvo.key) else {
             completion(.failure(.unknown))
             return
         }
         let message = Message(sender: Sender(id: senderConvo.senderId,
                                              displayName: senderConvo.senderProxyName),
-                              messageId: messageId,
+                              messageId: ref.childByAutoId().key,
                               data: .text(text),
                               dateRead: Date.distantPast,
                               parentConvoKey: senderConvo.key,
                               receiverId: senderConvo.receiverId,
                               receiverProxyKey: senderConvo.receiverProxyKey)
-        setMessage(message: message, senderConvo: senderConvo, completion: completion)
-    }
-
-    private static func makeConvoKey(senderProxy: Proxy, receiverProxy: Proxy) -> String {
-        return [senderProxy.key, senderProxy.ownerId, receiverProxy.key, receiverProxy.ownerId].sorted().joined()
-    }
-
-    private static func makeMessageId(_ convoKey: String) -> String? {
-        guard let ref = DB.makeReference(Child.messages, convoKey) else {
-            return nil
-        }
-        return ref.childByAutoId().key
-    }
-
-    private static func sendFirstMessage(senderProxy: Proxy, receiverProxy: Proxy, convoKey: String, text: String, completion: @escaping SendMessageCallback) {
-        guard let messageId = makeMessageId(convoKey) else {
-            completion(.failure(.unknown))
-            return
-        }
-        let message = Message(sender: Sender(id: senderProxy.ownerId,
-                                             displayName: senderProxy.nickname != "" ? senderProxy.nickname : senderProxy.name),
-                              messageId: messageId,
-                              data: .text(text),
-                              dateRead: Date.distantPast,
-                              parentConvoKey: convoKey,
-                              receiverId: receiverProxy.ownerId,
-                              receiverProxyKey: receiverProxy.key)
-        DB.makeConvo(convoKey: convoKey, sender: senderProxy, receiver: receiverProxy, firstMessageId: messageId) { (convo) in
-            guard let convo = convo else {
-                completion(.failure(.unknown))
-                return
-            }
-            setMessage(message: message, senderConvo: convo, completion: completion)
-        }
-    }
-
-    private static func setMessage(message: Message, senderConvo: Convo, completion: @escaping SendMessageCallback) {
         let work = GroupWork()
-
         work.set(message.toDictionary(), at: Child.messages, message.parentConvoKey, message.messageId)
         work.set(message.toDictionary(), at: Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
-
         let currentTime = Date().timeIntervalSince1970
-
         // Receiver updates
         work.increment(by: 1, forProperty: .messagesReceived, forUser: senderConvo.receiverId)
         work.set(.hasUnreadMessage(true), forConvo: senderConvo, asSender: false)
         work.set(.hasUnreadMessage(true), forProxyWithKey: message.receiverProxyKey, proxyOwner: message.receiverId)
         work.set(.timestamp(currentTime), forConvo: senderConvo, asSender: false)
         work.set(.timestamp(currentTime), forProxyInConvo: senderConvo, asSender: false)
-
         // Sender updates
         work.increment(by: 1, forProperty: .messagesSent, forUser: senderConvo.senderId)
         work.set(.timestamp(currentTime), forConvo: senderConvo, asSender: true)
         work.set(.timestamp(currentTime), forProxyInConvo: senderConvo, asSender: true)
-
         switch message.data {
         case .text(let s):
             work.set(.lastMessage(s), forConvo: senderConvo, asSender: false)
@@ -113,7 +77,6 @@ extension DB {
         default:
             break
         }
-
         work.allDone {
             if work.result {
                 completion(.success((message, senderConvo)))
@@ -121,6 +84,10 @@ extension DB {
                 completion(.failure(.unknown))
             }
         }
+    }
+
+    private static func makeConvoKey(senderProxy: Proxy, receiverProxy: Proxy) -> String {
+        return [senderProxy.key, senderProxy.ownerId, receiverProxy.key, receiverProxy.ownerId].sorted().joined()
     }
 }
 

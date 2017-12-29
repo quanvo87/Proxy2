@@ -3,7 +3,6 @@ import FirebaseDatabase
 struct Convo {
     let hasUnreadMessage: Bool
     let timestamp: Double
-    let firstMessageId: String
     let key: String
     let lastMessage: String
     let receiverIcon: String
@@ -26,7 +25,6 @@ struct Convo {
 
     init(hasUnreadMessage: Bool = false,
          timestamp: Double = Date().timeIntervalSince1970,
-         firstMessageId: String,
          key: String,
          lastMessage: String = "",
          receiverIcon: String = "",
@@ -40,7 +38,6 @@ struct Convo {
          senderProxyName: String) {
         self.hasUnreadMessage = hasUnreadMessage
         self.timestamp = timestamp
-        self.firstMessageId = firstMessageId
         self.key = key
         self.lastMessage = lastMessage
         self.receiverIcon = receiverIcon
@@ -62,7 +59,6 @@ struct Convo {
         guard
             let hasUnreadMessage = dictionary["hasUnreadMessage"] as? Bool,
             let timestamp = dictionary["timestamp"] as? Double,
-            let firstMessageId = dictionary["firstMessageId"] as? String,
             let key = dictionary["key"] as? String,
             let lastMessage = dictionary["lastMessage"] as? String,
             let receiverIcon = dictionary["receiverIcon"] as? String,
@@ -78,7 +74,6 @@ struct Convo {
         }
         self.hasUnreadMessage = hasUnreadMessage
         self.timestamp = timestamp
-        self.firstMessageId = firstMessageId
         self.key = key
         self.lastMessage = lastMessage
         self.receiverIcon = receiverIcon
@@ -96,7 +91,6 @@ struct Convo {
         return [
             "hasUnreadMessage": hasUnreadMessage,
             "timestamp": timestamp,
-            "firstMessageId": firstMessageId,
             "key": key,
             "lastMessage": lastMessage,
             "receiverIcon": receiverIcon,
@@ -116,7 +110,6 @@ extension Convo: Equatable {
     static func ==(_ lhs: Convo, _ rhs: Convo) -> Bool {
         return lhs.hasUnreadMessage == rhs.hasUnreadMessage &&
             lhs.timestamp.rounded() == rhs.timestamp.rounded() &&
-            lhs.firstMessageId == rhs.firstMessageId &&
             lhs.key == rhs.key &&
             lhs.lastMessage == rhs.lastMessage &&
             lhs.receiverIcon == rhs.receiverIcon &&
