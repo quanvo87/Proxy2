@@ -18,7 +18,7 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
 
         navigationItem.title = "My Proxies"
 
-        proxiesManager.load(uid: uid, tableView: tableView)
+        proxiesManager.load(uid: uid, navigationItem: navigationItem, tableView: tableView)
 
         dataSource.load(manager: proxiesManager, accessoryType: .disclosureIndicator)
 
