@@ -21,10 +21,8 @@ struct DBMessage {
             completion(.failure(.inputTooLong))
             return
         }
-
-        let convoKey = DBConvo.makeConvoKey(senderProxy: senderProxy, receiverProxy: receiverProxy)
-
-        DBConvo.getConvo(withKey: convoKey, belongingTo: senderProxy.ownerId) { (senderConvo) in
+        let convoKey = makeConvoKey(senderProxy: senderProxy, receiverProxy: receiverProxy)
+        DB.getConvo(withKey: convoKey, belongingTo: senderProxy.ownerId) { (senderConvo) in
             if let senderConvo = senderConvo {
                 sendMessage(text: text, senderConvo: senderConvo, completion: completion)
             } else {
@@ -38,32 +36,37 @@ struct DBMessage {
             completion(.failure(.inputTooLong))
             return
         }
-
-        guard let ref = DB.makeReference(Child.messages, senderConvo.key) else {
+        guard let messageId = makeMessageId(senderConvo.key) else {
             completion(.failure(.unknown))
             return
         }
-
         let message = Message(sender: Sender(id: senderConvo.senderId,
                                              displayName: senderConvo.senderProxyName),
-                              messageId: ref.childByAutoId().key,
+                              messageId: messageId,
                               data: .text(text),
                               dateRead: Date.distantPast,
                               parentConvoKey: senderConvo.key,
                               receiverId: senderConvo.receiverId,
                               receiverProxyKey: senderConvo.receiverProxyKey)
-
         setMessage(message: message, senderConvo: senderConvo, completion: completion)
     }
 
-    private static func sendFirstMessage(senderProxy: Proxy, receiverProxy: Proxy, convoKey: String, text: String, completion: @escaping SendMessageCallback) {
+    private static func makeConvoKey(senderProxy: Proxy, receiverProxy: Proxy) -> String {
+        return [senderProxy.key, senderProxy.ownerId, receiverProxy.key, receiverProxy.ownerId].sorted().joined()
+    }
+
+    private static func makeMessageId(_ convoKey: String) -> String? {
         guard let ref = DB.makeReference(Child.messages, convoKey) else {
+            return nil
+        }
+        return ref.childByAutoId().key
+    }
+
+    private static func sendFirstMessage(senderProxy: Proxy, receiverProxy: Proxy, convoKey: String, text: String, completion: @escaping SendMessageCallback) {
+        guard let messageId = makeMessageId(convoKey) else {
             completion(.failure(.unknown))
             return
         }
-
-        let messageId = ref.childByAutoId().key
-
         let message = Message(sender: Sender(id: senderProxy.ownerId,
                                              displayName: senderProxy.nickname != "" ? senderProxy.nickname : senderProxy.name),
                               messageId: messageId,
@@ -72,8 +75,7 @@ struct DBMessage {
                               parentConvoKey: convoKey,
                               receiverId: receiverProxy.ownerId,
                               receiverProxyKey: receiverProxy.key)
-
-        DBConvo.makeConvo(sender: senderProxy, receiver: receiverProxy, firstMessageId: messageId) { (convo) in
+        DB.makeConvo(convoKey: convoKey, sender: senderProxy, receiver: receiverProxy, firstMessageId: messageId) { (convo) in
             guard let convo = convo else {
                 completion(.failure(.unknown))
                 return
@@ -119,18 +121,6 @@ struct DBMessage {
                 completion(.failure(.unknown))
             }
         }
-    }
-}
-
-extension DataSnapshot {
-    func toMessagesArray() -> [Message] {
-        var messages = [Message]()
-        for child in self.children {
-            if let message = Message((child as? DataSnapshot)?.value as AnyObject) {
-                messages.append(message)
-            }
-        }
-        return messages
     }
 }
 

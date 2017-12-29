@@ -32,28 +32,6 @@ class DBProxyTests: DBTest {
             }
         }
     }
-
-    func testFixConvoCounts() {
-        let expectation = self.expectation(description: #function)
-        defer { waitForExpectations(timeout: 10) }
-
-        DBTest.makeConvo { (_, sender, _) in
-
-            let work = GroupWork()
-            work.set(.convoCount(0), forProxy: sender)
-            work.allDone {
-                DBProxy.fixConvoCounts(DBTest.uid) { (success) in
-                    XCTAssert(success)
-
-                    DBProxy.getConvoCount(forProxy: sender) { (convoCount) in
-                        XCTAssertEqual(convoCount, 1)
-
-                        expectation.fulfill()
-                    }
-                }
-            }
-        }
-    }
     
     func testGetImageForIcon() {
         XCTAssertEqual(ProxyService.iconNames.count, 101)
@@ -73,19 +51,6 @@ class DBProxyTests: DBTest {
 
         work.allDone {
             expectation.fulfill()
-        }
-    }
-    
-    func testGetProxiesForUser() {
-        let expectation = self.expectation(description: #function)
-        defer { waitForExpectations(timeout: 10) }
-        
-        DBTest.makeProxy { (proxy) in
-            DBProxy.getProxies(forUser: proxy.ownerId) { (proxies) in
-                XCTAssertEqual(proxies?.count, 1)
-                XCTAssertEqual(proxies?[0], proxy)
-                expectation.fulfill()
-            }
         }
     }
     

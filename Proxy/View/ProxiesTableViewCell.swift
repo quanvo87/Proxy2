@@ -1,7 +1,6 @@
 import UIKit
 
 class ProxiesTableViewCell: UITableViewCell {
-    @IBOutlet weak var convoCountLabel: UILabel!
     @IBOutlet weak var iconImageView: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var nicknameLabel: UILabel!
@@ -12,7 +11,6 @@ class ProxiesTableViewCell: UITableViewCell {
 
         nameLabel.text = proxy.name
         nicknameLabel.text = proxy.nickname
-        convoCountLabel.text = proxy.convoCount.asLabel
 
         iconImageView.image = nil
         UIImage.make(name: proxy.icon) { (image) in

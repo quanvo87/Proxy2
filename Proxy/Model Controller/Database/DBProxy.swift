@@ -6,7 +6,7 @@ struct DBProxy {
     typealias MakeProxyCallback = (Result<Proxy, ProxyError>) -> Void
 
     static func deleteProxy(_ proxy: Proxy, completion: @escaping (Success) -> Void) {
-        DBConvo.getConvos(forProxy: proxy) { (convos) in
+        DB.getConvos(forProxy: proxy) { (convos) in
             guard let convos = convos else {
                 completion(false)
                 return
@@ -24,42 +24,6 @@ struct DBProxy {
         work.deleteUnreadMessages(for: proxy)
         work.allDone {
             completion(work.result)
-        }
-    }
-
-    static func fixConvoCounts(_ uid: String, completion: @escaping (Success) -> Void) {
-        DBProxy.getProxies(forUser: uid) { (proxies) in
-            guard let proxies = proxies else {
-                completion(false)
-                return
-            }
-            let work = GroupWork()
-            for proxy in proxies {
-                work.start()
-                getConvoCount(forProxy: proxy) { (convoCount) in
-                    guard let convoCount = convoCount else {
-                        completion(false)
-                        return
-                    }
-                    work.set(.convoCount(Int(convoCount)), forProxy: proxy)
-                    work.finish(withResult: true)
-                }
-            }
-            work.allDone {
-                completion(work.result)
-            }
-        }
-    }
-
-    static func getConvoCount(forProxy proxy: Proxy, completion: @escaping (UInt?) -> Void) {
-        DB.get(Child.convos, proxy.key) { (data) in
-            completion(data?.childrenCount)
-        }
-    }
-
-    static func getProxies(forUser uid: String, completion: @escaping ([Proxy]?) -> Void) {
-        DB.get(Child.proxies, uid) { (data) in
-            completion(data?.toProxiesArray())
         }
     }
 
@@ -90,13 +54,12 @@ struct DBProxy {
             completion(nil)
             return
         }
-
         ref.queryOrdered(byChild: "receiverProxyKey").queryEqual(toValue: key).observeSingleEvent(of: .value, with: { (data) in
             completion(data.toMessagesArray())
         })
     }
 
-    static func makeProxy(withName proxyName: String = DBProxy.makeRandomProxyName(), forUser uid: String, maxAllowedProxies: Int = Setting.maxAllowedProxies, completion: @escaping MakeProxyCallback) {
+    static func makeProxy(withName proxyName: String = ProxyService.makeRandomProxyName(), forUser uid: String, maxAllowedProxies: Int = Setting.maxAllowedProxies, completion: @escaping MakeProxyCallback) {
         guard proxyName.count < Setting.maxNameSize else {
             completion(.failure(.inputTooLong))
             return
@@ -134,7 +97,7 @@ struct DBProxy {
                     }
 
                     if data.childrenCount == 1 {
-                        let proxy = Proxy(icon: DBProxy.makeRandomIconName(), name: proxyName, ownerId: uid)
+                        let proxy = Proxy(icon: ProxyService.makeRandomIconName(), name: proxyName, ownerId: uid)
                         let proxyOwner = ProxyOwner(key: proxyKey, ownerId: uid)
 
                         let work = GroupWork()
@@ -147,7 +110,7 @@ struct DBProxy {
 
                     } else {
                         if attempts < Setting.maxMakeProxyAttempts {
-                            makeProxyHelper(withName: DBProxy.makeRandomProxyName(), forUser: uid, attempts: attempts + 1, completion: completion)
+                            makeProxyHelper(withName: ProxyService.makeRandomProxyName(), forUser: uid, attempts: attempts + 1, completion: completion)
                         } else {
                             completion(.failure(.unknown))
                         }
@@ -157,25 +120,8 @@ struct DBProxy {
         }
     }
 
-    static func makeRandomIconName(iconNames: [String] = ProxyService.iconNames) -> String {
-        guard let name = iconNames[safe: iconNames.count.random] else {
-            return ""
-        }
-        return name
-    }
-
-    static func makeRandomProxyName(adjectives: [String] = ProxyService.words.adjectives, nouns: [String] = ProxyService.words.nouns, numberRange: Int = 9) -> String {
-        guard
-            let adjective = adjectives[safe: adjectives.count.random]?.lowercased().capitalized,
-            let noun = nouns[safe: nouns.count.random]?.lowercased().capitalized else {
-                return ""
-        }
-        let number = numberRange.random + 1
-        return adjective + noun + String(number)
-    }
-
     static func setIcon(to icon: String, forProxy proxy: Proxy, completion: @escaping (Success) -> Void) {
-        DBConvo.getConvos(forProxy: proxy) { (convos) in
+        DB.getConvos(forProxy: proxy) { (convos) in
             guard let convos = convos else {
                 completion(false)
                 return
@@ -198,8 +144,7 @@ struct DBProxy {
             completion(.inputTooLong)
             return
         }
-
-        DBConvo.getConvos(forProxy: proxy) { (convos) in
+        DB.getConvos(forProxy: proxy) { (convos) in
             guard let convos = convos else {
                 completion(.unknown)
                 return
@@ -218,32 +163,7 @@ struct DBProxy {
     }
 }
 
-extension DataSnapshot {
-    func toProxiesArray() -> [Proxy] {
-        var proxies = [Proxy]()
-        for child in self.children {
-            if let proxy = Proxy((child as? DataSnapshot)?.value as AnyObject) {
-                proxies.append(proxy)
-            }
-        }
-        return proxies
-    }
-}
-
 extension GroupWork {
-    func increment(by amount: Int, forProperty property: IncrementableProxyProperty, forProxy proxy: Proxy) {
-        increment(by: amount, forProperty: property, forProxyWithKey: proxy.key, ownerId: proxy.ownerId)
-    }
-
-    func increment(by amount: Int, forProperty property: IncrementableProxyProperty, forProxyInConvo convo: Convo, asSender: Bool) {
-        let (ownerId, proxyKey) = GroupWork.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
-        increment(by: amount, forProperty: property, forProxyWithKey: proxyKey, ownerId: ownerId)
-    }
-
-    func increment(by amount: Int, forProperty property: IncrementableProxyProperty, forProxyWithKey key: String, ownerId: String) {
-        increment(by: amount, at: Child.proxies, ownerId, key, property.rawValue)
-    }
-
     func set(_ property: SettableProxyProperty, forProxy proxy: Proxy) {
         set(property, forProxyWithKey: proxy.key, proxyOwner: proxy.ownerId)
     }

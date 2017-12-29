@@ -55,7 +55,7 @@ extension DBTest {
     static func makeConvo(completion: @escaping (_ convo: Convo, _ sender: Proxy, _ receiver: Proxy) -> Void) {
         makeProxy { (senderProxy) in
             makeProxy(forUser: testUser) { (receiverProxy) in
-                DBConvo.makeConvo(sender: senderProxy, receiver: receiverProxy) { (convo) in
+                DB.makeConvo(convoKey: "key", sender: senderProxy, receiver: receiverProxy, firstMessageId: "id") { (convo) in
                     guard let convo = convo else {
                         XCTFail()
                         return
@@ -66,7 +66,7 @@ extension DBTest {
         }
     }
 
-    static func makeProxy(withName name: String = DBProxy.makeRandomProxyName(), forUser uid: String = DBTest.uid, completion: @escaping (Proxy) -> Void) {
+    static func makeProxy(withName name: String = ProxyService.makeRandomProxyName(), forUser uid: String = DBTest.uid, completion: @escaping (Proxy) -> Void) {
         DBProxy.makeProxy(withName: name, forUser: uid) { (result) in
             switch result {
             case .failure:
@@ -85,7 +85,7 @@ extension DBTest {
                     case .failure:
                         XCTFail()
                     case .success(let tuple):
-                        DBConvo.getConvo(withKey: tuple.convo.key, belongingTo: tuple.convo.senderId) { (convo) in
+                        DB.getConvo(withKey: tuple.convo.key, belongingTo: tuple.convo.senderId) { (convo) in
                             guard let convo = convo else {
                                 XCTFail()
                                 return
