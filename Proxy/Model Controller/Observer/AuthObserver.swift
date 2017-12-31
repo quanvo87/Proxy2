@@ -5,7 +5,7 @@ class AuthObserver {
 
     func load(_ manager: AuthManaging) {
         stopObserving()
-        handle = Auth.auth.addStateDidChangeListener { [weak manager = manager] (_, user) in
+        handle = Auth.auth.addStateDidChangeListener { [weak manager] (_, user) in
             if let user = user {
                 manager?.logIn(user)
             } else {

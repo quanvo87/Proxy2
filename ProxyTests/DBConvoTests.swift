@@ -69,7 +69,7 @@ class DBConvoTests: DBTest {
 
         DBTest.makeConvo { (convo, _, _) in
             DB.get(Child.convos, convo.senderId) { (data) in
-                let convos = data?.toConvosArray()
+                let convos = data?.toConvosArray(DB.makeReference(""))
                 XCTAssertEqual(convos?.count, 1)
                 XCTAssertEqual(convos?[safe: 0], convo)
                 expectation.fulfill()
@@ -87,16 +87,14 @@ extension GroupWork {
 
     func checkConvoCreated(_ convo: Convo, asSender: Bool) {
         let (ownerId, proxyKey) = GroupWork.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
-
         start()
         DB.get(Child.convos, ownerId, convo.key) { (data) in
-            XCTAssertEqual(Convo(data?.value as AnyObject), convo)
+            XCTAssertEqual(Convo(data: data!, ref: DB.makeReference("")), convo)
             self.finish(withResult: true)
         }
-
         start()
         DB.get(Child.convos, proxyKey, convo.key) { (data) in
-            XCTAssertEqual(Convo(data?.value as AnyObject), convo)
+            XCTAssertEqual(Convo(data: data!, ref: DB.makeReference("")), convo)
             self.finish(withResult: true)
         }
     }

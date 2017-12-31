@@ -30,11 +30,8 @@ struct Proxy {
         self.ownerId = ownerId
     }
 
-    init?(_ data: DataSnapshot) {
-        self.init(data.value as AnyObject)
-    }
-
-    init?(_ dictionary: AnyObject) {
+    init?(data: DataSnapshot, ref: DatabaseReference?) {
+        let dictionary = data.value as AnyObject
         guard
             let hasUnreadMessage = dictionary["hasUnreadMessage"] as? Bool,
             let dateCreated = dictionary["dateCreated"] as? Double,
@@ -45,6 +42,7 @@ struct Proxy {
             let name = dictionary["name"] as? String,
             let nickname = dictionary["nickname"] as? String,
             let ownerId = dictionary["ownerId"] as? String else {
+                ref?.child(data.key).removeValue()
                 return nil
         }
         self.hasUnreadMessage = hasUnreadMessage

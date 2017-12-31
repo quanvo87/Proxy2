@@ -31,6 +31,7 @@ struct Child {
     static let proxyKeys = "proxyKeys"
     static let proxyOwners = "proxyOwners"
     static let receiverNickname = "receiverNickname"
+    static let receiverProxyKey = "receiverProxyKey"
     static let senderNickname = "senderNickname"
     static let timestamp = "timestamp"
     static let unreadCount = "unreadCount"
@@ -40,13 +41,12 @@ struct Child {
 }
 
 struct Setting {
-    static let maxProxyCount = 30
     static let maxMessageSize = 20000
     static let maxNameSize = 50
     static let maxMakeProxyAttempts = 50
-    static let querySize: UInt = 30
-    static let testConvoQuerySize: UInt = 10
+    static let maxProxyCount = 30
     static let navBarButtonCGDouble = 30.0
     static let navBarButtonCGRect = CGRect(x: 0, y: 0, width: Setting.navBarButtonCGDouble, height: Setting.navBarButtonCGDouble)
     static let navBarButtonCGSize = CGSize(width: Setting.navBarButtonCGDouble, height: Setting.navBarButtonCGDouble)
+    static let querySize: UInt = 30
 }

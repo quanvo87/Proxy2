@@ -16,11 +16,13 @@ class UnreadMessagesManager: UnreadMessagesManaging {
         }
     }
     
-    private let unreadMessagesObserver = UnreadMessagesObserver()
+    private let unreadMessageAddedObserver = UnreadMessageAddedObserver()
+    private let unreadMessageRemovedObserver = UnreadMessageRemovedObserver()
     private weak var convosViewController: UIViewController?
 
     func load(uid: String, convosViewController: UIViewController) {
         self.convosViewController = convosViewController
-        unreadMessagesObserver.observe(uid: uid, manager: self)
+        unreadMessageAddedObserver.observe(uid: uid, manager: self)
+        unreadMessageRemovedObserver.observe(uid: uid, manager: self)
     }
 }

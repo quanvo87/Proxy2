@@ -51,11 +51,8 @@ struct Convo {
         self.senderProxyName = senderProxyName
     }
 
-    init?(_ data: DataSnapshot) {
-        self.init(data.value as AnyObject)
-    }
-
-    init?(_ dictionary: AnyObject) {
+    init?(data: DataSnapshot, ref: DatabaseReference?) {
+        let dictionary = data.value as AnyObject
         guard
             let hasUnreadMessage = dictionary["hasUnreadMessage"] as? Bool,
             let timestamp = dictionary["timestamp"] as? Double,
@@ -70,6 +67,7 @@ struct Convo {
             let senderNickname = dictionary["senderNickname"] as? String,
             let senderProxyKey = dictionary["senderProxyKey"] as? String,
             let senderProxyName = dictionary["senderProxyName"] as? String else {
+                ref?.child(data.key).removeValue()
                 return nil
         }
         self.hasUnreadMessage = hasUnreadMessage

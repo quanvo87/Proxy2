@@ -101,7 +101,7 @@ extension GroupWork {
 
     func setHasUnreadMessageForProxy(key: String, ownerId: String) {
         start()
-        DB.getUnreadMessagesForProxy(owner: ownerId, key: key) { (messages) in
+        DB.getUnreadMessagesForProxy(ownerId: ownerId, proxyKey: key) { (messages) in
             if let messageCount = messages?.count, messageCount <= 0 {
                 self.set(.hasUnreadMessage(false), forProxyWithKey: key, proxyOwner: ownerId)
             }

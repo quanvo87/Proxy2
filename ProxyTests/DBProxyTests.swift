@@ -104,7 +104,7 @@ class DBProxyTests: DBTest {
 
         DBTest.sendMessage { (message, _, _, _) in
 
-            DB.getUnreadMessagesForProxy(owner: message.receiverId, key: message.receiverProxyKey) { (messages) in
+            DB.getUnreadMessagesForProxy(ownerId: message.receiverId, proxyKey: message.receiverProxyKey) { (messages) in
                 XCTAssertEqual(messages?[safe: 0], message)
 
                 expectation.fulfill()
@@ -118,7 +118,6 @@ class DBProxyTests: DBTest {
         
         DBTest.makeProxy { (proxy) in
             XCTAssertNotEqual(proxy.icon, "")
-            
             let work = GroupWork()
             work.checkProxyCreated(proxy)
             work.checkProxyKeyCreated(forProxy: proxy)
@@ -133,7 +132,7 @@ class DBProxyTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        DB.makeProxy(forUser: DBTest.uid, maxAllowedProxies: 0) { (result) in
+        DB.makeProxy(forUser: DBTest.uid, maxProxyCount: 0) { (result) in
             switch result {
             case .failure(let error):
                 XCTAssertEqual(error, ProxyError.proxyLimitReached)
@@ -211,7 +210,7 @@ extension GroupWork {
     func checkProxyCreated(_ proxy: Proxy) {
         start()
         DB.get(Child.proxies, DBTest.uid, proxy.key) { (data) in
-            XCTAssertEqual(Proxy(data?.value as AnyObject), proxy)
+            XCTAssertEqual(Proxy(data: data!, ref: DB.makeReference("")), proxy)
             self.finish(withResult: true)
         }
     }
@@ -227,14 +226,14 @@ extension GroupWork {
     func checkProxyOwnerCreated(forProxy proxy: Proxy) {
         start()
         DB.get(Child.proxyOwners, proxy.key) { (data) in
-            XCTAssertEqual(ProxyOwner(data?.value as AnyObject), ProxyOwner(key: proxy.key, ownerId: DBTest.uid))
+            XCTAssertEqual(ProxyOwner(data: data!, ref: DB.makeReference("")), ProxyOwner(key: proxy.key, ownerId: DBTest.uid))
             self.finish(withResult: true)
         }
     }
 
     func checkUnreadMessagesDeleted(for proxy: Proxy) {
         start()
-        DB.getUnreadMessagesForProxy(owner: proxy.ownerId, key: proxy.key) { (messages) in
+        DB.getUnreadMessagesForProxy(ownerId: proxy.ownerId, proxyKey: proxy.key) { (messages) in
             XCTAssertEqual(messages?.count, 0)
             self.finish(withResult: true)
         }

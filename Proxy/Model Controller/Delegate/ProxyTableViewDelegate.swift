@@ -1,11 +1,11 @@
 import UIKit
 
 class ProxyTableViewDelegate: NSObject {
-    private weak var convosManager: ConvosManaging?
+    private weak var convosManager: ConvosManager?
     private weak var unreadMessagesManager: UnreadMessagesManaging?
     private weak var controller: UIViewController?
 
-    func load(convosManager: ConvosManaging, unreadMessagesManager: UnreadMessagesManaging?, controller: UIViewController?) {
+    func load(convosManager: ConvosManager, unreadMessagesManager: UnreadMessagesManaging?, controller: UIViewController?) {
         self.convosManager = convosManager
         self.unreadMessagesManager = unreadMessagesManager
         self.controller = controller
@@ -44,5 +44,16 @@ extension ProxyTableViewDelegate: UITableViewDelegate {
         default:
             return 0
         }
+    }
+
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        guard
+            indexPath.section == 1,
+            let convoCount = convosManager?.convos.count,
+            indexPath.row == convoCount - 1,
+            let convo = convosManager?.convos[safe: indexPath.row] else {
+                return
+        }
+        convosManager?.observer.getConvos(endingAtTimestamp: convo.timestamp)
     }
 }
