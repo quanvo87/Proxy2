@@ -13,13 +13,17 @@ extension DB {
 
     static func getConvo(withKey key: String, belongingTo uid: String, completion: @escaping (Convo?) -> Void) {
         get(Child.convos, uid, key) { (data) in
-            completion(Convo(data?.value as AnyObject))
+            guard let data = data else {
+                completion(nil)
+                return
+            }
+            completion(Convo(data: data, ref: makeReference(Child.convos, uid)))
         }
     }
 
     static func getConvos(forProxy proxy: Proxy, completion: @escaping ([Convo]?) -> Void) {
         get(Child.convos, proxy.key) { (data) in
-            completion(data?.toConvosArray())
+            completion(data?.toConvosArray(makeReference(Child.convos, proxy.key)))
         }
     }
 

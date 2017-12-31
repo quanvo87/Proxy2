@@ -48,30 +48,39 @@ extension DataSnapshot {
         }
     }
 
-    func toConvosArray() -> [Convo] {
+    func toConvosArray(_ ref: DatabaseReference?) -> [Convo] {
         var convos = [Convo]()
         for child in self.children {
-            if let convo = Convo((child as? DataSnapshot)?.value as AnyObject) {
+            guard let data = child as? DataSnapshot else {
+                continue
+            }
+            if let convo = Convo(data: data, ref: ref) {
                 convos.append(convo)
             }
         }
         return convos
     }
-    
-    func toMessagesArray() -> [Message] {
+
+    func toMessagesArray(_ ref: DatabaseReference?) -> [Message] {
         var messages = [Message]()
         for child in self.children {
-            if let message = Message((child as? DataSnapshot)?.value as AnyObject) {
+            guard let data = child as? DataSnapshot else {
+                continue
+            }
+            if let message = Message(data: data, ref: ref) {
                 messages.append(message)
             }
         }
         return messages
     }
 
-    func toProxiesArray() -> [Proxy] {
+    func toProxiesArray(_ ref: DatabaseReference?) -> [Proxy] {
         var proxies = [Proxy]()
         for child in self.children {
-            if let proxy = Proxy((child as? DataSnapshot)?.value as AnyObject) {
+            guard let data = child as? DataSnapshot else {
+                continue
+            }
+            if let proxy = Proxy(data: data, ref: ref) {
                 proxies.append(proxy)
             }
         }
@@ -223,7 +232,7 @@ extension UIViewController {
             guard let nickname = alert.textFields?[0].text else {
                 return
             }
-            let trimmed = nickname.trimmingCharacters(in: CharacterSet(charactersIn: " "))
+            let trimmed = nickname.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
             if !(nickname != "" && trimmed == "") {
                 DB.setNickname(to: nickname, forProxy: proxy) { (error) in
                     if let error = error, case .inputTooLong = error {

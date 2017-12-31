@@ -9,13 +9,13 @@ class ConvosObserver: ReferenceObserving {
     func observe(convosOwner: String, manager: ConvosManaging, querySize: UInt = Setting.querySize) {
         stopObserving()
         loading = true
+        self.manager = manager
         ref = DB.makeReference(Child.convos, convosOwner)
-        handle = ref?.queryOrdered(byChild: Child.timestamp).queryLimited(toLast: querySize).observe(.value, with: { [weak manager = manager] (data) in
-            manager?.convos = data.toConvosArray().reversed()
-            manager?.tableView?.reloadData()
+        handle = ref?.queryOrdered(byChild: Child.timestamp).queryLimited(toLast: querySize).observe(.value, with: { (data) in
+            self.manager?.convos = data.toConvosArray(self.ref).reversed()
             self.loading = false
         })
-        self.manager = manager
+
     }
 
     func getConvos(endingAtTimestamp timestamp: Double, querySize: UInt = Setting.querySize) {
@@ -24,13 +24,12 @@ class ConvosObserver: ReferenceObserving {
         }
         loading = true
         ref?.queryOrdered(byChild: Child.timestamp).queryEnding(atValue: timestamp).queryLimited(toLast: querySize).observeSingleEvent(of: .value, with: { (data) in
-            var convos = data.toConvosArray()
+            var convos = data.toConvosArray(self.ref)
             guard convos.count > 1 else {
                 return
             }
             convos.removeLast(1)
             self.manager?.convos += convos.reversed()
-            self.manager?.tableView?.reloadData()
             self.loading = false
         })
     }

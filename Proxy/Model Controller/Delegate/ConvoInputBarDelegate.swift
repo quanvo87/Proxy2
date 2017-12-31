@@ -1,7 +1,7 @@
 import MessageKit
 
 class ConvoInputBarDelegate {
-    private var convo = Convo([] as AnyObject)
+    private var convo: Convo?
     private weak var controller: UIViewController?
 
     func load(convo: Convo, controller: UIViewController) {
@@ -16,7 +16,7 @@ extension ConvoInputBarDelegate: MessageInputBarDelegate {
         guard text.count > 0, let convo = convo else {
             return
         }
-        DB.sendMessage(senderConvo: convo, text: text) { (result) in
+        DB.sendMessage(senderConvo: convo, text: text.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)) { (result) in
             switch result {
             case .failure(let error):
                 switch error {

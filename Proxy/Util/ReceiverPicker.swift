@@ -1,10 +1,9 @@
 import UIKit
 
 class ReceiverPicker {
-    weak var okAction: UIAlertAction?
-    weak var controller: MakeNewMessageViewController?
-
     private let uid: String
+    private weak var controller: MakeNewMessageViewController?
+    private weak var okAction: UIAlertAction?
 
     init(uid: String, controller: MakeNewMessageViewController) {
         self.uid = uid
@@ -13,8 +12,8 @@ class ReceiverPicker {
 
     func load() {
         let alert = UIAlertController(title: "Enter Receiver Name", message: "Proxy names only. Nicknames do not work.", preferredStyle: .alert)
-        let okAction = UIAlertAction(title: "OK", style: .default) { [weak alert = alert] _ in
-            guard let text = alert?.textFields?[safe: 0]?.text?.lowercased().trimmingCharacters(in: CharacterSet(charactersIn: " ")) else {
+        let okAction = UIAlertAction(title: "OK", style: .default) { [weak alert] _ in
+            guard let text = alert?.textFields?[safe: 0]?.text?.lowercased().trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) else {
                 return
             }
             self.setReceiver(text)

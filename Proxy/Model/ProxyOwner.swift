@@ -1,3 +1,5 @@
+import FirebaseDatabase
+
 struct ProxyOwner: Equatable {
     let key: String
     let ownerId: String
@@ -6,11 +8,13 @@ struct ProxyOwner: Equatable {
         self.key = key
         self.ownerId = ownerId
     }
-    
-    init?(_ dictionary: AnyObject) {
+
+    init?(data: DataSnapshot, ref: DatabaseReference?) {
+        let dictionary = data.value as AnyObject
         guard
             let key = dictionary["key"] as? String,
             let ownerId = dictionary["ownerId"] as? String else {
+                ref?.child(data.key).removeValue()
                 return nil
         }
         self.key = key

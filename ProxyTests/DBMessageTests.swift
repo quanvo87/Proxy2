@@ -94,7 +94,7 @@ class DBMessageTests: DBTest {
 
         DBTest.sendMessage { (message, _, _, _) in
             DB.get(Child.messages, message.parentConvoKey) { (data) in
-                XCTAssertEqual(data?.toMessagesArray()[safe: 0], message)
+                XCTAssertEqual(data?.toMessagesArray(DB.makeReference(Child.messages, message.parentConvoKey))[safe: 0], message)
                 expectation.fulfill()
             }
         }
@@ -105,7 +105,7 @@ extension GroupWork {
     func checkMessageCreated(_ message: Message) {
         start()
         DB.get(Child.messages, message.parentConvoKey, message.messageId) { (data) in
-            XCTAssertEqual(Message(data?.value as AnyObject), message)
+            XCTAssertEqual(Message(data: data!, ref: DB.makeReference("")), message)
             self.finish(withResult: true)
         }
     }
@@ -113,7 +113,7 @@ extension GroupWork {
     func checkUnreadMessageCreated(_ message: Message) {
         start()
         DB.get(Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId) { (data) in
-            XCTAssertEqual(Message(data?.value as AnyObject), message)
+            XCTAssertEqual(Message(data: data!, ref: DB.makeReference("")), message)
             self.finish(withResult: true)
         }
     }
