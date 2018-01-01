@@ -26,7 +26,7 @@ class CommonDBTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        DBTest.makeConvo { (convo, _, _) in
+        DBTest.sendMessage { (_, convo, _, _) in
             DB.get(Child.convos, convo.senderId) { (data) in
                 let convos = data?.asConvosArray
                 XCTAssertEqual(convos?.count, 1)

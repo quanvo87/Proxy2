@@ -78,18 +78,6 @@ class DBProxyTests: DBTest {
         }
     }
 
-    func testGetUnreadMessagesForProxy() {
-        let expectation = self.expectation(description: #function)
-        defer { waitForExpectations(timeout: 10) }
-
-        DBTest.sendMessage { (message, _, _, _) in
-            DB.getUnreadMessagesForProxy(ownerId: message.receiverId, proxyKey: message.receiverProxyKey) { (messages) in
-                XCTAssertEqual(messages?[safe: 0], message)
-                expectation.fulfill()
-            }
-        }
-    }
-
     func testMakeProxy() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
@@ -146,8 +134,8 @@ class DBProxyTests: DBTest {
     func testSetIcon() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
-        
-        DBTest.makeConvo { (convo, proxy, _) in
+
+        DBTest.sendMessage { (_, convo, proxy, _) in
             let newIcon = "new icon"
             DB.setIcon(to: newIcon, forProxy: proxy) { (success) in
                 XCTAssert(success)
@@ -164,13 +152,13 @@ class DBProxyTests: DBTest {
     func testSetNickname() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
-        
-        DBTest.makeConvo { (convo, sender, _) in
+
+        DBTest.sendMessage { (_, convo, proxy, _) in
             let newNickname = "new nickname"
-            DB.setNickname(to: newNickname, forProxy: sender) { (error) in
+            DB.setNickname(to: newNickname, forProxy: proxy) { (error) in
                 XCTAssertNil(error)
                 let work = GroupWork()
-                work.check(.nickname(newNickname), forProxy: sender)
+                work.check(.nickname(newNickname), forProxy: proxy)
                 work.check(.senderNickname(newNickname), forConvo: convo, asSender: true)
                 work.allDone {
                     expectation.fulfill()

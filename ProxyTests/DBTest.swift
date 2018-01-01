@@ -52,20 +52,6 @@ class DBTest: XCTestCase {
 }
 
 extension DBTest {
-    static func makeConvo(completion: @escaping (_ convo: Convo, _ sender: Proxy, _ receiver: Proxy) -> Void) {
-        makeProxy { (senderProxy) in
-            makeProxy(forUser: testUser) { (receiverProxy) in
-                DB.makeConvo(convoKey: "key", sender: senderProxy, receiver: receiverProxy) { (convo) in
-                    guard let convo = convo else {
-                        XCTFail()
-                        return
-                    }
-                    completion(convo, senderProxy, receiverProxy)
-                }
-            }
-        }
-    }
-
     static func makeProxy(withName name: String = ProxyService.makeRandomProxyName(), forUser uid: String = DBTest.uid, completion: @escaping (Proxy) -> Void) {
         DB.makeProxy(withName: name, forUser: uid) { (result) in
             switch result {
