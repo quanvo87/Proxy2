@@ -1,8 +1,6 @@
 import Firebase
 import UIKit
 
-typealias Success = Bool
-
 enum Result<T, Error> {
     case success(T)
     case failure(Error)
@@ -19,12 +17,6 @@ extension Collection {
     subscript(safe index: Index) -> Element? {
         return indices.contains(index) ? self[index] : nil
     }
-}
-
-extension DispatchQueue {
-    static let queue: DispatchQueue = {
-        return DispatchQueue(label: "proxyQueue")
-    }()
 }
 
 extension Double {
@@ -48,7 +40,6 @@ extension DataSnapshot {
         }
     }
 
-    // todo: make these vars
     var asConvosArray: [Convo] {
         var convos = [Convo]()
         for child in self.children {

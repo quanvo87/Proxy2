@@ -19,11 +19,11 @@ struct DB {
 }
 
 extension DB {
-    static func delete(_ first: String, _ rest: String..., completion: @escaping (Success) -> Void) {
+    static func delete(_ first: String, _ rest: String..., completion: @escaping (Bool) -> Void) {
         delete(first, rest, completion: completion)
     }
 
-    static func delete(_ first: String, _ rest: [String], completion: @escaping (Success) -> Void) {
+    static func delete(_ first: String, _ rest: [String], completion: @escaping (Bool) -> Void) {
         guard let ref = makeReference(first, rest) else {
             completion(false)
             return
@@ -47,11 +47,11 @@ extension DB {
         }
     }
 
-    static func increment(by amount: Int, at first: String, _ rest: String..., completion: @escaping ((Success) -> Void)) {
+    static func increment(by amount: Int, at first: String, _ rest: String..., completion: @escaping ((Bool) -> Void)) {
         increment(by: amount, at: first, rest, completion: completion)
     }
 
-    static func increment(by amount: Int, at first: String, _ rest: [String], completion: @escaping ((Success) -> Void)) {
+    static func increment(by amount: Int, at first: String, _ rest: [String], completion: @escaping ((Bool) -> Void)) {
         guard let ref = makeReference(first, rest) else {
             completion(false)
             return
@@ -72,11 +72,11 @@ extension DB {
         }
     }
 
-    static func set(_ value: Any, at first: String, _ rest: String..., completion: @escaping ((Success) -> Void)) {
+    static func set(_ value: Any, at first: String, _ rest: String..., completion: @escaping ((Bool) -> Void)) {
         set(value, at: first, rest, completion: completion)
     }
 
-    static func set(_ value: Any, at first: String, _ rest: [String], completion: @escaping ((Success) -> Void)) {
+    static func set(_ value: Any, at first: String, _ rest: [String], completion: @escaping ((Bool) -> Void)) {
         guard let ref = makeReference(first, rest) else {
             completion(false)
             return
