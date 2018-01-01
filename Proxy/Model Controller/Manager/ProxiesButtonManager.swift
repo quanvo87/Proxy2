@@ -34,7 +34,7 @@ class ProxiesButtonManager: ButtonManaging {
             setDefaultButtons()
             return
         }
-        let alert = UIAlertController(title: "Delete Proxies?", message: "You will not be able to view their conversations anymore.", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Delete Proxies?", message: "Your conversations for the proxies will also be deleted.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
             self.disableButtons()
             self.proxiesManager?.observer.stopObserving()

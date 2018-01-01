@@ -9,7 +9,7 @@ class UnreadMessageRemovedObserver: ReferenceObserving {
         ref = DB.makeReference(Child.userInfo, uid, Child.unreadMessages)
         handle = ref?.observe(.childRemoved, with: { [weak manager] (data) in
             guard
-                let message = Message(data: data, ref: self.ref),
+                let message = Message(data),
                 let index = manager?.unreadMessages.index(of: message) else {
                     return
             }

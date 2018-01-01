@@ -8,11 +8,10 @@ class ConvoObserver: ReferenceObserving {
         stopObserving()
         ref = DB.makeReference(Child.convos, convoOwnerId, convoKey)
         handle = ref?.observe(.value, with: { [weak manager] (data) in
-            if let convo = Convo(data: data, ref: DB.makeReference(Child.convos, convoOwnerId)) {
-                manager?.convo = convo
-            } else {
-                self.ref?.removeValue()
+            guard let convo = Convo(data) else {
+                return
             }
+            manager?.convo = convo
         })
     }
 

@@ -12,7 +12,7 @@ class ConvosObserver: ReferenceObserving {
         self.manager = manager
         ref = DB.makeReference(Child.convos, convosOwner)
         handle = ref?.queryOrdered(byChild: Child.timestamp).queryLimited(toLast: querySize).observe(.value, with: { (data) in
-            self.manager?.convos = data.toConvosArray(self.ref).reversed()
+            self.manager?.convos = data.asConvosArray.reversed()
             self.loading = false
         })
 
@@ -24,7 +24,7 @@ class ConvosObserver: ReferenceObserving {
         }
         loading = true
         ref?.queryOrdered(byChild: Child.timestamp).queryEnding(atValue: timestamp).queryLimited(toLast: querySize).observeSingleEvent(of: .value, with: { (data) in
-            var convos = data.toConvosArray(self.ref)
+            var convos = data.asConvosArray
             guard convos.count > 1 else {
                 return
             }

@@ -6,7 +6,7 @@ extension DB {
     typealias MakeProxyCallback = (Result<Proxy, ProxyError>) -> Void
 
     static func deleteProxy(_ proxy: Proxy, completion: @escaping (Success) -> Void) {
-        getConvos(forProxy: proxy) { (convos) in
+        getConvos(forProxyWithKey: proxy.key) { (convos) in
             guard let convos = convos else {
                 completion(false)
                 return
@@ -20,8 +20,9 @@ extension DB {
         work.delete(at: Child.proxies, proxy.ownerId, proxy.key)
         work.delete(at: Child.proxyKeys, proxy.key)
         work.delete(at: Child.proxyOwners, proxy.key)
-        work.deleteConvos(convos)
+        work.deleteConvosForProxy(proxy)
         work.deleteUnreadMessages(for: proxy)
+        work.setReceiverDeletedProxy(convos)
         work.allDone {
             completion(work.result)
         }
@@ -31,7 +32,7 @@ extension DB {
         get(Child.proxyOwners, key) { (data) in
             guard
                 let data = data,
-                let proxyOwner = ProxyOwner(data: data, ref: DB.makeReference(Child.proxyOwners)) else {
+                let proxyOwner = ProxyOwner(data) else {
                     completion(nil)
                     return
             }
@@ -45,7 +46,7 @@ extension DB {
                 completion(nil)
                 return
             }
-            completion(Proxy(data: data, ref: makeReference(Child.proxies, uid)))
+            completion(Proxy(data))
         }
     }
 
@@ -61,7 +62,7 @@ extension DB {
             return
         }
         ref.queryOrdered(byChild: Child.receiverProxyKey).queryEqual(toValue: proxyKey).observeSingleEvent(of: .value, with: { (data) in
-            completion(data.toMessagesArray(ref))
+            completion(data.asMessagesArray)
         })
     }
 
@@ -136,7 +137,7 @@ extension DB {
     }
 
     static func setIcon(to icon: String, forProxy proxy: Proxy, completion: @escaping (Success) -> Void) {
-        getConvos(forProxy: proxy) { (convos) in
+        getConvos(forProxyWithKey: proxy.key) { (convos) in
             guard let convos = convos else {
                 completion(false)
                 return
@@ -159,7 +160,7 @@ extension DB {
             completion(.inputTooLong)
             return
         }
-        getConvos(forProxy: proxy) { (convos) in
+        getConvos(forProxyWithKey: proxy.key) { (convos) in
             guard let convos = convos else {
                 completion(.unknown)
                 return
@@ -174,6 +175,12 @@ extension DB {
         work.setSenderNickname(to: nickname, forConvos: convos)
         work.allDone {
             completion(work.result ? nil : .unknown)
+        }
+    }
+
+    private static func getConvos(forProxyWithKey proxyKey: String, completion: @escaping ([Convo]?) -> Void) {
+        get(Child.convos, proxyKey) { (data) in
+            completion(data?.asConvosArray)
         }
     }
 }
@@ -194,10 +201,21 @@ extension GroupWork {
 }
 
 extension GroupWork {
-    func deleteConvos(_ convos: [Convo]) {
-        for convo in convos {
-            self.delete(convo, asSender: true)
-        }
+    // todo: clean up
+    func deleteConvosForProxy(_ proxy: Proxy) {
+        delete(at: Child.convos, proxy.key)
+
+        start()
+        let ref = DB.makeReference(Child.convos, proxy.ownerId)
+        ref?.queryOrdered(byChild: "senderProxyKey").queryEqual(toValue: proxy.key).observeSingleEvent(of: .value, with: { (data) in
+            for child in data.children {
+                guard let childData = child as? DataSnapshot else {
+                    continue
+                }
+                self.delete(at: Child.convos, proxy.ownerId, childData.key)
+            }
+            self.finish(withResult: true)
+        })
     }
 
     func deleteUnreadMessages(for proxy: Proxy) {
@@ -214,9 +232,15 @@ extension GroupWork {
         }
     }
 
+    func setReceiverDeletedProxy(_ convos: [Convo]) {
+        for convo in convos {
+            set(.receiverDeletedProxy(true), forConvo: convo, asSender: false)
+        }
+    }
+
     func setReceiverIcon(to icon: String, forConvos convos: [Convo]) {
         for convo in convos {
-            self.set(.receiverIcon(icon), forConvo: convo, asSender: false)
+            set(.receiverIcon(icon), forConvo: convo, asSender: false)
         }
     }
 

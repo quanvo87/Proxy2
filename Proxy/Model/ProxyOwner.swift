@@ -9,12 +9,11 @@ struct ProxyOwner: Equatable {
         self.ownerId = ownerId
     }
 
-    init?(data: DataSnapshot, ref: DatabaseReference?) {
+    init?(_ data: DataSnapshot) {
         let dictionary = data.value as AnyObject
         guard
             let key = dictionary["key"] as? String,
             let ownerId = dictionary["ownerId"] as? String else {
-                ref?.child(data.key).removeValue()
                 return nil
         }
         self.key = key

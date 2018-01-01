@@ -5,7 +5,7 @@ class SenderPickerViewController: UIViewController {
     private let manager = ProxiesManager()
     private let dataSource = ProxiesTableViewDataSource()
     private let delegate = SenderPickerTableViewDelegate()
-    private let tableView = UITableView()
+    private let tableView = UITableView(frame: .zero, style: .grouped)
     private weak var senderPickerDelegate: SenderPickerDelegate?
 
     init(uid: String, senderPickerDelegate: SenderPickerDelegate) {
@@ -27,6 +27,8 @@ class SenderPickerViewController: UIViewController {
         tableView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
         tableView.register(UINib(nibName: Identifier.proxiesTableViewCell, bundle: nil), forCellReuseIdentifier: Identifier.proxiesTableViewCell)
         tableView.rowHeight = 60
+        tableView.sectionHeaderHeight = 0
+        
         view.addSubview(tableView)
     }
 
