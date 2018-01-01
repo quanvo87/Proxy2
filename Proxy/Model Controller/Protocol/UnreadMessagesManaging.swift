@@ -4,7 +4,6 @@ protocol UnreadMessagesManaging: class {
 }
 
 extension UnreadMessagesManaging {
-    // todo: instead of bool, make it a counter. or make it to where you can only be in one convo at a time
     func enterConvo(_ convoKey: String) {
         convosPresentIn[convoKey] = true
         var untouchedMessages = [Message]()

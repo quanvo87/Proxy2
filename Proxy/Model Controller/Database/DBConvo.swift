@@ -13,20 +13,6 @@ extension DB {
         }
     }
 
-    // todo: write test
-    static func makeConvo(convoKey: String, sender: Proxy, receiver: Proxy, completion: @escaping (Convo?) -> Void) {
-        let senderConvo = Convo(key: convoKey, receiverIcon: receiver.icon, receiverId: receiver.ownerId, receiverProxyKey: receiver.key, receiverProxyName: receiver.name, senderId: sender.ownerId, senderProxyKey: sender.key, senderProxyName: sender.name)
-        let receiverConvo = Convo(key: convoKey, receiverIcon: sender.icon, receiverId: sender.ownerId, receiverProxyKey: sender.key, receiverProxyName: sender.name, senderId: receiver.ownerId, senderProxyKey: receiver.key, senderProxyName: receiver.name)
-        let work = GroupWork()
-        work.increment(by: 1, forProperty: .proxiesInteractedWith, forUser: receiver.ownerId)
-        work.increment(by: 1, forProperty: .proxiesInteractedWith, forUser: sender.ownerId)
-        work.set(receiverConvo, asSender: true)
-        work.set(senderConvo, asSender: true)
-        work.allDone {
-            completion(work.result ? senderConvo : nil)
-        }
-    }
-
     static func setReceiverNickname(to nickname: String, forConvo convo: Convo, completion: @escaping (ProxyError?) -> Void) {
         guard nickname.count < Setting.maxNameSize else {
             completion(.inputTooLong)
@@ -41,12 +27,6 @@ extension DB {
 }
 
 extension GroupWork {
-    func delete(_ convo: Convo, asSender: Bool) {
-        let (ownerId, proxyKey) = GroupWork.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
-        delete(at: Child.convos, ownerId, convo.key)
-        delete(at: Child.convos, proxyKey, convo.key)
-    }
-
     func set(_ convo: Convo, asSender: Bool) {
         let (ownerId, proxyKey) = GroupWork.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
         set(convo.toDictionary(), at: Child.convos, ownerId, convo.key)

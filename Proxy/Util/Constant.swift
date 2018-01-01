@@ -33,6 +33,7 @@ struct Child {
     static let receiverNickname = "receiverNickname"
     static let receiverProxyKey = "receiverProxyKey"
     static let senderNickname = "senderNickname"
+    static let senderProxyKey = "senderProxyKey"
     static let timestamp = "timestamp"
     static let unreadMessages = "unreadMessages"
     static let userInfo = "userInfo"

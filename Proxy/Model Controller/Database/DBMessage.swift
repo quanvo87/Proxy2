@@ -1,4 +1,3 @@
-import FirebaseDatabase
 import GroupWork
 import MessageKit
 
@@ -66,10 +65,10 @@ extension DB {
                               receiverProxyKey: senderConvo.receiverProxyKey)
         let work = GroupWork()
         work.set(message.toDictionary(), at: Child.messages, message.parentConvoKey, message.messageId)
-        work.set(message.toDictionary(), at: Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
         let currentTime = Date().timeIntervalSince1970
         // Receiver updates
         work.increment(by: 1, forProperty: .messagesReceived, forUser: senderConvo.receiverId)
+        work.set(message.toDictionary(), at: Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
         if !senderConvo.receiverDeletedProxy {
             work.set(.hasUnreadMessage(true), forConvo: senderConvo, asSender: false)
             work.set(.hasUnreadMessage(true), forProxyWithKey: message.receiverProxyKey, proxyOwner: message.receiverId)
@@ -106,6 +105,19 @@ extension DB {
     private static func makeConvoKey(senderProxy: Proxy, receiverProxy: Proxy) -> String {
         return [senderProxy.key, senderProxy.ownerId, receiverProxy.key, receiverProxy.ownerId].sorted().joined()
     }
+
+    private static func makeConvo(convoKey: String, sender: Proxy, receiver: Proxy, completion: @escaping (Convo?) -> Void) {
+        let senderConvo = Convo(key: convoKey, receiverIcon: receiver.icon, receiverId: receiver.ownerId, receiverProxyKey: receiver.key, receiverProxyName: receiver.name, senderId: sender.ownerId, senderProxyKey: sender.key, senderProxyName: sender.name)
+        let receiverConvo = Convo(key: convoKey, receiverIcon: sender.icon, receiverId: sender.ownerId, receiverProxyKey: sender.key, receiverProxyName: sender.name, senderId: receiver.ownerId, senderProxyKey: receiver.key, senderProxyName: receiver.name)
+        let work = GroupWork()
+        work.increment(by: 1, forProperty: .proxiesInteractedWith, forUser: receiver.ownerId)
+        work.increment(by: 1, forProperty: .proxiesInteractedWith, forUser: sender.ownerId)
+        work.set(receiverConvo, asSender: true)
+        work.set(senderConvo, asSender: true)
+        work.allDone {
+            completion(work.result ? senderConvo : nil)
+        }
+    }
 }
 
 extension GroupWork {
@@ -118,7 +130,7 @@ extension GroupWork {
 
     func setHasUnreadMessageForProxy(key: String, ownerId: String) {
         start()
-        DB.getUnreadMessagesForProxy(ownerId: ownerId, proxyKey: key) { (messages) in
+        GroupWork.getUnreadMessagesForProxy(ownerId: ownerId, proxyKey: key) { (messages) in
             if let messageCount = messages?.count, messageCount <= 0 {
                 self.set(.hasUnreadMessage(false), forProxyWithKey: key, proxyOwner: ownerId)
             }

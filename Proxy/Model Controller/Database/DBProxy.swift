@@ -50,22 +50,14 @@ extension DB {
         }
     }
 
+    // todo: delete
     private static func getProxyCount(forUser uid: String, completion: @escaping (UInt) -> Void) {
         get(Child.proxies, uid) { (data) in
             completion(data?.childrenCount ?? 0)
         }
     }
 
-    static func getUnreadMessagesForProxy(ownerId: String, proxyKey: String, completion: @escaping ([Message]?) -> Void) {
-        guard let ref = makeReference(Child.userInfo, ownerId, Child.unreadMessages) else {
-            completion(nil)
-            return
-        }
-        ref.queryOrdered(byChild: Child.receiverProxyKey).queryEqual(toValue: proxyKey).observeSingleEvent(of: .value, with: { (data) in
-            completion(data.asMessagesArray)
-        })
-    }
-
+    // todo: take in proxy count from proxiesManager
     static func makeProxy(withName proxyName: String = ProxyService.makeRandomProxyName(),
                           maxNameSize: Int = Setting.maxNameSize,
                           forUser uid: String,
@@ -102,7 +94,7 @@ extension DB {
                 completion(.failure(.unknown))
                 return
             }
-            proxyKeyCount(ref: proxyKeysRef, key: proxyKey, completion: { (count) in
+            getProxyKeyCount(ref: proxyKeysRef, key: proxyKey, completion: { (count) in
                 delete(Child.proxyKeys, autoId) { (success) in
                     guard success else {
                         completion(.failure(.unknown))
@@ -130,7 +122,7 @@ extension DB {
         }
     }
 
-    private static func proxyKeyCount(ref: DatabaseReference, key: String, completion: @escaping (UInt?) -> Void) {
+    private static func getProxyKeyCount(ref: DatabaseReference, key: String, completion: @escaping (UInt?) -> Void) {
         ref.queryOrdered(byChild: Child.key).queryEqual(toValue: key).observeSingleEvent(of: .value, with: { (data) in
             completion(data.childrenCount)
         })
@@ -201,13 +193,11 @@ extension GroupWork {
 }
 
 extension GroupWork {
-    // todo: clean up
     func deleteConvosForProxy(_ proxy: Proxy) {
         delete(at: Child.convos, proxy.key)
-
         start()
         let ref = DB.makeReference(Child.convos, proxy.ownerId)
-        ref?.queryOrdered(byChild: "senderProxyKey").queryEqual(toValue: proxy.key).observeSingleEvent(of: .value, with: { (data) in
+        ref?.queryOrdered(byChild: Child.senderProxyKey).queryEqual(toValue: proxy.key).observeSingleEvent(of: .value, with: { (data) in
             for child in data.children {
                 guard let childData = child as? DataSnapshot else {
                     continue
@@ -216,20 +206,6 @@ extension GroupWork {
             }
             self.finish(withResult: true)
         })
-    }
-
-    func deleteUnreadMessages(for proxy: Proxy) {
-        start()
-        DB.getUnreadMessagesForProxy(ownerId: proxy.ownerId, proxyKey: proxy.key) { (messages) in
-            guard let messages = messages else {
-                self.finish(withResult: false)
-                return
-            }
-            for message in messages {
-                self.delete(at: Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
-            }
-            self.finish(withResult: true)
-        }
     }
 
     func setReceiverDeletedProxy(_ convos: [Convo]) {
@@ -248,5 +224,29 @@ extension GroupWork {
         for convo in convos {
             self.set(.senderNickname(nickname), forConvo: convo, asSender: true)
         }
+    }
+
+    func deleteUnreadMessages(for proxy: Proxy) {
+        start()
+        GroupWork.getUnreadMessagesForProxy(ownerId: proxy.ownerId, proxyKey: proxy.key) { (messages) in
+            guard let messages = messages else {
+                self.finish(withResult: false)
+                return
+            }
+            for message in messages {
+                self.delete(at: Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
+            }
+            self.finish(withResult: true)
+        }
+    }
+
+    static func getUnreadMessagesForProxy(ownerId: String, proxyKey: String, completion: @escaping ([Message]?) -> Void) {
+        guard let ref = DB.makeReference(Child.userInfo, ownerId, Child.unreadMessages) else {
+            completion(nil)
+            return
+        }
+        ref.queryOrdered(byChild: Child.receiverProxyKey).queryEqual(toValue: proxyKey).observeSingleEvent(of: .value, with: { (data) in
+            completion(data.asMessagesArray)
+        })
     }
 }

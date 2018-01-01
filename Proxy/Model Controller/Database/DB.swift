@@ -89,8 +89,10 @@ extension DB {
 
 extension GroupWork {
     static func getOwnerIdAndProxyKey(fromConvo convo: Convo, asSender: Bool) -> (ownerId: String, proxyKey: String) {
-        return (asSender ? convo.senderId : convo.receiverId,
-                asSender ? convo.senderProxyKey : convo.receiverProxyKey)
+        return
+            asSender ?
+            (convo.senderId, convo.senderProxyKey) :
+            (convo.receiverId, convo.receiverProxyKey)
     }
 
     func delete(at first: String, _ rest: String...) {
