@@ -8,11 +8,10 @@ class ProxyObserver: ReferenceObserving {
         stopObserving()
         ref = DB.makeReference(Child.proxies, ownerId, proxyKey)
         handle = ref?.observe(.value, with: { [weak manager] (data) in
-            if let proxy = Proxy(data) {
-                manager?.proxy = proxy
-            } else {
-                self.ref?.removeValue()
+            guard let proxy = Proxy(data) else {
+                return
             }
+            manager?.proxy = proxy
         })
     }
 

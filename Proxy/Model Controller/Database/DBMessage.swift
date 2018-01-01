@@ -5,7 +5,17 @@ import MessageKit
 extension DB {
     typealias SendMessageCallback = (Result<(message: Message, convo: Convo), ProxyError>) -> Void
 
-    static func read(_ message: Message, atDate date: Date = Date(), completion: @escaping (Success) -> Void) {
+    static func deleteUnreadMessage(_ message: Message, completion: @escaping (Bool) -> Void) {
+        let work = GroupWork()
+        work.delete(at: Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
+        work.delete(at: Child.convos, message.receiverId, message.parentConvoKey)
+        work.delete(at: Child.convos, message.receiverProxyKey, message.parentConvoKey)
+        work.allDone {
+            completion(work.result)
+        }
+    }
+
+    static func read(_ message: Message, atDate date: Date = Date(), completion: @escaping (Bool) -> Void) {
         let work = GroupWork()
         work.delete(at: Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
         work.set(.dateRead(date), forMessage: message)

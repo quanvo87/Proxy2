@@ -8,10 +8,10 @@ class ConvosObserver: ReferenceObserving {
 
     func observe(convosOwner: String, manager: ConvosManaging, querySize: UInt = Setting.querySize) {
         stopObserving()
-        loading = true
         self.manager = manager
         ref = DB.makeReference(Child.convos, convosOwner)
         handle = ref?.queryOrdered(byChild: Child.timestamp).queryLimited(toLast: querySize).observe(.value, with: { (data) in
+            self.loading = true
             self.manager?.convos = data.asConvosArray.reversed()
             self.loading = false
         })

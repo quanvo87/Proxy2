@@ -8,10 +8,10 @@ class MessagesObserver: ReferenceObserving {
 
     func observe(convoKey: String, manager: MessagesManaging, querySize: UInt = Setting.querySize) {
         stopObserving()
-        loading = true
         self.manager = manager
         ref = DB.makeReference(Child.messages, convoKey)
         handle = ref?.queryOrdered(byChild: Child.timestamp).queryLimited(toLast: querySize).observe(.value, with: { (data) in
+            self.loading = true
             self.manager?.messages = data.asMessagesArray
             self.manager?.collectionView?.reloadData()
             self.manager?.collectionView?.scrollToBottom()

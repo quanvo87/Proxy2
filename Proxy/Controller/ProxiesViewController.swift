@@ -3,15 +3,16 @@ import UIKit
 class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
     var newConvo: Convo?
 
-    private let proxiesManager = ProxiesManager()
     private let itemsToDeleteManager = ItemsToDeleteManager()
     private let dataSource = ProxiesTableViewDataSource()
     private let delegate = ProxiesTableViewDelegate()
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let buttonManager = ProxiesButtonManager()
+    private weak var proxiesManager: ProxiesManager?
     private weak var unreadMessagesManager: UnreadMessagesManaging?
 
-    init(uid: String, unreadMessagesManager: UnreadMessagesManaging) {
+    init(uid: String, proxiesManager: ProxiesManager, unreadMessagesManager: UnreadMessagesManaging) {
+        self.proxiesManager = proxiesManager
         self.unreadMessagesManager = unreadMessagesManager
         
         super.init(nibName: nil, bundle: nil)

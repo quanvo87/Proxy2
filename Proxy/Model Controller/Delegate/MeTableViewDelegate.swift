@@ -16,7 +16,7 @@ extension MeTableViewDelegate: UITableViewDelegate {
         case 1:
             switch indexPath.row {
             case 0:
-                let alert = UIAlertController(title: "Proxy v0.0.1", message: "For bugs, suggestions, etc, contact: qvo1987@gmail.com\n\nIcons from icons8.com", preferredStyle: .alert)
+                let alert = UIAlertController(title: "Proxy v0.0.1", message: "Send bugs, suggestions, etc., to:\nqvo1987@gmail.com\n\nIcons from icons8.com", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "OK", style: .cancel) { _ in })
                 controller?.present(alert, animated: true)
             case 1:

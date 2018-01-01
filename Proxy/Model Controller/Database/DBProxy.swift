@@ -5,7 +5,7 @@ import UIKit
 extension DB {
     typealias MakeProxyCallback = (Result<Proxy, ProxyError>) -> Void
 
-    static func deleteProxy(_ proxy: Proxy, completion: @escaping (Success) -> Void) {
+    static func deleteProxy(_ proxy: Proxy, completion: @escaping (Bool) -> Void) {
         getConvos(forProxyWithKey: proxy.key) { (convos) in
             guard let convos = convos else {
                 completion(false)
@@ -15,7 +15,7 @@ extension DB {
         }
     }
 
-    static func deleteProxy(_ proxy: Proxy, withConvos convos: [Convo], completion: @escaping (Success) -> Void) {
+    static func deleteProxy(_ proxy: Proxy, withConvos convos: [Convo], completion: @escaping (Bool) -> Void) {
         let work = GroupWork()
         work.delete(at: Child.proxies, proxy.ownerId, proxy.key)
         work.delete(at: Child.proxyKeys, proxy.key)
@@ -136,7 +136,7 @@ extension DB {
         })
     }
 
-    static func setIcon(to icon: String, forProxy proxy: Proxy, completion: @escaping (Success) -> Void) {
+    static func setIcon(to icon: String, forProxy proxy: Proxy, completion: @escaping (Bool) -> Void) {
         getConvos(forProxyWithKey: proxy.key) { (convos) in
             guard let convos = convos else {
                 completion(false)
@@ -146,7 +146,7 @@ extension DB {
         }
     }
 
-    static func setIcon(to icon: String, forProxy proxy: Proxy, withConvos convos: [Convo], completion: @escaping (Success) -> Void) {
+    static func setIcon(to icon: String, forProxy proxy: Proxy, withConvos convos: [Convo], completion: @escaping (Bool) -> Void) {
         let work = GroupWork()
         work.set(.icon(icon), forProxy: proxy)
         work.setReceiverIcon(to: icon, forConvos: convos)
