@@ -60,18 +60,25 @@ extension DB {
         let currentTime = Date().timeIntervalSince1970
         // Receiver updates
         work.increment(by: 1, forProperty: .messagesReceived, forUser: senderConvo.receiverId)
-        work.set(.hasUnreadMessage(true), forConvo: senderConvo, asSender: false)
-        work.set(.hasUnreadMessage(true), forProxyWithKey: message.receiverProxyKey, proxyOwner: message.receiverId)
-        work.set(.timestamp(currentTime), forConvo: senderConvo, asSender: false)
-        work.set(.timestamp(currentTime), forProxyInConvo: senderConvo, asSender: false)
+        if !senderConvo.receiverDeletedProxy {
+            work.set(.hasUnreadMessage(true), forConvo: senderConvo, asSender: false)
+            work.set(.hasUnreadMessage(true), forProxyWithKey: message.receiverProxyKey, proxyOwner: message.receiverId)
+            work.set(.timestamp(currentTime), forConvo: senderConvo, asSender: false)
+            work.set(.timestamp(currentTime), forProxyInConvo: senderConvo, asSender: false)
+            switch message.data {
+            case .text(let s):
+                work.set(.lastMessage(s), forConvo: senderConvo, asSender: false)
+                work.set(.lastMessage(s), forProxyInConvo: senderConvo, asSender: false)
+            default:
+                break
+            }
+        }
         // Sender updates
         work.increment(by: 1, forProperty: .messagesSent, forUser: senderConvo.senderId)
         work.set(.timestamp(currentTime), forConvo: senderConvo, asSender: true)
         work.set(.timestamp(currentTime), forProxyInConvo: senderConvo, asSender: true)
         switch message.data {
         case .text(let s):
-            work.set(.lastMessage(s), forConvo: senderConvo, asSender: false)
-            work.set(.lastMessage(s), forProxyInConvo: senderConvo, asSender: false)
             work.set(.lastMessage("You: \(s)"), forConvo: senderConvo, asSender: true)
             work.set(.lastMessage("You: \(s)"), forProxyInConvo: senderConvo, asSender: true)
         default:

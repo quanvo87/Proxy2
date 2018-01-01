@@ -48,39 +48,40 @@ extension DataSnapshot {
         }
     }
 
-    func toConvosArray(_ ref: DatabaseReference?) -> [Convo] {
+    // todo: make these vars
+    var asConvosArray: [Convo] {
         var convos = [Convo]()
         for child in self.children {
             guard let data = child as? DataSnapshot else {
                 continue
             }
-            if let convo = Convo(data: data, ref: ref) {
+            if let convo = Convo(data) {
                 convos.append(convo)
             }
         }
         return convos
     }
 
-    func toMessagesArray(_ ref: DatabaseReference?) -> [Message] {
+    var asMessagesArray: [Message] {
         var messages = [Message]()
         for child in self.children {
             guard let data = child as? DataSnapshot else {
                 continue
             }
-            if let message = Message(data: data, ref: ref) {
+            if let message = Message(data) {
                 messages.append(message)
             }
         }
         return messages
     }
 
-    func toProxiesArray(_ ref: DatabaseReference?) -> [Proxy] {
+    var asProxiesArray: [Proxy] {
         var proxies = [Proxy]()
         for child in self.children {
             guard let data = child as? DataSnapshot else {
                 continue
             }
-            if let proxy = Proxy(data: data, ref: ref) {
+            if let proxy = Proxy(data) {
                 proxies.append(proxy)
             }
         }

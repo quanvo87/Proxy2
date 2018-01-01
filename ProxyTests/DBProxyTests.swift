@@ -10,19 +10,20 @@ class DBProxyTests: DBTest {
 
         DBTest.makeProxy { (sender) in
             DBTest.makeProxy(forUser: DBTest.testUser) { (receiver) in
-                DB.sendMessage(senderProxy: receiver, receiverProxy: sender, text: DBTest.text) { (result) in
+                DB.sendMessage(senderProxy: sender, receiverProxy: receiver, text: DBTest.text) { (result) in
                     switch result {
                     case .failure:
                         XCTFail()
                     case .success(let tuple):
-                        DB.deleteProxy(sender) { (success) in
+                        DB.deleteProxy(receiver) { (success) in
                             XCTAssert(success)
                             let work = GroupWork()
-                            work.checkUnreadMessagesDeleted(for: sender)
-                            work.checkConvoDeleted(tuple.convo, asSender: false)
-                            work.checkDeleted(at: Child.proxies, sender.ownerId, sender.key)
-                            work.checkDeleted(at: Child.proxyKeys, sender.key)
-                            work.checkDeleted(at: Child.proxyOwners, sender.key)
+                            work.checkDeleted(at: Child.proxies, receiver.ownerId, receiver.key)
+                            work.checkDeleted(at: Child.proxyKeys, receiver.key)
+                            work.checkDeleted(at: Child.proxyOwners, receiver.key)
+                            work.checkDeleted(at: Child.convos, receiver.ownerId, tuple.convo.key)
+                            work.checkDeleted(at: Child.convos, receiver.ownerId, tuple.convo.key)
+                            work.checkUnreadMessageCount(uid: sender.ownerId, count: 0)
                             work.allDone {
                                 expectation.fulfill()
                             }
@@ -30,27 +31,6 @@ class DBProxyTests: DBTest {
                     }
                 }
             }
-        }
-    }
-    
-    func testGetImageForIcon() {
-        XCTAssertEqual(ProxyService.iconNames.count, 101)
-
-        let expectation = self.expectation(description: #function)
-        defer { waitForExpectations(timeout: 10) }
-
-        let work = GroupWork()
-
-        for icon in ProxyService.iconNames {
-            work.start()
-            UIImage.make(name: icon) { (image) in
-                XCTAssertNotNil(image)
-                work.finish(withResult: true)
-            }
-        }
-
-        work.allDone {
-            expectation.fulfill()
         }
     }
     
@@ -103,10 +83,8 @@ class DBProxyTests: DBTest {
         defer { waitForExpectations(timeout: 10) }
 
         DBTest.sendMessage { (message, _, _, _) in
-
             DB.getUnreadMessagesForProxy(ownerId: message.receiverId, proxyKey: message.receiverProxyKey) { (messages) in
                 XCTAssertEqual(messages?[safe: 0], message)
-
                 expectation.fulfill()
             }
         }
@@ -143,7 +121,7 @@ class DBProxyTests: DBTest {
         }
     }
     
-    func testMakeProxyWithExistingName() {
+    func testMakeProxyFailAtMaxAttempts() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
         
@@ -171,10 +149,8 @@ class DBProxyTests: DBTest {
         
         DBTest.makeConvo { (convo, proxy, _) in
             let newIcon = "new icon"
-            
             DB.setIcon(to: newIcon, forProxy: proxy) { (success) in
                 XCTAssert(success)
-                
                 let work = GroupWork()
                 work.check(.icon(newIcon), forProxy: proxy)
                 work.check(.receiverIcon(newIcon), forConvo: convo, asSender: false)
@@ -191,10 +167,8 @@ class DBProxyTests: DBTest {
         
         DBTest.makeConvo { (convo, sender, _) in
             let newNickname = "new nickname"
-            
             DB.setNickname(to: newNickname, forProxy: sender) { (error) in
                 XCTAssertNil(error)
-                
                 let work = GroupWork()
                 work.check(.nickname(newNickname), forProxy: sender)
                 work.check(.senderNickname(newNickname), forConvo: convo, asSender: true)
@@ -210,7 +184,7 @@ extension GroupWork {
     func checkProxyCreated(_ proxy: Proxy) {
         start()
         DB.get(Child.proxies, DBTest.uid, proxy.key) { (data) in
-            XCTAssertEqual(Proxy(data: data!, ref: DB.makeReference("")), proxy)
+            XCTAssertEqual(Proxy(data!), proxy)
             self.finish(withResult: true)
         }
     }
@@ -226,15 +200,7 @@ extension GroupWork {
     func checkProxyOwnerCreated(forProxy proxy: Proxy) {
         start()
         DB.get(Child.proxyOwners, proxy.key) { (data) in
-            XCTAssertEqual(ProxyOwner(data: data!, ref: DB.makeReference("")), ProxyOwner(key: proxy.key, ownerId: DBTest.uid))
-            self.finish(withResult: true)
-        }
-    }
-
-    func checkUnreadMessagesDeleted(for proxy: Proxy) {
-        start()
-        DB.getUnreadMessagesForProxy(ownerId: proxy.ownerId, proxyKey: proxy.key) { (messages) in
-            XCTAssertEqual(messages?.count, 0)
+            XCTAssertEqual(ProxyOwner(data!), ProxyOwner(key: proxy.key, ownerId: DBTest.uid))
             self.finish(withResult: true)
         }
     }

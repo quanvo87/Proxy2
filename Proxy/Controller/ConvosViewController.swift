@@ -17,6 +17,8 @@ class ConvosViewController: UIViewController, MakeNewMessageDelegate {
 
         navigationItem.title = "Messages"
 
+        buttonManager.load(uid: uid, makeNewMessageDelegate: self, viewController: self)
+        
         convosManager.load(convosOwner: uid, tableView: tableView)
 
         dataSource.load(manager: convosManager)
@@ -30,9 +32,8 @@ class ConvosViewController: UIViewController, MakeNewMessageDelegate {
         tableView.register(UINib(nibName: Identifier.convosTableViewCell, bundle: nil), forCellReuseIdentifier: Identifier.convosTableViewCell)
         tableView.rowHeight = 80
         tableView.sectionHeaderHeight = 0
-        view.addSubview(tableView)
 
-        buttonManager.load(uid: uid, makeNewMessageDelegate: self, viewController: self)
+        view.addSubview(tableView)
     }
 
     override func viewWillAppear(_ animated: Bool) {

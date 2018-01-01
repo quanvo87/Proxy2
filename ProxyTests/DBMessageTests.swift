@@ -17,7 +17,7 @@ class DBMessageTests: DBTest {
                 work.check(.dateRead(date), forMessage: message)
                 work.check(.hasUnreadMessage(false), forConvoWithKey: message.parentConvoKey, ownerId: message.receiverId, proxyKey: message.receiverProxyKey)
                 work.check(.hasUnreadMessage(false), forProxy: receiver)
-                work.checkUnreadMessageDeleted(message)
+                work.checkUnreadMessageCount(uid: message.receiverId, count: 0)
                 work.allDone {
                     expectation.fulfill()
                 }
@@ -76,6 +76,37 @@ class DBMessageTests: DBTest {
         }
     }
 
+    func testSendMessageAfterReceiverDeletedProxy() {
+        let expectation = self.expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
+
+        DBTest.sendMessage { (message, senderConvo, senderProxy, receiverProxy) in
+            DB.deleteProxy(receiverProxy) { (success) in
+                XCTAssert(success)
+                DB.getConvo(withKey: senderConvo.key, belongingTo: senderConvo.senderId) { (convo) in
+                    guard let updatedConvo = convo else {
+                        XCTFail()
+                        return
+                    }
+                    DB.sendMessage(senderConvo: updatedConvo, text: DBTest.text) { (result) in
+                        switch result {
+                        case .failure(let error):
+                            XCTFail(error.localizedDescription)
+                        case .success:
+                            let work = GroupWork()
+                            work.checkDeleted(at: Child.convos, receiverProxy.ownerId, updatedConvo.key)
+                            work.checkDeleted(at: Child.convos, receiverProxy.key, updatedConvo.key)
+                            work.checkDeleted(at: Child.proxies, receiverProxy.ownerId, updatedConvo.key)
+                            work.allDone {
+                                expectation.fulfill()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     func testSendMessageWithSenderConvo() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
@@ -87,25 +118,13 @@ class DBMessageTests: DBTest {
             }
         }
     }
-
-    func testToMessagesArray() {
-        let expectation = self.expectation(description: #function)
-        defer { waitForExpectations(timeout: 10) }
-
-        DBTest.sendMessage { (message, _, _, _) in
-            DB.get(Child.messages, message.parentConvoKey) { (data) in
-                XCTAssertEqual(data?.toMessagesArray(DB.makeReference(Child.messages, message.parentConvoKey))[safe: 0], message)
-                expectation.fulfill()
-            }
-        }
-    }
 }
 
 extension GroupWork {
     func checkMessageCreated(_ message: Message) {
         start()
         DB.get(Child.messages, message.parentConvoKey, message.messageId) { (data) in
-            XCTAssertEqual(Message(data: data!, ref: DB.makeReference("")), message)
+            XCTAssertEqual(Message(data!), message)
             self.finish(withResult: true)
         }
     }
@@ -113,15 +132,7 @@ extension GroupWork {
     func checkUnreadMessageCreated(_ message: Message) {
         start()
         DB.get(Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId) { (data) in
-            XCTAssertEqual(Message(data: data!, ref: DB.makeReference("")), message)
-            self.finish(withResult: true)
-        }
-    }
-
-    func checkUnreadMessageDeleted(_ message: Message) {
-        start()
-        DB.get(Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId) { (data) in
-            XCTAssertFalse(data?.exists() ?? true)
+            XCTAssertEqual(Message(data!), message)
             self.finish(withResult: true)
         }
     }

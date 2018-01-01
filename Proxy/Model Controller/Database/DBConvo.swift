@@ -3,30 +3,17 @@ import GroupWork
 import UIKit
 
 extension DB {
-    static func deleteConvo(_ convo: Convo, completion: @escaping (Success) -> Void) {
-        let work = GroupWork()
-        work.delete(convo, asSender: true)
-        work.allDone {
-            completion(work.result)
-        }
-    }
-
     static func getConvo(withKey key: String, belongingTo uid: String, completion: @escaping (Convo?) -> Void) {
         get(Child.convos, uid, key) { (data) in
             guard let data = data else {
                 completion(nil)
                 return
             }
-            completion(Convo(data: data, ref: makeReference(Child.convos, uid)))
+            completion(Convo(data))
         }
     }
 
-    static func getConvos(forProxy proxy: Proxy, completion: @escaping ([Convo]?) -> Void) {
-        get(Child.convos, proxy.key) { (data) in
-            completion(data?.toConvosArray(makeReference(Child.convos, proxy.key)))
-        }
-    }
-
+    // todo: write test
     static func makeConvo(convoKey: String, sender: Proxy, receiver: Proxy, completion: @escaping (Convo?) -> Void) {
         let senderConvo = Convo(key: convoKey, receiverIcon: receiver.icon, receiverId: receiver.ownerId, receiverProxyKey: receiver.key, receiverProxyName: receiver.name, senderId: sender.ownerId, senderProxyKey: sender.key, senderProxyName: sender.name)
         let receiverConvo = Convo(key: convoKey, receiverIcon: sender.icon, receiverId: sender.ownerId, receiverProxyKey: sender.key, receiverProxyName: sender.name, senderId: receiver.ownerId, senderProxyKey: receiver.key, senderProxyName: receiver.name)

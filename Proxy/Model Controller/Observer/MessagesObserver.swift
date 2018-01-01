@@ -12,7 +12,7 @@ class MessagesObserver: ReferenceObserving {
         self.manager = manager
         ref = DB.makeReference(Child.messages, convoKey)
         handle = ref?.queryOrdered(byChild: Child.timestamp).queryLimited(toLast: querySize).observe(.value, with: { (data) in
-            self.manager?.messages = data.toMessagesArray(self.ref)
+            self.manager?.messages = data.asMessagesArray
             self.manager?.collectionView?.reloadData()
             self.manager?.collectionView?.scrollToBottom()
             self.loading = false
@@ -25,7 +25,7 @@ class MessagesObserver: ReferenceObserving {
         }
         loading = true
         ref?.queryOrderedByKey().queryEnding(atValue: id).queryLimited(toLast: querySize).observeSingleEvent(of: .value, with: { (data) in
-            var olderMessages = data.toMessagesArray(self.ref)
+            var olderMessages = data.asMessagesArray
             guard olderMessages.count > 1 else {
                 return
             }

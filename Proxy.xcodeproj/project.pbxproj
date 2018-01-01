@@ -16,6 +16,7 @@
 		5914131A1FEC622E001A2A70 /* IconObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 591413191FEC622E001A2A70 /* IconObserver.swift */; };
 		59155AB61F7B7951001EDDD0 /* ConvosButtonManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59155AB51F7B7951001EDDD0 /* ConvosButtonManager.swift */; };
 		591E305C1FF8259C00094EB3 /* UnreadMessageRemovedObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 591E305B1FF8259C00094EB3 /* UnreadMessageRemovedObserver.swift */; };
+		591E305E1FF9729C00094EB3 /* CommonDBTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 591E305D1FF9729C00094EB3 /* CommonDBTests.swift */; };
 		5926A3791F9A7D83004544AE /* MakeNewMessageDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5926A3781F9A7D83004544AE /* MakeNewMessageDelegate.swift */; };
 		592C0DE81F8E598B0023DB02 /* ItemsToDeleteManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592C0DE71F8E598B0023DB02 /* ItemsToDeleteManaging.swift */; };
 		592C0DEA1F8E59B50023DB02 /* ItemsToDeleteManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592C0DE91F8E59B50023DB02 /* ItemsToDeleteManager.swift */; };
@@ -160,6 +161,7 @@
 		591413191FEC622E001A2A70 /* IconObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconObserver.swift; sourceTree = "<group>"; };
 		59155AB51F7B7951001EDDD0 /* ConvosButtonManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvosButtonManager.swift; sourceTree = "<group>"; };
 		591E305B1FF8259C00094EB3 /* UnreadMessageRemovedObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnreadMessageRemovedObserver.swift; sourceTree = "<group>"; };
+		591E305D1FF9729C00094EB3 /* CommonDBTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonDBTests.swift; sourceTree = "<group>"; };
 		5926A3781F9A7D83004544AE /* MakeNewMessageDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MakeNewMessageDelegate.swift; sourceTree = "<group>"; };
 		592C0DE71F8E598B0023DB02 /* ItemsToDeleteManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsToDeleteManaging.swift; sourceTree = "<group>"; };
 		592C0DE91F8E59B50023DB02 /* ItemsToDeleteManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsToDeleteManager.swift; sourceTree = "<group>"; };
@@ -418,6 +420,7 @@
 			isa = PBXGroup;
 			children = (
 				5973C8801F608A4E00647492 /* CommonTests.swift */,
+				591E305D1FF9729C00094EB3 /* CommonDBTests.swift */,
 				5973C87D1F608A4D00647492 /* DBConvoTests.swift */,
 				5973C87E1F608A4D00647492 /* DBMessageTests.swift */,
 				5973C8831F608A4E00647492 /* DBProxyTests.swift */,
@@ -1077,6 +1080,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				591E305E1FF9729C00094EB3 /* CommonDBTests.swift in Sources */,
 				5973C8841F608A4E00647492 /* DBTests.swift in Sources */,
 				5973C8871F608A4E00647492 /* DBMessageTests.swift in Sources */,
 				5973C8891F608A4E00647492 /* CommonTests.swift in Sources */,

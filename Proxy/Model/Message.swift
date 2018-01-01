@@ -23,7 +23,7 @@ struct Message: MessageType {
         self.receiverProxyKey = receiverProxyKey
     }
 
-    init?(data: DataSnapshot, ref: DatabaseReference?) {
+    init?(_ data: DataSnapshot) {
         let dictionary = data.value as AnyObject
         guard
             let senderId = dictionary["senderId"] as? String,
@@ -35,7 +35,6 @@ struct Message: MessageType {
             let parentConvoKey = dictionary["parentConvoKey"] as? String,
             let receiverId = dictionary["receiverId"] as? String,
             let receiverProxyKey = dictionary["receiverProxyKey"] as? String else {
-                ref?.child(data.key).removeValue()
                 return nil
         }
         self.sender = Sender(id: senderId, displayName: senderDisplayName)

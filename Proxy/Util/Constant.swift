@@ -34,9 +34,7 @@ struct Child {
     static let receiverProxyKey = "receiverProxyKey"
     static let senderNickname = "senderNickname"
     static let timestamp = "timestamp"
-    static let unreadCount = "unreadCount"
     static let unreadMessages = "unreadMessages"
-    static let userFiles = "userFiles"
     static let userInfo = "userInfo"
 }
 

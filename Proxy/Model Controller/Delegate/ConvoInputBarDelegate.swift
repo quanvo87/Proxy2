@@ -1,11 +1,11 @@
 import MessageKit
 
 class ConvoInputBarDelegate {
-    private var convo: Convo?
+    private weak var convoManager: ConvoManaging?
     private weak var controller: UIViewController?
 
-    func load(convo: Convo, controller: UIViewController) {
-        self.convo = convo
+    func load(convoManager: ConvoManaging, controller: UIViewController) {
+        self.convoManager = convoManager
         self.controller = controller
     }
 }
@@ -13,7 +13,7 @@ class ConvoInputBarDelegate {
 extension ConvoInputBarDelegate: MessageInputBarDelegate {
     func messageInputBar(_ inputBar: MessageInputBar, didPressSendButtonWith text: String) {
         inputBar.inputTextView.text = ""
-        guard text.count > 0, let convo = convo else {
+        guard text.count > 0, let convo = convoManager?.convo else {
             return
         }
         DB.sendMessage(senderConvo: convo, text: text.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)) { (result) in

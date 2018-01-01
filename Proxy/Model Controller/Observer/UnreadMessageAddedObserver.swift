@@ -8,7 +8,7 @@ class UnreadMessageAddedObserver: ReferenceObserving {
         stopObserving()
         ref = DB.makeReference(Child.userInfo, uid, Child.unreadMessages)
         handle = ref?.observe(.childAdded, with: { [weak manager] (data) in
-            guard let message = Message(data: data, ref: self.ref) else {
+            guard let message = Message(data) else {
                 self.ref?.child(data.key).removeValue()
                 return
             }

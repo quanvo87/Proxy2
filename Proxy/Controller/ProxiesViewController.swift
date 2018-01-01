@@ -18,6 +18,8 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
 
         navigationItem.title = "My Proxies"
 
+        buttonManager.load(uid: uid, proxiesManager: proxiesManager, itemsToDeleteManager: itemsToDeleteManager, tableView: tableView, proxiesViewController: self)
+        
         proxiesManager.load(uid: uid, navigationItem: navigationItem, tableView: tableView)
 
         dataSource.load(manager: proxiesManager, accessoryType: .disclosureIndicator)
@@ -31,9 +33,8 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
         tableView.register(UINib(nibName: Identifier.proxiesTableViewCell, bundle: nil), forCellReuseIdentifier: Identifier.proxiesTableViewCell)
         tableView.rowHeight = 60
         tableView.sectionHeaderHeight = 0
-        view.addSubview(tableView)
 
-        buttonManager.load(uid: uid, proxiesManager: proxiesManager, itemsToDeleteManager: itemsToDeleteManager, tableView: tableView, proxiesViewController: self)
+        view.addSubview(tableView)
     }
 
     override func viewWillAppear(_ animated: Bool) {

@@ -141,7 +141,6 @@ extension GroupWork {
             GroupWork.checkEquals(data, property.properties.value, function: function, line: line)
             self.finish(withResult: true)
         }
-
         start()
         DB.get(Child.convos, proxyKey, convoKey, property.properties.name) { (data) in
             GroupWork.checkEquals(data, property.properties.value, function: function, line: line)
@@ -187,6 +186,14 @@ extension GroupWork {
         start()
         DB.get(Child.userInfo, uid, property.rawValue) { (data) in
             GroupWork.checkEquals(data, value, function: function, line: line)
+            self.finish(withResult: true)
+        }
+    }
+
+    func checkUnreadMessageCount(uid: String, count: UInt, function: String = #function, line: Int = #line) {
+        start()
+        DB.get(Child.userInfo, uid, Child.unreadMessages) { (data) in
+            XCTAssertEqual(data?.childrenCount, count)
             self.finish(withResult: true)
         }
     }
