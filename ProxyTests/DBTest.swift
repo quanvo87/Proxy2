@@ -53,7 +53,7 @@ class DBTest: XCTestCase {
 
 extension DBTest {
     static func makeProxy(withName name: String = ProxyService.makeRandomProxyName(), forUser uid: String = DBTest.uid, completion: @escaping (Proxy) -> Void) {
-        DB.makeProxy(withName: name, forUser: uid) { (result) in
+        DB.makeProxy(withName: name, forUser: uid, currentProxyCount: 0) { (result) in
             switch result {
             case .failure:
                 XCTFail()

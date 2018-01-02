@@ -7,7 +7,7 @@ class ConvoDetailViewController: UIViewController {
     private let delegate = ConvoDetailTableViewDelegate()
     private let tableView = UITableView(frame: .zero, style: .grouped)
 
-    init(convo: Convo, unreadMessagesManager: UnreadMessagesManaging?) {
+    init(convo: Convo, proxiesManager: ProxiesManaging?, unreadMessagesManager: UnreadMessagesManaging?) {
         super.init(nibName: nil, bundle: nil)
 
         convoManager.load(convoOwnerId: convo.senderId, convoKey: convo.key, tableView: tableView)
@@ -16,7 +16,7 @@ class ConvoDetailViewController: UIViewController {
 
         dataSource.load(convoManager: convoManager, proxyManager: proxyManager, controller: self)
 
-        delegate.load(convoManager: convoManager, proxyManager: proxyManager, unreadMessagesManager: unreadMessagesManager, controller: self)
+        delegate.load(convoManager: convoManager, proxyManager: proxyManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager, controller: self)
 
         tableView.dataSource = dataSource
         tableView.delegate = delegate

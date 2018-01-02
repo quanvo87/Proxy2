@@ -41,7 +41,7 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         if let newConvo = newConvo {
-            navigationController?.showConvoViewController(convo: newConvo, unreadMessagesManager: unreadMessagesManager)
+            navigationController?.showConvoViewController(convo: newConvo, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
             self.newConvo = nil
         }
     }
