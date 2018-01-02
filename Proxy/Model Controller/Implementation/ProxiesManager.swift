@@ -8,13 +8,21 @@ class ProxiesManager: ProxiesManaging {
         }
     }
 
-    let observer = ProxiesObserver()
-    weak var navigationItem: UINavigationItem?
+    private let observer = ProxiesObserver()
+    private weak var navigationItem: UINavigationItem?
     private weak var tableView: UITableView?
 
-    func load(uid: String, navigationItem: UINavigationItem?, tableView: UITableView?) {
+    func load(uid: String, navigationItem: UINavigationItem?, tableView: UITableView) {
         self.navigationItem = navigationItem
         self.tableView = tableView
         observer.observe(uid: uid, manager: self)
+    }
+
+    func observe() {
+        observer.observe()
+    }
+
+    func stopObserving() {
+        observer.stopObserving()
     }
 }

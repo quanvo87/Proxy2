@@ -9,13 +9,11 @@ class ConvoViewController: MessagesViewController {
     private let displayDelegate = ConvoDisplayDelegate()
     private let layoutDelegate = ConvoLayoutDelegate()
     private let inputBarDelegate = ConvoInputBarDelegate()
-    private weak var proxiesManager: ProxiesManaging?
-    private weak var unreadMessagesManager: UnreadMessagesManaging?
+    private weak var container: DependencyContaining?
 
-    init(convo: Convo, proxiesManager: ProxiesManaging?, unreadMessagesManager: UnreadMessagesManaging?) {
+    init(convo: Convo, container: DependencyContaining) {
         self.convo = convo
-        self.proxiesManager = proxiesManager
-        self.unreadMessagesManager = unreadMessagesManager
+        self.container = container
 
         super.init(nibName: nil, bundle: nil)
 
@@ -46,13 +44,13 @@ class ConvoViewController: MessagesViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         tabBarController?.tabBar.isHidden = true
-        unreadMessagesManager?.enterConvo(convo.key)
+        container?.unreadMessagesManager.enterConvo(convo.key)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
         tabBarController?.tabBar.isHidden = false
-        unreadMessagesManager?.leaveConvo(convo.key)
+        container?.unreadMessagesManager.leaveConvo(convo.key)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -69,6 +67,9 @@ class ConvoViewController: MessagesViewController {
 
 private extension ConvoViewController {
     @objc private func showConvoDetailView() {
-        navigationController?.pushViewController(ConvoDetailViewController(convo: convo, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager), animated: true)
+        guard let container = container else {
+            return
+        }
+        navigationController?.pushViewController(ConvoDetailViewController(convo: convo, container: container), animated: true)
     }
 }

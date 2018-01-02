@@ -2,23 +2,19 @@ import UIKit
 
 class ProxiesTableViewDataSource: NSObject {
     private var accessoryType: UITableViewCellAccessoryType = .none
-    private weak var manager: ProxiesManaging?
+    private weak var container: DependencyContaining?
 
-    func load(manager: ProxiesManaging, accessoryType: UITableViewCellAccessoryType) {
-        self.manager = manager
+    func load(accessoryType: UITableViewCellAccessoryType, container: DependencyContaining) {
         self.accessoryType = accessoryType
+        self.container = container
     }
 }
 
 extension ProxiesTableViewDataSource: UITableViewDataSource {
-    var proxies: [Proxy] {
-        return manager?.proxies ?? []
-    }
-
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard
             let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.proxiesTableViewCell) as? ProxiesTableViewCell,
-            let proxy = proxies[safe: indexPath.row] else {
+            let proxy = container?.proxiesManager.proxies[safe: indexPath.row] else {
                 return tableView.dequeueReusableCell(withIdentifier: Identifier.proxiesTableViewCell, for: indexPath)
         }
         cell.load(proxy: proxy, accessoryType: accessoryType)
@@ -26,6 +22,6 @@ extension ProxiesTableViewDataSource: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return proxies.count
+        return container?.proxiesManager.proxies.count ?? 0
     }
 }

@@ -22,7 +22,7 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate, Sender
 
     private var uid = ""
     private weak var delegate: MakeNewMessageDelegate?
-    private weak var proxiesManager: ProxiesManaging?
+    private weak var container: DependencyContaining?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,14 +42,14 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate, Sender
         NotificationCenter.default.removeObserver(self)
     }
 
-    static func make(uid: String, delegate: MakeNewMessageDelegate, proxiesManager: ProxiesManaging?, sender: Proxy?) -> MakeNewMessageViewController? {
+    static func make(uid: String, delegate: MakeNewMessageDelegate, sender: Proxy?, container: DependencyContaining) -> MakeNewMessageViewController? {
         guard let controller = MakeNewMessageViewController.make() else {
             return nil
         }
         controller.uid = uid
         controller.delegate = delegate
-        controller.proxiesManager = proxiesManager
         controller.sender = sender
+        controller.container = container
         return controller
     }
 }
@@ -79,11 +79,11 @@ extension MakeNewMessageViewController {
 
 private extension MakeNewMessageViewController {
     @IBAction func makeNewProxy() {
-        guard let proxyCount = proxiesManager?.proxies.count else {
+        guard let container = container else {
             return
         }
         disableButtons()
-        DB.makeProxy(forUser: uid, currentProxyCount: proxyCount) { (result) in
+        DB.makeProxy(forUser: uid, currentProxyCount: container.proxiesManager.proxies.count) { (result) in
             switch result {
             case .failure(let error):
                 self.showAlert("Error Making New Proxy", message: error.description)
@@ -122,7 +122,10 @@ private extension MakeNewMessageViewController {
     }
 
     @IBAction func showSenderPickerController() {
-        navigationController?.pushViewController(SenderPickerViewController(uid: uid, senderPickerDelegate: self), animated: true)
+        guard let container = container else {
+            return
+        }
+        navigationController?.pushViewController(SenderPickerViewController(uid: uid, senderPickerDelegate: self, container: container), animated: true)
     }
 }
 

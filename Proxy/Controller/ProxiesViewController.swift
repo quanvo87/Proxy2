@@ -8,24 +8,22 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
     private let delegate = ProxiesTableViewDelegate()
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let buttonManager = ProxiesButtonManager()
-    private weak var proxiesManager: ProxiesManager?
-    private weak var unreadMessagesManager: UnreadMessagesManaging?
+    private weak var container: DependencyContaining?
 
-    init(uid: String, proxiesManager: ProxiesManager, unreadMessagesManager: UnreadMessagesManaging) {
-        self.proxiesManager = proxiesManager
-        self.unreadMessagesManager = unreadMessagesManager
+    init(uid: String, container: DependencyContaining) {
+        self.container = container
         
         super.init(nibName: nil, bundle: nil)
 
         navigationItem.title = "My Proxies"
 
-        buttonManager.load(uid: uid, proxiesManager: proxiesManager, itemsToDeleteManager: itemsToDeleteManager, tableView: tableView, proxiesViewController: self)
+        buttonManager.load(uid: uid, itemsToDeleteManager: itemsToDeleteManager, tableView: tableView, proxiesViewController: self, container: container)
         
-        proxiesManager.load(uid: uid, navigationItem: navigationItem, tableView: tableView)
+        container.proxiesManager.load(uid: uid, navigationItem: navigationItem, tableView: tableView)
 
-        dataSource.load(manager: proxiesManager, accessoryType: .disclosureIndicator)
+        dataSource.load(accessoryType: .disclosureIndicator, container: container)
 
-        delegate.load(proxiesManager: proxiesManager, itemsToDeleteManager: itemsToDeleteManager, unreadMessagesManager: unreadMessagesManager, controller: self)
+        delegate.load(itemsToDeleteManager: itemsToDeleteManager, controller: self, container: container)
 
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.dataSource = dataSource
@@ -40,8 +38,8 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        if let newConvo = newConvo {
-            navigationController?.showConvoViewController(convo: newConvo, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
+        if let newConvo = newConvo, let container = container {
+            navigationController?.showConvoViewController(convo: newConvo, container: container)
             self.newConvo = nil
         }
     }

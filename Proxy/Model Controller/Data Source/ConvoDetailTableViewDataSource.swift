@@ -83,8 +83,8 @@ private extension ConvoDetailTableViewDataSource {
             textField.placeholder = "Enter A Nickname"
             textField.text = convo.receiverNickname
         }
-        alert.addAction(UIAlertAction(title: "Save", style: .default) { (action) in
-            guard let nickname = alert.textFields?[0].text else {
+        alert.addAction(UIAlertAction(title: "Save", style: .default) { [weak alert] (action) in
+            guard let nickname = alert?.textFields?[0].text else {
                 return
             }
             let trimmed = nickname.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)

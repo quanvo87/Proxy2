@@ -1,6 +1,9 @@
+import UIKit
+
 protocol UnreadMessagesManaging: class {
     var convosPresentIn: [String: Bool] { get set }
     var unreadMessages: [Message] { get set }
+    func load(uid: String, proxiesManager: ProxiesManaging, controller: UIViewController)
 }
 
 extension UnreadMessagesManaging {
