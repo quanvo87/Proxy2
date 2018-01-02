@@ -9,7 +9,7 @@ class ConvoViewController: MessagesViewController {
     private let displayDelegate = ConvoDisplayDelegate()
     private let layoutDelegate = ConvoLayoutDelegate()
     private let inputBarDelegate = ConvoInputBarDelegate()
-    private weak var container: DependencyContaining?
+    private let container: DependencyContaining
 
     init(convo: Convo, container: DependencyContaining) {
         self.convo = convo
@@ -44,13 +44,13 @@ class ConvoViewController: MessagesViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         tabBarController?.tabBar.isHidden = true
-        container?.unreadMessagesManager.enterConvo(convo.key)
+        container.unreadMessagesManager.enterConvo(convo.key)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
         tabBarController?.tabBar.isHidden = false
-        container?.unreadMessagesManager.leaveConvo(convo.key)
+        container.unreadMessagesManager.leaveConvo(convo.key)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -67,9 +67,6 @@ class ConvoViewController: MessagesViewController {
 
 private extension ConvoViewController {
     @objc private func showConvoDetailView() {
-        guard let container = container else {
-            return
-        }
         navigationController?.pushViewController(ConvoDetailViewController(convo: convo, container: container), animated: true)
     }
 }

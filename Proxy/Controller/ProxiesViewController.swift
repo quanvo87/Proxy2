@@ -8,7 +8,7 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
     private let delegate = ProxiesTableViewDelegate()
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let buttonManager = ProxiesButtonManager()
-    private weak var container: DependencyContaining?
+    private let container: DependencyContaining
 
     init(uid: String, container: DependencyContaining) {
         self.container = container
@@ -38,7 +38,7 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        if let newConvo = newConvo, let container = container {
+        if let newConvo = newConvo {
             navigationController?.showConvoViewController(convo: newConvo, container: container)
             self.newConvo = nil
         }

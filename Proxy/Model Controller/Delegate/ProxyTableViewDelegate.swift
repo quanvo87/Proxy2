@@ -1,9 +1,9 @@
 import UIKit
 
 class ProxyTableViewDelegate: NSObject {
+    private var container: DependencyContaining = DependencyContainer.container
     private weak var convosManager: ConvosManager?
     private weak var controller: UIViewController?
-    private weak var container: DependencyContaining?
 
     func load(convosManager: ConvosManager, controller: UIViewController?, container: DependencyContaining) {
         self.convosManager = convosManager
@@ -17,8 +17,7 @@ extension ProxyTableViewDelegate: UITableViewDelegate {
         guard
             indexPath.section == 1,
             let row = tableView.indexPathForSelectedRow?.row,
-            let convo = convosManager?.convos[safe: row],
-            let container = container else {
+            let convo = convosManager?.convos[safe: row] else {
                 return
         }
         tableView.deselectRow(at: indexPath, animated: true)

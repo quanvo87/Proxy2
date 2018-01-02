@@ -21,8 +21,8 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate, Sender
     }
 
     private var uid = ""
+    private var container: DependencyContaining = DependencyContainer.container
     private weak var delegate: MakeNewMessageDelegate?
-    private weak var container: DependencyContaining?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -79,9 +79,6 @@ extension MakeNewMessageViewController {
 
 private extension MakeNewMessageViewController {
     @IBAction func makeNewProxy() {
-        guard let container = container else {
-            return
-        }
         disableButtons()
         DB.makeProxy(forUser: uid, currentProxyCount: container.proxiesManager.proxies.count) { (result) in
             switch result {
@@ -122,9 +119,6 @@ private extension MakeNewMessageViewController {
     }
 
     @IBAction func showSenderPickerController() {
-        guard let container = container else {
-            return
-        }
         navigationController?.pushViewController(SenderPickerViewController(uid: uid, senderPickerDelegate: self, container: container), animated: true)
     }
 }

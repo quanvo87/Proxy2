@@ -9,7 +9,7 @@ class ProxyViewController: UIViewController, MakeNewMessageDelegate {
     private let dataSource = ProxyTableViewDataSource()
     private let delegate = ProxyTableViewDelegate()
     private let tableView = UITableView(frame: .zero, style: .grouped)
-    private weak var container: DependencyContaining?
+    private let container: DependencyContaining
 
     init(proxy: Proxy, container: DependencyContaining) {
         self.proxy = proxy
@@ -43,7 +43,7 @@ class ProxyViewController: UIViewController, MakeNewMessageDelegate {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        if let newConvo = newConvo, let container = container {
+        if let newConvo = newConvo {
             navigationController?.showConvoViewController(convo: newConvo, container: container)
             self.newConvo = nil
         }
@@ -66,9 +66,6 @@ private extension ProxyViewController {
     }
 
     @objc func showMakeNewMessageController() {
-        guard let container = container else {
-            return
-        }
         showMakeNewMessageController(uid: proxy.ownerId, sender: proxy, controller: self, container: container)
     }
 }

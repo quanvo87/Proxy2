@@ -1,4 +1,4 @@
-protocol DependencyContaining: class {
+protocol DependencyContaining {
     var proxiesManager: ProxiesManaging { get }
     var unreadMessagesManager: UnreadMessagesManaging { get }
 }
