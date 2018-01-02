@@ -1,9 +1,9 @@
 import UIKit
 
 class SenderPickerTableViewDelegate: NSObject {
+    private var container: DependencyContaining = DependencyContainer.container
     private weak var delegate: SenderPickerDelegate?
     private weak var controller: UIViewController?
-    private weak var container: DependencyContaining?
 
     func load(delegate: SenderPickerDelegate, controller: UIViewController, container: DependencyContaining) {
         self.delegate = delegate
@@ -14,7 +14,7 @@ class SenderPickerTableViewDelegate: NSObject {
 
 extension SenderPickerTableViewDelegate: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let proxy = container?.proxiesManager.proxies[safe: indexPath.row] else {
+        guard let proxy = container.proxiesManager.proxies[safe: indexPath.row] else {
             return
         }
         delegate?.sender = proxy

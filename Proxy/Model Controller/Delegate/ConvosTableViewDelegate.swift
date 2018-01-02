@@ -1,9 +1,9 @@
 import UIKit
 
 class ConvosTableViewDelegate: NSObject {
+    private var container: DependencyContaining = DependencyContainer.container
     private weak var convosManager: ConvosManager?
     private weak var controller: UIViewController?
-    private weak var container: DependencyContaining?
   
     func load(convosManager: ConvosManager, controller: UIViewController, container: DependencyContaining) {
         self.convosManager = convosManager
@@ -14,7 +14,7 @@ class ConvosTableViewDelegate: NSObject {
 
 extension ConvosTableViewDelegate: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let convo = convosManager?.convos[safe: indexPath.row], let container = container else {
+        guard let convo = convosManager?.convos[safe: indexPath.row] else {
             return
         }
         tableView.deselectRow(at: indexPath, animated: true)

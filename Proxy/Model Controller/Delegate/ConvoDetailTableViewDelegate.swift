@@ -1,16 +1,16 @@
 import UIKit
 
 class ConvoDetailTableViewDelegate: NSObject {
+    private var container: DependencyContaining = DependencyContainer.container
     private weak var convoManager: ConvoManaging?
     private weak var proxyManager: ProxyManaging?
     private weak var controller: UIViewController?
-    private var container: DependencyContaining?
 
     func load(convoManager: ConvoManaging, proxyManager: ProxyManaging, controller: UIViewController, container: DependencyContaining) {
-        self.container = container
         self.convoManager = convoManager
         self.proxyManager = proxyManager
         self.controller = controller
+        self.container = container
     }
 }
 
@@ -22,9 +22,6 @@ extension ConvoDetailTableViewDelegate: UITableViewDelegate {
         }
         switch indexPath.section {
         case 1:
-            guard let container = container else {
-                return
-            }
             controller?.showProxyController(proxy: proxy, container: container)
         case 2:
             switch indexPath.row {

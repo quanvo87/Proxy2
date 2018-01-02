@@ -11,9 +11,9 @@ class ConvosButtonManager: ButtonManaging {
     weak var tableView: UITableView?
 
     private var uid: String?
+    private var container: DependencyContaining = DependencyContainer.container
     private weak var makeNewMessageDelegate: MakeNewMessageDelegate?
     private weak var controller: UIViewController?
-    private weak var container: DependencyContaining?
 
     func load(uid: String, makeNewMessageDelegate: MakeNewMessageDelegate, controller: UIViewController, container: DependencyContaining) {
         self.uid = uid
@@ -37,11 +37,11 @@ class ConvosButtonManager: ButtonManaging {
     func _deleteSelectedItems() {}
 
     func _makeNewProxy() {
-        guard let uid = uid, let proxyCount = container?.proxiesManager.proxies.count else {
+        guard let uid = uid else {
             return
         }
         navigationItem?.disableRightBarButtonItem(atIndex: 1)
-        DB.makeProxy(forUser: uid, currentProxyCount: proxyCount) { (result) in
+        DB.makeProxy(forUser: uid, currentProxyCount: container.proxiesManager.proxies.count) { (result) in
             self.navigationItem?.enableRightBarButtonItem(atIndex: 1)
             switch result {
             case .failure(let error):
@@ -64,7 +64,7 @@ class ConvosButtonManager: ButtonManaging {
     func _setEditModeButtons() {}
 
     func _showMakeNewMessageController() {
-        guard let uid = uid, let controller = controller, let container = container else {
+        guard let uid = uid, let controller = controller else {
             return
         }
         makeNewMessageDelegate?.showMakeNewMessageController(uid: uid, sender: nil, controller: controller, container: container)

@@ -10,7 +10,6 @@ class MessagesSentCountManager: MessagesSentCountManaging {
     private let observer = MessagesSentObserver()
     private weak var tableView: UITableView?
 
-
     func load(uid: String, tableView: UITableView) {
         self.tableView = tableView
         observer.observe(uid: uid, manager: self)

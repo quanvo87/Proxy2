@@ -12,8 +12,8 @@ class ProxiesButtonManager: ButtonManaging {
     weak var tableView: UITableView?
 
     private var uid: String?
+    private var container: DependencyContaining = DependencyContainer.container
     private weak var controller: ProxiesViewController?
-    private weak var container: DependencyContaining?
 
     func load(uid: String, itemsToDeleteManager: ItemsToDeleteManaging, tableView: UITableView, proxiesViewController: ProxiesViewController, container: DependencyContaining) {
         self.uid = uid
@@ -37,7 +37,7 @@ class ProxiesButtonManager: ButtonManaging {
         let alert = UIAlertController(title: "Delete Proxies?", message: "Your conversations for the proxies will also be deleted.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
             self.disableButtons()
-            self.container?.proxiesManager.stopObserving()
+            self.container.proxiesManager.stopObserving()
             let key = GroupWork()
             for (_, item) in itemsToDeleteManager.itemsToDelete {
                 guard let proxy = item as? Proxy else {
@@ -51,7 +51,7 @@ class ProxiesButtonManager: ButtonManaging {
             self.setDefaultButtons()
             key.allDone {
                 self.enableButtons()
-                self.container?.proxiesManager.observe()
+                self.container.proxiesManager.observe()
             }
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
@@ -59,11 +59,11 @@ class ProxiesButtonManager: ButtonManaging {
     }
 
     func _makeNewProxy() {
-        guard let uid = uid, let proxyCount = container?.proxiesManager.proxies.count else {
+        guard let uid = uid  else {
             return
         }
         controller?.navigationItem.disableRightBarButtonItem(atIndex: 1)
-        DB.makeProxy(forUser: uid, currentProxyCount: proxyCount) { (result) in
+        DB.makeProxy(forUser: uid, currentProxyCount: container.proxiesManager.proxies.count) { (result) in
             self.controller?.navigationItem.enableRightBarButtonItem(atIndex: 1)
             switch result {
             case .failure(let error):
@@ -83,7 +83,7 @@ class ProxiesButtonManager: ButtonManaging {
     }
 
     func _showMakeNewMessageController() {
-        guard let uid = uid, let controller = controller, let container = container else {
+        guard let uid = uid, let controller = controller else {
             return
         }
         controller.showMakeNewMessageController(uid: uid, sender: nil, controller: controller, container: container)
