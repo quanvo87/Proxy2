@@ -10,6 +10,10 @@ class AuthManager {
         self.window = window
         authObserver.load(self)
     }
+
+    deinit {
+        print("😍")
+    }
 }
 
 extension AuthManager: AuthManaging {
@@ -21,7 +25,7 @@ extension AuthManager: AuthManaging {
             changeRequest.displayName = email
             changeRequest.commitChanges()
         }
-        window?.rootViewController = TabBarController(displayName: displayName, uid: user.uid)
+        window?.rootViewController = TabBarController(displayName: displayName, uid: user.uid, container: DependencyContainer())
         loggedIn = true
     }
 

@@ -167,8 +167,8 @@ extension UInt {
 }
 
 extension UINavigationController {
-    func showConvoViewController(convo: Convo, proxiesManager: ProxiesManaging?, unreadMessagesManager: UnreadMessagesManaging?) {
-        pushViewController(ConvoViewController(convo: convo, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager), animated: true)
+    func showConvoViewController(convo: Convo, container: DependencyContaining) {
+        pushViewController(ConvoViewController(convo: convo, container: container), animated: true)
     }
 }
 
@@ -220,8 +220,8 @@ extension UIViewController {
             textField.placeholder = "Enter A Nickname"
             textField.text = proxy.nickname
         }
-        alert.addAction(UIAlertAction(title: "Save", style: .default) { (action) in
-            guard let nickname = alert.textFields?[0].text else {
+        alert.addAction(UIAlertAction(title: "Save", style: .default) { [weak alert] (action) in
+            guard let nickname = alert?.textFields?[0].text else {
                 return
             }
             let trimmed = nickname.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
@@ -245,8 +245,8 @@ extension UIViewController {
         present(navigationController, animated: true)
     }
 
-    func showProxyController(proxy: Proxy, proxiesManager: ProxiesManaging?, unreadMessagesManager: UnreadMessagesManaging?) {
-        navigationController?.pushViewController(ProxyViewController(proxy: proxy, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager), animated: true)
+    func showProxyController(proxy: Proxy, container: DependencyContaining) {
+        navigationController?.pushViewController(ProxyViewController(proxy: proxy, container: container), animated: true)
     }
 }
 

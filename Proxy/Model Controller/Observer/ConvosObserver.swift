@@ -10,10 +10,10 @@ class ConvosObserver: ReferenceObserving {
         stopObserving()
         self.manager = manager
         ref = DB.makeReference(Child.convos, convosOwner)
-        handle = ref?.queryOrdered(byChild: Child.timestamp).queryLimited(toLast: querySize).observe(.value, with: { (data) in
-            self.loading = true
-            self.manager?.convos = data.asConvosArray.reversed()
-            self.loading = false
+        handle = ref?.queryOrdered(byChild: Child.timestamp).queryLimited(toLast: querySize).observe(.value, with: { [weak self] (data) in
+            self?.loading = true
+            self?.manager?.convos = data.asConvosArray.reversed()
+            self?.loading = false
         })
 
     }
@@ -23,14 +23,14 @@ class ConvosObserver: ReferenceObserving {
             return
         }
         loading = true
-        ref?.queryOrdered(byChild: Child.timestamp).queryEnding(atValue: timestamp).queryLimited(toLast: querySize).observeSingleEvent(of: .value, with: { (data) in
+        ref?.queryOrdered(byChild: Child.timestamp).queryEnding(atValue: timestamp).queryLimited(toLast: querySize).observeSingleEvent(of: .value, with: { [weak self] (data) in
             var convos = data.asConvosArray
             guard convos.count > 1 else {
                 return
             }
             convos.removeLast(1)
-            self.manager?.convos += convos.reversed()
-            self.loading = false
+            self?.manager?.convos += convos.reversed()
+            self?.loading = false
         })
     }
 

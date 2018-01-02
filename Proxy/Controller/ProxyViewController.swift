@@ -9,13 +9,11 @@ class ProxyViewController: UIViewController, MakeNewMessageDelegate {
     private let dataSource = ProxyTableViewDataSource()
     private let delegate = ProxyTableViewDelegate()
     private let tableView = UITableView(frame: .zero, style: .grouped)
-    private weak var proxiesManager: ProxiesManaging?
-    private weak var unreadMessagesManager: UnreadMessagesManaging?
+    private weak var container: DependencyContaining?
 
-    init(proxy: Proxy, proxiesManager: ProxiesManaging?, unreadMessagesManager: UnreadMessagesManaging?) {
+    init(proxy: Proxy, container: DependencyContaining) {
         self.proxy = proxy
-        self.proxiesManager = proxiesManager
-        self.unreadMessagesManager = unreadMessagesManager
+        self.container = container
 
         super.init(nibName: nil, bundle: nil)
 
@@ -28,7 +26,7 @@ class ProxyViewController: UIViewController, MakeNewMessageDelegate {
 
         dataSource.load(proxyManager: proxyManager, convosManager: convosManager, controller: self)
 
-        delegate.load(convosManager: convosManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager, controller: self)
+        delegate.load(convosManager: convosManager, controller: self, container: container)
         
         tableView.dataSource = dataSource
         tableView.delaysContentTouches = false
@@ -45,8 +43,8 @@ class ProxyViewController: UIViewController, MakeNewMessageDelegate {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        if let newConvo = newConvo {
-            navigationController?.showConvoViewController(convo: newConvo, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
+        if let newConvo = newConvo, let container = container {
+            navigationController?.showConvoViewController(convo: newConvo, container: container)
             self.newConvo = nil
         }
     }
@@ -68,6 +66,9 @@ private extension ProxyViewController {
     }
 
     @objc func showMakeNewMessageController() {
-        showMakeNewMessageController(uid: proxy.ownerId, proxiesManager: proxiesManager, sender: proxy, controller: self)
+        guard let container = container else {
+            return
+        }
+        showMakeNewMessageController(uid: proxy.ownerId, sender: proxy, controller: self, container: container)
     }
 }

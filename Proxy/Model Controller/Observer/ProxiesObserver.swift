@@ -13,8 +13,8 @@ class ProxiesObserver: ReferenceObserving {
 
     func observe() {
         stopObserving()
-        handle = ref?.queryOrdered(byChild: Child.timestamp).observe(.value, with: { (data) in
-            self.manager?.proxies = data.asProxiesArray.reversed()
+        handle = ref?.queryOrdered(byChild: Child.timestamp).observe(.value, with: { [weak self] (data) in
+            self?.manager?.proxies = data.asProxiesArray.reversed()
         })
     }
 

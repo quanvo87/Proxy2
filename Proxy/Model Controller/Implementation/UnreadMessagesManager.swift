@@ -7,21 +7,21 @@ class UnreadMessagesManager: UnreadMessagesManaging {
         didSet {
             let count = unreadMessages.count
             if count == 0 {
-                convosViewController?.navigationItem.title = "Messages"
-                convosViewController?.tabBarController?.tabBar.items?.first?.badgeValue = nil
+                controller?.navigationItem.title = "Messages"
+                controller?.tabBarController?.tabBar.items?.first?.badgeValue = nil
             } else {
-                convosViewController?.navigationItem.title = "Messages" + count.asStringWithParens
-                convosViewController?.tabBarController?.tabBar.items?.first?.badgeValue = count == 0 ? nil : String(count)
+                controller?.navigationItem.title = "Messages" + count.asStringWithParens
+                controller?.tabBarController?.tabBar.items?.first?.badgeValue = count == 0 ? nil : String(count)
             }
         }
     }
     
     private let unreadMessageAddedObserver = UnreadMessageAddedObserver()
     private let unreadMessageRemovedObserver = UnreadMessageRemovedObserver()
-    private weak var convosViewController: UIViewController?
+    private weak var controller: UIViewController?
 
-    func load(uid: String, proxiesManager: ProxiesManaging, convosViewController: UIViewController) {
-        self.convosViewController = convosViewController
+    func load(uid: String, proxiesManager: ProxiesManaging, controller: UIViewController) {
+        self.controller = controller
         unreadMessageAddedObserver.observe(uid: uid, proxiesManager: proxiesManager, unreadMessagesManager: self)
         unreadMessageRemovedObserver.observe(uid: uid, manager: self)
     }

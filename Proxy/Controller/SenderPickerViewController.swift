@@ -8,7 +8,7 @@ class SenderPickerViewController: UIViewController {
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private weak var senderPickerDelegate: SenderPickerDelegate?
 
-    init(uid: String, senderPickerDelegate: SenderPickerDelegate) {
+    init(uid: String, senderPickerDelegate: SenderPickerDelegate, container: DependencyContaining) {
         self.uid = uid
         self.senderPickerDelegate = senderPickerDelegate
 
@@ -18,9 +18,9 @@ class SenderPickerViewController: UIViewController {
 
         manager.load(uid: uid, navigationItem: nil, tableView: tableView)
 
-        dataSource.load(manager: manager, accessoryType: .none)
+        dataSource.load(accessoryType: .none, container: container)
      
-        delegate.load(manager: manager, delegate: senderPickerDelegate, controller: self)
+        delegate.load(delegate: senderPickerDelegate, controller: self, container: container)
 
         tableView.dataSource = dataSource
         tableView.delegate = delegate

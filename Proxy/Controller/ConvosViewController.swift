@@ -8,24 +8,24 @@ class ConvosViewController: UIViewController, MakeNewMessageDelegate {
     private let delegate = ConvosTableViewDelegate()
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let buttonManager = ConvosButtonManager()
-    private weak var proxiesManager: ProxiesManaging?
-    private weak var unreadMessagesManager: UnreadMessagesManaging?
+    private weak var container: DependencyContaining?
 
-    init(uid: String, proxiesManager: ProxiesManaging, unreadMessagesManager: UnreadMessagesManaging) {
-        self.proxiesManager = proxiesManager
-        self.unreadMessagesManager = unreadMessagesManager
+    init(uid: String, container: DependencyContaining) {
+        self.container = container
         
         super.init(nibName: nil, bundle: nil)
 
         navigationItem.title = "Messages"
 
-        buttonManager.load(uid: uid, makeNewMessageDelegate: self, proxiesManager: proxiesManager, controller: self)
+        buttonManager.load(uid: uid, makeNewMessageDelegate: self, controller: self, container: container)
         
         convosManager.load(convosOwner: uid, tableView: tableView)
 
+        container.unreadMessagesManager.load(uid: uid, proxiesManager: container.proxiesManager, controller: self)
+
         dataSource.load(manager: convosManager)
 
-        delegate.load(convosManager: convosManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager, controller: self)
+        delegate.load(convosManager: convosManager, controller: self, container: container)
 
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.dataSource = dataSource
@@ -40,8 +40,8 @@ class ConvosViewController: UIViewController, MakeNewMessageDelegate {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        if let newConvo = newConvo {
-            navigationController?.showConvoViewController(convo: newConvo, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
+        if let newConvo = newConvo, let container = container {
+            navigationController?.showConvoViewController(convo: newConvo, container: container)
             self.newConvo = nil
         }
     }
