@@ -98,7 +98,7 @@ class DBProxyTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        DB.makeProxy(forUser: DBTest.uid, maxProxyCount: 0) { (result) in
+        DB.makeProxy(forUser: DBTest.uid, currentProxyCount: 0, maxProxyCount: 0) { (result) in
             switch result {
             case .failure(let error):
                 XCTAssertEqual(error, ProxyError.proxyLimitReached)
@@ -113,12 +113,12 @@ class DBProxyTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
         
-        DB.makeProxy(withName: "test", forUser: DBTest.uid) { (result) in
+        DB.makeProxy(withName: "test", forUser: DBTest.uid, currentProxyCount: 0) { (result) in
             switch result {
             case .failure:
                 XCTFail()
             case .success:
-                DB.makeProxy(withName: "test", forUser: DBTest.uid) { (result) in
+                DB.makeProxy(withName: "test", forUser: DBTest.uid, currentProxyCount: 1) { (result) in
                     switch result {
                     case .failure:
                         XCTFail()

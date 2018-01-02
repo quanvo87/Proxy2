@@ -59,11 +59,11 @@ class ProxiesButtonManager: ButtonManaging {
     }
 
     func _makeNewProxy() {
-        guard let uid = uid else {
+        guard let uid = uid, let proxyCount = proxiesManager?.proxies.count else {
             return
         }
         proxiesViewController?.navigationItem.disableRightBarButtonItem(atIndex: 1)
-        DB.makeProxy(forUser: uid) { (result) in
+        DB.makeProxy(forUser: uid, currentProxyCount: proxyCount) { (result) in
             self.proxiesViewController?.navigationItem.enableRightBarButtonItem(atIndex: 1)
             switch result {
             case .failure(let error):
@@ -86,6 +86,6 @@ class ProxiesButtonManager: ButtonManaging {
         guard let uid = uid else {
             return
         }
-        proxiesViewController?.showMakeNewMessageController(uid: uid, sender: nil, controller: proxiesViewController)
+        proxiesViewController?.showMakeNewMessageController(uid: uid, proxiesManager: proxiesManager, sender: nil, controller: proxiesViewController)
     }
 }

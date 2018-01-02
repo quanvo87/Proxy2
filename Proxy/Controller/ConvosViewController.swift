@@ -8,22 +8,24 @@ class ConvosViewController: UIViewController, MakeNewMessageDelegate {
     private let delegate = ConvosTableViewDelegate()
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let buttonManager = ConvosButtonManager()
+    private weak var proxiesManager: ProxiesManaging?
     private weak var unreadMessagesManager: UnreadMessagesManaging?
 
-    init(uid: String, unreadMessagesManager: UnreadMessagesManaging) {
+    init(uid: String, proxiesManager: ProxiesManaging, unreadMessagesManager: UnreadMessagesManaging) {
+        self.proxiesManager = proxiesManager
         self.unreadMessagesManager = unreadMessagesManager
         
         super.init(nibName: nil, bundle: nil)
 
         navigationItem.title = "Messages"
 
-        buttonManager.load(uid: uid, makeNewMessageDelegate: self, viewController: self)
+        buttonManager.load(uid: uid, makeNewMessageDelegate: self, proxiesManager: proxiesManager, controller: self)
         
         convosManager.load(convosOwner: uid, tableView: tableView)
 
         dataSource.load(manager: convosManager)
 
-        delegate.load(convosManager: convosManager, unreadMessagesManager: unreadMessagesManager, controller: self)
+        delegate.load(convosManager: convosManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager, controller: self)
 
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.dataSource = dataSource
@@ -39,7 +41,7 @@ class ConvosViewController: UIViewController, MakeNewMessageDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         if let newConvo = newConvo {
-            navigationController?.showConvoViewController(convo: newConvo, unreadMessagesManager: unreadMessagesManager)
+            navigationController?.showConvoViewController(convo: newConvo, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
             self.newConvo = nil
         }
     }

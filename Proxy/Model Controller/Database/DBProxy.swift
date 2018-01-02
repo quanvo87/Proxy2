@@ -50,17 +50,10 @@ extension DB {
         }
     }
 
-    // todo: delete
-    private static func getProxyCount(forUser uid: String, completion: @escaping (UInt) -> Void) {
-        get(Child.proxies, uid) { (data) in
-            completion(data?.childrenCount ?? 0)
-        }
-    }
-
-    // todo: take in proxy count from proxiesManager
     static func makeProxy(withName proxyName: String = ProxyService.makeRandomProxyName(),
                           maxNameSize: Int = Setting.maxNameSize,
                           forUser uid: String,
+                          currentProxyCount: Int,
                           maxProxyCount: Int = Setting.maxProxyCount,
                           maxAttemps: Int = Setting.maxMakeProxyAttempts,
                           completion: @escaping MakeProxyCallback) {
@@ -68,13 +61,11 @@ extension DB {
             completion(.failure(.inputTooLong))
             return
         }
-        getProxyCount(forUser: uid) { (proxyCount) in
-            guard proxyCount < maxProxyCount else {
-                completion(.failure(.proxyLimitReached))
-                return
-            }
-            makeProxyHelper(withName: proxyName, forUser: uid, maxAttempts: maxAttemps, completion: completion)
+        guard currentProxyCount < maxProxyCount else {
+            completion(.failure(.proxyLimitReached))
+            return
         }
+        makeProxyHelper(withName: proxyName, forUser: uid, maxAttempts: maxAttemps, completion: completion)
     }
 
     private static func makeProxyHelper(withName proxyName: String,

@@ -7,7 +7,7 @@ class TabBarController: UITabBarController {
     init(displayName: String?, uid: String) {
         super.init(nibName: nil, bundle: nil)
 
-        let convosController = ConvosViewController(uid: uid, unreadMessagesManager: unreadMessagesManager)
+        let convosController = ConvosViewController(uid: uid, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
         convosController.tabBarItem = UITabBarItem(title: "Messages", image: UIImage(named: "messages"), tag: 0)
 
         let proxiesController = ProxiesViewController(uid: uid, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)

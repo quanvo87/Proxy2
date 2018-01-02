@@ -9,10 +9,12 @@ class ConvoViewController: MessagesViewController {
     private let displayDelegate = ConvoDisplayDelegate()
     private let layoutDelegate = ConvoLayoutDelegate()
     private let inputBarDelegate = ConvoInputBarDelegate()
+    private weak var proxiesManager: ProxiesManaging?
     private weak var unreadMessagesManager: UnreadMessagesManaging?
 
-    init(convo: Convo, unreadMessagesManager: UnreadMessagesManaging?) {
+    init(convo: Convo, proxiesManager: ProxiesManaging?, unreadMessagesManager: UnreadMessagesManaging?) {
         self.convo = convo
+        self.proxiesManager = proxiesManager
         self.unreadMessagesManager = unreadMessagesManager
 
         super.init(nibName: nil, bundle: nil)
@@ -67,6 +69,6 @@ class ConvoViewController: MessagesViewController {
 
 private extension ConvoViewController {
     @objc private func showConvoDetailView() {
-        navigationController?.pushViewController(ConvoDetailViewController(convo: convo, unreadMessagesManager: unreadMessagesManager), animated: true)
+        navigationController?.pushViewController(ConvoDetailViewController(convo: convo, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager), animated: true)
     }
 }

@@ -167,8 +167,8 @@ extension UInt {
 }
 
 extension UINavigationController {
-    func showConvoViewController(convo: Convo, unreadMessagesManager: UnreadMessagesManaging?) {
-        pushViewController(ConvoViewController(convo: convo, unreadMessagesManager: unreadMessagesManager), animated: true)
+    func showConvoViewController(convo: Convo, proxiesManager: ProxiesManaging?, unreadMessagesManager: UnreadMessagesManaging?) {
+        pushViewController(ConvoViewController(convo: convo, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager), animated: true)
     }
 }
 
@@ -245,8 +245,8 @@ extension UIViewController {
         present(navigationController, animated: true)
     }
 
-    func showProxyController(proxy: Proxy, unreadMessagesManager: UnreadMessagesManaging?) {
-        navigationController?.pushViewController(ProxyViewController(proxy: proxy, unreadMessagesManager: unreadMessagesManager), animated: true)
+    func showProxyController(proxy: Proxy, proxiesManager: ProxiesManaging?, unreadMessagesManager: UnreadMessagesManaging?) {
+        navigationController?.pushViewController(ProxyViewController(proxy: proxy, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager), animated: true)
     }
 }
 

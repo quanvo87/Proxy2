@@ -21,8 +21,8 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate, Sender
     }
 
     private var uid = ""
-
     private weak var delegate: MakeNewMessageDelegate?
+    private weak var proxiesManager: ProxiesManaging?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,12 +42,13 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate, Sender
         NotificationCenter.default.removeObserver(self)
     }
 
-    static func make(uid: String, delegate: MakeNewMessageDelegate, sender: Proxy?) -> MakeNewMessageViewController? {
+    static func make(uid: String, delegate: MakeNewMessageDelegate, proxiesManager: ProxiesManaging?, sender: Proxy?) -> MakeNewMessageViewController? {
         guard let controller = MakeNewMessageViewController.make() else {
             return nil
         }
         controller.uid = uid
         controller.delegate = delegate
+        controller.proxiesManager = proxiesManager
         controller.sender = sender
         return controller
     }
@@ -78,8 +79,11 @@ extension MakeNewMessageViewController {
 
 private extension MakeNewMessageViewController {
     @IBAction func makeNewProxy() {
+        guard let proxyCount = proxiesManager?.proxies.count else {
+            return
+        }
         disableButtons()
-        DB.makeProxy(forUser: uid) { (result) in
+        DB.makeProxy(forUser: uid, currentProxyCount: proxyCount) { (result) in
             switch result {
             case .failure(let error):
                 self.showAlert("Error Making New Proxy", message: error.description)
