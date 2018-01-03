@@ -30,7 +30,7 @@ extension DB {
     }
 
     static func getProxy(key: String, completion: @escaping (Proxy?) -> Void) {
-        get(Child.proxyOwners, key.lowercased().trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)) { (data) in
+        get(Child.proxyOwners, key.lowercased().noWhiteSpaces) { (data) in
             guard
                 let data = data,
                 let proxyOwner = ProxyOwner(data) else {

@@ -11,8 +11,7 @@ class ReceiverPicker {
     }
 
     func load() {
-        // todo: remove spaces
-        let alert = UIAlertController(title: "Enter Receiver Proxy Name", message: "Spacing and capitalization don't matter.", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Enter Receiver Proxy Name", message: "Spaces and capitalization are ignored.", preferredStyle: .alert)
         let okAction = UIAlertAction(title: "OK", style: .default) { [weak alert] _ in
             guard let text = alert?.textFields?[safe: 0]?.text else {
                 return
@@ -25,6 +24,8 @@ class ReceiverPicker {
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         alert.addTextField { (textField) in
             textField.addTarget(self, action: #selector(self.textFieldDidChange), for: .editingChanged)
+            textField.autocorrectionType = .yes
+            textField.clearButtonMode = .whileEditing
         }
         controller?.present(alert, animated: true)
     }
@@ -38,7 +39,7 @@ private extension ReceiverPicker {
                 return
             }
             guard proxy.ownerId != self.uid else {
-                self.showErrorAlert(title: "Cannot Send Message To Your Own Proxy", message: "Please try again.")
+                self.showErrorAlert(title: "Cannot Send To Your Own Proxy", message: "Choose a different receiver!")
                 return
             }
             self.controller?.receiver = proxy

@@ -46,7 +46,7 @@ extension DB {
             completion(.failure(.receiverDeletedProxy))
             return
         }
-        let trimmedText = text.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        let trimmedText = text.trimmed
         guard trimmedText.count < Setting.maxMessageSize else {
             completion(.failure(.inputTooLong))
             return
