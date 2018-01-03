@@ -57,7 +57,8 @@ extension ConvoDataSource: MessagesDataSource {
                                                                              dateRead: Date(),
                                                                              parentConvoKey: "",
                                                                              receiverId: "",
-                                                                             receiverProxyKey: "")
+                                                                             receiverProxyKey: "",
+                                                                             senderProxyKey: "")
     }
 
     func numberOfMessages(in messagesCollectionView: MessagesCollectionView) -> Int {

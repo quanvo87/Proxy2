@@ -5,6 +5,7 @@ import UIKit
 extension DB {
     typealias MakeProxyCallback = (Result<Proxy, ProxyError>) -> Void
 
+    // todo: delete relevant messages
     static func deleteProxy(_ proxy: Proxy, completion: @escaping (Bool) -> Void) {
         getConvos(forProxyWithKey: proxy.key) { (convos) in
             guard let convos = convos else {
@@ -20,7 +21,8 @@ extension DB {
         work.delete(at: Child.proxies, proxy.ownerId, proxy.key)
         work.delete(at: Child.proxyKeys, proxy.key)
         work.delete(at: Child.proxyOwners, proxy.key)
-        work.deleteConvosForProxy(proxy)
+        work.delete(at: Child.convos, proxy.key)
+        work.delete(convos)
         work.deleteUnreadMessages(for: proxy)
         work.setReceiverDeletedProxy(convos)
         work.allDone {
@@ -29,7 +31,7 @@ extension DB {
     }
 
     static func getProxy(withKey key: String, completion: @escaping (Proxy?) -> Void) {
-        get(Child.proxyOwners, key) { (data) in
+        get(Child.proxyOwners, key.lowercased().trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)) { (data) in
             guard
                 let data = data,
                 let proxyOwner = ProxyOwner(data) else {
@@ -184,36 +186,9 @@ extension GroupWork {
 }
 
 extension GroupWork {
-    func deleteConvosForProxy(_ proxy: Proxy) {
-        delete(at: Child.convos, proxy.key)
-        start()
-        let ref = DB.makeReference(Child.convos, proxy.ownerId)
-        ref?.queryOrdered(byChild: Child.senderProxyKey).queryEqual(toValue: proxy.key).observeSingleEvent(of: .value, with: { (data) in
-            for child in data.children {
-                guard let childData = child as? DataSnapshot else {
-                    continue
-                }
-                self.delete(at: Child.convos, proxy.ownerId, childData.key)
-            }
-            self.finish(withResult: true)
-        })
-    }
-
-    func setReceiverDeletedProxy(_ convos: [Convo]) {
+    func delete(_ convos: [Convo]) {
         for convo in convos {
-            set(.receiverDeletedProxy(true), forConvo: convo, asSender: false)
-        }
-    }
-
-    func setReceiverIcon(to icon: String, forConvos convos: [Convo]) {
-        for convo in convos {
-            set(.receiverIcon(icon), forConvo: convo, asSender: false)
-        }
-    }
-
-    func setSenderNickname(to nickname: String, forConvos convos: [Convo]) {
-        for convo in convos {
-            self.set(.senderNickname(nickname), forConvo: convo, asSender: true)
+            delete(at: Child.convos, convo.senderId, convo.key)
         }
     }
 
@@ -239,5 +214,23 @@ extension GroupWork {
         ref.queryOrdered(byChild: Child.receiverProxyKey).queryEqual(toValue: proxyKey).observeSingleEvent(of: .value, with: { (data) in
             completion(data.asMessagesArray)
         })
+    }
+
+    func setReceiverDeletedProxy(_ convos: [Convo]) {
+        for convo in convos {
+            set(.receiverDeletedProxy(true), forConvo: convo, asSender: false)
+        }
+    }
+
+    func setReceiverIcon(to icon: String, forConvos convos: [Convo]) {
+        for convo in convos {
+            set(.receiverIcon(icon), forConvo: convo, asSender: false)
+        }
+    }
+
+    func setSenderNickname(to nickname: String, forConvos convos: [Convo]) {
+        for convo in convos {
+            self.set(.senderNickname(nickname), forConvo: convo, asSender: true)
+        }
     }
 }

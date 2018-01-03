@@ -3,6 +3,15 @@ import GroupWork
 import UIKit
 
 extension DB {
+    // todo: test
+    static func delete(_ convo: Convo, completion: @escaping (Bool) -> Void) {
+        let work = GroupWork()
+        work.delete(convo, asSender: true)
+        work.allDone {
+            completion(work.result)
+        }
+    }
+
     static func getConvo(withKey key: String, belongingTo uid: String, completion: @escaping (Convo?) -> Void) {
         get(Child.convos, uid, key) { (data) in
             guard let data = data else {
@@ -27,6 +36,12 @@ extension DB {
 }
 
 extension GroupWork {
+    func delete(_ convo: Convo, asSender: Bool) {
+        let (ownerId, proxyKey) = GroupWork.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
+        delete(at: Child.convos, ownerId, convo.key)
+        delete(at: Child.convos, proxyKey, convo.key)
+    }
+
     func set(_ convo: Convo, asSender: Bool) {
         let (ownerId, proxyKey) = GroupWork.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
         set(convo.toDictionary(), at: Child.convos, ownerId, convo.key)

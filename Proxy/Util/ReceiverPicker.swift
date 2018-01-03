@@ -11,9 +11,10 @@ class ReceiverPicker {
     }
 
     func load() {
-        let alert = UIAlertController(title: "Enter Receiver Name", message: "Proxy names only. Nicknames do not work.", preferredStyle: .alert)
+        // todo: remove spaces
+        let alert = UIAlertController(title: "Enter Receiver Proxy Name", message: "Spacing and capitalization don't matter.", preferredStyle: .alert)
         let okAction = UIAlertAction(title: "OK", style: .default) { [weak alert] _ in
-            guard let text = alert?.textFields?[safe: 0]?.text?.lowercased().trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) else {
+            guard let text = alert?.textFields?[safe: 0]?.text else {
                 return
             }
             self.setReceiver(text)

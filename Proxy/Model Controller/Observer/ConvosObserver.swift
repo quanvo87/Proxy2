@@ -12,7 +12,31 @@ class ConvosObserver: ReferenceObserving {
         ref = DB.makeReference(Child.convos, convosOwner)
         handle = ref?.queryOrdered(byChild: Child.timestamp).queryLimited(toLast: querySize).observe(.value, with: { [weak self] (data) in
             self?.loading = true
-            self?.manager?.convos = data.asConvosArray.reversed()
+
+            // todo: clean up
+            var convos = [Convo]()
+
+            for child in data.children {
+                guard let data = child as? DataSnapshot else {
+                    continue
+                }
+                if let convo = Convo(data) {
+                    convos.append(convo)
+                    continue
+                }
+                DB.get(Child.convos, convosOwner, data.key) { (data) in
+                    guard let data = data else {
+                        return
+                    }
+                    if let convo = Convo(data) {
+                        convos.append(convo)
+                    } else {
+                        DB.delete(Child.convos, convosOwner, data.key) { (_) in }
+                    }
+                }
+            }
+
+            self?.manager?.convos = convos.reversed()
             self?.loading = false
         })
 
