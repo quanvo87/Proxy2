@@ -109,8 +109,12 @@ class DBMessageTests: DBTest {
                     DB.sendMessage(senderConvo: updatedConvo, text: DBTest.text) { (result) in
                         switch result {
                         case .failure(let error):
-                            XCTFail(error.localizedDescription)
-                        case .success:
+                            switch error {
+                            case .receiverDeletedProxy:
+                                break
+                            default:
+                                XCTFail()
+                            }
                             let work = GroupWork()
                             work.checkDeleted(at: Child.convos, receiverProxy.ownerId, updatedConvo.key)
                             work.checkDeleted(at: Child.convos, receiverProxy.key, updatedConvo.key)
@@ -118,6 +122,8 @@ class DBMessageTests: DBTest {
                             work.allDone {
                                 expectation.fulfill()
                             }
+                        case .success:
+                            XCTFail()
                         }
                     }
                 }

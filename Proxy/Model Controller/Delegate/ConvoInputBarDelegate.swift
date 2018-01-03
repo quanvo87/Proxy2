@@ -21,9 +21,11 @@ extension ConvoInputBarDelegate: MessageInputBarDelegate {
             case .failure(let error):
                 switch error {
                 case .inputTooLong:
-                    self.controller?.showAlert("Message Too Long", message: "Please try shortening the message.")
+                    self.controller?.showAlert("Message Too Long", message: error.localizedDescription)
+                case .receiverDeletedProxy:
+                    self.controller?.showAlert("Receiver Deleted Proxy", message: error.localizedDescription)
                 default:
-                    self.controller?.showAlert("Error Sending Message", message: "There was an error sending the message. Please try again.")
+                    self.controller?.showAlert("Error Sending Message", message: error.localizedDescription)
                 }
             default:
                 break

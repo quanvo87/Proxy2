@@ -11,8 +11,9 @@ struct Message: MessageType {
     let parentConvoKey: String
     let receiverId: String
     let receiverProxyKey: String
+    let senderProxyKey: String
 
-    init(sender: Sender, messageId: String, data: MessageData, dateRead: Date, parentConvoKey: String, receiverId: String, receiverProxyKey: String) {
+    init(sender: Sender, messageId: String, data: MessageData, dateRead: Date, parentConvoKey: String, receiverId: String, receiverProxyKey: String, senderProxyKey: String) {
         self.sender = sender
         self.messageId = messageId
         self.sentDate = Date()
@@ -21,6 +22,7 @@ struct Message: MessageType {
         self.parentConvoKey = parentConvoKey
         self.receiverId = receiverId
         self.receiverProxyKey = receiverProxyKey
+        self.senderProxyKey = senderProxyKey
     }
 
     init?(_ data: DataSnapshot) {
@@ -34,7 +36,8 @@ struct Message: MessageType {
             let dateRead = dictionary["dateRead"] as? Double,
             let parentConvoKey = dictionary["parentConvoKey"] as? String,
             let receiverId = dictionary["receiverId"] as? String,
-            let receiverProxyKey = dictionary["receiverProxyKey"] as? String else {
+            let receiverProxyKey = dictionary["receiverProxyKey"] as? String,
+            let senderProxyKey = dictionary["senderProxyKey"] as? String else {
                 return nil
         }
         self.sender = Sender(id: senderId, displayName: senderDisplayName)
@@ -45,6 +48,7 @@ struct Message: MessageType {
         self.parentConvoKey = parentConvoKey
         self.receiverId = receiverId
         self.receiverProxyKey = receiverProxyKey
+        self.senderProxyKey = senderProxyKey
     }
 
     func toDictionary() -> Any {
@@ -64,7 +68,8 @@ struct Message: MessageType {
             "dateRead": dateRead.timeIntervalSince1970,
             "parentConvoKey": parentConvoKey,
             "receiverId": receiverId,
-            "receiverProxyKey": receiverProxyKey
+            "receiverProxyKey": receiverProxyKey,
+            "senderProxyKey": senderProxyKey
         ]
     }
 }
@@ -78,7 +83,8 @@ extension Message: Equatable {
             lhs.dateRead.timeIntervalSince1970.rounded() == rhs.dateRead.timeIntervalSince1970.rounded() &&
             lhs.parentConvoKey == rhs.parentConvoKey &&
             lhs.receiverId == rhs.receiverId &&
-            lhs.receiverProxyKey == rhs.receiverProxyKey
+            lhs.receiverProxyKey == rhs.receiverProxyKey &&
+            lhs.senderProxyKey == rhs.senderProxyKey
     }
 }
 

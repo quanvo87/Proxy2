@@ -102,9 +102,11 @@ private extension MakeNewMessageViewController {
             case .failure(let error):
                 switch error {
                 case .inputTooLong:
-                    self.showAlert("Message Too Long", message: "Please try shortening the message.")
+                    self.showAlert("Message Too Long", message: error.localizedDescription)
+                case .receiverDeletedProxy:
+                    self.showAlert("Receiver Deleted Proxy", message: error.localizedDescription)
                 default:
-                    self.showAlert("Error Sending Message", message: "There was an error sending the message. Please try again.")
+                    self.showAlert("Error Sending Message", message: error.localizedDescription)
                 }
             case .success(let tuple):
                 self.delegate?.newConvo = tuple.convo

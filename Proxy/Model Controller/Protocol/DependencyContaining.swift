@@ -6,7 +6,6 @@ protocol DependencyContaining {
 
 struct DependencyContainer: DependencyContaining {
     static let container = DependencyContainer()
-
     let proxiesManager: ProxiesManaging
     let unreadMessagesManager: UnreadMessagesManaging
     let presenceManager: PresenceManaging

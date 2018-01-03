@@ -4,6 +4,7 @@ import MessageKit
 extension DB {
     typealias SendMessageCallback = (Result<(message: Message, convo: Convo), ProxyError>) -> Void
 
+    // todo: test
     static func deleteUnreadMessage(_ message: Message, completion: @escaping (Bool) -> Void) {
         let work = GroupWork()
         work.delete(at: Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
@@ -26,29 +27,29 @@ extension DB {
     }
 
     static func sendMessage(senderProxy: Proxy, receiverProxy: Proxy, text: String, completion: @escaping SendMessageCallback) {
-        let trimmedText = text.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
-        guard trimmedText.count < Setting.maxMessageSize else {
-            completion(.failure(.inputTooLong))
-            return
-        }
         let convoKey = makeConvoKey(senderProxy: senderProxy, receiverProxy: receiverProxy)
-        getConvo(withKey: convoKey, belongingTo: senderProxy.ownerId) { (senderConvo) in
-            if let senderConvo = senderConvo {
-                sendMessage(senderConvo: senderConvo, text: trimmedText, completion: completion)
+        getConvo(withKey: convoKey, belongingTo: senderProxy.ownerId) { (convo) in
+            if let convo = convo {
+                sendMessage(senderConvo: convo, text: text, completion: completion)
             } else {
                 makeConvo(convoKey: convoKey, sender: senderProxy, receiver: receiverProxy, completion: { (convo) in
                     guard let convo = convo else {
                         completion(.failure(.unknown))
                         return
                     }
-                    sendMessage(senderConvo: convo, text: trimmedText, completion: completion)
+                    sendMessage(senderConvo: convo, text: text, completion: completion)
                 })
             }
         }
     }
 
     static func sendMessage(senderConvo: Convo, text: String, completion: @escaping SendMessageCallback) {
-        guard text.count < Setting.maxMessageSize else {
+        guard !senderConvo.receiverDeletedProxy else {
+            completion(.failure(.receiverDeletedProxy))
+            return
+        }
+        let trimmedText = text.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        guard trimmedText.count < Setting.maxMessageSize else {
             completion(.failure(.inputTooLong))
             return
         }
@@ -56,14 +57,16 @@ extension DB {
             completion(.failure(.unknown))
             return
         }
+        updateReceiverDeletedProxy(senderConvo)
         let message = Message(sender: Sender(id: senderConvo.senderId,
                                              displayName: senderConvo.senderProxyName),
                               messageId: ref.childByAutoId().key,
-                              data: .text(text),
+                              data: .text(trimmedText),
                               dateRead: Date.distantPast,
                               parentConvoKey: senderConvo.key,
                               receiverId: senderConvo.receiverId,
-                              receiverProxyKey: senderConvo.receiverProxyKey)
+                              receiverProxyKey: senderConvo.receiverProxyKey,
+                              senderProxyKey: senderConvo.senderProxyKey)
         let work = GroupWork()
         work.set(message.toDictionary(), at: Child.messages, message.parentConvoKey, message.messageId)
         let currentTime = Date().timeIntervalSince1970
@@ -117,6 +120,17 @@ extension DB {
         work.set(senderConvo, asSender: true)
         work.allDone {
             completion(work.result ? senderConvo : nil)
+        }
+    }
+
+    // todo: ?
+    private static func updateReceiverDeletedProxy(_ convo: Convo) {
+        DB.get(Child.proxies, convo.receiverId, convo.receiverProxyKey) { (data) in
+            if ((data?.value as AnyObject)["key"] as? String) == nil {
+                let work = GroupWork()
+                work.set(.receiverDeletedProxy(true), forConvo: convo, asSender: true)
+                work.allDone {}
+            }
         }
     }
 }
