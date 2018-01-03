@@ -40,6 +40,19 @@ extension DataSnapshot {
         }
     }
 
+    var asMessagesArray: [Message] {
+        var messages = [Message]()
+        for child in self.children {
+            guard let data = child as? DataSnapshot else {
+                continue
+            }
+            if let message = Message(data) {
+                messages.append(message)
+            }
+        }
+        return messages
+    }
+
     func toConvosArray(uid: String, proxyKey: String?) -> [Convo] {
         var convos = [Convo]()
         for child in self.children {
@@ -69,28 +82,25 @@ extension DataSnapshot {
         return convos
     }
 
-    var asMessagesArray: [Message] {
-        var messages = [Message]()
-        for child in self.children {
-            guard let data = child as? DataSnapshot else {
-                continue
-            }
-            if let message = Message(data) {
-                messages.append(message)
-            }
-        }
-        return messages
-    }
-
-    var asProxiesArray: [Proxy] {
+    func toProxiesArray(uid: String) -> [Proxy] {
         var proxies = [Proxy]()
         for child in self.children {
             guard let data = child as? DataSnapshot else {
+                return proxies
+            }
+            guard let proxy = Proxy(data) else {
+                DB.get(Child.proxies, uid, data.key) { (data) in
+                    guard let data = data else {
+                        return
+                    }
+                    guard Proxy(data) != nil else {
+                        DB.delete(Child.proxies, uid, data.key) { _ in }
+                        return
+                    }
+                }
                 continue
             }
-            if let proxy = Proxy(data) {
-                proxies.append(proxy)
-            }
+            proxies.append(proxy)
         }
         return proxies
     }
