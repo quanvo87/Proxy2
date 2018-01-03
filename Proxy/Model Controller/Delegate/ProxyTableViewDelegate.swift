@@ -2,10 +2,10 @@ import UIKit
 
 class ProxyTableViewDelegate: NSObject {
     private var container: DependencyContaining = DependencyContainer.container
-    private weak var convosManager: ConvosManager?
+    private weak var convosManager: ConvosManaging?
     private weak var controller: UIViewController?
 
-    func load(convosManager: ConvosManager, controller: UIViewController?, container: DependencyContaining) {
+    func load(convosManager: ConvosManaging, controller: UIViewController?, container: DependencyContaining) {
         self.convosManager = convosManager
         self.controller = controller
         self.container = container
@@ -54,6 +54,6 @@ extension ProxyTableViewDelegate: UITableViewDelegate {
             let convo = convosManager?.convos[safe: indexPath.row] else {
                 return
         }
-        convosManager?.observer.getConvos(endingAtTimestamp: convo.timestamp)
+        convosManager?.getConvos(endingAtTimestamp: convo.timestamp, querySize: Setting.querySize)
     }
 }

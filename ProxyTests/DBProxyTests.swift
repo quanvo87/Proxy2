@@ -22,8 +22,8 @@ class DBProxyTests: DBTest {
                             work.checkDeleted(at: Child.proxyKeys, receiver.key)
                             work.checkDeleted(at: Child.proxyOwners, receiver.key)
                             work.checkDeleted(at: Child.convos, receiver.ownerId, tuple.convo.key)
-                            work.checkDeleted(at: Child.convos, receiver.ownerId, tuple.convo.key)
-                            work.checkUnreadMessageCount(uid: sender.ownerId, count: 0)
+                            work.checkDeleted(at: Child.userInfo, receiver.ownerId, Child.unreadMessages, tuple.message.messageId)
+                            work.check(.receiverDeletedProxy(true), forConvo: tuple.convo, asSender: true)
                             work.allDone {
                                 expectation.fulfill()
                             }

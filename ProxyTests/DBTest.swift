@@ -109,7 +109,7 @@ extension GroupWork {
     func checkDeleted(at first: String, _ rest: String..., function: String = #function, line: Int = #line) {
         start()
         DB.get(first, rest) { (data) in
-            XCTAssertFalse(data?.exists() ?? true, GroupWork.makeErrorMessage(function: function, line: line))
+            XCTAssertFalse(data!.exists(), GroupWork.makeErrorMessage(function: function, line: line))
             self.finish(withResult: true)
         }
     }
@@ -117,18 +117,13 @@ extension GroupWork {
 
 extension GroupWork {
     func check(_ property: SettableConvoProperty, forConvo convo: Convo, asSender: Bool, function: String = #function, line: Int = #line) {
-        let (ownerId, proxyKey) = GroupWork.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
-        check(property, forConvoWithKey: convo.key, ownerId: ownerId, proxyKey: proxyKey, function: function, line: line)
+        let (ownerId, _) = GroupWork.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
+        check(property, forConvoWithKey: convo.key, ownerId: ownerId, function: function, line: line)
     }
 
-    func check(_ property: SettableConvoProperty, forConvoWithKey convoKey: String, ownerId: String, proxyKey: String, function: String = #function, line: Int = #line) {
+    func check(_ property: SettableConvoProperty, forConvoWithKey convoKey: String, ownerId: String, function: String = #function, line: Int = #line) {
         start()
         DB.get(Child.convos, ownerId, convoKey, property.properties.name) { (data) in
-            GroupWork.checkEquals(data, property.properties.value, function: function, line: line)
-            self.finish(withResult: true)
-        }
-        start()
-        DB.get(Child.convos, proxyKey, convoKey, property.properties.name) { (data) in
             GroupWork.checkEquals(data, property.properties.value, function: function, line: line)
             self.finish(withResult: true)
         }
@@ -172,14 +167,6 @@ extension GroupWork {
         start()
         DB.get(Child.userInfo, uid, property.rawValue) { (data) in
             GroupWork.checkEquals(data, value, function: function, line: line)
-            self.finish(withResult: true)
-        }
-    }
-
-    func checkUnreadMessageCount(uid: String, count: UInt, function: String = #function, line: Int = #line) {
-        start()
-        DB.get(Child.userInfo, uid, Child.unreadMessages) { (data) in
-            XCTAssertEqual(data?.childrenCount, count)
             self.finish(withResult: true)
         }
     }

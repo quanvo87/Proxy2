@@ -16,7 +16,7 @@ class SenderPickerViewController: UIViewController {
 
         navigationItem.title = "Pick A Sender"
 
-        manager.load(uid: uid, navigationItem: nil, tableView: tableView)
+        manager.load(uid: uid, tableView: tableView, controller: nil)
 
         dataSource.load(accessoryType: .none, container: container)
      

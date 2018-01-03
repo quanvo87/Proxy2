@@ -19,7 +19,7 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
 
         buttonManager.load(uid: uid, itemsToDeleteManager: itemsToDeleteManager, tableView: tableView, proxiesViewController: self, container: container)
         
-        container.proxiesManager.load(uid: uid, navigationItem: navigationItem, tableView: tableView)
+        container.proxiesManager.load(uid: uid, tableView: tableView, controller: self)
 
         dataSource.load(accessoryType: .disclosureIndicator, container: container)
 
