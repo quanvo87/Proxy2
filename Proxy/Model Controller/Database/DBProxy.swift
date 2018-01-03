@@ -5,9 +5,9 @@ import UIKit
 extension DB {
     typealias MakeProxyCallback = (Result<Proxy, ProxyError>) -> Void
 
-    // todo: delete relevant messages
+    // todo: delete relevant messages if last proxy to get deleted
     static func deleteProxy(_ proxy: Proxy, completion: @escaping (Bool) -> Void) {
-        getConvos(forProxyWithKey: proxy.key) { (convos) in
+        getConvos(uid: proxy.ownerId) { (convos) in
             guard let convos = convos else {
                 completion(false)
                 return
@@ -21,7 +21,6 @@ extension DB {
         work.delete(at: Child.proxies, proxy.ownerId, proxy.key)
         work.delete(at: Child.proxyKeys, proxy.key)
         work.delete(at: Child.proxyOwners, proxy.key)
-        work.delete(at: Child.convos, proxy.key)
         work.delete(convos)
         work.deleteUnreadMessages(for: proxy)
         work.setReceiverDeletedProxy(convos)
@@ -122,7 +121,7 @@ extension DB {
     }
 
     static func setIcon(to icon: String, forProxy proxy: Proxy, completion: @escaping (Bool) -> Void) {
-        getConvos(forProxyWithKey: proxy.key) { (convos) in
+        getConvos(uid: proxy.ownerId) { (convos) in
             guard let convos = convos else {
                 completion(false)
                 return
@@ -145,7 +144,7 @@ extension DB {
             completion(.inputTooLong)
             return
         }
-        getConvos(forProxyWithKey: proxy.key) { (convos) in
+        getConvos(uid: proxy.ownerId) { (convos) in
             guard let convos = convos else {
                 completion(.unknown)
                 return
@@ -163,8 +162,8 @@ extension DB {
         }
     }
 
-    private static func getConvos(forProxyWithKey proxyKey: String, completion: @escaping ([Convo]?) -> Void) {
-        get(Child.convos, proxyKey) { (data) in
+    private static func getConvos(uid: String, completion: @escaping ([Convo]?) -> Void) {
+        get(Child.convos, uid) { (data) in
             completion(data?.asConvosArray)
         }
     }

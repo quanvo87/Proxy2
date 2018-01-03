@@ -4,12 +4,10 @@ import MessageKit
 extension DB {
     typealias SendMessageCallback = (Result<(message: Message, convo: Convo), ProxyError>) -> Void
 
-    // todo: test
     static func deleteUnreadMessage(_ message: Message, completion: @escaping (Bool) -> Void) {
         let work = GroupWork()
         work.delete(at: Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
         work.delete(at: Child.convos, message.receiverId, message.parentConvoKey)
-        work.delete(at: Child.convos, message.receiverProxyKey, message.parentConvoKey)
         work.allDone {
             completion(work.result)
         }
@@ -19,7 +17,7 @@ extension DB {
         let work = GroupWork()
         work.delete(at: Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
         work.set(.dateRead(date), forMessage: message)
-        work.set(.hasUnreadMessage(false), forConvoWithKey: message.parentConvoKey, ownerId: message.receiverId, proxyKey: message.receiverProxyKey)
+        work.set(.hasUnreadMessage(false), forConvoWithKey: message.parentConvoKey, ownerId: message.receiverId)
         work.setHasUnreadMessageForProxy(key: message.receiverProxyKey, ownerId: message.receiverId)
         work.allDone {
             completion(work.result)

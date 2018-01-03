@@ -19,7 +19,7 @@ class ConvosViewController: UIViewController, MakeNewMessageDelegate {
 
         buttonManager.load(uid: uid, makeNewMessageDelegate: self, controller: self, container: container)
         
-        convosManager.load(convosOwner: uid, tableView: tableView, container: container)
+        convosManager.load(convosOwner: uid, proxyKey: nil, tableView: tableView, container: container)
 
         container.unreadMessagesManager.load(uid: uid, controller: self, container: container)
 

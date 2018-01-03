@@ -3,10 +3,9 @@ import GroupWork
 import UIKit
 
 extension DB {
-    // todo: test
-    static func delete(_ convo: Convo, completion: @escaping (Bool) -> Void) {
+    static func delete(_ convo: Convo, asSender: Bool, completion: @escaping (Bool) -> Void) {
         let work = GroupWork()
-        work.delete(convo, asSender: true)
+        work.delete(convo, asSender: asSender)
         work.allDone {
             completion(work.result)
         }
@@ -37,25 +36,21 @@ extension DB {
 
 extension GroupWork {
     func delete(_ convo: Convo, asSender: Bool) {
-        let (ownerId, proxyKey) = GroupWork.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
+        let (ownerId, _) = GroupWork.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
         delete(at: Child.convos, ownerId, convo.key)
-        delete(at: Child.convos, proxyKey, convo.key)
     }
 
     func set(_ convo: Convo, asSender: Bool) {
-        let (ownerId, proxyKey) = GroupWork.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
+        let (ownerId, _) = GroupWork.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
         set(convo.toDictionary(), at: Child.convos, ownerId, convo.key)
-        set(convo.toDictionary(), at: Child.convos, proxyKey, convo.key)
     }
 
     func set(_ property: SettableConvoProperty, forConvo convo: Convo, asSender: Bool) {
-        let (ownerId, proxyKey) = GroupWork.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
+        let (ownerId, _) = GroupWork.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
         set(property.properties.value, at: Child.convos, ownerId, convo.key, property.properties.name)
-        set(property.properties.value, at: Child.convos, proxyKey, convo.key, property.properties.name)
     }
 
-    func set(_ property: SettableConvoProperty, forConvoWithKey key: String, ownerId: String, proxyKey: String) {
+    func set(_ property: SettableConvoProperty, forConvoWithKey key: String, ownerId: String) {
         set(property.properties.value, at: Child.convos, ownerId, key, property.properties.name)
-        set(property.properties.value, at: Child.convos, proxyKey, key, property.properties.name)
     }
 }

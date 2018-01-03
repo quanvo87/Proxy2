@@ -4,12 +4,28 @@ import XCTest
 @testable import Proxy
 
 class DBConvoTests: DBTest {
+    func testDelete() {
+        let expectation = self.expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
+
+        DBTest.sendMessage { (_, convo, _, _) in
+            DB.delete(convo, asSender: true) { (success) in
+                XCTAssert(success)
+                let work = GroupWork()
+                work.checkDeleted(at: Child.convos, convo.senderId, convo.key)
+                work.allDone {
+                    expectation.fulfill()
+                }
+            }
+        }
+    }
+
     func testGetConvo() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
         DBTest.sendMessage { (_, convo, _, _) in
-            DB.getConvo(withKey: convo.key, belongingTo: DBTest.uid) { (retrievedConvo) in
+            DB.getConvo(withKey: convo.key, belongingTo: convo.senderId) { (retrievedConvo) in
                 XCTAssertEqual(retrievedConvo, convo)
                 expectation.fulfill()
             }

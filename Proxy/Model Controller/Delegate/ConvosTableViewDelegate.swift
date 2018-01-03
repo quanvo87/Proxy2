@@ -32,6 +32,6 @@ extension ConvosTableViewDelegate: UITableViewDelegate {
             let convo = convosManager?.convos[safe: indexPath.row] else {
                 return
         }
-        convosManager?.observer.getConvos(endingAtTimestamp: convo.timestamp)
+        convosManager?.getConvos(endingAtTimestamp: convo.timestamp, querySize: Setting.querySize)
     }
 }
