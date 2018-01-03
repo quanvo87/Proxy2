@@ -3,7 +3,7 @@ import UIKit
 class MeTableViewDataSource: NSObject {
     private weak var manager: UserStatsManaging?
 
-    func load(_ manager: UserStatsManaging) {
+    func load(manager: UserStatsManaging) {
         self.manager = manager
     }
 }

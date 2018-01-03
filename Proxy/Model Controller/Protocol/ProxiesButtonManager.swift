@@ -52,12 +52,12 @@ class ProxiesButtonManager: ButtonManaging {
         guard let uid = uid  else {
             return
         }
-        controller?.navigationItem.disableRightBarButtonItem(atIndex: 1)
-        DB.makeProxy(forUser: uid, currentProxyCount: container.proxiesManager.proxies.count) { (result) in
-            self.controller?.navigationItem.enableRightBarButtonItem(atIndex: 1)
+        controller?.navigationItem.disableRightBarButtonItem(index: 1)
+        DB.makeProxy(uid: uid, currentProxyCount: container.proxiesManager.proxies.count) { (result) in
+            self.controller?.navigationItem.enableRightBarButtonItem(index: 1)
             switch result {
             case .failure(let error):
-                self.controller?.showAlert("Error Creating Proxy", message: error.description)
+                self.controller?.showAlert(title: "Error Creating Proxy", message: error.description)
             case .success:
                 self.controller?.scrollToTop()
             }

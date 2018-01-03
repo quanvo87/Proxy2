@@ -7,29 +7,29 @@ extension DB {
 
     // todo: delete relevant messages if last proxy to get deleted
     static func deleteProxy(_ proxy: Proxy, completion: @escaping (Bool) -> Void) {
-        getConvos(uid: proxy.ownerId, proxyKey: proxy.key) { (convos) in
+        getConvosForProxy(uid: proxy.ownerId, key: proxy.key) { (convos) in
             guard let convos = convos else {
                 completion(false)
                 return
             }
-            deleteProxy(proxy, withConvos: convos, completion: completion)
+            deleteProxy(proxy, convos: convos, completion: completion)
         }
     }
 
-    static func deleteProxy(_ proxy: Proxy, withConvos convos: [Convo], completion: @escaping (Bool) -> Void) {
+    static func deleteProxy(_ proxy: Proxy, convos: [Convo], completion: @escaping (Bool) -> Void) {
         let work = GroupWork()
-        work.delete(at: Child.proxies, proxy.ownerId, proxy.key)
-        work.delete(at: Child.proxyKeys, proxy.key)
-        work.delete(at: Child.proxyOwners, proxy.key)
+        work.delete(Child.proxies, proxy.ownerId, proxy.key)
+        work.delete(Child.proxyKeys, proxy.key)
+        work.delete(Child.proxyOwners, proxy.key)
         work.delete(convos)
         work.deleteUnreadMessages(for: proxy)
-        work.setReceiverDeletedProxy(convos)
+        work.setReceiverDeletedProxy(for: convos)
         work.allDone {
             completion(work.result)
         }
     }
 
-    static func getProxy(withKey key: String, completion: @escaping (Proxy?) -> Void) {
+    static func getProxy(key: String, completion: @escaping (Proxy?) -> Void) {
         get(Child.proxyOwners, key.lowercased().trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)) { (data) in
             guard
                 let data = data,
@@ -37,11 +37,11 @@ extension DB {
                     completion(nil)
                     return
             }
-            getProxy(withKey: proxyOwner.key, belongingTo: proxyOwner.ownerId, completion: completion)
+            getProxy(uid: proxyOwner.ownerId, key: proxyOwner.key, completion: completion)
         }
     }
 
-    static func getProxy(withKey key: String, belongingTo uid: String, completion: @escaping (Proxy?) -> Void) {
+    static func getProxy(uid: String, key: String, completion: @escaping (Proxy?) -> Void) {
         get(Child.proxies, uid, key) { (data) in
             guard let data = data else {
                 completion(nil)
@@ -51,14 +51,14 @@ extension DB {
         }
     }
 
-    static func makeProxy(withName proxyName: String = ProxyService.makeRandomProxyName(),
+    static func makeProxy(uid: String,
+                          name: String = ProxyService.makeRandomProxyName(),
                           maxNameSize: Int = Setting.maxNameSize,
-                          forUser uid: String,
                           currentProxyCount: Int,
                           maxProxyCount: Int = Setting.maxProxyCount,
                           maxAttemps: Int = Setting.maxMakeProxyAttempts,
                           completion: @escaping MakeProxyCallback) {
-        guard proxyName.count < maxNameSize else {
+        guard name.count < maxNameSize else {
             completion(.failure(.inputTooLong))
             return
         }
@@ -66,11 +66,11 @@ extension DB {
             completion(.failure(.proxyLimitReached))
             return
         }
-        makeProxyHelper(withName: proxyName, forUser: uid, maxAttempts: maxAttemps, completion: completion)
+        makeProxyHelper(uid: uid, name: name, maxAttempts: maxAttemps, completion: completion)
     }
 
-    private static func makeProxyHelper(withName proxyName: String,
-                                        forUser uid: String,
+    private static func makeProxyHelper(uid: String,
+                                        name: String,
                                         attempts: Int = 0,
                                         maxAttempts: Int,
                                         completion: @escaping MakeProxyCallback) {
@@ -78,7 +78,7 @@ extension DB {
             completion(.failure(.unknown))
             return
         }
-        let proxyKey = proxyName.lowercased()
+        let proxyKey = name.lowercased()
         let proxyKeyDictionary = [Child.key: proxyKey]
         let autoId = proxyKeysRef.childByAutoId().key
         set(proxyKeyDictionary, at: Child.proxyKeys, autoId) { (success) in
@@ -93,7 +93,7 @@ extension DB {
                         return
                     }
                     if count == 1 {
-                        let proxy = Proxy(icon: ProxyService.makeRandomIconName(), name: proxyName, ownerId: uid)
+                        let proxy = Proxy(icon: ProxyService.makeRandomIconName(), name: name, ownerId: uid)
                         let proxyOwner = ProxyOwner(key: proxyKey, ownerId: uid)
                         let work = GroupWork()
                         work.set(proxy.toDictionary(), at: Child.proxies, proxy.ownerId, proxy.key)
@@ -104,7 +104,7 @@ extension DB {
                         }
                     } else {
                         if attempts < maxAttempts {
-                            makeProxyHelper(withName: ProxyService.makeRandomProxyName(), forUser: uid, attempts: attempts + 1, maxAttempts: maxAttempts, completion: completion)
+                            makeProxyHelper(uid: uid, name: ProxyService.makeRandomProxyName(), attempts: attempts + 1, maxAttempts: maxAttempts, completion: completion)
                         } else {
                             completion(.failure(.unknown))
                         }
@@ -120,116 +120,116 @@ extension DB {
         })
     }
 
-    static func setIcon(to icon: String, forProxy proxy: Proxy, completion: @escaping (Bool) -> Void) {
-        getConvos(uid: proxy.ownerId, proxyKey: proxy.key) { (convos) in
+    static func setIcon(to icon: String, for proxy: Proxy, completion: @escaping (Bool) -> Void) {
+        getConvosForProxy(uid: proxy.ownerId, key: proxy.key) { (convos) in
             guard let convos = convos else {
                 completion(false)
                 return
             }
-            setIcon(to: icon, forProxy: proxy, withConvos: convos, completion: completion)
+            setIcon(to: icon, for: proxy, convos: convos, completion: completion)
         }
     }
 
-    static func setIcon(to icon: String, forProxy proxy: Proxy, withConvos convos: [Convo], completion: @escaping (Bool) -> Void) {
+    static func setIcon(to icon: String, for proxy: Proxy, convos: [Convo], completion: @escaping (Bool) -> Void) {
         let work = GroupWork()
-        work.set(.icon(icon), forProxy: proxy)
-        work.setReceiverIcon(to: icon, forConvos: convos)
+        work.set(.icon(icon), for: proxy)
+        work.setReceiverIcon(to: icon, for: convos)
         work.allDone {
             completion(work.result)
         }
     }
 
-    static func setNickname(to nickname: String, forProxy proxy: Proxy, completion: @escaping (ProxyError?) -> Void) {
+    static func setNickname(to nickname: String, for proxy: Proxy, completion: @escaping (ProxyError?) -> Void) {
         guard nickname.count < Setting.maxNameSize else {
             completion(.inputTooLong)
             return
         }
-        getConvos(uid: proxy.ownerId, proxyKey: proxy.key) { (convos) in
+        getConvosForProxy(uid: proxy.ownerId, key: proxy.key) { (convos) in
             guard let convos = convos else {
                 completion(.unknown)
                 return
             }
-            setNickname(to: nickname, forProxy: proxy, withConvos: convos, completion: completion)
+            setNickname(to: nickname, for: proxy, convos: convos, completion: completion)
         }
     }
 
-    static func setNickname(to nickname: String, forProxy proxy: Proxy, withConvos convos: [Convo], completion: @escaping (ProxyError?) -> Void) {
+    static func setNickname(to nickname: String, for proxy: Proxy, convos: [Convo], completion: @escaping (ProxyError?) -> Void) {
         let work = GroupWork()
-        work.set(.nickname(nickname), forProxy: proxy)
-        work.setSenderNickname(to: nickname, forConvos: convos)
+        work.set(.nickname(nickname), for: proxy)
+        work.setSenderNickname(to: nickname, for: convos)
         work.allDone {
             completion(work.result ? nil : .unknown)
         }
     }
 
-    private static func getConvos(uid: String, proxyKey: String, completion: @escaping ([Convo]?) -> Void) {
+    private static func getConvosForProxy(uid: String, key: String, completion: @escaping ([Convo]?) -> Void) {
         get(Child.convos, uid) { (data) in
-            completion(data?.toConvosArray(uid: uid, proxyKey: proxyKey))
+            completion(data?.toConvosArray(uid: uid, proxyKey: key))
         }
     }
 }
 
 extension GroupWork {
-    func set(_ property: SettableProxyProperty, forProxy proxy: Proxy) {
-        set(property, forProxyWithKey: proxy.key, proxyOwner: proxy.ownerId)
+    func set(_ property: SettableProxyProperty, for proxy: Proxy) {
+        set(property, uid: proxy.ownerId, proxyKey: proxy.key)
     }
 
-    func set(_ property: SettableProxyProperty, forProxyInConvo convo: Convo, asSender: Bool) {
-        let (ownerId, proxyKey) = GroupWork.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
-        set(property, forProxyWithKey: proxyKey, proxyOwner: ownerId)
+    func set(_ property: SettableProxyProperty, forProxyIn convo: Convo, asSender: Bool) {
+        let (ownerId, proxyKey) = GroupWork.getOwnerIdAndProxyKey(convo: convo, asSender: asSender)
+        set(property, uid: ownerId, proxyKey: proxyKey)
     }
 
-    func set(_ property: SettableProxyProperty, forProxyWithKey key: String, proxyOwner: String) {
-        set(property.properties.value, at: Child.proxies, proxyOwner, key, property.properties.name)
+    func set(_ property: SettableProxyProperty, uid: String, proxyKey: String) {
+        set(property.properties.value, at: Child.proxies, uid, proxyKey, property.properties.name)
     }
 }
 
 extension GroupWork {
     func delete(_ convos: [Convo]) {
         for convo in convos {
-            delete(at: Child.convos, convo.senderId, convo.key)
+            delete(Child.convos, convo.senderId, convo.key)
         }
     }
 
     func deleteUnreadMessages(for proxy: Proxy) {
         start()
-        GroupWork.getUnreadMessagesForProxy(ownerId: proxy.ownerId, proxyKey: proxy.key) { (messages) in
+        GroupWork.getUnreadMessagesForProxy(uid: proxy.ownerId, key: proxy.key) { (messages) in
             guard let messages = messages else {
                 self.finish(withResult: false)
                 return
             }
             for message in messages {
-                self.delete(at: Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
+                self.delete(Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
             }
             self.finish(withResult: true)
         }
     }
 
-    static func getUnreadMessagesForProxy(ownerId: String, proxyKey: String, completion: @escaping ([Message]?) -> Void) {
-        guard let ref = DB.makeReference(Child.userInfo, ownerId, Child.unreadMessages) else {
+    static func getUnreadMessagesForProxy(uid: String, key: String, completion: @escaping ([Message]?) -> Void) {
+        guard let ref = DB.makeReference(Child.userInfo, uid, Child.unreadMessages) else {
             completion(nil)
             return
         }
-        ref.queryOrdered(byChild: Child.receiverProxyKey).queryEqual(toValue: proxyKey).observeSingleEvent(of: .value, with: { (data) in
+        ref.queryOrdered(byChild: Child.receiverProxyKey).queryEqual(toValue: key).observeSingleEvent(of: .value, with: { (data) in
             completion(data.asMessagesArray)
         })
     }
 
-    func setReceiverDeletedProxy(_ convos: [Convo]) {
+    func setReceiverDeletedProxy(for convos: [Convo]) {
         for convo in convos {
-            set(.receiverDeletedProxy(true), forConvo: convo, asSender: false)
+            set(.receiverDeletedProxy(true), for: convo, asSender: false)
         }
     }
 
-    func setReceiverIcon(to icon: String, forConvos convos: [Convo]) {
+    func setReceiverIcon(to icon: String, for convos: [Convo]) {
         for convo in convos {
-            set(.receiverIcon(icon), forConvo: convo, asSender: false)
+            set(.receiverIcon(icon), for: convo, asSender: false)
         }
     }
 
-    func setSenderNickname(to nickname: String, forConvos convos: [Convo]) {
+    func setSenderNickname(to nickname: String, for convos: [Convo]) {
         for convo in convos {
-            self.set(.senderNickname(nickname), forConvo: convo, asSender: true)
+            self.set(.senderNickname(nickname), for: convo, asSender: true)
         }
     }
 }

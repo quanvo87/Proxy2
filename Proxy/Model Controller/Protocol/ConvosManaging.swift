@@ -2,7 +2,7 @@ import UIKit
 
 protocol ConvosManaging: class {
     var convos: [Convo] { get set }
-    func getConvos(endingAtTimestamp timestamp: Double, querySize: UInt)
+    func loadConvos(endingAtTimestamp timestamp: Double, querySize: UInt)
 }
 
 class ConvosManager: ConvosManaging {
@@ -15,12 +15,12 @@ class ConvosManager: ConvosManaging {
     private let observer = ConvosObserver()
     private weak var tableView: UITableView?
 
-    func load(convosOwner: String, proxyKey: String?, tableView: UITableView) {
+    func load(uid: String, proxyKey: String?, tableView: UITableView) {
         self.tableView = tableView
-        observer.observe(convosOwner: convosOwner, proxyKey: proxyKey, manager: self)
+        observer.observe(uid: uid, proxyKey: proxyKey, manager: self)
     }
 
-    func getConvos(endingAtTimestamp timestamp: Double, querySize: UInt) {
-        observer.getConvos(endingAtTimestamp: timestamp, querySize: querySize)
+    func loadConvos(endingAtTimestamp timestamp: Double, querySize: UInt) {
+        observer.loadConvos(endingAtTimestamp: timestamp, querySize: querySize)
     }
 }

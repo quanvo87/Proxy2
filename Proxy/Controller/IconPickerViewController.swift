@@ -18,7 +18,7 @@ class IconPickerViewController: UIViewController {
         navigationItem.title = "Select An Icon"
         navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self, action: #selector(close), imageName: ButtonName.cancel)
 
-        dataSource.load(ProxyService.iconNames)
+        dataSource.load(iconNames: ProxyService.iconNames)
 
         delegate.load(proxy: proxy, iconNames: ProxyService.iconNames, controller: self)
 

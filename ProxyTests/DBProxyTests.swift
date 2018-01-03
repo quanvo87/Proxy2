@@ -10,7 +10,7 @@ class DBProxyTests: DBTest {
 
         DBTest.makeProxy { (sender) in
             DBTest.makeProxy(forUser: DBTest.testUser) { (receiver) in
-                DB.sendMessage(senderProxy: sender, receiverProxy: receiver, text: DBTest.text) { (result) in
+                DB.sendMessage(sender: sender, receiver: receiver, text: DBTest.text) { (result) in
                     switch result {
                     case .failure:
                         XCTFail()
@@ -39,7 +39,7 @@ class DBProxyTests: DBTest {
         defer { waitForExpectations(timeout: 10) }
         
         DBTest.makeProxy { (proxy) in
-            DB.getProxy(withKey: proxy.key) { (retrievedProxy) in
+            DB.getProxy(key: proxy.key) { (retrievedProxy) in
                 XCTAssertEqual(retrievedProxy, proxy)
                 expectation.fulfill()
             }
@@ -50,7 +50,7 @@ class DBProxyTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
         
-        DB.getProxy(withKey: "invalid key") { (proxy) in
+        DB.getProxy(key: "invalid key") { (proxy) in
             XCTAssertNil(proxy)
             expectation.fulfill()
         }
@@ -61,7 +61,7 @@ class DBProxyTests: DBTest {
         defer { waitForExpectations(timeout: 10) }
         
         DBTest.makeProxy { (proxy) in
-            DB.getProxy(withKey: proxy.key, belongingTo: proxy.ownerId) { (retrievedProxy) in
+            DB.getProxy(uid: proxy.ownerId, key: proxy.key) { (retrievedProxy) in
                 XCTAssertEqual(retrievedProxy, proxy)
                 expectation.fulfill()
             }
@@ -72,7 +72,7 @@ class DBProxyTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
         
-        DB.getProxy(withKey: "invalid key", belongingTo: DBTest.uid) { (proxy) in
+        DB.getProxy(uid: DBTest.uid, key: "invalid key") { (proxy) in
             XCTAssertNil(proxy)
             expectation.fulfill()
         }
@@ -98,7 +98,7 @@ class DBProxyTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        DB.makeProxy(forUser: DBTest.uid, currentProxyCount: 0, maxProxyCount: 0) { (result) in
+        DB.makeProxy(uid: DBTest.uid, currentProxyCount: 0, maxProxyCount: 0) { (result) in
             switch result {
             case .failure(let error):
                 XCTAssertEqual(error, ProxyError.proxyLimitReached)
@@ -113,12 +113,12 @@ class DBProxyTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
         
-        DB.makeProxy(withName: "test", forUser: DBTest.uid, currentProxyCount: 0) { (result) in
+        DB.makeProxy(uid: DBTest.uid, name: "test", currentProxyCount: 0) { (result) in
             switch result {
             case .failure:
                 XCTFail()
             case .success:
-                DB.makeProxy(withName: "test", forUser: DBTest.uid, currentProxyCount: 1) { (result) in
+                DB.makeProxy(uid: DBTest.uid, name: "test", currentProxyCount: 1) { (result) in
                     switch result {
                     case .failure:
                         XCTFail()
@@ -137,7 +137,7 @@ class DBProxyTests: DBTest {
 
         DBTest.sendMessage { (_, convo, proxy, _) in
             let newIcon = "new icon"
-            DB.setIcon(to: newIcon, forProxy: proxy) { (success) in
+            DB.setIcon(to: newIcon, for: proxy) { (success) in
                 XCTAssert(success)
                 let work = GroupWork()
                 work.check(.icon(newIcon), forProxy: proxy)
@@ -155,7 +155,7 @@ class DBProxyTests: DBTest {
 
         DBTest.sendMessage { (_, convo, proxy, _) in
             let newNickname = "new nickname"
-            DB.setNickname(to: newNickname, forProxy: proxy) { (error) in
+            DB.setNickname(to: newNickname, for: proxy) { (error) in
                 XCTAssertNil(error)
                 let work = GroupWork()
                 work.check(.nickname(newNickname), forProxy: proxy)

@@ -4,25 +4,25 @@ class ConvosObserver: ReferenceObserving {
     private (set) var ref: DatabaseReference?
     private (set) var handle: DatabaseHandle?
     private weak var manager: ConvosManaging?
-    private var uid = ""
+    private var uid: String?
     private var proxyKey: String?
     private var loading = true
 
-    func observe(convosOwner: String, proxyKey: String?, manager: ConvosManaging, querySize: UInt = Setting.querySize) {
+    func observe(uid: String, proxyKey: String?, manager: ConvosManaging, querySize: UInt = Setting.querySize) {
         stopObserving()
-        self.uid = convosOwner
+        self.uid = uid
         self.proxyKey = proxyKey
         self.manager = manager
-        ref = DB.makeReference(Child.convos, convosOwner)
+        ref = DB.makeReference(Child.convos, uid)
         handle = ref?.queryOrdered(byChild: Child.timestamp).queryLimited(toLast: querySize).observe(.value, with: { [weak self] (data) in
             self?.loading = true
-            self?.manager?.convos = data.toConvosArray(uid: convosOwner, proxyKey: proxyKey).reversed()
+            self?.manager?.convos = data.toConvosArray(uid: uid, proxyKey: proxyKey).reversed()
             self?.loading = false
         })
 
     }
 
-    func getConvos(endingAtTimestamp timestamp: Double, querySize: UInt) {
+    func loadConvos(endingAtTimestamp timestamp: Double, querySize: UInt) {
         guard !loading else {
             return
         }

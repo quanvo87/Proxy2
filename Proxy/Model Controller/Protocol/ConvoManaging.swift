@@ -18,14 +18,14 @@ class ConvoManager: ConvoManaging {
     private weak var collectionView: UICollectionView?
     private weak var tableView: UITableView?
 
-    func load(convoOwnerId: String, convoKey: String, navigationItem: UINavigationItem, collectionView: UICollectionView) {
+    func load(uid: String, key: String, navigationItem: UINavigationItem, collectionView: UICollectionView) {
         self.navigationItem = navigationItem
         self.collectionView = collectionView
-        observer.observe(convoOwnerId: convoOwnerId, convoKey: convoKey, manager: self)
+        observer.observe(uid: uid, key: key, manager: self)
     }
 
-    func load(convoOwnerId: String, convoKey: String, tableView: UITableView) {
+    func load(uid: String, key: String, tableView: UITableView) {
         self.tableView = tableView
-        observer.observe(convoOwnerId: convoOwnerId, convoKey: convoKey, manager: self)
+        observer.observe(uid: uid, key: key, manager: self)
     }
 }

@@ -25,7 +25,7 @@ class DBConvoTests: DBTest {
         defer { waitForExpectations(timeout: 10) }
 
         DBTest.sendMessage { (_, convo, _, _) in
-            DB.getConvo(withKey: convo.key, belongingTo: convo.senderId) { (retrievedConvo) in
+            DB.getConvo(uid: convo.senderId, key: convo.key) { (retrievedConvo) in
                 XCTAssertEqual(retrievedConvo, convo)
                 expectation.fulfill()
             }
@@ -38,7 +38,7 @@ class DBConvoTests: DBTest {
 
         DBTest.sendMessage { (_, convo, _, _) in
             let testNickname = "test nickname"
-            DB.setReceiverNickname(to: testNickname, forConvo: convo) { (error) in
+            DB.setReceiverNickname(to: testNickname, for: convo) { (error) in
                 XCTAssertNil(error)
                 let work = GroupWork()
                 work.check(.receiverNickname(testNickname), forConvo: convo, asSender: true)

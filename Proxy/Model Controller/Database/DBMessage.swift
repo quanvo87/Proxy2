@@ -6,43 +6,43 @@ extension DB {
 
     static func deleteUnreadMessage(_ message: Message, completion: @escaping (Bool) -> Void) {
         let work = GroupWork()
-        work.delete(at: Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
-        work.delete(at: Child.convos, message.receiverId, message.parentConvoKey)
+        work.delete(Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
+        work.delete(Child.convos, message.receiverId, message.parentConvoKey)
         work.allDone {
             completion(work.result)
         }
     }
 
-    static func read(_ message: Message, atDate date: Date = Date(), completion: @escaping (Bool) -> Void) {
+    static func read(_ message: Message, date: Date = Date(), completion: @escaping (Bool) -> Void) {
         let work = GroupWork()
-        work.delete(at: Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
-        work.set(.dateRead(date), forMessage: message)
-        work.set(.hasUnreadMessage(false), forConvoWithKey: message.parentConvoKey, ownerId: message.receiverId)
-        work.setHasUnreadMessageForProxy(key: message.receiverProxyKey, ownerId: message.receiverId)
+        work.delete(Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
+        work.set(.dateRead(date), for: message)
+        work.set(.hasUnreadMessage(false), uid: message.receiverId, convoKey: message.parentConvoKey)
+        work.setHasUnreadMessageForProxy(uid: message.receiverId, key: message.receiverProxyKey)
         work.allDone {
             completion(work.result)
         }
     }
 
-    static func sendMessage(senderProxy: Proxy, receiverProxy: Proxy, text: String, completion: @escaping SendMessageCallback) {
-        let convoKey = makeConvoKey(senderProxy: senderProxy, receiverProxy: receiverProxy)
-        getConvo(withKey: convoKey, belongingTo: senderProxy.ownerId) { (convo) in
+    static func sendMessage(sender: Proxy, receiver: Proxy, text: String, completion: @escaping SendMessageCallback) {
+        let convoKey = makeConvoKey(sender: sender, receiver: receiver)
+        getConvo(uid: sender.ownerId, key: convoKey) { (convo) in
             if let convo = convo {
-                sendMessage(senderConvo: convo, text: text, completion: completion)
+                sendMessage(convo: convo, text: text, completion: completion)
             } else {
-                makeConvo(convoKey: convoKey, sender: senderProxy, receiver: receiverProxy, completion: { (convo) in
+                makeConvo(convoKey: convoKey, sender: sender, receiver: receiver, completion: { (convo) in
                     guard let convo = convo else {
                         completion(.failure(.unknown))
                         return
                     }
-                    sendMessage(senderConvo: convo, text: text, completion: completion)
+                    sendMessage(convo: convo, text: text, completion: completion)
                 })
             }
         }
     }
 
-    static func sendMessage(senderConvo: Convo, text: String, completion: @escaping SendMessageCallback) {
-        guard !senderConvo.receiverDeletedProxy else {
+    static func sendMessage(convo: Convo, text: String, completion: @escaping SendMessageCallback) {
+        guard !convo.receiverDeletedProxy else {
             completion(.failure(.receiverDeletedProxy))
             return
         }
@@ -51,69 +51,69 @@ extension DB {
             completion(.failure(.inputTooLong))
             return
         }
-        guard let ref = makeReference(Child.messages, senderConvo.key) else {
+        guard let ref = makeReference(Child.messages, convo.key) else {
             completion(.failure(.unknown))
             return
         }
-        updateReceiverDeletedProxy(senderConvo)
-        let message = Message(sender: Sender(id: senderConvo.senderId,
-                                             displayName: senderConvo.senderProxyName),
+        updateReceiverDeletedProxy(convo: convo)
+        let message = Message(sender: Sender(id: convo.senderId,
+                                             displayName: convo.senderProxyName),
                               messageId: ref.childByAutoId().key,
                               data: .text(trimmedText),
                               dateRead: Date.distantPast,
-                              parentConvoKey: senderConvo.key,
-                              receiverId: senderConvo.receiverId,
-                              receiverProxyKey: senderConvo.receiverProxyKey,
-                              senderProxyKey: senderConvo.senderProxyKey)
+                              parentConvoKey: convo.key,
+                              receiverId: convo.receiverId,
+                              receiverProxyKey: convo.receiverProxyKey,
+                              senderProxyKey: convo.senderProxyKey)
         let work = GroupWork()
         work.set(message.toDictionary(), at: Child.messages, message.parentConvoKey, message.messageId)
         let currentTime = Date().timeIntervalSince1970
         // Receiver updates
-        work.increment(by: 1, forProperty: .messagesReceived, forUser: senderConvo.receiverId)
+        work.increment(1, property: .messagesReceived, uid: convo.receiverId)
         work.set(message.toDictionary(), at: Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
-        if !senderConvo.receiverDeletedProxy {
-            work.set(.hasUnreadMessage(true), forConvo: senderConvo, asSender: false)
-            work.set(.hasUnreadMessage(true), forProxyWithKey: message.receiverProxyKey, proxyOwner: message.receiverId)
-            work.set(.timestamp(currentTime), forConvo: senderConvo, asSender: false)
-            work.set(.timestamp(currentTime), forProxyInConvo: senderConvo, asSender: false)
+        if !convo.receiverDeletedProxy {
+            work.set(.hasUnreadMessage(true), for: convo, asSender: false)
+            work.set(.hasUnreadMessage(true), uid: message.receiverId, proxyKey: message.receiverProxyKey)
+            work.set(.timestamp(currentTime), for: convo, asSender: false)
+            work.set(.timestamp(currentTime), forProxyIn: convo, asSender: false)
             switch message.data {
             case .text(let s):
-                work.set(.lastMessage(s), forConvo: senderConvo, asSender: false)
-                work.set(.lastMessage(s), forProxyInConvo: senderConvo, asSender: false)
+                work.set(.lastMessage(s), for: convo, asSender: false)
+                work.set(.lastMessage(s), forProxyIn: convo, asSender: false)
             default:
                 break
             }
         }
         // Sender updates
-        work.increment(by: 1, forProperty: .messagesSent, forUser: senderConvo.senderId)
-        work.set(.timestamp(currentTime), forConvo: senderConvo, asSender: true)
-        work.set(.timestamp(currentTime), forProxyInConvo: senderConvo, asSender: true)
+        work.increment(1, property: .messagesSent, uid: convo.senderId)
+        work.set(.timestamp(currentTime), for: convo, asSender: true)
+        work.set(.timestamp(currentTime), forProxyIn: convo, asSender: true)
         switch message.data {
         case .text(let s):
-            work.set(.lastMessage("You: \(s)"), forConvo: senderConvo, asSender: true)
-            work.set(.lastMessage("You: \(s)"), forProxyInConvo: senderConvo, asSender: true)
+            work.set(.lastMessage("You: \(s)"), for: convo, asSender: true)
+            work.set(.lastMessage("You: \(s)"), forProxyIn: convo, asSender: true)
         default:
             break
         }
         work.allDone {
             if work.result {
-                completion(.success((message, senderConvo)))
+                completion(.success((message, convo)))
             } else {
                 completion(.failure(.unknown))
             }
         }
     }
 
-    private static func makeConvoKey(senderProxy: Proxy, receiverProxy: Proxy) -> String {
-        return [senderProxy.key, senderProxy.ownerId, receiverProxy.key, receiverProxy.ownerId].sorted().joined()
+    private static func makeConvoKey(sender: Proxy, receiver: Proxy) -> String {
+        return [sender.key, sender.ownerId, receiver.key, receiver.ownerId].sorted().joined()
     }
 
     private static func makeConvo(convoKey: String, sender: Proxy, receiver: Proxy, completion: @escaping (Convo?) -> Void) {
         let senderConvo = Convo(key: convoKey, receiverIcon: receiver.icon, receiverId: receiver.ownerId, receiverProxyKey: receiver.key, receiverProxyName: receiver.name, senderId: sender.ownerId, senderProxyKey: sender.key, senderProxyName: sender.name)
         let receiverConvo = Convo(key: convoKey, receiverIcon: sender.icon, receiverId: sender.ownerId, receiverProxyKey: sender.key, receiverProxyName: sender.name, senderId: receiver.ownerId, senderProxyKey: receiver.key, senderProxyName: receiver.name)
         let work = GroupWork()
-        work.increment(by: 1, forProperty: .proxiesInteractedWith, forUser: receiver.ownerId)
-        work.increment(by: 1, forProperty: .proxiesInteractedWith, forUser: sender.ownerId)
+        work.increment(1, property: .proxiesInteractedWith, uid: receiver.ownerId)
+        work.increment(1, property: .proxiesInteractedWith, uid: sender.ownerId)
         work.set(receiverConvo, asSender: true)
         work.set(senderConvo, asSender: true)
         work.allDone {
@@ -121,12 +121,11 @@ extension DB {
         }
     }
 
-    // todo: ?
-    private static func updateReceiverDeletedProxy(_ convo: Convo) {
-        DB.get(Child.proxies, convo.receiverId, convo.receiverProxyKey) { (data) in
-            if ((data?.value as AnyObject)["key"] as? String) == nil {
+    private static func updateReceiverDeletedProxy(convo: Convo) {
+        getConvo(uid: convo.receiverId, key: convo.key) { (receiverConvo) in
+            if receiverConvo == nil {
                 let work = GroupWork()
-                work.set(.receiverDeletedProxy(true), forConvo: convo, asSender: true)
+                work.set(.receiverDeletedProxy(true), for: convo, asSender: true)
                 work.allDone {}
             }
         }
@@ -134,18 +133,18 @@ extension DB {
 }
 
 extension GroupWork {
-    func set(_ property: SettableMessageProperty, forMessage message: Message) {
+    func set(_ property: SettableMessageProperty, for message: Message) {
         switch property {
         case .dateRead(let date):
             set(date.timeIntervalSince1970, at: Child.messages, message.parentConvoKey, message.messageId, property.properties.name)
         }
     }
 
-    func setHasUnreadMessageForProxy(key: String, ownerId: String) {
+    func setHasUnreadMessageForProxy(uid: String, key: String) {
         start()
-        GroupWork.getUnreadMessagesForProxy(ownerId: ownerId, proxyKey: key) { (messages) in
+        GroupWork.getUnreadMessagesForProxy(uid: uid, key: key) { (messages) in
             if let messageCount = messages?.count, messageCount <= 0 {
-                self.set(.hasUnreadMessage(false), forProxyWithKey: key, proxyOwner: ownerId)
+                self.set(.hasUnreadMessage(false), uid: uid, proxyKey: key)
             }
             self.finish(withResult: true)
         }
