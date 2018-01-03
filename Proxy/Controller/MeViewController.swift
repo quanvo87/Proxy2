@@ -1,9 +1,7 @@
 import UIKit
 
 class MeViewController: UIViewController {
-    private let messagesReceivedManager = MessagesReceivedCountManager()
-    private let messagesSentManager = MessagesSentCountManager()
-    private let proxiesInteractedWithManager = ProxiesInteractedWithCountManager()
+    private let manager = UserStatsManager()
     private let dataSource = MeTableViewDataSource()
     private let delegate = MeTableViewDelegate()
     private let tableView = UITableView(frame: .zero, style: .grouped)
@@ -13,15 +11,9 @@ class MeViewController: UIViewController {
 
         navigationItem.title = displayName
 
-        messagesReceivedManager.load(uid: uid, tableView: tableView)
+        manager.load(uid: uid, tableView: tableView)
 
-        messagesSentManager.load(uid: uid, tableView: tableView)
-
-        proxiesInteractedWithManager.load(uid: uid, tableView: tableView)
-
-        dataSource.load(messagesReceivedManager: messagesReceivedManager,
-                        messagesSentManager: messagesSentManager,
-                        proxiesInteractedWithManager: proxiesInteractedWithManager)
+        dataSource.load(manager)
 
         delegate.load(controller: self)
 

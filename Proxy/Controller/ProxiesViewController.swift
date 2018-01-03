@@ -48,7 +48,7 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
         guard tableView.numberOfRows(inSection: 0) > 0 else {
             return
         }
-        tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
+        tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .bottom, animated: true)
     }
 
     required init?(coder aDecoder: NSCoder) {

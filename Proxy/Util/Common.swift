@@ -1,8 +1,6 @@
 import Firebase
 import UIKit
 
-var uid = ""
-
 enum Result<T, Error> {
     case success(T)
     case failure(Error)

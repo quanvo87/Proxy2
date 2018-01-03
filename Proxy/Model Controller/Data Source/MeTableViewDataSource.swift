@@ -1,16 +1,10 @@
 import UIKit
 
 class MeTableViewDataSource: NSObject {
-    private weak var messagesReceivedManager: MessagesReceivedCountManaging?
-    private weak var messagesSentManager: MessagesSentCountManaging?
-    private weak var proxiesInteractedWithManager: ProxiesInteractedWithCountManaging?
+    private weak var manager: UserStatsManaging?
 
-    func load(messagesReceivedManager: MessagesReceivedCountManaging,
-              messagesSentManager: MessagesSentCountManaging,
-              proxiesInteractedWithManager: ProxiesInteractedWithCountManaging) {
-        self.messagesReceivedManager = messagesReceivedManager
-        self.messagesSentManager = messagesSentManager
-        self.proxiesInteractedWithManager = proxiesInteractedWithManager
+    func load(_ manager: UserStatsManaging) {
+        self.manager = manager
     }
 }
 
@@ -28,11 +22,11 @@ extension MeTableViewDataSource: UITableViewDataSource {
             cell.selectionStyle = .none
             switch indexPath.row {
             case 0:
-                cell.load(icon: "messagesReceived", title: "Messages Received", subtitle: messagesReceivedManager?.messagesReceivedCount)
+                cell.load(icon: "messagesReceived", title: "Messages Received", subtitle: manager?.messagesReceivedCount)
             case 1:
-                cell.load(icon: "messagesSent", title: "Messages Sent", subtitle: messagesSentManager?.messagesSentCount)
+                cell.load(icon: "messagesSent", title: "Messages Sent", subtitle: manager?.messagesSentCount)
             case 2:
-                cell.load(icon: "proxiesInteractedWith", title: "Proxies Interacted With", subtitle: proxiesInteractedWithManager?.proxiesInteractedWithCount)
+                cell.load(icon: "proxiesInteractedWith", title: "Proxies Interacted With", subtitle: manager?.proxiesInteractedWithCount)
             default:
                 break
             }

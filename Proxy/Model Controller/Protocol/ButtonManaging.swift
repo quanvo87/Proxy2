@@ -1,6 +1,32 @@
 import UIKit
 
-typealias ButtonManaging = ButtonEditing & ButtonMaking & ButtonOwning
+typealias ButtonManaging = ButtonOwning & ButtonMaking & ButtonEditing
+
+@objc protocol ButtonOwning {
+    var cancelButton: UIBarButtonItem { get set }
+    var confirmButton: UIBarButtonItem { get set }
+    var deleteButton: UIBarButtonItem { get set }
+    var makeNewMessageButton: UIBarButtonItem { get set }
+    var makeNewProxyButton: UIBarButtonItem { get set }
+}
+
+@objc protocol ButtonMaking: ButtonOwning {
+    func _deleteSelectedItems()
+    func _makeNewProxy()
+    func _setDefaultButtons()
+    func _setEditModeButtons()
+    func _showMakeNewMessageController()
+}
+
+extension ButtonMaking {
+    func makeButtons() {
+        cancelButton = UIBarButtonItem.make(target: self, action: #selector(_setDefaultButtons), imageName: ButtonName.cancel)
+        confirmButton = UIBarButtonItem.make(target: self, action: #selector(_deleteSelectedItems), imageName: ButtonName.confirm)
+        deleteButton = UIBarButtonItem.make(target: self, action: #selector(_setEditModeButtons), imageName: ButtonName.delete)
+        makeNewMessageButton = UIBarButtonItem.make(target: self, action: #selector(_showMakeNewMessageController), imageName: ButtonName.makeNewMessage)
+        makeNewProxyButton = UIBarButtonItem.make(target: self, action: #selector(_makeNewProxy), imageName: ButtonName.makeNewProxy)
+    }
+}
 
 protocol ButtonEditing: ButtonOwning {
     var itemsToDeleteManager: ItemsToDeleteManaging? { get }
@@ -37,30 +63,4 @@ extension ButtonEditing {
         navigationItem?.rightBarButtonItems = [confirmButton]
         tableView?.setEditing(true, animated: true)
     }
-}
-
-@objc protocol ButtonMaking: ButtonOwning {
-    func _deleteSelectedItems()
-    func _makeNewProxy()
-    func _setDefaultButtons()
-    func _setEditModeButtons()
-    func _showMakeNewMessageController()
-}
-
-extension ButtonMaking {
-    func makeButtons() {
-        cancelButton = UIBarButtonItem.make(target: self, action: #selector(_setDefaultButtons), imageName: ButtonName.cancel)
-        confirmButton = UIBarButtonItem.make(target: self, action: #selector(_deleteSelectedItems), imageName: ButtonName.confirm)
-        deleteButton = UIBarButtonItem.make(target: self, action: #selector(_setEditModeButtons), imageName: ButtonName.delete)
-        makeNewMessageButton = UIBarButtonItem.make(target: self, action: #selector(_showMakeNewMessageController), imageName: ButtonName.makeNewMessage)
-        makeNewProxyButton = UIBarButtonItem.make(target: self, action: #selector(_makeNewProxy), imageName: ButtonName.makeNewProxy)
-    }
-}
-
-@objc protocol ButtonOwning {
-    var cancelButton: UIBarButtonItem { get set }
-    var confirmButton: UIBarButtonItem { get set }
-    var deleteButton: UIBarButtonItem { get set }
-    var makeNewMessageButton: UIBarButtonItem { get set }
-    var makeNewProxyButton: UIBarButtonItem { get set }
 }

@@ -26,21 +26,22 @@ extension DB {
     }
 
     static func sendMessage(senderProxy: Proxy, receiverProxy: Proxy, text: String, completion: @escaping SendMessageCallback) {
-        guard text.count < Setting.maxMessageSize else {
+        let trimmedText = text.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        guard trimmedText.count < Setting.maxMessageSize else {
             completion(.failure(.inputTooLong))
             return
         }
         let convoKey = makeConvoKey(senderProxy: senderProxy, receiverProxy: receiverProxy)
         getConvo(withKey: convoKey, belongingTo: senderProxy.ownerId) { (senderConvo) in
             if let senderConvo = senderConvo {
-                sendMessage(senderConvo: senderConvo, text: text, completion: completion)
+                sendMessage(senderConvo: senderConvo, text: trimmedText, completion: completion)
             } else {
                 makeConvo(convoKey: convoKey, sender: senderProxy, receiver: receiverProxy, completion: { (convo) in
                     guard let convo = convo else {
                         completion(.failure(.unknown))
                         return
                     }
-                    sendMessage(senderConvo: convo, text: text, completion: completion)
+                    sendMessage(senderConvo: convo, text: trimmedText, completion: completion)
                 })
             }
         }

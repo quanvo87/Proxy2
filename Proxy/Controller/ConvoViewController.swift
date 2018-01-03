@@ -53,15 +53,15 @@ class ConvoViewController: MessagesViewController {
         container.unreadMessagesManager.leaveConvo(convo.key)
     }
 
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         guard indexPath.section == 0, let message = messagesManager.messages[safe: indexPath.section] else {
             return
         }
         messagesManager.observer.getMessages(endingAtMessageWithId: message.messageId)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
 
