@@ -87,7 +87,7 @@ private extension ConvoDetailTableViewDataSource {
             guard let nickname = alert?.textFields?[0].text else {
                 return
             }
-            let trimmed = nickname.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+            let trimmed = nickname.trimmed
             if !(nickname != "" && trimmed == "") {
                 DB.setReceiverNickname(to: nickname, for: convo) { (error) in
                     if let error = error, case .inputTooLong = error {

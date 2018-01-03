@@ -131,8 +131,16 @@ extension NSAttributedString {
 }
 
 extension String {
+    var noWhiteSpaces: String {
+        return components(separatedBy: .whitespacesAndNewlines).joined()
+    }
+
+    var trimmed: String {
+        return trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
     func getFirstNChars(_ n: Int) -> String {
-        guard self.count >= n else {
+        guard count >= n else {
             return ""
         }
         return String(self[..<self.index(self.startIndex, offsetBy: n)])
@@ -250,7 +258,7 @@ extension UIViewController {
             guard let nickname = alert?.textFields?[0].text else {
                 return
             }
-            let trimmed = nickname.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+            let trimmed = nickname.trimmed
             if !(nickname != "" && trimmed == "") {
                 DB.setNickname(to: nickname, for: proxy) { (error) in
                     if let error = error, case .inputTooLong = error {
