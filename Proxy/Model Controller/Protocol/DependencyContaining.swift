@@ -1,15 +1,19 @@
 protocol DependencyContaining {
     var proxiesManager: ProxiesManaging { get }
-    var presenceManager: PresenceManaging { get }
     var unreadMessagesManager: UnreadMessagesManaging { get }
+    var presenceManager: PresenceManaging { get }
 }
 
 struct DependencyContainer: DependencyContaining {
     static let container = DependencyContainer()
 
-    let proxiesManager: ProxiesManaging = ProxiesManager()
-    let presenceManager: PresenceManaging = PresenceManager()
-    let unreadMessagesManager: UnreadMessagesManaging = UnreadMessagesManager()
+    let proxiesManager: ProxiesManaging
+    let unreadMessagesManager: UnreadMessagesManaging
+    let presenceManager: PresenceManaging
 
-    private init() {}
+    private init() {
+        proxiesManager = ProxiesManager()
+        unreadMessagesManager = UnreadMessagesManager()
+        presenceManager = PresenceManager(unreadMessagesManager)
+    }
 }
