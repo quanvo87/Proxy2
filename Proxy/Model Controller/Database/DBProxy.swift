@@ -5,7 +5,6 @@ import UIKit
 extension DB {
     typealias MakeProxyCallback = (Result<Proxy, ProxyError>) -> Void
 
-    // todo: delete relevant messages if last proxy to get deleted
     static func deleteProxy(_ proxy: Proxy, completion: @escaping (Bool) -> Void) {
         getConvosForProxy(uid: proxy.ownerId, key: proxy.key) { (convos) in
             guard let convos = convos else {
