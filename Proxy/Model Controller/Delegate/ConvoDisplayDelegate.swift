@@ -1,15 +1,15 @@
 import MessageKit
 
 class ConvoDisplayDelegate {
-    private weak var messagesManager: MessagesManaging?
+    private weak var manager: MessagesManaging?
     private weak var dataSource: MessagesDataSource?
 
     private var messages: [MessageType] {
-        return messagesManager?.messages ?? []
+        return manager?.messages ?? []
     }
 
-    func load(messagesManager: MessagesManaging, dataSource: MessagesDataSource) {
-        self.messagesManager = messagesManager
+    func load(manager: MessagesManaging, dataSource: MessagesDataSource) {
+        self.manager = manager
         self.dataSource = dataSource
     }
 }
@@ -39,7 +39,6 @@ extension ConvoDisplayDelegate: MessagesDisplayDelegate {
                 return .bubbleTail(.bottomLeft, .curved)
             }
         }
-
         if let nextMessage = messages[safe: indexPath.section + 1],
             nextMessage.sender != message.sender {
             if dataSource?.isFromCurrentSender(message: message) ?? false {
@@ -48,7 +47,6 @@ extension ConvoDisplayDelegate: MessagesDisplayDelegate {
                 return .bubbleTail(.bottomLeft, .curved)
             }
         }
-
         return .bubble
     }
 }

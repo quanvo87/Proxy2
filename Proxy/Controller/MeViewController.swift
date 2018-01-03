@@ -13,7 +13,7 @@ class MeViewController: UIViewController {
 
         manager.load(uid: uid, tableView: tableView)
 
-        dataSource.load(manager)
+        dataSource.load(manager: manager)
 
         delegate.load(controller: self)
 

@@ -10,9 +10,9 @@ class ConvoDetailViewController: UIViewController {
     init(convo: Convo, container: DependencyContaining) {
         super.init(nibName: nil, bundle: nil)
 
-        convoManager.load(convoOwnerId: convo.senderId, convoKey: convo.key, tableView: tableView)
+        convoManager.load(uid: convo.senderId, key: convo.key, tableView: tableView)
 
-        proxyManager.load(ownerId: convo.senderId, proxyKey: convo.senderProxyKey, tableView: tableView)
+        proxyManager.load(uid: convo.senderId, key: convo.senderProxyKey, tableView: tableView)
 
         dataSource.load(convoManager: convoManager, proxyManager: proxyManager, controller: self)
 

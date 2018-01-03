@@ -19,13 +19,13 @@ class ConvosViewController: UIViewController, MakeNewMessageDelegate {
 
         buttonManager.load(uid: uid, makeNewMessageDelegate: self, controller: self, container: container)
         
-        convosManager.load(convosOwner: uid, proxyKey: nil, tableView: tableView)
+        convosManager.load(uid: uid, proxyKey: nil, tableView: tableView)
 
         container.unreadMessagesManager.load(uid: uid, controller: self, container: container)
 
         dataSource.load(manager: convosManager)
 
-        delegate.load(convosManager: convosManager, controller: self, container: container)
+        delegate.load(manager: convosManager, controller: self, container: container)
 
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.dataSource = dataSource

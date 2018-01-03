@@ -20,7 +20,7 @@ class DBTests: DBTest {
 
                 work.start()
 
-                DB.increment(by: -1, at: "test") { (success) in
+                DB.increment(-1, at: "test") { (success) in
                     XCTAssert(success)
 
                     work.finish(withResult: true)
@@ -63,7 +63,7 @@ class DBTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
         
-        DB.increment(by: 1, at: "test") { (success) in
+        DB.increment(1, at: "test") { (success) in
             XCTAssert(success)
             
             DB.get("test") { (data) in
@@ -81,7 +81,7 @@ class DBTests: DBTest {
         
         for _ in 1...2 {
             incrementsDone.enter()
-            DB.increment(by: 1, at: "test") { (success) in
+            DB.increment(1, at: "test") { (success) in
                 XCTAssert(success)
                 incrementsDone.leave()
             }

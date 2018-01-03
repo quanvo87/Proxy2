@@ -2,11 +2,11 @@ import UIKit
 
 class ProxiesTableViewDelegate: NSObject {
     private var container: DependencyContaining = DependencyContainer.container
-    private weak var itemsToDeleteManager: ItemsToDeleteManaging?
+    private weak var manager: ItemsToDeleteManaging?
     private weak var controller: UIViewController?
 
-    func load(itemsToDeleteManager: ItemsToDeleteManaging, controller: UIViewController, container: DependencyContaining) {
-        self.itemsToDeleteManager = itemsToDeleteManager
+    func load(manager: ItemsToDeleteManaging, controller: UIViewController, container: DependencyContaining) {
+        self.manager = manager
         self.controller = controller
         self.container = container
     }
@@ -18,7 +18,7 @@ extension ProxiesTableViewDelegate: UITableViewDelegate {
             return
         }
         if tableView.isEditing {
-            itemsToDeleteManager?.itemsToDelete[proxy.key] = proxy
+            manager?.itemsToDelete[proxy.key] = proxy
         } else {
             tableView.deselectRow(at: indexPath, animated: true)
             controller?.showProxyController(proxy: proxy, container: container)
@@ -31,7 +31,7 @@ extension ProxiesTableViewDelegate: UITableViewDelegate {
             let proxy = container.proxiesManager.proxies[safe: indexPath.row] else {
                 return
         }
-        itemsToDeleteManager?.itemsToDelete.removeValue(forKey: proxy.key)
+        manager?.itemsToDelete.removeValue(forKey: proxy.key)
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

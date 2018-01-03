@@ -2,11 +2,11 @@ import UIKit
 
 class ProxyTableViewDelegate: NSObject {
     private var container: DependencyContaining = DependencyContainer.container
-    private weak var convosManager: ConvosManaging?
+    private weak var manager: ConvosManaging?
     private weak var controller: UIViewController?
 
-    func load(convosManager: ConvosManaging, controller: UIViewController?, container: DependencyContaining) {
-        self.convosManager = convosManager
+    func load(manager: ConvosManaging, controller: UIViewController?, container: DependencyContaining) {
+        self.manager = manager
         self.controller = controller
         self.container = container
     }
@@ -17,7 +17,7 @@ extension ProxyTableViewDelegate: UITableViewDelegate {
         guard
             indexPath.section == 1,
             let row = tableView.indexPathForSelectedRow?.row,
-            let convo = convosManager?.convos[safe: row] else {
+            let convo = manager?.convos[safe: row] else {
                 return
         }
         tableView.deselectRow(at: indexPath, animated: true)
@@ -49,11 +49,11 @@ extension ProxyTableViewDelegate: UITableViewDelegate {
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         guard
             indexPath.section == 1,
-            let convoCount = convosManager?.convos.count,
+            let convoCount = manager?.convos.count,
             indexPath.row == convoCount - 1,
-            let convo = convosManager?.convos[safe: indexPath.row] else {
+            let convo = manager?.convos[safe: indexPath.row] else {
                 return
         }
-        convosManager?.getConvos(endingAtTimestamp: convo.timestamp, querySize: Setting.querySize)
+        manager?.loadConvos(endingAtTimestamp: convo.timestamp, querySize: Setting.querySize)
     }
 }

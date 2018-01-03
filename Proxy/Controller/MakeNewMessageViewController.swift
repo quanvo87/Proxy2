@@ -80,10 +80,10 @@ extension MakeNewMessageViewController {
 private extension MakeNewMessageViewController {
     @IBAction func makeNewProxy() {
         disableButtons()
-        DB.makeProxy(forUser: uid, currentProxyCount: container.proxiesManager.proxies.count) { (result) in
+        DB.makeProxy(uid: uid, currentProxyCount: container.proxiesManager.proxies.count) { (result) in
             switch result {
             case .failure(let error):
-                self.showAlert("Error Making New Proxy", message: error.description)
+                self.showAlert(title: "Error Making New Proxy", message: error.description)
                 self.enableButtons()
             case .success(let newProxy):
                 self.sender = newProxy
@@ -96,17 +96,17 @@ private extension MakeNewMessageViewController {
             return
         }
         disableButtons()
-        DB.sendMessage(senderProxy: sender, receiverProxy: receiver, text: messageTextView.text) { (result) in
+        DB.sendMessage(sender: sender, receiver: receiver, text: messageTextView.text) { (result) in
             self.enableButtons()
             switch result {
             case .failure(let error):
                 switch error {
                 case .inputTooLong:
-                    self.showAlert("Message Too Long", message: error.localizedDescription)
+                    self.showAlert(title: "Message Too Long", message: error.localizedDescription)
                 case .receiverDeletedProxy:
-                    self.showAlert("Receiver Deleted Proxy", message: error.localizedDescription)
+                    self.showAlert(title: "Receiver Deleted Proxy", message: error.localizedDescription)
                 default:
-                    self.showAlert("Error Sending Message", message: error.localizedDescription)
+                    self.showAlert(title: "Error Sending Message", message: error.localizedDescription)
                 }
             case .success(let tuple):
                 self.delegate?.newConvo = tuple.convo

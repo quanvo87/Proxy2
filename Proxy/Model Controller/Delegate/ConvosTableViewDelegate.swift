@@ -2,11 +2,11 @@ import UIKit
 
 class ConvosTableViewDelegate: NSObject {
     private var container: DependencyContaining = DependencyContainer.container
-    private weak var convosManager: ConvosManager?
+    private weak var manager: ConvosManager?
     private weak var controller: UIViewController?
   
-    func load(convosManager: ConvosManager, controller: UIViewController, container: DependencyContaining) {
-        self.convosManager = convosManager
+    func load(manager: ConvosManager, controller: UIViewController, container: DependencyContaining) {
+        self.manager = manager
         self.controller = controller
         self.container = container
     }
@@ -14,7 +14,7 @@ class ConvosTableViewDelegate: NSObject {
 
 extension ConvosTableViewDelegate: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let convo = convosManager?.convos[safe: indexPath.row] else {
+        guard let convo = manager?.convos[safe: indexPath.row] else {
             return
         }
         tableView.deselectRow(at: indexPath, animated: true)
@@ -27,11 +27,11 @@ extension ConvosTableViewDelegate: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         guard
-            let convoCount = convosManager?.convos.count,
+            let convoCount = manager?.convos.count,
             indexPath.row == convoCount - 1,
-            let convo = convosManager?.convos[safe: indexPath.row] else {
+            let convo = manager?.convos[safe: indexPath.row] else {
                 return
         }
-        convosManager?.getConvos(endingAtTimestamp: convo.timestamp, querySize: Setting.querySize)
+        manager?.loadConvos(endingAtTimestamp: convo.timestamp, querySize: Setting.querySize)
     }
 }

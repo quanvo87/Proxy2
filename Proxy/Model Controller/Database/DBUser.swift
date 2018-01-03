@@ -7,7 +7,7 @@ enum IncrementableUserProperty: String {
 }
 
 extension GroupWork {
-    func increment(by amount: Int, forProperty property: IncrementableUserProperty, forUser uid: String) {
-        increment(by: amount, at: Child.userInfo, uid, property.rawValue)
+    func increment(_ amount: Int, property: IncrementableUserProperty, uid: String) {
+        increment(amount, at: Child.userInfo, uid, property.rawValue)
     }
 }

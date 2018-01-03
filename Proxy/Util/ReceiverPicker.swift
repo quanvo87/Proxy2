@@ -32,7 +32,7 @@ class ReceiverPicker {
 
 private extension ReceiverPicker {
     func setReceiver(_ key: String) {
-        DB.getProxy(withKey: key) { (proxy) in
+        DB.getProxy(key: key) { (proxy) in
             guard let proxy = proxy else {
                 self.showErrorAlert(title: "Receiver Not Found", message: "Please try again.")
                 return

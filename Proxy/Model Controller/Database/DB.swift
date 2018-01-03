@@ -47,11 +47,11 @@ extension DB {
         }
     }
 
-    static func increment(by amount: Int, at first: String, _ rest: String..., completion: @escaping ((Bool) -> Void)) {
-        increment(by: amount, at: first, rest, completion: completion)
+    static func increment(_ amount: Int, at first: String, _ rest: String..., completion: @escaping ((Bool) -> Void)) {
+        increment(amount, at: first, rest, completion: completion)
     }
 
-    static func increment(by amount: Int, at first: String, _ rest: [String], completion: @escaping ((Bool) -> Void)) {
+    static func increment(_ amount: Int, at first: String, _ rest: [String], completion: @escaping ((Bool) -> Void)) {
         guard let ref = makeReference(first, rest) else {
             completion(false)
             return
@@ -88,23 +88,23 @@ extension DB {
 }
 
 extension GroupWork {
-    static func getOwnerIdAndProxyKey(fromConvo convo: Convo, asSender: Bool) -> (ownerId: String, proxyKey: String) {
+    static func getOwnerIdAndProxyKey(convo: Convo, asSender: Bool) -> (ownerId: String, proxyKey: String) {
         return
             asSender ?
             (convo.senderId, convo.senderProxyKey) :
             (convo.receiverId, convo.receiverProxyKey)
     }
 
-    func delete(at first: String, _ rest: String...) {
+    func delete(_ first: String, _ rest: String...) {
         start()
         DB.delete(first, rest) { (success) in
             self.finish(withResult: success)
         }
     }
 
-    func increment(by amount: Int, at first: String, _ rest: String...) {
+    func increment(_ amount: Int, at first: String, _ rest: String...) {
         start()
-        DB.increment(by: amount, at: first, rest) { (success) in
+        DB.increment(amount, at: first, rest) { (success) in
             self.finish(withResult: success)
         }
     }

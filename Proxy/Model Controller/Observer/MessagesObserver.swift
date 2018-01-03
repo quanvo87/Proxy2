@@ -19,7 +19,7 @@ class MessagesObserver: ReferenceObserving {
         })
     }
 
-    func getMessages(endingAtMessageWithId id: String, querySize: UInt = Setting.querySize) {
+    func loadMessages(endingAtMessageWithId id: String, querySize: UInt) {
         guard !loading else {
             return
         }

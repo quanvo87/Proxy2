@@ -27,7 +27,7 @@ class DBMessageTests: DBTest {
 
         DBTest.sendMessage { (message, _, _, receiver) in
             let date = Date()
-            DB.read(message, atDate: date) { (success) in
+            DB.read(message, date: date) { (success) in
                 XCTAssert(success)
                 let work = GroupWork()
                 work.checkDeleted(at: Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
@@ -103,7 +103,7 @@ class DBMessageTests: DBTest {
         defer { waitForExpectations(timeout: 10) }
 
         DBTest.sendMessage { (_, convo, _, _) in
-            DB.sendMessage(senderConvo: convo, text: DBTest.text) { (result) in
+            DB.sendMessage(convo: convo, text: DBTest.text) { (result) in
                 XCTAssertNotNil(result)
                 expectation.fulfill()
             }
@@ -117,12 +117,12 @@ class DBMessageTests: DBTest {
         DBTest.sendMessage { (message, senderConvo, senderProxy, receiverProxy) in
             DB.deleteProxy(receiverProxy) { (success) in
                 XCTAssert(success)
-                DB.getConvo(withKey: senderConvo.key, belongingTo: senderConvo.senderId) { (convo) in
+                DB.getConvo(uid: senderConvo.senderId, key: senderConvo.key) { (convo) in
                     guard let updatedConvo = convo else {
                         XCTFail()
                         return
                     }
-                    DB.sendMessage(senderConvo: updatedConvo, text: DBTest.text) { (result) in
+                    DB.sendMessage(convo: updatedConvo, text: DBTest.text) { (result) in
                         switch result {
                         case .failure(let error):
                             switch error {

@@ -53,7 +53,7 @@ class DBTest: XCTestCase {
 
 extension DBTest {
     static func makeProxy(withName name: String = ProxyService.makeRandomProxyName(), forUser uid: String = DBTest.uid, completion: @escaping (Proxy) -> Void) {
-        DB.makeProxy(withName: name, forUser: uid, currentProxyCount: 0) { (result) in
+        DB.makeProxy(uid: uid, name: name, currentProxyCount: 0) { (result) in
             switch result {
             case .failure:
                 XCTFail()
@@ -66,12 +66,12 @@ extension DBTest {
     static func sendMessage(completion: @escaping (_ message: Message, _ convo: Convo, _ sender: Proxy, _ receiver: Proxy) -> Void) {
         makeProxy { (sender) in
             makeProxy (forUser: testUser) { (receiver) in
-                DB.sendMessage(senderProxy: sender, receiverProxy: receiver, text: text) { (result) in
+                DB.sendMessage(sender: sender, receiver: receiver, text: text) { (result) in
                     switch result {
                     case .failure:
                         XCTFail()
                     case .success(let tuple):
-                        DB.getConvo(withKey: tuple.convo.key, belongingTo: tuple.convo.senderId) { (convo) in
+                        DB.getConvo(uid: tuple.convo.senderId, key: tuple.convo.key) { (convo) in
                             guard let convo = convo else {
                                 XCTFail()
                                 return
@@ -117,7 +117,7 @@ extension GroupWork {
 
 extension GroupWork {
     func check(_ property: SettableConvoProperty, forConvo convo: Convo, asSender: Bool, function: String = #function, line: Int = #line) {
-        let (ownerId, _) = GroupWork.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
+        let (ownerId, _) = GroupWork.getOwnerIdAndProxyKey(convo: convo, asSender: asSender)
         check(property, forConvoWithKey: convo.key, ownerId: ownerId, function: function, line: line)
     }
 
@@ -149,7 +149,7 @@ extension GroupWork {
     }
 
     func check(_ property: SettableProxyProperty, forProxyInConvo convo: Convo , asSender: Bool, function: String = #function, line: Int = #line) {
-        let (ownerId, proxyKey) = GroupWork.getOwnerIdAndProxyKey(fromConvo: convo, asSender: asSender)
+        let (ownerId, proxyKey) = GroupWork.getOwnerIdAndProxyKey(convo: convo, asSender: asSender)
         check(property, forProxyWithKey: proxyKey, ownerId: ownerId, function: function, line: line)
     }
 

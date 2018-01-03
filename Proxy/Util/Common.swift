@@ -199,14 +199,14 @@ extension UINavigationController {
 }
 
 extension UINavigationItem {
-    func disableRightBarButtonItem(atIndex index: Int) {
+    func disableRightBarButtonItem(index: Int) {
         guard let item = self.rightBarButtonItems?[safe: index] else {
             return
         }
         item.isEnabled = false
     }
 
-    func enableRightBarButtonItem(atIndex index: Int) {
+    func enableRightBarButtonItem(index: Int) {
         guard let item = self.rightBarButtonItems?[safe: index] else {
             return
         }
@@ -229,7 +229,7 @@ extension UITableView {
 }
 
 extension UIViewController {
-    func showAlert(_ title: String?, message: String?, completion: (() -> Void)? = nil) {
+    func showAlert(title: String?, message: String?, completion: (() -> Void)? = nil) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default) { (_) in
             completion?()
@@ -252,9 +252,9 @@ extension UIViewController {
             }
             let trimmed = nickname.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
             if !(nickname != "" && trimmed == "") {
-                DB.setNickname(to: nickname, forProxy: proxy) { (error) in
+                DB.setNickname(to: nickname, for: proxy) { (error) in
                     if let error = error, case .inputTooLong = error {
-                        self.showAlert("Nickname Too Long", message: "Please try a shorter nickname.") {
+                        self.showAlert(title: "Nickname Too Long", message: "Please try a shorter nickname.") {
                             self.showEditProxyNicknameAlert(proxy)
                         }
                     }

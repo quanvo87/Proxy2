@@ -22,17 +22,17 @@ class ConvoViewController: MessagesViewController {
 
         maintainPositionOnKeyboardFrameChanged = true
 
-        convoManager.load(convoOwnerId: convo.senderId, convoKey: convo.key, navigationItem: navigationItem, collectionView: messagesCollectionView)
+        convoManager.load(uid: convo.senderId, key: convo.key, navigationItem: navigationItem, collectionView: messagesCollectionView)
 
         iconManager.load(convo: convo, collectionView: messagesCollectionView)
 
         messagesManager.load(convoKey: convo.key, collectionView: messagesCollectionView)
 
-        dataSource.load(convoManager: convoManager, iconManager: iconManager, messagesManager: messagesManager)
+        dataSource.load(convoManager: convoManager, messagesManager: messagesManager, iconManager: iconManager)
 
-        displayDelegate.load(messagesManager: messagesManager, dataSource: dataSource)
+        displayDelegate.load(manager: messagesManager, dataSource: dataSource)
 
-        inputBarDelegate.load(convoManager: convoManager, controller: self)
+        inputBarDelegate.load(manager: convoManager, controller: self)
 
         messagesCollectionView.messagesDataSource = dataSource
         messagesCollectionView.messagesDisplayDelegate = displayDelegate
@@ -57,7 +57,7 @@ class ConvoViewController: MessagesViewController {
         guard indexPath.section == 0, let message = messagesManager.messages[safe: indexPath.section] else {
             return
         }
-        messagesManager.observer.getMessages(endingAtMessageWithId: message.messageId)
+        messagesManager.loadMessages(endingAtMessageWithId: message.messageId, querySize: Setting.querySize)
     }
 
     required init?(coder aDecoder: NSCoder) {
