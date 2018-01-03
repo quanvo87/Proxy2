@@ -4,23 +4,21 @@ class UnreadMessageAddedObserver: ReferenceObserving {
     private (set) var ref: DatabaseReference?
     private (set) var handle: DatabaseHandle?
 
-    func observe(uid: String, proxiesManager: ProxiesManaging, unreadMessagesManager: UnreadMessagesManaging) {
+    func observe(uid: String, container: DependencyContaining) {
         stopObserving()
         ref = DB.makeReference(Child.userInfo, uid, Child.unreadMessages)
-        handle = ref?.observe(.childAdded, with: { [weak proxiesManager, weak unreadMessagesManager] (data) in
-            guard let proxiesManager = proxiesManager, let message = Message(data) else {
+        handle = ref?.observe(.childAdded, with: { (data) in
+            guard let message = Message(data) else {
                 return
             }
-
-            guard proxiesManager.proxies.contains(where: { $0.key == message.receiverProxyKey }) else {
+            guard container.proxiesManager.proxies.contains(where: { $0.key == message.receiverProxyKey }) else {
                 DB.deleteUnreadMessage(message) { _ in }
                 return
             }
-
-            if unreadMessagesManager?.convosPresentIn[message.parentConvoKey] != nil {
+            if container.presenceManager.presentInConvo == message.parentConvoKey {
                 DB.read(message) { _ in }
             } else {
-                unreadMessagesManager?.unreadMessages.append(message)
+                container.unreadMessagesManager.unreadMessages.append(message)
             }
         })
     }

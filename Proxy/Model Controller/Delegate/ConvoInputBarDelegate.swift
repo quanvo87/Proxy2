@@ -16,7 +16,7 @@ extension ConvoInputBarDelegate: MessageInputBarDelegate {
         guard text.count > 0, let convo = convoManager?.convo else {
             return
         }
-        DB.sendMessage(senderConvo: convo, text: text.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)) { (result) in
+        DB.sendMessage(senderConvo: convo, text: text) { (result) in
             switch result {
             case .failure(let error):
                 switch error {

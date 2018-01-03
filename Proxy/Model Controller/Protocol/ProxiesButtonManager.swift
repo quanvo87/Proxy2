@@ -35,24 +35,14 @@ class ProxiesButtonManager: ButtonManaging {
             return
         }
         let alert = UIAlertController(title: "Delete Proxies?", message: "Your conversations for the proxies will also be deleted.", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
-            self.disableButtons()
-            self.container.proxiesManager.stopObserving()
-            let key = GroupWork()
+        alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
             for (_, item) in itemsToDeleteManager.itemsToDelete {
                 guard let proxy = item as? Proxy else {
-                    return
+                    continue
                 }
-                key.start()
-                DB.deleteProxy(proxy) { _ in
-                    key.finish(withResult: true)
-                }
+                DB.deleteProxy(proxy) { _ in }
             }
-            self.setDefaultButtons()
-            key.allDone {
-                self.enableButtons()
-                self.container.proxiesManager.observe()
-            }
+            self?.setDefaultButtons()
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         controller?.present(alert, animated: true)
