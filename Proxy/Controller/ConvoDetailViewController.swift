@@ -1,6 +1,8 @@
 import UIKit
 
-class ConvoDetailViewController: UIViewController {
+class ConvoDetailViewController: UIViewController, Closing {
+    var shouldClose: Bool = false
+
     private let convoManager = ConvoManager()
     private let proxyManager = ProxyManager()
     private let dataSource = ConvoDetailTableViewDataSource()
@@ -10,9 +12,9 @@ class ConvoDetailViewController: UIViewController {
     init(convo: Convo, container: DependencyContaining) {
         super.init(nibName: nil, bundle: nil)
 
-        convoManager.load(uid: convo.senderId, key: convo.key, tableView: tableView)
+        convoManager.load(uid: convo.senderId, key: convo.key, tableView: tableView, closer: self)
 
-        proxyManager.load(uid: convo.senderId, key: convo.senderProxyKey, tableView: tableView)
+        proxyManager.load(uid: convo.senderId, key: convo.senderProxyKey, tableView: tableView, closer: self)
 
         dataSource.load(convoManager: convoManager, proxyManager: proxyManager, controller: self)
 
@@ -27,6 +29,13 @@ class ConvoDetailViewController: UIViewController {
         tableView.setDelaysContentTouchesForScrollViews()
 
         view.addSubview(tableView)
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        if shouldClose {
+            _ = navigationController?.popViewController(animated: false)
+        }
     }
 
     required init?(coder aDecoder: NSCoder) {

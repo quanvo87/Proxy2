@@ -1,6 +1,8 @@
 import MessageKit
 
-class ConvoViewController: MessagesViewController {
+class ConvoViewController: MessagesViewController, Closing {
+    var shouldClose = false
+
     private let convo: Convo
     private let convoManager = ConvoManager()
     private let iconManager = IconManager()
@@ -22,7 +24,7 @@ class ConvoViewController: MessagesViewController {
 
         maintainPositionOnKeyboardFrameChanged = true
 
-        convoManager.load(uid: convo.senderId, key: convo.key, navigationItem: navigationItem, collectionView: messagesCollectionView)
+        convoManager.load(uid: convo.senderId, key: convo.key, navigationItem: navigationItem, collectionView: messagesCollectionView, closer: self)
 
         iconManager.load(convo: convo, collectionView: messagesCollectionView)
 
@@ -43,6 +45,9 @@ class ConvoViewController: MessagesViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
+        if shouldClose {
+            navigationController?.popViewController(animated: false)
+        }
         tabBarController?.tabBar.isHidden = true
         container.presenceManager.enterConvo(convo.key)
     }
