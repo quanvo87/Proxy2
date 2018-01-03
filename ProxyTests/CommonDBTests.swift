@@ -21,28 +21,28 @@ class CommonDBTests: DBTest {
             expectation.fulfill()
         }
     }
-    
-    func testToConvosArray() {
-        let expectation = self.expectation(description: #function)
-        defer { waitForExpectations(timeout: 10) }
 
-        DBTest.sendMessage { (_, convo, _, _) in
-            DB.get(Child.convos, convo.senderId) { (data) in
-                let convos = data?.toConvosArray(uid: convo.senderId, proxyKey: nil)
-                XCTAssertEqual(convos?.count, 1)
-                XCTAssert(convos!.contains(convo))
-                expectation.fulfill()
-            }
-        }
-    }
-    
-    func testToMessagesArray() {
+    func testAsMessagesArray() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
         DBTest.sendMessage { (message, _, _, _) in
             DB.get(Child.messages, message.parentConvoKey) { (data) in
                 XCTAssert(data?.asMessagesArray.contains(message) ?? false)
+                expectation.fulfill()
+            }
+        }
+    }
+
+    func testToConvosArray() {
+        let expectation = self.expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
+
+        DBTest.sendMessage { (_, convo, _, _) in
+            DB.get(Child.convos, convo.senderId) { (data) in
+                let convos = data!.toConvosArray(uid: "", proxyKey: nil)
+                XCTAssertEqual(convos.count, 1)
+                XCTAssert(convos.contains(convo))
                 expectation.fulfill()
             }
         }
@@ -55,10 +55,10 @@ class CommonDBTests: DBTest {
         DBTest.makeProxy { (proxy1) in
             DBTest.makeProxy { (proxy2) in
                 DB.get(Child.proxies, DBTest.uid) { (data) in
-                    let proxies = data?.asProxiesArray
-                    XCTAssertEqual(proxies?.count, 2)
-                    XCTAssert(proxies?.contains(proxy1) ?? false)
-                    XCTAssert(proxies?.contains(proxy2) ?? false)
+                    let proxies = data!.toProxiesArray(uid: "")
+                    XCTAssertEqual(proxies.count, 2)
+                    XCTAssert(proxies.contains(proxy1))
+                    XCTAssert(proxies.contains(proxy2))
                     expectation.fulfill()
                 }
             }
