@@ -89,6 +89,7 @@
 		598F8A621FEB9A9700CCF024 /* ConvoObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598F8A611FEB9A9700CCF024 /* ConvoObserver.swift */; };
 		598F8A661FEB9B2300CCF024 /* ConvoManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598F8A651FEB9B2300CCF024 /* ConvoManaging.swift */; };
 		599B8D411F98610C002F394A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599B8D401F98610C002F394A /* AppDelegate.swift */; };
+		59A9D0091FFD8A19005B6879 /* Closing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59A9D0081FFD8A19005B6879 /* Closing.swift */; };
 		59AC04B61F6BFCFD00DB580B /* MessagesReceivedObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59AC04B51F6BFCFD00DB580B /* MessagesReceivedObserver.swift */; };
 		59AC04B81F6C049100DB580B /* MeTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59AC04B71F6C049100DB580B /* MeTableViewDataSource.swift */; };
 		59AF0E7C1F7B5129009F6F38 /* ProxiesButtonManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59AF0E7B1F7B5129009F6F38 /* ProxiesButtonManager.swift */; };
@@ -221,6 +222,7 @@
 		598F8A611FEB9A9700CCF024 /* ConvoObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoObserver.swift; sourceTree = "<group>"; };
 		598F8A651FEB9B2300CCF024 /* ConvoManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoManaging.swift; sourceTree = "<group>"; };
 		599B8D401F98610C002F394A /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		59A9D0081FFD8A19005B6879 /* Closing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Closing.swift; sourceTree = "<group>"; };
 		59AC04B51F6BFCFD00DB580B /* MessagesReceivedObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesReceivedObserver.swift; sourceTree = "<group>"; };
 		59AC04B71F6C049100DB580B /* MeTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeTableViewDataSource.swift; sourceTree = "<group>"; };
 		59AF0E7B1F7B5129009F6F38 /* ProxiesButtonManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxiesButtonManager.swift; sourceTree = "<group>"; };
@@ -477,6 +479,7 @@
 				59AF0E7B1F7B5129009F6F38 /* ProxiesButtonManager.swift */,
 				598F8A651FEB9B2300CCF024 /* ConvoManaging.swift */,
 				59E75B291F846F140033A407 /* ConvosManaging.swift */,
+				59A9D0081FFD8A19005B6879 /* Closing.swift */,
 				59E4D1C71FFB7C6E00C4D1CC /* DependencyContaining.swift */,
 				591413171FEC58C1001A2A70 /* IconManaging.swift */,
 				592C0DE91F8E59B50023DB02 /* ItemsToDeleteManaging.swift */,
@@ -1005,6 +1008,7 @@
 				5973C8681F608A2200647492 /* ProxyViewController.swift in Sources */,
 				5973C8781F608A2200647492 /* ButtonManaging.swift in Sources */,
 				593D7D441F851F7D00D3FBD5 /* UserStatsManaging.swift in Sources */,
+				59A9D0091FFD8A19005B6879 /* Closing.swift in Sources */,
 				5973C8611F608A2200647492 /* DB.swift in Sources */,
 				5973C87A1F608A2200647492 /* AuthObserver.swift in Sources */,
 				5973C85E1F608A2200647492 /* SenderProxyTableViewCell.swift in Sources */,

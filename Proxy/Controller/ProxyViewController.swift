@@ -1,6 +1,7 @@
 import UIKit
 
-class ProxyViewController: UIViewController, MakeNewMessageDelegate {
+class ProxyViewController: UIViewController, Closing, MakeNewMessageDelegate {
+    var shouldClose: Bool = false
     var newConvo: Convo?
 
     private let proxy: Proxy
@@ -20,7 +21,7 @@ class ProxyViewController: UIViewController, MakeNewMessageDelegate {
         navigationItem.rightBarButtonItems = [UIBarButtonItem.make(target: self, action: #selector(showMakeNewMessageController), imageName: ButtonName.makeNewMessage),
                                               UIBarButtonItem.make(target: self, action: #selector(deleteProxy), imageName: ButtonName.delete)]
 
-        proxyManager.load(uid: proxy.ownerId, key: proxy.key, tableView: tableView)
+        proxyManager.load(uid: proxy.ownerId, key: proxy.key, tableView: tableView, closer: self)
 
         convosManager.load(uid: proxy.ownerId, proxyKey: proxy.key, tableView: tableView)
 
@@ -43,6 +44,9 @@ class ProxyViewController: UIViewController, MakeNewMessageDelegate {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
+        if shouldClose {
+            _ = navigationController?.popViewController(animated: false)
+        }
         if let newConvo = newConvo {
             navigationController?.showConvoViewController(convo: newConvo, container: container)
             self.newConvo = nil
@@ -57,9 +61,13 @@ class ProxyViewController: UIViewController, MakeNewMessageDelegate {
 private extension ProxyViewController {
     @objc func deleteProxy() {
         let alert = UIAlertController(title: "Delete Proxy?", message: "You will not be able to see this proxy or its conversations again.", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
-            DB.deleteProxy(self.proxy) { _ in }
-            _ = self.navigationController?.popViewController(animated: true)
+        alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
+            guard let proxy = self?.proxy else {
+                return
+            }
+            DB.deleteProxy(proxy) { _ in
+                self?.navigationController?.popViewController(animated: true)
+            }
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         present(alert, animated: true)
