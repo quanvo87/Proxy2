@@ -66,6 +66,7 @@ extension DataSnapshot {
                     }
                     guard Convo(data) != nil else {
                         DB.delete(Child.convos, uid, data.key) { _ in }
+                        DB.delete(Child.messages, data.key) { _ in }
                         return
                     }
                 }
