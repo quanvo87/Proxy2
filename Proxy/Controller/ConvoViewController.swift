@@ -44,13 +44,13 @@ class ConvoViewController: MessagesViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         tabBarController?.tabBar.isHidden = true
-        container.unreadMessagesManager.enterConvo(convo.key)
+        container.presenceManager.enterConvo(convo.key)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
         tabBarController?.tabBar.isHidden = false
-        container.unreadMessagesManager.leaveConvo(convo.key)
+        container.presenceManager.leaveConvo(convo.key)
     }
 
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
