@@ -40,13 +40,22 @@ extension DataSnapshot {
         }
     }
 
-    func toConvosArray(_ proxyKey: String?) -> [Convo] {
+    func toConvosArray(uid: String, proxyKey: String?) -> [Convo] {
         var convos = [Convo]()
         for child in self.children {
             guard let data = child as? DataSnapshot else {
-                continue
+                return convos
             }
             guard let convo = Convo(data) else {
+                DB.get(Child.convos, uid, data.key) { (data) in
+                    guard let data = data else {
+                        return
+                    }
+                    guard Convo(data) != nil else {
+                        DB.delete(Child.convos, uid, data.key) { _ in }
+                        return
+                    }
+                }
                 continue
             }
             if let proxyKey = proxyKey {
@@ -54,19 +63,6 @@ extension DataSnapshot {
                     convos.append(convo)
                 }
             } else {
-                convos.append(convo)
-            }
-        }
-        return convos
-    }
-
-    var asConvosArray: [Convo] {
-        var convos = [Convo]()
-        for child in self.children {
-            guard let data = child as? DataSnapshot else {
-                continue
-            }
-            if let convo = Convo(data) {
                 convos.append(convo)
             }
         }

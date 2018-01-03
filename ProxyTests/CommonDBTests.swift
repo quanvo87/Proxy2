@@ -28,9 +28,9 @@ class CommonDBTests: DBTest {
 
         DBTest.sendMessage { (_, convo, _, _) in
             DB.get(Child.convos, convo.senderId) { (data) in
-                let convos = data?.asConvosArray
+                let convos = data?.toConvosArray(uid: convo.senderId, proxyKey: nil)
                 XCTAssertEqual(convos?.count, 1)
-                XCTAssert(data?.asConvosArray.contains(convo) ?? false)
+                XCTAssert(convos!.contains(convo))
                 expectation.fulfill()
             }
         }
