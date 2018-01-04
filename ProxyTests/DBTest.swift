@@ -34,6 +34,7 @@ class DBTest: XCTestCase {
                     }
                     catch {
                         XCTFail()
+                        expectation.fulfill()
                     }
                     auth.signIn(withEmail: self.email, password: self.password) { (_, error) in
                         XCTAssertNil(error)
@@ -106,7 +107,7 @@ extension GroupWork {
         return "Function: \(function), Line: \(line)."
     }
     
-    func checkDeleted(at first: String, _ rest: String..., function: String = #function, line: Int = #line) {
+    func checkDeleted(_ first: String, _ rest: String..., function: String = #function, line: Int = #line) {
         start()
         DB.get(first, rest) { (data) in
             XCTAssertFalse(data!.exists(), GroupWork.makeErrorMessage(function: function, line: line))
@@ -116,14 +117,14 @@ extension GroupWork {
 }
 
 extension GroupWork {
-    func check(_ property: SettableConvoProperty, forConvo convo: Convo, asSender: Bool, function: String = #function, line: Int = #line) {
+    func check(_ property: SettableConvoProperty, for convo: Convo, asSender: Bool, function: String = #function, line: Int = #line) {
         let (ownerId, _) = GroupWork.getOwnerIdAndProxyKey(convo: convo, asSender: asSender)
-        check(property, forConvoWithKey: convo.key, ownerId: ownerId, function: function, line: line)
+        check(property, uid: ownerId, convoKey: convo.key, function: function, line: line)
     }
 
-    func check(_ property: SettableConvoProperty, forConvoWithKey convoKey: String, ownerId: String, function: String = #function, line: Int = #line) {
+    func check(_ property: SettableConvoProperty, uid: String, convoKey: String, function: String = #function, line: Int = #line) {
         start()
-        DB.get(Child.convos, ownerId, convoKey, property.properties.name) { (data) in
+        DB.get(Child.convos, uid, convoKey, property.properties.name) { (data) in
             GroupWork.checkEquals(data, property.properties.value, function: function, line: line)
             self.finish(withResult: true)
         }
@@ -131,7 +132,7 @@ extension GroupWork {
 }
 
 extension GroupWork {
-    func check(_ property: SettableMessageProperty, forMessage message: Message, function: String = #function, line: Int = #line) {
+    func check(_ property: SettableMessageProperty, for message: Message, function: String = #function, line: Int = #line) {
         start()
         DB.get(Child.messages, message.parentConvoKey, message.messageId, property.properties.name) { (data) in
             switch property {
@@ -144,18 +145,18 @@ extension GroupWork {
 }
 
 extension GroupWork {
-    func check(_ property: SettableProxyProperty, forProxy proxy: Proxy, function: String = #function, line: Int = #line) {
-        check(property, forProxyWithKey: proxy.key, ownerId: proxy.ownerId, function: function, line: line)
+    func check(_ property: SettableProxyProperty, for proxy: Proxy, function: String = #function, line: Int = #line) {
+        check(property, uid: proxy.ownerId, proxyKey: proxy.key, function: function, line: line)
     }
 
-    func check(_ property: SettableProxyProperty, forProxyInConvo convo: Convo , asSender: Bool, function: String = #function, line: Int = #line) {
+    func check(_ property: SettableProxyProperty, forProxyIn convo: Convo , asSender: Bool, function: String = #function, line: Int = #line) {
         let (ownerId, proxyKey) = GroupWork.getOwnerIdAndProxyKey(convo: convo, asSender: asSender)
-        check(property, forProxyWithKey: proxyKey, ownerId: ownerId, function: function, line: line)
+        check(property, uid: ownerId, proxyKey: proxyKey, function: function, line: line)
     }
 
-    func check(_ property: SettableProxyProperty, forProxyWithKey proxyKey: String, ownerId: String, function: String = #function, line: Int = #line) {
+    func check(_ property: SettableProxyProperty, uid: String, proxyKey: String, function: String = #function, line: Int = #line) {
         start()
-        DB.get(Child.proxies, ownerId, proxyKey, property.properties.name) { (data) in
+        DB.get(Child.proxies, uid, proxyKey, property.properties.name) { (data) in
             GroupWork.checkEquals(data, property.properties.value, function: function, line: line)
             self.finish(withResult: true)
         }
@@ -163,7 +164,7 @@ extension GroupWork {
 }
 
 extension GroupWork {
-    func check(_ property: IncrementableUserProperty, _ value: Int, forUser uid: String, function: String = #function, line: Int = #line) {
+    func check(_ property: IncrementableUserProperty, equals value: Int, uid: String, function: String = #function, line: Int = #line) {
         start()
         DB.get(Child.userInfo, uid, property.rawValue) { (data) in
             GroupWork.checkEquals(data, value, function: function, line: line)

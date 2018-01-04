@@ -12,7 +12,7 @@ class DBConvoTests: DBTest {
             DB.delete(convo, asSender: true) { (success) in
                 XCTAssert(success)
                 let work = GroupWork()
-                work.checkDeleted(at: Child.convos, convo.senderId, convo.key)
+                work.checkDeleted(Child.convos, convo.senderId, convo.key)
                 work.allDone {
                     expectation.fulfill()
                 }
@@ -41,7 +41,7 @@ class DBConvoTests: DBTest {
             DB.setReceiverNickname(to: testNickname, for: convo) { (error) in
                 XCTAssertNil(error)
                 let work = GroupWork()
-                work.check(.receiverNickname(testNickname), forConvo: convo, asSender: true)
+                work.check(.receiverNickname(testNickname), for: convo, asSender: true)
                 work.allDone {
                     expectation.fulfill()
                 }

@@ -10,27 +10,19 @@ class DBTests: DBTest {
 
         let rand1 = Int(arc4random_uniform(500))
         let rand2 = Int(arc4random_uniform(500))
-
         DB.set(rand1, at: "test") { (success) in
             XCTAssert(success)
-
             let work = GroupWork()
-
             for _ in 1...rand2 {
-
                 work.start()
-
                 DB.increment(-1, at: "test") { (success) in
                     XCTAssert(success)
-
                     work.finish(withResult: true)
                 }
             }
-
             work.allDone {
                 DB.get("test") { (data) in
                     XCTAssertEqual(data?.value as? Int, rand1 - rand2)
-
                     expectation.fulfill()
                 }
             }

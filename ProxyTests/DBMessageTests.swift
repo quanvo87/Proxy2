@@ -12,8 +12,8 @@ class DBMessageTests: DBTest {
         DBTest.sendMessage { (message, _, _, _) in
             DB.deleteUnreadMessage(message) { (success) in
                 let work = GroupWork()
-                work.checkDeleted(at: Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
-                work.checkDeleted(at: Child.convos, message.receiverId, message.parentConvoKey)
+                work.checkDeleted(Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
+                work.checkDeleted(Child.convos, message.receiverId, message.parentConvoKey)
                 work.allDone {
                     expectation.fulfill()
                 }
@@ -30,10 +30,10 @@ class DBMessageTests: DBTest {
             DB.read(message, date: date) { (success) in
                 XCTAssert(success)
                 let work = GroupWork()
-                work.checkDeleted(at: Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
-                work.check(.dateRead(date), forMessage: message)
-                work.check(.hasUnreadMessage(false), forConvoWithKey: message.parentConvoKey, ownerId: message.receiverId)
-                work.check(.hasUnreadMessage(false), forProxy: receiver)
+                work.checkDeleted(Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
+                work.check(.dateRead(date), for: message)
+                work.check(.hasUnreadMessage(false), uid: message.receiverId, convoKey: message.parentConvoKey)
+                work.check(.hasUnreadMessage(false), for: receiver)
                 work.allDone {
                     expectation.fulfill()
                 }
@@ -50,7 +50,7 @@ class DBMessageTests: DBTest {
                 DB.read(message1) { (success) in
                     XCTAssert(success)
                     let work = GroupWork()
-                    work.check(.hasUnreadMessage(true), forProxy: receiver)
+                    work.check(.hasUnreadMessage(true), for: receiver)
                     work.allDone {
                         expectation.fulfill()
                     }
@@ -67,8 +67,8 @@ class DBMessageTests: DBTest {
             let work = GroupWork()
 
             // Check convo made
-            work.check(.proxiesInteractedWith, 1, forUser: receiver.ownerId)
-            work.check(.proxiesInteractedWith, 1, forUser: sender.ownerId)
+            work.check(.proxiesInteractedWith, equals: 1, uid: receiver.ownerId)
+            work.check(.proxiesInteractedWith, equals: 1, uid: sender.ownerId)
             work.checkConvoCreated(convo, asSender: true)
             work.checkConvoCreated(convo, asSender: false)
 
@@ -76,21 +76,21 @@ class DBMessageTests: DBTest {
             work.checkMessageCreated(message)
 
             // Check receiver updates
-            work.check(.messagesReceived, 1, forUser: convo.receiverId)
+            work.check(.messagesReceived, equals: 1, uid: convo.receiverId)
             work.checkUnreadMessageCreated(message)
-            work.check(.hasUnreadMessage(true), forConvo: convo, asSender: false)
-            work.check(.hasUnreadMessage(true), forProxy: receiver)
-            work.check(.timestamp(convo.timestamp), forConvo: convo, asSender: false)
-            work.check(.timestamp(convo.timestamp), forProxy: receiver)
-            work.check(.lastMessage(DBTest.text), forConvo: convo, asSender: false)
-            work.check(.lastMessage(DBTest.text), forProxy: receiver)
+            work.check(.hasUnreadMessage(true), for: convo, asSender: false)
+            work.check(.hasUnreadMessage(true), for: receiver)
+            work.check(.timestamp(convo.timestamp), for: convo, asSender: false)
+            work.check(.timestamp(convo.timestamp), for: receiver)
+            work.check(.lastMessage(DBTest.text), for: convo, asSender: false)
+            work.check(.lastMessage(DBTest.text), for: receiver)
             
             // Check sender updates
-            work.check(.messagesSent, 1, forUser: sender.ownerId)
-            work.check(.timestamp(convo.timestamp), forConvo: convo, asSender: true)
-            work.check(.timestamp(convo.timestamp), forProxy: sender)
-            work.check(.lastMessage(DBMessageTests.senderText), forConvo: convo, asSender: true)
-            work.check(.lastMessage(DBMessageTests.senderText), forProxy: sender)
+            work.check(.messagesSent, equals: 1, uid: sender.ownerId)
+            work.check(.timestamp(convo.timestamp), for: convo, asSender: true)
+            work.check(.timestamp(convo.timestamp), for: sender)
+            work.check(.lastMessage(DBMessageTests.senderText), for: convo, asSender: true)
+            work.check(.lastMessage(DBMessageTests.senderText), for: sender)
 
             work.allDone {
                 expectation.fulfill()
@@ -133,9 +133,9 @@ class DBMessageTests: DBTest {
                                 expectation.fulfill()
                             }
                             let work = GroupWork()
-                            work.checkDeleted(at: Child.convos, receiverProxy.ownerId, updatedConvo.key)
-                            work.checkDeleted(at: Child.convos, receiverProxy.key, updatedConvo.key)
-                            work.checkDeleted(at: Child.proxies, receiverProxy.ownerId, updatedConvo.key)
+                            work.checkDeleted(Child.convos, receiverProxy.ownerId, updatedConvo.key)
+                            work.checkDeleted(Child.convos, receiverProxy.key, updatedConvo.key)
+                            work.checkDeleted(Child.proxies, receiverProxy.ownerId, updatedConvo.key)
                             work.allDone {
                                 expectation.fulfill()
                             }
