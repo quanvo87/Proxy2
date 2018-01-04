@@ -14,10 +14,10 @@ class TabBarController: UITabBarController {
         let proxiesController = ProxiesViewController(uid: uid, container: container)
         proxiesController.tabBarItem = UITabBarItem(title: "Proxies", image: UIImage(named: "proxies"), tag: 1)
 
-        let meController = MeViewController(uid: uid, displayName: displayName)
-        meController.tabBarItem = UITabBarItem(title: "Me", image: UIImage(named: "me"), tag: 2)
+        let settingsController = SettingsViewController(uid: uid, displayName: displayName)
+        settingsController.tabBarItem = UITabBarItem(title: "Settings", image: UIImage(named: "settings"), tag: 2)
 
-        viewControllers = [convosController, proxiesController, meController].map {
+        viewControllers = [convosController, proxiesController, settingsController].map {
             UINavigationController(rootViewController: $0)
         }
     }

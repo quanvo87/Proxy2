@@ -1,6 +1,6 @@
 import UIKit
 
-class MeTableViewDataSource: NSObject {
+class SettingsTableViewDataSource: NSObject {
     private weak var manager: UserStatsManaging?
 
     func load(manager: UserStatsManaging) {
@@ -8,14 +8,14 @@ class MeTableViewDataSource: NSObject {
     }
 }
 
-extension MeTableViewDataSource: UITableViewDataSource {
+extension SettingsTableViewDataSource: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.meTableViewCell) as? MeTableViewCell else {
-            return tableView.dequeueReusableCell(withIdentifier: Identifier.meTableViewCell, for: indexPath)
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.settingsTableViewCell) as? SettingsTableViewCell else {
+            return tableView.dequeueReusableCell(withIdentifier: Identifier.settingsTableViewCell, for: indexPath)
         }
         switch indexPath.section {
         case 0:

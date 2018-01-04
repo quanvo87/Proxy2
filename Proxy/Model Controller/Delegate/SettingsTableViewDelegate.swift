@@ -1,7 +1,7 @@
 import FirebaseAuth
 import UIKit
 
-class MeTableViewDelegate: NSObject {
+class SettingsTableViewDelegate: NSObject {
     private weak var controller: UIViewController?
 
     func load(controller: UIViewController) {
@@ -9,7 +9,7 @@ class MeTableViewDelegate: NSObject {
     }
 }
 
-extension MeTableViewDelegate: UITableViewDelegate {
+extension SettingsTableViewDelegate: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         switch indexPath.section {

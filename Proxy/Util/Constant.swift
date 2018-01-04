@@ -15,10 +15,10 @@ struct Identifier {
     static let convosTableViewCell = "ConvosTableViewCell"
     static let iconPickerCollectionViewCell = "IconPickerCollectionViewCell"
     static let makeNewMessageViewController = "MakeNewMessageViewController"
-    static let meTableViewCell = "MeTableViewCell"
     static let loginViewController = "LoginViewController"
     static let proxiesTableViewCell = "ProxiesTableViewCell"
     static let senderProxyTableViewCell = "SenderProxyTableViewCell"
+    static let settingsTableViewCell = "SettingsTableViewCell"
 }
 
 struct Child {

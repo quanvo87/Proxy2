@@ -1,9 +1,9 @@
 import UIKit
 
-class MeViewController: UIViewController {
+class SettingsViewController: UIViewController {
     private let manager = UserStatsManager()
-    private let dataSource = MeTableViewDataSource()
-    private let delegate = MeTableViewDelegate()
+    private let dataSource = SettingsTableViewDataSource()
+    private let delegate = SettingsTableViewDelegate()
     private let tableView = UITableView(frame: .zero, style: .grouped)
 
     init(uid: String, displayName: String?) {
@@ -20,7 +20,7 @@ class MeViewController: UIViewController {
         tableView.dataSource = dataSource
         tableView.delegate = delegate
         tableView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
-        tableView.register(UINib(nibName: Identifier.meTableViewCell, bundle: nil), forCellReuseIdentifier: Identifier.meTableViewCell)
+        tableView.register(UINib(nibName: Identifier.settingsTableViewCell, bundle: nil), forCellReuseIdentifier: Identifier.settingsTableViewCell)
         tableView.rowHeight = 44
         
         view.addSubview(tableView)
