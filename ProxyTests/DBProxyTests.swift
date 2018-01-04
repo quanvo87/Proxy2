@@ -14,16 +14,17 @@ class DBProxyTests: DBTest {
                     switch result {
                     case .failure:
                         XCTFail()
+                        expectation.fulfill()
                     case .success(let tuple):
                         DB.deleteProxy(receiver) { (success) in
                             XCTAssert(success)
                             let work = GroupWork()
-                            work.checkDeleted(at: Child.proxies, receiver.ownerId, receiver.key)
-                            work.checkDeleted(at: Child.proxyKeys, receiver.key)
-                            work.checkDeleted(at: Child.proxyOwners, receiver.key)
-                            work.checkDeleted(at: Child.convos, receiver.ownerId, tuple.convo.key)
-                            work.checkDeleted(at: Child.userInfo, receiver.ownerId, Child.unreadMessages, tuple.message.messageId)
-                            work.check(.receiverDeletedProxy(true), forConvo: tuple.convo, asSender: true)
+                            work.checkDeleted(Child.proxies, receiver.ownerId, receiver.key)
+                            work.checkDeleted(Child.proxyKeys, receiver.key)
+                            work.checkDeleted(Child.proxyOwners, receiver.key)
+                            work.checkDeleted(Child.convos, receiver.ownerId, tuple.convo.key)
+                            work.checkDeleted(Child.userInfo, receiver.ownerId, Child.unreadMessages, tuple.message.messageId)
+                            work.check(.receiverDeletedProxy(true), for: tuple.convo, asSender: true)
                             work.allDone {
                                 expectation.fulfill()
                             }
@@ -105,6 +106,7 @@ class DBProxyTests: DBTest {
                 expectation.fulfill()
             case .success:
                 XCTFail()
+                expectation.fulfill()
             }
         }
     }
@@ -122,6 +124,7 @@ class DBProxyTests: DBTest {
                     switch result {
                     case .failure:
                         XCTFail()
+                        expectation.fulfill()
                     case .success(let proxy):
                         XCTAssert(proxy.name != "test")
                         expectation.fulfill()
@@ -140,8 +143,8 @@ class DBProxyTests: DBTest {
             DB.setIcon(to: newIcon, for: proxy) { (success) in
                 XCTAssert(success)
                 let work = GroupWork()
-                work.check(.icon(newIcon), forProxy: proxy)
-                work.check(.receiverIcon(newIcon), forConvo: convo, asSender: false)
+                work.check(.icon(newIcon), for: proxy)
+                work.check(.receiverIcon(newIcon), for: convo, asSender: false)
                 work.allDone {
                     expectation.fulfill()
                 }
@@ -158,8 +161,8 @@ class DBProxyTests: DBTest {
             DB.setNickname(to: newNickname, for: proxy) { (error) in
                 XCTAssertNil(error)
                 let work = GroupWork()
-                work.check(.nickname(newNickname), forProxy: proxy)
-                work.check(.senderNickname(newNickname), forConvo: convo, asSender: true)
+                work.check(.nickname(newNickname), for: proxy)
+                work.check(.senderNickname(newNickname), for: convo, asSender: true)
                 work.allDone {
                     expectation.fulfill()
                 }

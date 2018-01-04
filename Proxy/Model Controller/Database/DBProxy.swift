@@ -187,6 +187,9 @@ extension GroupWork {
     func delete(_ convos: [Convo]) {
         for convo in convos {
             delete(Child.convos, convo.senderId, convo.key)
+            if convo.receiverDeletedProxy {
+                delete(Child.messages, convo.key)
+            }
         }
     }
 
