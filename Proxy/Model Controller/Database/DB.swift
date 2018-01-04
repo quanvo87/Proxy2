@@ -47,11 +47,11 @@ extension DB {
         }
     }
 
-    static func increment(_ amount: Int, at first: String, _ rest: String..., completion: @escaping ((Bool) -> Void)) {
+    static func increment(_ amount: Int, at first: String, _ rest: String..., completion: @escaping (Bool) -> Void) {
         increment(amount, at: first, rest, completion: completion)
     }
 
-    static func increment(_ amount: Int, at first: String, _ rest: [String], completion: @escaping ((Bool) -> Void)) {
+    static func increment(_ amount: Int, at first: String, _ rest: [String], completion: @escaping (Bool) -> Void) {
         guard let ref = makeReference(first, rest) else {
             completion(false)
             return
@@ -72,17 +72,27 @@ extension DB {
         }
     }
 
-    static func set(_ value: Any, at first: String, _ rest: String..., completion: @escaping ((Bool) -> Void)) {
+    static func set(_ value: Any, at first: String, _ rest: String..., completion: @escaping (Bool) -> Void) {
         set(value, at: first, rest, completion: completion)
     }
 
-    static func set(_ value: Any, at first: String, _ rest: [String], completion: @escaping ((Bool) -> Void)) {
+    static func set(_ value: Any, at first: String, _ rest: [String], completion: @escaping (Bool) -> Void) {
         guard let ref = makeReference(first, rest) else {
             completion(false)
             return
         }
         ref.setValue(value) { (error, _) in
             completion(error == nil)
+        }
+    }
+
+    static func checkKeyExists(_ first: String, _ rest: String..., completion: @escaping (Bool) -> Void) {
+        checkKeyExists(first, rest, completion: completion)
+    }
+
+    static func checkKeyExists(_ first: String, _ rest: [String], completion: @escaping (Bool) -> Void) {
+        get(first, rest) { (data) in
+            completion((data?.value as AnyObject)["key"] as? String != nil)
         }
     }
 }

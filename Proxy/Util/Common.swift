@@ -60,8 +60,8 @@ extension DataSnapshot {
                 return convos
             }
             guard let convo = Convo(data) else {
-                DB.getConvo(uid: uid, key: data.key) { (convo) in
-                    if convo == nil {
+                DB.checkKeyExists(Child.convos, uid, data.key) { (exists) in
+                    if !exists {
                         DB.delete(Child.convos, uid, data.key) { _ in }
                     }
                 }
@@ -85,8 +85,8 @@ extension DataSnapshot {
                 return proxies
             }
             guard let proxy = Proxy(data) else {
-                DB.getProxy(uid: uid, key: data.key) { (proxy) in
-                    if proxy == nil {
+                DB.checkKeyExists(Child.proxies, uid, data.key) { (exists) in
+                    if !exists {
                         DB.delete(Child.proxies, uid, data.key) { _ in }
                     }
                 }

@@ -97,7 +97,6 @@ private extension MakeNewMessageViewController {
         }
         disableButtons()
         DB.sendMessage(sender: sender, receiver: receiver, text: messageTextView.text) { (result) in
-            self.enableButtons()
             switch result {
             case .failure(let error):
                 switch error {
@@ -108,6 +107,7 @@ private extension MakeNewMessageViewController {
                 default:
                     self.showAlert(title: "Error Sending Message", message: error.localizedDescription)
                 }
+                self.enableButtons()
             case .success(let tuple):
                 self.delegate?.newConvo = tuple.convo
                 self.navigationController?.dismiss(animated: true)

@@ -122,8 +122,8 @@ extension DB {
     }
 
     private static func updateReceiverDeletedProxy(convo: Convo) {
-        getConvo(uid: convo.receiverId, key: convo.key) { (receiverConvo) in
-            if receiverConvo == nil {
+        checkKeyExists(Child.convos, convo.receiverId, convo.key) { (exists) in
+            if !exists {
                 let work = GroupWork()
                 work.set(.receiverDeletedProxy(true), for: convo, asSender: true)
                 work.allDone {}
