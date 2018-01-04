@@ -9,8 +9,8 @@ class ProxyObserver: ReferenceObserving {
         ref = DB.makeReference(Child.proxies, uid, key)
         handle = ref?.observe(.value, with: { [weak manager, weak closer] (data) in
             guard let proxy = Proxy(data) else {
-                DB.getProxy(uid: uid, key: key){ (proxy) in
-                    if proxy == nil {
+                DB.checkKeyExists(Child.proxies, uid, key) { (exists) in
+                    if !exists {
                         closer?.shouldClose = true
                     }
                 }

@@ -152,7 +152,7 @@ class DBMessageTests: DBTest {
 
 extension GroupWork {
     func checkConvoCreated(_ convo: Convo, asSender: Bool) {
-        let uid = asSender ? convo.senderId : convo.receiverId
+        let (uid, _) = GroupWork.getOwnerIdAndProxyKey(convo: convo, asSender: asSender)
         start()
         DB.get(Child.convos, uid, convo.key) { (data) in
             XCTAssertNotNil(Convo(data!))

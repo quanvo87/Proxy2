@@ -9,11 +9,11 @@ class ConvoObserver: ReferenceObserving {
         ref = DB.makeReference(Child.convos, uid, key)
         handle = ref?.observe(.value, with: { [weak manager, weak closer] (data) in
             guard let convo = Convo(data) else {
-                DB.getConvo(uid: uid, key: key, completion: { (convo) in
-                    if convo == nil {
+                DB.checkKeyExists(Child.convos, uid, key) { (exists) in
+                    if !exists {
                         closer?.shouldClose = true
                     }
-                })
+                }
                 return
             }
             manager?.convo = convo

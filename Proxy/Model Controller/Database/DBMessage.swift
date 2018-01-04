@@ -30,13 +30,13 @@ extension DB {
             if let convo = convo {
                 sendMessage(convo: convo, text: text, completion: completion)
             } else {
-                makeConvo(convoKey: convoKey, sender: sender, receiver: receiver, completion: { (convo) in
+                makeConvo(convoKey: convoKey, sender: sender, receiver: receiver) { (convo) in
                     guard let convo = convo else {
                         completion(.failure(.unknown))
                         return
                     }
                     sendMessage(convo: convo, text: text, completion: completion)
-                })
+                }
             }
         }
     }
