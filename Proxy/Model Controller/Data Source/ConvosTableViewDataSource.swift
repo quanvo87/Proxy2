@@ -27,4 +27,12 @@ extension ConvosTableViewDataSource: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return convos.count
     }
+
+    func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+        if convos.count == 0 {
+            return "No messages yet. Tap the button to get started."
+        } else {
+            return nil
+        }
+    }
 }

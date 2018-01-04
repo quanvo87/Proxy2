@@ -62,6 +62,14 @@ extension ProxyTableViewDataSource: UITableViewDataSource {
             return nil
         }
     }
+
+    func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+        if section == 1 && convosManager?.convos.count == 0 {
+            return "This Proxy is not in any conversations yet."
+        } else {
+            return nil
+        }
+    }
 }
 
 private extension ProxyTableViewDataSource {

@@ -24,4 +24,12 @@ extension ProxiesTableViewDataSource: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return container.proxiesManager.proxies.count
     }
+
+    func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+        if container.proxiesManager.proxies.count == 0 {
+            return "Make a new Proxy to begin chatting."
+        } else {
+            return nil
+        }
+    }
 }

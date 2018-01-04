@@ -118,8 +118,8 @@ extension GroupWork {
 
 extension GroupWork {
     func check(_ property: SettableConvoProperty, for convo: Convo, asSender: Bool, function: String = #function, line: Int = #line) {
-        let (ownerId, _) = GroupWork.getOwnerIdAndProxyKey(convo: convo, asSender: asSender)
-        check(property, uid: ownerId, convoKey: convo.key, function: function, line: line)
+        let (uid, _) = GroupWork.getOwnerIdAndProxyKey(convo: convo, asSender: asSender)
+        check(property, uid: uid, convoKey: convo.key, function: function, line: line)
     }
 
     func check(_ property: SettableConvoProperty, uid: String, convoKey: String, function: String = #function, line: Int = #line) {
@@ -150,8 +150,8 @@ extension GroupWork {
     }
 
     func check(_ property: SettableProxyProperty, forProxyIn convo: Convo , asSender: Bool, function: String = #function, line: Int = #line) {
-        let (ownerId, proxyKey) = GroupWork.getOwnerIdAndProxyKey(convo: convo, asSender: asSender)
-        check(property, uid: ownerId, proxyKey: proxyKey, function: function, line: line)
+        let (uid, proxyKey) = GroupWork.getOwnerIdAndProxyKey(convo: convo, asSender: asSender)
+        check(property, uid: uid, proxyKey: proxyKey, function: function, line: line)
     }
 
     func check(_ property: SettableProxyProperty, uid: String, proxyKey: String, function: String = #function, line: Int = #line) {

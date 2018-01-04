@@ -25,8 +25,8 @@ class IconManager: IconManaging {
 
     func load(convo: Convo, collectionView: UICollectionView) {
         self.collectionView = collectionView
-        receiverIconObserver.observe(proxyOwner: convo.receiverId, proxyKey: convo.receiverProxyKey, manager: self)
-        senderIconObserver.observe(proxyOwner: convo.senderId, proxyKey: convo.senderProxyKey, manager: self)
+        receiverIconObserver.observe(uid: convo.receiverId, proxyKey: convo.receiverProxyKey, manager: self)
+        senderIconObserver.observe(uid: convo.senderId, proxyKey: convo.senderProxyKey, manager: self)
     }
 }
 
