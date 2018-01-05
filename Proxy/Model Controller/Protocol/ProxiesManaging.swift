@@ -11,8 +11,12 @@ class ProxiesManager: ProxiesManaging {
             controller?.title = "My Proxies\(proxies.count.asStringWithParens)"
             controller?.tabBarController?.tabBar.items?[1].title = "Proxies\(proxies.count.asStringWithParens)"
 
-            if let manager = manager, proxies.isEmpty {
-                manager.animateButton(manager.makeNewProxyButton, loop: true)
+            if let manager = manager {
+                if proxies.isEmpty {
+                    manager.animate(manager.makeNewProxyButton, loop: true)
+                } else {
+                    manager.stopAnimating(manager.makeNewProxyButton)
+                }
             }
 
             tableView?.reloadData()

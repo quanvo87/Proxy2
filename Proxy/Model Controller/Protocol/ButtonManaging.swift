@@ -1,4 +1,5 @@
 import UIKit
+import ViewGlower
 
 typealias ButtonManaging = ButtonOwning & ButtonEditing
 
@@ -12,16 +13,17 @@ protocol ButtonEditing: ButtonOwning {
 }
 
 extension ButtonEditing {
-    func animateButton(_ button: UIBarButtonItem, loop: Bool = false) {
+    func animate(_ button: UIBarButtonItem, loop: Bool = false) {
         button.morph(loop: loop)
         if loop {
-            viewGlower.glow(button.customView)
+            viewGlower.glow(button.customView, to: 0.6, duration: 1.2)
         } else {
             viewGlower.stopGlowing(button.customView)
         }
     }
 
-    func stopAnimatingButton(_ button: UIBarButtonItem) {
-        
+    func stopAnimating(_ button: UIBarButtonItem) {
+        button.customView?.layer.stopAnimating()
+        viewGlower.stopGlowing(button.customView)
     }
 }

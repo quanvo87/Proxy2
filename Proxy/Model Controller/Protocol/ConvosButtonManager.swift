@@ -1,4 +1,5 @@
 import UIKit
+import ViewGlower
 
 class ConvosButtonManager: ButtonManaging {
     let viewGlower = ViewGlower()
@@ -30,7 +31,7 @@ private extension ConvosButtonManager {
 
     @objc func makeNewProxy() {
         makeNewProxyButton.isEnabled = false
-        animateButton(makeNewProxyButton)
+        animate(makeNewProxyButton)
         DB.makeProxy(uid: uid, currentProxyCount: container.proxiesManager.proxies.count) { (result) in
             switch result {
             case .failure(let error):
@@ -53,7 +54,7 @@ private extension ConvosButtonManager {
             makeNewMessageButton.isEnabled = true
         }
         makeNewMessageButton.isEnabled = false
-        animateButton(makeNewMessageButton)
+        animate(makeNewMessageButton)
         guard let controller = controller else {
             return
         }

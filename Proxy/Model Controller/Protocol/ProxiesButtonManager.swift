@@ -1,4 +1,5 @@
 import UIKit
+import ViewGlower
 
 class ProxiesButtonManager: ButtonManaging {
     let viewGlower = ViewGlower()
@@ -47,7 +48,7 @@ private extension ProxiesButtonManager {
         makeNewProxyButton.isEnabled = true
         makeNewProxyButton.customView?.isHidden = false
         if container.proxiesManager.proxies.isEmpty {
-            animateButton(makeNewProxyButton, loop: true)
+            animate(makeNewProxyButton, loop: true)
         }
     }
 
@@ -83,7 +84,7 @@ private extension ProxiesButtonManager {
 
     @objc func makeNewProxy() {
         makeNewProxyButton.isEnabled = false
-        animateButton(makeNewProxyButton)
+        animate(makeNewProxyButton)
         DB.makeProxy(uid: uid, currentProxyCount: container.proxiesManager.proxies.count) { (result) in
             switch result {
             case .failure(let error):
@@ -100,7 +101,7 @@ private extension ProxiesButtonManager {
             makeNewMessageButton.isEnabled = true
         }
         makeNewMessageButton.isEnabled = false
-        animateButton(makeNewMessageButton)
+        animate(makeNewMessageButton)
         guard let controller = controller else {
             return
         }

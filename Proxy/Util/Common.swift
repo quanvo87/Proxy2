@@ -13,6 +13,13 @@ extension Auth {
     }()
 }
 
+extension CALayer {
+    func stopAnimating() {
+        removeAllAnimations()
+        shadowColor = UIColor.clear.cgColor
+    }
+}
+
 // https://stackoverflow.com/questions/25329186/safe-bounds-checked-array-lookup-in-swift-through-optional-bindings
 extension Collection {
     subscript(safe index: Index) -> Element? {
@@ -127,7 +134,7 @@ extension SpringButton {
     func morph(loop: Bool = false) {
         animation = "morph"
         curve = "spring"
-        duration = loop ? 1 : 0.8
+        duration = loop ? 1.2 : 0.8
         repeatCount = loop ? .infinity : 0
         animate()
     }
@@ -173,8 +180,7 @@ extension UIBarButtonItem {
     }
 
     func morph(loop: Bool = false) {
-        customView?.layer.removeAllAnimations()
-        customView?.layer.shadowColor = UIColor.clear.cgColor
+        customView?.layer.stopAnimating()
         (customView as? SpringButton)?.morph(loop: loop)
         if loop {
             customView?.addGlow()

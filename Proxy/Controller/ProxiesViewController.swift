@@ -48,7 +48,7 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
         super.viewDidAppear(true)
         // todo: else stop animating
         if container.proxiesManager.proxies.isEmpty {
-            buttonManager.animateButton(buttonManager.makeNewProxyButton, loop: true)
+            buttonManager.animate(buttonManager.makeNewProxyButton, loop: true)
         }
     }
 

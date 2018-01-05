@@ -10,10 +10,10 @@ def pods
   pod 'FirebaseAuth'
   pod 'Firebase/Database'
   pod 'Firebase/Storage'
-  pod 'GroupWork', '~> 0.0'
+  pod 'GroupWork',
   pod 'MessageKit'
   pod 'Spring', :git => 'https://github.com/MengTo/Spring.git'
-  pod 'SwiftVideoBackground', '~> 2.0'
+  pod 'SwiftVideoBackground',
   pod 'ViewGlower'
 end
 

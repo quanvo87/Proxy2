@@ -8,8 +8,12 @@ protocol ConvosManaging: class {
 class ConvosManager: ConvosManaging {
     var convos = [Convo]() {
         didSet {
-            if let manager = manager, convos.isEmpty {
-                manager.animateButton(manager.makeNewMessageButton, loop: true)
+            if let manager = manager {
+                if convos.isEmpty {
+                    manager.animate(manager.makeNewMessageButton, loop: true)
+                } else {
+                    manager.stopAnimating(manager.makeNewMessageButton)
+                }
             }
             tableView?.reloadData()
         }

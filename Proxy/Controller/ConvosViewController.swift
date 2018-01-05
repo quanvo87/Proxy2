@@ -49,7 +49,7 @@ class ConvosViewController: UIViewController, MakeNewMessageDelegate {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
         if convosManager.convos.isEmpty {
-            buttonManager.animateButton(buttonManager.makeNewMessageButton, loop: true)
+            buttonManager.animate(buttonManager.makeNewMessageButton, loop: true)
         }
     }
 

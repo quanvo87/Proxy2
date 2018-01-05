@@ -70,6 +70,7 @@ PODS:
   - nanopb/encode (0.3.8)
   - Spring (1.0.5)
   - SwiftVideoBackground (2.0.0)
+  - ViewGlower (0.1.0)
 
 DEPENDENCIES:
   - FacebookCore
@@ -82,6 +83,7 @@ DEPENDENCIES:
   - MessageKit
   - Spring (from `https://github.com/MengTo/Spring.git`)
   - SwiftVideoBackground (~> 2.0)
+  - ViewGlower
 
 EXTERNAL SOURCES:
   Spring:
@@ -113,7 +115,8 @@ SPEC CHECKSUMS:
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
   Spring: 48aad470f3ead043b2da98b64e0bf0630b7ebc42
   SwiftVideoBackground: 41d030c232284482973e46959de6398a116c6b58
+  ViewGlower: 552fb17f91cf1b99e5474f73506f55d106fd8edd
 
-PODFILE CHECKSUM: 031a34cb3b9f56a8f0b8f027174aa7657e1d90f0
+PODFILE CHECKSUM: 533de57b1022155320fd7d8a4975edeb09ce8a71
 
 COCOAPODS: 1.3.1
