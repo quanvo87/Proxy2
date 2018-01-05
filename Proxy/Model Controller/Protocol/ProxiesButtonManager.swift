@@ -1,42 +1,75 @@
-import GroupWork
 import UIKit
 
 class ProxiesButtonManager: ButtonManaging {
-    var itemsToDeleteManager: ItemsToDeleteManaging?
+    let viewGlower = ViewGlower()
     var cancelButton = UIBarButtonItem()
     var confirmButton = UIBarButtonItem()
     var deleteButton = UIBarButtonItem()
     var makeNewMessageButton = UIBarButtonItem()
     var makeNewProxyButton = UIBarButtonItem()
-    weak var navigationItem: UINavigationItem?
-    weak var tableView: UITableView?
-
-    private var uid: String?
     private var container: DependencyContaining = DependencyContainer.container
+    private var uid = ""
     private weak var controller: ProxiesViewController?
+    private weak var itemsToDeleteManager: ItemsToDeleteManaging?
+    private weak var navigationItem: UINavigationItem?
+    private weak var tableView: UITableView?
 
-    func load(uid: String, itemsToDeleteManager: ItemsToDeleteManaging, tableView: UITableView, proxiesViewController: ProxiesViewController, container: DependencyContaining) {
-        self.uid = uid
-        self.itemsToDeleteManager = itemsToDeleteManager
-        self.tableView = tableView
-        self.controller = proxiesViewController
+    func load(container: DependencyContaining,
+              uid: String,
+              controller: ProxiesViewController,
+              itemsToDeleteManager: ItemsToDeleteManaging,
+              tableView: UITableView) {
         self.container = container
-        navigationItem = proxiesViewController.navigationItem
+        self.uid = uid
+        self.controller = controller
+        self.itemsToDeleteManager = itemsToDeleteManager
+        self.navigationItem = controller.navigationItem
+        self.tableView = tableView
         makeButtons()
         setDefaultButtons()
     }
+}
 
-    func _deleteSelectedItems() {
-        guard let itemsToDeleteManager = itemsToDeleteManager else {
+private extension ProxiesButtonManager {
+    func makeButtons() {
+        cancelButton = UIBarButtonItem.make(target: self, action: #selector(setDefaultButtons), imageName: ButtonName.cancel)
+        confirmButton = UIBarButtonItem.make(target: self, action: #selector(deleteSelectedItems), imageName: ButtonName.confirm)
+        deleteButton = UIBarButtonItem.make(target: self, action: #selector(setEditModeButtons), imageName: ButtonName.delete)
+        makeNewMessageButton = UIBarButtonItem.make(target: self, action: #selector(showMakeNewMessageController), imageName: ButtonName.makeNewMessage)
+        makeNewProxyButton = UIBarButtonItem.make(target: self, action: #selector(makeNewProxy), imageName: ButtonName.makeNewProxy)
+    }
+
+    @objc func setDefaultButtons() {
+        tableView?.setEditing(false, animated: true)
+        itemsToDeleteManager?.itemsToDelete.removeAll()
+        navigationItem?.leftBarButtonItem = deleteButton
+        navigationItem?.rightBarButtonItems = [makeNewMessageButton, makeNewProxyButton]
+        makeNewProxyButton.isEnabled = true
+        makeNewProxyButton.customView?.isHidden = false
+        if container.proxiesManager.proxies.isEmpty {
+            animateButton(makeNewProxyButton, loop: true)
+        }
+    }
+
+    @objc func setEditModeButtons() {
+        tableView?.setEditing(true, animated: true)
+        navigationItem?.leftBarButtonItem = cancelButton
+        navigationItem?.rightBarButtonItems = [confirmButton, makeNewProxyButton]
+        makeNewProxyButton.isEnabled = false
+        makeNewProxyButton.customView?.isHidden = true
+    }
+
+    @objc func deleteSelectedItems() {
+        guard let itemsToDelete = itemsToDeleteManager?.itemsToDelete else {
             return
         }
-        if itemsToDeleteManager.itemsToDelete.isEmpty {
+        if itemsToDelete.isEmpty {
             setDefaultButtons()
             return
         }
         let alert = UIAlertController(title: "Delete Proxies?", message: "Your conversations for the proxies will also be deleted.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
-            for (_, item) in itemsToDeleteManager.itemsToDelete {
+            for (_, item) in itemsToDelete {
                 guard let proxy = item as? Proxy else {
                     continue
                 }
@@ -48,32 +81,27 @@ class ProxiesButtonManager: ButtonManaging {
         controller?.present(alert, animated: true)
     }
 
-    func _makeNewProxy() {
-        guard let uid = uid  else {
-            return
-        }
-        controller?.navigationItem.disableRightBarButtonItem(index: 1)
+    @objc func makeNewProxy() {
+        makeNewProxyButton.isEnabled = false
+        animateButton(makeNewProxyButton)
         DB.makeProxy(uid: uid, currentProxyCount: container.proxiesManager.proxies.count) { (result) in
-            self.controller?.navigationItem.enableRightBarButtonItem(index: 1)
             switch result {
             case .failure(let error):
                 self.controller?.showAlert(title: "Error Creating Proxy", message: error.description)
             case .success:
                 self.controller?.scrollToTop()
             }
+            self.makeNewProxyButton.isEnabled = true
         }
     }
 
-    func _setDefaultButtons() {
-        setDefaultButtons()
-    }
-
-    func _setEditModeButtons() {
-        setEditModeButtons()
-    }
-
-    func _showMakeNewMessageController() {
-        guard let uid = uid, let controller = controller else {
+    @objc func showMakeNewMessageController() {
+        defer {
+            makeNewMessageButton.isEnabled = true
+        }
+        makeNewMessageButton.isEnabled = false
+        animateButton(makeNewMessageButton)
+        guard let controller = controller else {
             return
         }
         controller.showMakeNewMessageController(uid: uid, sender: nil, controller: controller, container: container)

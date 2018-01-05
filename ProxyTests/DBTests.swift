@@ -43,7 +43,7 @@ class DBTests: DBTest {
                     XCTAssert(success)
                     
                     DB.get("test") { (data) in
-                        XCTAssertFalse(data?.exists() ?? true)
+                        XCTAssertFalse(data!.exists())
                         expectation.fulfill()
                     }
                 }

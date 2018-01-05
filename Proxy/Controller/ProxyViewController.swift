@@ -23,7 +23,7 @@ class ProxyViewController: UIViewController, Closing, MakeNewMessageDelegate {
 
         proxyManager.load(uid: proxy.ownerId, key: proxy.key, tableView: tableView, closer: self)
 
-        convosManager.load(uid: proxy.ownerId, proxyKey: proxy.key, tableView: tableView)
+        convosManager.load(uid: proxy.ownerId, proxyKey: proxy.key, manager: nil, tableView: tableView)
 
         dataSource.load(proxyManager: proxyManager, convosManager: convosManager, controller: self)
 

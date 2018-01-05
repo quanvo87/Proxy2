@@ -17,9 +17,9 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
 
         navigationItem.title = "My Proxies"
 
-        buttonManager.load(uid: uid, itemsToDeleteManager: itemsToDeleteManager, tableView: tableView, proxiesViewController: self, container: container)
+        buttonManager.load(container: container, uid: uid, controller: self, itemsToDeleteManager: itemsToDeleteManager, tableView: tableView)
         
-        container.proxiesManager.load(uid: uid, tableView: tableView, controller: self)
+        container.proxiesManager.load(uid: uid, controller: self, manager: buttonManager, tableView: tableView)
 
         dataSource.load(accessoryType: .disclosureIndicator, container: container)
 
@@ -41,6 +41,14 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
         if let newConvo = newConvo {
             navigationController?.showConvoViewController(convo: newConvo, container: container)
             self.newConvo = nil
+        }
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(true)
+        // todo: else stop animating
+        if container.proxiesManager.proxies.isEmpty {
+            buttonManager.animateButton(buttonManager.makeNewProxyButton, loop: true)
         }
     }
 

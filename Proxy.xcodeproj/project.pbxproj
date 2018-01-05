@@ -115,6 +115,7 @@
 		59EC6F591F9C0552009D7A6C /* SenderPickerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59EC6F581F9C0552009D7A6C /* SenderPickerDelegate.swift */; };
 		59EC6F5D1F9D22EA009D7A6C /* StoryboardMakable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59EC6F5C1F9D22EA009D7A6C /* StoryboardMakable.swift */; };
 		59F060581FFC4AFA000B9223 /* PresenceManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F060571FFC4AFA000B9223 /* PresenceManaging.swift */; };
+		59F9ABAA1FFF32790014B410 /* ViewGlower.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F9ABA91FFF32790014B410 /* ViewGlower.swift */; };
 		59FF373D1F97984200FA1AF0 /* AuthManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59FF373C1F97984200FA1AF0 /* AuthManaging.swift */; };
 		59FF37421F97A6AA00FA1AF0 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59FF37411F97A6AA00FA1AF0 /* TabBarController.swift */; };
 		9F0C2E94B3D2ACDB881894D0 /* Pods_ProxyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 677A1D9397BD6DC3C3277EF9 /* Pods_ProxyTests.framework */; };
@@ -255,6 +256,7 @@
 		59EC6F581F9C0552009D7A6C /* SenderPickerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SenderPickerDelegate.swift; sourceTree = "<group>"; };
 		59EC6F5C1F9D22EA009D7A6C /* StoryboardMakable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryboardMakable.swift; sourceTree = "<group>"; };
 		59F060571FFC4AFA000B9223 /* PresenceManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresenceManaging.swift; sourceTree = "<group>"; };
+		59F9ABA91FFF32790014B410 /* ViewGlower.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewGlower.swift; sourceTree = "<group>"; };
 		59FF373C1F97984200FA1AF0 /* AuthManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManaging.swift; sourceTree = "<group>"; };
 		59FF37411F97A6AA00FA1AF0 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		677A1D9397BD6DC3C3277EF9 /* Pods_ProxyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ProxyTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -546,6 +548,7 @@
 				5973C8391F608A1F00647492 /* LoginService.swift */,
 				5973C81D1F608A1B00647492 /* ProxyError.swift */,
 				59B5007C1F6A3469002D4C29 /* ReceiverPicker.swift */,
+				59F9ABA91FFF32790014B410 /* ViewGlower.swift */,
 				5973C8131F608A1A00647492 /* NSDate+NVTimeAgo.h */,
 				5973C8181F608A1A00647492 /* NSDate+NVTimeAgo.m */,
 			);
@@ -801,6 +804,7 @@
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
 				"${BUILT_PRODUCTS_DIR}/GroupWork/GroupWork.framework",
 				"${BUILT_PRODUCTS_DIR}/MessageKit/MessageKit.framework",
+				"${BUILT_PRODUCTS_DIR}/Spring/Spring.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftVideoBackground/SwiftVideoBackground.framework",
 				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
@@ -816,6 +820,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GroupWork.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MessageKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Spring.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftVideoBackground.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
@@ -874,6 +879,7 @@
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
 				"${BUILT_PRODUCTS_DIR}/GroupWork/GroupWork.framework",
 				"${BUILT_PRODUCTS_DIR}/MessageKit/MessageKit.framework",
+				"${BUILT_PRODUCTS_DIR}/Spring/Spring.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftVideoBackground/SwiftVideoBackground.framework",
 				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
@@ -889,6 +895,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GroupWork.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MessageKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Spring.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftVideoBackground.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
@@ -1012,6 +1019,7 @@
 				5973C8611F608A2200647492 /* DB.swift in Sources */,
 				5973C87A1F608A2200647492 /* AuthObserver.swift in Sources */,
 				5973C85E1F608A2200647492 /* SenderProxyTableViewCell.swift in Sources */,
+				59F9ABAA1FFF32790014B410 /* ViewGlower.swift in Sources */,
 				590441EB1F98351E0015CE16 /* ConvosViewController.swift in Sources */,
 				59AF0E7C1F7B5129009F6F38 /* ProxiesButtonManager.swift in Sources */,
 				5973C85B1F608A2200647492 /* DBProxy.swift in Sources */,

@@ -1,52 +1,40 @@
 import UIKit
 
 class ConvosButtonManager: ButtonManaging {
-    var itemsToDeleteManager: ItemsToDeleteManaging?
-    var cancelButton = UIBarButtonItem()
-    var confirmButton = UIBarButtonItem()
-    var deleteButton = UIBarButtonItem()
+    let viewGlower = ViewGlower()
     var makeNewMessageButton = UIBarButtonItem()
     var makeNewProxyButton = UIBarButtonItem()
-    weak var navigationItem: UINavigationItem?
-    weak var tableView: UITableView?
-
-    private var uid: String?
     private var container: DependencyContaining = DependencyContainer.container
-    private weak var makeNewMessageDelegate: MakeNewMessageDelegate?
+    private var uid = ""
     private weak var controller: UIViewController?
+    private weak var makeNewMessageDelegate: MakeNewMessageDelegate?
 
-    func load(uid: String, makeNewMessageDelegate: MakeNewMessageDelegate, controller: UIViewController, container: DependencyContaining) {
-        self.uid = uid
-        self.makeNewMessageDelegate = makeNewMessageDelegate
-        self.controller = controller
+    func load(container: DependencyContaining,
+              uid: String,
+              controller: UIViewController,
+              makeNewMessageDelegate: MakeNewMessageDelegate) {
         self.container = container
-        navigationItem = controller.navigationItem
+        self.uid = uid
+        self.controller = controller
+        self.makeNewMessageDelegate = makeNewMessageDelegate
         makeButtons()
-        setDefaultButtons()
+        controller.navigationItem.rightBarButtonItems = [makeNewMessageButton, makeNewProxyButton]
     }
+}
 
+private extension ConvosButtonManager {
     func makeButtons() {
-        makeNewMessageButton = UIBarButtonItem.make(target: self, action: #selector(_showMakeNewMessageController), imageName: ButtonName.makeNewMessage)
-        makeNewProxyButton = UIBarButtonItem.make(target: self, action: #selector(_makeNewProxy), imageName: ButtonName.makeNewProxy)
+        makeNewMessageButton = UIBarButtonItem.make(target: self, action: #selector(showMakeNewMessageController), imageName: ButtonName.makeNewMessage)
+        makeNewProxyButton = UIBarButtonItem.make(target: self, action: #selector(makeNewProxy), imageName: ButtonName.makeNewProxy)
     }
 
-    func setDefaultButtons() {
-        navigationItem?.rightBarButtonItems = [makeNewMessageButton, makeNewProxyButton]
-    }
-
-    func _deleteSelectedItems() {}
-
-    func _makeNewProxy() {
-        guard let uid = uid else {
-            return
-        }
-        navigationItem?.disableRightBarButtonItem(index: 1)
+    @objc func makeNewProxy() {
+        makeNewProxyButton.isEnabled = false
+        animateButton(makeNewProxyButton)
         DB.makeProxy(uid: uid, currentProxyCount: container.proxiesManager.proxies.count) { (result) in
-            self.navigationItem?.enableRightBarButtonItem(index: 1)
             switch result {
             case .failure(let error):
                 self.controller?.showAlert(title: "Error Creating Proxy", message: error.description)
-                self.controller?.tabBarController?.selectedIndex = 1
             case .success:
                 guard
                     let proxiesNavigationController = self.controller?.tabBarController?.viewControllers?[safe: 1] as? UINavigationController,
@@ -54,17 +42,19 @@ class ConvosButtonManager: ButtonManaging {
                         return
                 }
                 proxiesViewController.scrollToTop()
-                self.controller?.tabBarController?.selectedIndex = 1
             }
+            self.controller?.tabBarController?.selectedIndex = 1
+            self.makeNewProxyButton.isEnabled = true
         }
     }
 
-    func _setDefaultButtons() {}
-
-    func _setEditModeButtons() {}
-
-    func _showMakeNewMessageController() {
-        guard let uid = uid, let controller = controller else {
+    @objc func showMakeNewMessageController() {
+        defer {
+            makeNewMessageButton.isEnabled = true
+        }
+        makeNewMessageButton.isEnabled = false
+        animateButton(makeNewMessageButton)
+        guard let controller = controller else {
             return
         }
         makeNewMessageDelegate?.showMakeNewMessageController(uid: uid, sender: nil, controller: controller, container: container)

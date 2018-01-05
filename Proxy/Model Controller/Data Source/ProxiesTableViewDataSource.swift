@@ -26,8 +26,8 @@ extension ProxiesTableViewDataSource: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        if container.proxiesManager.proxies.count == 0 {
-            return "Make a new Proxy to begin chatting."
+        if container.proxiesManager.proxies.isEmpty {
+            return "Tap the bouncing button to make a new Proxy 👶🏾."
         } else {
             return nil
         }

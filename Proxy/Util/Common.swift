@@ -1,4 +1,5 @@
 import Firebase
+import Spring
 import UIKit
 
 enum Result<T, Error> {
@@ -122,6 +123,16 @@ extension NSAttributedString {
     }
 }
 
+extension SpringButton {
+    func morph(loop: Bool = false) {
+        animation = "morph"
+        curve = "spring"
+        duration = loop ? 1 : 0.8
+        repeatCount = loop ? .infinity : 0
+        animate()
+    }
+}
+
 extension String {
     var noWhiteSpaces: String {
         return components(separatedBy: .whitespacesAndNewlines).joined()
@@ -142,15 +153,32 @@ extension String {
         let boldAttr = [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: size)]
         return NSMutableAttributedString(string: self, attributes: boldAttr)
     }
+
+    // https://gist.github.com/oaleeapp/c0b02b96cc706283fce54e9170d25a24
+    static var randomEmoji: String {
+        let emojiStart = 0x1F601
+        let ascii = emojiStart + Int(arc4random_uniform(UInt32(35)))
+        let emoji = UnicodeScalar(ascii)?.description
+        return emoji ?? "😍"
+    }
 }
 
 extension UIBarButtonItem {
     static func make(target: Any?, action: Selector, imageName: String) -> UIBarButtonItem {
-        let button = UIButton(type: .custom)
+        let button = SpringButton(type: .custom)
         button.addTarget(target, action: action, for: .touchUpInside)
         button.frame = Setting.navBarButtonCGRect
         button.setImage(UIImage(named: imageName), for: .normal)
         return UIBarButtonItem(customView: button)
+    }
+
+    func morph(loop: Bool = false) {
+        customView?.layer.removeAllAnimations()
+        customView?.layer.shadowColor = UIColor.clear.cgColor
+        (customView as? SpringButton)?.morph(loop: loop)
+        if loop {
+            customView?.addGlow()
+        }
     }
 }
 
@@ -198,22 +226,6 @@ extension UINavigationController {
     }
 }
 
-extension UINavigationItem {
-    func disableRightBarButtonItem(index: Int) {
-        guard let item = self.rightBarButtonItems?[safe: index] else {
-            return
-        }
-        item.isEnabled = false
-    }
-
-    func enableRightBarButtonItem(index: Int) {
-        guard let item = self.rightBarButtonItems?[safe: index] else {
-            return
-        }
-        item.isEnabled = true
-    }
-}
-
 extension UIStoryboard {
     static let main: UIStoryboard = {
         return UIStoryboard(name: "Main", bundle: nil)
@@ -225,6 +237,16 @@ extension UITableView {
         for case let scrollView as UIScrollView in self.subviews {
             scrollView.delaysContentTouches = value
         }
+    }
+}
+
+extension UIView {
+    func addGlow(color: CGColor = UIColor.blue.cgColor) {
+        layer.shadowColor = color
+        layer.shadowRadius = 4
+        layer.shadowOpacity = 0.9
+        layer.shadowOffset = .zero
+        layer.masksToBounds = false
     }
 }
 

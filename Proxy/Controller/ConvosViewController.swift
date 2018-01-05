@@ -17,9 +17,9 @@ class ConvosViewController: UIViewController, MakeNewMessageDelegate {
 
         navigationItem.title = "Messages"
 
-        buttonManager.load(uid: uid, makeNewMessageDelegate: self, controller: self, container: container)
+        buttonManager.load(container: container, uid: uid, controller: self, makeNewMessageDelegate: self)
         
-        convosManager.load(uid: uid, proxyKey: nil, tableView: tableView)
+        convosManager.load(uid: uid, proxyKey: nil, manager: buttonManager, tableView: tableView)
 
         container.unreadMessagesManager.load(uid: uid, controller: self, container: container)
 
@@ -43,6 +43,13 @@ class ConvosViewController: UIViewController, MakeNewMessageDelegate {
         if let newConvo = newConvo {
             navigationController?.showConvoViewController(convo: newConvo, container: container)
             self.newConvo = nil
+        }
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(true)
+        if convosManager.convos.isEmpty {
+            buttonManager.animateButton(buttonManager.makeNewMessageButton, loop: true)
         }
     }
 
