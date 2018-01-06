@@ -227,8 +227,18 @@ extension UInt {
 }
 
 extension UINavigationController {
-    func showConvoViewController(convo: Convo, container: DependencyContaining) {
-        pushViewController(ConvoViewController(convo: convo, container: container), animated: true)
+    func showConvoViewController(convo: Convo,
+                                 presenceManager: PresenceManaging,
+                                 proxiesManager: ProxiesManaging,
+                                 unreadMessagesManager: UnreadMessagesManaging) {
+        pushViewController(ConvoViewController(convo: convo, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager), animated: true)
+    }
+
+    func showProxyController(proxy: Proxy,
+                             presenceManager: PresenceManaging,
+                             proxiesManager: ProxiesManaging,
+                             unreadMessagesManager: UnreadMessagesManaging) {
+        pushViewController(ProxyViewController(proxy: proxy, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager), animated: true)
     }
 }
 
@@ -297,10 +307,6 @@ extension UIViewController {
         let viewController = IconPickerViewController(proxy)
         let navigationController = UINavigationController(rootViewController: viewController)
         present(navigationController, animated: true)
-    }
-
-    func showProxyController(proxy: Proxy, container: DependencyContaining) {
-        navigationController?.pushViewController(ProxyViewController(proxy: proxy, container: container), animated: true)
     }
 }
 

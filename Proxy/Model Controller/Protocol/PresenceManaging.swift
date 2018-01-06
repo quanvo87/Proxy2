@@ -1,5 +1,6 @@
 protocol PresenceManaging: class {
     var presentInConvo: String { get set }
+    func load(_ manager: UnreadMessagesManaging)
     func enterConvo(_ key: String)
 }
 
@@ -13,14 +14,17 @@ class PresenceManager: PresenceManaging {
     var presentInConvo = ""
     private weak var manager: UnreadMessagesManaging?
 
-    init(_ manager: UnreadMessagesManaging) {
+    func load(_ manager: UnreadMessagesManaging) {
         self.manager = manager
     }
 
     func enterConvo(_ key: String) {
+        guard let unreadMessages = manager?.unreadMessages else {
+            return
+        }
         presentInConvo = key
         var untouchedMessages = [Message]()
-        for message in (manager?.unreadMessages) ?? [] {
+        for message in unreadMessages {
             if message.parentConvoKey == key {
                 DB.read(message) { _ in }
             } else {

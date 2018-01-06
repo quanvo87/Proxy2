@@ -1,18 +1,13 @@
 import UIKit
 import ViewGlower
 
-typealias ButtonManaging = ButtonOwning & ButtonEditing
-
-@objc protocol ButtonOwning {
+protocol ButtonManaging: class {
     var makeNewMessageButton: UIBarButtonItem { get set }
     var makeNewProxyButton: UIBarButtonItem { get set }
-}
-
-protocol ButtonEditing: ButtonOwning {
     var viewGlower: ViewGlower { get }
 }
 
-extension ButtonEditing {
+extension ButtonManaging {
     func animate(_ button: UIBarButtonItem, loop: Bool = false) {
         button.morph(loop: loop)
         if loop {

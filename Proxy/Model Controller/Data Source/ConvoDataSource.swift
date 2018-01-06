@@ -2,21 +2,21 @@ import MessageKit
 
 class ConvoDataSource {
     private weak var convoManager: ConvoManaging?
-    private weak var messagesManager: MessagesManaging?
     private weak var iconManager: IconManaging?
-
-    private var messages: [MessageType] {
-        return messagesManager?.messages ?? []
-    }
+    private weak var messagesManager: MessagesManaging?
 
     private var icons: [String: UIImage] {
         return iconManager?.icons ?? [:]
     }
 
-    func load(convoManager: ConvoManaging, messagesManager: MessagesManaging, iconManager: IconManaging) {
+    private var messages: [MessageType] {
+        return messagesManager?.messages ?? []
+    }
+
+    func load(convoManager: ConvoManaging, iconManager: IconManaging, messagesManager: MessagesManaging) {
         self.convoManager = convoManager
-        self.messagesManager = messagesManager
         self.iconManager = iconManager
+        self.messagesManager = messagesManager
     }
 }
 

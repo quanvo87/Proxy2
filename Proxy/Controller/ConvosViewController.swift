@@ -2,30 +2,36 @@ import UIKit
 
 class ConvosViewController: UIViewController, MakeNewMessageDelegate {
     var newConvo: Convo?
-
+    private let buttonManager = ConvosButtonManager()
     private let convosManager = ConvosManager()
     private let dataSource = ConvosTableViewDataSource()
     private let delegate = ConvosTableViewDelegate()
     private let tableView = UITableView(frame: .zero, style: .grouped)
-    private let buttonManager = ConvosButtonManager()
-    private let container: DependencyContaining
+    private weak var presenceManager: PresenceManaging?
+    private weak var proxiesManager: ProxiesManaging?
+    private weak var unreadMessagesManager: UnreadMessagesManaging?
 
-    init(uid: String, container: DependencyContaining) {
-        self.container = container
+    init(uid: String,
+         presenceManager: PresenceManaging,
+         proxiesManager: ProxiesManaging,
+         unreadMessagesManager: UnreadMessagesManaging) {
+        self.presenceManager = presenceManager
+        self.proxiesManager = proxiesManager
+        self.unreadMessagesManager = unreadMessagesManager
         
         super.init(nibName: nil, bundle: nil)
 
         navigationItem.title = "Messages"
 
-        buttonManager.load(container: container, uid: uid, controller: self, makeNewMessageDelegate: self)
+        buttonManager.load(uid: uid, controller: self, makeNewMessageDelegate: self, manager: proxiesManager)
         
         convosManager.load(uid: uid, proxyKey: nil, manager: buttonManager, tableView: tableView)
 
-        container.unreadMessagesManager.load(uid: uid, controller: self, container: container)
+        unreadMessagesManager.load(uid: uid, controller: self, presenceManager: presenceManager, proxiesManager: proxiesManager)
 
         dataSource.load(manager: convosManager)
 
-        delegate.load(manager: convosManager, controller: self, container: container)
+        delegate.load(controller: self, convosManager: convosManager, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
 
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.dataSource = dataSource
@@ -40,10 +46,15 @@ class ConvosViewController: UIViewController, MakeNewMessageDelegate {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        if let newConvo = newConvo {
-            navigationController?.showConvoViewController(convo: newConvo, container: container)
-            self.newConvo = nil
+        guard
+            let newConvo = newConvo,
+            let presenceManager = presenceManager,
+            let proxiesManager = proxiesManager,
+            let unreadMessagesManager = unreadMessagesManager else {
+                return
         }
+        navigationController?.showConvoViewController(convo: newConvo, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
+        self.newConvo = nil
     }
 
     override func viewDidAppear(_ animated: Bool) {

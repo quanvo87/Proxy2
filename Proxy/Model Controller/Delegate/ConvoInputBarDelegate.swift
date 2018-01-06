@@ -1,12 +1,12 @@
 import MessageKit
 
 class ConvoInputBarDelegate {
-    private weak var manager: ConvoManaging?
     private weak var controller: UIViewController?
+    private weak var manager: ConvoManaging?
 
-    func load(manager: ConvoManaging, controller: UIViewController) {
-        self.manager = manager
+    func load(controller: UIViewController, manager: ConvoManaging) {
         self.controller = controller
+        self.manager = manager
     }
 }
 

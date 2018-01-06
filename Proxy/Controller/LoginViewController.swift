@@ -13,7 +13,8 @@ class LoginViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let videos = ["arabiangulf", "beachpalm", "dragontailzipline", "hawaiiancoast"]
+//        let videos = ["arabiangulf", "beachpalm", "dragontailzipline", "hawaiiancoast"]
+        let videos = ["arabiangulf", "beachpalm", "hawaiiancoast"]
         let random = Int(arc4random_uniform(UInt32(videos.count)))
 
         videoBackground.play(view: view, videoName: videos[random], videoType: "mp4", alpha: 0.1)

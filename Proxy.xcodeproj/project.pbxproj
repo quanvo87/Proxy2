@@ -308,8 +308,8 @@
 		5966076A1F977C1500874741 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				59DECF5E1FEA56AD009ABB36 /* ConvoViewController.swift */,
 				598F89FD1FEB401200CCF024 /* ConvoDetailViewController.swift */,
+				59DECF5E1FEA56AD009ABB36 /* ConvoViewController.swift */,
 				590441EA1F98351E0015CE16 /* ConvosViewController.swift */,
 				5973C82C1F608A1D00647492 /* IconPickerViewController.swift */,
 				5973C8221F608A1B00647492 /* LoginViewController.swift */,
@@ -541,6 +541,7 @@
 			isa = PBXGroup;
 			children = (
 				59C6138E1F9F7EFE0014F414 /* Proxy Service */,
+				599B8D401F98610C002F394A /* AppDelegate.swift */,
 				5973C8291F608A1C00647492 /* Common.swift */,
 				5973C83F1F608A2000647492 /* Constant.swift */,
 				5973C8391F608A1F00647492 /* LoginService.swift */,
@@ -555,9 +556,8 @@
 		59D8D2B31F977F3500909572 /* Other */ = {
 			isa = PBXGroup;
 			children = (
-				59C171B51F60C65000EDE032 /* Login Splash Videos */,
 				59B432E61F60648400622DEA /* Assets.xcassets */,
-				599B8D401F98610C002F394A /* AppDelegate.swift */,
+				59C171B51F60C65000EDE032 /* Login Splash Videos */,
 				59B432EB1F60648400622DEA /* Info.plist */,
 				5973C80F1F60840F00647492 /* GoogleService-Info.plist */,
 				59B432E81F60648400622DEA /* LaunchScreen.storyboard */,

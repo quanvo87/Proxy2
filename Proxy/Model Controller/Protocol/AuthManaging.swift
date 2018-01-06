@@ -26,7 +26,7 @@ extension AuthManager: AuthManaging {
             changeRequest.displayName = email
             changeRequest.commitChanges()
         }
-        window?.rootViewController = TabBarController(displayName: displayName, uid: user.uid, container: DependencyContainer.container)
+        window?.rootViewController = TabBarController(uid: user.uid, displayName: displayName)
         loggedIn = true
     }
 

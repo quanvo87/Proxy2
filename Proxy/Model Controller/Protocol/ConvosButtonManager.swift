@@ -5,19 +5,20 @@ class ConvosButtonManager: ButtonManaging {
     let viewGlower = ViewGlower()
     var makeNewMessageButton = UIBarButtonItem()
     var makeNewProxyButton = UIBarButtonItem()
-    private var container: DependencyContaining = DependencyContainer.container
+    // todo: make optional
     private var uid = ""
     private weak var controller: UIViewController?
     private weak var makeNewMessageDelegate: MakeNewMessageDelegate?
+    private weak var manager: ProxiesManaging?
 
-    func load(container: DependencyContaining,
-              uid: String,
+    func load(uid: String,
               controller: UIViewController,
-              makeNewMessageDelegate: MakeNewMessageDelegate) {
-        self.container = container
+              makeNewMessageDelegate: MakeNewMessageDelegate,
+              manager: ProxiesManaging) {
         self.uid = uid
         self.controller = controller
         self.makeNewMessageDelegate = makeNewMessageDelegate
+        self.manager = manager
         makeButtons()
         controller.navigationItem.rightBarButtonItems = [makeNewMessageButton, makeNewProxyButton]
     }
@@ -30,9 +31,12 @@ private extension ConvosButtonManager {
     }
 
     @objc func makeNewProxy() {
+        guard let proxyCount = manager?.proxies.count else {
+            return
+        }
         makeNewProxyButton.isEnabled = false
         animate(makeNewProxyButton)
-        DB.makeProxy(uid: uid, currentProxyCount: container.proxiesManager.proxies.count) { (result) in
+        DB.makeProxy(uid: uid, currentProxyCount: proxyCount) { (result) in
             switch result {
             case .failure(let error):
                 self.controller?.showAlert(title: "Error Creating Proxy", message: error.description)
@@ -55,9 +59,11 @@ private extension ConvosButtonManager {
         }
         makeNewMessageButton.isEnabled = false
         animate(makeNewMessageButton)
-        guard let controller = controller else {
-            return
+        guard
+            let controller = controller,
+            let manager = manager else {
+                return
         }
-        makeNewMessageDelegate?.showMakeNewMessageController(uid: uid, sender: nil, controller: controller, container: container)
+        makeNewMessageDelegate?.showMakeNewMessageController(sender: nil, uid: uid, manager: manager, controller: controller)
     }
 }

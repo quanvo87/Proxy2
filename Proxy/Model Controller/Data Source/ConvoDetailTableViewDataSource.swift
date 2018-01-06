@@ -1,14 +1,14 @@
 import UIKit
 
 class ConvoDetailTableViewDataSource: NSObject {
+    private weak var controller: UIViewController?
     private weak var convoManager: ConvoManaging?
     private weak var proxyManager: ProxyManaging?
-    private weak var controller: UIViewController?
 
-    func load(convoManager: ConvoManaging, proxyManager: ProxyManaging, controller: UIViewController) {
+    func load(controller: UIViewController, convoManager: ConvoManaging, proxyManager: ProxyManaging) {
+        self.controller = controller
         self.convoManager = convoManager
         self.proxyManager = proxyManager
-        self.controller = controller
     }
 }
 

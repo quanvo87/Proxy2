@@ -2,23 +2,25 @@ import UIKit
 
 class ConvoDetailViewController: UIViewController, Closing {
     var shouldClose: Bool = false
-
     private let convoManager = ConvoManager()
-    private let proxyManager = ProxyManager()
     private let dataSource = ConvoDetailTableViewDataSource()
     private let delegate = ConvoDetailTableViewDelegate()
+    private let proxyManager = ProxyManager()
     private let tableView = UITableView(frame: .zero, style: .grouped)
 
-    init(convo: Convo, container: DependencyContaining) {
+    init(convo: Convo,
+         presenceManager: PresenceManaging,
+         proxiesManager: ProxiesManaging,
+         unreadMessagesManager: UnreadMessagesManaging) {
         super.init(nibName: nil, bundle: nil)
 
         convoManager.load(uid: convo.senderId, key: convo.key, tableView: tableView, closer: self)
 
         proxyManager.load(uid: convo.senderId, key: convo.senderProxyKey, tableView: tableView, closer: self)
 
-        dataSource.load(convoManager: convoManager, proxyManager: proxyManager, controller: self)
+        dataSource.load(controller: self, convoManager: convoManager, proxyManager: proxyManager)
 
-        delegate.load(convoManager: convoManager, proxyManager: proxyManager, controller: self, container: container)
+        delegate.load(controller: self, convoManager: convoManager, presenceManager: presenceManager, proxiesManager: proxiesManager, proxyManager: proxyManager, unreadMessagesManager: unreadMessagesManager)
 
         tableView.dataSource = dataSource
         tableView.delegate = delegate

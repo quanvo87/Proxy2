@@ -8,22 +8,23 @@ class ProxiesButtonManager: ButtonManaging {
     var deleteButton = UIBarButtonItem()
     var makeNewMessageButton = UIBarButtonItem()
     var makeNewProxyButton = UIBarButtonItem()
-    private var container: DependencyContaining = DependencyContainer.container
     private var uid = ""
     private weak var controller: ProxiesViewController?
     private weak var itemsToDeleteManager: ItemsToDeleteManaging?
     private weak var navigationItem: UINavigationItem?
+    private weak var proxiesManager: ProxiesManaging?
     private weak var tableView: UITableView?
 
-    func load(container: DependencyContaining,
-              uid: String,
+    // todo: use proxiesvc delegate
+    func load(uid: String,
               controller: ProxiesViewController,
               itemsToDeleteManager: ItemsToDeleteManaging,
+              proxiesManager: ProxiesManaging,
               tableView: UITableView) {
-        self.container = container
         self.uid = uid
         self.controller = controller
         self.itemsToDeleteManager = itemsToDeleteManager
+        self.proxiesManager = proxiesManager
         self.navigationItem = controller.navigationItem
         self.tableView = tableView
         makeButtons()
@@ -47,7 +48,7 @@ private extension ProxiesButtonManager {
         navigationItem?.rightBarButtonItems = [makeNewMessageButton, makeNewProxyButton]
         makeNewProxyButton.isEnabled = true
         makeNewProxyButton.customView?.isHidden = false
-        if container.proxiesManager.proxies.isEmpty {
+        if proxiesManager?.proxies.isEmpty ?? false {
             animate(makeNewProxyButton, loop: true)
         }
     }
@@ -83,9 +84,12 @@ private extension ProxiesButtonManager {
     }
 
     @objc func makeNewProxy() {
+        guard let proxyCount = proxiesManager?.proxies.count else {
+            return
+        }
         makeNewProxyButton.isEnabled = false
         animate(makeNewProxyButton)
-        DB.makeProxy(uid: uid, currentProxyCount: container.proxiesManager.proxies.count) { (result) in
+        DB.makeProxy(uid: uid, currentProxyCount: proxyCount) { (result) in
             switch result {
             case .failure(let error):
                 self.controller?.showAlert(title: "Error Creating Proxy", message: error.description)
@@ -102,9 +106,10 @@ private extension ProxiesButtonManager {
         }
         makeNewMessageButton.isEnabled = false
         animate(makeNewMessageButton)
-        guard let controller = controller else {
-            return
+        guard let controller = controller,
+            let proxiesManager = proxiesManager else {
+                return
         }
-        controller.showMakeNewMessageController(uid: uid, sender: nil, controller: controller, container: container)
+        controller.showMakeNewMessageController(sender: nil, uid: uid, manager: proxiesManager, controller: controller)
     }
 }

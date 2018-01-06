@@ -28,7 +28,6 @@ class ProxiesManager: ProxiesManaging {
     private weak var manager: ButtonManaging?
     private weak var tableView: UITableView?
 
-
     func load(uid: String, controller: UIViewController?, manager: ButtonManaging?, tableView: UITableView) {
         self.controller = controller
         self.manager = manager

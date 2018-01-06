@@ -1,20 +1,20 @@
 import UIKit
 
 class SenderPickerTableViewDelegate: NSObject {
-    private var container: DependencyContaining = DependencyContainer.container
-    private weak var delegate: SenderPickerDelegate?
     private weak var controller: UIViewController?
+    private weak var delegate: SenderPickerDelegate?
+    private weak var manager: ProxiesManaging?
 
-    func load(delegate: SenderPickerDelegate, controller: UIViewController, container: DependencyContaining) {
-        self.delegate = delegate
+    func load(controller: UIViewController, delegate: SenderPickerDelegate, manager: ProxiesManaging) {
         self.controller = controller
-        self.container = container
+        self.delegate = delegate
+        self.manager = manager
     }
 }
 
 extension SenderPickerTableViewDelegate: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let proxy = container.proxiesManager.proxies[safe: indexPath.row] else {
+        guard let proxy = manager?.proxies[safe: indexPath.row] else {
             return
         }
         delegate?.sender = proxy

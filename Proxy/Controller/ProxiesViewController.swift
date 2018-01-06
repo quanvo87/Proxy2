@@ -2,28 +2,35 @@ import UIKit
 
 class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
     var newConvo: Convo?
-
     private let itemsToDeleteManager = ItemsToDeleteManager()
     private let dataSource = ProxiesTableViewDataSource()
     private let delegate = ProxiesTableViewDelegate()
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let buttonManager = ProxiesButtonManager()
-    private let container: DependencyContaining
+    private weak var presenceManager: PresenceManaging?
+    private weak var proxiesManager: ProxiesManaging?
+    private weak var unreadMessagesManager: UnreadMessagesManaging?
 
-    init(uid: String, container: DependencyContaining) {
-        self.container = container
+    init(uid: String,
+         presenceManager: PresenceManaging,
+         proxiesManager: ProxiesManaging,
+         unreadMessagesManager: UnreadMessagesManaging) {
+        self.presenceManager = presenceManager
+        self.proxiesManager = proxiesManager
+        self.unreadMessagesManager = unreadMessagesManager
         
         super.init(nibName: nil, bundle: nil)
 
         navigationItem.title = "My Proxies"
 
-        buttonManager.load(container: container, uid: uid, controller: self, itemsToDeleteManager: itemsToDeleteManager, tableView: tableView)
+        buttonManager.load(uid: uid, controller: self, itemsToDeleteManager: itemsToDeleteManager, proxiesManager: proxiesManager, tableView: tableView)
+
         
-        container.proxiesManager.load(uid: uid, controller: self, manager: buttonManager, tableView: tableView)
+        proxiesManager.load(uid: uid, controller: self, manager: buttonManager, tableView: tableView)
 
-        dataSource.load(accessoryType: .disclosureIndicator, container: container)
+        dataSource.load(accessoryType: .disclosureIndicator, manager: proxiesManager)
 
-        delegate.load(manager: itemsToDeleteManager, controller: self, container: container)
+        delegate.load(controller: self, itemsToDeleteManager: itemsToDeleteManager, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
 
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.dataSource = dataSource
@@ -38,16 +45,20 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        if let newConvo = newConvo {
-            navigationController?.showConvoViewController(convo: newConvo, container: container)
-            self.newConvo = nil
+        guard
+            let newConvo = newConvo,
+            let presenceManager = presenceManager,
+            let proxiesManager = proxiesManager,
+            let unreadMessagesManager = unreadMessagesManager else {
+                return
         }
+        navigationController?.showConvoViewController(convo: newConvo, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
+        self.newConvo = nil
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
-        // todo: else stop animating
-        if container.proxiesManager.proxies.isEmpty {
+        if proxiesManager?.proxies.isEmpty ?? false {
             buttonManager.animate(buttonManager.makeNewProxyButton, loop: true)
         }
     }

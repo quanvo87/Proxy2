@@ -1,10 +1,10 @@
 import UIKit
 
 class IconPickerViewController: UIViewController {
-    private let proxy: Proxy
+    private let collectionView: UICollectionView
     private let dataSource = IconPickerCollectionViewDataSource()
     private let delegate = IconPickerCollectionViewDelegate()
-    private let collectionView: UICollectionView
+    private let proxy: Proxy
 
     init(_ proxy: Proxy) {
         self.proxy = proxy

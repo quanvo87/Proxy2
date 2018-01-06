@@ -1,20 +1,26 @@
 import UIKit
 
 class ProxyViewController: UIViewController, Closing, MakeNewMessageDelegate {
-    var shouldClose: Bool = false
     var newConvo: Convo?
-
-    private let proxy: Proxy
-    private let proxyManager = ProxyManager()
+    var shouldClose: Bool = false
     private let convosManager = ConvosManager()
     private let dataSource = ProxyTableViewDataSource()
     private let delegate = ProxyTableViewDelegate()
+    private let proxy: Proxy
+    private let proxyManager = ProxyManager()
     private let tableView = UITableView(frame: .zero, style: .grouped)
-    private let container: DependencyContaining
+    private weak var presenceManager: PresenceManaging?
+    private weak var proxiesManager: ProxiesManaging?
+    private weak var unreadMessagesManager: UnreadMessagesManaging?
 
-    init(proxy: Proxy, container: DependencyContaining) {
+    init(proxy: Proxy,
+         presenceManager: PresenceManaging,
+         proxiesManager: ProxiesManaging,
+         unreadMessagesManager: UnreadMessagesManaging) {
         self.proxy = proxy
-        self.container = container
+        self.presenceManager = presenceManager
+        self.proxiesManager = proxiesManager
+        self.unreadMessagesManager = unreadMessagesManager
 
         super.init(nibName: nil, bundle: nil)
 
@@ -25,9 +31,9 @@ class ProxyViewController: UIViewController, Closing, MakeNewMessageDelegate {
 
         convosManager.load(uid: proxy.ownerId, proxyKey: proxy.key, manager: nil, tableView: tableView)
 
-        dataSource.load(proxyManager: proxyManager, convosManager: convosManager, controller: self)
+        dataSource.load(controller: self, convosManager: convosManager, proxyManager: proxyManager)
 
-        delegate.load(manager: convosManager, controller: self, container: container)
+        delegate.load(controller: self, convosManager: convosManager, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
         
         tableView.dataSource = dataSource
         tableView.delaysContentTouches = false
@@ -47,10 +53,15 @@ class ProxyViewController: UIViewController, Closing, MakeNewMessageDelegate {
         if shouldClose {
             _ = navigationController?.popViewController(animated: false)
         }
-        if let newConvo = newConvo {
-            navigationController?.showConvoViewController(convo: newConvo, container: container)
-            self.newConvo = nil
+        guard
+            let newConvo = newConvo,
+            let presenceManager = presenceManager,
+            let proxiesManager = proxiesManager,
+            let unreadMessagesManager = unreadMessagesManager else {
+                return
         }
+        navigationController?.showConvoViewController(convo: newConvo, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
+        self.newConvo = nil
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -74,6 +85,9 @@ private extension ProxyViewController {
     }
 
     @objc func showMakeNewMessageController() {
-        showMakeNewMessageController(uid: proxy.ownerId, sender: proxy, controller: self, container: container)
+        guard let proxiesManager = proxiesManager else {
+            return
+        }
+        showMakeNewMessageController(sender: proxy, uid: proxy.ownerId, manager: proxiesManager, controller: self)
     }
 }

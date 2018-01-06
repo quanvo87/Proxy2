@@ -1,14 +1,14 @@
 import UIKit
 
 class SenderPickerViewController: UIViewController {
-    private let uid: String
-    private let manager = ProxiesManager()
     private let dataSource = ProxiesTableViewDataSource()
     private let delegate = SenderPickerTableViewDelegate()
+    private let manager = ProxiesManager()
     private let tableView = UITableView(frame: .zero, style: .grouped)
+    private let uid: String
     private weak var senderPickerDelegate: SenderPickerDelegate?
 
-    init(uid: String, senderPickerDelegate: SenderPickerDelegate, container: DependencyContaining) {
+    init(uid: String, senderPickerDelegate: SenderPickerDelegate) {
         self.uid = uid
         self.senderPickerDelegate = senderPickerDelegate
 
@@ -18,9 +18,9 @@ class SenderPickerViewController: UIViewController {
 
         manager.load(uid: uid, controller: nil, manager: nil, tableView: tableView)
 
-        dataSource.load(accessoryType: .none, container: container)
-     
-        delegate.load(delegate: senderPickerDelegate, controller: self, container: container)
+        dataSource.load(accessoryType: .none, manager: manager)
+
+        delegate.load(controller: self, delegate: senderPickerDelegate, manager: manager)
 
         tableView.dataSource = dataSource
         tableView.delegate = delegate
