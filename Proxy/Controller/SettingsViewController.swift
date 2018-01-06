@@ -1,21 +1,21 @@
 import UIKit
 
 class SettingsViewController: UIViewController {
-    private let manager = UserStatsManager()
     private let dataSource = SettingsTableViewDataSource()
     private let delegate = SettingsTableViewDelegate()
+    private let manager = UserStatsManager()
     private let tableView = UITableView(frame: .zero, style: .grouped)
 
     init(uid: String, displayName: String?) {
         super.init(nibName: nil, bundle: nil)
 
-        navigationItem.title = displayName
+        dataSource.load(manager)
+
+        delegate.load(self)
 
         manager.load(uid: uid, tableView: tableView)
 
-        dataSource.load(manager: manager)
-
-        delegate.load(controller: self)
+        navigationItem.title = displayName
 
         tableView.dataSource = dataSource
         tableView.delegate = delegate

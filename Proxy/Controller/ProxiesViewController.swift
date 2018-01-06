@@ -21,16 +21,15 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
         
         super.init(nibName: nil, bundle: nil)
 
-        navigationItem.title = "My Proxies"
-
-        buttonManager.load(uid: uid, controller: self, itemsToDeleteManager: itemsToDeleteManager, proxiesManager: proxiesManager, tableView: tableView)
-
-        
-        proxiesManager.load(uid: uid, controller: self, manager: buttonManager, tableView: tableView)
+        buttonManager.load(uid: uid, controller: self, delegate: self, itemsToDeleteManager: itemsToDeleteManager, proxiesManager: proxiesManager, tableView: tableView)
 
         dataSource.load(accessoryType: .disclosureIndicator, manager: proxiesManager)
 
         delegate.load(controller: self, itemsToDeleteManager: itemsToDeleteManager, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
+
+        navigationItem.title = "My Proxies"
+
+        proxiesManager.load(uid: uid, controller: self, manager: buttonManager, tableView: tableView)
 
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.dataSource = dataSource

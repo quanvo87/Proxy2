@@ -25,28 +25,28 @@ class ConvoViewController: MessagesViewController, Closing {
 
         super.init(nibName: nil, bundle: nil)
 
-        navigationItem.title = convo.receiverProxyName
-        navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self, action: #selector(showConvoDetailView), imageName: ButtonName.info)
-
-        maintainPositionOnKeyboardFrameChanged = true
-
-        convoManager.load(uid: convo.senderId, key: convo.key, navigationItem: navigationItem, collectionView: messagesCollectionView, closer: self)
+        convoManager.load(uid: convo.senderId, key: convo.key, collectionView: messagesCollectionView, navigationItem: navigationItem, closer: self)
 
         iconManager.load(convo: convo, collectionView: messagesCollectionView)
 
-        messagesManager.load(convoKey: convo.key, collectionView: messagesCollectionView)
+        inputBarDelegate.load(controller: self, manager: convoManager)
 
         dataSource.load(convoManager: convoManager, iconManager: iconManager, messagesManager: messagesManager)
 
         displayDelegate.load(dataSource: dataSource, manager: messagesManager)
 
-        inputBarDelegate.load(controller: self, manager: convoManager)
+        navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self, action: #selector(showConvoDetailView), imageName: ButtonName.info)
+        navigationItem.title = convo.receiverProxyName
+
+        maintainPositionOnKeyboardFrameChanged = true
+
+        messageInputBar.delegate = inputBarDelegate
 
         messagesCollectionView.messagesDataSource = dataSource
         messagesCollectionView.messagesDisplayDelegate = displayDelegate
         messagesCollectionView.messagesLayoutDelegate = layoutDelegate
 
-        messageInputBar.delegate = inputBarDelegate
+        messagesManager.load(convoKey: convo.key, collectionView: messagesCollectionView)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -54,14 +54,14 @@ class ConvoViewController: MessagesViewController, Closing {
         if shouldClose {
             navigationController?.popViewController(animated: false)
         }
-        tabBarController?.tabBar.isHidden = true
         presenceManager?.enterConvo(convo.key)
+        tabBarController?.tabBar.isHidden = true
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
-        tabBarController?.tabBar.isHidden = false
         presenceManager?.leaveConvo(convo.key)
+        tabBarController?.tabBar.isHidden = false
     }
 
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {

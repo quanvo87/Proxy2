@@ -16,11 +16,11 @@ class ConvoDetailViewController: UIViewController, Closing {
 
         convoManager.load(uid: convo.senderId, key: convo.key, tableView: tableView, closer: self)
 
-        proxyManager.load(uid: convo.senderId, key: convo.senderProxyKey, tableView: tableView, closer: self)
-
         dataSource.load(controller: self, convoManager: convoManager, proxyManager: proxyManager)
 
         delegate.load(controller: self, convoManager: convoManager, presenceManager: presenceManager, proxiesManager: proxiesManager, proxyManager: proxyManager, unreadMessagesManager: unreadMessagesManager)
+
+        proxyManager.load(uid: convo.senderId, key: convo.senderProxyKey, tableView: tableView, closer: self)
 
         tableView.dataSource = dataSource
         tableView.delegate = delegate

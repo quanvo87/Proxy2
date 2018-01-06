@@ -5,19 +5,18 @@ class ConvosButtonManager: ButtonManaging {
     let viewGlower = ViewGlower()
     var makeNewMessageButton = UIBarButtonItem()
     var makeNewProxyButton = UIBarButtonItem()
-    // todo: make optional
-    private var uid = ""
+    private var uid: String?
     private weak var controller: UIViewController?
-    private weak var makeNewMessageDelegate: MakeNewMessageDelegate?
+    private weak var delegate: MakeNewMessageDelegate?
     private weak var manager: ProxiesManaging?
 
     func load(uid: String,
               controller: UIViewController,
-              makeNewMessageDelegate: MakeNewMessageDelegate,
+              delegate: MakeNewMessageDelegate,
               manager: ProxiesManaging) {
         self.uid = uid
         self.controller = controller
-        self.makeNewMessageDelegate = makeNewMessageDelegate
+        self.delegate = delegate
         self.manager = manager
         makeButtons()
         controller.navigationItem.rightBarButtonItems = [makeNewMessageButton, makeNewProxyButton]
@@ -31,8 +30,10 @@ private extension ConvosButtonManager {
     }
 
     @objc func makeNewProxy() {
-        guard let proxyCount = manager?.proxies.count else {
-            return
+        guard
+            let uid = uid,
+            let proxyCount = manager?.proxies.count else {
+                return
         }
         makeNewProxyButton.isEnabled = false
         animate(makeNewProxyButton)
@@ -60,10 +61,11 @@ private extension ConvosButtonManager {
         makeNewMessageButton.isEnabled = false
         animate(makeNewMessageButton)
         guard
+            let uid = uid,
             let controller = controller,
             let manager = manager else {
                 return
         }
-        makeNewMessageDelegate?.showMakeNewMessageController(sender: nil, uid: uid, manager: manager, controller: controller)
+        delegate?.showMakeNewMessageController(sender: nil, uid: uid, manager: manager, controller: controller)
     }
 }

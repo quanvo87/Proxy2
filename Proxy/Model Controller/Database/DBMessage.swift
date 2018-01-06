@@ -55,7 +55,7 @@ extension DB {
             completion(.failure(.unknown))
             return
         }
-        updateReceiverDeletedProxy(convo: convo)
+        updateReceiverDeletedProxy(convo)
         let message = Message(sender: Sender(id: convo.senderId,
                                              displayName: convo.senderProxyName),
                               messageId: ref.childByAutoId().key,
@@ -121,7 +121,7 @@ extension DB {
         }
     }
 
-    private static func updateReceiverDeletedProxy(convo: Convo) {
+    private static func updateReceiverDeletedProxy(_ convo: Convo) {
         checkKeyExists(Child.convos, convo.receiverId, convo.key) { (exists) in
             if !exists {
                 let work = GroupWork()

@@ -8,21 +8,23 @@ class ProxiesButtonManager: ButtonManaging {
     var deleteButton = UIBarButtonItem()
     var makeNewMessageButton = UIBarButtonItem()
     var makeNewProxyButton = UIBarButtonItem()
-    private var uid = ""
-    private weak var controller: ProxiesViewController?
+    private var uid: String?
+    private weak var controller: UIViewController?
+    private weak var delegate: MakeNewMessageDelegate?
     private weak var itemsToDeleteManager: ItemsToDeleteManaging?
     private weak var navigationItem: UINavigationItem?
     private weak var proxiesManager: ProxiesManaging?
     private weak var tableView: UITableView?
 
-    // todo: use proxiesvc delegate
     func load(uid: String,
-              controller: ProxiesViewController,
+              controller: UIViewController,
+              delegate: MakeNewMessageDelegate,
               itemsToDeleteManager: ItemsToDeleteManaging,
               proxiesManager: ProxiesManaging,
               tableView: UITableView) {
         self.uid = uid
         self.controller = controller
+        self.delegate = delegate
         self.itemsToDeleteManager = itemsToDeleteManager
         self.proxiesManager = proxiesManager
         self.navigationItem = controller.navigationItem
@@ -84,8 +86,10 @@ private extension ProxiesButtonManager {
     }
 
     @objc func makeNewProxy() {
-        guard let proxyCount = proxiesManager?.proxies.count else {
-            return
+        guard
+            let uid = uid,
+            let proxyCount = proxiesManager?.proxies.count else {
+                return
         }
         makeNewProxyButton.isEnabled = false
         animate(makeNewProxyButton)
@@ -94,7 +98,10 @@ private extension ProxiesButtonManager {
             case .failure(let error):
                 self.controller?.showAlert(title: "Error Creating Proxy", message: error.description)
             case .success:
-                self.controller?.scrollToTop()
+                guard let controller = self.controller as? ProxiesViewController else {
+                    return
+                }
+                controller.scrollToTop()
             }
             self.makeNewProxyButton.isEnabled = true
         }
@@ -106,10 +113,12 @@ private extension ProxiesButtonManager {
         }
         makeNewMessageButton.isEnabled = false
         animate(makeNewMessageButton)
-        guard let controller = controller,
+        guard
+            let uid = uid,
+            let controller = controller,
             let proxiesManager = proxiesManager else {
                 return
         }
-        controller.showMakeNewMessageController(sender: nil, uid: uid, manager: proxiesManager, controller: controller)
+        delegate?.showMakeNewMessageController(sender: nil, uid: uid, manager: proxiesManager, controller: controller)
     }
 }

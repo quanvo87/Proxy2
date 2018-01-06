@@ -1,17 +1,17 @@
 import FirebaseDatabase
 
 class ConvosObserver: ReferenceObserving {
+    private var loading = true
+    private var proxyKey: String?
+    private var uid: String?
     private (set) var ref: DatabaseReference?
     private (set) var handle: DatabaseHandle?
     private weak var manager: ConvosManaging?
-    private var uid: String?
-    private var proxyKey: String?
-    private var loading = true
 
-    func observe(uid: String, proxyKey: String?, manager: ConvosManaging, querySize: UInt = Setting.querySize) {
+    func observe(uid: String, proxyKey: String?, manager: ConvosManaging, querySize: UInt) {
         stopObserving()
-        self.uid = uid
         self.proxyKey = proxyKey
+        self.uid = uid
         self.manager = manager
         ref = DB.makeReference(Child.convos, uid)
         handle = ref?.queryOrdered(byChild: Child.timestamp).queryLimited(toLast: querySize).observe(.value, with: { [weak self] (data) in

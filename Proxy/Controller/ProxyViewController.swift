@@ -24,17 +24,17 @@ class ProxyViewController: UIViewController, Closing, MakeNewMessageDelegate {
 
         super.init(nibName: nil, bundle: nil)
 
-        navigationItem.rightBarButtonItems = [UIBarButtonItem.make(target: self, action: #selector(showMakeNewMessageController), imageName: ButtonName.makeNewMessage),
-                                              UIBarButtonItem.make(target: self, action: #selector(deleteProxy), imageName: ButtonName.delete)]
-
-        proxyManager.load(uid: proxy.ownerId, key: proxy.key, tableView: tableView, closer: self)
-
         convosManager.load(uid: proxy.ownerId, proxyKey: proxy.key, manager: nil, tableView: tableView)
 
         dataSource.load(controller: self, convosManager: convosManager, proxyManager: proxyManager)
 
         delegate.load(controller: self, convosManager: convosManager, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
-        
+
+        navigationItem.rightBarButtonItems = [UIBarButtonItem.make(target: self, action: #selector(showMakeNewMessageController), imageName: ButtonName.makeNewMessage),
+                                              UIBarButtonItem.make(target: self, action: #selector(deleteProxy), imageName: ButtonName.delete)]
+
+        proxyManager.load(uid: proxy.ownerId, key: proxy.key, tableView: tableView, closer: self)
+
         tableView.dataSource = dataSource
         tableView.delaysContentTouches = false
         tableView.delegate = delegate

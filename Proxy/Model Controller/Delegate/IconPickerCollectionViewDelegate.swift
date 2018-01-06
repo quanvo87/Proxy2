@@ -1,13 +1,13 @@
 import UIKit
 
 class IconPickerCollectionViewDelegate: NSObject {
-    private var proxy: Proxy?
     private var iconNames = [String]()
+    private var proxy: Proxy?
     private weak var controller: UIViewController?
 
-    func load(proxy: Proxy, iconNames: [String], controller: UIViewController) {
-        self.proxy = proxy
+    func load(iconNames: [String], proxy: Proxy, controller: UIViewController) {
         self.iconNames = iconNames
+        self.proxy = proxy
         self.controller = controller
     }
 }

@@ -5,7 +5,10 @@ protocol MakeNewMessageDelegate: class {
 }
 
 extension MakeNewMessageDelegate {
-    func showMakeNewMessageController(sender: Proxy?, uid: String, manager: ProxiesManaging, controller: UIViewController) {
+    func showMakeNewMessageController(sender: Proxy?,
+                                      uid: String,
+                                      manager: ProxiesManaging,
+                                      controller: UIViewController) {
         guard let makeNewMessageViewController = MakeNewMessageViewController.make(sender: sender, uid: uid, delegate: self, manager: manager) else {
             return
         }

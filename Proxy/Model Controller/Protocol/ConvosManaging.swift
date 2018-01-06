@@ -26,7 +26,7 @@ class ConvosManager: ConvosManaging {
     func load(uid: String, proxyKey: String?, manager: ButtonManaging?, tableView: UITableView) {
         self.manager = manager
         self.tableView = tableView
-        observer.observe(uid: uid, proxyKey: proxyKey, manager: self)
+        observer.observe(uid: uid, proxyKey: proxyKey, manager: self, querySize: Setting.querySize)
     }
 
     func loadConvos(endingAtTimestamp timestamp: Double, querySize: UInt) {

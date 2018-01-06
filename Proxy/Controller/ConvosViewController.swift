@@ -21,17 +21,15 @@ class ConvosViewController: UIViewController, MakeNewMessageDelegate {
         
         super.init(nibName: nil, bundle: nil)
 
-        navigationItem.title = "Messages"
-
-        buttonManager.load(uid: uid, controller: self, makeNewMessageDelegate: self, manager: proxiesManager)
+        buttonManager.load(uid: uid, controller: self, delegate: self, manager: proxiesManager)
         
         convosManager.load(uid: uid, proxyKey: nil, manager: buttonManager, tableView: tableView)
 
-        unreadMessagesManager.load(uid: uid, controller: self, presenceManager: presenceManager, proxiesManager: proxiesManager)
-
-        dataSource.load(manager: convosManager)
+        dataSource.load(convosManager)
 
         delegate.load(controller: self, convosManager: convosManager, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
+
+        navigationItem.title = "Messages"
 
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.dataSource = dataSource
@@ -40,6 +38,8 @@ class ConvosViewController: UIViewController, MakeNewMessageDelegate {
         tableView.register(UINib(nibName: Identifier.convosTableViewCell, bundle: nil), forCellReuseIdentifier: Identifier.convosTableViewCell)
         tableView.rowHeight = 80
         tableView.sectionHeaderHeight = 0
+
+        unreadMessagesManager.load(uid: uid, controller: self, presenceManager: presenceManager, proxiesManager: proxiesManager)
 
         view.addSubview(tableView)
     }

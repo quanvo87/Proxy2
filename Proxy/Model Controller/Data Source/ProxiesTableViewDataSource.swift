@@ -27,7 +27,7 @@ extension ProxiesTableViewDataSource: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         if manager?.proxies.isEmpty ?? false {
-            return "Tap the bouncing button to make a new Proxy 👶🏾."
+            return "Tap the bouncing button to make a new Proxy \(String.randomEmoji)."
         } else {
             return nil
         }

@@ -7,7 +7,7 @@ class ConvosTableViewDataSource: NSObject {
         return manager?.convos ?? []
     }
 
-    func load(manager: ConvosManaging) {
+    func load(_ manager: ConvosManaging) {
         self.manager = manager
     }
 }

@@ -30,7 +30,7 @@ class IconManager: IconManaging {
     }
 }
 
-// modified from https://stackoverflow.com/questions/26542035/create-uiimage-with-solid-color-in-swift
+// https://stackoverflow.com/questions/26542035/create-uiimage-with-solid-color-in-swift
 private extension UIImage {
     static func make(color: UIColor, size: CGSize = CGSize(width: 1, height: 1), completion: @escaping (UIImage) -> Void) {
         DispatchQueue.main.async {

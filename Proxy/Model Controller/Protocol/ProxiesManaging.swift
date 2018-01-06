@@ -8,9 +8,6 @@ protocol ProxiesManaging: class {
 class ProxiesManager: ProxiesManaging {
     var proxies = [Proxy]() {
         didSet {
-            controller?.title = "My Proxies\(proxies.count.asStringWithParens)"
-            controller?.tabBarController?.tabBar.items?[1].title = "Proxies\(proxies.count.asStringWithParens)"
-
             if let manager = manager {
                 if proxies.isEmpty {
                     manager.animate(manager.makeNewProxyButton, loop: true)
@@ -18,6 +15,9 @@ class ProxiesManager: ProxiesManaging {
                     manager.stopAnimating(manager.makeNewProxyButton)
                 }
             }
+
+            controller?.title = "My Proxies\(proxies.count.asStringWithParens)"
+            controller?.tabBarController?.tabBar.items?[1].title = "Proxies\(proxies.count.asStringWithParens)"
 
             tableView?.reloadData()
         }

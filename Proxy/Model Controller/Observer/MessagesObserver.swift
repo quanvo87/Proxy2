@@ -1,10 +1,10 @@
 import FirebaseDatabase
 
 class MessagesObserver: ReferenceObserving {
+    private var loading = true
     private (set) var ref: DatabaseReference?
     private (set) var handle: DatabaseHandle?
     private weak var manager: MessagesManaging?
-    private var loading = true
 
     func observe(convoKey: String, manager: MessagesManaging, querySize: UInt = Setting.querySize) {
         stopObserving()

@@ -3,7 +3,7 @@ import UIKit
 class SettingsTableViewDataSource: NSObject {
     private weak var manager: UserStatsManaging?
 
-    func load(manager: UserStatsManaging) {
+    func load(_ manager: UserStatsManaging) {
         self.manager = manager
     }
 }

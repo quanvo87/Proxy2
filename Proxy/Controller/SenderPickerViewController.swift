@@ -14,13 +14,13 @@ class SenderPickerViewController: UIViewController {
 
         super.init(nibName: nil, bundle: nil)
 
-        navigationItem.title = "Pick A Sender"
-
-        manager.load(uid: uid, controller: nil, manager: nil, tableView: tableView)
-
         dataSource.load(accessoryType: .none, manager: manager)
 
         delegate.load(controller: self, delegate: senderPickerDelegate, manager: manager)
+
+        manager.load(uid: uid, controller: nil, manager: nil, tableView: tableView)
+
+        navigationItem.title = "Pick A Sender"
 
         tableView.dataSource = dataSource
         tableView.delegate = delegate

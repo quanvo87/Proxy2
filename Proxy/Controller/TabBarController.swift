@@ -30,14 +30,11 @@ class TabBarController: UITabBarController {
         }
 
         presenceManager.load(unreadMessagesManager)
+
         unreadMessagesManager.load(uid: uid, controller: convosController, presenceManager: presenceManager, proxiesManager: proxiesManager)
     }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    deinit {
-        print("🦖")
     }
 }

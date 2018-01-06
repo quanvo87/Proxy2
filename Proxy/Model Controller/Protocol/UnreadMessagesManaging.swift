@@ -31,10 +31,7 @@ class UnreadMessagesManager: UnreadMessagesManaging {
               presenceManager: PresenceManaging,
               proxiesManager: ProxiesManaging) {
         self.controller = controller
-        unreadMessageAddedObserver.observe(uid: uid,
-                                           presenceManager: presenceManager,
-                                           proxiesManager: proxiesManager,
-                                           unreadMessagesManager: self)
+        unreadMessageAddedObserver.observe(uid: uid, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: self)
         unreadMessageRemovedObserver.observe(uid: uid, manager: self)
     }
 }
