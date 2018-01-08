@@ -3,23 +3,26 @@ import UIKit
 class TabBarController: UITabBarController {
     let presenceManager: PresenceManaging
     let proxiesManager: ProxiesManaging
+    let proxyKeysManager: ProxyKeysManaging
     let unreadMessagesManager: UnreadMessagesManaging
 
     init(uid: String,
          displayName: String?,
          presenceManager: PresenceManaging = PresenceManager(),
          proxiesManager: ProxiesManaging = ProxiesManager(),
+         proxyKeysManager: ProxyKeysManaging = ProxyKeysManager(),
          unreadMessagesManager: UnreadMessagesManaging = UnreadMessagesManager()) {
         self.presenceManager = presenceManager
         self.proxiesManager = proxiesManager
+        self.proxyKeysManager = proxyKeysManager
         self.unreadMessagesManager = unreadMessagesManager
 
         super.init(nibName: nil, bundle: nil)
 
-        let convosController = ConvosViewController(uid: uid, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
+        let convosController = ConvosViewController(uid: uid, presenceManager: presenceManager, proxiesManager: proxiesManager, proxyKeysManager: proxyKeysManager, unreadMessagesManager: unreadMessagesManager)
         convosController.tabBarItem = UITabBarItem(title: "Messages", image: UIImage(named: "messages"), tag: 0)
 
-        let proxiesController = ProxiesViewController(uid: uid, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
+        let proxiesController = ProxiesViewController(uid: uid, presenceManager: presenceManager, proxiesManager: proxiesManager, proxyKeysManager: proxyKeysManager, unreadMessagesManager: unreadMessagesManager)
         proxiesController.tabBarItem = UITabBarItem(title: "Proxies", image: UIImage(named: "proxies"), tag: 1)
 
         let settingsController = SettingsViewController(uid: uid, displayName: displayName)

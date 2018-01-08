@@ -10,7 +10,7 @@ class UnreadMessageAddedObserver: ReferenceObserving {
                  unreadMessagesManager: UnreadMessagesManaging) {
         stopObserving()
         ref = DB.makeReference(Child.userInfo, uid, Child.unreadMessages)
-        handle = ref?.observe(.childAdded, with: { [weak presenceManager, weak proxiesManager, weak unreadMessagesManager] (data) in
+        handle = ref?.observe(.childAdded) { [weak presenceManager, weak proxiesManager, weak unreadMessagesManager] (data) in
             guard
                 let message = Message(data),
                 let proxiesManager = proxiesManager else {
@@ -25,7 +25,7 @@ class UnreadMessageAddedObserver: ReferenceObserving {
             } else {
                 unreadMessagesManager?.unreadMessages.append(message)
             }
-        })
+        }
     }
 
     deinit {

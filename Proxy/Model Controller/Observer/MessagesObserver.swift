@@ -10,13 +10,13 @@ class MessagesObserver: ReferenceObserving {
         stopObserving()
         self.manager = manager
         ref = DB.makeReference(Child.messages, convoKey)
-        handle = ref?.queryOrdered(byChild: Child.timestamp).queryLimited(toLast: querySize).observe(.value, with: { [weak self] (data) in
+        handle = ref?.queryOrdered(byChild: Child.timestamp).queryLimited(toLast: querySize).observe(.value) { [weak self] (data) in
             self?.loading = true
             self?.manager?.messages = data.asMessagesArray
             self?.manager?.collectionView?.reloadData()
             self?.manager?.collectionView?.scrollToBottom()
             self?.loading = false
-        })
+        }
     }
 
     func loadMessages(endingAtMessageWithId id: String, querySize: UInt) {
@@ -24,7 +24,7 @@ class MessagesObserver: ReferenceObserving {
             return
         }
         loading = true
-        ref?.queryOrderedByKey().queryEnding(atValue: id).queryLimited(toLast: querySize).observeSingleEvent(of: .value, with: { [weak self] (data) in
+        ref?.queryOrderedByKey().queryEnding(atValue: id).queryLimited(toLast: querySize).observeSingleEvent(of: .value) { [weak self] (data) in
             var olderMessages = data.asMessagesArray
             guard olderMessages.count > 1 else {
                 return
@@ -34,7 +34,7 @@ class MessagesObserver: ReferenceObserving {
             self?.manager?.messages = olderMessages + currentMessages
             self?.manager?.collectionView?.reloadDataAndKeepOffset()
             self?.loading = false
-        })
+        }
     }
 
     deinit {

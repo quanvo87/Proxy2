@@ -7,9 +7,9 @@ class MessagesSentObserver: ReferenceObserving {
     func observe(uid: String, manager: MessagesSentManaging) {
         stopObserving()
         ref = DB.makeReference(Child.userInfo, uid, IncrementableUserProperty.messagesSent.rawValue)
-        handle = ref?.observe(.value, with: { [weak manager] (data) in
+        handle = ref?.observe(.value) { [weak manager] (data) in
             manager?.messagesSentCount = data.asNumberLabel
-        })
+        }
     }
 
     deinit {

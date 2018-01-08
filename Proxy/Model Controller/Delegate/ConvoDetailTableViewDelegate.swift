@@ -5,6 +5,7 @@ class ConvoDetailTableViewDelegate: NSObject {
     private weak var convoManager: ConvoManaging?
     private weak var presenceManager: PresenceManaging?
     private weak var proxiesManager: ProxiesManaging?
+    private weak var proxyKeysManager: ProxyKeysManaging?
     private weak var proxyManager: ProxyManaging?
     private weak var unreadMessagesManager: UnreadMessagesManaging?
 
@@ -12,12 +13,14 @@ class ConvoDetailTableViewDelegate: NSObject {
               convoManager: ConvoManaging,
               presenceManager: PresenceManaging,
               proxiesManager: ProxiesManaging,
+              proxyKeysManager: ProxyKeysManaging,
               proxyManager: ProxyManaging,
               unreadMessagesManager: UnreadMessagesManaging) {
         self.controller = controller
         self.convoManager = convoManager
         self.presenceManager = presenceManager
         self.proxiesManager = proxiesManager
+        self.proxyKeysManager = proxyKeysManager
         self.proxyManager = proxyManager
         self.unreadMessagesManager = unreadMessagesManager
     }
@@ -30,12 +33,13 @@ extension ConvoDetailTableViewDelegate: UITableViewDelegate {
             let proxy = proxyManager?.proxy,
             let presenceManager = presenceManager,
             let proxiesManager = proxiesManager,
+            let proxyKeysManager = proxyKeysManager,
             let unreadMessagesManager = unreadMessagesManager else {
                 return
         }
         switch indexPath.section {
         case 1:
-            controller?.navigationController?.showProxyController(proxy: proxy, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
+            controller?.navigationController?.showProxyController(proxy: proxy, presenceManager: presenceManager, proxiesManager: proxiesManager, proxyKeysManager: proxyKeysManager, unreadMessagesManager: unreadMessagesManager)
         case 2:
             switch indexPath.row {
             case 0:

@@ -114,9 +114,9 @@ extension DB {
     }
 
     private static func getProxyKeyCount(ref: DatabaseReference, key: String, completion: @escaping (UInt?) -> Void) {
-        ref.queryOrdered(byChild: Child.key).queryEqual(toValue: key).observeSingleEvent(of: .value, with: { (data) in
+        ref.queryOrdered(byChild: Child.key).queryEqual(toValue: key).observeSingleEvent(of: .value) { (data) in
             completion(data.childrenCount)
-        })
+        }
     }
 
     static func setIcon(to icon: String, for proxy: Proxy, completion: @escaping (Bool) -> Void) {
@@ -212,9 +212,9 @@ extension GroupWork {
             completion(nil)
             return
         }
-        ref.queryOrdered(byChild: Child.receiverProxyKey).queryEqual(toValue: key).observeSingleEvent(of: .value, with: { (data) in
+        ref.queryOrdered(byChild: Child.receiverProxyKey).queryEqual(toValue: key).observeSingleEvent(of: .value) { (data) in
             completion(data.asMessagesArray)
-        })
+        }
     }
 
     func setReceiverDeletedProxy(for convos: [Convo]) {

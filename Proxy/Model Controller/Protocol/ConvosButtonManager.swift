@@ -8,16 +8,19 @@ class ConvosButtonManager: ButtonManaging {
     private var uid: String?
     private weak var controller: UIViewController?
     private weak var delegate: MakeNewMessageDelegate?
-    private weak var manager: ProxiesManaging?
+    private weak var proxiesManager: ProxiesManaging?
+    private weak var proxyKeysManager: ProxyKeysManaging?
 
     func load(uid: String,
               controller: UIViewController,
               delegate: MakeNewMessageDelegate,
-              manager: ProxiesManaging) {
+              proxiesManager: ProxiesManaging,
+              proxyKeysManager: ProxyKeysManaging) {
         self.uid = uid
         self.controller = controller
         self.delegate = delegate
-        self.manager = manager
+        self.proxiesManager = proxiesManager
+        self.proxyKeysManager = proxyKeysManager
         makeButtons()
         controller.navigationItem.rightBarButtonItems = [makeNewMessageButton, makeNewProxyButton]
     }
@@ -32,40 +35,39 @@ private extension ConvosButtonManager {
     @objc func makeNewProxy() {
         guard
             let uid = uid,
-            let proxyCount = manager?.proxies.count else {
+            let proxyCount = proxiesManager?.proxies.count else {
                 return
         }
-        makeNewProxyButton.isEnabled = false
         animate(makeNewProxyButton)
-        DB.makeProxy(uid: uid, currentProxyCount: proxyCount) { (result) in
+        makeNewProxyButton.isEnabled = false
+        DB.makeProxy(uid: uid, currentProxyCount: proxyCount) { [weak self] (result) in
             switch result {
             case .failure(let error):
-                self.controller?.showAlert(title: "Error Creating Proxy", message: error.description)
+                self?.controller?.showAlert(title: "Error Creating Proxy", message: error.description)
             case .success:
                 guard
-                    let proxiesNavigationController = self.controller?.tabBarController?.viewControllers?[safe: 1] as? UINavigationController,
+                    let proxiesNavigationController = self?.controller?.tabBarController?.viewControllers?[safe: 1] as? UINavigationController,
                     let proxiesViewController = proxiesNavigationController.viewControllers[safe: 0] as? ProxiesViewController else {
                         return
                 }
                 proxiesViewController.scrollToTop()
             }
-            self.controller?.tabBarController?.selectedIndex = 1
-            self.makeNewProxyButton.isEnabled = true
+            self?.controller?.tabBarController?.selectedIndex = 1
+            self?.makeNewProxyButton.isEnabled = true
         }
     }
 
     @objc func showMakeNewMessageController() {
-        defer {
-            makeNewMessageButton.isEnabled = true
-        }
-        makeNewMessageButton.isEnabled = false
-        animate(makeNewMessageButton)
         guard
             let uid = uid,
             let controller = controller,
-            let manager = manager else {
+            let proxiesManager = proxiesManager,
+            let proxyKeysManager = proxyKeysManager else {
                 return
         }
-        delegate?.showMakeNewMessageController(sender: nil, uid: uid, manager: manager, controller: controller)
+        animate(makeNewMessageButton)
+        makeNewMessageButton.isEnabled = false
+        delegate?.showMakeNewMessageController(sender: nil, uid: uid, proxiesManager: proxiesManager, proxyKeysManager: proxyKeysManager, controller: controller)
+        makeNewMessageButton.isEnabled = true
     }
 }

@@ -8,14 +8,14 @@ class IconObserver: ReferenceObserving {
     func observe(uid: String, proxyKey: String, manager: IconManaging) {
         stopObserving()
         ref = DB.makeReference(Child.proxies, uid, proxyKey, Child.icon)
-        handle = ref?.observe(.value, with: { [weak manager] (data) in
+        handle = ref?.observe(.value) { [weak manager] (data) in
             guard let icon = data.value as? String else {
                 return
             }
             UIImage.make(name: icon) { (image) in
                 manager?.icons[proxyKey] = image
             }
-        })
+        }
     }
 
     deinit {

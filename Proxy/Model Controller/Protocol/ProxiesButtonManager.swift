@@ -12,8 +12,8 @@ class ProxiesButtonManager: ButtonManaging {
     private weak var controller: UIViewController?
     private weak var delegate: MakeNewMessageDelegate?
     private weak var itemsToDeleteManager: ItemsToDeleteManaging?
-    private weak var navigationItem: UINavigationItem?
     private weak var proxiesManager: ProxiesManaging?
+    private weak var proxyKeysManager: ProxyKeysManaging?
     private weak var tableView: UITableView?
 
     func load(uid: String,
@@ -21,13 +21,14 @@ class ProxiesButtonManager: ButtonManaging {
               delegate: MakeNewMessageDelegate,
               itemsToDeleteManager: ItemsToDeleteManaging,
               proxiesManager: ProxiesManaging,
+              proxyKeysManager: ProxyKeysManaging,
               tableView: UITableView) {
         self.uid = uid
         self.controller = controller
         self.delegate = delegate
         self.itemsToDeleteManager = itemsToDeleteManager
         self.proxiesManager = proxiesManager
-        self.navigationItem = controller.navigationItem
+        self.proxyKeysManager = proxyKeysManager
         self.tableView = tableView
         makeButtons()
         setDefaultButtons()
@@ -44,23 +45,24 @@ private extension ProxiesButtonManager {
     }
 
     @objc func setDefaultButtons() {
-        tableView?.setEditing(false, animated: true)
-        itemsToDeleteManager?.itemsToDelete.removeAll()
-        navigationItem?.leftBarButtonItem = deleteButton
-        navigationItem?.rightBarButtonItems = [makeNewMessageButton, makeNewProxyButton]
-        makeNewProxyButton.isEnabled = true
-        makeNewProxyButton.customView?.isHidden = false
         if proxiesManager?.proxies.isEmpty ?? false {
             animate(makeNewProxyButton, loop: true)
         }
+        controller?.navigationItem.leftBarButtonItem = deleteButton
+        controller?.navigationItem.rightBarButtonItems = [makeNewMessageButton, makeNewProxyButton]
+        itemsToDeleteManager?.itemsToDelete.removeAll()
+        makeNewProxyButton.isEnabled = true
+        makeNewProxyButton.customView?.isHidden = false
+        tableView?.setEditing(false, animated: true)
+
     }
 
     @objc func setEditModeButtons() {
-        tableView?.setEditing(true, animated: true)
-        navigationItem?.leftBarButtonItem = cancelButton
-        navigationItem?.rightBarButtonItems = [confirmButton, makeNewProxyButton]
+        controller?.navigationItem.leftBarButtonItem = cancelButton
+        controller?.navigationItem.rightBarButtonItems = [confirmButton, makeNewProxyButton]
         makeNewProxyButton.isEnabled = false
         makeNewProxyButton.customView?.isHidden = true
+        tableView?.setEditing(true, animated: true)
     }
 
     @objc func deleteSelectedItems() {
@@ -91,34 +93,33 @@ private extension ProxiesButtonManager {
             let proxyCount = proxiesManager?.proxies.count else {
                 return
         }
-        makeNewProxyButton.isEnabled = false
         animate(makeNewProxyButton)
-        DB.makeProxy(uid: uid, currentProxyCount: proxyCount) { (result) in
+        makeNewProxyButton.isEnabled = false
+        DB.makeProxy(uid: uid, currentProxyCount: proxyCount) { [weak self] (result) in
             switch result {
             case .failure(let error):
-                self.controller?.showAlert(title: "Error Creating Proxy", message: error.description)
+                self?.controller?.showAlert(title: "Error Creating Proxy", message: error.description)
             case .success:
-                guard let controller = self.controller as? ProxiesViewController else {
+                guard let controller = self?.controller as? ProxiesViewController else {
                     return
                 }
                 controller.scrollToTop()
             }
-            self.makeNewProxyButton.isEnabled = true
+            self?.makeNewProxyButton.isEnabled = true
         }
     }
 
     @objc func showMakeNewMessageController() {
-        defer {
-            makeNewMessageButton.isEnabled = true
-        }
-        makeNewMessageButton.isEnabled = false
-        animate(makeNewMessageButton)
         guard
             let uid = uid,
             let controller = controller,
-            let proxiesManager = proxiesManager else {
+            let proxiesManager = proxiesManager,
+            let proxyKeysManager = proxyKeysManager else {
                 return
         }
-        delegate?.showMakeNewMessageController(sender: nil, uid: uid, manager: proxiesManager, controller: controller)
+        animate(makeNewMessageButton)
+        makeNewMessageButton.isEnabled = false
+        delegate?.showMakeNewMessageController(sender: nil, uid: uid, proxiesManager: proxiesManager, proxyKeysManager: proxyKeysManager, controller: controller)
+        makeNewMessageButton.isEnabled = true
     }
 }

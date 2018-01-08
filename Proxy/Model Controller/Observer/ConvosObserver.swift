@@ -14,12 +14,11 @@ class ConvosObserver: ReferenceObserving {
         self.uid = uid
         self.manager = manager
         ref = DB.makeReference(Child.convos, uid)
-        handle = ref?.queryOrdered(byChild: Child.timestamp).queryLimited(toLast: querySize).observe(.value, with: { [weak self] (data) in
+        handle = ref?.queryOrdered(byChild: Child.timestamp).queryLimited(toLast: querySize).observe(.value) { [weak self] (data) in
             self?.loading = true
             self?.manager?.convos = data.toConvosArray(uid: uid, proxyKey: proxyKey).reversed()
             self?.loading = false
-        })
-
+        }
     }
 
     func loadConvos(endingAtTimestamp timestamp: Double, querySize: UInt) {
@@ -27,7 +26,7 @@ class ConvosObserver: ReferenceObserving {
             return
         }
         loading = true
-        ref?.queryOrdered(byChild: Child.timestamp).queryEnding(atValue: timestamp).queryLimited(toLast: querySize).observeSingleEvent(of: .value, with: { [weak self] (data) in
+        ref?.queryOrdered(byChild: Child.timestamp).queryEnding(atValue: timestamp).queryLimited(toLast: querySize).observeSingleEvent(of: .value) { [weak self] (data) in
             guard let uid = self?.uid else {
                 return
             }
@@ -38,7 +37,7 @@ class ConvosObserver: ReferenceObserving {
             convos.removeLast(1)
             self?.manager?.convos += convos.reversed()
             self?.loading = false
-        })
+        }
     }
 
     deinit {

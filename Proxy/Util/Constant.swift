@@ -17,6 +17,7 @@ struct Identifier {
     static let makeNewMessageViewController = "MakeNewMessageViewController"
     static let loginViewController = "LoginViewController"
     static let proxiesTableViewCell = "ProxiesTableViewCell"
+//    static let receiverPickerViewController = "ReceiverPickerViewController"
     static let senderProxyTableViewCell = "SenderProxyTableViewCell"
     static let settingsTableViewCell = "SettingsTableViewCell"
 }

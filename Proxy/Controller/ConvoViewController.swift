@@ -12,15 +12,18 @@ class ConvoViewController: MessagesViewController, Closing {
     private let messagesManager = MessagesManager()
     private weak var presenceManager: PresenceManaging?
     private weak var proxiesManager: ProxiesManaging?
+    private weak var proxyKeysManager: ProxyKeysManaging?
     private weak var unreadMessagesManager: UnreadMessagesManaging?
 
     init(convo: Convo,
          presenceManager: PresenceManaging,
          proxiesManager: ProxiesManaging,
+         proxyKeysManager: ProxyKeysManaging,
          unreadMessagesManager: UnreadMessagesManaging) {
         self.convo = convo
         self.presenceManager = presenceManager
         self.proxiesManager = proxiesManager
+        self.proxyKeysManager = proxyKeysManager
         self.unreadMessagesManager = unreadMessagesManager
 
         super.init(nibName: nil, bundle: nil)
@@ -83,9 +86,14 @@ private extension ConvoViewController {
         guard
             let presenceManager = presenceManager,
             let proxiesManager = proxiesManager,
+            let proxyKeysManager = proxyKeysManager,
             let unreadMessagesManager = unreadMessagesManager else {
                 return
         }
-        navigationController?.pushViewController(ConvoDetailViewController(convo: convo, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager), animated: true)
+        navigationController?.pushViewController(ConvoDetailViewController(convo: convo,
+                                                                           presenceManager: presenceManager,
+                                                                           proxiesManager: proxiesManager,
+                                                                           proxyKeysManager: proxyKeysManager,
+                                                                           unreadMessagesManager: unreadMessagesManager), animated: true)
     }
 }

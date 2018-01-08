@@ -5,17 +5,20 @@ class ProxiesTableViewDelegate: NSObject {
     private weak var itemsToDeleteManager: ItemsToDeleteManaging?
     private weak var presenceManager: PresenceManaging?
     private weak var proxiesManager: ProxiesManaging?
+    private weak var proxyKeysManager: ProxyKeysManaging?
     private weak var unreadMessagesManager: UnreadMessagesManaging?
 
     func load(controller: UIViewController,
               itemsToDeleteManager: ItemsToDeleteManaging,
               presenceManager: PresenceManaging,
               proxiesManager: ProxiesManaging,
+              proxyKeysManager: ProxyKeysManaging,
               unreadMessagesManager: UnreadMessagesManaging) {
         self.controller = controller
         self.itemsToDeleteManager = itemsToDeleteManager
         self.presenceManager = presenceManager
         self.proxiesManager = proxiesManager
+        self.proxyKeysManager = proxyKeysManager
         self.unreadMessagesManager = unreadMessagesManager
     }
 }
@@ -26,6 +29,7 @@ extension ProxiesTableViewDelegate: UITableViewDelegate {
             let proxy = proxiesManager?.proxies[safe: indexPath.row],
             let presenceManager = presenceManager,
             let proxiesManager = proxiesManager,
+            let proxyKeysManager = proxyKeysManager,
             let unreadMessagesManager = unreadMessagesManager else {
                 return
         }
@@ -33,7 +37,7 @@ extension ProxiesTableViewDelegate: UITableViewDelegate {
             itemsToDeleteManager?.itemsToDelete[proxy.key] = proxy
         } else {
             tableView.deselectRow(at: indexPath, animated: true)
-            controller?.navigationController?.showProxyController(proxy: proxy, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
+            controller?.navigationController?.showProxyController(proxy: proxy, presenceManager: presenceManager, proxiesManager: proxiesManager, proxyKeysManager: proxyKeysManager, unreadMessagesManager: unreadMessagesManager)
         }
     }
 

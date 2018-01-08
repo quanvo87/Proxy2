@@ -7,7 +7,7 @@ class ConvoObserver: ReferenceObserving {
     func observe(uid: String, key: String, manager: ConvoManaging, closer: Closing) {
         stopObserving()
         ref = DB.makeReference(Child.convos, uid, key)
-        handle = ref?.observe(.value, with: { [weak manager, weak closer] (data) in
+        handle = ref?.observe(.value) { [weak manager, weak closer] (data) in
             guard let convo = Convo(data) else {
                 DB.checkKeyExists(Child.convos, uid, key) { (exists) in
                     if !exists {
@@ -17,7 +17,7 @@ class ConvoObserver: ReferenceObserving {
                 return
             }
             manager?.convo = convo
-        })
+        }
     }
 
     deinit {

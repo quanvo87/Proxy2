@@ -7,9 +7,9 @@ class ProxiesObserver: ReferenceObserving {
     func observe(uid: String, manager: ProxiesManaging) {
         stopObserving()
         ref = DB.makeReference(Child.proxies, uid)
-        handle = ref?.queryOrdered(byChild: Child.timestamp).observe(.value, with: { [weak manager] (data) in
+        handle = ref?.queryOrdered(byChild: Child.timestamp).observe(.value) { [weak manager] (data) in
             manager?.proxies = data.toProxiesArray(uid: uid).reversed()
-        })
+        }
     }
 
     deinit {

@@ -96,13 +96,12 @@
 		59B432E51F60648400622DEA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 59B432E31F60648400622DEA /* Main.storyboard */; };
 		59B432E71F60648400622DEA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 59B432E61F60648400622DEA /* Assets.xcassets */; };
 		59B432EA1F60648400622DEA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 59B432E81F60648400622DEA /* LaunchScreen.storyboard */; };
-		59B5007D1F6A3469002D4C29 /* ReceiverPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59B5007C1F6A3469002D4C29 /* ReceiverPicker.swift */; };
 		59B7CC6C1F638A2A0063D137 /* ReferenceObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59B7CC6B1F638A2A0063D137 /* ReferenceObserving.swift */; };
 		59B90C211FF3411E00449569 /* UnreadMessagesManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59B90C201FF3411E00449569 /* UnreadMessagesManaging.swift */; };
 		59B90C231FF341AE00449569 /* UnreadMessageAddedObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59B90C221FF341AE00449569 /* UnreadMessageAddedObserver.swift */; };
+		59BDAE512003849C002A5A6C /* ProxyNamesLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BDAE502003849C002A5A6C /* ProxyNamesLoader.swift */; };
 		59C171B11F60C64500EDE032 /* arabiangulf.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 59C171AD1F60C64400EDE032 /* arabiangulf.mp4 */; };
 		59C171B21F60C64500EDE032 /* beachpalm.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 59C171AE1F60C64400EDE032 /* beachpalm.mp4 */; };
-		59C171B31F60C64500EDE032 /* dragontailzipline.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 59C171AF1F60C64500EDE032 /* dragontailzipline.mp4 */; };
 		59C171B41F60C64500EDE032 /* hawaiiancoast.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 59C171B01F60C64500EDE032 /* hawaiiancoast.mp4 */; };
 		59D3AE501FA1A4FF009F18A5 /* ConvoDetailReceiverProxyTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 59D3AE4F1FA1A4FF009F18A5 /* ConvoDetailReceiverProxyTableViewCell.xib */; };
 		59DCE5FC1F65FCC900AC9CEC /* ProxyTableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59DCE5FB1F65FCC900AC9CEC /* ProxyTableViewDelegate.swift */; };
@@ -235,13 +234,12 @@
 		59B432FB1F60648400622DEA /* ProxyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ProxyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		59B433011F60648400622DEA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		59B433AD1F60807400622DEA /* Proxy-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Proxy-Bridging-Header.h"; sourceTree = "<group>"; };
-		59B5007C1F6A3469002D4C29 /* ReceiverPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiverPicker.swift; sourceTree = "<group>"; };
 		59B7CC6B1F638A2A0063D137 /* ReferenceObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReferenceObserving.swift; sourceTree = "<group>"; };
 		59B90C201FF3411E00449569 /* UnreadMessagesManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnreadMessagesManaging.swift; sourceTree = "<group>"; };
 		59B90C221FF341AE00449569 /* UnreadMessageAddedObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnreadMessageAddedObserver.swift; sourceTree = "<group>"; };
+		59BDAE502003849C002A5A6C /* ProxyNamesLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyNamesLoader.swift; sourceTree = "<group>"; };
 		59C171AD1F60C64400EDE032 /* arabiangulf.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = arabiangulf.mp4; sourceTree = "<group>"; };
 		59C171AE1F60C64400EDE032 /* beachpalm.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = beachpalm.mp4; sourceTree = "<group>"; };
-		59C171AF1F60C64500EDE032 /* dragontailzipline.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = dragontailzipline.mp4; sourceTree = "<group>"; };
 		59C171B01F60C64500EDE032 /* hawaiiancoast.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = hawaiiancoast.mp4; sourceTree = "<group>"; };
 		59D3AE4F1FA1A4FF009F18A5 /* ConvoDetailReceiverProxyTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConvoDetailReceiverProxyTableViewCell.xib; sourceTree = "<group>"; };
 		59DCE5FB1F65FCC900AC9CEC /* ProxyTableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyTableViewDelegate.swift; sourceTree = "<group>"; };
@@ -419,7 +417,6 @@
 			children = (
 				59C171AD1F60C64400EDE032 /* arabiangulf.mp4 */,
 				59C171AE1F60C64400EDE032 /* beachpalm.mp4 */,
-				59C171AF1F60C64500EDE032 /* dragontailzipline.mp4 */,
 				59C171B01F60C64500EDE032 /* hawaiiancoast.mp4 */,
 			);
 			name = "Login Splash Videos";
@@ -543,7 +540,7 @@
 				5973C83F1F608A2000647492 /* Constant.swift */,
 				5973C8391F608A1F00647492 /* LoginService.swift */,
 				5973C81D1F608A1B00647492 /* ProxyError.swift */,
-				59B5007C1F6A3469002D4C29 /* ReceiverPicker.swift */,
+				59BDAE502003849C002A5A6C /* ProxyNamesLoader.swift */,
 				5973C8131F608A1A00647492 /* NSDate+NVTimeAgo.h */,
 				5973C8181F608A1A00647492 /* NSDate+NVTimeAgo.m */,
 			);
@@ -702,7 +699,6 @@
 				598F8A5A1FEB501400CCF024 /* ConvoDetailSenderProxyTableViewCell.xib in Resources */,
 				5973C8101F60844A00647492 /* GoogleService-Info.plist in Resources */,
 				5954AE181F9A4E95004A351F /* ProxiesTableViewCell.xib in Resources */,
-				59C171B31F60C64500EDE032 /* dragontailzipline.mp4 in Resources */,
 				59B432E71F60648400622DEA /* Assets.xcassets in Resources */,
 				59D3AE501FA1A4FF009F18A5 /* ConvoDetailReceiverProxyTableViewCell.xib in Resources */,
 				59C171B11F60C64500EDE032 /* arabiangulf.mp4 in Resources */,
@@ -798,6 +794,7 @@
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
 				"${BUILT_PRODUCTS_DIR}/GroupWork/GroupWork.framework",
 				"${BUILT_PRODUCTS_DIR}/MessageKit/MessageKit.framework",
+				"${BUILT_PRODUCTS_DIR}/SearchTextField/SearchTextField.framework",
 				"${BUILT_PRODUCTS_DIR}/Spring/Spring.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftVideoBackground/SwiftVideoBackground.framework",
 				"${BUILT_PRODUCTS_DIR}/ViewGlower/ViewGlower.framework",
@@ -815,6 +812,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GroupWork.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MessageKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SearchTextField.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Spring.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftVideoBackground.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ViewGlower.framework",
@@ -875,6 +873,7 @@
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
 				"${BUILT_PRODUCTS_DIR}/GroupWork/GroupWork.framework",
 				"${BUILT_PRODUCTS_DIR}/MessageKit/MessageKit.framework",
+				"${BUILT_PRODUCTS_DIR}/SearchTextField/SearchTextField.framework",
 				"${BUILT_PRODUCTS_DIR}/Spring/Spring.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftVideoBackground/SwiftVideoBackground.framework",
 				"${BUILT_PRODUCTS_DIR}/ViewGlower/ViewGlower.framework",
@@ -892,6 +891,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GroupWork.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MessageKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SearchTextField.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Spring.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftVideoBackground.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ViewGlower.framework",
@@ -944,7 +944,6 @@
 				594D2A501F6B0CDD00ECCF06 /* IconPickerCollectionViewDataSource.swift in Sources */,
 				5973C8531F608A2200647492 /* ConvoDetailReceiverProxyTableViewCell.swift in Sources */,
 				5958D5081F6C15EA00B07B0F /* ProxiesInteractedWithObserver.swift in Sources */,
-				59B5007D1F6A3469002D4C29 /* ReceiverPicker.swift in Sources */,
 				598F89F01FEB141800CCF024 /* MessagesObserver.swift in Sources */,
 				5973C8651F608A2200647492 /* Proxy.swift in Sources */,
 				5958D50A1F6C18B600B07B0F /* SettingsTableViewDelegate.swift in Sources */,
@@ -961,6 +960,7 @@
 				59FF373D1F97984200FA1AF0 /* AuthManaging.swift in Sources */,
 				598F8A621FEB9A9700CCF024 /* ConvoObserver.swift in Sources */,
 				59E75B2E1F846F550033A407 /* ProxiesManaging.swift in Sources */,
+				59BDAE512003849C002A5A6C /* ProxyNamesLoader.swift in Sources */,
 				592C0DEA1F8E59B50023DB02 /* ItemsToDeleteManaging.swift in Sources */,
 				59B90C231FF341AE00449569 /* UnreadMessageAddedObserver.swift in Sources */,
 				5973C84C1F608A2200647492 /* NSDate+NVTimeAgo.m in Sources */,

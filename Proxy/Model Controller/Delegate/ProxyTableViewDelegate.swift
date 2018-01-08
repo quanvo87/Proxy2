@@ -5,17 +5,20 @@ class ProxyTableViewDelegate: NSObject {
     private weak var convosManager: ConvosManaging?
     private weak var presenceManager: PresenceManaging?
     private weak var proxiesManager: ProxiesManaging?
+    private weak var proxyKeysManager: ProxyKeysManaging?
     private weak var unreadMessagesManager: UnreadMessagesManaging?
 
     func load(controller: UIViewController?,
               convosManager: ConvosManaging,
               presenceManager: PresenceManaging,
               proxiesManager: ProxiesManaging,
+              proxyKeysManager: ProxyKeysManaging,
               unreadMessagesManager: UnreadMessagesManaging) {
         self.convosManager = convosManager
         self.controller = controller
         self.presenceManager = presenceManager
         self.proxiesManager = proxiesManager
+        self.proxyKeysManager = proxyKeysManager
         self.unreadMessagesManager = unreadMessagesManager
     }
 }
@@ -28,11 +31,12 @@ extension ProxyTableViewDelegate: UITableViewDelegate {
             let convo = convosManager?.convos[safe: row],
             let presenceManager = presenceManager,
             let proxiesManager = proxiesManager,
+            let proxyKeysManager = proxyKeysManager,
             let unreadMessagesManager = unreadMessagesManager else {
                 return
         }
         tableView.deselectRow(at: indexPath, animated: true)
-        controller?.navigationController?.showConvoViewController(convo: convo, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
+        controller?.navigationController?.showConvoViewController(convo: convo, presenceManager: presenceManager, proxiesManager: proxiesManager, proxyKeysManager: proxyKeysManager, unreadMessagesManager: unreadMessagesManager)
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
