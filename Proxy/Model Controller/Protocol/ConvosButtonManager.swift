@@ -8,19 +8,16 @@ class ConvosButtonManager: ButtonManaging {
     private var uid: String?
     private weak var controller: UIViewController?
     private weak var delegate: MakeNewMessageDelegate?
-    private weak var proxiesManager: ProxiesManaging?
-    private weak var proxyKeysManager: ProxyKeysManaging?
+    private weak var manager: ProxiesManaging?
 
     func load(uid: String,
               controller: UIViewController,
               delegate: MakeNewMessageDelegate,
-              proxiesManager: ProxiesManaging,
-              proxyKeysManager: ProxyKeysManaging) {
+              manager: ProxiesManaging) {
         self.uid = uid
         self.controller = controller
         self.delegate = delegate
-        self.proxiesManager = proxiesManager
-        self.proxyKeysManager = proxyKeysManager
+        self.manager = manager
         makeButtons()
         controller.navigationItem.rightBarButtonItems = [makeNewMessageButton, makeNewProxyButton]
     }
@@ -35,7 +32,7 @@ private extension ConvosButtonManager {
     @objc func makeNewProxy() {
         guard
             let uid = uid,
-            let proxyCount = proxiesManager?.proxies.count else {
+            let proxyCount = manager?.proxies.count else {
                 return
         }
         animate(makeNewProxyButton)
@@ -61,13 +58,12 @@ private extension ConvosButtonManager {
         guard
             let uid = uid,
             let controller = controller,
-            let proxiesManager = proxiesManager,
-            let proxyKeysManager = proxyKeysManager else {
+            let manager = manager else {
                 return
         }
         animate(makeNewMessageButton)
         makeNewMessageButton.isEnabled = false
-        delegate?.showMakeNewMessageController(sender: nil, uid: uid, proxiesManager: proxiesManager, proxyKeysManager: proxyKeysManager, controller: controller)
+        delegate?.showMakeNewMessageController(sender: nil, uid: uid, manager: manager, controller: controller)
         makeNewMessageButton.isEnabled = true
     }
 }

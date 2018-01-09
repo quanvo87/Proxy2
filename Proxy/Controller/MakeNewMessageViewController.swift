@@ -19,7 +19,7 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate, Sender
     private var receiver: Proxy?
     private var uid = ""
     private weak var delegate: MakeNewMessageDelegate?
-    private weak var proxiesManager: ProxiesManaging?
+    private weak var manager: ProxiesManaging?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,20 +30,25 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate, Sender
         enterReceiverNameTextField.comparisonOptions = [.caseInsensitive]
         enterReceiverNameTextField.highlightAttributes = [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 14)]
         enterReceiverNameTextField.placeholder = "Start typing to see suggestions:"
+        enterReceiverNameTextField.theme.cellHeight = 50
         enterReceiverNameTextField.theme.font = .systemFont(ofSize: 14)
         enterReceiverNameTextField.theme.separatorColor = UIColor.lightGray.withAlphaComponent(0.5)
-        enterReceiverNameTextField.theme.cellHeight = 50
-
         enterReceiverNameTextField.userStoppedTypingHandler = { [weak self] in
-            guard let query = self?.enterReceiverNameTextField.text else {
-                return
+            guard
+                let query = self?.enterReceiverNameTextField.text,
+                query.count > 0 else {
+                    return
             }
             self?.enterReceiverNameTextField.showLoadingIndicator()
-            self?.loader.load(query) { (results) in
+            self?.loader.load(query) { [weak self] (results) in
                 self?.enterReceiverNameTextField.filterStrings(results)
                 self?.enterReceiverNameTextField.stopLoadingIndicator()
             }
         }
+
+        // todo: we have the receiver, then what
+
+        // todo: add icon? show icon in main view as well
 
         messageTextView.delegate = self
 
@@ -62,15 +67,14 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate, Sender
     static func make(sender: Proxy?,
                      uid: String,
                      delegate: MakeNewMessageDelegate,
-                     proxiesManager: ProxiesManaging,
-                     proxyKeysManager: ProxyKeysManaging) -> MakeNewMessageViewController? {
+                     manager: ProxiesManaging) -> MakeNewMessageViewController? {
         guard let controller = MakeNewMessageViewController.make() else {
             return nil
         }
         controller.sender = sender
         controller.uid = uid
         controller.delegate = delegate
-        controller.proxiesManager = proxiesManager
+        controller.manager = manager
         return controller
     }
 }
@@ -100,7 +104,7 @@ extension MakeNewMessageViewController {
 
 private extension MakeNewMessageViewController {
     @IBAction func makeNewProxy() {
-        guard let proxyCount = proxiesManager?.proxies.count else {
+        guard let proxyCount = manager?.proxies.count else {
             return
         }
         disableButtons()

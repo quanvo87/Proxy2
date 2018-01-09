@@ -9,26 +9,23 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
     private let buttonManager = ProxiesButtonManager()
     private weak var presenceManager: PresenceManaging?
     private weak var proxiesManager: ProxiesManaging?
-    private weak var proxyKeysManager: ProxyKeysManaging?
     private weak var unreadMessagesManager: UnreadMessagesManaging?
 
     init(uid: String,
          presenceManager: PresenceManaging,
          proxiesManager: ProxiesManaging,
-         proxyKeysManager: ProxyKeysManaging,
          unreadMessagesManager: UnreadMessagesManaging) {
         self.presenceManager = presenceManager
         self.proxiesManager = proxiesManager
-        self.proxyKeysManager = proxyKeysManager
         self.unreadMessagesManager = unreadMessagesManager
         
         super.init(nibName: nil, bundle: nil)
 
-        buttonManager.load(uid: uid, controller: self, delegate: self, itemsToDeleteManager: itemsToDeleteManager, proxiesManager: proxiesManager, proxyKeysManager: proxyKeysManager, tableView: tableView)
+        buttonManager.load(uid: uid, controller: self, delegate: self, itemsToDeleteManager: itemsToDeleteManager, proxiesManager: proxiesManager, tableView: tableView)
 
         dataSource.load(accessoryType: .disclosureIndicator, manager: proxiesManager)
 
-        delegate.load(controller: self, itemsToDeleteManager: itemsToDeleteManager, presenceManager: presenceManager, proxiesManager: proxiesManager, proxyKeysManager: proxyKeysManager, unreadMessagesManager: unreadMessagesManager)
+        delegate.load(controller: self, itemsToDeleteManager: itemsToDeleteManager, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
 
         navigationItem.title = "My Proxies"
 
@@ -51,11 +48,10 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
             let newConvo = newConvo,
             let presenceManager = presenceManager,
             let proxiesManager = proxiesManager,
-            let proxyKeysManager = proxyKeysManager,
             let unreadMessagesManager = unreadMessagesManager else {
                 return
         }
-        navigationController?.showConvoViewController(convo: newConvo, presenceManager: presenceManager, proxiesManager: proxiesManager, proxyKeysManager: proxyKeysManager, unreadMessagesManager: unreadMessagesManager)
+        navigationController?.showConvoViewController(convo: newConvo, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
         self.newConvo = nil
     }
 

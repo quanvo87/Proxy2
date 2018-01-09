@@ -13,7 +13,6 @@ class ProxiesButtonManager: ButtonManaging {
     private weak var delegate: MakeNewMessageDelegate?
     private weak var itemsToDeleteManager: ItemsToDeleteManaging?
     private weak var proxiesManager: ProxiesManaging?
-    private weak var proxyKeysManager: ProxyKeysManaging?
     private weak var tableView: UITableView?
 
     func load(uid: String,
@@ -21,14 +20,12 @@ class ProxiesButtonManager: ButtonManaging {
               delegate: MakeNewMessageDelegate,
               itemsToDeleteManager: ItemsToDeleteManaging,
               proxiesManager: ProxiesManaging,
-              proxyKeysManager: ProxyKeysManaging,
               tableView: UITableView) {
         self.uid = uid
         self.controller = controller
         self.delegate = delegate
         self.itemsToDeleteManager = itemsToDeleteManager
         self.proxiesManager = proxiesManager
-        self.proxyKeysManager = proxyKeysManager
         self.tableView = tableView
         makeButtons()
         setDefaultButtons()
@@ -113,13 +110,12 @@ private extension ProxiesButtonManager {
         guard
             let uid = uid,
             let controller = controller,
-            let proxiesManager = proxiesManager,
-            let proxyKeysManager = proxyKeysManager else {
+            let manager = proxiesManager else {
                 return
         }
         animate(makeNewMessageButton)
         makeNewMessageButton.isEnabled = false
-        delegate?.showMakeNewMessageController(sender: nil, uid: uid, proxiesManager: proxiesManager, proxyKeysManager: proxyKeysManager, controller: controller)
+        delegate?.showMakeNewMessageController(sender: nil, uid: uid, manager: manager, controller: controller)
         makeNewMessageButton.isEnabled = true
     }
 }

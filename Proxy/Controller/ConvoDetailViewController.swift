@@ -11,7 +11,6 @@ class ConvoDetailViewController: UIViewController, Closing {
     init(convo: Convo,
          presenceManager: PresenceManaging,
          proxiesManager: ProxiesManaging,
-         proxyKeysManager: ProxyKeysManaging,
          unreadMessagesManager: UnreadMessagesManaging) {
         super.init(nibName: nil, bundle: nil)
 
@@ -19,7 +18,7 @@ class ConvoDetailViewController: UIViewController, Closing {
 
         dataSource.load(controller: self, convoManager: convoManager, proxyManager: proxyManager)
 
-        delegate.load(controller: self, convoManager: convoManager, presenceManager: presenceManager, proxiesManager: proxiesManager, proxyKeysManager: proxyKeysManager, proxyManager: proxyManager, unreadMessagesManager: unreadMessagesManager)
+        delegate.load(controller: self, convoManager: convoManager, presenceManager: presenceManager, proxiesManager: proxiesManager, proxyManager: proxyManager, unreadMessagesManager: unreadMessagesManager)
 
         proxyManager.load(uid: convo.senderId, key: convo.senderProxyKey, tableView: tableView, closer: self)
 
