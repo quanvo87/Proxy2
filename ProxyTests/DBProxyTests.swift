@@ -20,7 +20,7 @@ class DBProxyTests: DBTest {
                             XCTAssert(success)
                             let work = GroupWork()
                             work.checkDeleted(Child.proxies, receiver.ownerId, receiver.key)
-                            work.checkDeleted(Child.proxyKeys, receiver.key)
+                            work.checkDeleted(Child.proxyNames, receiver.key)
                             work.checkDeleted(Child.proxyOwners, receiver.key)
                             work.checkDeleted(Child.convos, receiver.ownerId, tuple.convo.key)
                             work.checkDeleted(Child.userInfo, receiver.ownerId, Child.unreadMessages, tuple.message.messageId)
@@ -87,7 +87,7 @@ class DBProxyTests: DBTest {
             XCTAssertNotEqual(proxy.icon, "")
             let work = GroupWork()
             work.checkProxyCreated(proxy)
-            work.checkProxyKeyCreated(forProxy: proxy)
+            work.checkProxyNameCreated(forProxy: proxy)
             work.checkProxyOwnerCreated(forProxy: proxy)
             work.allDone {
                 expectation.fulfill()
@@ -180,10 +180,10 @@ extension GroupWork {
         }
     }
     
-    func checkProxyKeyCreated(forProxy proxy: Proxy) {
+    func checkProxyNameCreated(forProxy proxy: Proxy) {
         start()
-        DB.get(Child.proxyKeys, proxy.key) { (data) in
-            XCTAssertEqual(data?.value as? [String: String] ?? [:], [Child.key: proxy.key])
+        DB.get(Child.proxyNames, proxy.key) { (data) in
+            XCTAssertEqual(data?.value as? [String: String] ?? [:], [Child.name: proxy.name])
             self.finish(withResult: true)
         }
     }

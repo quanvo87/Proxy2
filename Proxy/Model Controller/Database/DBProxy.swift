@@ -18,7 +18,7 @@ extension DB {
     static func deleteProxy(_ proxy: Proxy, convos: [Convo], completion: @escaping (Bool) -> Void) {
         let work = GroupWork()
         work.delete(Child.proxies, proxy.ownerId, proxy.key)
-        work.delete(Child.proxyKeys, proxy.key)
+        work.delete(Child.proxyNames, proxy.key)
         work.delete(Child.proxyOwners, proxy.key)
         work.delete(convos)
         work.deleteUnreadMessages(for: proxy)
@@ -70,33 +70,34 @@ extension DB {
 
     private static func makeProxyHelper(uid: String,
                                         name: String,
+                                        icon: String = ProxyService.makeRandomIconName(),
                                         attempts: Int = 0,
                                         maxAttempts: Int,
                                         completion: @escaping MakeProxyCallback) {
-        guard let proxyKeysRef = makeReference(Child.proxyKeys) else {
+        guard let proxyNamesRef = makeReference(Child.proxyNames) else {
             completion(.failure(.unknown))
             return
         }
         let proxyKey = name.lowercased()
-        let proxyKeyDictionary = [Child.key: proxyKey]
-        let autoId = proxyKeysRef.childByAutoId().key
-        set(proxyKeyDictionary, at: Child.proxyKeys, autoId) { (success) in
+        let proxyNameDictionary = [Child.name: name]
+        let autoId = proxyNamesRef.childByAutoId().key
+        set(proxyNameDictionary, at: Child.proxyNames, autoId) { (success) in
             guard success else {
                 completion(.failure(.unknown))
                 return
             }
-            getProxyKeyCount(ref: proxyKeysRef, key: proxyKey, completion: { (count) in
-                delete(Child.proxyKeys, autoId) { (success) in
+            getProxyNameCount(ref: proxyNamesRef, name: name, completion: { (count) in
+                delete(Child.proxyNames, autoId) { (success) in
                     guard success else {
                         completion(.failure(.unknown))
                         return
                     }
                     if count == 1 {
-                        let proxy = Proxy(icon: ProxyService.makeRandomIconName(), name: name, ownerId: uid)
+                        let proxy = Proxy(icon: icon, name: name, ownerId: uid)
                         let proxyOwner = ProxyOwner(key: proxyKey, ownerId: uid)
                         let work = GroupWork()
                         work.set(proxy.toDictionary(), at: Child.proxies, proxy.ownerId, proxy.key)
-                        work.set(proxyKeyDictionary, at: Child.proxyKeys, proxy.key)
+                        work.set(proxyNameDictionary, at: Child.proxyNames, proxy.key)
                         work.set(proxyOwner.toDictionary(), at: Child.proxyOwners, proxy.key)
                         work.allDone {
                             completion(work.result ? .success(proxy) : .failure(.unknown))
@@ -113,8 +114,8 @@ extension DB {
         }
     }
 
-    private static func getProxyKeyCount(ref: DatabaseReference, key: String, completion: @escaping (UInt?) -> Void) {
-        ref.queryOrdered(byChild: Child.key).queryEqual(toValue: key).observeSingleEvent(of: .value) { (data) in
+    private static func getProxyNameCount(ref: DatabaseReference, name: String, completion: @escaping (UInt?) -> Void) {
+        ref.queryOrdered(byChild: Child.name).queryEqual(toValue: name).observeSingleEvent(of: .value) { (data) in
             completion(data.childrenCount)
         }
     }
