@@ -1,4 +1,5 @@
 import FirebaseDatabase
+import SearchTextField
 
 // https://www.swiftbysundell.com/posts/a-deep-dive-into-grand-central-dispatch-in-swift
 class ProxyNamesLoader {
@@ -12,7 +13,7 @@ class ProxyNamesLoader {
 
     func load(_ query: String,
               querySize: UInt = Setting.querySizeForProxyNames,
-              completion: @escaping ([String]) -> Void) {
+              completion: @escaping ([SearchTextFieldItem]) -> Void) {
         pendingWorkItem?.cancel()
         let workItem = DispatchWorkItem { [weak self] in
             self?.ref?
@@ -20,7 +21,7 @@ class ProxyNamesLoader {
                 .queryStarting(atValue: query)
                 .queryLimited(toFirst: querySize)
                 .observeSingleEvent(of: .value) { (data) in
-                    var proxyKeys = [String]()
+                    var items = [SearchTextFieldItem]()
                     for child in data.children {
                         guard
                             let data = child as? DataSnapshot,
@@ -28,9 +29,12 @@ class ProxyNamesLoader {
                             proxy.ownerId != self?.uid else {
                                 continue
                         }
-                        proxyKeys.append(proxy.name)
+                        let item = SearchTextFieldItem.init(title: proxy.name,
+                                                            subtitle: nil,
+                                                            image: UIImage(named: proxy.icon))
+                        items.append(item)
                     }
-                    completion(proxyKeys)
+                    completion(items)
             }
         }
         pendingWorkItem = workItem

@@ -20,7 +20,7 @@ class SenderPickerViewController: UIViewController {
 
         manager.load(uid: uid, controller: nil, manager: nil, tableView: tableView)
 
-        navigationItem.title = "Pick A Sender"
+        navigationItem.title = "Choose Your Sender"
 
         tableView.dataSource = dataSource
         tableView.delegate = delegate

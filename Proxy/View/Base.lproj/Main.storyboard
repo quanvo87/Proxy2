@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="mti-JT-f0N">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
         <capability name="Alignment constraints to the first baseline" minToolsVersion="6.0"/>
@@ -20,21 +17,21 @@
                         <viewControllerLayoutGuide type="bottom" id="Ibs-yw-gQo"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="fyE-nn-SUx">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Email" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="dqA-pJ-vea">
-                                <rect key="frame" x="26" y="247" width="323" height="30"/>
+                                <rect key="frame" x="30" y="213.5" width="540" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="O0c-5Z-zER">
-                                <rect key="frame" x="26" y="282" width="323" height="30"/>
+                                <rect key="frame" x="30" y="248.5" width="540" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rfd-Be-8KZ" userLabel="Sign Up Button">
-                                <rect key="frame" x="26" y="317" width="159" height="33"/>
+                                <rect key="frame" x="30" y="283.5" width="267.5" height="33"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <state key="normal" title="Sign Up"/>
                                 <connections>
@@ -42,7 +39,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sBg-Hu-X6j">
-                                <rect key="frame" x="26" y="355" width="323" height="33"/>
+                                <rect key="frame" x="30" y="321.5" width="540" height="33"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <state key="normal" title="Log In With Facebook"/>
                                 <connections>
@@ -50,7 +47,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="A17-BD-92J" userLabel="Login Button">
-                                <rect key="frame" x="190" y="317" width="159" height="33"/>
+                                <rect key="frame" x="302.5" y="283.5" width="267.5" height="33"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <state key="normal" title="Log In"/>
                                 <connections>
@@ -99,49 +96,49 @@
                         <viewControllerLayoutGuide type="bottom" id="4JC-hV-Rck"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="qsI-lD-hlD">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="From:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VnU-9X-AID">
-                                <rect key="frame" x="16" y="30" width="40" height="18"/>
+                                <rect key="frame" x="20" y="30" width="40" height="18"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <color key="textColor" red="0.50196081400000003" green="0.50196081400000003" blue="0.50196081400000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f3h-fA-TYv" userLabel="Pick Sender Button">
-                                <rect key="frame" x="66" y="24" width="96" height="30"/>
+                                <rect key="frame" x="70" y="24" width="96" height="30"/>
                                 <state key="normal" title="Pick A Sender"/>
                                 <connections>
                                     <action selector="showSenderPickerController" destination="hJ2-7r-RNJ" eventType="touchUpInside" id="vUQ-fG-c8Y"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="D4A-fT-4Nv" userLabel="Make New Proxy Button">
-                                <rect key="frame" x="245" y="24" width="114" height="30"/>
+                                <rect key="frame" x="466" y="24" width="114" height="30"/>
                                 <state key="normal" title="Make New Proxy"/>
                                 <connections>
                                     <action selector="makeNewProxy" destination="hJ2-7r-RNJ" eventType="touchUpInside" id="CQk-pF-yoP"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="To:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bro-Qk-hjj">
-                                <rect key="frame" x="16" y="73" width="21" height="18"/>
+                                <rect key="frame" x="20" y="73" width="21" height="18"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <color key="textColor" red="0.50196081400000003" green="0.50196081400000003" blue="0.50196081400000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Message:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IGm-Gk-l0I">
-                                <rect key="frame" x="16" y="116" width="66" height="18"/>
+                                <rect key="frame" x="20" y="116" width="66" height="18"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <color key="textColor" red="0.50196081400000003" green="0.50196081400000003" blue="0.50196081400000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="ioc-14-Kcf">
-                                <rect key="frame" x="6" y="139" width="363" height="485"/>
+                                <rect key="frame" x="10" y="139" width="580" height="418"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WCw-NF-b91" userLabel="Send Button">
-                                <rect key="frame" x="6" y="634" width="363" height="33"/>
+                                <rect key="frame" x="10" y="567" width="580" height="33"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <state key="normal" title="Send"/>
                                 <connections>
@@ -149,7 +146,7 @@
                                 </connections>
                             </button>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="DzE-gH-2hm" customClass="SearchTextField" customModule="SearchTextField">
-                                <rect key="frame" x="66" y="67" width="293" height="30"/>
+                                <rect key="frame" x="70" y="67" width="510" height="30"/>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
@@ -186,10 +183,10 @@
                     <navigationItem key="navigationItem" id="Gmk-sd-ddQ"/>
                     <connections>
                         <outlet property="bottomConstraint" destination="Mga-g4-LDe" id="4dW-kg-bvb"/>
-                        <outlet property="enterReceiverNameTextField" destination="DzE-gH-2hm" id="MtF-av-Dxm"/>
+                        <outlet property="chooseSenderButton" destination="f3h-fA-TYv" id="sUv-dH-3fB"/>
                         <outlet property="makeNewProxyButton" destination="D4A-fT-4Nv" id="ZvT-QZ-EMJ"/>
                         <outlet property="messageTextView" destination="ioc-14-Kcf" id="GhX-zY-qyA"/>
-                        <outlet property="pickSenderButton" destination="f3h-fA-TYv" id="sUv-dH-3fB"/>
+                        <outlet property="receiverNameTextField" destination="DzE-gH-2hm" id="MtF-av-Dxm"/>
                         <outlet property="sendMessageButton" destination="WCw-NF-b91" id="vbR-ta-w7b"/>
                     </connections>
                 </viewController>

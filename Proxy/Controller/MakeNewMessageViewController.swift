@@ -1,10 +1,10 @@
 import SearchTextField
 import UIKit
 
-class MakeNewMessageViewController: UIViewController, UITextViewDelegate, SenderPickerDelegate {
-    @IBOutlet weak var pickSenderButton: UIButton!
+class MakeNewMessageViewController: UIViewController, SenderPickerDelegate {
+    @IBOutlet weak var chooseSenderButton: UIButton!
     @IBOutlet weak var makeNewProxyButton: UIButton!
-    @IBOutlet weak var enterReceiverNameTextField: SearchTextField!
+    @IBOutlet weak var receiverNameTextField: SearchTextField!
     @IBOutlet weak var messageTextView: UITextView!
     @IBOutlet weak var sendMessageButton: UIButton!
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
@@ -15,7 +15,6 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate, Sender
         }
     }
 
-    private var receiver: Proxy?
     private var uid = ""
     private weak var delegate: MakeNewMessageDelegate?
     private weak var manager: ProxiesManaging?
@@ -24,32 +23,27 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate, Sender
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        enterReceiverNameTextField.becomeFirstResponder()
-        enterReceiverNameTextField.clearButtonMode = .whileEditing
-        enterReceiverNameTextField.comparisonOptions = [.caseInsensitive]
-        enterReceiverNameTextField.highlightAttributes = [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 14)]
-        enterReceiverNameTextField.placeholder = "Start typing to see suggestions:"
-        enterReceiverNameTextField.theme.cellHeight = 50
-        enterReceiverNameTextField.theme.font = .systemFont(ofSize: 14)
-        enterReceiverNameTextField.theme.separatorColor = UIColor.lightGray.withAlphaComponent(0.5)
-        enterReceiverNameTextField.userStoppedTypingHandler = { [weak self] in
+        receiverNameTextField.becomeFirstResponder()
+        receiverNameTextField.clearButtonMode = .whileEditing
+        receiverNameTextField.comparisonOptions = [.caseInsensitive]
+        receiverNameTextField.highlightAttributes = [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 14)]
+        receiverNameTextField.maxResultsListHeight = Int(view.frame.height / 2)
+        receiverNameTextField.placeholder = "Start typing to see suggestions:"
+        receiverNameTextField.theme.cellHeight = 50
+        receiverNameTextField.theme.font = .systemFont(ofSize: 14)
+        receiverNameTextField.theme.separatorColor = UIColor.lightGray.withAlphaComponent(0.5)
+        receiverNameTextField.userStoppedTypingHandler = { [weak self] in
             guard
-                let query = self?.enterReceiverNameTextField.text,
+                let query = self?.receiverNameTextField.text,
                 query.count > 0 else {
                     return
             }
-            self?.enterReceiverNameTextField.showLoadingIndicator()
-            self?.loader.load(query) { [weak self] (results) in
-                self?.enterReceiverNameTextField.filterStrings(results)
-                self?.enterReceiverNameTextField.stopLoadingIndicator()
+            self?.receiverNameTextField.showLoadingIndicator()
+            self?.loader.load(query) { [weak self] (items) in
+                self?.receiverNameTextField.filterItems(items)
+                self?.receiverNameTextField.stopLoadingIndicator()
             }
         }
-
-        // todo: we have the receiver, then what
-
-        // todo: add icon? show icon in main view as well
-
-        messageTextView.delegate = self
 
         navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self, action: #selector(close), imageName: ButtonName.cancel)
         navigationItem.title = "New Message"
@@ -91,13 +85,11 @@ extension MakeNewMessageViewController {
             let keyboardFrame = (info[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
                 return
         }
-        UIView.animate(withDuration: 0.1) {
-            self.bottomConstraint.constant = keyboardFrame.size.height + 5
+        DispatchQueue.main.async {
+            UIView.animate(withDuration: 0.1) {
+                self.bottomConstraint.constant = keyboardFrame.size.height + 5
+            }
         }
-    }
-
-    func textViewDidChange(_ textView: UITextView) {
-        enableSendButton()
     }
 }
 
@@ -119,25 +111,48 @@ private extension MakeNewMessageViewController {
     }
 
     @IBAction func sendMessage() {
-        guard let sender = sender, let receiver = receiver else {
+        disableButtons()
+        guard let sender = sender else {
+            showAlert(title: "Choose A Sender", message: "Please choose a Proxy to send your message from.")
+            enableButtons()
             return
         }
-        disableButtons()
-        DB.sendMessage(sender: sender, receiver: receiver, text: messageTextView.text) { (result) in
-            switch result {
-            case .failure(let error):
-                switch error {
-                case .inputTooLong:
-                    self.showAlert(title: "Message Too Long", message: error.localizedDescription)
-                case .receiverDeletedProxy:
-                    self.showAlert(title: "Receiver Deleted Proxy", message: error.localizedDescription)
-                default:
-                    self.showAlert(title: "Error Sending Message", message: error.localizedDescription)
+        guard
+            let receiverName = receiverNameTextField.text,
+            receiverName != "" else {
+                showAlert(title: "Choose A Receiver", message: "Please enter the receiver's name.")
+                enableButtons()
+                return
+        }
+        DB.getProxy(key: receiverName) { [weak self] (receiver) in
+            guard let receiver = receiver else {
+                self?.showAlert(title: "Receiver Not Found", message: "The receiver you chose could not be found. Please try again.")
+                self?.enableButtons()
+                return
+            }
+            guard
+                let text = self?.messageTextView.text,
+                text != "" else {
+                    self?.showAlert(title: "Blank Message", message: "Please type the message you would like to send \(String.randomEmoji).")
+                    self?.enableButtons()
+                    return
+            }
+            DB.sendMessage(sender: sender, receiver: receiver, text: text) { [weak self] (result) in
+                switch result {
+                case .failure(let error):
+                    switch error {
+                    case .inputTooLong:
+                        self?.showAlert(title: "Message Too Long", message: error.localizedDescription)
+                    case .receiverDeletedProxy:
+                        self?.showAlert(title: "Receiver Deleted Proxy", message: error.localizedDescription)
+                    default:
+                        self?.showAlert(title: "Error Sending Message", message: error.localizedDescription)
+                    }
+                    self?.enableButtons()
+                case .success(let tuple):
+                    self?.delegate?.newConvo = tuple.convo
+                    self?.navigationController?.dismiss(animated: true)
                 }
-                self.enableButtons()
-            case .success(let tuple):
-                self.delegate?.newConvo = tuple.convo
-                self.navigationController?.dismiss(animated: true)
             }
         }
     }
@@ -155,21 +170,17 @@ private extension MakeNewMessageViewController {
 
     func disableButtons() {
         makeNewProxyButton?.isEnabled = false
-        pickSenderButton?.isEnabled = false
+        chooseSenderButton?.isEnabled = false
         sendMessageButton?.isEnabled = false
     }
 
     func enableButtons() {
-        enableSendButton()
         makeNewProxyButton?.isEnabled = true
-        pickSenderButton?.isEnabled = true
-    }
-
-    func enableSendButton() {
-        sendMessageButton?.isEnabled = sender != nil && receiver != nil && messageTextView.text != ""
+        chooseSenderButton?.isEnabled = true
+        sendMessageButton.isEnabled = true
     }
 
     func setSenderButtonTitle() {
-        pickSenderButton?.setTitle(sender?.name ?? "Pick A Sender", for: .normal)
+        chooseSenderButton?.setTitle(sender?.name ?? "Choose Your Sender", for: .normal)
     }
 }
