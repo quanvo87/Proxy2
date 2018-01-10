@@ -14,7 +14,7 @@ struct Proxy {
     init(hasUnreadMessage: Bool = false,
          dateCreated: Double = Date().timeIntervalSince1970,
          timestamp: Double = Date().timeIntervalSince1970,
-         icon: String,
+         icon: String = ProxyService.makeRandomIconName(),
          lastMessage: String = "",
          name: String,
          nickname: String = "",

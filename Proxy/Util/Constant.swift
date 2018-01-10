@@ -30,7 +30,6 @@ struct Child {
     static let parentConvoKey = "parentConvoKey"
     static let proxies = "proxies"
     static let proxyNames = "proxyNames"
-    static let proxyOwners = "proxyOwners"
     static let receiverNickname = "receiverNickname"
     static let receiverProxyKey = "receiverProxyKey"
     static let senderNickname = "senderNickname"

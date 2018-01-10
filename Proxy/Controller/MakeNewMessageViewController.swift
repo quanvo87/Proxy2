@@ -15,18 +15,17 @@ class MakeNewMessageViewController: UIViewController, UITextViewDelegate, Sender
         }
     }
 
-    private let loader = ProxyNamesLoader()
     private var receiver: Proxy?
     private var uid = ""
     private weak var delegate: MakeNewMessageDelegate?
     private weak var manager: ProxiesManaging?
+    private lazy var loader = ProxyNamesLoader(uid)
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         enterReceiverNameTextField.becomeFirstResponder()
         enterReceiverNameTextField.clearButtonMode = .whileEditing
-        // todo: make proxy keys cap'd
         enterReceiverNameTextField.comparisonOptions = [.caseInsensitive]
         enterReceiverNameTextField.highlightAttributes = [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 14)]
         enterReceiverNameTextField.placeholder = "Start typing to see suggestions:"

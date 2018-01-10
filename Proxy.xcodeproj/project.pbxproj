@@ -26,7 +26,6 @@
 		5958D5081F6C15EA00B07B0F /* ProxiesInteractedWithObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5958D5071F6C15EA00B07B0F /* ProxiesInteractedWithObserver.swift */; };
 		5958D50A1F6C18B600B07B0F /* SettingsTableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5958D5091F6C18B600B07B0F /* SettingsTableViewDelegate.swift */; };
 		5958E34A1F9D5E8D00CC0560 /* SenderProxyTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5958E3491F9D5E8D00CC0560 /* SenderProxyTableViewCell.xib */; };
-		5962575A1FD6ED7E00C87E2A /* ProxyOwner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596257591FD6ED7E00C87E2A /* ProxyOwner.swift */; };
 		596D7FD41F62EC1100E6AF8D /* ProxiesTableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596D7FD31F62EC1100E6AF8D /* ProxiesTableViewDelegate.swift */; };
 		5973C8101F60844A00647492 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5973C80F1F60840F00647492 /* GoogleService-Info.plist */; };
 		5973C8111F60844A00647492 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5973C80F1F60840F00647492 /* GoogleService-Info.plist */; };
@@ -158,7 +157,6 @@
 		5958D5071F6C15EA00B07B0F /* ProxiesInteractedWithObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxiesInteractedWithObserver.swift; sourceTree = "<group>"; };
 		5958D5091F6C18B600B07B0F /* SettingsTableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTableViewDelegate.swift; sourceTree = "<group>"; };
 		5958E3491F9D5E8D00CC0560 /* SenderProxyTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SenderProxyTableViewCell.xib; sourceTree = "<group>"; };
-		596257591FD6ED7E00C87E2A /* ProxyOwner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyOwner.swift; sourceTree = "<group>"; };
 		596D7FD31F62EC1100E6AF8D /* ProxiesTableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxiesTableViewDelegate.swift; sourceTree = "<group>"; };
 		5973C80F1F60840F00647492 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5973C8131F608A1A00647492 /* NSDate+NVTimeAgo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+NVTimeAgo.h"; sourceTree = "<group>"; };
@@ -325,7 +323,6 @@
 				5973C8381F608A1F00647492 /* Convo.swift */,
 				598420501FEA598300855647 /* Message.swift */,
 				5973C8321F608A1E00647492 /* Proxy.swift */,
-				596257591FD6ED7E00C87E2A /* ProxyOwner.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1001,7 +998,6 @@
 				5973C8761F608A2200647492 /* SettingsViewController.swift in Sources */,
 				598F89EC1FEB12E000CCF024 /* MessagesManaging.swift in Sources */,
 				598F89FE1FEB401200CCF024 /* ConvoDetailViewController.swift in Sources */,
-				5962575A1FD6ED7E00C87E2A /* ProxyOwner.swift in Sources */,
 				5973C8601F608A2200647492 /* SettingsTableViewCell.swift in Sources */,
 				5973C8511F608A2200647492 /* ProxyError.swift in Sources */,
 				5958D5061F6C140100B07B0F /* MessagesSentObserver.swift in Sources */,

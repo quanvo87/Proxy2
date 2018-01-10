@@ -21,7 +21,6 @@ class DBProxyTests: DBTest {
                             let work = GroupWork()
                             work.checkDeleted(Child.proxies, receiver.ownerId, receiver.key)
                             work.checkDeleted(Child.proxyNames, receiver.key)
-                            work.checkDeleted(Child.proxyOwners, receiver.key)
                             work.checkDeleted(Child.convos, receiver.ownerId, tuple.convo.key)
                             work.checkDeleted(Child.userInfo, receiver.ownerId, Child.unreadMessages, tuple.message.messageId)
                             work.check(.receiverDeletedProxy(true), for: tuple.convo, asSender: true)
@@ -88,7 +87,6 @@ class DBProxyTests: DBTest {
             let work = GroupWork()
             work.checkProxyCreated(proxy)
             work.checkProxyNameCreated(forProxy: proxy)
-            work.checkProxyOwnerCreated(forProxy: proxy)
             work.allDone {
                 expectation.fulfill()
             }
@@ -179,19 +177,12 @@ extension GroupWork {
             self.finish(withResult: true)
         }
     }
-    
+
     func checkProxyNameCreated(forProxy proxy: Proxy) {
         start()
         DB.get(Child.proxyNames, proxy.key) { (data) in
-            XCTAssertEqual(data?.value as? [String: String] ?? [:], [Child.name: proxy.name])
-            self.finish(withResult: true)
-        }
-    }
-    
-    func checkProxyOwnerCreated(forProxy proxy: Proxy) {
-        start()
-        DB.get(Child.proxyOwners, proxy.key) { (data) in
-            XCTAssertEqual(ProxyOwner(data!), ProxyOwner(key: proxy.key, ownerId: DBTest.uid))
+            let testProxy = Proxy(icon: proxy.icon, name: proxy.name, ownerId: proxy.ownerId)
+            XCTAssertEqual(Proxy(data!), testProxy)
             self.finish(withResult: true)
         }
     }
