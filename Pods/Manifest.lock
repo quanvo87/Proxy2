@@ -71,7 +71,6 @@ PODS:
   - SearchTextField (1.2.0)
   - Spring (1.0.5)
   - SwiftVideoBackground (2.0.0)
-  - ViewGlower (0.1.0)
 
 DEPENDENCIES:
   - FacebookCore
@@ -85,7 +84,6 @@ DEPENDENCIES:
   - SearchTextField
   - Spring (from `https://github.com/MengTo/Spring.git`)
   - SwiftVideoBackground
-  - ViewGlower
 
 EXTERNAL SOURCES:
   Spring:
@@ -118,8 +116,7 @@ SPEC CHECKSUMS:
   SearchTextField: a5bb7e4c33affadb115afdbe8100d84ef10a8024
   Spring: 48aad470f3ead043b2da98b64e0bf0630b7ebc42
   SwiftVideoBackground: 41d030c232284482973e46959de6398a116c6b58
-  ViewGlower: 552fb17f91cf1b99e5474f73506f55d106fd8edd
 
-PODFILE CHECKSUM: 4db0875a3af5bd7e8b82b0cd8e1f45b63d984b50
+PODFILE CHECKSUM: 1d848467029a0aeafa965321c2ed58cf88fe0f9f
 
 COCOAPODS: 1.3.1

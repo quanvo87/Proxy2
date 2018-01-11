@@ -29,10 +29,9 @@ class ProxyNamesLoader {
                             proxy.ownerId != self?.uid else {
                                 continue
                         }
-                        let item = SearchTextFieldItem.init(title: proxy.name,
-                                                            subtitle: nil,
-                                                            image: UIImage(named: proxy.icon))
-                        items.append(item)
+                        items.append(SearchTextFieldItem.init(title: proxy.name,
+                                                              subtitle: nil,
+                                                              image: UIImage(named: proxy.icon)))
                     }
                     completion(items)
             }

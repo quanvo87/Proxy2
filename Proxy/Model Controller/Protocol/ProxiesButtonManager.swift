@@ -1,8 +1,6 @@
 import UIKit
-import ViewGlower
 
-class ProxiesButtonManager: ButtonManaging {
-    let viewGlower = ViewGlower()
+class ProxiesButtonManager {
     var cancelButton = UIBarButtonItem()
     var confirmButton = UIBarButtonItem()
     var deleteButton = UIBarButtonItem()
@@ -32,6 +30,16 @@ class ProxiesButtonManager: ButtonManaging {
     }
 }
 
+extension ProxiesButtonManager: ButtonAnimating {
+    func animateButton() {
+        makeNewProxyButton.morph(loop: true)
+    }
+
+    func stopAnimatingButton() {
+        makeNewProxyButton.stopAnimating()
+    }
+}
+
 private extension ProxiesButtonManager {
     func makeButtons() {
         cancelButton = UIBarButtonItem.make(target: self, action: #selector(setDefaultButtons), imageName: ButtonName.cancel)
@@ -43,7 +51,7 @@ private extension ProxiesButtonManager {
 
     @objc func setDefaultButtons() {
         if proxiesManager?.proxies.isEmpty ?? false {
-            animate(makeNewProxyButton, loop: true)
+            makeNewProxyButton.morph(loop: true)
         }
         controller?.navigationItem.leftBarButtonItem = deleteButton
         controller?.navigationItem.rightBarButtonItems = [makeNewMessageButton, makeNewProxyButton]
@@ -51,7 +59,6 @@ private extension ProxiesButtonManager {
         makeNewProxyButton.isEnabled = true
         makeNewProxyButton.customView?.isHidden = false
         tableView?.setEditing(false, animated: true)
-
     }
 
     @objc func setEditModeButtons() {
@@ -90,7 +97,7 @@ private extension ProxiesButtonManager {
             let proxyCount = proxiesManager?.proxies.count else {
                 return
         }
-        animate(makeNewProxyButton)
+        makeNewProxyButton.morph()
         makeNewProxyButton.isEnabled = false
         DB.makeProxy(uid: uid, currentProxyCount: proxyCount) { [weak self] (result) in
             switch result {
@@ -113,7 +120,7 @@ private extension ProxiesButtonManager {
             let manager = proxiesManager else {
                 return
         }
-        animate(makeNewMessageButton)
+        makeNewMessageButton.morph()
         makeNewMessageButton.isEnabled = false
         delegate?.showMakeNewMessageController(sender: nil, uid: uid, manager: manager, controller: controller)
         makeNewMessageButton.isEnabled = true

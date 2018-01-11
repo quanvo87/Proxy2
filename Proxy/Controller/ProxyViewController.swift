@@ -24,7 +24,7 @@ class ProxyViewController: UIViewController, Closing, MakeNewMessageDelegate {
 
         super.init(nibName: nil, bundle: nil)
 
-        convosManager.load(uid: proxy.ownerId, proxyKey: proxy.key, manager: nil, tableView: tableView)
+        convosManager.load(uid: proxy.ownerId, proxyKey: proxy.key, animator: self, tableView: tableView)
 
         dataSource.load(controller: self, convosManager: convosManager, proxyManager: proxyManager)
 
@@ -66,6 +66,22 @@ class ProxyViewController: UIViewController, Closing, MakeNewMessageDelegate {
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+}
+
+extension ProxyViewController: ButtonAnimating {
+    func animateButton() {
+        guard let item = navigationItem.rightBarButtonItems?[safe: 0] else {
+            return
+        }
+        item.morph(loop: true)
+    }
+
+    func stopAnimatingButton() {
+        guard let item = navigationItem.rightBarButtonItems?[safe: 0] else {
+            return
+        }
+        item.stopAnimating()
     }
 }
 

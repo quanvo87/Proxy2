@@ -105,18 +105,11 @@
                                 <color key="textColor" red="0.50196081400000003" green="0.50196081400000003" blue="0.50196081400000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f3h-fA-TYv" userLabel="Pick Sender Button">
-                                <rect key="frame" x="70" y="24" width="96" height="30"/>
-                                <state key="normal" title="Pick A Sender"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f3h-fA-TYv" userLabel="Pick Sender Button">
+                                <rect key="frame" x="70" y="24" width="520" height="30"/>
+                                <state key="normal" title="Pick Your Sender"/>
                                 <connections>
                                     <action selector="showSenderPickerController" destination="hJ2-7r-RNJ" eventType="touchUpInside" id="vUQ-fG-c8Y"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="D4A-fT-4Nv" userLabel="Make New Proxy Button">
-                                <rect key="frame" x="466" y="24" width="114" height="30"/>
-                                <state key="normal" title="Make New Proxy"/>
-                                <connections>
-                                    <action selector="makeNewProxy" destination="hJ2-7r-RNJ" eventType="touchUpInside" id="CQk-pF-yoP"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="To:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bro-Qk-hjj">
@@ -146,7 +139,7 @@
                                 </connections>
                             </button>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="DzE-gH-2hm" customClass="SearchTextField" customModule="SearchTextField">
-                                <rect key="frame" x="70" y="67" width="510" height="30"/>
+                                <rect key="frame" x="70" y="67" width="520" height="30"/>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
@@ -155,37 +148,34 @@
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="VnU-9X-AID" firstAttribute="top" secondItem="zSL-AK-Fru" secondAttribute="top" constant="10" id="0lo-QV-sun"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="D4A-fT-4Nv" secondAttribute="trailing" id="1DB-mQ-7C7"/>
                             <constraint firstItem="WCw-NF-b91" firstAttribute="width" secondItem="ioc-14-Kcf" secondAttribute="width" id="4b7-LO-rtZ"/>
                             <constraint firstAttribute="trailingMargin" secondItem="ioc-14-Kcf" secondAttribute="trailing" constant="-10" id="78e-Nv-cMn"/>
                             <constraint firstItem="bro-Qk-hjj" firstAttribute="top" secondItem="VnU-9X-AID" secondAttribute="bottom" constant="25" id="8fY-nL-Oue"/>
-                            <constraint firstItem="D4A-fT-4Nv" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="f3h-fA-TYv" secondAttribute="trailing" constant="5" id="I4o-SN-LOI"/>
                             <constraint firstItem="DzE-gH-2hm" firstAttribute="leading" secondItem="f3h-fA-TYv" secondAttribute="leading" id="Ifi-nF-rLm"/>
                             <constraint firstItem="WCw-NF-b91" firstAttribute="top" secondItem="ioc-14-Kcf" secondAttribute="bottom" constant="10" id="KhI-9g-yog"/>
                             <constraint firstItem="ioc-14-Kcf" firstAttribute="top" secondItem="IGm-Gk-l0I" secondAttribute="bottom" constant="5" id="Lgm-30-BE3"/>
                             <constraint firstItem="f3h-fA-TYv" firstAttribute="leading" secondItem="VnU-9X-AID" secondAttribute="trailing" constant="10" id="M4B-Kd-S5H"/>
                             <constraint firstAttribute="bottomMargin" secondItem="WCw-NF-b91" secondAttribute="bottom" id="Mga-g4-LDe"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="bro-Qk-hjj" secondAttribute="trailing" constant="20" symbolic="YES" id="Qfe-jP-g4L"/>
-                            <constraint firstItem="D4A-fT-4Nv" firstAttribute="centerY" secondItem="f3h-fA-TYv" secondAttribute="centerY" id="RlG-Xl-5hK"/>
                             <constraint firstItem="WCw-NF-b91" firstAttribute="centerX" secondItem="qsI-lD-hlD" secondAttribute="centerX" id="So3-Oc-ECf"/>
+                            <constraint firstItem="zSL-AK-Fru" firstAttribute="trailing" secondItem="f3h-fA-TYv" secondAttribute="trailing" constant="10" id="Wgn-WZ-DXw"/>
                             <constraint firstItem="ioc-14-Kcf" firstAttribute="leading" secondItem="qsI-lD-hlD" secondAttribute="leadingMargin" constant="-10" id="bho-II-vWY"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="IGm-Gk-l0I" secondAttribute="trailing" constant="20" symbolic="YES" id="cA7-e0-PFU"/>
                             <constraint firstItem="VnU-9X-AID" firstAttribute="leading" secondItem="qsI-lD-hlD" secondAttribute="leadingMargin" id="eog-XB-Fqg"/>
                             <constraint firstItem="IGm-Gk-l0I" firstAttribute="leading" secondItem="bro-Qk-hjj" secondAttribute="leading" id="hHe-im-nTB"/>
                             <constraint firstItem="IGm-Gk-l0I" firstAttribute="top" secondItem="bro-Qk-hjj" secondAttribute="bottom" constant="25" id="kFW-Ij-LrK"/>
-                            <constraint firstItem="DzE-gH-2hm" firstAttribute="trailing" secondItem="D4A-fT-4Nv" secondAttribute="trailing" id="kUV-FV-y61"/>
                             <constraint firstItem="DzE-gH-2hm" firstAttribute="centerY" secondItem="bro-Qk-hjj" secondAttribute="centerY" id="lsm-2s-AwB"/>
                             <constraint firstItem="f3h-fA-TYv" firstAttribute="firstBaseline" secondItem="VnU-9X-AID" secondAttribute="firstBaseline" id="un9-UM-I5a"/>
                             <constraint firstItem="bro-Qk-hjj" firstAttribute="leading" secondItem="VnU-9X-AID" secondAttribute="leading" id="wfR-Kh-CDC"/>
+                            <constraint firstItem="zSL-AK-Fru" firstAttribute="trailing" secondItem="DzE-gH-2hm" secondAttribute="trailing" constant="10" id="xIz-Vh-Vpe"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="zSL-AK-Fru"/>
                     </view>
                     <navigationItem key="navigationItem" id="Gmk-sd-ddQ"/>
                     <connections>
                         <outlet property="bottomConstraint" destination="Mga-g4-LDe" id="4dW-kg-bvb"/>
-                        <outlet property="chooseSenderButton" destination="f3h-fA-TYv" id="sUv-dH-3fB"/>
-                        <outlet property="makeNewProxyButton" destination="D4A-fT-4Nv" id="ZvT-QZ-EMJ"/>
                         <outlet property="messageTextView" destination="ioc-14-Kcf" id="GhX-zY-qyA"/>
+                        <outlet property="pickSenderButton" destination="f3h-fA-TYv" id="sUv-dH-3fB"/>
                         <outlet property="receiverNameTextField" destination="DzE-gH-2hm" id="MtF-av-Dxm"/>
                         <outlet property="sendMessageButton" destination="WCw-NF-b91" id="vbR-ta-w7b"/>
                     </connections>

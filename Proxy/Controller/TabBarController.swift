@@ -8,7 +8,7 @@ class TabBarController: UITabBarController {
     init(uid: String,
          displayName: String?,
          presenceManager: PresenceManaging = PresenceManager(),
-         proxiesManager: ProxiesManaging = ProxiesManager(),
+         proxiesManager: ProxiesManaging,
          unreadMessagesManager: UnreadMessagesManaging = UnreadMessagesManager()) {
         self.presenceManager = presenceManager
         self.proxiesManager = proxiesManager

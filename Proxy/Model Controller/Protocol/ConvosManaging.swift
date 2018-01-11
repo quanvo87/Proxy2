@@ -8,23 +8,21 @@ protocol ConvosManaging: class {
 class ConvosManager: ConvosManaging {
     var convos = [Convo]() {
         didSet {
-            if let manager = manager {
-                if convos.isEmpty {
-                    manager.animate(manager.makeNewMessageButton, loop: true)
-                } else {
-                    manager.stopAnimating(manager.makeNewMessageButton)
-                }
+            if convos.isEmpty {
+                animator?.animateButton()
+            } else {
+                animator?.stopAnimatingButton()
             }
             tableView?.reloadData()
         }
     }
     
     private let observer = ConvosObserver()
-    private weak var manager: ButtonManaging?
+    private weak var animator: ButtonAnimating?
     private weak var tableView: UITableView?
 
-    func load(uid: String, proxyKey: String?, manager: ButtonManaging?, tableView: UITableView) {
-        self.manager = manager
+    func load(uid: String, proxyKey: String?, animator: ButtonAnimating, tableView: UITableView) {
+        self.animator = animator
         self.tableView = tableView
         observer.observe(uid: uid, proxyKey: proxyKey, manager: self, querySize: Setting.querySize)
     }

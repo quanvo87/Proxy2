@@ -8,7 +8,7 @@ class ConvosObserver: ReferenceObserving {
     private (set) var handle: DatabaseHandle?
     private weak var manager: ConvosManaging?
 
-    func observe(uid: String, proxyKey: String?, manager: ConvosManaging, querySize: UInt) {
+    func observe(uid: String, proxyKey: String?, manager: ConvosManaging, querySize: UInt = Setting.querySize) {
         stopObserving()
         self.proxyKey = proxyKey
         self.uid = uid
@@ -21,7 +21,7 @@ class ConvosObserver: ReferenceObserving {
         }
     }
 
-    func loadConvos(endingAtTimestamp timestamp: Double, querySize: UInt) {
+    func loadConvos(endingAtTimestamp timestamp: Double, querySize: UInt = Setting.querySize) {
         guard !loading else {
             return
         }

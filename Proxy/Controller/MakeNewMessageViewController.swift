@@ -2,8 +2,7 @@ import SearchTextField
 import UIKit
 
 class MakeNewMessageViewController: UIViewController, SenderPickerDelegate {
-    @IBOutlet weak var chooseSenderButton: UIButton!
-    @IBOutlet weak var makeNewProxyButton: UIButton!
+    @IBOutlet weak var pickSenderButton: UIButton!
     @IBOutlet weak var receiverNameTextField: SearchTextField!
     @IBOutlet weak var messageTextView: UITextView!
     @IBOutlet weak var sendMessageButton: UIButton!
@@ -20,6 +19,8 @@ class MakeNewMessageViewController: UIViewController, SenderPickerDelegate {
     private weak var manager: ProxiesManaging?
     private lazy var loader = ProxyNamesLoader(uid)
 
+    // todo: put this content in a tableview
+    // todo: add icons next to sender and receiver
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -28,7 +29,7 @@ class MakeNewMessageViewController: UIViewController, SenderPickerDelegate {
         receiverNameTextField.comparisonOptions = [.caseInsensitive]
         receiverNameTextField.highlightAttributes = [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 14)]
         receiverNameTextField.maxResultsListHeight = Int(view.frame.height / 2)
-        receiverNameTextField.placeholder = "Start typing to see suggestions:"
+        receiverNameTextField.placeholder = "Start typing to see suggestions..."
         receiverNameTextField.theme.cellHeight = 50
         receiverNameTextField.theme.font = .systemFont(ofSize: 14)
         receiverNameTextField.theme.separatorColor = UIColor.lightGray.withAlphaComponent(0.5)
@@ -45,10 +46,20 @@ class MakeNewMessageViewController: UIViewController, SenderPickerDelegate {
             }
         }
 
-        navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self, action: #selector(close), imageName: ButtonName.cancel)
+        manager?.load(animator: self, controller: nil, tableView: nil)
+
+        navigationItem.rightBarButtonItems = [UIBarButtonItem.make(target: self,
+                                                                   action: #selector(close),
+                                                                   imageName: ButtonName.cancel),
+                                              UIBarButtonItem.make(target: self,
+                                                                   action: #selector(makeNewProxy),
+                                                                   imageName: ButtonName.makeNewProxy)]
         navigationItem.title = "New Message"
 
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: view.window)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(keyboardWillShow),
+                                               name: NSNotification.Name.UIKeyboardWillShow,
+                                               object: view.window)
 
         setSenderButtonTitle()
     }
@@ -72,55 +83,40 @@ class MakeNewMessageViewController: UIViewController, SenderPickerDelegate {
     }
 }
 
+extension MakeNewMessageViewController: ButtonAnimating {
+    func animateButton() {
+        guard let item = navigationItem.rightBarButtonItems?[safe: 1] else {
+            return
+        }
+        item.morph(loop: true)
+    }
+
+    func stopAnimatingButton() {
+        guard let item = navigationItem.rightBarButtonItems?[safe: 1] else {
+            return
+        }
+        item.stopAnimating()
+    }
+}
+
 extension MakeNewMessageViewController: StoryboardMakable {
     static var identifier: String {
         return Identifier.makeNewMessageViewController
     }
 }
 
-extension MakeNewMessageViewController {
-    @objc func keyboardWillShow(_ notification: Notification) {
-        guard
-            let info = notification.userInfo,
-            let keyboardFrame = (info[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
-                return
-        }
-        DispatchQueue.main.async {
-            UIView.animate(withDuration: 0.1) {
-                self.bottomConstraint.constant = keyboardFrame.size.height + 5
-            }
-        }
-    }
-}
-
 private extension MakeNewMessageViewController {
-    @IBAction func makeNewProxy() {
-        guard let proxyCount = manager?.proxies.count else {
-            return
-        }
-        disableButtons()
-        DB.makeProxy(uid: uid, currentProxyCount: proxyCount) { [weak self] (result) in
-            switch result {
-            case .failure(let error):
-                self?.showAlert(title: "Error Making New Proxy", message: error.description)
-            case .success(let newProxy):
-                self?.sender = newProxy
-            }
-            self?.enableButtons()
-        }
-    }
-
     @IBAction func sendMessage() {
         disableButtons()
         guard let sender = sender else {
-            showAlert(title: "Choose A Sender", message: "Please choose a Proxy to send your message from.")
+            showAlert(title: "Sender Missing", message: "Please pick one of your Proxies to send the message from.")
             enableButtons()
             return
         }
         guard
             let receiverName = receiverNameTextField.text,
             receiverName != "" else {
-                showAlert(title: "Choose A Receiver", message: "Please enter the receiver's name.")
+                showAlert(title: "Receiver Missing", message: "Please enter the receiver's name.")
                 enableButtons()
                 return
         }
@@ -144,7 +140,7 @@ private extension MakeNewMessageViewController {
                     case .inputTooLong:
                         self?.showAlert(title: "Message Too Long", message: error.localizedDescription)
                     case .receiverDeletedProxy:
-                        self?.showAlert(title: "Receiver Deleted Proxy", message: error.localizedDescription)
+                        self?.showAlert(title: "Receiver Has Been Deleted", message: error.localizedDescription)
                     default:
                         self?.showAlert(title: "Error Sending Message", message: error.localizedDescription)
                     }
@@ -158,29 +154,57 @@ private extension MakeNewMessageViewController {
     }
 
     @IBAction func showSenderPickerController() {
-        navigationController?.pushViewController(SenderPickerViewController(uid: uid, senderPickerDelegate: self), animated: true)
+        guard let manager = manager else {
+            return
+        }
+        navigationController?.pushViewController(SenderPickerViewController(uid: uid, manager: manager, senderPickerDelegate: self), animated: true)
     }
-}
 
-private extension MakeNewMessageViewController {
     @objc func close() {
         disableButtons()
         dismiss(animated: true)
     }
 
+    @objc func keyboardWillShow(_ notification: Notification) {
+        guard
+            let info = notification.userInfo,
+            let keyboardFrame = (info[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
+                return
+        }
+        UIView.animate(withDuration: 0.1) { [weak self] in
+            self?.bottomConstraint.constant = keyboardFrame.size.height + 5
+        }
+    }
+
+    @objc func makeNewProxy() {
+        guard let proxyCount = manager?.proxies.count else {
+            return
+        }
+        disableButtons()
+        DB.makeProxy(uid: uid, currentProxyCount: proxyCount) { [weak self] (result) in
+            switch result {
+            case .failure(let error):
+                self?.showAlert(title: "Error Making New Proxy", message: error.description)
+            case .success(let newProxy):
+                self?.sender = newProxy
+            }
+            self?.enableButtons()
+        }
+    }
+
     func disableButtons() {
-        makeNewProxyButton?.isEnabled = false
-        chooseSenderButton?.isEnabled = false
+        navigationItem.rightBarButtonItems?.forEach { $0.isEnabled = false }
+        pickSenderButton?.isEnabled = false
         sendMessageButton?.isEnabled = false
     }
 
     func enableButtons() {
-        makeNewProxyButton?.isEnabled = true
-        chooseSenderButton?.isEnabled = true
+        navigationItem.rightBarButtonItems?.forEach { $0.isEnabled = true }
+        pickSenderButton?.isEnabled = true
         sendMessageButton.isEnabled = true
     }
 
     func setSenderButtonTitle() {
-        chooseSenderButton?.setTitle(sender?.name ?? "Choose Your Sender", for: .normal)
+        pickSenderButton?.setTitle(sender?.name ?? "Pick Your Sender", for: .normal)
     }
 }

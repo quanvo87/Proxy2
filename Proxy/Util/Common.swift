@@ -186,6 +186,10 @@ extension UIBarButtonItem {
             customView?.addGlow()
         }
     }
+
+    func stopAnimating() {
+         customView?.layer.stopAnimating()
+    }
 }
 
 extension UIColor {

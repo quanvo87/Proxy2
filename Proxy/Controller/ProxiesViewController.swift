@@ -29,7 +29,7 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
 
         navigationItem.title = "My Proxies"
 
-        proxiesManager.load(uid: uid, controller: self, manager: buttonManager, tableView: tableView)
+        proxiesManager.load(animator: buttonManager, controller: self, tableView: tableView)
 
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.dataSource = dataSource
@@ -58,7 +58,7 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
         if proxiesManager?.proxies.isEmpty ?? false {
-            buttonManager.animate(buttonManager.makeNewProxyButton, loop: true)
+            buttonManager.makeNewProxyButton.morph(loop: true)
         }
     }
 

@@ -63,7 +63,7 @@
 		5973C8751F608A2200647492 /* makeIconNames.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8421F608A2100647492 /* makeIconNames.swift */; };
 		5973C8761F608A2200647492 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8431F608A2100647492 /* SettingsViewController.swift */; };
 		5973C8771F608A2200647492 /* SenderPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8441F608A2100647492 /* SenderPickerViewController.swift */; };
-		5973C8781F608A2200647492 /* ButtonManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8451F608A2100647492 /* ButtonManaging.swift */; };
+		5973C8781F608A2200647492 /* ButtonAnimating.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8451F608A2100647492 /* ButtonAnimating.swift */; };
 		5973C8791F608A2200647492 /* makeAdjectives.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8461F608A2100647492 /* makeAdjectives.swift */; };
 		5973C87A1F608A2200647492 /* AuthObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8471F608A2200647492 /* AuthObserver.swift */; };
 		5973C8841F608A4E00647492 /* DBTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C87B1F608A4D00647492 /* DBTests.swift */; };
@@ -193,7 +193,7 @@
 		5973C8421F608A2100647492 /* makeIconNames.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = makeIconNames.swift; sourceTree = "<group>"; };
 		5973C8431F608A2100647492 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		5973C8441F608A2100647492 /* SenderPickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SenderPickerViewController.swift; sourceTree = "<group>"; };
-		5973C8451F608A2100647492 /* ButtonManaging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonManaging.swift; sourceTree = "<group>"; };
+		5973C8451F608A2100647492 /* ButtonAnimating.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonAnimating.swift; sourceTree = "<group>"; };
 		5973C8461F608A2100647492 /* makeAdjectives.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = makeAdjectives.swift; sourceTree = "<group>"; };
 		5973C8471F608A2200647492 /* AuthObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthObserver.swift; sourceTree = "<group>"; };
 		5973C87B1F608A4D00647492 /* DBTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBTests.swift; sourceTree = "<group>"; };
@@ -466,7 +466,7 @@
 			isa = PBXGroup;
 			children = (
 				59FF373C1F97984200FA1AF0 /* AuthManaging.swift */,
-				5973C8451F608A2100647492 /* ButtonManaging.swift */,
+				5973C8451F608A2100647492 /* ButtonAnimating.swift */,
 				59A9D0081FFD8A19005B6879 /* Closing.swift */,
 				598F8A651FEB9B2300CCF024 /* ConvoManaging.swift */,
 				59155AB51F7B7951001EDDD0 /* ConvosButtonManager.swift */,
@@ -794,7 +794,6 @@
 				"${BUILT_PRODUCTS_DIR}/SearchTextField/SearchTextField.framework",
 				"${BUILT_PRODUCTS_DIR}/Spring/Spring.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftVideoBackground/SwiftVideoBackground.framework",
-				"${BUILT_PRODUCTS_DIR}/ViewGlower/ViewGlower.framework",
 				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
@@ -812,7 +811,6 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SearchTextField.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Spring.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftVideoBackground.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ViewGlower.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
@@ -873,7 +871,6 @@
 				"${BUILT_PRODUCTS_DIR}/SearchTextField/SearchTextField.framework",
 				"${BUILT_PRODUCTS_DIR}/Spring/Spring.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftVideoBackground/SwiftVideoBackground.framework",
-				"${BUILT_PRODUCTS_DIR}/ViewGlower/ViewGlower.framework",
 				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
@@ -891,7 +888,6 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SearchTextField.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Spring.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftVideoBackground.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ViewGlower.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
@@ -1006,7 +1002,7 @@
 				5973C84A1F608A2200647492 /* ConvosTableViewCell.swift in Sources */,
 				5973C8561F608A2200647492 /* LoginViewController.swift in Sources */,
 				5973C8681F608A2200647492 /* ProxyViewController.swift in Sources */,
-				5973C8781F608A2200647492 /* ButtonManaging.swift in Sources */,
+				5973C8781F608A2200647492 /* ButtonAnimating.swift in Sources */,
 				593D7D441F851F7D00D3FBD5 /* UserStatsManaging.swift in Sources */,
 				59A9D0091FFD8A19005B6879 /* Closing.swift in Sources */,
 				5973C8611F608A2200647492 /* DB.swift in Sources */,

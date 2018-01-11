@@ -15,7 +15,6 @@ def pods
   pod 'SearchTextField'
   pod 'Spring', :git => 'https://github.com/MengTo/Spring.git'
   pod 'SwiftVideoBackground'
-  pod 'ViewGlower'
 end
 
 target 'Proxy' do

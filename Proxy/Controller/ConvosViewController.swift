@@ -23,7 +23,7 @@ class ConvosViewController: UIViewController, MakeNewMessageDelegate {
 
         buttonManager.load(uid: uid, controller: self, delegate: self, manager: proxiesManager)
         
-        convosManager.load(uid: uid, proxyKey: nil, manager: buttonManager, tableView: tableView)
+        convosManager.load(uid: uid, proxyKey: nil, animator: buttonManager, tableView: tableView)
 
         dataSource.load(convosManager)
 
@@ -60,7 +60,7 @@ class ConvosViewController: UIViewController, MakeNewMessageDelegate {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
         if convosManager.convos.isEmpty {
-            buttonManager.animate(buttonManager.makeNewMessageButton, loop: true)
+            buttonManager.makeNewMessageButton.morph(loop: true)
         }
     }
 

@@ -2,36 +2,44 @@ import UIKit
 
 protocol ProxiesManaging: class {
     var proxies: [Proxy] { get set }
-    func load(uid: String, controller: UIViewController?, manager: ButtonManaging?, tableView: UITableView)
+    func load(animator: ButtonAnimating, controller: UIViewController?, tableView: UITableView?)
 }
 
 class ProxiesManager: ProxiesManaging {
     var proxies = [Proxy]() {
         didSet {
-            if let manager = manager {
-                if proxies.isEmpty {
-                    manager.animate(manager.makeNewProxyButton, loop: true)
-                } else {
-                    manager.stopAnimating(manager.makeNewProxyButton)
+            for object in objects.allObjects {
+                switch object {
+                case let animator as ButtonAnimating:
+                    if proxies.isEmpty {
+                        animator.animateButton()
+                    } else {
+                        animator.stopAnimatingButton()
+                    }
+                case let controller as UIViewController:
+                    controller.title = "My Proxies\(proxies.count.asStringWithParens)"
+                    controller.tabBarController?.tabBar.items?[1].title = "Proxies\(proxies.count.asStringWithParens)"
+                case let tableView as UITableView:
+                    tableView.reloadData()
+                default:
+                    break
                 }
             }
-
-            controller?.title = "My Proxies\(proxies.count.asStringWithParens)"
-            controller?.tabBarController?.tabBar.items?[1].title = "Proxies\(proxies.count.asStringWithParens)"
-
-            tableView?.reloadData()
         }
     }
 
+    private let objects = NSHashTable<AnyObject>(options: .weakMemory)
     private let observer = ProxiesObserver()
-    private weak var controller: UIViewController?
-    private weak var manager: ButtonManaging?
-    private weak var tableView: UITableView?
+    private let uid: String
 
-    func load(uid: String, controller: UIViewController?, manager: ButtonManaging?, tableView: UITableView) {
-        self.controller = controller
-        self.manager = manager
-        self.tableView = tableView
+    init(_ uid: String) {
+        self.uid = uid
+    }
+
+    func load(animator: ButtonAnimating, controller: UIViewController?, tableView: UITableView?) {
+        objects.add(animator)
+        objects.add(controller)
+        objects.add(tableView)
         observer.observe(uid: uid, manager: self)
     }
 }

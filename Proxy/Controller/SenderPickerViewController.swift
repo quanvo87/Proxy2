@@ -3,13 +3,14 @@ import UIKit
 class SenderPickerViewController: UIViewController {
     private let dataSource = ProxiesTableViewDataSource()
     private let delegate = SenderPickerTableViewDelegate()
-    private let manager = ProxiesManager()
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
+    private weak var manager: ProxiesManaging?
     private weak var senderPickerDelegate: SenderPickerDelegate?
 
-    init(uid: String, senderPickerDelegate: SenderPickerDelegate) {
+    init(uid: String, manager: ProxiesManaging, senderPickerDelegate: SenderPickerDelegate) {
         self.uid = uid
+        self.manager = manager
         self.senderPickerDelegate = senderPickerDelegate
 
         super.init(nibName: nil, bundle: nil)
@@ -18,9 +19,10 @@ class SenderPickerViewController: UIViewController {
 
         delegate.load(controller: self, delegate: senderPickerDelegate, manager: manager)
 
-        manager.load(uid: uid, controller: nil, manager: nil, tableView: tableView)
+        manager.load(animator: self, controller: nil, tableView: tableView)
 
-        navigationItem.title = "Choose Your Sender"
+        navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self, action: #selector(makeNewProxy), imageName: ButtonName.makeNewProxy)
+        navigationItem.title = "Pick Your Sender"
 
         tableView.dataSource = dataSource
         tableView.delegate = delegate
@@ -34,5 +36,33 @@ class SenderPickerViewController: UIViewController {
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+}
+
+extension SenderPickerViewController: ButtonAnimating {
+    func animateButton() {
+        navigationItem.rightBarButtonItem?.morph(loop: true)
+    }
+
+    func stopAnimatingButton() {
+        navigationItem.rightBarButtonItem?.stopAnimating()
+    }
+}
+
+private extension SenderPickerViewController {
+    @objc func makeNewProxy() {
+        guard let proxyCount = manager?.proxies.count else {
+            return
+        }
+        navigationItem.rightBarButtonItem?.isEnabled = false
+        DB.makeProxy(uid: uid, currentProxyCount: proxyCount) { [weak self] (result) in
+            switch result {
+            case .failure(let error):
+                self?.showAlert(title: "Error Making New Proxy", message: error.description)
+            case .success:
+                self?.stopAnimatingButton()
+            }
+            self?.navigationItem.rightBarButtonItem?.isEnabled = true
+        }
     }
 }

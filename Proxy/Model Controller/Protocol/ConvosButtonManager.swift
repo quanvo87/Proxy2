@@ -1,8 +1,6 @@
 import UIKit
-import ViewGlower
 
-class ConvosButtonManager: ButtonManaging {
-    let viewGlower = ViewGlower()
+class ConvosButtonManager {
     var makeNewMessageButton = UIBarButtonItem()
     var makeNewProxyButton = UIBarButtonItem()
     private var uid: String?
@@ -23,6 +21,16 @@ class ConvosButtonManager: ButtonManaging {
     }
 }
 
+extension ConvosButtonManager: ButtonAnimating {
+    func animateButton() {
+        makeNewMessageButton.morph(loop: true)
+    }
+
+    func stopAnimatingButton() {
+        makeNewMessageButton.stopAnimating()
+    }
+}
+
 private extension ConvosButtonManager {
     func makeButtons() {
         makeNewMessageButton = UIBarButtonItem.make(target: self, action: #selector(showMakeNewMessageController), imageName: ButtonName.makeNewMessage)
@@ -35,7 +43,7 @@ private extension ConvosButtonManager {
             let proxyCount = manager?.proxies.count else {
                 return
         }
-        animate(makeNewProxyButton)
+        makeNewProxyButton.morph()
         makeNewProxyButton.isEnabled = false
         DB.makeProxy(uid: uid, currentProxyCount: proxyCount) { [weak self] (result) in
             switch result {
@@ -61,7 +69,7 @@ private extension ConvosButtonManager {
             let manager = manager else {
                 return
         }
-        animate(makeNewMessageButton)
+        makeNewMessageButton.morph()
         makeNewMessageButton.isEnabled = false
         delegate?.showMakeNewMessageController(sender: nil, uid: uid, manager: manager, controller: controller)
         makeNewMessageButton.isEnabled = true
