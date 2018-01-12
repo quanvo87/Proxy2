@@ -13,7 +13,7 @@ class ConvoDataSource {
         return messagesManager?.messages ?? []
     }
 
-    func load(convoManager: ConvoManaging, iconManager: IconManaging, messagesManager: MessagesManaging) {
+    init(convoManager: ConvoManaging, iconManager: IconManaging, messagesManager: MessagesManaging) {
         self.convoManager = convoManager
         self.iconManager = iconManager
         self.messagesManager = messagesManager

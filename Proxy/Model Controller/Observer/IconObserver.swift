@@ -4,17 +4,27 @@ import UIKit
 class IconObserver: ReferenceObserving {
     private (set) var ref: DatabaseReference?
     private (set) var handle: DatabaseHandle?
+    private let proxyKey: String
+    private let uid: String
+    private weak var manager: IconManaging?
 
-    func observe(uid: String, proxyKey: String, manager: IconManaging) {
-        stopObserving()
+    init(proxyKey: String, uid: String, manager: IconManaging) {
+        self.proxyKey = proxyKey
+        self.uid = uid
+        self.manager = manager
         ref = DB.makeReference(Child.proxies, uid, proxyKey, Child.icon)
-        handle = ref?.observe(.value) { [weak manager] (data) in
+    }
+
+    func observe() {
+        stopObserving()
+        handle = ref?.observe(.value) { [weak self] (data) in
+            guard let strong = self else {
+                return
+            }
             guard let icon = data.value as? String else {
                 return
             }
-            UIImage.make(name: icon) { (image) in
-                manager?.icons[proxyKey] = image
-            }
+            strong.manager?.icons[strong.proxyKey] = UIImage(named: icon)
         }
     }
 

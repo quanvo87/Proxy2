@@ -1,18 +1,33 @@
 import MessageKit
 
-class ConvoViewController: MessagesViewController, Closing {
+class ConvoViewController: MessagesViewController, Closing, IconManaging, MessagesManaging {
+    var icons: [String : UIImage] = [:] {
+        didSet {
+            messagesCollectionView.reloadDataAndKeepOffset()
+        }
+    }
+
+    var messages: [Message] = []
     var shouldClose = false
     private let convo: Convo
-    private let convoManager = ConvoManager()
-    private let dataSource = ConvoDataSource()
     private let displayDelegate = ConvoDisplayDelegate()
-    private let iconManager = IconManager()
     private let inputBarDelegate = ConvoInputBarDelegate()
     private let layoutDelegate = ConvoLayoutDelegate()
-    private let messagesManager = MessagesManager()
     private weak var presenceManager: PresenceManaging?
     private weak var proxiesManager: ProxiesManaging?
     private weak var unreadMessagesManager: UnreadMessagesManaging?
+    private lazy var convoManager = ConvoManager(convo)
+    private lazy var dataSource = ConvoDataSource(convoManager: convoManager,
+                                                  iconManager: self,
+                                                  messagesManager: self)
+    private lazy var messsagesObserver = MessagesObserver(convoKey: convo.key,
+                                                          manager: self)
+    private lazy var receiverIconObserver = IconObserver(proxyKey: convo.receiverProxyKey,
+                                                         uid: convo.receiverId,
+                                                         manager: self)
+    private lazy var senderIconObserver = IconObserver(proxyKey: convo.senderProxyKey,
+                                                       uid: convo.senderId,
+                                                       manager: self)
 
     init(convo: Convo,
          presenceManager: PresenceManaging,
@@ -25,15 +40,14 @@ class ConvoViewController: MessagesViewController, Closing {
 
         super.init(nibName: nil, bundle: nil)
 
-        convoManager.load(uid: convo.senderId, key: convo.key, collectionView: messagesCollectionView, navigationItem: navigationItem, closer: self)
+        convoManager.listeners.add(messagesCollectionView)
+        convoManager.listeners.add(self)
 
-        iconManager.load(convo: convo, collectionView: messagesCollectionView)
+        icons["blank"] = UIImage.make(color: .white)
 
         inputBarDelegate.load(controller: self, manager: convoManager)
 
-        dataSource.load(convoManager: convoManager, iconManager: iconManager, messagesManager: messagesManager)
-
-        displayDelegate.load(dataSource: dataSource, manager: messagesManager)
+        displayDelegate.load(dataSource: dataSource, manager: self)
 
         navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self, action: #selector(showConvoDetailView), imageName: ButtonName.info)
         navigationItem.title = convo.receiverProxyName
@@ -46,7 +60,10 @@ class ConvoViewController: MessagesViewController, Closing {
         messagesCollectionView.messagesDisplayDelegate = displayDelegate
         messagesCollectionView.messagesLayoutDelegate = layoutDelegate
 
-        messagesManager.load(convoKey: convo.key, collectionView: messagesCollectionView)
+        messsagesObserver.observe()
+
+        receiverIconObserver.observe()
+        senderIconObserver.observe()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -67,10 +84,10 @@ class ConvoViewController: MessagesViewController, Closing {
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         guard
             indexPath.section == 0,
-            let message = messagesManager.messages[safe: indexPath.section] else {
+            let message = messages[safe: indexPath.section] else {
                 return
         }
-        messagesManager.loadMessages(endingAtMessageWithId: message.messageId, querySize: Setting.querySize)
+        messsagesObserver.loadMessages(endingAtMessageWithId: message.messageId)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -80,15 +97,29 @@ class ConvoViewController: MessagesViewController, Closing {
 
 private extension ConvoViewController {
     @objc private func showConvoDetailView() {
-        guard
-            let presenceManager = presenceManager,
-            let proxiesManager = proxiesManager,
-            let unreadMessagesManager = unreadMessagesManager else {
-                return
-        }
+        // todo: make stuff like this take in an optional, they're always gonna be optional
         navigationController?.pushViewController(ConvoDetailViewController(convo: convo,
+                                                                           manager: convoManager,
                                                                            presenceManager: presenceManager,
                                                                            proxiesManager: proxiesManager,
-                                                                           unreadMessagesManager: unreadMessagesManager), animated: true)
+                                                                           unreadMessagesManager: unreadMessagesManager),
+                                                 animated: true)
+    }
+}
+
+// https://stackoverflow.com/questions/26542035/create-uiimage-with-solid-color-in-swift
+private extension UIImage {
+    static func make(color: UIColor, size: CGSize = CGSize(width: 1, height: 1)) -> UIImage {
+        let rect = CGRect(origin: .zero, size: size)
+        UIGraphicsBeginImageContextWithOptions(rect.size, false, 0.0)
+        color.setFill()
+        UIRectFill(rect)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        if let cgImage = image?.cgImage {
+            return UIImage(cgImage: cgImage)
+        } else {
+            return UIImage()
+        }
     }
 }

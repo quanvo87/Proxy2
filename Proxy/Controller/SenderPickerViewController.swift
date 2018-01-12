@@ -61,12 +61,13 @@ private extension SenderPickerViewController {
             return
         }
         navigationItem.rightBarButtonItem?.isEnabled = false
+        navigationItem.rightBarButtonItem?.morph()
         DB.makeProxy(uid: uid, currentProxyCount: proxyCount) { [weak self] (result) in
             switch result {
             case .failure(let error):
                 self?.showAlert(title: "Error Making New Proxy", message: error.description)
             case .success:
-                self?.animateButton()
+                self?.stopAnimatingButton()
             }
             self?.navigationItem.rightBarButtonItem?.isEnabled = true
         }

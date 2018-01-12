@@ -3,18 +3,23 @@ import UIKit
 class ConvosViewController: UIViewController, MakeNewMessageDelegate {
     var newConvo: Convo?
     private let buttonManager = ConvosButtonManager()
-    private let convosManager = ConvosManager()
     private let dataSource = ConvosTableViewDataSource()
     private let delegate = ConvosTableViewDelegate()
     private let tableView = UITableView(frame: .zero, style: .grouped)
+    private let uid: String
     private weak var presenceManager: PresenceManaging?
     private weak var proxiesManager: ProxiesManaging?
     private weak var unreadMessagesManager: UnreadMessagesManaging?
+    private lazy var convosManager = ConvosManager(proxyKey: nil,
+                                                   uid: uid,
+                                                   animator: buttonManager,
+                                                   tableView: tableView)
 
     init(uid: String,
          presenceManager: PresenceManaging,
          proxiesManager: ProxiesManaging,
          unreadMessagesManager: UnreadMessagesManaging) {
+        self.uid = uid
         self.presenceManager = presenceManager
         self.proxiesManager = proxiesManager
         self.unreadMessagesManager = unreadMessagesManager
@@ -22,8 +27,6 @@ class ConvosViewController: UIViewController, MakeNewMessageDelegate {
         super.init(nibName: nil, bundle: nil)
 
         buttonManager.load(uid: uid, controller: self, delegate: self, manager: proxiesManager)
-        
-        convosManager.load(uid: uid, proxyKey: nil, animator: buttonManager, tableView: tableView)
 
         dataSource.load(convosManager)
 
@@ -34,7 +37,8 @@ class ConvosViewController: UIViewController, MakeNewMessageDelegate {
         tableView.dataSource = dataSource
         tableView.delegate = delegate
         tableView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
-        tableView.register(UINib(nibName: Identifier.convosTableViewCell, bundle: nil), forCellReuseIdentifier: Identifier.convosTableViewCell)
+        tableView.register(UINib(nibName: Identifier.convosTableViewCell, bundle: nil),
+                           forCellReuseIdentifier: Identifier.convosTableViewCell)
         tableView.rowHeight = 80
         tableView.sectionHeaderHeight = 0
 

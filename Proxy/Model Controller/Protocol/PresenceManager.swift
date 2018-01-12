@@ -1,20 +1,8 @@
-protocol PresenceManaging: class {
-    var presentInConvo: String { get set }
-    func load(_ manager: UnreadMessagesManaging)
-    func enterConvo(_ key: String)
-}
-
-extension PresenceManaging {
-    func leaveConvo(_ key: String) {
-        presentInConvo = ""
-    }
-}
-
 class PresenceManager: PresenceManaging {
     var presentInConvo = ""
     private weak var manager: UnreadMessagesManaging?
 
-    func load(_ manager: UnreadMessagesManaging) {
+    init(_ manager: UnreadMessagesManaging) {
         self.manager = manager
     }
 

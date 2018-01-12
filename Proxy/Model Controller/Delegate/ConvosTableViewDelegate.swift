@@ -2,13 +2,13 @@ import UIKit
 
 class ConvosTableViewDelegate: NSObject {
     private weak var controller: UIViewController?
-    private weak var convosManager: ConvosManager?
+    private weak var convosManager: ConvosManaging?
     private weak var presenceManager: PresenceManaging?
     private weak var proxiesManager: ProxiesManaging?
     private weak var unreadMessagesManager: UnreadMessagesManaging?
   
     func load(controller: UIViewController,
-              convosManager: ConvosManager,
+              convosManager: ConvosManaging,
               presenceManager: PresenceManaging,
               proxiesManager: ProxiesManaging,
               unreadMessagesManager: UnreadMessagesManaging) {
@@ -44,6 +44,6 @@ extension ConvosTableViewDelegate: UITableViewDelegate {
             let convo = convosManager?.convos[safe: indexPath.row] else {
                 return
         }
-        convosManager?.loadConvos(endingAtTimestamp: convo.timestamp, querySize: Setting.querySize)
+        convosManager?.loadConvos(endingAtTimestamp: convo.timestamp)
     }
 }

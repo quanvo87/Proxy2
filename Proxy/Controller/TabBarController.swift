@@ -7,9 +7,9 @@ class TabBarController: UITabBarController {
 
     init(uid: String,
          displayName: String?,
-         presenceManager: PresenceManaging = PresenceManager(),
+         presenceManager: PresenceManaging,
          proxiesManager: ProxiesManaging,
-         unreadMessagesManager: UnreadMessagesManaging = UnreadMessagesManager()) {
+         unreadMessagesManager: UnreadMessagesManaging) {
         self.presenceManager = presenceManager
         self.proxiesManager = proxiesManager
         self.unreadMessagesManager = unreadMessagesManager
@@ -28,8 +28,6 @@ class TabBarController: UITabBarController {
         viewControllers = [convosController, proxiesController, settingsController].map {
             UINavigationController(rootViewController: $0)
         }
-
-        presenceManager.load(unreadMessagesManager)
 
         unreadMessagesManager.load(uid: uid, controller: convosController, presenceManager: presenceManager, proxiesManager: proxiesManager)
     }

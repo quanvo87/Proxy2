@@ -26,7 +26,13 @@ extension AuthManager: AuthManaging {
             changeRequest.displayName = email
             changeRequest.commitChanges()
         }
-        window?.rootViewController = TabBarController(uid: user.uid, displayName: displayName, proxiesManager: ProxiesManager(user.uid))
+        let unreadMessagesManager = UnreadMessagesManager()
+        let presenceManager = PresenceManager(unreadMessagesManager)
+        window?.rootViewController = TabBarController(uid: user.uid,
+                                                      displayName: displayName,
+                                                      presenceManager: presenceManager,
+                                                      proxiesManager: ProxiesManager(user.uid),
+                                                      unreadMessagesManager: unreadMessagesManager)
         loggedIn = true
     }
 

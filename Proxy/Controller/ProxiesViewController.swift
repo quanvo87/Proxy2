@@ -1,8 +1,8 @@
 import UIKit
 
-class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
+class ProxiesViewController: UIViewController, ItemsToDeleteManaging, MakeNewMessageDelegate {
+    var itemsToDelete: [String : Any] = [:]
     var newConvo: Convo?
-    private let itemsToDeleteManager = ItemsToDeleteManager()
     private let delegate = ProxiesTableViewDelegate()
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let buttonManager = ProxiesButtonManager()
@@ -22,9 +22,9 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
         
         super.init(nibName: nil, bundle: nil)
 
-        buttonManager.load(uid: uid, controller: self, delegate: self, itemsToDeleteManager: itemsToDeleteManager, proxiesManager: proxiesManager, tableView: tableView)
+        buttonManager.load(uid: uid, controller: self, delegate: self, itemsToDeleteManager: self, proxiesManager: proxiesManager, tableView: tableView)
 
-        delegate.load(controller: self, itemsToDeleteManager: itemsToDeleteManager, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
+        delegate.load(controller: self, itemsToDeleteManager: self, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
 
         navigationItem.title = "My Proxies"
 

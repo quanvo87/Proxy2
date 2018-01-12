@@ -65,6 +65,6 @@ extension ProxyTableViewDelegate: UITableViewDelegate {
             let convo = convosManager?.convos[safe: indexPath.row] else {
                 return
         }
-        convosManager?.loadConvos(endingAtTimestamp: convo.timestamp, querySize: Setting.querySize)
+        convosManager?.loadConvos(endingAtTimestamp: convo.timestamp)
     }
 }
