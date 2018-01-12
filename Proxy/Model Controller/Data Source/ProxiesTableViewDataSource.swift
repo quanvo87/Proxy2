@@ -4,7 +4,7 @@ class ProxiesTableViewDataSource: NSObject {
     private var accessoryType: UITableViewCellAccessoryType = .none
     private weak var manager: ProxiesManaging?
 
-    func load(accessoryType: UITableViewCellAccessoryType, manager: ProxiesManaging) {
+    init(accessoryType: UITableViewCellAccessoryType, manager: ProxiesManaging?) {
         self.accessoryType = accessoryType
         self.manager = manager
     }
@@ -27,7 +27,7 @@ extension ProxiesTableViewDataSource: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         if manager?.proxies.isEmpty ?? false {
-            return "Tap the bouncing button to make a new Proxy \(String.randomEmoji)."
+            return "Tap the bouncing button to make a new Proxy."
         } else {
             return nil
         }

@@ -49,9 +49,12 @@ class ProxyViewController: UIViewController, Closing, MakeNewMessageDelegate {
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(true)
+        super.viewWillAppear(animated)
         if shouldClose {
             _ = navigationController?.popViewController(animated: false)
+        }
+        if convosManager.convos.isEmpty {
+            animateButton()
         }
         guard
             let newConvo = newConvo,

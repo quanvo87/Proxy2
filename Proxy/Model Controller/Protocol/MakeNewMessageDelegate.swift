@@ -9,9 +9,7 @@ extension MakeNewMessageDelegate {
                                       uid: String,
                                       manager: ProxiesManaging,
                                       controller: UIViewController) {
-        guard let makeNewMessageViewController = MakeNewMessageViewController.make(sender: sender, uid: uid, delegate: self, manager: manager) else {
-            return
-        }
+        let makeNewMessageViewController = MakeNewMessageViewController(sender: sender, uid: uid, delegate: self, manager: manager)
         let navigationController = UINavigationController(rootViewController: makeNewMessageViewController)
         controller.present(navigationController, animated: true)
     }

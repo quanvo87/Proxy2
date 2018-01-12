@@ -32,11 +32,13 @@ class IconPickerViewController: UIViewController {
         view.addSubview(collectionView)
     }
     
-    @objc func close() {
-        dismiss(animated: true)
-    }
-
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+}
+
+private extension IconPickerViewController {
+    @objc func close() {
+        dismiss(animated: true)
     }
 }

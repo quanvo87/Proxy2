@@ -16,7 +16,8 @@ class ConvosButtonManager {
         self.controller = controller
         self.delegate = delegate
         self.manager = manager
-        makeButtons()
+        makeNewMessageButton = UIBarButtonItem.make(target: self, action: #selector(showMakeNewMessageController), imageName: ButtonName.makeNewMessage)
+        makeNewProxyButton = UIBarButtonItem.make(target: self, action: #selector(makeNewProxy), imageName: ButtonName.makeNewProxy)
         controller.navigationItem.rightBarButtonItems = [makeNewMessageButton, makeNewProxyButton]
     }
 }
@@ -32,11 +33,6 @@ extension ConvosButtonManager: ButtonAnimating {
 }
 
 private extension ConvosButtonManager {
-    func makeButtons() {
-        makeNewMessageButton = UIBarButtonItem.make(target: self, action: #selector(showMakeNewMessageController), imageName: ButtonName.makeNewMessage)
-        makeNewProxyButton = UIBarButtonItem.make(target: self, action: #selector(makeNewProxy), imageName: ButtonName.makeNewProxy)
-    }
-
     @objc func makeNewProxy() {
         guard
             let uid = uid,

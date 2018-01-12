@@ -50,7 +50,7 @@ class ConvoViewController: MessagesViewController, Closing {
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(true)
+        super.viewWillAppear(animated)
         if shouldClose {
             navigationController?.popViewController(animated: false)
         }
@@ -59,7 +59,7 @@ class ConvoViewController: MessagesViewController, Closing {
     }
 
     override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(true)
+        super.viewWillDisappear(animated)
         presenceManager?.leaveConvo(convo.key)
         tabBarController?.tabBar.isHidden = false
     }

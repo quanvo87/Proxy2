@@ -65,7 +65,7 @@ extension ProxyTableViewDataSource: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         if section == 1 && (convosManager?.convos.isEmpty) ?? false {
-            return "Tap the bouncing button to send a new message 💬\(String.randomEmoji)."
+            return "Tap the bouncing button to send a new message 💬."
         } else {
             return nil
         }

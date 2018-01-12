@@ -31,7 +31,6 @@ class ConvosViewController: UIViewController, MakeNewMessageDelegate {
 
         navigationItem.title = "Messages"
 
-        tableView.allowsMultipleSelectionDuringEditing = true
         tableView.dataSource = dataSource
         tableView.delegate = delegate
         tableView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
@@ -45,7 +44,10 @@ class ConvosViewController: UIViewController, MakeNewMessageDelegate {
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(true)
+        super.viewWillAppear(animated)
+        if convosManager.convos.isEmpty {
+            buttonManager.animateButton()
+        }
         guard
             let newConvo = newConvo,
             let presenceManager = presenceManager,
@@ -55,13 +57,6 @@ class ConvosViewController: UIViewController, MakeNewMessageDelegate {
         }
         navigationController?.showConvoViewController(convo: newConvo, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
         self.newConvo = nil
-    }
-
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(true)
-        if convosManager.convos.isEmpty {
-            buttonManager.makeNewMessageButton.morph(loop: true)
-        }
     }
 
     required init?(coder aDecoder: NSCoder) {

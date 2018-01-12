@@ -3,13 +3,14 @@ import UIKit
 class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
     var newConvo: Convo?
     private let itemsToDeleteManager = ItemsToDeleteManager()
-    private let dataSource = ProxiesTableViewDataSource()
     private let delegate = ProxiesTableViewDelegate()
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let buttonManager = ProxiesButtonManager()
     private weak var presenceManager: PresenceManaging?
     private weak var proxiesManager: ProxiesManaging?
     private weak var unreadMessagesManager: UnreadMessagesManaging?
+    private lazy var dataSource = ProxiesTableViewDataSource(accessoryType: .disclosureIndicator,
+                                                             manager: proxiesManager)
 
     init(uid: String,
          presenceManager: PresenceManaging,
@@ -22,8 +23,6 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
         super.init(nibName: nil, bundle: nil)
 
         buttonManager.load(uid: uid, controller: self, delegate: self, itemsToDeleteManager: itemsToDeleteManager, proxiesManager: proxiesManager, tableView: tableView)
-
-        dataSource.load(accessoryType: .disclosureIndicator, manager: proxiesManager)
 
         delegate.load(controller: self, itemsToDeleteManager: itemsToDeleteManager, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
 
@@ -43,7 +42,10 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(true)
+        super.viewWillAppear(animated)
+        if proxiesManager?.proxies.isEmpty ?? false {
+            buttonManager.animateButton()
+        }
         guard
             let newConvo = newConvo,
             let presenceManager = presenceManager,
@@ -53,13 +55,6 @@ class ProxiesViewController: UIViewController, MakeNewMessageDelegate {
         }
         navigationController?.showConvoViewController(convo: newConvo, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
         self.newConvo = nil
-    }
-
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(true)
-        if proxiesManager?.proxies.isEmpty ?? false {
-            buttonManager.makeNewProxyButton.morph(loop: true)
-        }
     }
 
     func scrollToTop() {

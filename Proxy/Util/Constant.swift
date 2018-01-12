@@ -14,7 +14,7 @@ struct Identifier {
     static let convoDetailSenderProxyTableViewCell = "ConvoDetailSenderProxyTableViewCell"
     static let convosTableViewCell = "ConvosTableViewCell"
     static let iconPickerCollectionViewCell = "IconPickerCollectionViewCell"
-    static let makeNewMessageViewController = "MakeNewMessageViewController"
+    static let makeNewMessageSenderTableViewCell = "MakeNewMessageSenderTableViewCell"
     static let loginViewController = "LoginViewController"
     static let proxiesTableViewCell = "ProxiesTableViewCell"
     static let senderProxyTableViewCell = "SenderProxyTableViewCell"

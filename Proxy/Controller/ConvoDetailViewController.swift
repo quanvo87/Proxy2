@@ -34,7 +34,7 @@ class ConvoDetailViewController: UIViewController, Closing {
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(true)
+        super.viewWillAppear(animated)
         if shouldClose {
             _ = navigationController?.popViewController(animated: false)
         }

@@ -160,14 +160,6 @@ extension String {
         let boldAttr = [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: size)]
         return NSMutableAttributedString(string: self, attributes: boldAttr)
     }
-
-    // https://gist.github.com/oaleeapp/c0b02b96cc706283fce54e9170d25a24
-    static var randomEmoji: String {
-        let emojiStart = 0x1F601
-        let ascii = emojiStart + Int(arc4random_uniform(UInt32(35)))
-        let emoji = UnicodeScalar(ascii)?.description
-        return emoji ?? "😍"
-    }
 }
 
 extension UIBarButtonItem {
