@@ -1,6 +1,10 @@
 import FirebaseDatabase
 import MessageKit
 
+protocol ConvoManaging: ListenerManaging, ReferenceObserving {
+    var convo: Convo { get set }
+}
+
 class ConvoManager: ConvoManaging {
     var convo: Convo {
         didSet {
@@ -25,11 +29,6 @@ class ConvoManager: ConvoManaging {
     init(_ convo: Convo) {
         self.convo = convo
         ref = DB.makeReference(Child.convos, convo.senderId, convo.key)
-        observe()
-    }
-
-    func observe() {
-        stopObserving()
         handle = ref?.observe(.value) { [weak self] (data) in
             guard let _self = self else {
                 return

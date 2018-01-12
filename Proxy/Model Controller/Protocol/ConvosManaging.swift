@@ -1,6 +1,11 @@
 import FirebaseDatabase
 import UIKit
 
+protocol ConvosManaging: ReferenceObserving {
+    var convos: [Convo] { get set }
+    func loadConvos(endingAtTimestamp timestamp: Double)
+}
+
 class ConvosManager: ConvosManaging {
     var convos: [Convo] = [] {
         didSet {
@@ -32,11 +37,6 @@ class ConvosManager: ConvosManaging {
         self.animator = animator
         self.tableView = tableView
         ref = DB.makeReference(Child.convos, uid)
-        observe()
-    }
-
-    func observe() {
-        stopObserving()
         handle = ref?.queryOrdered(byChild: Child.timestamp).queryLimited(toLast: querySize).observe(.value) { [weak self] (data) in
             guard let _self = self else {
                 return

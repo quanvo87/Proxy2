@@ -1,21 +1,8 @@
 import FirebaseDatabase
 import MessageKit
 
-protocol ConvoManaging: ListenerManaging, ReferenceObserving {
-    var convo: Convo { get set }
-}
-
-protocol ConvosManaging: ReferenceObserving {
-    var convos: [Convo] { get set }
-    func loadConvos(endingAtTimestamp timestamp: Double)
-}
-
 protocol Closing: class {
     var shouldClose: Bool { get set }
-}
-
-protocol IconManaging: class {
-    var icons: [String: UIImage] { get set }
 }
 
 protocol ItemsToDeleteManaging: class {
