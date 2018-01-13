@@ -30,7 +30,7 @@ extension ConvosTableViewDataSource: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         if convos.isEmpty {
-            return "No messages yet. Tap the bouncing button to begin 💬."
+            return "Tap the bouncing button to send a message 💬."
         } else {
             return nil
         }

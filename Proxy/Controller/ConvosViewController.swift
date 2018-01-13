@@ -42,8 +42,6 @@ class ConvosViewController: UIViewController, MakeNewMessageDelegate {
         tableView.rowHeight = 80
         tableView.sectionHeaderHeight = 0
 
-        unreadMessagesManager.load(uid: uid, controller: self, presenceManager: presenceManager, proxiesManager: proxiesManager)
-
         view.addSubview(tableView)
     }
 

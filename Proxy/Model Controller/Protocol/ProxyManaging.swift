@@ -10,7 +10,7 @@ class ProxyManager: ProxyManaging {
     private (set) var handle: DatabaseHandle?
     private (set) var proxy: Proxy?
 
-    init(uid: String, key: String, tableView: UITableView, closer: Closing) {
+    init(closer: Closing, key: String, tableView: UITableView, uid: String) {
         ref = DB.makeReference(Child.proxies, uid, key)
         handle = ref?.observe(.value) { [weak self] (data) in
             guard let _self = self else {

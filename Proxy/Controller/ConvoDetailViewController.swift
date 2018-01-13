@@ -17,10 +17,10 @@ class ConvoDetailViewController: UIViewController, Closing {
                                                              proxiesManager: proxiesManager,
                                                              proxyManager: proxyManager,
                                                              unreadMessagesManager: unreadMessagesManager)
-    private lazy var proxyManager = ProxyManager(uid: convo.senderId,
+    private lazy var proxyManager = ProxyManager(closer: self,
                                                  key: convo.senderProxyKey,
                                                  tableView: tableView,
-                                                 closer: self)
+                                                 uid: convo.senderId)
 
     init(convo: Convo,
          manager: ConvoManaging?,

@@ -14,10 +14,10 @@ class ProxyViewController: UIViewController, Closing, MakeNewMessageDelegate {
                                                    uid: proxy.ownerId,
                                                    animator: self,
                                                    tableView: tableView)
-    private lazy var proxyManager = ProxyManager(uid: proxy.ownerId,
+    private lazy var proxyManager = ProxyManager(closer: self,
                                                  key: proxy.key,
                                                  tableView: tableView,
-                                                 closer: self)
+                                                 uid: proxy.ownerId)
 
     init(proxy: Proxy,
          presenceManager: PresenceManaging,
@@ -34,15 +34,21 @@ class ProxyViewController: UIViewController, Closing, MakeNewMessageDelegate {
 
         delegate.load(controller: self, convosManager: convosManager, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
 
-        navigationItem.rightBarButtonItems = [UIBarButtonItem.make(target: self, action: #selector(showMakeNewMessageController), imageName: ButtonName.makeNewMessage),
-                                              UIBarButtonItem.make(target: self, action: #selector(deleteProxy), imageName: ButtonName.delete)]
+        navigationItem.rightBarButtonItems = [UIBarButtonItem.make(target: self,
+                                                                   action: #selector(showMakeNewMessageController),
+                                                                   imageName: ButtonName.makeNewMessage),
+                                              UIBarButtonItem.make(target: self,
+                                                                   action: #selector(deleteProxy),
+                                                                   imageName: ButtonName.delete)]
 
         tableView.dataSource = dataSource
         tableView.delaysContentTouches = false
         tableView.delegate = delegate
         tableView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
-        tableView.register(UINib(nibName: Identifier.convosTableViewCell, bundle: nil), forCellReuseIdentifier: Identifier.convosTableViewCell)
-        tableView.register(UINib(nibName: Identifier.senderProxyTableViewCell, bundle: nil), forCellReuseIdentifier: Identifier.senderProxyTableViewCell)
+        tableView.register(UINib(nibName: Identifier.convosTableViewCell, bundle: nil),
+                           forCellReuseIdentifier: Identifier.convosTableViewCell)
+        tableView.register(UINib(nibName: Identifier.senderProxyTableViewCell, bundle: nil),
+                           forCellReuseIdentifier: Identifier.senderProxyTableViewCell)
         tableView.sectionHeaderHeight = 0
         tableView.separatorStyle = .none
         tableView.setDelaysContentTouchesForScrollViews()

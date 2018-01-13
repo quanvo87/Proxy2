@@ -13,10 +13,6 @@ class PresenceManager: PresenceManaging {
     var presentInConvo = ""
     private weak var manager: UnreadMessagesManaging?
 
-    init(_ manager: UnreadMessagesManaging) {
-        self.manager = manager
-    }
-
     func enterConvo(_ key: String) {
         guard let unreadMessages = manager?.unreadMessages else {
             return
@@ -31,5 +27,9 @@ class PresenceManager: PresenceManaging {
             }
         }
         manager?.unreadMessages = untouchedMessages
+    }
+
+    func load(_ manager: UnreadMessagesManaging) {
+        self.manager = manager
     }
 }

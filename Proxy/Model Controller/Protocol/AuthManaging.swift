@@ -26,9 +26,11 @@ extension AuthManager: AuthManaging {
             changeRequest.displayName = email
             changeRequest.commitChanges()
         }
-        let unreadMessagesManager = UnreadMessagesManager()
-        let presenceManager = PresenceManager(unreadMessagesManager)
         let proxiesManager = ProxiesManager(user.uid)
+        let presenceManager = PresenceManager()
+        let unreadMessagesManager = UnreadMessagesManager(user.uid)
+        presenceManager.load(unreadMessagesManager)
+        unreadMessagesManager.load(presenceManager: presenceManager, proxiesManager: proxiesManager)
         window?.rootViewController = TabBarController(uid: user.uid,
                                                       displayName: displayName,
                                                       presenceManager: presenceManager,

@@ -35,7 +35,7 @@ extension MakeNewMessageTableViewDataSource: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         if section == 0 && controller?.proxiesManager?.proxies.count == 0 {
-            return "Tap the bouncing button to make a new Proxy."
+            return "Tap the bouncing button to make a new Proxy 🎉."
         } else {
             return nil
         }
