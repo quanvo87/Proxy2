@@ -2,18 +2,21 @@ import UIKit
 
 class ConvosViewController: UIViewController, MakeNewMessageDelegate {
     var newConvo: Convo?
-    private let buttonManager = ConvosButtonManager()
-    private let dataSource = ConvosTableViewDataSource()
     private let delegate = ConvosTableViewDelegate()
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
     private weak var presenceManager: PresenceManaging?
     private weak var proxiesManager: ProxiesManaging?
     private weak var unreadMessagesManager: UnreadMessagesManaging?
+    private lazy var buttonManager = ConvosButtonManager(uid: uid,
+                                                         controller: self,
+                                                         delegate: self,
+                                                         manager: proxiesManager)
     private lazy var convosManager = ConvosManager(proxyKey: nil,
                                                    uid: uid,
                                                    animator: buttonManager,
                                                    tableView: tableView)
+    private lazy var dataSource = ConvosTableViewDataSource(convosManager)
 
     init(uid: String,
          presenceManager: PresenceManaging,
@@ -25,10 +28,6 @@ class ConvosViewController: UIViewController, MakeNewMessageDelegate {
         self.unreadMessagesManager = unreadMessagesManager
         
         super.init(nibName: nil, bundle: nil)
-
-        buttonManager.load(uid: uid, controller: self, delegate: self, manager: proxiesManager)
-
-        dataSource.load(convosManager)
 
         delegate.load(controller: self, convosManager: convosManager, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
 

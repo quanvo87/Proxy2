@@ -3,7 +3,6 @@ import UIKit
 class ProxyViewController: UIViewController, Closing, MakeNewMessageDelegate {
     var newConvo: Convo?
     var shouldClose: Bool = false
-    private let dataSource = ProxyTableViewDataSource()
     private let delegate = ProxyTableViewDelegate()
     private let proxy: Proxy
     private let tableView = UITableView(frame: .zero, style: .grouped)
@@ -14,6 +13,9 @@ class ProxyViewController: UIViewController, Closing, MakeNewMessageDelegate {
                                                    uid: proxy.ownerId,
                                                    animator: self,
                                                    tableView: tableView)
+    private lazy var dataSource = ProxyTableViewDataSource(controller: self,
+                                                           convosManager: convosManager,
+                                                           proxyManager: proxyManager)
     private lazy var proxyManager = ProxyManager(closer: self,
                                                  key: proxy.key,
                                                  tableView: tableView,
@@ -29,8 +31,6 @@ class ProxyViewController: UIViewController, Closing, MakeNewMessageDelegate {
         self.unreadMessagesManager = unreadMessagesManager
 
         super.init(nibName: nil, bundle: nil)
-
-        dataSource.load(controller: self, convosManager: convosManager, proxyManager: proxyManager)
 
         delegate.load(controller: self, convosManager: convosManager, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
 

@@ -3,7 +3,7 @@ import UIKit
 class IconPickerCollectionViewDataSource: NSObject {
     private var iconNames = [String]()
 
-    func load(_ iconNames: [String]) {
+    init(_ iconNames: [String]) {
         self.iconNames = iconNames
     }
 }

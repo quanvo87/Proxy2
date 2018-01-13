@@ -1,7 +1,6 @@
 import FirebaseDatabase
 import MessageKit
 
-// todo: delete?
 protocol ButtonAnimating: class {
     func animateButton()
     func stopAnimatingButton()
@@ -31,8 +30,8 @@ extension MakeNewMessageDelegate {
 }
 
 protocol ReferenceObserving: class {
-    var ref: DatabaseReference? { get }
     var handle: DatabaseHandle? { get }
+    var ref: DatabaseReference? { get }
 }
 
 extension ReferenceObserving {

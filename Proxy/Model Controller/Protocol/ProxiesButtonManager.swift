@@ -6,26 +6,30 @@ class ProxiesButtonManager {
     var deleteButton = UIBarButtonItem()
     var makeNewMessageButton = UIBarButtonItem()
     var makeNewProxyButton = UIBarButtonItem()
-    private var uid: String?
+    private let uid: String
     private weak var controller: UIViewController?
     private weak var delegate: MakeNewMessageDelegate?
     private weak var itemsToDeleteManager: ItemsToDeleteManaging?
     private weak var proxiesManager: ProxiesManaging?
     private weak var tableView: UITableView?
 
-    func load(uid: String,
-              controller: UIViewController,
-              delegate: MakeNewMessageDelegate,
-              itemsToDeleteManager: ItemsToDeleteManaging,
-              proxiesManager: ProxiesManaging,
-              tableView: UITableView) {
+    init(uid: String,
+         controller: UIViewController?,
+         delegate: MakeNewMessageDelegate?,
+         itemsToDeleteManager: ItemsToDeleteManaging?,
+         proxiesManager: ProxiesManaging?,
+         tableView: UITableView?) {
         self.uid = uid
         self.controller = controller
         self.delegate = delegate
         self.itemsToDeleteManager = itemsToDeleteManager
         self.proxiesManager = proxiesManager
         self.tableView = tableView
-        makeButtons()
+        cancelButton = UIBarButtonItem.make(target: self, action: #selector(setDefaultButtons), imageName: ButtonName.cancel)
+        confirmButton = UIBarButtonItem.make(target: self, action: #selector(deleteSelectedItems), imageName: ButtonName.confirm)
+        deleteButton = UIBarButtonItem.make(target: self, action: #selector(setEditModeButtons), imageName: ButtonName.delete)
+        makeNewMessageButton = UIBarButtonItem.make(target: self, action: #selector(showMakeNewMessageController), imageName: ButtonName.makeNewMessage)
+        makeNewProxyButton = UIBarButtonItem.make(target: self, action: #selector(makeNewProxy), imageName: ButtonName.makeNewProxy)
         setDefaultButtons()
     }
 }
@@ -41,14 +45,6 @@ extension ProxiesButtonManager: ButtonAnimating {
 }
 
 private extension ProxiesButtonManager {
-    func makeButtons() {
-        cancelButton = UIBarButtonItem.make(target: self, action: #selector(setDefaultButtons), imageName: ButtonName.cancel)
-        confirmButton = UIBarButtonItem.make(target: self, action: #selector(deleteSelectedItems), imageName: ButtonName.confirm)
-        deleteButton = UIBarButtonItem.make(target: self, action: #selector(setEditModeButtons), imageName: ButtonName.delete)
-        makeNewMessageButton = UIBarButtonItem.make(target: self, action: #selector(showMakeNewMessageController), imageName: ButtonName.makeNewMessage)
-        makeNewProxyButton = UIBarButtonItem.make(target: self, action: #selector(makeNewProxy), imageName: ButtonName.makeNewProxy)
-    }
-
     @objc func setDefaultButtons() {
         if proxiesManager?.proxies.isEmpty ?? false {
             makeNewProxyButton.morph(loop: true)
@@ -85,6 +81,7 @@ private extension ProxiesButtonManager {
                 }
                 DB.deleteProxy(proxy) { _ in }
             }
+            self?.itemsToDeleteManager?.itemsToDelete.removeAll()
             self?.setDefaultButtons()
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
@@ -92,13 +89,11 @@ private extension ProxiesButtonManager {
     }
 
     @objc func makeNewProxy() {
-        guard
-            let uid = uid,
-            let proxyCount = proxiesManager?.proxies.count else {
-                return
+        guard let proxyCount = proxiesManager?.proxies.count else {
+            return
         }
-        makeNewProxyButton.morph()
         makeNewProxyButton.isEnabled = false
+        makeNewProxyButton.morph()
         DB.makeProxy(uid: uid, currentProxyCount: proxyCount) { [weak self] (result) in
             switch result {
             case .failure(let error):
@@ -115,13 +110,12 @@ private extension ProxiesButtonManager {
 
     @objc func showMakeNewMessageController() {
         guard
-            let uid = uid,
             let controller = controller,
             let manager = proxiesManager else {
                 return
         }
-        makeNewMessageButton.morph()
         makeNewMessageButton.isEnabled = false
+        makeNewMessageButton.morph()
         delegate?.showMakeNewMessageController(sender: nil, uid: uid, manager: manager, controller: controller)
         makeNewMessageButton.isEnabled = true
     }

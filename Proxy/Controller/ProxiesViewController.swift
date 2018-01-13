@@ -5,10 +5,16 @@ class ProxiesViewController: UIViewController, ItemsToDeleteManaging, MakeNewMes
     var newConvo: Convo?
     private let delegate = ProxiesTableViewDelegate()
     private let tableView = UITableView(frame: .zero, style: .grouped)
-    private let buttonManager = ProxiesButtonManager()
+    private let uid: String
     private weak var presenceManager: PresenceManaging?
     private weak var proxiesManager: ProxiesManaging?
     private weak var unreadMessagesManager: UnreadMessagesManaging?
+    private lazy var buttonManager = ProxiesButtonManager(uid: uid,
+                                                          controller: self,
+                                                          delegate: self,
+                                                          itemsToDeleteManager: self,
+                                                          proxiesManager: proxiesManager,
+                                                          tableView: tableView)
     private lazy var dataSource = ProxiesTableViewDataSource(accessoryType: .disclosureIndicator,
                                                              manager: proxiesManager)
 
@@ -16,13 +22,12 @@ class ProxiesViewController: UIViewController, ItemsToDeleteManaging, MakeNewMes
          presenceManager: PresenceManaging,
          proxiesManager: ProxiesManaging,
          unreadMessagesManager: UnreadMessagesManaging) {
+        self.uid = uid
         self.presenceManager = presenceManager
         self.proxiesManager = proxiesManager
         self.unreadMessagesManager = unreadMessagesManager
         
         super.init(nibName: nil, bundle: nil)
-
-        buttonManager.load(uid: uid, controller: self, delegate: self, itemsToDeleteManager: self, proxiesManager: proxiesManager, tableView: tableView)
 
         delegate.load(controller: self, itemsToDeleteManager: self, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
 

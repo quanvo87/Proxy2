@@ -2,9 +2,9 @@ import UIKit
 
 class IconPickerViewController: UIViewController {
     private let collectionView: UICollectionView
-    private let dataSource = IconPickerCollectionViewDataSource()
     private let delegate = IconPickerCollectionViewDelegate()
     private let proxy: Proxy
+    private lazy var dataSource = IconPickerCollectionViewDataSource(ProxyService.iconNames)
 
     init(_ proxy: Proxy) {
         self.proxy = proxy
@@ -14,8 +14,6 @@ class IconPickerViewController: UIViewController {
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
 
         super.init(nibName: nil, bundle: nil)
-
-        dataSource.load(ProxyService.iconNames)
 
         delegate.load(iconNames: ProxyService.iconNames, proxy: proxy, controller: self)
 
