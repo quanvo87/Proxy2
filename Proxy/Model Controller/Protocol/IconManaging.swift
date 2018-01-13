@@ -2,11 +2,11 @@ import FirebaseDatabase
 import MessageKit
 
 protocol IconManaging: class {
-    var icons: [String: UIImage] { get set }
+    var icons: [String: UIImage] { get }
 }
 
 class IconManager: IconManaging {
-    var icons: [String : UIImage] = [:] {
+    private (set) var icons = [String : UIImage]() {
         didSet {
             collectionView?.reloadDataAndKeepOffset()
         }

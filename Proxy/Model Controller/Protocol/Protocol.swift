@@ -28,15 +28,6 @@ extension MakeNewMessageDelegate {
     }
 }
 
-protocol MessagesManaging: class {
-    var messages: [Message] { get set }
-    var messagesCollectionView: MessagesCollectionView { get }
-}
-
-protocol MessagesObserving: ReferenceObserving {
-    func loadMessages(endingAtMessageWithId id: String)
-}
-
 protocol PresenceManaging: class {
     var presentInConvo: String { get set }
     func enterConvo(_ key: String)

@@ -2,12 +2,12 @@ import FirebaseDatabase
 import UIKit
 
 protocol ConvosManaging: ReferenceObserving {
-    var convos: [Convo] { get set }
+    var convos: [Convo] { get }
     func loadConvos(endingAtTimestamp timestamp: Double)
 }
 
 class ConvosManager: ConvosManaging {
-    var convos: [Convo] = [] {
+    private (set) var convos = [Convo]() {
         didSet {
             if convos.isEmpty {
                 animator?.animateButton()
@@ -37,13 +37,16 @@ class ConvosManager: ConvosManaging {
         self.animator = animator
         self.tableView = tableView
         ref = DB.makeReference(Child.convos, uid)
-        handle = ref?.queryOrdered(byChild: Child.timestamp).queryLimited(toLast: querySize).observe(.value) { [weak self] (data) in
-            guard let _self = self else {
-                return
-            }
-            _self.loading = true
-            _self.convos = data.toConvosArray(uid: _self.uid, proxyKey: _self.proxyKey).reversed()
-            _self.loading = false
+        handle = ref?
+            .queryOrdered(byChild: Child.timestamp)
+            .queryLimited(toLast: querySize)
+            .observe(.value) { [weak self] (data) in
+                guard let _self = self else {
+                    return
+                }
+                _self.loading = true
+                _self.convos = data.toConvosArray(uid: _self.uid, proxyKey: _self.proxyKey).reversed()
+                _self.loading = false
         }
     }
 

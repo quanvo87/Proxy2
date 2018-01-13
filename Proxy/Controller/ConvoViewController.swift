@@ -1,7 +1,6 @@
 import MessageKit
 
-class ConvoViewController: MessagesViewController, Closing, MessagesManaging {
-    var messages: [Message] = []
+class ConvoViewController: MessagesViewController, Closing {
     var shouldClose = false
     private let convo: Convo
     private let displayDelegate = ConvoDisplayDelegate()
@@ -18,9 +17,9 @@ class ConvoViewController: MessagesViewController, Closing, MessagesManaging {
                                                collectionView: messagesCollectionView)
     private lazy var dataSource = ConvoDataSource(convoManager: convoManager,
                                                   iconManager: iconManager,
-                                                  messagesManager: self)
-    private lazy var messsagesObserver = MessagesObserver(convoKey: convo.key,
-                                                          manager: self)
+                                                  messagesManager: messagesManager)
+    private lazy var messagesManager = MessagesManager(convoKey: convo.key,
+                                                       collectionView: messagesCollectionView)
 
     init(convo: Convo,
          presenceManager: PresenceManaging,
@@ -38,7 +37,7 @@ class ConvoViewController: MessagesViewController, Closing, MessagesManaging {
 
         inputBarDelegate.load(controller: self, manager: convoManager)
 
-        displayDelegate.load(dataSource: dataSource, manager: self)
+        displayDelegate.load(dataSource: dataSource, manager: messagesManager)
 
         navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self, action: #selector(showConvoDetailView), imageName: ButtonName.info)
         navigationItem.title = convo.receiverProxyName
@@ -50,8 +49,6 @@ class ConvoViewController: MessagesViewController, Closing, MessagesManaging {
         messagesCollectionView.messagesDataSource = dataSource
         messagesCollectionView.messagesDisplayDelegate = displayDelegate
         messagesCollectionView.messagesLayoutDelegate = layoutDelegate
-
-        messsagesObserver.observe()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -72,10 +69,10 @@ class ConvoViewController: MessagesViewController, Closing, MessagesManaging {
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         guard
             indexPath.section == 0,
-            let message = messages[safe: indexPath.section] else {
+            let message = messagesManager.messages[safe: indexPath.section] else {
                 return
         }
-        messsagesObserver.loadMessages(endingAtMessageWithId: message.messageId)
+        messagesManager.loadMessages(endingAtMessageId: message.messageId)
     }
 
     required init?(coder aDecoder: NSCoder) {

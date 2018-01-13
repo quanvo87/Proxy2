@@ -2,11 +2,11 @@ import FirebaseDatabase
 import MessageKit
 
 protocol ConvoManaging: ListenerManaging, ReferenceObserving {
-    var convo: Convo { get set }
+    var convo: Convo { get }
 }
 
 class ConvoManager: ConvoManaging {
-    var convo: Convo {
+    private (set) var convo: Convo {
         didSet {
             for listener in listeners.allObjects {
                 switch listener {
