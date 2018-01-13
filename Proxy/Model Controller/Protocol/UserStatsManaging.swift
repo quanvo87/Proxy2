@@ -1,47 +1,50 @@
+import FirebaseDatabase
 import UIKit
 
-protocol MessagesReceivedManaging: class {
-    var messagesReceivedCount: String { get set }
+protocol UserStatsManaging: class {
+    var messagesReceivedCount: String { get }
+    var messagesSentCount: String { get }
+    var proxiesInteractedWithCount: String { get }
 }
-
-protocol MessagesSentManaging: class {
-    var messagesSentCount: String { get set }
-}
-
-protocol ProxiesInteractedWithManaging: class {
-    var proxiesInteractedWithCount: String { get set }
-}
-
-typealias UserStatsManaging = MessagesReceivedManaging & MessagesSentManaging & ProxiesInteractedWithManaging
 
 class UserStatsManager: UserStatsManaging {
-    var messagesReceivedCount = "-" {
-        didSet {
-            tableView?.reloadData()
+    private (set) var messagesReceivedCount = "-"
+    private (set) var messagesSentCount = "-"
+    private (set) var proxiesInteractedWithCount = "-"
+    private let messagesReceivedRef: DatabaseReference?
+    private let messagesSentRef: DatabaseReference?
+    private let proxiesInteractedWithRef: DatabaseReference?
+    private var messagesReceivedHandle: DatabaseHandle?
+    private var messagesSentHandle: DatabaseHandle?
+    private var proxiesInteractedWithHandle: DatabaseHandle?
+
+    init(uid: String, tableView: UITableView) {
+        messagesReceivedRef = DB.makeReference(Child.userInfo, uid, IncrementableUserProperty.messagesReceived.rawValue)
+        messagesSentRef = DB.makeReference(Child.userInfo, uid, IncrementableUserProperty.messagesSent.rawValue)
+        proxiesInteractedWithRef = DB.makeReference(Child.userInfo, uid, IncrementableUserProperty.proxiesInteractedWith.rawValue)
+        messagesReceivedHandle = messagesReceivedRef?.observe(.value) { [weak self] (data) in
+            self?.messagesReceivedCount = data.asNumberLabel
+            tableView.reloadData()
+        }
+        messagesSentHandle = messagesSentRef?.observe(.value) { [weak self] (data) in
+            self?.messagesSentCount = data.asNumberLabel
+            tableView.reloadData()
+        }
+        proxiesInteractedWithHandle = proxiesInteractedWithRef?.observe(.value) { [weak self] (data) in
+            self?.proxiesInteractedWithCount = data.asNumberLabel
+            tableView.reloadData()
         }
     }
 
-    var messagesSentCount = "-" {
-        didSet {
-            tableView?.reloadData()
+    deinit {
+        if let messagesReceivedHandle = messagesReceivedHandle {
+            messagesReceivedRef?.removeObserver(withHandle: messagesReceivedHandle)
         }
-    }
-
-    var proxiesInteractedWithCount = "-" {
-        didSet {
-            tableView?.reloadData()
+        if let messagesSentHandle = messagesSentHandle {
+            messagesSentRef?.removeObserver(withHandle: messagesSentHandle)
         }
-    }
-
-    private let messagesReceivedObserver = MessagesReceivedObserver()
-    private let messagesSentObserver = MessagesSentObserver()
-    private let proxiesInteractedWithObserver = ProxiesInteractedWithObserver()
-    private weak var tableView: UITableView?
-
-    func load(uid: String, tableView: UITableView) {
-        self.tableView = tableView
-        messagesReceivedObserver.observe(uid: uid, manager: self)
-        messagesSentObserver.observe(uid: uid, manager: self)
-        proxiesInteractedWithObserver.observe(uid: uid, manager: self)
+        if let proxiesInteractedWithHandle = proxiesInteractedWithHandle {
+            proxiesInteractedWithRef?.removeObserver(withHandle: proxiesInteractedWithHandle)
+        }
     }
 }

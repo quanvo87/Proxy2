@@ -3,17 +3,18 @@ import UIKit
 class SettingsViewController: UIViewController {
     private let dataSource = SettingsTableViewDataSource()
     private let delegate = SettingsTableViewDelegate()
-    private let manager = UserStatsManager()
     private let tableView = UITableView(frame: .zero, style: .grouped)
+    private let uid: String
+    private lazy var manager = UserStatsManager(uid: uid, tableView: tableView)
 
     init(uid: String, displayName: String?) {
+        self.uid = uid
+
         super.init(nibName: nil, bundle: nil)
 
         dataSource.load(manager)
 
         delegate.load(self)
-
-        manager.load(uid: uid, tableView: tableView)
 
         navigationItem.title = displayName
 
