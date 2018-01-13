@@ -18,7 +18,8 @@ class SenderPickerViewController: UIViewController {
 
         super.init(nibName: nil, bundle: nil)
 
-        manager.load(animator: self, controller: nil, tableView: tableView)
+        manager.addAnimator(self)
+        manager.addTableView(tableView)
 
         navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self, action: #selector(makeNewProxy), imageName: ButtonName.makeNewProxy)
         navigationItem.title = "Pick Your Sender"

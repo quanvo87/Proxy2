@@ -1,45 +1,69 @@
+import FirebaseDatabase
 import UIKit
 
-protocol ProxiesManaging: class {
+protocol ProxiesManaging: ReferenceObserving {
     var proxies: [Proxy] { get set }
-    func load(animator: ButtonAnimating, controller: UIViewController?, tableView: UITableView?)
+    func addAnimator(_ animator: ButtonAnimating)
+    func addController(_ controller: UIViewController)
+    func addTableView(_ tableView: UITableView)
 }
 
 class ProxiesManager: ProxiesManaging {
     var proxies = [Proxy]() {
         didSet {
-            for object in objects.allObjects {
-                switch object {
-                case let animator as ButtonAnimating:
-                    if proxies.isEmpty {
-                        animator.animateButton()
-                    } else {
-                        animator.stopAnimatingButton()
-                    }
-                case let controller as UIViewController:
-                    controller.title = "My Proxies\(proxies.count.asStringWithParens)"
-                    controller.tabBarController?.tabBar.items?[1].title = "Proxies\(proxies.count.asStringWithParens)"
-                case let tableView as UITableView:
-                    tableView.reloadData()
-                default:
-                    break
+            for animator in animators.allObjects {
+                guard let animator = animator as? ButtonAnimating else {
+                    continue
                 }
+                if proxies.isEmpty {
+                    animator.animateButton()
+                } else {
+                    animator.stopAnimatingButton()
+                }
+            }
+            for controller in controllers.allObjects {
+                guard let controller = controller as? UIViewController else {
+                    continue
+                }
+                controller.title = "My Proxies\(proxies.count.asStringWithParens)"
+                controller.tabBarController?.tabBar.items?[1].title = "Proxies\(proxies.count.asStringWithParens)"
+            }
+            for tableView in tableViews.allObjects {
+                guard let tableView = tableView as? UITableView else {
+                    continue
+                }
+                tableView.reloadData()
             }
         }
     }
-
-    private let objects = NSHashTable<AnyObject>(options: .weakMemory)
-    private let observer = ProxiesObserver()
+    let ref: DatabaseReference?
+    private (set) var handle: DatabaseHandle?
     private let uid: String
+    private let animators = NSHashTable<AnyObject>(options: .weakMemory)
+    private let controllers = NSHashTable<AnyObject>(options: .weakMemory)
+    private let tableViews = NSHashTable<AnyObject>(options: .weakMemory)
 
     init(_ uid: String) {
         self.uid = uid
+        ref = DB.makeReference(Child.proxies, uid)
+        handle = ref?.queryOrdered(byChild: Child.timestamp).observe(.value) { [weak self] (data) in
+            self?.proxies = data.toProxiesArray(uid: uid).reversed()
+        }
     }
 
-    func load(animator: ButtonAnimating, controller: UIViewController?, tableView: UITableView?) {
-        objects.add(animator)
-        objects.add(controller)
-        objects.add(tableView)
-        observer.observe(uid: uid, manager: self)
+    func addAnimator(_ animator: ButtonAnimating) {
+        animators.add(animator)
+    }
+
+    func addController(_ controller: UIViewController) {
+        controllers.add(controller)
+    }
+
+    func addTableView(_ tableView: UITableView) {
+        tableViews.add(tableView)
+    }
+
+    deinit {
+        stopObserving()
     }
 }

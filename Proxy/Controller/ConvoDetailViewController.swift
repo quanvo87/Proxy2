@@ -30,7 +30,8 @@ class ConvoDetailViewController: UIViewController, Closing {
 
         super.init(nibName: nil, bundle: nil)
 
-        manager?.listeners.add(tableView)
+        manager?.addCloser(self)
+        manager?.addTableView(tableView)
 
         proxyManager.load(uid: convo.senderId, key: convo.senderProxyKey, tableView: tableView, closer: self)
 

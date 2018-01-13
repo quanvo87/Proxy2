@@ -28,7 +28,9 @@ class ProxiesViewController: UIViewController, ItemsToDeleteManaging, MakeNewMes
 
         navigationItem.title = "My Proxies"
 
-        proxiesManager.load(animator: buttonManager, controller: self, tableView: tableView)
+        proxiesManager.addAnimator(buttonManager)
+        proxiesManager.addController(self)
+        proxiesManager.addTableView(tableView)
 
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.dataSource = dataSource

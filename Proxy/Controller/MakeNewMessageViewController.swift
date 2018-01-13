@@ -60,7 +60,7 @@ class MakeNewMessageViewController: UIViewController, SenderPickerDelegate {
 //            }
 //        }
 
-        manager.load(animator: self, controller: nil, tableView: nil)
+        manager.addAnimator(self)
 
         navigationItem.rightBarButtonItems = [UIBarButtonItem.make(target: self,
                                                                    action: #selector(close),

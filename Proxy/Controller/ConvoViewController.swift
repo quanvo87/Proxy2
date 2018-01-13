@@ -32,8 +32,9 @@ class ConvoViewController: MessagesViewController, Closing {
 
         super.init(nibName: nil, bundle: nil)
 
-        convoManager.listeners.add(messagesCollectionView)
-        convoManager.listeners.add(self)
+        convoManager.addCloser(self)
+        convoManager.addCollectionView(messagesCollectionView)
+        convoManager.addController(self)
 
         inputBarDelegate.load(controller: self, manager: convoManager)
 

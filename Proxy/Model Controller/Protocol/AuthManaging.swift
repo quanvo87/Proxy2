@@ -28,10 +28,11 @@ extension AuthManager: AuthManaging {
         }
         let unreadMessagesManager = UnreadMessagesManager()
         let presenceManager = PresenceManager(unreadMessagesManager)
+        let proxiesManager = ProxiesManager(user.uid)
         window?.rootViewController = TabBarController(uid: user.uid,
                                                       displayName: displayName,
                                                       presenceManager: presenceManager,
-                                                      proxiesManager: ProxiesManager(user.uid),
+                                                      proxiesManager: proxiesManager,
                                                       unreadMessagesManager: unreadMessagesManager)
         loggedIn = true
     }

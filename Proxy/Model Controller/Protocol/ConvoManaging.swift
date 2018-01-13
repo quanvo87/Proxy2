@@ -1,30 +1,43 @@
 import FirebaseDatabase
 import MessageKit
 
-protocol ConvoManaging: ListenerManaging, ReferenceObserving {
+protocol ConvoManaging: ReferenceObserving {
     var convo: Convo { get }
+    func addCloser(_ closer: Closing)
+    func addController(_ controller: UIViewController)
+    func addCollectionView(_ collectionView: MessagesCollectionView)
+    func addTableView(_ tableView: UITableView)
 }
 
 class ConvoManager: ConvoManaging {
     private (set) var convo: Convo {
         didSet {
-            for listener in listeners.allObjects {
-                switch listener {
-                case let controller as UIViewController:
-                    controller.navigationItem.title = convo.receiverDisplayName
-                case let collectionView as MessagesCollectionView:
-                    collectionView.reloadDataAndKeepOffset()
-                case let tableView as UITableView:
-                    tableView.reloadData()
-                default:
-                    break
+            for controller in controllers.allObjects {
+                guard let controller = controller as? UIViewController else {
+                    continue
                 }
+                controller.navigationItem.title = convo.receiverDisplayName
+            }
+            for collectionView in collectionViews.allObjects {
+                guard let collectionView = collectionView as? MessagesCollectionView else {
+                    continue
+                }
+                collectionView.reloadDataAndKeepOffset()
+            }
+            for tableView in tableViews.allObjects {
+                guard let tableView = tableView as? UITableView else {
+                    continue
+                }
+                tableView.reloadData()
             }
         }
     }
-    let listeners = NSHashTable<AnyObject>(options: .weakMemory)
     let ref: DatabaseReference?
     private (set) var handle: DatabaseHandle?
+    private let closers = NSHashTable<AnyObject>(options: .weakMemory)
+    private let controllers = NSHashTable<AnyObject>(options: .weakMemory)
+    private let collectionViews = NSHashTable<AnyObject>(options: .weakMemory)
+    private let tableViews = NSHashTable<AnyObject>(options: .weakMemory)
 
     init(_ convo: Convo) {
         self.convo = convo
@@ -45,6 +58,22 @@ class ConvoManager: ConvoManaging {
         }
     }
 
+    func addCloser(_ closer: Closing) {
+        closers.add(closer)
+    }
+
+    func addController(_ controller: UIViewController) {
+        controllers.add(controller)
+    }
+
+    func addCollectionView(_ collectionView: MessagesCollectionView) {
+        collectionViews.add(collectionView)
+    }
+
+    func addTableView(_ tableView: UITableView) {
+        tableViews.add(tableView)
+    }
+
     deinit {
         stopObserving()
     }
@@ -52,8 +81,8 @@ class ConvoManager: ConvoManaging {
 
 private extension ConvoManager {
     func updateClosers() {
-        for listener in listeners.allObjects {
-            guard let closer = listener as? Closing else {
+        for closer in closers.allObjects {
+            guard let closer = closer as? Closing else {
                 continue
             }
             closer.shouldClose = true
