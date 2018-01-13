@@ -6,7 +6,6 @@ class ProxyViewController: UIViewController, Closing, MakeNewMessageDelegate {
     private let dataSource = ProxyTableViewDataSource()
     private let delegate = ProxyTableViewDelegate()
     private let proxy: Proxy
-    private let proxyManager = ProxyManager()
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private weak var presenceManager: PresenceManaging?
     private weak var proxiesManager: ProxiesManaging?
@@ -15,6 +14,10 @@ class ProxyViewController: UIViewController, Closing, MakeNewMessageDelegate {
                                                    uid: proxy.ownerId,
                                                    animator: self,
                                                    tableView: tableView)
+    private lazy var proxyManager = ProxyManager(uid: proxy.ownerId,
+                                                 key: proxy.key,
+                                                 tableView: tableView,
+                                                 closer: self)
 
     init(proxy: Proxy,
          presenceManager: PresenceManaging,
@@ -33,8 +36,6 @@ class ProxyViewController: UIViewController, Closing, MakeNewMessageDelegate {
 
         navigationItem.rightBarButtonItems = [UIBarButtonItem.make(target: self, action: #selector(showMakeNewMessageController), imageName: ButtonName.makeNewMessage),
                                               UIBarButtonItem.make(target: self, action: #selector(deleteProxy), imageName: ButtonName.delete)]
-
-        proxyManager.load(uid: proxy.ownerId, key: proxy.key, tableView: tableView, closer: self)
 
         tableView.dataSource = dataSource
         tableView.delaysContentTouches = false

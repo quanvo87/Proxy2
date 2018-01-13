@@ -1,6 +1,12 @@
 import FirebaseDatabase
 import MessageKit
 
+// todo: delete?
+protocol ButtonAnimating: class {
+    func animateButton()
+    func stopAnimatingButton()
+}
+
 protocol Closing: class {
     var shouldClose: Bool { get set }
 }

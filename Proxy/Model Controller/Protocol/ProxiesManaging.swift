@@ -38,13 +38,11 @@ class ProxiesManager: ProxiesManaging {
     }
     let ref: DatabaseReference?
     private (set) var handle: DatabaseHandle?
-    private let uid: String
     private let animators = NSHashTable<AnyObject>(options: .weakMemory)
     private let controllers = NSHashTable<AnyObject>(options: .weakMemory)
     private let tableViews = NSHashTable<AnyObject>(options: .weakMemory)
 
     init(_ uid: String) {
-        self.uid = uid
         ref = DB.makeReference(Child.proxies, uid)
         handle = ref?.queryOrdered(byChild: Child.timestamp).observe(.value) { [weak self] (data) in
             self?.proxies = data.toProxiesArray(uid: uid).reversed()

@@ -2,7 +2,7 @@ import UIKit
 
 class ConvoDetailViewController: UIViewController, Closing {
     var shouldClose: Bool = false
-    private let proxyManager = ProxyManager()
+    private let convo: Convo
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private weak var manager: ConvoManaging?
     private weak var presenceManager: PresenceManaging?
@@ -17,12 +17,17 @@ class ConvoDetailViewController: UIViewController, Closing {
                                                              proxiesManager: proxiesManager,
                                                              proxyManager: proxyManager,
                                                              unreadMessagesManager: unreadMessagesManager)
+    private lazy var proxyManager = ProxyManager(uid: convo.senderId,
+                                                 key: convo.senderProxyKey,
+                                                 tableView: tableView,
+                                                 closer: self)
 
     init(convo: Convo,
          manager: ConvoManaging?,
          presenceManager: PresenceManaging?,
          proxiesManager: ProxiesManaging?,
          unreadMessagesManager: UnreadMessagesManaging?) {
+        self.convo = convo
         self.manager = manager
         self.presenceManager = presenceManager
         self.proxiesManager = proxiesManager
@@ -32,8 +37,6 @@ class ConvoDetailViewController: UIViewController, Closing {
 
         manager?.addCloser(self)
         manager?.addTableView(tableView)
-
-        proxyManager.load(uid: convo.senderId, key: convo.senderProxyKey, tableView: tableView, closer: self)
 
         tableView.dataSource = dataSource
         tableView.delegate = delegate
