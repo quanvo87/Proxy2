@@ -4,7 +4,7 @@ class ConvoInputBarDelegate {
     private weak var controller: UIViewController?
     private weak var manager: ConvoManaging?
 
-    func load(controller: UIViewController, manager: ConvoManaging) {
+    init(controller: UIViewController?, manager: ConvoManaging?) {
         self.controller = controller
         self.manager = manager
     }

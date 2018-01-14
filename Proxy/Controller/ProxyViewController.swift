@@ -3,7 +3,6 @@ import UIKit
 class ProxyViewController: UIViewController, Closing, MakeNewMessageDelegate {
     var newConvo: Convo?
     var shouldClose: Bool = false
-    private let delegate = ProxyTableViewDelegate()
     private let proxy: Proxy
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private weak var presenceManager: PresenceManaging?
@@ -16,6 +15,11 @@ class ProxyViewController: UIViewController, Closing, MakeNewMessageDelegate {
     private lazy var dataSource = ProxyTableViewDataSource(controller: self,
                                                            convosManager: convosManager,
                                                            proxyManager: proxyManager)
+    private lazy var delegate = ProxyTableViewDelegate(controller: self,
+                                                       convosManager: convosManager,
+                                                       presenceManager: presenceManager,
+                                                       proxiesManager: proxiesManager,
+                                                       unreadMessagesManager: unreadMessagesManager)
     private lazy var proxyManager = ProxyManager(closer: self,
                                                  key: proxy.key,
                                                  tableView: tableView,
@@ -31,8 +35,6 @@ class ProxyViewController: UIViewController, Closing, MakeNewMessageDelegate {
         self.unreadMessagesManager = unreadMessagesManager
 
         super.init(nibName: nil, bundle: nil)
-
-        delegate.load(controller: self, convosManager: convosManager, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
 
         navigationItem.rightBarButtonItems = [UIBarButtonItem.make(target: self,
                                                                    action: #selector(showMakeNewMessageController),

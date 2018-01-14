@@ -4,7 +4,7 @@ import UIKit
 class SettingsTableViewDelegate: NSObject {
     private weak var controller: UIViewController?
 
-    func load(_ controller: UIViewController) {
+    init(_ controller: UIViewController) {
         self.controller = controller
     }
 }

@@ -21,13 +21,16 @@ class SenderPickerViewController: UIViewController {
         manager.addAnimator(self)
         manager.addTableView(tableView)
 
-        navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self, action: #selector(makeNewProxy), imageName: ButtonName.makeNewProxy)
+        navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self,
+                                                                 action: #selector(makeNewProxy),
+                                                                 imageName: ButtonName.makeNewProxy)
         navigationItem.title = "Pick Your Sender"
 
         tableView.dataSource = tableViewDataSource
         tableView.delegate = tableViewDelegate
         tableView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
-        tableView.register(UINib(nibName: Identifier.proxiesTableViewCell, bundle: nil), forCellReuseIdentifier: Identifier.proxiesTableViewCell)
+        tableView.register(UINib(nibName: Identifier.proxiesTableViewCell, bundle: nil),
+                           forCellReuseIdentifier: Identifier.proxiesTableViewCell)
         tableView.rowHeight = 60
         tableView.sectionHeaderHeight = 0
         

@@ -3,7 +3,6 @@ import UIKit
 class ProxiesViewController: UIViewController, ItemsToDeleteManaging, MakeNewMessageDelegate {
     var itemsToDelete: [String : Any] = [:]
     var newConvo: Convo?
-    private let delegate = ProxiesTableViewDelegate()
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
     private weak var presenceManager: PresenceManaging?
@@ -17,6 +16,11 @@ class ProxiesViewController: UIViewController, ItemsToDeleteManaging, MakeNewMes
                                                           tableView: tableView)
     private lazy var dataSource = ProxiesTableViewDataSource(accessoryType: .disclosureIndicator,
                                                              manager: proxiesManager)
+    private lazy var delegate = ProxiesTableViewDelegate(controller: self,
+                                                         itemsToDeleteManager: self,
+                                                         presenceManager: presenceManager,
+                                                         proxiesManager: proxiesManager,
+                                                         unreadMessagesManager: unreadMessagesManager)
 
     init(uid: String,
          presenceManager: PresenceManaging,
@@ -28,8 +32,6 @@ class ProxiesViewController: UIViewController, ItemsToDeleteManaging, MakeNewMes
         self.unreadMessagesManager = unreadMessagesManager
         
         super.init(nibName: nil, bundle: nil)
-
-        delegate.load(controller: self, itemsToDeleteManager: self, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
 
         navigationItem.title = "My Proxies"
 

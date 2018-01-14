@@ -8,7 +8,7 @@ class ConvoDisplayDelegate {
         return manager?.messages ?? []
     }
 
-    func load(dataSource: MessagesDataSource, manager: MessagesManaging) {
+    init(dataSource: MessagesDataSource?, manager: MessagesManaging?) {
         self.dataSource = dataSource
         self.manager = manager
     }

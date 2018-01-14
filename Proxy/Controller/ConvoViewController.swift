@@ -3,21 +3,23 @@ import MessageKit
 class ConvoViewController: MessagesViewController, Closing {
     var shouldClose = false
     private let convo: Convo
-    private let displayDelegate = ConvoDisplayDelegate()
-    private let inputBarDelegate = ConvoInputBarDelegate()
     private let layoutDelegate = ConvoLayoutDelegate()
     private weak var presenceManager: PresenceManaging?
     private weak var proxiesManager: ProxiesManaging?
     private weak var unreadMessagesManager: UnreadMessagesManaging?
     private lazy var convoManager = ConvoManager(convo)
+    private lazy var dataSource = ConvoDataSource(convoManager: convoManager,
+                                                  iconManager: iconManager,
+                                                  messagesManager: messagesManager)
+    private lazy var displayDelegate = ConvoDisplayDelegate(dataSource: dataSource,
+                                                            manager: messagesManager)
     private lazy var iconManager = IconManager(receiverId: convo.receiverId,
                                                receiverProxyKey: convo.receiverProxyKey,
                                                senderId: convo.senderId,
                                                senderProxyKey: convo.senderProxyKey,
                                                collectionView: messagesCollectionView)
-    private lazy var dataSource = ConvoDataSource(convoManager: convoManager,
-                                                  iconManager: iconManager,
-                                                  messagesManager: messagesManager)
+    private lazy var inputBarDelegate = ConvoInputBarDelegate(controller: self,
+                                                              manager: convoManager)
     private lazy var messagesManager = MessagesManager(convoKey: convo.key,
                                                        collectionView: messagesCollectionView)
 
@@ -35,10 +37,6 @@ class ConvoViewController: MessagesViewController, Closing {
         convoManager.addCloser(self)
         convoManager.addCollectionView(messagesCollectionView)
         convoManager.addController(self)
-
-        inputBarDelegate.load(controller: self, manager: convoManager)
-
-        displayDelegate.load(dataSource: dataSource, manager: messagesManager)
 
         navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self, action: #selector(showConvoDetailView), imageName: ButtonName.info)
         navigationItem.title = convo.receiverProxyName

@@ -7,11 +7,11 @@ class ConvosTableViewDelegate: NSObject {
     private weak var proxiesManager: ProxiesManaging?
     private weak var unreadMessagesManager: UnreadMessagesManaging?
   
-    func load(controller: UIViewController,
-              convosManager: ConvosManaging,
-              presenceManager: PresenceManaging,
-              proxiesManager: ProxiesManaging,
-              unreadMessagesManager: UnreadMessagesManaging) {
+    init(controller: UIViewController?,
+              convosManager: ConvosManaging?,
+              presenceManager: PresenceManaging?,
+              proxiesManager: ProxiesManaging?,
+              unreadMessagesManager: UnreadMessagesManaging?) {
         self.controller = controller
         self.convosManager = convosManager
         self.presenceManager = presenceManager
