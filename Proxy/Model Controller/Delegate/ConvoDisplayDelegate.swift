@@ -8,7 +8,7 @@ class ConvoDisplayDelegate {
         return manager?.messages ?? []
     }
 
-    func load(dataSource: MessagesDataSource, manager: MessagesManaging) {
+    init(dataSource: MessagesDataSource?, manager: MessagesManaging?) {
         self.dataSource = dataSource
         self.manager = manager
     }
@@ -23,7 +23,7 @@ extension ConvoDisplayDelegate: MessagesDisplayDelegate {
         }
     }
 
-    func detectorAttributes(for detector: DetectorType, and message: MessageType, at indexPath: IndexPath) -> [NSAttributedStringKey : Any] {
+    func detectorAttributes(for detector: DetectorType, and message: MessageType, at indexPath: IndexPath) -> [NSAttributedStringKey: Any] {
         return MessageLabel.defaultAttributes
     }
 

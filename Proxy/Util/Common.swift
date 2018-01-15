@@ -224,9 +224,9 @@ extension UInt {
 
 extension UINavigationController {
     func showConvoViewController(convo: Convo,
-                                 presenceManager: PresenceManaging,
-                                 proxiesManager: ProxiesManaging,
-                                 unreadMessagesManager: UnreadMessagesManaging) {
+                                 presenceManager: PresenceManaging?,
+                                 proxiesManager: ProxiesManaging?,
+                                 unreadMessagesManager: UnreadMessagesManaging?) {
         pushViewController(ConvoViewController(convo: convo,
                                                presenceManager: presenceManager,
                                                proxiesManager: proxiesManager,
@@ -234,9 +234,9 @@ extension UINavigationController {
     }
 
     func showProxyController(proxy: Proxy,
-                             presenceManager: PresenceManaging,
-                             proxiesManager: ProxiesManaging,
-                             unreadMessagesManager: UnreadMessagesManaging) {
+                             presenceManager: PresenceManaging?,
+                             proxiesManager: ProxiesManaging?,
+                             unreadMessagesManager: UnreadMessagesManaging?) {
         pushViewController(ProxyViewController(proxy: proxy,
                                                presenceManager: presenceManager,
                                                proxiesManager: proxiesManager,
@@ -286,7 +286,7 @@ extension UIViewController {
             textField.placeholder = "Enter A Nickname"
             textField.text = proxy.nickname
         }
-        alert.addAction(UIAlertAction(title: "Save", style: .default) { [weak alert] (action) in
+        alert.addAction(UIAlertAction(title: "Save", style: .default) { [weak alert] _ in
             guard let nickname = alert?.textFields?[0].text else {
                 return
             }

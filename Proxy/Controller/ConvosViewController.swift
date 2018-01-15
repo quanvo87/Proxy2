@@ -2,7 +2,6 @@ import UIKit
 
 class ConvosViewController: UIViewController, MakeNewMessageDelegate {
     var newConvo: Convo?
-    private let delegate = ConvosTableViewDelegate()
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
     private weak var presenceManager: PresenceManaging?
@@ -17,19 +16,22 @@ class ConvosViewController: UIViewController, MakeNewMessageDelegate {
                                                    animator: buttonManager,
                                                    tableView: tableView)
     private lazy var dataSource = ConvosTableViewDataSource(convosManager)
+    private lazy var delegate = ConvosTableViewDelegate(controller: self,
+                                                        convosManager: convosManager,
+                                                        presenceManager: presenceManager,
+                                                        proxiesManager: proxiesManager,
+                                                        unreadMessagesManager: unreadMessagesManager)
 
     init(uid: String,
-         presenceManager: PresenceManaging,
-         proxiesManager: ProxiesManaging,
-         unreadMessagesManager: UnreadMessagesManaging) {
+         presenceManager: PresenceManaging?,
+         proxiesManager: ProxiesManaging?,
+         unreadMessagesManager: UnreadMessagesManaging?) {
         self.uid = uid
         self.presenceManager = presenceManager
         self.proxiesManager = proxiesManager
         self.unreadMessagesManager = unreadMessagesManager
-        
-        super.init(nibName: nil, bundle: nil)
 
-        delegate.load(controller: self, convosManager: convosManager, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
+        super.init(nibName: nil, bundle: nil)
 
         navigationItem.title = "Messages"
 
@@ -49,14 +51,13 @@ class ConvosViewController: UIViewController, MakeNewMessageDelegate {
         if convosManager.convos.isEmpty {
             buttonManager.animateButton()
         }
-        guard
-            let newConvo = newConvo,
-            let presenceManager = presenceManager,
-            let proxiesManager = proxiesManager,
-            let unreadMessagesManager = unreadMessagesManager else {
-                return
+        guard let newConvo = newConvo else {
+            return
         }
-        navigationController?.showConvoViewController(convo: newConvo, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
+        navigationController?.showConvoViewController(convo: newConvo,
+                                                      presenceManager: presenceManager,
+                                                      proxiesManager: proxiesManager,
+                                                      unreadMessagesManager: unreadMessagesManager)
         self.newConvo = nil
     }
 

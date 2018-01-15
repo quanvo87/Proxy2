@@ -6,7 +6,7 @@ protocol IconManaging: class {
 }
 
 class IconManager: IconManaging {
-    private (set) var icons = [String : UIImage]() {
+    private (set) var icons = [String: UIImage]() {
         didSet {
             collectionView?.reloadDataAndKeepOffset()
         }

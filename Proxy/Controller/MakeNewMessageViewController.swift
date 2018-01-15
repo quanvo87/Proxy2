@@ -27,8 +27,8 @@ class MakeNewMessageViewController: UIViewController, SenderPickerDelegate {
 
     init(sender: Proxy?,
          uid: String,
-         delegate: MakeNewMessageDelegate,
-         manager: ProxiesManaging) {
+         delegate: MakeNewMessageDelegate?,
+         manager: ProxiesManaging?) {
         self.uid = uid
         self.sender = sender
         self.makeNewMessageDelegate = delegate
@@ -60,7 +60,7 @@ class MakeNewMessageViewController: UIViewController, SenderPickerDelegate {
 //            }
 //        }
 
-        manager.addAnimator(self)
+        manager?.addAnimator(self)
 
         navigationItem.rightBarButtonItems = [UIBarButtonItem.make(target: self,
                                                                    action: #selector(close),
@@ -134,7 +134,7 @@ extension MakeNewMessageViewController {
         }
     }
 
-    func setButtons(_ state: Bool) {
-        navigationItem.rightBarButtonItems?.forEach { $0.isEnabled = state }
+    func setButtons(_ isEnabled: Bool) {
+        navigationItem.rightBarButtonItems?.forEach { $0.isEnabled = isEnabled }
     }
 }

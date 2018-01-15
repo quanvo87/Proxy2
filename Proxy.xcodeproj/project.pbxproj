@@ -444,11 +444,9 @@
 				598F8A651FEB9B2300CCF024 /* Protocol.swift */,
 				5932BA17200963AC0041BD7B /* ConvoManaging.swift */,
 				5932BA1920096FD60041BD7B /* ConvosManaging.swift */,
-				59155AB51F7B7951001EDDD0 /* ConvosButtonManager.swift */,
 				5932BA1B20097ACF0041BD7B /* IconManaging.swift */,
 				5932BA1D2009837D0041BD7B /* MessagesManaging.swift */,
 				59F060571FFC4AFA000B9223 /* PresenceManaging.swift */,
-				59AF0E7B1F7B5129009F6F38 /* ProxiesButtonManager.swift */,
 				59E75B2D1F846F550033A407 /* ProxiesManaging.swift */,
 				59E75B2F1F846F6B0033A407 /* ProxyManaging.swift */,
 				59B90C201FF3411E00449569 /* UnreadMessagesManaging.swift */,
@@ -488,7 +486,9 @@
 				59FF373C1F97984200FA1AF0 /* AuthManager.swift */,
 				5973C8291F608A1C00647492 /* Common.swift */,
 				5973C83F1F608A2000647492 /* Constant.swift */,
+				59155AB51F7B7951001EDDD0 /* ConvosButtonManager.swift */,
 				5973C8391F608A1F00647492 /* LoginService.swift */,
+				59AF0E7B1F7B5129009F6F38 /* ProxiesButtonManager.swift */,
 				5973C81D1F608A1B00647492 /* ProxyError.swift */,
 				59BDAE502003849C002A5A6C /* ProxyNamesLoader.swift */,
 				5973C8131F608A1A00647492 /* NSDate+NVTimeAgo.h */,
@@ -536,6 +536,7 @@
 				59B432DA1F60648400622DEA /* Resources */,
 				CF00DBAC666EBCFC05EE87FE /* [CP] Embed Pods Frameworks */,
 				F470B4295EF919880155E08E /* [CP] Copy Pods Resources */,
+				59DD8019200CC741003EC17D /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -710,6 +711,19 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ProxyTests/Pods-ProxyTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		59DD8019200CC741003EC17D /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\"";
 		};
 		B23B4C1543CC1ED09DE92681 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;

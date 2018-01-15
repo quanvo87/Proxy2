@@ -12,16 +12,14 @@ extension MakeNewMessageTableViewDelegate: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard
             indexPath.row == 0,
-            let uid = controller?.uid,
-            let manager = controller?.proxiesManager,
-            let controller = controller else {
+            let uid = controller?.uid else {
                 return
         }
         tableView.deselectRow(at: indexPath, animated: true)
         let senderPickerViewController = SenderPickerViewController(uid: uid,
-                                                                    manager: manager,
+                                                                    manager: controller?.proxiesManager,
                                                                     senderPickerDelegate: controller)
-        controller.navigationController?.pushViewController(senderPickerViewController, animated: true)
+        controller?.navigationController?.pushViewController(senderPickerViewController, animated: true)
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

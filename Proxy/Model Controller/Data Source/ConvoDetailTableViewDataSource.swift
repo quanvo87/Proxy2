@@ -83,7 +83,7 @@ private extension ConvoDetailTableViewDataSource {
             textField.placeholder = "Enter A Nickname"
             textField.text = convo.receiverNickname
         }
-        alert.addAction(UIAlertAction(title: "Save", style: .default) { [weak alert] (action) in
+        alert.addAction(UIAlertAction(title: "Save", style: .default) { [weak alert] _ in
             guard let nickname = alert?.textFields?[0].text else {
                 return
             }

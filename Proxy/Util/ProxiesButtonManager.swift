@@ -109,14 +109,9 @@ private extension ProxiesButtonManager {
     }
 
     @objc func showMakeNewMessageController() {
-        guard
-            let controller = controller,
-            let manager = proxiesManager else {
-                return
-        }
         makeNewMessageButton.isEnabled = false
         makeNewMessageButton.morph()
-        delegate?.showMakeNewMessageController(sender: nil, uid: uid, manager: manager, controller: controller)
+        delegate?.showMakeNewMessageController(sender: nil, uid: uid, manager: proxiesManager, controller: controller)
         makeNewMessageButton.isEnabled = true
     }
 }

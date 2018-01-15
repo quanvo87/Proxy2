@@ -14,6 +14,7 @@ def pods
   pod 'MessageKit'
   pod 'SearchTextField'
   pod 'Spring', :git => 'https://github.com/MengTo/Spring.git'
+  pod 'SwiftLint'
   pod 'SwiftVideoBackground'
 end
 

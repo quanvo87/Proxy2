@@ -6,12 +6,12 @@ class ConvosTableViewDelegate: NSObject {
     private weak var presenceManager: PresenceManaging?
     private weak var proxiesManager: ProxiesManaging?
     private weak var unreadMessagesManager: UnreadMessagesManaging?
-  
-    func load(controller: UIViewController,
-              convosManager: ConvosManaging,
-              presenceManager: PresenceManaging,
-              proxiesManager: ProxiesManaging,
-              unreadMessagesManager: UnreadMessagesManaging) {
+
+    init(controller: UIViewController?,
+         convosManager: ConvosManaging?,
+         presenceManager: PresenceManaging?,
+         proxiesManager: ProxiesManaging?,
+         unreadMessagesManager: UnreadMessagesManaging?) {
         self.controller = controller
         self.convosManager = convosManager
         self.presenceManager = presenceManager
@@ -22,15 +22,14 @@ class ConvosTableViewDelegate: NSObject {
 
 extension ConvosTableViewDelegate: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard
-            let convo = convosManager?.convos[safe: indexPath.row],
-            let presenceManager = presenceManager,
-            let proxiesManager = proxiesManager,
-            let unreadMessagesManager = unreadMessagesManager else {
-                return
+        guard let convo = convosManager?.convos[safe: indexPath.row] else {
+            return
         }
         tableView.deselectRow(at: indexPath, animated: true)
-        controller?.navigationController?.showConvoViewController(convo: convo, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
+        controller?.navigationController?.showConvoViewController(convo: convo,
+                                                                  presenceManager: presenceManager,
+                                                                  proxiesManager: proxiesManager,
+                                                                  unreadMessagesManager: unreadMessagesManager)
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

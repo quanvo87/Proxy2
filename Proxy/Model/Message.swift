@@ -75,7 +75,7 @@ struct Message: MessageType {
 }
 
 extension Message: Equatable {
-    static func ==(_ lhs: Message, _ rhs: Message) -> Bool {
+    static func == (_ lhs: Message, _ rhs: Message) -> Bool {
         return lhs.sender == rhs.sender &&
             lhs.messageId == rhs.messageId &&
             lhs.sentDate.timeIntervalSince1970.rounded() == rhs.sentDate.timeIntervalSince1970.rounded() &&
@@ -89,7 +89,7 @@ extension Message: Equatable {
 }
 
 extension MessageData: Equatable {
-    public static func ==(_ lhs: MessageData, _ rhs: MessageData) -> Bool {
+    public static func == (_ lhs: MessageData, _ rhs: MessageData) -> Bool {
         switch (lhs, rhs) {
         case (let .text(l), let .text(r)):
             return l == r

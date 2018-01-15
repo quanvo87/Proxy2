@@ -3,7 +3,6 @@ import UIKit
 class ProxyViewController: UIViewController, Closing, MakeNewMessageDelegate {
     var newConvo: Convo?
     var shouldClose: Bool = false
-    private let delegate = ProxyTableViewDelegate()
     private let proxy: Proxy
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private weak var presenceManager: PresenceManaging?
@@ -16,23 +15,26 @@ class ProxyViewController: UIViewController, Closing, MakeNewMessageDelegate {
     private lazy var dataSource = ProxyTableViewDataSource(controller: self,
                                                            convosManager: convosManager,
                                                            proxyManager: proxyManager)
+    private lazy var delegate = ProxyTableViewDelegate(controller: self,
+                                                       convosManager: convosManager,
+                                                       presenceManager: presenceManager,
+                                                       proxiesManager: proxiesManager,
+                                                       unreadMessagesManager: unreadMessagesManager)
     private lazy var proxyManager = ProxyManager(closer: self,
                                                  key: proxy.key,
                                                  tableView: tableView,
                                                  uid: proxy.ownerId)
 
     init(proxy: Proxy,
-         presenceManager: PresenceManaging,
-         proxiesManager: ProxiesManaging,
-         unreadMessagesManager: UnreadMessagesManaging) {
+         presenceManager: PresenceManaging?,
+         proxiesManager: ProxiesManaging?,
+         unreadMessagesManager: UnreadMessagesManaging?) {
         self.proxy = proxy
         self.presenceManager = presenceManager
         self.proxiesManager = proxiesManager
         self.unreadMessagesManager = unreadMessagesManager
 
         super.init(nibName: nil, bundle: nil)
-
-        delegate.load(controller: self, convosManager: convosManager, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
 
         navigationItem.rightBarButtonItems = [UIBarButtonItem.make(target: self,
                                                                    action: #selector(showMakeNewMessageController),
@@ -64,14 +66,13 @@ class ProxyViewController: UIViewController, Closing, MakeNewMessageDelegate {
         if convosManager.convos.isEmpty {
             animateButton()
         }
-        guard
-            let newConvo = newConvo,
-            let presenceManager = presenceManager,
-            let proxiesManager = proxiesManager,
-            let unreadMessagesManager = unreadMessagesManager else {
-                return
+        guard let newConvo = newConvo else {
+            return
         }
-        navigationController?.showConvoViewController(convo: newConvo, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
+        navigationController?.showConvoViewController(convo: newConvo,
+                                                      presenceManager: presenceManager,
+                                                      proxiesManager: proxiesManager,
+                                                      unreadMessagesManager: unreadMessagesManager)
         self.newConvo = nil
     }
 

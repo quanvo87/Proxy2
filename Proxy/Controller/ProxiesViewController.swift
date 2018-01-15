@@ -1,9 +1,8 @@
 import UIKit
 
 class ProxiesViewController: UIViewController, ItemsToDeleteManaging, MakeNewMessageDelegate {
-    var itemsToDelete: [String : Any] = [:]
+    var itemsToDelete: [String: Any] = [:]
     var newConvo: Convo?
-    private let delegate = ProxiesTableViewDelegate()
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
     private weak var presenceManager: PresenceManaging?
@@ -17,25 +16,28 @@ class ProxiesViewController: UIViewController, ItemsToDeleteManaging, MakeNewMes
                                                           tableView: tableView)
     private lazy var dataSource = ProxiesTableViewDataSource(accessoryType: .disclosureIndicator,
                                                              manager: proxiesManager)
+    private lazy var delegate = ProxiesTableViewDelegate(controller: self,
+                                                         itemsToDeleteManager: self,
+                                                         presenceManager: presenceManager,
+                                                         proxiesManager: proxiesManager,
+                                                         unreadMessagesManager: unreadMessagesManager)
 
     init(uid: String,
-         presenceManager: PresenceManaging,
-         proxiesManager: ProxiesManaging,
-         unreadMessagesManager: UnreadMessagesManaging) {
+         presenceManager: PresenceManaging?,
+         proxiesManager: ProxiesManaging?,
+         unreadMessagesManager: UnreadMessagesManaging?) {
         self.uid = uid
         self.presenceManager = presenceManager
         self.proxiesManager = proxiesManager
         self.unreadMessagesManager = unreadMessagesManager
-        
-        super.init(nibName: nil, bundle: nil)
 
-        delegate.load(controller: self, itemsToDeleteManager: self, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
+        super.init(nibName: nil, bundle: nil)
 
         navigationItem.title = "My Proxies"
 
-        proxiesManager.addAnimator(buttonManager)
-        proxiesManager.addController(self)
-        proxiesManager.addTableView(tableView)
+        proxiesManager?.addAnimator(buttonManager)
+        proxiesManager?.addController(self)
+        proxiesManager?.addTableView(tableView)
 
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.dataSource = dataSource
@@ -53,14 +55,13 @@ class ProxiesViewController: UIViewController, ItemsToDeleteManaging, MakeNewMes
         if proxiesManager?.proxies.isEmpty ?? false {
             buttonManager.animateButton()
         }
-        guard
-            let newConvo = newConvo,
-            let presenceManager = presenceManager,
-            let proxiesManager = proxiesManager,
-            let unreadMessagesManager = unreadMessagesManager else {
-                return
+        guard let newConvo = newConvo else {
+            return
         }
-        navigationController?.showConvoViewController(convo: newConvo, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
+        navigationController?.showConvoViewController(convo: newConvo,
+                                                      presenceManager: presenceManager,
+                                                      proxiesManager: proxiesManager,
+                                                      unreadMessagesManager: unreadMessagesManager)
         self.newConvo = nil
     }
 

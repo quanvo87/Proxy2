@@ -70,6 +70,7 @@ PODS:
   - nanopb/encode (0.3.8)
   - SearchTextField (1.2.0)
   - Spring (1.0.5)
+  - SwiftLint (0.24.2)
   - SwiftVideoBackground (2.0.0)
 
 DEPENDENCIES:
@@ -83,6 +84,7 @@ DEPENDENCIES:
   - MessageKit
   - SearchTextField
   - Spring (from `https://github.com/MengTo/Spring.git`)
+  - SwiftLint
   - SwiftVideoBackground
 
 EXTERNAL SOURCES:
@@ -115,8 +117,9 @@ SPEC CHECKSUMS:
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
   SearchTextField: a5bb7e4c33affadb115afdbe8100d84ef10a8024
   Spring: 48aad470f3ead043b2da98b64e0bf0630b7ebc42
+  SwiftLint: 2aa21b96c8d13396a051bc1cb659d2ce1e0075b0
   SwiftVideoBackground: 41d030c232284482973e46959de6398a116c6b58
 
-PODFILE CHECKSUM: 1d848467029a0aeafa965321c2ed58cf88fe0f9f
+PODFILE CHECKSUM: 0113a8d0960f4e5cc76b093f271194885cd153d3
 
 COCOAPODS: 1.3.1

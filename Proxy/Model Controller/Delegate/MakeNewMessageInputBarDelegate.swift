@@ -3,7 +3,7 @@ import MessageKit
 class MakeNewMessageInputBarDelegate {
     private weak var controller: MakeNewMessageViewController?
 
-    init(_ controller: MakeNewMessageViewController) {
+    init(_ controller: MakeNewMessageViewController?) {
         self.controller = controller
     }
 }

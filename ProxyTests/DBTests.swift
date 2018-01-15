@@ -35,13 +35,10 @@ class DBTests: DBTest {
 
         DB.set("a", at: "test") { (success) in
             XCTAssert(success)
-            
             DB.get("test") { (data) in
                 XCTAssertEqual(data?.value as? String, "a")
-                
                 DB.delete("test") { (success) in
                     XCTAssert(success)
-                    
                     DB.get("test") { (data) in
                         XCTAssertFalse(data!.exists())
                         expectation.fulfill()
@@ -50,27 +47,25 @@ class DBTests: DBTest {
             }
         }
     }
-    
+
     func testIncrement() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
-        
+
         DB.increment(1, at: "test") { (success) in
             XCTAssert(success)
-            
             DB.get("test") { (data) in
                 XCTAssertEqual(data?.value as? Int, 1)
                 expectation.fulfill()
             }
         }
     }
-    
+
     func testIncrementConcurrent() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
         let incrementsDone = DispatchGroup()
-        
         for _ in 1...2 {
             incrementsDone.enter()
             DB.increment(1, at: "test") { (success) in
@@ -78,7 +73,6 @@ class DBTests: DBTest {
                 incrementsDone.leave()
             }
         }
-        
         incrementsDone.notify(queue: .main) {
             DB.get("test") { (data) in
                 XCTAssertEqual(data?.value as? Int, 2)
@@ -94,7 +88,7 @@ class DBTests: DBTest {
         XCTAssertNotNil(DB.makeReference("//a//"))
         XCTAssertNotNil(DB.makeReference("/a/a/"))
     }
-    
+
     func testMakeDatabaseReferenceFail() {
         XCTAssertNil(DB.makeReference(""))
         XCTAssertNil(DB.makeReference("a", ""))

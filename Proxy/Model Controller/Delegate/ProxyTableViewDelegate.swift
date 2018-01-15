@@ -7,11 +7,11 @@ class ProxyTableViewDelegate: NSObject {
     private weak var proxiesManager: ProxiesManaging?
     private weak var unreadMessagesManager: UnreadMessagesManaging?
 
-    func load(controller: UIViewController?,
-              convosManager: ConvosManaging,
-              presenceManager: PresenceManaging,
-              proxiesManager: ProxiesManaging,
-              unreadMessagesManager: UnreadMessagesManaging) {
+    init(controller: UIViewController?,
+         convosManager: ConvosManaging?,
+         presenceManager: PresenceManaging?,
+         proxiesManager: ProxiesManaging?,
+         unreadMessagesManager: UnreadMessagesManaging?) {
         self.convosManager = convosManager
         self.controller = controller
         self.presenceManager = presenceManager
@@ -25,14 +25,14 @@ extension ProxyTableViewDelegate: UITableViewDelegate {
         guard
             indexPath.section == 1,
             let row = tableView.indexPathForSelectedRow?.row,
-            let convo = convosManager?.convos[safe: row],
-            let presenceManager = presenceManager,
-            let proxiesManager = proxiesManager,
-            let unreadMessagesManager = unreadMessagesManager else {
+            let convo = convosManager?.convos[safe: row] else {
                 return
         }
         tableView.deselectRow(at: indexPath, animated: true)
-        controller?.navigationController?.showConvoViewController(convo: convo, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
+        controller?.navigationController?.showConvoViewController(convo: convo,
+                                                                  presenceManager: presenceManager,
+                                                                  proxiesManager: proxiesManager,
+                                                                  unreadMessagesManager: unreadMessagesManager)
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

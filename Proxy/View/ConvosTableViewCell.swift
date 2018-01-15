@@ -21,7 +21,7 @@ class ConvosTableViewCell: UITableViewCell {
 
         unreadMessagesIndicatorImageView.image = nil
         if convo.hasUnreadMessage {
-            unreadMessagesIndicatorImageView.image = UIImage.makeCircle(diameter:  unreadMessagesIndicatorImageView.frame.width)
+            unreadMessagesIndicatorImageView.image = UIImage.makeCircle(diameter: unreadMessagesIndicatorImageView.frame.width)
         }
     }
 }

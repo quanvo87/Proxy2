@@ -33,11 +33,11 @@ class DBProxyTests: DBTest {
             }
         }
     }
-    
+
     func testGetProxy() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
-        
+
         DBTest.makeProxy { (proxy) in
             DB.getProxy(key: proxy.key) { (retrievedProxy) in
                 XCTAssertEqual(retrievedProxy, proxy)

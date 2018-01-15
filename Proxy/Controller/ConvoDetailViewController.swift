@@ -4,15 +4,15 @@ class ConvoDetailViewController: UIViewController, Closing {
     var shouldClose: Bool = false
     private let convo: Convo
     private let tableView = UITableView(frame: .zero, style: .grouped)
-    private weak var manager: ConvoManaging?
+    private weak var convoManager: ConvoManaging?
     private weak var presenceManager: PresenceManaging?
     private weak var proxiesManager: ProxiesManaging?
     private weak var unreadMessagesManager: UnreadMessagesManaging?
     private lazy var dataSource = ConvoDetailTableViewDataSource(controller: self,
-                                                                 convoManager: manager,
+                                                                 convoManager: convoManager,
                                                                  proxyManager: proxyManager)
     private lazy var delegate = ConvoDetailTableViewDelegate(controller: self,
-                                                             convoManager: manager,
+                                                             convoManager: convoManager,
                                                              presenceManager: presenceManager,
                                                              proxiesManager: proxiesManager,
                                                              proxyManager: proxyManager,
@@ -23,20 +23,20 @@ class ConvoDetailViewController: UIViewController, Closing {
                                                  uid: convo.senderId)
 
     init(convo: Convo,
-         manager: ConvoManaging?,
+         convoManager: ConvoManaging?,
          presenceManager: PresenceManaging?,
          proxiesManager: ProxiesManaging?,
          unreadMessagesManager: UnreadMessagesManaging?) {
         self.convo = convo
-        self.manager = manager
+        self.convoManager = convoManager
         self.presenceManager = presenceManager
         self.proxiesManager = proxiesManager
         self.unreadMessagesManager = unreadMessagesManager
 
         super.init(nibName: nil, bundle: nil)
 
-        manager?.addCloser(self)
-        manager?.addTableView(tableView)
+        convoManager?.addCloser(self)
+        convoManager?.addTableView(tableView)
 
         tableView.dataSource = dataSource
         tableView.delegate = delegate

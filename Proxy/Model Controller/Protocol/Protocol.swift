@@ -11,7 +11,7 @@ protocol Closing: class {
 }
 
 protocol ItemsToDeleteManaging: class {
-    var itemsToDelete: [String : Any] { get set }
+    var itemsToDelete: [String: Any] { get set }
 }
 
 protocol MakeNewMessageDelegate: class {
@@ -21,11 +21,11 @@ protocol MakeNewMessageDelegate: class {
 extension MakeNewMessageDelegate {
     func showMakeNewMessageController(sender: Proxy?,
                                       uid: String,
-                                      manager: ProxiesManaging,
-                                      controller: UIViewController) {
+                                      manager: ProxiesManaging?,
+                                      controller: UIViewController?) {
         let makeNewMessageViewController = MakeNewMessageViewController(sender: sender, uid: uid, delegate: self, manager: manager)
         let navigationController = UINavigationController(rootViewController: makeNewMessageViewController)
-        controller.present(navigationController, animated: true)
+        controller?.present(navigationController, animated: true)
     }
 }
 
@@ -46,7 +46,6 @@ protocol SenderPickerDelegate: class {
     var sender: Proxy? { get set }
 }
 
-// todo: delete?
 protocol StoryboardMakable {
     static var identifier: String { get }
 }
@@ -59,4 +58,3 @@ extension StoryboardMakable {
         return controller
     }
 }
-

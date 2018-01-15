@@ -57,11 +57,6 @@ private extension ConvosButtonManager {
     }
 
     @objc func showMakeNewMessageController() {
-        guard
-            let controller = controller,
-            let manager = manager else {
-                return
-        }
         makeNewMessageButton.isEnabled = false
         makeNewMessageButton.morph()
         delegate?.showMakeNewMessageController(sender: nil, uid: uid, manager: manager, controller: controller)

@@ -7,11 +7,11 @@ class ProxiesTableViewDelegate: NSObject {
     private weak var proxiesManager: ProxiesManaging?
     private weak var unreadMessagesManager: UnreadMessagesManaging?
 
-    func load(controller: UIViewController,
-              itemsToDeleteManager: ItemsToDeleteManaging,
-              presenceManager: PresenceManaging,
-              proxiesManager: ProxiesManaging,
-              unreadMessagesManager: UnreadMessagesManaging) {
+    init(controller: UIViewController?,
+         itemsToDeleteManager: ItemsToDeleteManaging?,
+         presenceManager: PresenceManaging?,
+         proxiesManager: ProxiesManaging?,
+         unreadMessagesManager: UnreadMessagesManaging?) {
         self.controller = controller
         self.itemsToDeleteManager = itemsToDeleteManager
         self.presenceManager = presenceManager
@@ -22,18 +22,17 @@ class ProxiesTableViewDelegate: NSObject {
 
 extension ProxiesTableViewDelegate: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard
-            let proxy = proxiesManager?.proxies[safe: indexPath.row],
-            let presenceManager = presenceManager,
-            let proxiesManager = proxiesManager,
-            let unreadMessagesManager = unreadMessagesManager else {
-                return
+        guard let proxy = proxiesManager?.proxies[safe: indexPath.row] else {
+            return
         }
         if tableView.isEditing {
             itemsToDeleteManager?.itemsToDelete[proxy.key] = proxy
         } else {
             tableView.deselectRow(at: indexPath, animated: true)
-            controller?.navigationController?.showProxyController(proxy: proxy, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
+            controller?.navigationController?.showProxyController(proxy: proxy,
+                                                                  presenceManager: presenceManager,
+                                                                  proxiesManager: proxiesManager,
+                                                                  unreadMessagesManager: unreadMessagesManager)
         }
     }
 

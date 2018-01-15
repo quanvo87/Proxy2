@@ -1,7 +1,6 @@
 import UIKit
 
 // todo: decouple dependencies
-// todo: see where i can use lazy vars throughout app
 class MakeNewMessageTableViewDataSource: NSObject {
     private weak var controller: MakeNewMessageViewController?
 

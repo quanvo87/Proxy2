@@ -71,7 +71,7 @@ struct Proxy {
 }
 
 extension Proxy: Equatable {
-    static func ==(_ lhs: Proxy, _ rhs: Proxy) -> Bool {
+    static func == (_ lhs: Proxy, _ rhs: Proxy) -> Bool {
         return lhs.hasUnreadMessage == rhs.hasUnreadMessage &&
             lhs.dateCreated.rounded() == rhs.dateCreated.rounded() &&
             lhs.timestamp.rounded() == rhs.timestamp.rounded() &&

@@ -26,16 +26,15 @@ class ConvoDetailTableViewDelegate: NSObject {
 extension ConvoDetailTableViewDelegate: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        guard
-            let proxy = proxyManager?.proxy,
-            let presenceManager = presenceManager,
-            let proxiesManager = proxiesManager,
-            let unreadMessagesManager = unreadMessagesManager else {
-                return
+        guard let proxy = proxyManager?.proxy else {
+            return
         }
         switch indexPath.section {
         case 1:
-            controller?.navigationController?.showProxyController(proxy: proxy, presenceManager: presenceManager, proxiesManager: proxiesManager, unreadMessagesManager: unreadMessagesManager)
+            controller?.navigationController?.showProxyController(proxy: proxy,
+                                                                  presenceManager: presenceManager,
+                                                                  proxiesManager: proxiesManager,
+                                                                  unreadMessagesManager: unreadMessagesManager)
         case 2:
             switch indexPath.row {
             case 0:
