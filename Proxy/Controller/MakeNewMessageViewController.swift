@@ -1,32 +1,53 @@
 import MessageKit
 import SearchTextField
 
-class MakeNewMessageViewController: UIViewController, SenderPickerDelegate {
+class MakeNewMessageViewController: UIViewController, SearchTextFieldManaging, SenderPickerDelegate {
     override var inputAccessoryView: UIView? {
         return inputBar
     }
-
     var sender: Proxy? {
         didSet {
             tableView.reloadData()
         }
     }
-
+    var textField = SearchTextField() {
+        didSet {
+            textField.becomeFirstResponder()
+            textField.comparisonOptions = [.caseInsensitive]
+            textField.highlightAttributes = [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 14)]
+            textField.maxResultsListHeight = Int(view.frame.height / 2)
+            textField.theme.cellHeight = 50
+            textField.theme.font = .systemFont(ofSize: 14)
+            textField.theme.separatorColor = UIColor.lightGray.withAlphaComponent(0.5)
+            textField.userStoppedTypingHandler = { [weak self] in
+                guard
+                    let query = self?.textField.text,
+                    query.count > 0 else {
+                        return
+                }
+                self?.textField.showLoadingIndicator()
+                self?.loader.load(query) { [weak self] (items) in
+                    self?.textField.filterItems(items)
+                    self?.textField.stopLoadingIndicator()
+                }
+            }
+        }
+    }
     private let inputBar = MessageInputBar()
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
     private weak var makeNewMessageDelegate: MakeNewMessageDelegate?
     private weak var proxiesManager: ProxiesManaging?
-    private weak var receiverNameTextField: SearchTextField?
-    private lazy var inputBarDelegate = MakeNewMessageInputBarDelegate(controller: self,
+    private lazy var inputBarDelegate = MakeNewMessageInputBarDelegate(buttonManager: self,
+                                                                       controller: self,
                                                                        makeNewMessageDelegate: makeNewMessageDelegate,
-                                                                       manager: self,
-                                                                       senderPickerDelegate: self,
-                                                                       textField: receiverNameTextField)
-//    private lazy var loader = ProxyNamesLoader(uid)
+                                                                       searchTextFieldManager: self,
+                                                                       senderPickerDelegate: self)
+    private lazy var loader = ProxyNamesLoader(uid)
     private lazy var tableViewDataSource = MakeNewMessageTableViewDataSource(controller: self,
                                                                              delegate: self,
-                                                                             manager: proxiesManager)
+                                                                             proxiesManager: proxiesManager,
+                                                                             searchTextFieldManager: self)
     private lazy var tableViewDelegate = MakeNewMessageTableViewDelegate(uid: uid,
                                                                          controller: self,
                                                                          delegate: self,
@@ -45,28 +66,6 @@ class MakeNewMessageViewController: UIViewController, SenderPickerDelegate {
 
         inputBar.delegate = inputBarDelegate
 
-//        receiverNameTextField.becomeFirstResponder()
-//        receiverNameTextField.clearButtonMode = .whileEditing
-//        receiverNameTextField.comparisonOptions = [.caseInsensitive]
-//        receiverNameTextField.highlightAttributes = [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 14)]
-//        receiverNameTextField.maxResultsListHeight = Int(view.frame.height / 2)
-//        receiverNameTextField.placeholder = "Start typing to see suggestions..."
-//        receiverNameTextField.theme.cellHeight = 50
-//        receiverNameTextField.theme.font = .systemFont(ofSize: 14)
-//        receiverNameTextField.theme.separatorColor = UIColor.lightGray.withAlphaComponent(0.5)
-//        receiverNameTextField.userStoppedTypingHandler = { [weak self] in
-//            guard
-//                let query = self?.receiverNameTextField.text,
-//                query.count > 0 else {
-//                    return
-//            }
-//            self?.receiverNameTextField.showLoadingIndicator()
-//            self?.loader.load(query) { [weak self] (items) in
-//                self?.receiverNameTextField.filterItems(items)
-//                self?.receiverNameTextField.stopLoadingIndicator()
-//            }
-//        }
-
         manager?.addManager(self)
 
         navigationItem.rightBarButtonItems = [UIBarButtonItem.make(target: self,
@@ -80,9 +79,11 @@ class MakeNewMessageViewController: UIViewController, SenderPickerDelegate {
         tableView.dataSource = tableViewDataSource
         tableView.delegate = tableViewDelegate
         tableView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
+        tableView.register(UINib(nibName: Identifier.makeNewMessageReceiverTableViewCell, bundle: nil),
+                           forCellReuseIdentifier: Identifier.makeNewMessageReceiverTableViewCell)
         tableView.register(UINib(nibName: Identifier.makeNewMessageSenderTableViewCell, bundle: nil),
                            forCellReuseIdentifier: Identifier.makeNewMessageSenderTableViewCell)
-//        tableView.register(UINib(nibName: Identifier.convoDetailSenderProxyTableViewCell, bundle: nil), forCellReuseIdentifier: Identifier.convoDetailSenderProxyTableViewCell)
+        tableView.rowHeight = 44
         tableView.sectionHeaderHeight = 0
 
         view.addSubview(tableView)
@@ -90,7 +91,7 @@ class MakeNewMessageViewController: UIViewController, SenderPickerDelegate {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if proxiesManager?.proxies.count == 0 {
+        if proxiesManager?.proxies.isEmpty ?? false {
             animateButton()
         }
     }

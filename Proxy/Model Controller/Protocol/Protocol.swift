@@ -1,7 +1,12 @@
 import FirebaseDatabase
 import MessageKit
+import SearchTextField
 
-protocol ButtonManaging: class {}
+protocol ButtonManaging: class {
+    func animateButton()
+    func stopAnimatingButton()
+    func setButtons(_ isEnabled: Bool)
+}
 
 extension ButtonManaging {
     func animateButton() {}
@@ -26,7 +31,10 @@ extension MakeNewMessageDelegate {
                                       uid: String,
                                       manager: ProxiesManaging?,
                                       controller: UIViewController?) {
-        let makeNewMessageViewController = MakeNewMessageViewController(sender: sender, uid: uid, delegate: self, manager: manager)
+        let makeNewMessageViewController = MakeNewMessageViewController(sender: sender,
+                                                                        uid: uid,
+                                                                        delegate: self,
+                                                                        manager: manager)
         let navigationController = UINavigationController(rootViewController: makeNewMessageViewController)
         controller?.present(navigationController, animated: true)
     }
@@ -43,6 +51,10 @@ extension ReferenceObserving {
             ref?.removeObserver(withHandle: handle)
         }
     }
+}
+
+protocol SearchTextFieldManaging: class {
+    var textField: SearchTextField { get set }
 }
 
 protocol SenderPickerDelegate: class {

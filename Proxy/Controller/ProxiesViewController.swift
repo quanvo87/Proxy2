@@ -43,7 +43,8 @@ class ProxiesViewController: UIViewController, ItemsToDeleteManaging, MakeNewMes
         tableView.dataSource = dataSource
         tableView.delegate = delegate
         tableView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
-        tableView.register(UINib(nibName: Identifier.proxiesTableViewCell, bundle: nil), forCellReuseIdentifier: Identifier.proxiesTableViewCell)
+        tableView.register(UINib(nibName: Identifier.proxiesTableViewCell, bundle: nil),
+                           forCellReuseIdentifier: Identifier.proxiesTableViewCell)
         tableView.rowHeight = 60
         tableView.sectionHeaderHeight = 0
 
@@ -55,14 +56,13 @@ class ProxiesViewController: UIViewController, ItemsToDeleteManaging, MakeNewMes
         if proxiesManager?.proxies.isEmpty ?? false {
             buttonManager.animateButton()
         }
-        guard let newConvo = newConvo else {
-            return
+        if let newConvo = newConvo {
+            navigationController?.showConvoViewController(convo: newConvo,
+                                                          presenceManager: presenceManager,
+                                                          proxiesManager: proxiesManager,
+                                                          unreadMessagesManager: unreadMessagesManager)
+            self.newConvo = nil
         }
-        navigationController?.showConvoViewController(convo: newConvo,
-                                                      presenceManager: presenceManager,
-                                                      proxiesManager: proxiesManager,
-                                                      unreadMessagesManager: unreadMessagesManager)
-        self.newConvo = nil
     }
 
     func scrollToTop() {

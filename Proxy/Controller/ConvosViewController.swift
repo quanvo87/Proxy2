@@ -51,14 +51,13 @@ class ConvosViewController: UIViewController, MakeNewMessageDelegate {
         if convosManager.convos.isEmpty {
             buttonManager.animateButton()
         }
-        guard let newConvo = newConvo else {
-            return
+        if let newConvo = newConvo {
+            navigationController?.showConvoViewController(convo: newConvo,
+                                                          presenceManager: presenceManager,
+                                                          proxiesManager: proxiesManager,
+                                                          unreadMessagesManager: unreadMessagesManager)
+            self.newConvo = nil
         }
-        navigationController?.showConvoViewController(convo: newConvo,
-                                                      presenceManager: presenceManager,
-                                                      proxiesManager: proxiesManager,
-                                                      unreadMessagesManager: unreadMessagesManager)
-        self.newConvo = nil
     }
 
     required init?(coder aDecoder: NSCoder) {

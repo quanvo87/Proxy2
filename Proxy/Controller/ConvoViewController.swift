@@ -38,7 +38,9 @@ class ConvoViewController: MessagesViewController, Closing {
         convoManager.addCollectionView(messagesCollectionView)
         convoManager.addController(self)
 
-        navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self, action: #selector(showConvoDetailView), imageName: ButtonName.info)
+        navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self,
+                                                                 action: #selector(showConvoDetailView),
+                                                                 imageName: ButtonName.info)
         navigationItem.title = convo.receiverProxyName
 
         maintainPositionOnKeyboardFrameChanged = true
@@ -65,7 +67,9 @@ class ConvoViewController: MessagesViewController, Closing {
         tabBarController?.tabBar.isHidden = false
     }
 
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+    func collectionView(_ collectionView: UICollectionView,
+                        willDisplay cell: UICollectionViewCell,
+                        forItemAt indexPath: IndexPath) {
         guard
             indexPath.section == 0,
             let message = messagesManager.messages[safe: indexPath.section] else {

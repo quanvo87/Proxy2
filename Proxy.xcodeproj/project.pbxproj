@@ -19,6 +19,8 @@
 		5932BA1A20096FD60041BD7B /* ConvosManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5932BA1920096FD60041BD7B /* ConvosManaging.swift */; };
 		5932BA1C20097ACF0041BD7B /* IconManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5932BA1B20097ACF0041BD7B /* IconManaging.swift */; };
 		5932BA1E2009837D0041BD7B /* MessagesManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5932BA1D2009837D0041BD7B /* MessagesManaging.swift */; };
+		5939F05E200D13BA00AECD35 /* MakeNewMessageReceiverTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5939F05D200D13BA00AECD35 /* MakeNewMessageReceiverTableViewCell.xib */; };
+		5939F060200D174300AECD35 /* MakeNewMessageReceiverTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5939F05F200D174300AECD35 /* MakeNewMessageReceiverTableViewCell.swift */; };
 		593D7D441F851F7D00D3FBD5 /* UserStatsManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 593D7D431F851F7D00D3FBD5 /* UserStatsManaging.swift */; };
 		594D2A501F6B0CDD00ECCF06 /* IconPickerCollectionViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 594D2A4F1F6B0CDD00ECCF06 /* IconPickerCollectionViewDataSource.swift */; };
 		594D2A521F6B167F00ECCF06 /* IconPickerCollectionViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 594D2A511F6B167F00ECCF06 /* IconPickerCollectionViewDelegate.swift */; };
@@ -137,6 +139,8 @@
 		5932BA1920096FD60041BD7B /* ConvosManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvosManaging.swift; sourceTree = "<group>"; };
 		5932BA1B20097ACF0041BD7B /* IconManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconManaging.swift; sourceTree = "<group>"; };
 		5932BA1D2009837D0041BD7B /* MessagesManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesManaging.swift; sourceTree = "<group>"; };
+		5939F05D200D13BA00AECD35 /* MakeNewMessageReceiverTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MakeNewMessageReceiverTableViewCell.xib; sourceTree = "<group>"; };
+		5939F05F200D174300AECD35 /* MakeNewMessageReceiverTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MakeNewMessageReceiverTableViewCell.swift; sourceTree = "<group>"; };
 		593D7D431F851F7D00D3FBD5 /* UserStatsManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserStatsManaging.swift; sourceTree = "<group>"; };
 		594D2A4F1F6B0CDD00ECCF06 /* IconPickerCollectionViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconPickerCollectionViewDataSource.swift; sourceTree = "<group>"; };
 		594D2A511F6B167F00ECCF06 /* IconPickerCollectionViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconPickerCollectionViewDelegate.swift; sourceTree = "<group>"; };
@@ -466,6 +470,8 @@
 				590823C21F9EED6A00A3B6A9 /* IconPickerCollectionViewCell.xib */,
 				5973C8161F608A1A00647492 /* ConvosTableViewCell.swift */,
 				5988E8311F9A5A7E002C8C95 /* ConvosTableViewCell.xib */,
+				5939F05F200D174300AECD35 /* MakeNewMessageReceiverTableViewCell.swift */,
+				5939F05D200D13BA00AECD35 /* MakeNewMessageReceiverTableViewCell.xib */,
 				5904054B2008DDE3005F4638 /* MakeNewMessageSenderTableViewCell.swift */,
 				5904054920087C90005F4638 /* MakeNewMessageSenderTableViewCell.xib */,
 				5973C8261F608A1C00647492 /* ProxiesTableViewCell.swift */,
@@ -655,6 +661,7 @@
 				59D3AE501FA1A4FF009F18A5 /* ConvoDetailReceiverProxyTableViewCell.xib in Resources */,
 				59C171B11F60C64500EDE032 /* arabiangulf.mp4 in Resources */,
 				59B432E51F60648400622DEA /* Main.storyboard in Resources */,
+				5939F05E200D13BA00AECD35 /* MakeNewMessageReceiverTableViewCell.xib in Resources */,
 				5988E8321F9A5A7E002C8C95 /* ConvosTableViewCell.xib in Resources */,
 				5958E34A1F9D5E8D00CC0560 /* SenderProxyTableViewCell.xib in Resources */,
 			);
@@ -941,6 +948,7 @@
 				5973C86B1F608A2200647492 /* Convo.swift in Sources */,
 				59E690782007A9DF00C6E8B1 /* MakeNewMessageTableViewDataSource.swift in Sources */,
 				5973C8631F608A2200647492 /* ProxiesTableViewDataSource.swift in Sources */,
+				5939F060200D174300AECD35 /* MakeNewMessageReceiverTableViewCell.swift in Sources */,
 				5973C8751F608A2200647492 /* makeIconNames.swift in Sources */,
 				598F89F41FEB311A00CCF024 /* ConvoDisplayDelegate.swift in Sources */,
 				59155AB61F7B7951001EDDD0 /* ConvosButtonManager.swift in Sources */,

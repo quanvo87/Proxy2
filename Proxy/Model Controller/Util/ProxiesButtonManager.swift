@@ -52,16 +52,16 @@ private extension ProxiesButtonManager {
         controller?.navigationItem.leftBarButtonItem = deleteButton
         controller?.navigationItem.rightBarButtonItems = [makeNewMessageButton, makeNewProxyButton]
         itemsToDeleteManager?.itemsToDelete.removeAll()
-        makeNewProxyButton.isEnabled = true
         makeNewProxyButton.customView?.isHidden = false
+        makeNewProxyButton.isEnabled = true
         tableView?.setEditing(false, animated: true)
     }
 
     @objc func setEditModeButtons() {
         controller?.navigationItem.leftBarButtonItem = cancelButton
         controller?.navigationItem.rightBarButtonItems = [confirmButton, makeNewProxyButton]
-        makeNewProxyButton.isEnabled = false
         makeNewProxyButton.customView?.isHidden = true
+        makeNewProxyButton.isEnabled = false
         tableView?.setEditing(true, animated: true)
     }
 

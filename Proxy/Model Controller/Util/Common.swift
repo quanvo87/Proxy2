@@ -180,7 +180,7 @@ extension UIBarButtonItem {
     }
 
     func stopAnimating() {
-         customView?.layer.stopAnimating()
+        customView?.layer.stopAnimating()
     }
 }
 

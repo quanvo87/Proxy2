@@ -1,17 +1,19 @@
-import UIKit
+import SearchTextField
 
-// todo: decouple dependencies
 class MakeNewMessageTableViewDataSource: NSObject {
     private weak var controller: UIViewController?
     private weak var delegate: SenderPickerDelegate?
-    private weak var manager: ProxiesManaging?
+    private weak var proxiesManager: ProxiesManaging?
+    private weak var searchTextFieldManager: SearchTextFieldManaging?
 
     init(controller: UIViewController?,
          delegate: SenderPickerDelegate?,
-         manager: ProxiesManaging?) {
+         proxiesManager: ProxiesManaging?,
+         searchTextFieldManager: SearchTextFieldManaging?) {
         self.controller = controller
         self.delegate = delegate
-        self.manager = manager
+        self.proxiesManager = proxiesManager
+        self.searchTextFieldManager = searchTextFieldManager
     }
 }
 
@@ -33,13 +35,19 @@ extension MakeNewMessageTableViewDataSource: UITableViewDataSource {
             }
             cell.nameLabel.textColor = .blue
             return cell
+        case 1:
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.makeNewMessageReceiverTableViewCell) as? MakeNewMessageReceiverTableViewCell else {
+                return tableView.dequeueReusableCell(withIdentifier: Identifier.makeNewMessageReceiverTableViewCell, for: indexPath)
+            }
+            searchTextFieldManager?.textField = cell.receiverNameTextField
+            return cell
         default:
             return UITableViewCell()
         }
     }
 
     func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        if section == 0 && manager?.proxies.count == 0 {
+        if section == 0 && proxiesManager?.proxies.count == 0 {
             return "Tap the bouncing button to make a new Proxy 🎉."
         } else {
             return nil
