@@ -34,7 +34,7 @@ class ProxiesButtonManager {
     }
 }
 
-extension ProxiesButtonManager: ButtonAnimating {
+extension ProxiesButtonManager: ButtonManaging {
     func animateButton() {
         makeNewProxyButton.morph(loop: true)
     }

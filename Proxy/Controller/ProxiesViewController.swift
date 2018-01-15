@@ -35,7 +35,7 @@ class ProxiesViewController: UIViewController, ItemsToDeleteManaging, MakeNewMes
 
         navigationItem.title = "My Proxies"
 
-        proxiesManager?.addAnimator(buttonManager)
+        proxiesManager?.addManager(buttonManager)
         proxiesManager?.addController(self)
         proxiesManager?.addTableView(tableView)
 

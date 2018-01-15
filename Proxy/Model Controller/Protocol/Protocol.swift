@@ -1,9 +1,12 @@
 import FirebaseDatabase
 import MessageKit
 
-protocol ButtonAnimating: class {
-    func animateButton()
-    func stopAnimatingButton()
+protocol ButtonManaging: class {}
+
+extension ButtonManaging {
+    func animateButton() {}
+    func stopAnimatingButton() {}
+    func setButtons(_ isEnabled: Bool) {}
 }
 
 protocol Closing: class {

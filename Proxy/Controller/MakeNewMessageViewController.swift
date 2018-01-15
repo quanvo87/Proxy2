@@ -12,16 +12,25 @@ class MakeNewMessageViewController: UIViewController, SenderPickerDelegate {
         }
     }
 
-    let uid: String
-    weak var makeNewMessageDelegate: MakeNewMessageDelegate?
-    weak var proxiesManager: ProxiesManaging?
-    weak var receiverNameTextField: SearchTextField?
     private let inputBar = MessageInputBar()
     private let tableView = UITableView(frame: .zero, style: .grouped)
-    private lazy var inputBarDelegate = MakeNewMessageInputBarDelegate(self)
+    private let uid: String
+    private weak var makeNewMessageDelegate: MakeNewMessageDelegate?
+    private weak var proxiesManager: ProxiesManaging?
+    private weak var receiverNameTextField: SearchTextField?
+    private lazy var inputBarDelegate = MakeNewMessageInputBarDelegate(controller: self,
+                                                                       makeNewMessageDelegate: makeNewMessageDelegate,
+                                                                       manager: self,
+                                                                       senderPickerDelegate: self,
+                                                                       textField: receiverNameTextField)
 //    private lazy var loader = ProxyNamesLoader(uid)
-    private lazy var tableViewDataSource = MakeNewMessageTableViewDataSource(self)
-    private lazy var tableViewDelegate = MakeNewMessageTableViewDelegate(self)
+    private lazy var tableViewDataSource = MakeNewMessageTableViewDataSource(controller: self,
+                                                                             delegate: self,
+                                                                             manager: proxiesManager)
+    private lazy var tableViewDelegate = MakeNewMessageTableViewDelegate(uid: uid,
+                                                                         controller: self,
+                                                                         delegate: self,
+                                                                         manager: proxiesManager)
 
     init(sender: Proxy?,
          uid: String,
@@ -58,7 +67,7 @@ class MakeNewMessageViewController: UIViewController, SenderPickerDelegate {
 //            }
 //        }
 
-        manager?.addAnimator(self)
+        manager?.addManager(self)
 
         navigationItem.rightBarButtonItems = [UIBarButtonItem.make(target: self,
                                                                    action: #selector(close),
@@ -71,7 +80,8 @@ class MakeNewMessageViewController: UIViewController, SenderPickerDelegate {
         tableView.dataSource = tableViewDataSource
         tableView.delegate = tableViewDelegate
         tableView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
-        tableView.register(UINib(nibName: Identifier.makeNewMessageSenderTableViewCell, bundle: nil), forCellReuseIdentifier: Identifier.makeNewMessageSenderTableViewCell)
+        tableView.register(UINib(nibName: Identifier.makeNewMessageSenderTableViewCell, bundle: nil),
+                           forCellReuseIdentifier: Identifier.makeNewMessageSenderTableViewCell)
 //        tableView.register(UINib(nibName: Identifier.convoDetailSenderProxyTableViewCell, bundle: nil), forCellReuseIdentifier: Identifier.convoDetailSenderProxyTableViewCell)
         tableView.sectionHeaderHeight = 0
 
@@ -90,7 +100,7 @@ class MakeNewMessageViewController: UIViewController, SenderPickerDelegate {
     }
 }
 
-extension MakeNewMessageViewController: ButtonAnimating {
+extension MakeNewMessageViewController: ButtonManaging {
     func animateButton() {
         guard let item = navigationItem.rightBarButtonItems?[safe: 1] else {
             return
@@ -103,6 +113,10 @@ extension MakeNewMessageViewController: ButtonAnimating {
             return
         }
         item.stopAnimating()
+    }
+
+    func setButtons(_ isEnabled: Bool) {
+        navigationItem.rightBarButtonItems?.forEach { $0.isEnabled = isEnabled }
     }
 }
 
@@ -130,9 +144,5 @@ extension MakeNewMessageViewController {
             }
             self?.setButtons(true)
         }
-    }
-
-    func setButtons(_ isEnabled: Bool) {
-        navigationItem.rightBarButtonItems?.forEach { $0.isEnabled = isEnabled }
     }
 }

@@ -2,10 +2,16 @@ import UIKit
 
 // todo: decouple dependencies
 class MakeNewMessageTableViewDataSource: NSObject {
-    private weak var controller: MakeNewMessageViewController?
+    private weak var controller: UIViewController?
+    private weak var delegate: SenderPickerDelegate?
+    private weak var manager: ProxiesManaging?
 
-    init(_ controller: MakeNewMessageViewController) {
+    init(controller: UIViewController?,
+         delegate: SenderPickerDelegate?,
+         manager: ProxiesManaging?) {
         self.controller = controller
+        self.delegate = delegate
+        self.manager = manager
     }
 }
 
@@ -20,7 +26,7 @@ extension MakeNewMessageTableViewDataSource: UITableViewDataSource {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.makeNewMessageSenderTableViewCell) as? MakeNewMessageSenderTableViewCell else {
                 return tableView.dequeueReusableCell(withIdentifier: Identifier.makeNewMessageSenderTableViewCell, for: indexPath)
             }
-            if let name = controller?.sender?.name {
+            if let name = delegate?.sender?.name {
                 cell.nameLabel.text = name
             } else {
                 cell.nameLabel.text = "Pick Your Sender"
@@ -33,7 +39,7 @@ extension MakeNewMessageTableViewDataSource: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        if section == 0 && controller?.proxiesManager?.proxies.count == 0 {
+        if section == 0 && manager?.proxies.count == 0 {
             return "Tap the bouncing button to make a new Proxy 🎉."
         } else {
             return nil

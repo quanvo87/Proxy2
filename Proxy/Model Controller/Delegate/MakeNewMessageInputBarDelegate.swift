@@ -1,32 +1,45 @@
 import MessageKit
+import SearchTextField
 
 class MakeNewMessageInputBarDelegate {
-    private weak var controller: MakeNewMessageViewController?
+    private weak var controller: UIViewController?
+    private weak var makeNewMessageDelegate: MakeNewMessageDelegate?
+    private weak var manager: ButtonManaging?
+    private weak var senderPickerDelegate: SenderPickerDelegate?
+    private weak var textField: SearchTextField?
 
-    init(_ controller: MakeNewMessageViewController?) {
+    init(controller: UIViewController?,
+         makeNewMessageDelegate: MakeNewMessageDelegate?,
+         manager: ButtonManaging?,
+         senderPickerDelegate: SenderPickerDelegate?,
+         textField: SearchTextField?) {
         self.controller = controller
+        self.makeNewMessageDelegate = makeNewMessageDelegate
+        self.manager = manager
+        self.senderPickerDelegate = senderPickerDelegate
+        self.textField = textField
     }
 }
 
 extension MakeNewMessageInputBarDelegate: MessageInputBarDelegate {
     func messageInputBar(_ inputBar: MessageInputBar, didPressSendButtonWith text: String) {
-        controller?.setButtons(false)
-        guard let sender = controller?.sender else {
+        manager?.setButtons(false)
+        guard let sender = senderPickerDelegate?.sender else {
             controller?.showAlert(title: "Sender Missing", message: "Please pick one of your Proxies to send the message from.")
-            controller?.setButtons(true)
+            manager?.setButtons(true)
             return
         }
         guard
-            let receiverName = controller?.receiverNameTextField?.text,
+            let receiverName = textField?.text,
             receiverName != "" else {
                 controller?.showAlert(title: "Receiver Missing", message: "Please enter the receiver's name.")
-                controller?.setButtons(true)
+                manager?.setButtons(true)
                 return
         }
         DB.getProxy(key: receiverName) { [weak self] (receiver) in
             guard let receiver = receiver else {
                 self?.controller?.showAlert(title: "Receiver Not Found", message: "The receiver you chose could not be found. Please try again.")
-                self?.controller?.setButtons(true)
+                self?.manager?.setButtons(true)
                 return
             }
             DB.sendMessage(sender: sender, receiver: receiver, text: text) { [weak self] (result) in
@@ -40,9 +53,9 @@ extension MakeNewMessageInputBarDelegate: MessageInputBarDelegate {
                     default:
                         self?.controller?.showAlert(title: "Error Sending Message", message: error.localizedDescription)
                     }
-                    self?.controller?.setButtons(true)
+                    self?.manager?.setButtons(true)
                 case .success(let tuple):
-                    self?.controller?.makeNewMessageDelegate?.newConvo = tuple.convo
+                    self?.makeNewMessageDelegate?.newConvo = tuple.convo
                     self?.controller?.navigationController?.dismiss(animated: true)
                 }
             }

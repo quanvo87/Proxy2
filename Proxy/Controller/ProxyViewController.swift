@@ -10,7 +10,7 @@ class ProxyViewController: UIViewController, Closing, MakeNewMessageDelegate {
     private weak var unreadMessagesManager: UnreadMessagesManaging?
     private lazy var convosManager = ConvosManager(proxyKey: proxy.key,
                                                    uid: proxy.ownerId,
-                                                   animator: self,
+                                                   manager: self,
                                                    tableView: tableView)
     private lazy var dataSource = ProxyTableViewDataSource(controller: self,
                                                            convosManager: convosManager,
@@ -81,7 +81,7 @@ class ProxyViewController: UIViewController, Closing, MakeNewMessageDelegate {
     }
 }
 
-extension ProxyViewController: ButtonAnimating {
+extension ProxyViewController: ButtonManaging {
     func animateButton() {
         guard let item = navigationItem.rightBarButtonItems?[safe: 0] else {
             return

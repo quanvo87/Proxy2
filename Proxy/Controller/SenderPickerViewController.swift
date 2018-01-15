@@ -20,7 +20,7 @@ class SenderPickerViewController: UIViewController {
 
         super.init(nibName: nil, bundle: nil)
 
-        manager?.addAnimator(self)
+        manager?.addManager(self)
         manager?.addTableView(tableView)
 
         navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self,
@@ -51,7 +51,7 @@ class SenderPickerViewController: UIViewController {
     }
 }
 
-extension SenderPickerViewController: ButtonAnimating {
+extension SenderPickerViewController: ButtonManaging {
     func animateButton() {
         navigationItem.rightBarButtonItem?.morph(loop: true)
     }

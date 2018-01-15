@@ -22,7 +22,7 @@ class ConvosButtonManager {
     }
 }
 
-extension ConvosButtonManager: ButtonAnimating {
+extension ConvosButtonManager: ButtonManaging {
     func animateButton() {
         makeNewMessageButton.morph(loop: true)
     }

@@ -13,7 +13,7 @@ class ConvosViewController: UIViewController, MakeNewMessageDelegate {
                                                          manager: proxiesManager)
     private lazy var convosManager = ConvosManager(proxyKey: nil,
                                                    uid: uid,
-                                                   animator: buttonManager,
+                                                   manager: buttonManager,
                                                    tableView: tableView)
     private lazy var dataSource = ConvosTableViewDataSource(convosManager)
     private lazy var delegate = ConvosTableViewDelegate(controller: self,

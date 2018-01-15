@@ -10,9 +10,9 @@ class ConvosManager: ConvosManaging {
     private (set) var convos = [Convo]() {
         didSet {
             if convos.isEmpty {
-                animator?.animateButton()
+                manager?.animateButton()
             } else {
-                animator?.stopAnimatingButton()
+                manager?.stopAnimatingButton()
             }
             tableView?.reloadData()
         }
@@ -23,18 +23,18 @@ class ConvosManager: ConvosManaging {
     private let querySize: UInt
     private let uid: String
     private var loading = false
-    private weak var animator: ButtonAnimating?
+    private weak var manager: ButtonManaging?
     private weak var tableView: UITableView?
 
     init(proxyKey: String?,
          querySize: UInt = Setting.querySize,
          uid: String,
-         animator: ButtonAnimating?,
+         manager: ButtonManaging?,
          tableView: UITableView?) {
         self.proxyKey = proxyKey
         self.querySize = querySize
         self.uid = uid
-        self.animator = animator
+        self.manager = manager
         self.tableView = tableView
         ref = DB.makeReference(Child.convos, uid)
         handle = ref?
