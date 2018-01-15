@@ -45,21 +45,21 @@ class DBProxyTests: DBTest {
             }
         }
     }
-    
+
     func testGetProxyNotFound() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
-        
+
         DB.getProxy(key: "invalid key") { (proxy) in
             XCTAssertNil(proxy)
             expectation.fulfill()
         }
     }
-    
+
     func testGetProxyWithOwnerId() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
-        
+
         DBTest.makeProxy { (proxy) in
             DB.getProxy(uid: proxy.ownerId, key: proxy.key) { (retrievedProxy) in
                 XCTAssertEqual(retrievedProxy, proxy)
@@ -67,11 +67,11 @@ class DBProxyTests: DBTest {
             }
         }
     }
-    
+
     func testGetProxyWithOwnerIdNotFound() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
-        
+
         DB.getProxy(uid: DBTest.uid, key: "invalid key") { (proxy) in
             XCTAssertNil(proxy)
             expectation.fulfill()
@@ -81,7 +81,7 @@ class DBProxyTests: DBTest {
     func testMakeProxy() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
-        
+
         DBTest.makeProxy { (proxy) in
             XCTAssertNotEqual(proxy.icon, "")
             let work = GroupWork()
@@ -108,11 +108,11 @@ class DBProxyTests: DBTest {
             }
         }
     }
-    
+
     func testMakeProxyFailAtMaxAttempts() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
-        
+
         DB.makeProxy(uid: DBTest.uid, name: "test", currentProxyCount: 0) { (result) in
             switch result {
             case .failure:
@@ -131,7 +131,7 @@ class DBProxyTests: DBTest {
             }
         }
     }
-    
+
     func testSetIcon() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
@@ -149,7 +149,7 @@ class DBProxyTests: DBTest {
             }
         }
     }
-    
+
     func testSetNickname() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
