@@ -113,9 +113,10 @@ private extension ProxyViewController {
     }
 
     @objc func showMakeNewMessageController() {
-        guard let manager = proxiesManager else {
+        guard let item = navigationItem.rightBarButtonItems?[safe: 0] else {
             return
         }
-        showMakeNewMessageController(sender: proxy, uid: proxy.ownerId, manager: manager, controller: self)
+        item.morph()
+        showMakeNewMessageController(sender: proxy, uid: proxy.ownerId, manager: proxiesManager, controller: self)
     }
 }

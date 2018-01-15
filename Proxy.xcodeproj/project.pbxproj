@@ -304,15 +304,16 @@
 		5966076C1F977CA300874741 /* Model Controller */ = {
 			isa = PBXGroup;
 			children = (
-				5966076D1F977CB500874741 /* Database */,
 				59D896A31F977D44008B3A05 /* Data Source */,
 				59D896A21F977D2B008B3A05 /* Delegate */,
+				5966076D1F977CB500874741 /* Firebase */,
 				59D896A41F977D70008B3A05 /* Protocol */,
+				59D896A81F977EEA008B3A05 /* Util */,
 			);
 			path = "Model Controller";
 			sourceTree = "<group>";
 		};
-		5966076D1F977CB500874741 /* Database */ = {
+		5966076D1F977CB500874741 /* Firebase */ = {
 			isa = PBXGroup;
 			children = (
 				5973C82E1F608A1D00647492 /* DB.swift */,
@@ -321,7 +322,7 @@
 				5973C8271F608A1C00647492 /* DBProxy.swift */,
 				5973C8171F608A1A00647492 /* DBUser.swift */,
 			);
-			path = Database;
+			path = Firebase;
 			sourceTree = "<group>";
 		};
 		59B432D31F60648400622DEA = {
@@ -352,7 +353,6 @@
 				5966076A1F977C1500874741 /* Controller */,
 				5966076B1F977C3100874741 /* Model */,
 				5966076C1F977CA300874741 /* Model Controller */,
-				59D896A81F977EEA008B3A05 /* Util */,
 				59D896A71F977EC7008B3A05 /* View */,
 				59D8D2B31F977F3500909572 /* Other */,
 			);

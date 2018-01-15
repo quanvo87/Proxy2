@@ -1,8 +1,6 @@
 import MessageKit
 import SearchTextField
 
-// todo: add animations to all views when they tap button
-
 class MakeNewMessageViewController: UIViewController, SenderPickerDelegate {
     override var inputAccessoryView: UIView? {
         return inputBar
