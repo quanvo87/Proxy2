@@ -1,24 +1,32 @@
 import SearchTextField
 
 class MakeNewMessageTableViewDataSource: NSObject {
+    private let uid: String
+    private var firstLoad = true
     private weak var controller: UIViewController?
     private weak var delegate: SenderPickerDelegate?
     private weak var proxiesManager: ProxiesManaging?
-    private weak var searchTextFieldManager: SearchTextFieldManaging?
+    private weak var receiverManager: ReceiverIconImageManaging?
+    private weak var receiverTextFieldDelegate: UITextFieldDelegate?
+    private lazy var loader = ProxyNamesLoader(uid)
 
-    init(controller: UIViewController?,
+    init(uid: String,
+         controller: UIViewController?,
          delegate: SenderPickerDelegate?,
          proxiesManager: ProxiesManaging?,
-         searchTextFieldManager: SearchTextFieldManaging?) {
+         receiverIconImageManager: ReceiverIconImageManaging?,
+         receiverTextFieldDelegate: UITextFieldDelegate?) {
+        self.uid = uid
         self.controller = controller
         self.delegate = delegate
         self.proxiesManager = proxiesManager
-        self.searchTextFieldManager = searchTextFieldManager
+        self.receiverManager = receiverIconImageManager
+        self.receiverTextFieldDelegate = receiverTextFieldDelegate
     }
 }
 
 extension MakeNewMessageTableViewDataSource: UITableViewDataSource {
-     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 2
     }
 
@@ -28,18 +36,47 @@ extension MakeNewMessageTableViewDataSource: UITableViewDataSource {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.makeNewMessageSenderTableViewCell) as? MakeNewMessageSenderTableViewCell else {
                 return tableView.dequeueReusableCell(withIdentifier: Identifier.makeNewMessageSenderTableViewCell, for: indexPath)
             }
-            if let name = delegate?.sender?.name {
-                cell.nameLabel.text = name
-            } else {
-                cell.nameLabel.text = "Pick Your Sender"
-            }
-            cell.nameLabel.textColor = .blue
+            cell.load(delegate?.sender)
             return cell
         case 1:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.makeNewMessageReceiverTableViewCell) as? MakeNewMessageReceiverTableViewCell else {
                 return tableView.dequeueReusableCell(withIdentifier: Identifier.makeNewMessageReceiverTableViewCell, for: indexPath)
             }
-            searchTextFieldManager?.textField = cell.receiverNameTextField
+            cell.iconImageView.image = receiverManager?.receiverIconImage
+            if firstLoad {
+                cell.receiverTextField.becomeFirstResponder()
+                firstLoad = false
+            }
+            if let controller = controller {
+                cell.receiverTextField.maxResultsListHeight = Int(controller.view.frame.height / 2)
+            }
+            cell.receiverTextField.comparisonOptions = [.caseInsensitive]
+            cell.receiverTextField.delegate = receiverTextFieldDelegate
+            cell.receiverTextField.highlightAttributes = [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 17)]
+            cell.receiverTextField.itemSelectionHandler = { [weak self] (items, index) in
+                guard let item = items[safe: index] else {
+                    return
+                }
+                self?.receiverManager?.receiverIconImage = item.image
+                cell.receiverTextField.text = item.title
+                cell.receiverTextField.becomeFirstResponder()
+            }
+            cell.receiverTextField.theme.cellHeight = 50
+            cell.receiverTextField.theme.font = .systemFont(ofSize: 17)
+            cell.receiverTextField.theme.separatorColor = UIColor.lightGray.withAlphaComponent(0.5)
+            cell.receiverTextField.userStoppedTypingHandler = { [weak self] in
+                guard
+                    let query = cell.receiverTextField.text,
+                    query.count > 0 else {
+                        return
+                }
+                self?.receiverManager?.receiverIconImage = nil
+                cell.receiverTextField.showLoadingIndicator()
+                self?.loader.load(query) { (items) in
+                    cell.receiverTextField.filterItems(items)
+                    cell.receiverTextField.stopLoadingIndicator()
+                }
+            }
             return cell
         default:
             return UITableViewCell()

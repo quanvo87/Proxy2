@@ -23,26 +23,36 @@
                         <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Start typing for suggestions..." textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="3WX-mN-SlX" customClass="SearchTextField" customModule="SearchTextField">
-                        <rect key="frame" x="65" y="0.0" width="310" height="43.5"/>
+                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Type for suggestions..." textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="3WX-mN-SlX" customClass="SearchTextField" customModule="SearchTextField">
+                        <rect key="frame" x="65" y="0.0" width="242" height="43.5"/>
                         <nil key="textColor"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <textInputTraits key="textInputTraits" autocorrectionType="yes"/>
                     </textField>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="iJ2-0A-JLP">
+                        <rect key="frame" x="312" y="9.5" width="25" height="25"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="25" id="JcU-Rl-Cde"/>
+                            <constraint firstAttribute="width" constant="25" id="WOM-2S-MH6"/>
+                        </constraints>
+                    </imageView>
                 </subviews>
                 <constraints>
                     <constraint firstItem="pu6-2o-IVA" firstAttribute="centerY" secondItem="dUK-N8-DWq" secondAttribute="centerY" id="7Dj-nL-y72"/>
+                    <constraint firstAttribute="trailing" secondItem="iJ2-0A-JLP" secondAttribute="trailing" constant="38" id="93m-tA-LXu"/>
                     <constraint firstItem="3WX-mN-SlX" firstAttribute="leading" secondItem="dUK-N8-DWq" secondAttribute="leading" constant="65" id="DBF-af-Qx4"/>
                     <constraint firstItem="pu6-2o-IVA" firstAttribute="leading" secondItem="dUK-N8-DWq" secondAttribute="leading" constant="10" id="Wwa-Lo-sth"/>
-                    <constraint firstAttribute="trailing" secondItem="3WX-mN-SlX" secondAttribute="trailing" id="gXo-b1-EOU"/>
+                    <constraint firstItem="iJ2-0A-JLP" firstAttribute="centerY" secondItem="dUK-N8-DWq" secondAttribute="centerY" id="YQh-Yv-AI2"/>
+                    <constraint firstItem="iJ2-0A-JLP" firstAttribute="leading" secondItem="3WX-mN-SlX" secondAttribute="trailing" constant="5" id="bul-OV-DLc"/>
                     <constraint firstItem="3WX-mN-SlX" firstAttribute="top" secondItem="dUK-N8-DWq" secondAttribute="top" id="oSe-Eg-laA"/>
                     <constraint firstAttribute="bottom" secondItem="3WX-mN-SlX" secondAttribute="bottom" id="qtO-Bq-PKP"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
-                <outlet property="receiverNameTextField" destination="3WX-mN-SlX" id="6hq-1B-Tm2"/>
+                <outlet property="iconImageView" destination="iJ2-0A-JLP" id="0Cf-V2-m7I"/>
+                <outlet property="receiverTextField" destination="3WX-mN-SlX" id="6hq-1B-Tm2"/>
             </connections>
-            <point key="canvasLocation" x="-255" y="-6"/>
+            <point key="canvasLocation" x="-255.5" y="-6"/>
         </tableViewCell>
     </objects>
 </document>

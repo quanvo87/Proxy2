@@ -40,6 +40,10 @@ extension MakeNewMessageDelegate {
     }
 }
 
+protocol ReceiverIconImageManaging: class {
+    var receiverIconImage: UIImage? { get set }
+}
+
 protocol ReferenceObserving: class {
     var handle: DatabaseHandle? { get }
     var ref: DatabaseReference? { get }
@@ -51,10 +55,6 @@ extension ReferenceObserving {
             ref?.removeObserver(withHandle: handle)
         }
     }
-}
-
-protocol SearchTextFieldManaging: class {
-    var textField: SearchTextField { get set }
 }
 
 protocol SenderPickerDelegate: class {

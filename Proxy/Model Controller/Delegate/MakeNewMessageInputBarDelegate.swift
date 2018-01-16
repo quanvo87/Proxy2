@@ -5,20 +5,19 @@ class MakeNewMessageInputBarDelegate {
     private weak var buttonManager: ButtonManaging?
     private weak var controller: UIViewController?
     private weak var makeNewMessageDelegate: MakeNewMessageDelegate?
-    private weak var searchTextFieldManager: SearchTextFieldManaging?
     private weak var senderPickerDelegate: SenderPickerDelegate?
+    private weak var tableView: UITableView?
 
     init(buttonManager: ButtonManaging?,
          controller: UIViewController?,
          makeNewMessageDelegate: MakeNewMessageDelegate?,
-         searchTextFieldManager: SearchTextFieldManaging?,
-         senderPickerDelegate: SenderPickerDelegate?) {
+         senderPickerDelegate: SenderPickerDelegate?,
+         tableView: UITableView?) {
         self.buttonManager = buttonManager
         self.controller = controller
         self.makeNewMessageDelegate = makeNewMessageDelegate
-        self.searchTextFieldManager = searchTextFieldManager
         self.senderPickerDelegate = senderPickerDelegate
-
+        self.tableView = tableView
     }
 }
 
@@ -31,7 +30,7 @@ extension MakeNewMessageInputBarDelegate: MessageInputBarDelegate {
             return
         }
         guard
-            let receiverName = searchTextFieldManager?.textField.text,
+            let receiverName = (tableView?.cellForRow(at: IndexPath(row: 1, section: 0)) as? MakeNewMessageReceiverTableViewCell)?.receiverTextField.text,
             receiverName != "" else {
                 controller?.showAlert(title: "Receiver Missing", message: "Please enter the receiver's name.")
                 buttonManager?.setButtons(true)
@@ -57,7 +56,7 @@ extension MakeNewMessageInputBarDelegate: MessageInputBarDelegate {
                     self?.buttonManager?.setButtons(true)
                 case .success(let tuple):
                     self?.makeNewMessageDelegate?.newConvo = tuple.convo
-                    self?.controller?.navigationController?.dismiss(animated: true)
+                    self?.controller?.navigationController?.dismiss(animated: false)
                 }
             }
         }

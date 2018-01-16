@@ -1,53 +1,49 @@
 import MessageKit
 import SearchTextField
 
-class MakeNewMessageViewController: UIViewController, SearchTextFieldManaging, SenderPickerDelegate {
-    override var inputAccessoryView: UIView? {
-        return inputBar
+private enum FirstResponder {
+    case receiverTextField
+    case newMessageTextView
+}
+
+class MakeNewMessageViewController: UIViewController, ReceiverIconImageManaging, SenderPickerDelegate {
+    var receiverIconImage: UIImage? {
+        didSet {
+            tableView.reloadData()
+            makeReceiverTextFieldFirstResponder()
+        }
     }
     var sender: Proxy? {
         didSet {
             tableView.reloadData()
-        }
-    }
-    var textField = SearchTextField() {
-        didSet {
-            textField.becomeFirstResponder()
-            textField.comparisonOptions = [.caseInsensitive]
-            textField.highlightAttributes = [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 14)]
-            textField.maxResultsListHeight = Int(view.frame.height / 2)
-            textField.theme.cellHeight = 50
-            textField.theme.font = .systemFont(ofSize: 14)
-            textField.theme.separatorColor = UIColor.lightGray.withAlphaComponent(0.5)
-            textField.userStoppedTypingHandler = { [weak self] in
-                guard
-                    let query = self?.textField.text,
-                    query.count > 0 else {
-                        return
-                }
-                self?.textField.showLoadingIndicator()
-                self?.loader.load(query) { [weak self] (items) in
-                    self?.textField.filterItems(items)
-                    self?.textField.stopLoadingIndicator()
-                }
+            switch firstResponder {
+            case .receiverTextField:
+                makeReceiverTextFieldFirstResponder()
+            case .newMessageTextView:
+                inputBar.inputTextView.becomeFirstResponder()
             }
         }
+    }
+    override var inputAccessoryView: UIView? {
+        return inputBar
     }
     private let inputBar = MessageInputBar()
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
+    private var firstResponder: FirstResponder = .receiverTextField
     private weak var makeNewMessageDelegate: MakeNewMessageDelegate?
     private weak var proxiesManager: ProxiesManaging?
     private lazy var inputBarDelegate = MakeNewMessageInputBarDelegate(buttonManager: self,
                                                                        controller: self,
                                                                        makeNewMessageDelegate: makeNewMessageDelegate,
-                                                                       searchTextFieldManager: self,
-                                                                       senderPickerDelegate: self)
-    private lazy var loader = ProxyNamesLoader(uid)
-    private lazy var tableViewDataSource = MakeNewMessageTableViewDataSource(controller: self,
+                                                                       senderPickerDelegate: self,
+                                                                       tableView: tableView)
+    private lazy var tableViewDataSource = MakeNewMessageTableViewDataSource(uid: uid,
+                                                                             controller: self,
                                                                              delegate: self,
                                                                              proxiesManager: proxiesManager,
-                                                                             searchTextFieldManager: self)
+                                                                             receiverIconImageManager: self,
+                                                                             receiverTextFieldDelegate: self)
     private lazy var tableViewDelegate = MakeNewMessageTableViewDelegate(uid: uid,
                                                                          controller: self,
                                                                          delegate: self,
@@ -65,6 +61,7 @@ class MakeNewMessageViewController: UIViewController, SearchTextFieldManaging, S
         super.init(nibName: nil, bundle: nil)
 
         inputBar.delegate = inputBarDelegate
+        inputBar.inputTextView.delegate = self
 
         manager?.addManager(self)
 
@@ -121,7 +118,19 @@ extension MakeNewMessageViewController: ButtonManaging {
     }
 }
 
-extension MakeNewMessageViewController {
+extension MakeNewMessageViewController: UITextFieldDelegate {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        firstResponder = .receiverTextField
+    }
+}
+
+extension MakeNewMessageViewController: UITextViewDelegate {
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        firstResponder = .newMessageTextView
+    }
+}
+
+private extension MakeNewMessageViewController {
     @objc func close() {
         setButtons(false)
         dismiss(animated: true)
@@ -145,5 +154,12 @@ extension MakeNewMessageViewController {
             }
             self?.setButtons(true)
         }
+    }
+
+    func makeReceiverTextFieldFirstResponder() {
+        guard let cell = tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? MakeNewMessageReceiverTableViewCell else {
+            return
+        }
+        cell.receiverTextField.becomeFirstResponder()
     }
 }
