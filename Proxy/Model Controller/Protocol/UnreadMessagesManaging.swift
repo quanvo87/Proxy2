@@ -29,10 +29,8 @@ class UnreadMessagesManager: UnreadMessagesManaging {
     init(_ uid: String) {
         ref = DB.makeReference(Child.userInfo, uid, Child.unreadMessages)
         addedHandle = ref?.observe(.childAdded) { [weak self] (data) in
-            guard
-                let _self = self,
-                let proxiesManager = _self.proxiesManager else {
-                    return
+            guard let proxiesManager = self?.proxiesManager else {
+                return
             }
             guard let message = Message(data) else {
                 return
@@ -41,22 +39,19 @@ class UnreadMessagesManager: UnreadMessagesManaging {
                 DB.deleteUnreadMessage(message) { _ in }
                 return
             }
-            if _self.presenceManager?.presentInConvo == message.parentConvoKey {
+            if self?.presenceManager?.presentInConvo == message.parentConvoKey {
                 DB.read(message) { _ in }
             } else {
-                _self.unreadMessages.append(message)
+                self?.unreadMessages.append(message)
             }
         }
         removedHandle = ref?.observe(.childRemoved) { [weak self] (data) in
-            guard let _self = self else {
-                return
-            }
             guard
                 let message = Message(data),
-                let index = _self.unreadMessages.index(of: message) else {
+                let index = self?.unreadMessages.index(of: message) else {
                     return
             }
-            _self.unreadMessages.remove(at: index)
+            self?.unreadMessages.remove(at: index)
         }
     }
 

@@ -104,6 +104,7 @@ extension MakeNewMessageViewController: ButtonManaging {
     }
 
     func setButtons(_ isEnabled: Bool) {
+        inputBar.sendButton.isEnabled = isEnabled
         navigationItem.rightBarButtonItems?.forEach { $0.isEnabled = isEnabled }
     }
 }

@@ -22,17 +22,17 @@ class UserStatsManager: UserStatsManaging {
         messagesReceivedRef = DB.makeReference(Child.userInfo, uid, IncrementableUserProperty.messagesReceived.rawValue)
         messagesSentRef = DB.makeReference(Child.userInfo, uid, IncrementableUserProperty.messagesSent.rawValue)
         proxiesInteractedWithRef = DB.makeReference(Child.userInfo, uid, IncrementableUserProperty.proxiesInteractedWith.rawValue)
-        messagesReceivedHandle = messagesReceivedRef?.observe(.value) { [weak self] (data) in
+        messagesReceivedHandle = messagesReceivedRef?.observe(.value) { [weak self, weak tableView] (data) in
             self?.messagesReceivedCount = data.asNumberLabel
-            tableView.reloadData()
+            tableView?.reloadData()
         }
-        messagesSentHandle = messagesSentRef?.observe(.value) { [weak self] (data) in
+        messagesSentHandle = messagesSentRef?.observe(.value) { [weak self, weak tableView] (data) in
             self?.messagesSentCount = data.asNumberLabel
-            tableView.reloadData()
+            tableView?.reloadData()
         }
-        proxiesInteractedWithHandle = proxiesInteractedWithRef?.observe(.value) { [weak self] (data) in
+        proxiesInteractedWithHandle = proxiesInteractedWithRef?.observe(.value) { [weak self, weak tableView] (data) in
             self?.proxiesInteractedWithCount = data.asNumberLabel
-            tableView.reloadData()
+            tableView?.reloadData()
         }
     }
 

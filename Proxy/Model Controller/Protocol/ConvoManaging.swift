@@ -47,14 +47,14 @@ class ConvoManager: ConvoManaging {
                 return
             }
             guard let convo = Convo(data) else {
-                DB.checkKeyExists(Child.convos, _self.convo.senderId, _self.convo.key) { (exists) in
+                DB.checkKeyExists(Child.convos, _self.convo.senderId, _self.convo.key) { [weak self] (exists) in
                     if !exists {
-                        _self.updateClosers()
+                        self?.updateClosers()
                     }
                 }
                 return
             }
-            _self.convo = convo
+            self?.convo = convo
         }
     }
 

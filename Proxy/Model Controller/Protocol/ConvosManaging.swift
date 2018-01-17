@@ -44,9 +44,9 @@ class ConvosManager: ConvosManaging {
                 guard let _self = self else {
                     return
                 }
-                _self.loading = true
-                _self.convos = data.toConvosArray(uid: _self.uid, proxyKey: _self.proxyKey).reversed()
-                _self.loading = false
+                self?.loading = true
+                self?.convos = data.toConvosArray(uid: _self.uid, proxyKey: _self.proxyKey).reversed()
+                self?.loading = false
         }
     }
 
@@ -67,8 +67,8 @@ class ConvosManager: ConvosManaging {
                     return
                 }
                 convos.removeLast(1)
-                _self.convos += convos.reversed()
-                _self.loading = false
+                self?.convos += convos.reversed()
+                self?.loading = false
         }
     }
 

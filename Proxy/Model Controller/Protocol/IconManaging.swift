@@ -27,22 +27,16 @@ class IconManager: IconManaging {
         receiverRef = DB.makeReference(Child.proxies, receiverId, receiverProxyKey, Child.icon)
         senderRef = DB.makeReference(Child.proxies, senderId, senderProxyKey, Child.icon)
         receiverHandle = receiverRef?.observe(.value) { [weak self] (data) in
-            guard let _self = self else {
-                return
-            }
             guard let icon = data.value as? String else {
                 return
             }
-            _self.icons[receiverProxyKey] = UIImage(named: icon)
+            self?.icons[receiverProxyKey] = UIImage(named: icon)
         }
         senderHandle = senderRef?.observe(.value) { [weak self] (data) in
-            guard let _self = self else {
-                return
-            }
             guard let icon = data.value as? String else {
                 return
             }
-            _self.icons[senderProxyKey] = UIImage(named: icon)
+            self?.icons[senderProxyKey] = UIImage(named: icon)
         }
     }
 
