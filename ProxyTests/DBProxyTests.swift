@@ -20,8 +20,7 @@ class DBProxyTests: DBTest {
                             XCTAssert(success)
                             let work = GroupWork()
                             work.checkDeleted(Child.proxies, receiver.ownerId, receiver.key)
-                            work.checkDeleted(Child.proxyKeys, receiver.key)
-                            work.checkDeleted(Child.proxyOwners, receiver.key)
+                            work.checkDeleted(Child.proxyNames, receiver.key)
                             work.checkDeleted(Child.convos, receiver.ownerId, tuple.convo.key)
                             work.checkDeleted(Child.userInfo, receiver.ownerId, Child.unreadMessages, tuple.message.messageId)
                             work.check(.receiverDeletedProxy(true), for: tuple.convo, asSender: true)
@@ -34,11 +33,11 @@ class DBProxyTests: DBTest {
             }
         }
     }
-    
+
     func testGetProxy() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
-        
+
         DBTest.makeProxy { (proxy) in
             DB.getProxy(key: proxy.key) { (retrievedProxy) in
                 XCTAssertEqual(retrievedProxy, proxy)
@@ -46,21 +45,21 @@ class DBProxyTests: DBTest {
             }
         }
     }
-    
+
     func testGetProxyNotFound() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
-        
+
         DB.getProxy(key: "invalid key") { (proxy) in
             XCTAssertNil(proxy)
             expectation.fulfill()
         }
     }
-    
+
     func testGetProxyWithOwnerId() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
-        
+
         DBTest.makeProxy { (proxy) in
             DB.getProxy(uid: proxy.ownerId, key: proxy.key) { (retrievedProxy) in
                 XCTAssertEqual(retrievedProxy, proxy)
@@ -68,11 +67,11 @@ class DBProxyTests: DBTest {
             }
         }
     }
-    
+
     func testGetProxyWithOwnerIdNotFound() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
-        
+
         DB.getProxy(uid: DBTest.uid, key: "invalid key") { (proxy) in
             XCTAssertNil(proxy)
             expectation.fulfill()
@@ -82,13 +81,12 @@ class DBProxyTests: DBTest {
     func testMakeProxy() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
-        
+
         DBTest.makeProxy { (proxy) in
             XCTAssertNotEqual(proxy.icon, "")
             let work = GroupWork()
             work.checkProxyCreated(proxy)
-            work.checkProxyKeyCreated(forProxy: proxy)
-            work.checkProxyOwnerCreated(forProxy: proxy)
+            work.checkProxyNameCreated(forProxy: proxy)
             work.allDone {
                 expectation.fulfill()
             }
@@ -110,11 +108,11 @@ class DBProxyTests: DBTest {
             }
         }
     }
-    
+
     func testMakeProxyFailAtMaxAttempts() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
-        
+
         DB.makeProxy(uid: DBTest.uid, name: "test", currentProxyCount: 0) { (result) in
             switch result {
             case .failure:
@@ -133,7 +131,7 @@ class DBProxyTests: DBTest {
             }
         }
     }
-    
+
     func testSetIcon() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
@@ -151,7 +149,7 @@ class DBProxyTests: DBTest {
             }
         }
     }
-    
+
     func testSetNickname() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
@@ -179,19 +177,12 @@ extension GroupWork {
             self.finish(withResult: true)
         }
     }
-    
-    func checkProxyKeyCreated(forProxy proxy: Proxy) {
+
+    func checkProxyNameCreated(forProxy proxy: Proxy) {
         start()
-        DB.get(Child.proxyKeys, proxy.key) { (data) in
-            XCTAssertEqual(data?.value as? [String: String] ?? [:], [Child.key: proxy.key])
-            self.finish(withResult: true)
-        }
-    }
-    
-    func checkProxyOwnerCreated(forProxy proxy: Proxy) {
-        start()
-        DB.get(Child.proxyOwners, proxy.key) { (data) in
-            XCTAssertEqual(ProxyOwner(data!), ProxyOwner(key: proxy.key, ownerId: DBTest.uid))
+        DB.get(Child.proxyNames, proxy.key) { (data) in
+            let testProxy = Proxy(icon: proxy.icon, name: proxy.name, ownerId: proxy.ownerId)
+            XCTAssertEqual(Proxy(data!), testProxy)
             self.finish(withResult: true)
         }
     }

@@ -1,23 +1,61 @@
+import FirebaseDatabase
 import MessageKit
-import UIKit
 
-protocol MessagesManaging: class {
-    var messages: [Message] { get set }
-    var collectionView: MessagesCollectionView? { get }
-    func loadMessages(endingAtMessageWithId id: String, querySize: UInt)
+protocol MessagesManaging: ReferenceObserving {
+    var messages: [Message] { get }
+    func loadMessages(endingAtMessageId id: String)
 }
 
 class MessagesManager: MessagesManaging {
-    var messages = [Message]()
-    weak var collectionView: MessagesCollectionView?
-    private let observer = MessagesObserver()
+    let ref: DatabaseReference?
+    private (set) var handle: DatabaseHandle?
+    private (set) var messages = [Message]()
+    private let convoKey: String
+    private let querySize: UInt
+    private var loading = true
+    private weak var collectionView: MessagesCollectionView?
 
-    func load(convoKey: String, collectionView: MessagesCollectionView) {
+    init(convoKey: String,
+         querySize: UInt = Setting.querySize,
+         collectionView: MessagesCollectionView?) {
+        self.convoKey = convoKey
+        self.querySize = querySize
         self.collectionView = collectionView
-        observer.observe(convoKey: convoKey, manager: self)
+        ref = DB.makeReference(Child.messages, convoKey)
+        handle = ref?
+            .queryOrdered(byChild: Child.timestamp)
+            .queryLimited(toLast: querySize)
+            .observe(.value) { [weak self] (data) in
+                self?.loading = true
+                self?.messages = data.asMessagesArray
+                self?.collectionView?.reloadData()
+                self?.collectionView?.scrollToBottom()
+                self?.loading = false
+        }
     }
 
-    func loadMessages(endingAtMessageWithId id: String, querySize: UInt) {
-        observer.loadMessages(endingAtMessageWithId: id, querySize: querySize)
+    func loadMessages(endingAtMessageId id: String) {
+        guard !loading else {
+            return
+        }
+        loading = true
+        ref?.queryOrderedByKey()
+            .queryEnding(atValue: id)
+            .queryLimited(toLast: querySize)
+            .observeSingleEvent(of: .value) { [weak self] (data) in
+                var olderMessages = data.asMessagesArray
+                guard olderMessages.count > 1 else {
+                    return
+                }
+                olderMessages.removeLast(1)
+                let currentMessages = self?.messages ?? []
+                self?.messages = olderMessages + currentMessages
+                self?.collectionView?.reloadDataAndKeepOffset()
+                self?.loading = false
+        }
+    }
+
+    deinit {
+        stopObserving()
     }
 }

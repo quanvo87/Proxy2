@@ -11,6 +11,7 @@ class DBMessageTests: DBTest {
 
         DBTest.sendMessage { (message, _, _, _) in
             DB.deleteUnreadMessage(message) { (success) in
+                XCTAssert(success)
                 let work = GroupWork()
                 work.checkDeleted(Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
                 work.checkDeleted(Child.convos, message.receiverId, message.parentConvoKey)
@@ -45,9 +46,9 @@ class DBMessageTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        DBTest.sendMessage { (message1, _, _, _) in
-            DBTest.sendMessage { (message2, _, _, receiver) in
-                DB.read(message1) { (success) in
+        DBTest.sendMessage { (message, _, _, _) in
+            DBTest.sendMessage { (_, _, _, receiver) in
+                DB.read(message) { (success) in
                     XCTAssert(success)
                     let work = GroupWork()
                     work.check(.hasUnreadMessage(true), for: receiver)
@@ -84,7 +85,7 @@ class DBMessageTests: DBTest {
             work.check(.timestamp(convo.timestamp), for: receiver)
             work.check(.lastMessage(DBTest.text), for: convo, asSender: false)
             work.check(.lastMessage(DBTest.text), for: receiver)
-            
+
             // Check sender updates
             work.check(.messagesSent, equals: 1, uid: sender.ownerId)
             work.check(.timestamp(convo.timestamp), for: convo, asSender: true)
@@ -114,7 +115,7 @@ class DBMessageTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        DBTest.sendMessage { (message, senderConvo, senderProxy, receiverProxy) in
+        DBTest.sendMessage { (_, senderConvo, _, receiverProxy) in
             DB.deleteProxy(receiverProxy) { (success) in
                 XCTAssert(success)
                 DB.getConvo(uid: senderConvo.senderId, key: senderConvo.key) { (convo) in

@@ -1,24 +1,35 @@
 import UIKit
 
 class ConvosTableViewDelegate: NSObject {
-    private var container: DependencyContaining = DependencyContainer.container
-    private weak var manager: ConvosManager?
     private weak var controller: UIViewController?
-  
-    func load(manager: ConvosManager, controller: UIViewController, container: DependencyContaining) {
-        self.manager = manager
+    private weak var convosManager: ConvosManaging?
+    private weak var presenceManager: PresenceManaging?
+    private weak var proxiesManager: ProxiesManaging?
+    private weak var unreadMessagesManager: UnreadMessagesManaging?
+
+    init(controller: UIViewController?,
+         convosManager: ConvosManaging?,
+         presenceManager: PresenceManaging?,
+         proxiesManager: ProxiesManaging?,
+         unreadMessagesManager: UnreadMessagesManaging?) {
         self.controller = controller
-        self.container = container
+        self.convosManager = convosManager
+        self.presenceManager = presenceManager
+        self.proxiesManager = proxiesManager
+        self.unreadMessagesManager = unreadMessagesManager
     }
 }
 
 extension ConvosTableViewDelegate: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let convo = manager?.convos[safe: indexPath.row] else {
+        guard let convo = convosManager?.convos[safe: indexPath.row] else {
             return
         }
         tableView.deselectRow(at: indexPath, animated: true)
-        controller?.navigationController?.showConvoViewController(convo: convo, container: container)
+        controller?.navigationController?.showConvoViewController(convo: convo,
+                                                                  presenceManager: presenceManager,
+                                                                  proxiesManager: proxiesManager,
+                                                                  unreadMessagesManager: unreadMessagesManager)
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -27,11 +38,11 @@ extension ConvosTableViewDelegate: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         guard
-            let convoCount = manager?.convos.count,
+            let convoCount = convosManager?.convos.count,
             indexPath.row == convoCount - 1,
-            let convo = manager?.convos[safe: indexPath.row] else {
+            let convo = convosManager?.convos[safe: indexPath.row] else {
                 return
         }
-        manager?.loadConvos(endingAtTimestamp: convo.timestamp, querySize: Setting.querySize)
+        convosManager?.loadConvos(endingAtTimestamp: convo.timestamp)
     }
 }

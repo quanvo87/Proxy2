@@ -7,14 +7,13 @@ class ConvosTableViewDataSource: NSObject {
         return manager?.convos ?? []
     }
 
-    func load(manager: ConvosManaging) {
+    init(_ manager: ConvosManaging?) {
         self.manager = manager
     }
 }
 
 extension ConvosTableViewDataSource: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         guard
             let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.convosTableViewCell) as? ConvosTableViewCell,
             let convo = convos[safe: indexPath.row] else {
@@ -29,8 +28,8 @@ extension ConvosTableViewDataSource: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        if convos.count == 0 {
-            return "No messages yet. Tap the button to get started."
+        if convos.isEmpty {
+            return "Tap the bouncing button to send a message 💬."
         } else {
             return nil
         }

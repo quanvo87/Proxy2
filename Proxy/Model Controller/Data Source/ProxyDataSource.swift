@@ -20,7 +20,7 @@ extension ProxyTableViewDataSource: UITableViewDataSource {
     var proxy: Proxy? {
         return proxyManager?.proxy
     }
-    
+
     func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
@@ -84,7 +84,7 @@ private extension ProxyTableViewDataSource {
             textField.placeholder = "Enter A Nickname"
             textField.text = proxy.nickname
         }
-        alert.addAction(UIAlertAction(title: "Save", style: .default) { (action) in
+        alert.addAction(UIAlertAction(title: "Save", style: .default) { _ in
             guard let nickname = alert.textFields?[0].text else { return }
             let trim = nickname.trimmingCharacters(in: CharacterSet(charactersIn: " "))
             if !(nickname != "" && trim == "") {

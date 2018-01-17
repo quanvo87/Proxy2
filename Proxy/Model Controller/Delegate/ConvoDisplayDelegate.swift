@@ -1,16 +1,16 @@
 import MessageKit
 
 class ConvoDisplayDelegate {
-    private weak var manager: MessagesManaging?
     private weak var dataSource: MessagesDataSource?
+    private weak var manager: MessagesManaging?
 
     private var messages: [MessageType] {
         return manager?.messages ?? []
     }
 
-    func load(manager: MessagesManaging, dataSource: MessagesDataSource) {
-        self.manager = manager
+    init(dataSource: MessagesDataSource?, manager: MessagesManaging?) {
         self.dataSource = dataSource
+        self.manager = manager
     }
 }
 
@@ -23,7 +23,7 @@ extension ConvoDisplayDelegate: MessagesDisplayDelegate {
         }
     }
 
-    func detectorAttributes(for detector: DetectorType, and message: MessageType, at indexPath: IndexPath) -> [NSAttributedStringKey : Any] {
+    func detectorAttributes(for detector: DetectorType, and message: MessageType, at indexPath: IndexPath) -> [NSAttributedStringKey: Any] {
         return MessageLabel.defaultAttributes
     }
 

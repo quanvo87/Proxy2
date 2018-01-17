@@ -2,11 +2,11 @@ import UIKit
 
 class ProxiesTableViewDataSource: NSObject {
     private var accessoryType: UITableViewCellAccessoryType = .none
-    private var container: DependencyContaining = DependencyContainer.container
+    private weak var manager: ProxiesManaging?
 
-    func load(accessoryType: UITableViewCellAccessoryType, container: DependencyContaining) {
+    init(accessoryType: UITableViewCellAccessoryType, manager: ProxiesManaging?) {
         self.accessoryType = accessoryType
-        self.container = container
+        self.manager = manager
     }
 }
 
@@ -14,7 +14,7 @@ extension ProxiesTableViewDataSource: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard
             let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.proxiesTableViewCell) as? ProxiesTableViewCell,
-            let proxy = container.proxiesManager.proxies[safe: indexPath.row] else {
+            let proxy = manager?.proxies[safe: indexPath.row] else {
                 return tableView.dequeueReusableCell(withIdentifier: Identifier.proxiesTableViewCell, for: indexPath)
         }
         cell.load(proxy: proxy, accessoryType: accessoryType)
@@ -22,12 +22,12 @@ extension ProxiesTableViewDataSource: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return container.proxiesManager.proxies.count
+        return manager?.proxies.count ?? 0
     }
 
     func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        if container.proxiesManager.proxies.count == 0 {
-            return "Make a new Proxy to begin chatting."
+        if manager?.proxies.isEmpty ?? false {
+            return "Tap the bouncing button to make a new Proxy 🎉."
         } else {
             return nil
         }

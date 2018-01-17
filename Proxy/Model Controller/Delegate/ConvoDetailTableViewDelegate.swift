@@ -1,16 +1,25 @@
 import UIKit
 
 class ConvoDetailTableViewDelegate: NSObject {
-    private var container: DependencyContaining = DependencyContainer.container
-    private weak var convoManager: ConvoManaging?
-    private weak var proxyManager: ProxyManaging?
     private weak var controller: UIViewController?
+    private weak var convoManager: ConvoManaging?
+    private weak var presenceManager: PresenceManaging?
+    private weak var proxiesManager: ProxiesManaging?
+    private weak var proxyManager: ProxyManaging?
+    private weak var unreadMessagesManager: UnreadMessagesManaging?
 
-    func load(convoManager: ConvoManaging, proxyManager: ProxyManaging, controller: UIViewController, container: DependencyContaining) {
-        self.convoManager = convoManager
-        self.proxyManager = proxyManager
+    init(controller: UIViewController?,
+         convoManager: ConvoManaging?,
+         presenceManager: PresenceManaging?,
+         proxiesManager: ProxiesManaging?,
+         proxyManager: ProxyManaging?,
+         unreadMessagesManager: UnreadMessagesManaging?) {
         self.controller = controller
-        self.container = container
+        self.convoManager = convoManager
+        self.presenceManager = presenceManager
+        self.proxiesManager = proxiesManager
+        self.proxyManager = proxyManager
+        self.unreadMessagesManager = unreadMessagesManager
     }
 }
 
@@ -22,7 +31,10 @@ extension ConvoDetailTableViewDelegate: UITableViewDelegate {
         }
         switch indexPath.section {
         case 1:
-            controller?.showProxyController(proxy: proxy, container: container)
+            controller?.navigationController?.showProxyController(proxy: proxy,
+                                                                  presenceManager: presenceManager,
+                                                                  proxiesManager: proxiesManager,
+                                                                  unreadMessagesManager: unreadMessagesManager)
         case 2:
             switch indexPath.row {
             case 0:

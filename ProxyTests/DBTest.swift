@@ -9,7 +9,7 @@ class DBTest: XCTestCase {
     private let auth = Auth.auth(app: FirebaseApp.app!)
     private let email = "ahettisele-0083@yopmail.com"
     private let password = "BGbN92GY6_W+rR!Q"
-    
+
     static let uid = "bKx62eEMy9gbynfbxvVsAr3nXQJ2"
     static let testUser = "test user"
     static let text = "🤤"
@@ -31,8 +31,7 @@ class DBTest: XCTestCase {
                 } else {
                     do {
                         try auth.signOut()
-                    }
-                    catch {
+                    } catch {
                         XCTFail()
                         expectation.fulfill()
                     }
@@ -106,7 +105,7 @@ extension GroupWork {
     static func makeErrorMessage(function: String, line: Int) -> String {
         return "Function: \(function), Line: \(line)."
     }
-    
+
     func checkDeleted(_ first: String, _ rest: String..., function: String = #function, line: Int = #line) {
         start()
         DB.get(first, rest) { (data) in
@@ -149,7 +148,7 @@ extension GroupWork {
         check(property, uid: proxy.ownerId, proxyKey: proxy.key, function: function, line: line)
     }
 
-    func check(_ property: SettableProxyProperty, forProxyIn convo: Convo , asSender: Bool, function: String = #function, line: Int = #line) {
+    func check(_ property: SettableProxyProperty, forProxyIn convo: Convo, asSender: Bool, function: String = #function, line: Int = #line) {
         let (uid, proxyKey) = GroupWork.getOwnerIdAndProxyKey(convo: convo, asSender: asSender)
         check(property, uid: uid, proxyKey: proxyKey, function: function, line: line)
     }

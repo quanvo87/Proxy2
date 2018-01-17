@@ -9,12 +9,12 @@ class CommonTests: XCTestCase {
         let date = Date()
         XCTAssertEqual(date.timeIntervalSince1970.asTimeAgo, dateFormatter.string(from: date))
     }
-    
+
     func testIntAsLabel() {
         XCTAssertEqual(0.asLabel, "")
         XCTAssertEqual(1.asLabel, "1")
     }
-    
+
     func testIntAsLabelWithParens() {
         XCTAssertEqual(0.asStringWithParens, "")
         XCTAssertEqual(1.asStringWithParens, " (1)")

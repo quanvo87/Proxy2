@@ -2,67 +2,80 @@ import MessageKit
 
 class ConvoViewController: MessagesViewController, Closing {
     var shouldClose = false
-
     private let convo: Convo
-    private let convoManager = ConvoManager()
-    private let iconManager = IconManager()
-    private let messagesManager = MessagesManager()
-    private let dataSource = ConvoDataSource()
-    private let displayDelegate = ConvoDisplayDelegate()
     private let layoutDelegate = ConvoLayoutDelegate()
-    private let inputBarDelegate = ConvoInputBarDelegate()
-    private let container: DependencyContaining
+    private weak var presenceManager: PresenceManaging?
+    private weak var proxiesManager: ProxiesManaging?
+    private weak var unreadMessagesManager: UnreadMessagesManaging?
+    private lazy var convoManager = ConvoManager(convo)
+    private lazy var dataSource = ConvoDataSource(convoManager: convoManager,
+                                                  iconManager: iconManager,
+                                                  messagesManager: messagesManager)
+    private lazy var displayDelegate = ConvoDisplayDelegate(dataSource: dataSource,
+                                                            manager: messagesManager)
+    private lazy var iconManager = IconManager(receiverId: convo.receiverId,
+                                               receiverProxyKey: convo.receiverProxyKey,
+                                               senderId: convo.senderId,
+                                               senderProxyKey: convo.senderProxyKey,
+                                               collectionView: messagesCollectionView)
+    private lazy var inputBarDelegate = ConvoInputBarDelegate(controller: self,
+                                                              manager: convoManager)
+    private lazy var messagesManager = MessagesManager(convoKey: convo.key,
+                                                       collectionView: messagesCollectionView)
 
-    init(convo: Convo, container: DependencyContaining) {
+    init(convo: Convo,
+         presenceManager: PresenceManaging?,
+         proxiesManager: ProxiesManaging?,
+         unreadMessagesManager: UnreadMessagesManaging?) {
         self.convo = convo
-        self.container = container
+        self.presenceManager = presenceManager
+        self.proxiesManager = proxiesManager
+        self.unreadMessagesManager = unreadMessagesManager
 
         super.init(nibName: nil, bundle: nil)
 
+        convoManager.addCloser(self)
+        convoManager.addCollectionView(messagesCollectionView)
+        convoManager.addController(self)
+
+        navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self,
+                                                                 action: #selector(showConvoDetailView),
+                                                                 imageName: ButtonName.info)
         navigationItem.title = convo.receiverProxyName
-        navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self, action: #selector(showConvoDetailView), imageName: ButtonName.info)
 
         maintainPositionOnKeyboardFrameChanged = true
 
-        convoManager.load(uid: convo.senderId, key: convo.key, navigationItem: navigationItem, collectionView: messagesCollectionView, closer: self)
-
-        iconManager.load(convo: convo, collectionView: messagesCollectionView)
-
-        messagesManager.load(convoKey: convo.key, collectionView: messagesCollectionView)
-
-        dataSource.load(convoManager: convoManager, messagesManager: messagesManager, iconManager: iconManager)
-
-        displayDelegate.load(manager: messagesManager, dataSource: dataSource)
-
-        inputBarDelegate.load(manager: convoManager, controller: self)
+        messageInputBar.delegate = inputBarDelegate
 
         messagesCollectionView.messagesDataSource = dataSource
         messagesCollectionView.messagesDisplayDelegate = displayDelegate
         messagesCollectionView.messagesLayoutDelegate = layoutDelegate
-
-        messageInputBar.delegate = inputBarDelegate
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(true)
+        super.viewWillAppear(animated)
         if shouldClose {
             navigationController?.popViewController(animated: false)
         }
+        presenceManager?.enterConvo(convo.key)
         tabBarController?.tabBar.isHidden = true
-        container.presenceManager.enterConvo(convo.key)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(true)
+        super.viewWillDisappear(animated)
+        presenceManager?.leaveConvo(convo.key)
         tabBarController?.tabBar.isHidden = false
-        container.presenceManager.leaveConvo(convo.key)
     }
 
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        guard indexPath.section == 0, let message = messagesManager.messages[safe: indexPath.section] else {
-            return
+    func collectionView(_ collectionView: UICollectionView,
+                        willDisplay cell: UICollectionViewCell,
+                        forItemAt indexPath: IndexPath) {
+        guard
+            indexPath.section == 0,
+            let message = messagesManager.messages[safe: indexPath.section] else {
+                return
         }
-        messagesManager.loadMessages(endingAtMessageWithId: message.messageId, querySize: Setting.querySize)
+        messagesManager.loadMessages(endingAtMessageId: message.messageId)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -72,6 +85,11 @@ class ConvoViewController: MessagesViewController, Closing {
 
 private extension ConvoViewController {
     @objc private func showConvoDetailView() {
-        navigationController?.pushViewController(ConvoDetailViewController(convo: convo, container: container), animated: true)
+        navigationController?.pushViewController(ConvoDetailViewController(convo: convo,
+                                                                           convoManager: convoManager,
+                                                                           presenceManager: presenceManager,
+                                                                           proxiesManager: proxiesManager,
+                                                                           unreadMessagesManager: unreadMessagesManager),
+                                                 animated: true)
     }
 }

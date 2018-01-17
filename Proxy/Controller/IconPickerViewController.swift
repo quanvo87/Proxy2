@@ -1,10 +1,12 @@
 import UIKit
 
 class IconPickerViewController: UIViewController {
-    private let proxy: Proxy
-    private let dataSource = IconPickerCollectionViewDataSource()
-    private let delegate = IconPickerCollectionViewDelegate()
     private let collectionView: UICollectionView
+    private let proxy: Proxy
+    private lazy var dataSource = IconPickerCollectionViewDataSource(ProxyService.iconNames)
+    private lazy var delegate = IconPickerCollectionViewDelegate(iconNames: ProxyService.iconNames,
+                                                                 proxy: proxy,
+                                                                 controller: self)
 
     init(_ proxy: Proxy) {
         self.proxy = proxy
@@ -15,28 +17,29 @@ class IconPickerViewController: UIViewController {
 
         super.init(nibName: nil, bundle: nil)
 
-        navigationItem.title = "Select An Icon"
-        navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self, action: #selector(close), imageName: ButtonName.cancel)
-
-        dataSource.load(iconNames: ProxyService.iconNames)
-
-        delegate.load(proxy: proxy, iconNames: ProxyService.iconNames, controller: self)
-
         collectionView.backgroundColor = UIColor.white
         collectionView.dataSource = dataSource
         collectionView.delegate = delegate
         collectionView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
-        collectionView.register(UINib(nibName: Identifier.iconPickerCollectionViewCell, bundle: nil), forCellWithReuseIdentifier: Identifier.iconPickerCollectionViewCell)
+        collectionView.register(UINib(nibName: Identifier.iconPickerCollectionViewCell, bundle: nil),
+                                forCellWithReuseIdentifier: Identifier.iconPickerCollectionViewCell)
         collectionView.reloadData()
-        
+
+        navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self,
+                                                                 action: #selector(close),
+                                                                 imageName: ButtonName.cancel)
+        navigationItem.title = "Select An Icon"
+
         view.addSubview(collectionView)
-    }
-    
-    @objc func close() {
-        dismiss(animated: true)
     }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+}
+
+private extension IconPickerViewController {
+    @objc func close() {
+        dismiss(animated: true)
     }
 }

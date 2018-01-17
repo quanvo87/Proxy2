@@ -1,14 +1,14 @@
 import UIKit
 
 class ProxyTableViewDataSource: NSObject {
-    private weak var proxyManager: ProxyManaging?
-    private weak var convosManager: ConvosManaging?
     private weak var controller: UIViewController?
+    private weak var convosManager: ConvosManaging?
+    private weak var proxyManager: ProxyManaging?
 
-    func load(proxyManager: ProxyManaging, convosManager: ConvosManaging, controller: UIViewController) {
-        self.proxyManager = proxyManager
-        self.convosManager = convosManager
+    init(controller: UIViewController?, convosManager: ConvosManaging?, proxyManager: ProxyManaging?) {
         self.controller = controller
+        self.convosManager = convosManager
+        self.proxyManager = proxyManager
     }
 }
 
@@ -64,8 +64,8 @@ extension ProxyTableViewDataSource: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        if section == 1 && convosManager?.convos.count == 0 {
-            return "This Proxy is not in any conversations yet."
+        if section == 1 && (convosManager?.convos.isEmpty) ?? false {
+            return "Tap the bouncing button to send a new message 💬."
         } else {
             return nil
         }

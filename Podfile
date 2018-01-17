@@ -10,9 +10,12 @@ def pods
   pod 'FirebaseAuth'
   pod 'Firebase/Database'
   pod 'Firebase/Storage'
-  pod 'GroupWork', '~> 0.0'
+  pod 'GroupWork'
   pod 'MessageKit'
-  pod 'SwiftVideoBackground', '~> 2.0'
+  pod 'SearchTextField'
+  pod 'Spring', :git => 'https://github.com/MengTo/Spring.git'
+  pod 'SwiftLint'
+  pod 'SwiftVideoBackground'
 end
 
 target 'Proxy' do

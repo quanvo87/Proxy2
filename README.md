@@ -1,5 +1,5 @@
 # Proxy - iOS
-Create unlimited, random, anonymous user names (Proxy's) with just one tap. Talk to any other Proxy. Delete your Proxy when you're done. Never share your phone number or email with strangers again.
+Create unlimited, anonymous user names (Proxy's) with just one tap. Chat with any other Proxy. Delete your Proxy when you're done. Never share your phone number or email with strangers again.
 
 #### Libraries Used:
 
@@ -7,6 +7,9 @@ Create unlimited, random, anonymous user names (Proxy's) with just one tap. Talk
 - [Firebase](https://cocoapods.org/pods/Firebase)
 - [GroupWork](https://github.com/quanvo87/GroupWork)
 - [MessageKit](https://cocoapods.org/pods/MessageKit)
+- [SearchTextField](https://cocoapods.org/pods/SearchTextField)
+- [Spring](https://cocoapods.org/pods/Spring)
+- [SwiftLint](https://cocoapods.org/pods/SwiftLint)
 - [SwiftVideoBackground](https://cocoapods.org/pods/SwiftVideoBackground)
 
 Icons from [Icons8](https://icons8.com/).

@@ -1,8 +1,9 @@
+import FirebaseDatabase
 import UIKit
 
 protocol UnreadMessagesManaging: class {
     var unreadMessages: [Message] { get set }
-    func load(uid: String, controller: UIViewController, container: DependencyContaining)
+    func setController(_ controller: UIViewController)
 }
 
 class UnreadMessagesManager: UnreadMessagesManaging {
@@ -18,14 +19,62 @@ class UnreadMessagesManager: UnreadMessagesManaging {
             }
         }
     }
-
-    private let unreadMessageAddedObserver = UnreadMessageAddedObserver()
-    private let unreadMessageRemovedObserver = UnreadMessageRemovedObserver()
+    private let ref: DatabaseReference?
+    private var addedHandle: DatabaseHandle?
+    private var removedHandle: DatabaseHandle?
     private weak var controller: UIViewController?
+    private weak var presenceManager: PresenceManaging?
+    private weak var proxiesManager: ProxiesManaging?
 
-    func load(uid: String, controller: UIViewController, container: DependencyContaining) {
+    init(_ uid: String) {
+        ref = DB.makeReference(Child.userInfo, uid, Child.unreadMessages)
+        addedHandle = ref?.observe(.childAdded) { [weak self] (data) in
+            guard
+                let _self = self,
+                let proxiesManager = _self.proxiesManager else {
+                    return
+            }
+            guard let message = Message(data) else {
+                return
+            }
+            guard proxiesManager.proxies.contains(where: { $0.key == message.receiverProxyKey }) else {
+                DB.deleteUnreadMessage(message) { _ in }
+                return
+            }
+            if _self.presenceManager?.presentInConvo == message.parentConvoKey {
+                DB.read(message) { _ in }
+            } else {
+                _self.unreadMessages.append(message)
+            }
+        }
+        removedHandle = ref?.observe(.childRemoved) { [weak self] (data) in
+            guard let _self = self else {
+                return
+            }
+            guard
+                let message = Message(data),
+                let index = _self.unreadMessages.index(of: message) else {
+                    return
+            }
+            _self.unreadMessages.remove(at: index)
+        }
+    }
+
+    func setController(_ controller: UIViewController) {
         self.controller = controller
-        unreadMessageAddedObserver.observe(uid: uid, container: container)
-        unreadMessageRemovedObserver.observe(uid: uid, manager: self)
+    }
+
+    func load(presenceManager: PresenceManaging?, proxiesManager: ProxiesManaging?) {
+        self.presenceManager = presenceManager
+        self.proxiesManager = proxiesManager
+    }
+
+    deinit {
+        if let addedHandle = addedHandle {
+            ref?.removeObserver(withHandle: addedHandle)
+        }
+        if let removedHandle = removedHandle {
+            ref?.removeObserver(withHandle: removedHandle)
+        }
     }
 }

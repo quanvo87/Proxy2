@@ -1,14 +1,14 @@
 import UIKit
 
 class ConvoDetailTableViewDataSource: NSObject {
+    private weak var controller: UIViewController?
     private weak var convoManager: ConvoManaging?
     private weak var proxyManager: ProxyManaging?
-    private weak var controller: UIViewController?
 
-    func load(convoManager: ConvoManaging, proxyManager: ProxyManaging, controller: UIViewController) {
+    init(controller: UIViewController?, convoManager: ConvoManaging?, proxyManager: ProxyManaging?) {
+        self.controller = controller
         self.convoManager = convoManager
         self.proxyManager = proxyManager
-        self.controller = controller
     }
 }
 
@@ -83,7 +83,7 @@ private extension ConvoDetailTableViewDataSource {
             textField.placeholder = "Enter A Nickname"
             textField.text = convo.receiverNickname
         }
-        alert.addAction(UIAlertAction(title: "Save", style: .default) { [weak alert] (action) in
+        alert.addAction(UIAlertAction(title: "Save", style: .default) { [weak alert] _ in
             guard let nickname = alert?.textFields?[0].text else {
                 return
             }
