@@ -12,20 +12,17 @@ class ProxyManager: ProxyManaging {
 
     init(closer: Closing, key: String, tableView: UITableView, uid: String) {
         ref = DB.makeReference(Child.proxies, uid, key)
-        handle = ref?.observe(.value) { [weak self] (data) in
-            guard let _self = self else {
-                return
-            }
+        handle = ref?.observe(.value) { [weak self, weak tableView] (data) in
             guard let proxy = Proxy(data) else {
-                DB.checkKeyExists(Child.proxies, uid, key) { (exists) in
+                DB.checkKeyExists(Child.proxies, uid, key) { [weak closer] (exists) in
                     if !exists {
-                        closer.shouldClose = true
+                        closer?.shouldClose = true
                     }
                 }
                 return
             }
-            _self.proxy = proxy
-            tableView.reloadData()
+            self?.proxy = proxy
+            tableView?.reloadData()
         }
     }
 
