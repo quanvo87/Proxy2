@@ -3,17 +3,17 @@ import UIKit
 class MakeNewMessageTableViewDelegate: NSObject {
     private let uid: String
     private weak var controller: UIViewController?
-    private weak var delegate: SenderPickerDelegate?
-    private weak var manager: ProxiesManaging?
+    private weak var proxiesManager: ProxiesManaging?
+    private weak var senderManager: SenderManaging?
 
     init(uid: String,
          controller: UIViewController,
-         delegate: SenderPickerDelegate?,
-         manager: ProxiesManaging?) {
+         proxiesManager: ProxiesManaging?,
+         senderManager: SenderManaging?) {
         self.uid = uid
         self.controller = controller
-        self.delegate = delegate
-        self.manager = manager
+        self.proxiesManager = proxiesManager
+        self.senderManager = senderManager
     }
 }
 
@@ -24,8 +24,8 @@ extension MakeNewMessageTableViewDelegate: UITableViewDelegate {
         }
         tableView.deselectRow(at: indexPath, animated: true)
         let senderPickerViewController = SenderPickerViewController(uid: uid,
-                                                                    manager: manager,
-                                                                    senderPickerDelegate: delegate)
+                                                                    proxiesManager: proxiesManager,
+                                                                    senderManager: senderManager)
         controller?.navigationController?.pushViewController(senderPickerViewController, animated: true)
     }
 

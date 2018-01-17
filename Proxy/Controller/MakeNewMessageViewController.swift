@@ -6,24 +6,7 @@ private enum FirstResponder {
     case newMessageTextView
 }
 
-class MakeNewMessageViewController: UIViewController, ReceiverIconImageManaging, SenderPickerDelegate {
-    var receiverIconImage: UIImage? {
-        didSet {
-            tableView.reloadData()
-            makeReceiverTextFieldFirstResponder()
-        }
-    }
-    var sender: Proxy? {
-        didSet {
-            tableView.reloadData()
-            switch firstResponder {
-            case .receiverTextField:
-                makeReceiverTextFieldFirstResponder()
-            case .newMessageTextView:
-                inputBar.inputTextView.becomeFirstResponder()
-            }
-        }
-    }
+class MakeNewMessageViewController: UIViewController {
     override var inputAccessoryView: UIView? {
         return inputBar
     }
@@ -31,39 +14,41 @@ class MakeNewMessageViewController: UIViewController, ReceiverIconImageManaging,
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
     private var firstResponder: FirstResponder = .receiverTextField
-    private weak var makeNewMessageDelegate: MakeNewMessageDelegate?
+    private weak var newConvoManager: NewConvoManaging?
     private weak var proxiesManager: ProxiesManaging?
     private lazy var inputBarDelegate = MakeNewMessageInputBarDelegate(buttonManager: self,
                                                                        controller: self,
-                                                                       makeNewMessageDelegate: makeNewMessageDelegate,
-                                                                       senderPickerDelegate: self,
+                                                                       newConvoManager: newConvoManager,
+                                                                       senderManager: senderManager,
                                                                        tableView: tableView)
+    private lazy var receiverIconImageManager = ReceiverIconImageManager(setter: self,
+                                                                         tableView: tableView)
+    private lazy var senderManager = SenderManager(setter: self, tableView: tableView)
     private lazy var tableViewDataSource = MakeNewMessageTableViewDataSource(uid: uid,
                                                                              controller: self,
-                                                                             delegate: self,
                                                                              proxiesManager: proxiesManager,
-                                                                             receiverIconImageManager: self,
-                                                                             receiverTextFieldDelegate: self)
+                                                                             receiverIconImageManager: receiverIconImageManager,
+                                                                             receiverTextFieldDelegate: self,
+                                                                             senderManager: senderManager)
     private lazy var tableViewDelegate = MakeNewMessageTableViewDelegate(uid: uid,
                                                                          controller: self,
-                                                                         delegate: self,
-                                                                         manager: proxiesManager)
+                                                                         proxiesManager: proxiesManager,
+                                                                         senderManager: senderManager)
 
     init(sender: Proxy?,
          uid: String,
-         delegate: MakeNewMessageDelegate?,
-         manager: ProxiesManaging?) {
+         newConvoManager: NewConvoManaging?,
+         proxiesManager: ProxiesManaging?) {
         self.uid = uid
-        self.sender = sender
-        self.makeNewMessageDelegate = delegate
-        self.proxiesManager = manager
+        self.newConvoManager = newConvoManager
+        self.proxiesManager = proxiesManager
 
         super.init(nibName: nil, bundle: nil)
 
         inputBar.delegate = inputBarDelegate
         inputBar.inputTextView.delegate = self
 
-        manager?.addManager(self)
+        proxiesManager?.addManager(self)
 
         navigationItem.rightBarButtonItems = [UIBarButtonItem.make(target: self,
                                                                    action: #selector(close),
@@ -82,6 +67,11 @@ class MakeNewMessageViewController: UIViewController, ReceiverIconImageManaging,
                            forCellReuseIdentifier: Identifier.makeNewMessageSenderTableViewCell)
         tableView.rowHeight = 44
         tableView.sectionHeaderHeight = 0
+        tableView.reloadData()
+
+        senderManager.sender = sender
+
+        setFirstResponder()
 
         view.addSubview(tableView)
     }
@@ -118,6 +108,20 @@ extension MakeNewMessageViewController: ButtonManaging {
     }
 }
 
+extension MakeNewMessageViewController: FirstResponderSetting {
+    func setFirstResponder() {
+        switch firstResponder {
+        case .receiverTextField:
+            guard let cell = tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? MakeNewMessageReceiverTableViewCell else {
+                return
+            }
+            cell.receiverTextField.becomeFirstResponder()
+        case .newMessageTextView:
+            inputBar.inputTextView.becomeFirstResponder()
+        }
+    }
+}
+
 extension MakeNewMessageViewController: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
         firstResponder = .receiverTextField
@@ -150,16 +154,9 @@ private extension MakeNewMessageViewController {
             case .failure(let error):
                 self?.showAlert(title: "Error Making New Proxy", message: error.description)
             case .success(let newProxy):
-                self?.sender = newProxy
+                self?.senderManager.sender = newProxy
             }
             self?.setButtons(true)
         }
-    }
-
-    func makeReceiverTextFieldFirstResponder() {
-        guard let cell = tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? MakeNewMessageReceiverTableViewCell else {
-            return
-        }
-        cell.receiverTextField.becomeFirstResponder()
     }
 }

@@ -1,6 +1,6 @@
 import UIKit
 
-class ProxyViewController: UIViewController, Closing, MakeNewMessageDelegate {
+class ProxyViewController: UIViewController, Closing, NewConvoManaging {
     var newConvo: Convo?
     var shouldClose: Bool = false
     private let proxy: Proxy

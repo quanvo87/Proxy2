@@ -1,6 +1,6 @@
 import UIKit
 
-class ProxiesViewController: UIViewController, ItemsToDeleteManaging, MakeNewMessageDelegate {
+class ProxiesViewController: UIViewController, ItemsToDeleteManaging, NewConvoManaging {
     var itemsToDelete: [String: Any] = [:]
     var newConvo: Convo?
     private let tableView = UITableView(frame: .zero, style: .grouped)
@@ -10,8 +10,8 @@ class ProxiesViewController: UIViewController, ItemsToDeleteManaging, MakeNewMes
     private weak var unreadMessagesManager: UnreadMessagesManaging?
     private lazy var buttonManager = ProxiesButtonManager(uid: uid,
                                                           controller: self,
-                                                          delegate: self,
                                                           itemsToDeleteManager: self,
+                                                          newConvoManager: self,
                                                           proxiesManager: proxiesManager,
                                                           tableView: tableView)
     private lazy var dataSource = ProxiesTableViewDataSource(accessoryType: .disclosureIndicator,

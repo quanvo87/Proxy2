@@ -1,9 +1,9 @@
 import UIKit
 
 class TabBarController: UITabBarController {
-    let presenceManager: PresenceManaging
-    let proxiesManager: ProxiesManaging
-    let unreadMessagesManager: UnreadMessagesManaging
+    private let presenceManager: PresenceManaging
+    private let proxiesManager: ProxiesManaging
+    private let unreadMessagesManager: UnreadMessagesManaging
 
     init(uid: String,
          displayName: String?,

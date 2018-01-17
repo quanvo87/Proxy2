@@ -2,26 +2,25 @@ import SearchTextField
 
 class MakeNewMessageTableViewDataSource: NSObject {
     private let uid: String
-    private var firstLoad = true
     private weak var controller: UIViewController?
-    private weak var delegate: SenderPickerDelegate?
     private weak var proxiesManager: ProxiesManaging?
     private weak var receiverManager: ReceiverIconImageManaging?
     private weak var receiverTextFieldDelegate: UITextFieldDelegate?
+    private weak var senderManager: SenderManaging?
     private lazy var loader = ProxyNamesLoader(uid)
 
     init(uid: String,
          controller: UIViewController?,
-         delegate: SenderPickerDelegate?,
          proxiesManager: ProxiesManaging?,
          receiverIconImageManager: ReceiverIconImageManaging?,
-         receiverTextFieldDelegate: UITextFieldDelegate?) {
+         receiverTextFieldDelegate: UITextFieldDelegate?,
+         senderManager: SenderManaging?) {
         self.uid = uid
         self.controller = controller
-        self.delegate = delegate
         self.proxiesManager = proxiesManager
         self.receiverManager = receiverIconImageManager
         self.receiverTextFieldDelegate = receiverTextFieldDelegate
+        self.senderManager = senderManager
     }
 }
 
@@ -36,17 +35,13 @@ extension MakeNewMessageTableViewDataSource: UITableViewDataSource {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.makeNewMessageSenderTableViewCell) as? MakeNewMessageSenderTableViewCell else {
                 return tableView.dequeueReusableCell(withIdentifier: Identifier.makeNewMessageSenderTableViewCell, for: indexPath)
             }
-            cell.load(delegate?.sender)
+            cell.load(senderManager?.sender)
             return cell
         case 1:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.makeNewMessageReceiverTableViewCell) as? MakeNewMessageReceiverTableViewCell else {
                 return tableView.dequeueReusableCell(withIdentifier: Identifier.makeNewMessageReceiverTableViewCell, for: indexPath)
             }
             cell.iconImageView.image = receiverManager?.receiverIconImage
-            if firstLoad {
-                cell.receiverTextField.becomeFirstResponder()
-                firstLoad = false
-            }
             if let controller = controller {
                 cell.receiverTextField.maxResultsListHeight = Int(controller.view.frame.height / 2)
             }

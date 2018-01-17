@@ -5,17 +5,17 @@ class ConvosButtonManager {
     var makeNewProxyButton = UIBarButtonItem()
     private let uid: String
     private weak var controller: UIViewController?
-    private weak var delegate: MakeNewMessageDelegate?
-    private weak var manager: ProxiesManaging?
+    private weak var newConvoManager: NewConvoManaging?
+    private weak var proxiesManager: ProxiesManaging?
 
     init(uid: String,
          controller: UIViewController?,
-         delegate: MakeNewMessageDelegate?,
-         manager: ProxiesManaging?) {
+         newConvoManager: NewConvoManaging?,
+         proxiesManager: ProxiesManaging?) {
         self.uid = uid
         self.controller = controller
-        self.delegate = delegate
-        self.manager = manager
+        self.newConvoManager = newConvoManager
+        self.proxiesManager = proxiesManager
         makeNewMessageButton = UIBarButtonItem.make(target: self, action: #selector(showMakeNewMessageController), imageName: ButtonName.makeNewMessage)
         makeNewProxyButton = UIBarButtonItem.make(target: self, action: #selector(makeNewProxy), imageName: ButtonName.makeNewProxy)
         controller?.navigationItem.rightBarButtonItems = [makeNewMessageButton, makeNewProxyButton]
@@ -34,7 +34,7 @@ extension ConvosButtonManager: ButtonManaging {
 
 private extension ConvosButtonManager {
     @objc func makeNewProxy() {
-        guard let proxyCount = manager?.proxies.count else {
+        guard let proxyCount = proxiesManager?.proxies.count else {
             return
         }
         makeNewProxyButton.isEnabled = false
@@ -59,7 +59,7 @@ private extension ConvosButtonManager {
     @objc func showMakeNewMessageController() {
         makeNewMessageButton.isEnabled = false
         makeNewMessageButton.morph()
-        delegate?.showMakeNewMessageController(sender: nil, uid: uid, manager: manager, controller: controller)
+        newConvoManager?.showMakeNewMessageController(sender: nil, uid: uid, manager: proxiesManager, controller: controller)
         makeNewMessageButton.isEnabled = true
     }
 }

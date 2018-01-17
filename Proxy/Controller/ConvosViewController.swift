@@ -1,6 +1,6 @@
 import UIKit
 
-class ConvosViewController: UIViewController, MakeNewMessageDelegate {
+class ConvosViewController: UIViewController, NewConvoManaging {
     var newConvo: Convo?
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
@@ -9,8 +9,8 @@ class ConvosViewController: UIViewController, MakeNewMessageDelegate {
     private weak var unreadMessagesManager: UnreadMessagesManaging?
     private lazy var buttonManager = ConvosButtonManager(uid: uid,
                                                          controller: self,
-                                                         delegate: self,
-                                                         manager: proxiesManager)
+                                                         newConvoManager: self,
+                                                         proxiesManager: proxiesManager)
     private lazy var convosManager = ConvosManager(proxyKey: nil,
                                                    uid: uid,
                                                    manager: buttonManager,

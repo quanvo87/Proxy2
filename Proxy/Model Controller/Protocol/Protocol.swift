@@ -18,30 +18,30 @@ protocol Closing: class {
     var shouldClose: Bool { get set }
 }
 
+protocol FirstResponderSetting: class {
+    func setFirstResponder()
+}
+
 protocol ItemsToDeleteManaging: class {
     var itemsToDelete: [String: Any] { get set }
 }
 
-protocol MakeNewMessageDelegate: class {
+protocol NewConvoManaging: class {
     var newConvo: Convo? { get set }
 }
 
-extension MakeNewMessageDelegate {
+extension NewConvoManaging {
     func showMakeNewMessageController(sender: Proxy?,
                                       uid: String,
                                       manager: ProxiesManaging?,
                                       controller: UIViewController?) {
         let makeNewMessageViewController = MakeNewMessageViewController(sender: sender,
                                                                         uid: uid,
-                                                                        delegate: self,
-                                                                        manager: manager)
+                                                                        newConvoManager: self,
+                                                                        proxiesManager: manager)
         let navigationController = UINavigationController(rootViewController: makeNewMessageViewController)
         controller?.present(navigationController, animated: true)
     }
-}
-
-protocol ReceiverIconImageManaging: class {
-    var receiverIconImage: UIImage? { get set }
 }
 
 protocol ReferenceObserving: class {
@@ -55,10 +55,6 @@ extension ReferenceObserving {
             ref?.removeObserver(withHandle: handle)
         }
     }
-}
-
-protocol SenderPickerDelegate: class {
-    var sender: Proxy? { get set }
 }
 
 protocol StoryboardMakable {

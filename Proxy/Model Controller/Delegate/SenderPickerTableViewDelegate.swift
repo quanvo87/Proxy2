@@ -2,22 +2,24 @@ import UIKit
 
 class SenderPickerTableViewDelegate: NSObject {
     private weak var controller: UIViewController?
-    private weak var delegate: SenderPickerDelegate?
-    private weak var manager: ProxiesManaging?
+    private weak var proxiesManager: ProxiesManaging?
+    private weak var senderManager: SenderManaging?
 
-    init(controller: UIViewController, delegate: SenderPickerDelegate?, manager: ProxiesManaging?) {
+    init(controller: UIViewController,
+         proxiesManager: ProxiesManaging?,
+         senderManager: SenderManaging?) {
         self.controller = controller
-        self.delegate = delegate
-        self.manager = manager
+        self.proxiesManager = proxiesManager
+        self.senderManager = senderManager
     }
 }
 
 extension SenderPickerTableViewDelegate: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let proxy = manager?.proxies[safe: indexPath.row] else {
+        guard let proxy = proxiesManager?.proxies[safe: indexPath.row] else {
             return
         }
-        delegate?.sender = proxy
+        senderManager?.sender = proxy
         _ = controller?.navigationController?.popViewController(animated: true)
     }
 

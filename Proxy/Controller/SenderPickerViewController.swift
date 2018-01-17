@@ -3,25 +3,25 @@ import UIKit
 class SenderPickerViewController: UIViewController {
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
-    private weak var manager: ProxiesManaging?
-    private weak var senderPickerDelegate: SenderPickerDelegate?
+    private weak var proxiesManager: ProxiesManaging?
+    private weak var senderManager: SenderManaging?
     private lazy var tableViewDataSource = ProxiesTableViewDataSource(accessoryType: .none,
-                                                                      manager: manager)
+                                                                      manager: proxiesManager)
     private lazy var tableViewDelegate = SenderPickerTableViewDelegate(controller: self,
-                                                                       delegate: senderPickerDelegate,
-                                                                       manager: manager)
+                                                                       proxiesManager: proxiesManager,
+                                                                       senderManager: senderManager)
 
     init(uid: String,
-         manager: ProxiesManaging?,
-         senderPickerDelegate: SenderPickerDelegate?) {
+         proxiesManager: ProxiesManaging?,
+         senderManager: SenderManaging?) {
         self.uid = uid
-        self.manager = manager
-        self.senderPickerDelegate = senderPickerDelegate
+        self.proxiesManager = proxiesManager
+        self.senderManager = senderManager
 
         super.init(nibName: nil, bundle: nil)
 
-        manager?.addManager(self)
-        manager?.addTableView(tableView)
+        proxiesManager?.addManager(self)
+        proxiesManager?.addTableView(tableView)
 
         navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self,
                                                                  action: #selector(makeNewProxy),
@@ -41,7 +41,7 @@ class SenderPickerViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if manager?.proxies.isEmpty ?? false {
+        if proxiesManager?.proxies.isEmpty ?? false {
             animateButton()
         }
     }
@@ -63,7 +63,7 @@ extension SenderPickerViewController: ButtonManaging {
 
 private extension SenderPickerViewController {
     @objc func makeNewProxy() {
-        guard let proxyCount = manager?.proxies.count else {
+        guard let proxyCount = proxiesManager?.proxies.count else {
             return
         }
         navigationItem.rightBarButtonItem?.isEnabled = false

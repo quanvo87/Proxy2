@@ -8,21 +8,21 @@ class ProxiesButtonManager {
     var makeNewProxyButton = UIBarButtonItem()
     private let uid: String
     private weak var controller: UIViewController?
-    private weak var delegate: MakeNewMessageDelegate?
     private weak var itemsToDeleteManager: ItemsToDeleteManaging?
+    private weak var newConvoManager: NewConvoManaging?
     private weak var proxiesManager: ProxiesManaging?
     private weak var tableView: UITableView?
 
     init(uid: String,
          controller: UIViewController?,
-         delegate: MakeNewMessageDelegate?,
          itemsToDeleteManager: ItemsToDeleteManaging?,
+         newConvoManager: NewConvoManaging?,
          proxiesManager: ProxiesManaging?,
          tableView: UITableView?) {
         self.uid = uid
         self.controller = controller
-        self.delegate = delegate
         self.itemsToDeleteManager = itemsToDeleteManager
+        self.newConvoManager = newConvoManager
         self.proxiesManager = proxiesManager
         self.tableView = tableView
         cancelButton = UIBarButtonItem.make(target: self, action: #selector(setDefaultButtons), imageName: ButtonName.cancel)
@@ -111,7 +111,7 @@ private extension ProxiesButtonManager {
     @objc func showMakeNewMessageController() {
         makeNewMessageButton.isEnabled = false
         makeNewMessageButton.morph()
-        delegate?.showMakeNewMessageController(sender: nil, uid: uid, manager: proxiesManager, controller: controller)
+        newConvoManager?.showMakeNewMessageController(sender: nil, uid: uid, manager: proxiesManager, controller: controller)
         makeNewMessageButton.isEnabled = true
     }
 }

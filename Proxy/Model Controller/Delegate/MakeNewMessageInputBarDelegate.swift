@@ -4,19 +4,19 @@ import SearchTextField
 class MakeNewMessageInputBarDelegate {
     private weak var buttonManager: ButtonManaging?
     private weak var controller: UIViewController?
-    private weak var makeNewMessageDelegate: MakeNewMessageDelegate?
-    private weak var senderPickerDelegate: SenderPickerDelegate?
+    private weak var newConvoManager: NewConvoManaging?
+    private weak var senderManager: SenderManaging?
     private weak var tableView: UITableView?
 
     init(buttonManager: ButtonManaging?,
          controller: UIViewController?,
-         makeNewMessageDelegate: MakeNewMessageDelegate?,
-         senderPickerDelegate: SenderPickerDelegate?,
+         newConvoManager: NewConvoManaging?,
+         senderManager: SenderManaging?,
          tableView: UITableView?) {
         self.buttonManager = buttonManager
         self.controller = controller
-        self.makeNewMessageDelegate = makeNewMessageDelegate
-        self.senderPickerDelegate = senderPickerDelegate
+        self.newConvoManager = newConvoManager
+        self.senderManager = senderManager
         self.tableView = tableView
     }
 }
@@ -24,7 +24,7 @@ class MakeNewMessageInputBarDelegate {
 extension MakeNewMessageInputBarDelegate: MessageInputBarDelegate {
     func messageInputBar(_ inputBar: MessageInputBar, didPressSendButtonWith text: String) {
         buttonManager?.setButtons(false)
-        guard let sender = senderPickerDelegate?.sender else {
+        guard let sender = senderManager?.sender else {
             controller?.showAlert(title: "Sender Missing", message: "Please pick one of your Proxies to send the message from.")
             buttonManager?.setButtons(true)
             return
@@ -55,7 +55,7 @@ extension MakeNewMessageInputBarDelegate: MessageInputBarDelegate {
                     }
                     self?.buttonManager?.setButtons(true)
                 case .success(let tuple):
-                    self?.makeNewMessageDelegate?.newConvo = tuple.convo
+                    self?.newConvoManager?.newConvo = tuple.convo
                     self?.controller?.navigationController?.dismiss(animated: false)
                 }
             }
