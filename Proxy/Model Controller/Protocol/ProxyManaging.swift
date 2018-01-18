@@ -14,8 +14,8 @@ class ProxyManager: ProxyManaging {
         ref = DB.makeReference(Child.proxies, uid, key)
         handle = ref?.observe(.value) { [weak self, weak tableView] (data) in
             guard let proxy = Proxy(data) else {
-                DB.checkKeyExists(Child.proxies, uid, key) { [weak closer] (exists) in
-                    if !exists {
+                DB.getProxy(uid: uid, key: key) { [weak closer] (proxy) in
+                    if proxy == nil {
                         closer?.shouldClose = true
                     }
                 }

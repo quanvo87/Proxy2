@@ -85,17 +85,6 @@ extension DB {
             completion(error == nil)
         }
     }
-
-    // todo: think i can delete this
-    static func checkKeyExists(_ first: String, _ rest: String..., completion: @escaping (Bool) -> Void) {
-        checkKeyExists(first, rest, completion: completion)
-    }
-
-    static func checkKeyExists(_ first: String, _ rest: [String], completion: @escaping (Bool) -> Void) {
-        get(first, rest) { (data) in
-            completion((data?.value as AnyObject)["key"] as? String != nil)
-        }
-    }
 }
 
 extension GroupWork {
