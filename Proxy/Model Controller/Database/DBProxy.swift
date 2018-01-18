@@ -217,7 +217,15 @@ extension GroupWork {
 
     func setReceiverDeletedProxy(for convos: [Convo]) {
         for convo in convos {
-            set(.receiverDeletedProxy(true), for: convo, asSender: false)
+            start()
+            DB.set(true, at: Child.convos, convo.receiverId, convo.key, Child.receiverDeletedProxy) { (success) in
+                self.finish(withResult: success)
+                DB.getConvo(uid: convo.receiverId, key: convo.key) { (receiverConvo) in
+                    if receiverConvo == nil {
+                        DB.delete(Child.convos, convo.receiverId, convo.key) { _ in }
+                    }
+                }
+            }
         }
     }
 

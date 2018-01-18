@@ -24,13 +24,16 @@ struct Identifier {
 
 struct Child {
     static let convos = "convos"
+    static let hasUnreadMessage = "hasUnreadMessage"
     static let icon = "icon"
     static let key = "key"
+    static let lastMessage = "lastMessage"
     static let messages = "messages"
     static let name = "name"
     static let parentConvoKey = "parentConvoKey"
     static let proxies = "proxies"
     static let proxyNames = "proxyNames"
+    static let receiverDeletedProxy = "receiverDeletedProxy"
     static let receiverNickname = "receiverNickname"
     static let receiverProxyKey = "receiverProxyKey"
     static let senderNickname = "senderNickname"

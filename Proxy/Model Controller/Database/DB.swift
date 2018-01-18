@@ -86,6 +86,7 @@ extension DB {
         }
     }
 
+    // todo: think i can delete this
     static func checkKeyExists(_ first: String, _ rest: String..., completion: @escaping (Bool) -> Void) {
         checkKeyExists(first, rest, completion: completion)
     }

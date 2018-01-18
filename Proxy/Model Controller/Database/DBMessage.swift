@@ -55,7 +55,8 @@ extension DB {
             completion(.failure(.unknown))
             return
         }
-        updateReceiverDeletedProxy(convo)
+        // todo: re-think this
+//        updateReceiverDeletedProxy(convo)
         let message = Message(sender: Sender(id: convo.senderId,
                                              displayName: convo.senderProxyName),
                               messageId: ref.childByAutoId().key,
@@ -70,20 +71,7 @@ extension DB {
         let currentTime = Date().timeIntervalSince1970
         // Receiver updates
         work.increment(1, property: .messagesReceived, uid: convo.receiverId)
-        work.set(message.toDictionary(), at: Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
-        if !convo.receiverDeletedProxy {
-            work.set(.hasUnreadMessage(true), for: convo, asSender: false)
-            work.set(.hasUnreadMessage(true), uid: message.receiverId, proxyKey: message.receiverProxyKey)
-            work.set(.timestamp(currentTime), for: convo, asSender: false)
-            work.set(.timestamp(currentTime), forProxyIn: convo, asSender: false)
-            switch message.data {
-            case .text(let s):
-                work.set(.lastMessage(s), for: convo, asSender: false)
-                work.set(.lastMessage(s), forProxyIn: convo, asSender: false)
-            default:
-                break
-            }
-        }
+        work.setReceiverMessageValues(convo: convo, currentTime: currentTime, message: message)
         // Sender updates
         work.increment(1, property: .messagesSent, uid: convo.senderId)
         work.set(.timestamp(currentTime), for: convo, asSender: true)
@@ -114,22 +102,23 @@ extension DB {
         let work = GroupWork()
         work.increment(1, property: .proxiesInteractedWith, uid: receiver.ownerId)
         work.increment(1, property: .proxiesInteractedWith, uid: sender.ownerId)
-        work.set(receiverConvo, asSender: true)
         work.set(senderConvo, asSender: true)
+        work.setReceiverConvo(receiverConvo)
         work.allDone {
             completion(work.result ? senderConvo : nil)
         }
     }
 
-    private static func updateReceiverDeletedProxy(_ convo: Convo) {
-        checkKeyExists(Child.convos, convo.receiverId, convo.key) { (exists) in
-            if !exists {
-                let work = GroupWork()
-                work.set(.receiverDeletedProxy(true), for: convo, asSender: true)
-                work.allDone {}
-            }
-        }
-    }
+    // todo: delete?
+//    private static func updateReceiverDeletedProxy(_ convo: Convo) {
+//        checkKeyExists(Child.convos, convo.receiverId, convo.key) { (exists) in
+//            if !exists {
+//                let work = GroupWork()
+//                work.set(.receiverDeletedProxy(true), for: convo, asSender: true)
+//                work.allDone {}
+//            }
+//        }
+//    }
 }
 
 extension GroupWork {
@@ -147,6 +136,64 @@ extension GroupWork {
                 self.set(.hasUnreadMessage(false), uid: uid, proxyKey: key)
             }
             self.finish(withResult: true)
+        }
+    }
+
+    func setReceiverConvo(_ convo: Convo) {
+        start()
+        DB.set(convo.toDictionary(), at: Child.convos, convo.senderId, convo.key) { (success) in
+            self.finish(withResult: success)
+            DB.getProxy(uid: convo.senderId, key: convo.senderProxyKey) { (proxy) in
+                if proxy == nil {
+                    DB.delete(convo, asSender: true) {_ in }
+                }
+            }
+        }
+    }
+
+    func setReceiverMessageValues(convo: Convo, currentTime: Double, message: Message) {
+        guard !convo.receiverDeletedProxy else {
+            return
+        }
+        switch message.data {
+        case .text(let text):
+            start()
+            DB.set(message.toDictionary(), at: Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId) { (success) in
+                self.finish(withResult: success)
+                DB.getProxy(uid: message.receiverId, key: message.receiverProxyKey) { (proxy) in
+                    if proxy == nil {
+                        DB.delete(Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId) { _ in }
+                    }
+                }
+            }
+            let convoUpdates: [String: Any] = [Child.hasUnreadMessage: true,
+                                               Child.lastMessage: text,
+                                               Child.timestamp: currentTime]
+            start()
+            DB.makeReference(Child.convos, convo.receiverId, convo.key)?
+                .updateChildValues(convoUpdates) { (error, _) in
+                    self.finish(withResult: error == nil)
+                    DB.getConvo(uid: convo.receiverId, key: convo.key) { (receiverConvo) in
+                        if receiverConvo == nil {
+                            DB.delete(Child.convos, convo.receiverId, convo.key) { _ in }
+                        }
+                    }
+            }
+            let proxyUpdates: [String: Any] = [Child.hasUnreadMessage: true,
+                                               Child.lastMessage: text,
+                                               Child.timestamp: currentTime]
+            start()
+            DB.makeReference(Child.proxies, convo.receiverId, convo.receiverProxyKey)?
+                .updateChildValues(proxyUpdates) { (error, _) in
+                    self.finish(withResult: error == nil)
+                    DB.getProxy(uid: convo.receiverId, key: convo.receiverProxyKey) { (proxy) in
+                        if proxy == nil {
+                            DB.delete(Child.proxies, convo.receiverId, convo.receiverProxyKey) { _ in }
+                        }
+                    }
+            }
+        default:
+            break
         }
     }
 }
