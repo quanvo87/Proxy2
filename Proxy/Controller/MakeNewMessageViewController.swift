@@ -1,5 +1,4 @@
 import MessageKit
-import SearchTextField
 
 class MakeNewMessageViewController: UIViewController {
     override var inputAccessoryView: UIView? {

@@ -3,6 +3,7 @@ Create unlimited, anonymous user names (Proxy's) with just one tap. Chat with an
 
 #### Libraries Used:
 
+- [Device.swift](https://github.com/schickling/Device.swift)
 - [FacebookCore](https://cocoapods.org/pods/FacebookCore)
 - [Firebase](https://cocoapods.org/pods/Firebase)
 - [GroupWork](https://github.com/quanvo87/GroupWork)
