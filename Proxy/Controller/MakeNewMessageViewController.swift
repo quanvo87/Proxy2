@@ -1,11 +1,6 @@
 import MessageKit
 import SearchTextField
 
-private enum FirstResponder {
-    case receiverTextField
-    case newMessageTextView
-}
-
 class MakeNewMessageViewController: UIViewController {
     override var inputAccessoryView: UIView? {
         return inputBar
@@ -26,6 +21,7 @@ class MakeNewMessageViewController: UIViewController {
     private lazy var senderManager = SenderManager(setter: self, tableView: tableView)
     private lazy var tableViewDataSource = MakeNewMessageTableViewDataSource(uid: uid,
                                                                              controller: self,
+                                                                             inputBar: inputBar,
                                                                              proxiesManager: proxiesManager,
                                                                              receiverIconImageManager: receiverIconImageManager,
                                                                              receiverTextFieldDelegate: self,

@@ -2,6 +2,11 @@ import Firebase
 import Spring
 import UIKit
 
+enum FirstResponder {
+    case receiverTextField
+    case newMessageTextView
+}
+
 enum Result<T, Error> {
     case success(T)
     case failure(Error)
@@ -70,6 +75,7 @@ extension DataSnapshot {
             guard let convo = Convo(data) else {
                 DB.checkKeyExists(Child.convos, uid, data.key) { (exists) in
                     if !exists {
+                        print("😢")
                         DB.delete(Child.convos, uid, data.key) { _ in }
                     }
                 }
@@ -95,6 +101,7 @@ extension DataSnapshot {
             guard let proxy = Proxy(data) else {
                 DB.checkKeyExists(Child.proxies, uid, data.key) { (exists) in
                     if !exists {
+                        print("😓")
                         DB.delete(Child.proxies, uid, data.key) { _ in }
                     }
                 }
