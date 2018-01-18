@@ -55,8 +55,6 @@ extension DB {
             completion(.failure(.unknown))
             return
         }
-        // todo: re-think this
-//        updateReceiverDeletedProxy(convo)
         let message = Message(sender: Sender(id: convo.senderId,
                                              displayName: convo.senderProxyName),
                               messageId: ref.childByAutoId().key,
@@ -108,17 +106,6 @@ extension DB {
             completion(work.result ? senderConvo : nil)
         }
     }
-
-    // todo: delete?
-//    private static func updateReceiverDeletedProxy(_ convo: Convo) {
-//        checkKeyExists(Child.convos, convo.receiverId, convo.key) { (exists) in
-//            if !exists {
-//                let work = GroupWork()
-//                work.set(.receiverDeletedProxy(true), for: convo, asSender: true)
-//                work.allDone {}
-//            }
-//        }
-//    }
 }
 
 extension GroupWork {
@@ -163,6 +150,9 @@ extension GroupWork {
                 DB.getProxy(uid: message.receiverId, key: message.receiverProxyKey) { (proxy) in
                     if proxy == nil {
                         DB.delete(Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId) { _ in }
+                        let work = GroupWork()
+                        work.set(.receiverDeletedProxy(true), for: convo, asSender: true)
+                        work.allDone {}
                     }
                 }
             }
@@ -189,6 +179,9 @@ extension GroupWork {
                     DB.getProxy(uid: convo.receiverId, key: convo.receiverProxyKey) { (proxy) in
                         if proxy == nil {
                             DB.delete(Child.proxies, convo.receiverId, convo.receiverProxyKey) { _ in }
+                            let work = GroupWork()
+                            work.set(.receiverDeletedProxy(true), for: convo, asSender: true)
+                            work.allDone {}
                         }
                     }
             }
