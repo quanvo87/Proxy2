@@ -29,11 +29,10 @@ class UnreadMessagesManager: UnreadMessagesManaging {
     init(_ uid: String) {
         ref = DB.makeReference(Child.userInfo, uid, Child.unreadMessages)
         addedHandle = ref?.observe(.childAdded) { [weak self] (data) in
-            guard let proxiesManager = self?.proxiesManager else {
-                return
-            }
-            guard let message = Message(data) else {
-                return
+            guard
+                let message = Message(data),
+                let proxiesManager = self?.proxiesManager else {
+                    return
             }
             guard proxiesManager.proxies.contains(where: { $0.key == message.receiverProxyKey }) else {
                 DB.deleteUnreadMessage(message) { _ in }
