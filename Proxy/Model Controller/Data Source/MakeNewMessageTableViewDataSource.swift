@@ -1,8 +1,10 @@
+import MessageKit
 import SearchTextField
 
 class MakeNewMessageTableViewDataSource: NSObject {
     private let uid: String
     private weak var controller: UIViewController?
+    private weak var inputBar: MessageInputBar?
     private weak var proxiesManager: ProxiesManaging?
     private weak var receiverManager: ReceiverIconImageManaging?
     private weak var receiverTextFieldDelegate: UITextFieldDelegate?
@@ -11,12 +13,14 @@ class MakeNewMessageTableViewDataSource: NSObject {
 
     init(uid: String,
          controller: UIViewController?,
+         inputBar: MessageInputBar?,
          proxiesManager: ProxiesManaging?,
          receiverIconImageManager: ReceiverIconImageManaging?,
          receiverTextFieldDelegate: UITextFieldDelegate?,
          senderManager: SenderManaging?) {
         self.uid = uid
         self.controller = controller
+        self.inputBar = inputBar
         self.proxiesManager = proxiesManager
         self.receiverManager = receiverIconImageManager
         self.receiverTextFieldDelegate = receiverTextFieldDelegate
@@ -47,6 +51,7 @@ extension MakeNewMessageTableViewDataSource: UITableViewDataSource {
             }
             cell.receiverTextField.comparisonOptions = [.caseInsensitive]
             cell.receiverTextField.delegate = receiverTextFieldDelegate
+            // todo: make this a smaller font if not on iphone 7, 8, x
             cell.receiverTextField.highlightAttributes = [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 17)]
             cell.receiverTextField.itemSelectionHandler = { [weak self] (items, index) in
                 guard let item = items[safe: index] else {
@@ -54,7 +59,7 @@ extension MakeNewMessageTableViewDataSource: UITableViewDataSource {
                 }
                 self?.receiverManager?.receiverIconImage = item.image
                 cell.receiverTextField.text = item.title
-                cell.receiverTextField.becomeFirstResponder()
+                self?.inputBar?.inputTextView.becomeFirstResponder()
             }
             cell.receiverTextField.theme.cellHeight = 50
             cell.receiverTextField.theme.font = .systemFont(ofSize: 17)
