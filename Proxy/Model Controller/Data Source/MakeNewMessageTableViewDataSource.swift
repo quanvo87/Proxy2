@@ -1,5 +1,5 @@
+import Device_swift
 import MessageKit
-import SearchTextField
 
 class MakeNewMessageTableViewDataSource: NSObject {
     private let uid: String
@@ -49,10 +49,10 @@ extension MakeNewMessageTableViewDataSource: UITableViewDataSource {
             if let controller = controller {
                 cell.receiverTextField.maxResultsListHeight = Int(controller.view.frame.height / 2)
             }
+            let fontSize: CGFloat = isSmallDevice() ? 14 : 17
             cell.receiverTextField.comparisonOptions = [.caseInsensitive]
             cell.receiverTextField.delegate = receiverTextFieldDelegate
-            // todo: make this a smaller font if not on iphone 7, 8, x
-            cell.receiverTextField.highlightAttributes = [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 17)]
+            cell.receiverTextField.highlightAttributes = [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: fontSize)]
             cell.receiverTextField.itemSelectionHandler = { [weak self] (items, index) in
                 guard let item = items[safe: index] else {
                     return
@@ -62,7 +62,7 @@ extension MakeNewMessageTableViewDataSource: UITableViewDataSource {
                 self?.inputBar?.inputTextView.becomeFirstResponder()
             }
             cell.receiverTextField.theme.cellHeight = 50
-            cell.receiverTextField.theme.font = .systemFont(ofSize: 17)
+            cell.receiverTextField.theme.font = .systemFont(ofSize: fontSize)
             cell.receiverTextField.theme.separatorColor = UIColor.lightGray.withAlphaComponent(0.5)
             cell.receiverTextField.userStoppedTypingHandler = { [weak self] in
                 guard
@@ -88,6 +88,42 @@ extension MakeNewMessageTableViewDataSource: UITableViewDataSource {
             return "Tap the bouncing button to make a new Proxy 🎉."
         } else {
             return nil
+        }
+    }
+
+    private func isSmallDevice() -> Bool {
+        let deviceType = UIDevice.current.deviceType
+        switch deviceType {
+        case .iPhone2G:
+            return true
+        case .iPhone3G:
+            return true
+        case .iPhone3GS:
+            return true
+        case .iPhone4:
+            return true
+        case .iPhone4S:
+            return true
+        case .iPhone5:
+            return true
+        case .iPhone5C:
+            return true
+        case .iPhone5S:
+            return true
+        case .iPhoneSE:
+            return true
+        case .iPodTouch1G:
+            return true
+        case .iPodTouch2G:
+            return true
+        case .iPodTouch3G:
+            return true
+        case .iPodTouch4G:
+            return true
+        case .iPodTouch5G:
+            return true
+        default:
+            return false
         }
     }
 }
