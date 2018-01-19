@@ -44,6 +44,10 @@ extension NewConvoManaging {
     }
 }
 
+protocol ProxyManaging: class {
+    var proxy: Proxy? { get set }
+}
+
 protocol ReferenceObserving: class {
     var handle: DatabaseHandle? { get }
     var ref: DatabaseReference? { get }
