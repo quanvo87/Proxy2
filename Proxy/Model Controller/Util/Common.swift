@@ -281,7 +281,7 @@ extension UIViewController {
             textField.placeholder = "Enter A Nickname"
             textField.text = proxy.nickname
         }
-        alert.addAction(UIAlertAction(title: "Save", style: .default) { [weak alert] _ in
+        alert.addAction(UIAlertAction(title: "Save", style: .default) { [weak self, weak alert] _ in
             guard let nickname = alert?.textFields?[0].text else {
                 return
             }
@@ -289,8 +289,8 @@ extension UIViewController {
             if !(nickname != "" && trimmed == "") {
                 DB.setNickname(to: nickname, for: proxy) { (error) in
                     if let error = error, case .inputTooLong = error {
-                        self.showAlert(title: "Nickname Too Long", message: "Please try a shorter nickname.") {
-                            self.showEditProxyNicknameAlert(proxy)
+                        self?.showAlert(title: "Nickname Too Long", message: "Please try a shorter nickname.") {
+                            self?.showEditProxyNicknameAlert(proxy)
                         }
                     }
                 }

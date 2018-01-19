@@ -1,35 +1,42 @@
 import UIKit
 
-class ProxyViewController: UIViewController, Closing, NewConvoManaging {
-    var newConvo: Convo?
+class ProxyViewController: UIViewController, Closing, NewConvoManaging, ProxyManaging {
     var shouldClose: Bool = false
-    private let proxy: Proxy
+    var newConvo: Convo?
+    var proxy: Proxy? {
+        didSet {
+            if proxy == nil {
+                shouldClose = true
+            } else {
+                tableView.reloadData()
+            }
+        }
+    }
+    private let observer: ProxyObsering
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private weak var presenceManager: PresenceManaging?
     private weak var proxiesManager: ProxiesManaging?
     private weak var unreadMessagesManager: UnreadMessagesManaging?
-    private lazy var convosManager = ConvosManager(proxyKey: proxy.key,
-                                                   uid: proxy.ownerId,
+    private lazy var convosManager = ConvosManager(proxyKey: proxy!.key,
+                                                   uid: proxy!.ownerId,
                                                    manager: self,
                                                    tableView: tableView)
     private lazy var dataSource = ProxyTableViewDataSource(controller: self,
                                                            convosManager: convosManager,
-                                                           proxyManager: proxyManager)
+                                                           proxyManager: self)
     private lazy var delegate = ProxyTableViewDelegate(controller: self,
                                                        convosManager: convosManager,
                                                        presenceManager: presenceManager,
                                                        proxiesManager: proxiesManager,
                                                        unreadMessagesManager: unreadMessagesManager)
-    private lazy var proxyManager = ProxyManager(closer: self,
-                                                 key: proxy.key,
-                                                 tableView: tableView,
-                                                 uid: proxy.ownerId)
 
     init(proxy: Proxy,
+         observer: ProxyObsering = ProxyObserver(),
          presenceManager: PresenceManaging?,
          proxiesManager: ProxiesManaging?,
          unreadMessagesManager: UnreadMessagesManaging?) {
         self.proxy = proxy
+        self.observer = observer
         self.presenceManager = presenceManager
         self.proxiesManager = proxiesManager
         self.unreadMessagesManager = unreadMessagesManager
@@ -42,6 +49,8 @@ class ProxyViewController: UIViewController, Closing, NewConvoManaging {
                                               UIBarButtonItem.make(target: self,
                                                                    action: #selector(deleteProxy),
                                                                    imageName: ButtonName.delete)]
+
+        observer.load(proxyKey: proxy.key, uid: proxy.ownerId, manager: self)
 
         tableView.dataSource = dataSource
         tableView.delaysContentTouches = false
@@ -112,8 +121,10 @@ private extension ProxyViewController {
     }
 
     @objc func showMakeNewMessageController() {
-        guard let item = navigationItem.rightBarButtonItems?[safe: 0] else {
-            return
+        guard
+            let item = navigationItem.rightBarButtonItems?[safe: 0],
+            let proxy = proxy else {
+                return
         }
         item.morph()
         showMakeNewMessageController(sender: proxy, uid: proxy.ownerId, manager: proxiesManager, controller: self)
