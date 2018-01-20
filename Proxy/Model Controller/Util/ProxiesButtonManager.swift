@@ -36,7 +36,7 @@ class ProxiesButtonManager {
 
 extension ProxiesButtonManager: ButtonManaging {
     func animateButton() {
-        makeNewProxyButton.morph(loop: true)
+        makeNewProxyButton.animate(loop: true)
     }
 
     func stopAnimatingButton() {
@@ -47,7 +47,7 @@ extension ProxiesButtonManager: ButtonManaging {
 private extension ProxiesButtonManager {
     @objc func setDefaultButtons() {
         if proxiesManager?.proxies.isEmpty ?? false {
-            makeNewProxyButton.morph(loop: true)
+            makeNewProxyButton.animate(loop: true)
         }
         controller?.navigationItem.leftBarButtonItem = deleteButton
         controller?.navigationItem.rightBarButtonItems = [makeNewMessageButton, makeNewProxyButton]
@@ -93,7 +93,7 @@ private extension ProxiesButtonManager {
             return
         }
         makeNewProxyButton.isEnabled = false
-        makeNewProxyButton.morph()
+        makeNewProxyButton.animate()
         DB.makeProxy(uid: uid, currentProxyCount: proxyCount) { [weak self] (result) in
             switch result {
             case .failure(let error):
@@ -110,8 +110,8 @@ private extension ProxiesButtonManager {
 
     @objc func showMakeNewMessageController() {
         makeNewMessageButton.isEnabled = false
-        makeNewMessageButton.morph()
-        newConvoManager?.showMakeNewMessageController(sender: nil, uid: uid, manager: proxiesManager, controller: controller)
+        makeNewMessageButton.animate()
+//        newConvoManager?.showMakeNewMessageController(sender: nil, uid: uid, manager: proxiesManager, controller: controller)
         makeNewMessageButton.isEnabled = true
     }
 }

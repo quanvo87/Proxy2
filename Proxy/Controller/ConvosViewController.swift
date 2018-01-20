@@ -1,66 +1,155 @@
 import UIKit
 
-class ConvosViewController: UIViewController, NewConvoManaging {
+class ConvosViewController: UIViewController, ConvosManaging, NewConvoManaging {
+    var convos = [Convo]() {
+        didSet {
+            if convos.isEmpty {
+                makeNewMessageButton.animate(loop: true)
+            } else {
+                makeNewMessageButton.stopAnimating()
+            }
+            tableView.reloadData()
+        }
+    }
     var newConvo: Convo?
+    private let observer: ConvosObsering
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
     private weak var presenceManager: PresenceManaging?
     private weak var proxiesManager: ProxiesManaging?
     private weak var unreadMessagesManager: UnreadMessagesManaging?
-    private lazy var buttonManager = ConvosButtonManager(uid: uid,
-                                                         controller: self,
-                                                         newConvoManager: self,
-                                                         proxiesManager: proxiesManager)
-    private lazy var convosManager = ConvosManager(proxyKey: nil,
-                                                   uid: uid,
-                                                   manager: buttonManager,
-                                                   tableView: tableView)
-    private lazy var dataSource = ConvosTableViewDataSource(convosManager)
-    private lazy var delegate = ConvosTableViewDelegate(controller: self,
-                                                        convosManager: convosManager,
-                                                        presenceManager: presenceManager,
-                                                        proxiesManager: proxiesManager,
-                                                        unreadMessagesManager: unreadMessagesManager)
+    private lazy var makeNewMessageButton = UIBarButtonItem.make(target: self,
+                                                                 action: #selector(showMakeNewMessageController),
+                                                                 imageName: ButtonName.makeNewMessage)
+    private lazy var makeNewProxyButton = UIBarButtonItem.make(target: self,
+                                                               action: #selector(makeNewProxy),
+                                                               imageName: ButtonName.makeNewProxy)
 
-    init(uid: String,
+    init(observer: ConvosObsering = ConvosObserver(),
+         uid: String,
          presenceManager: PresenceManaging?,
          proxiesManager: ProxiesManaging?,
          unreadMessagesManager: UnreadMessagesManaging?) {
+        self.observer = observer
         self.uid = uid
         self.presenceManager = presenceManager
         self.proxiesManager = proxiesManager
         self.unreadMessagesManager = unreadMessagesManager
-
         super.init(nibName: nil, bundle: nil)
-
+        navigationItem.rightBarButtonItems = [makeNewMessageButton, makeNewProxyButton]
         navigationItem.title = "Messages"
-
-        tableView.dataSource = dataSource
-        tableView.delegate = delegate
+        observer.load(proxyKey: nil, querySize: Setting.querySize, uid: uid, manager: self)
+        tableView.dataSource = self
+        tableView.delegate = self
         tableView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
         tableView.register(UINib(nibName: Identifier.convosTableViewCell, bundle: nil),
                            forCellReuseIdentifier: Identifier.convosTableViewCell)
         tableView.rowHeight = 80
         tableView.sectionHeaderHeight = 0
-
         view.addSubview(tableView)
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if convosManager.convos.isEmpty {
-            buttonManager.animateButton()
+        if convos.isEmpty {
+            makeNewMessageButton.animate(loop: true)
         }
         if let newConvo = newConvo {
-            navigationController?.showConvoViewController(convo: newConvo,
-                                                          presenceManager: presenceManager,
-                                                          proxiesManager: proxiesManager,
-                                                          unreadMessagesManager: unreadMessagesManager)
+            showConvoController(convo: newConvo,
+                                presenceManager: presenceManager,
+                                proxiesManager: proxiesManager,
+                                unreadMessagesManager: unreadMessagesManager)
             self.newConvo = nil
         }
     }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    @objc private func makeNewProxy() {
+        guard let proxyCount = proxiesManager?.proxies.count else {
+            return
+        }
+        makeNewProxyButton.animate()
+        makeNewProxyButton.isEnabled = false
+        DB.makeProxy(uid: uid, currentProxyCount: proxyCount) { [weak self] (result) in
+            switch result {
+            case .failure(let error):
+                self?.showAlert(title: "Error Creating Proxy", message: error.description)
+            case .success:
+                guard
+                    let proxiesNavigationController = self?.tabBarController?.viewControllers?[safe: 1] as? UINavigationController,
+                    let proxiesViewController = proxiesNavigationController.viewControllers[safe: 0] as? ProxiesViewController else {
+                        return
+                }
+                proxiesViewController.scrollToTop()
+            }
+            self?.tabBarController?.selectedIndex = 1
+            self?.makeNewProxyButton.isEnabled = true
+        }
+    }
+
+    @objc private func showMakeNewMessageController() {
+        makeNewMessageButton.animate()
+        makeNewMessageButton.isEnabled = false
+        showMakeNewMessageController(sender: nil, uid: uid, manager: proxiesManager)
+        makeNewMessageButton.isEnabled = true
+    }
+}
+
+// MARK: - UITableViewDataSource
+extension ConvosViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard
+            let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.convosTableViewCell) as? ConvosTableViewCell,
+            let convo = convos[safe: indexPath.row] else {
+                return tableView.dequeueReusableCell(withIdentifier: Identifier.convosTableViewCell, for: indexPath)
+        }
+        cell.load(convo)
+        return cell
+    }
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return convos.count
+    }
+
+    func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+        if convos.isEmpty {
+            return "Tap the bouncing button to send a message 💬."
+        } else {
+            return nil
+        }
+    }
+}
+
+// MARK: - UITableViewDelegate
+extension ConvosViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let convo = convos[safe: indexPath.row] else {
+            return
+        }
+        tableView.deselectRow(at: indexPath, animated: true)
+        showConvoController(convo: convo,
+                            presenceManager: presenceManager,
+                            proxiesManager: proxiesManager,
+                            unreadMessagesManager: unreadMessagesManager)
+    }
+
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return CGFloat.leastNormalMagnitude
+    }
+
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        guard
+            indexPath.row == convos.count - 1,
+            let convo = convos[safe: indexPath.row] else {
+                return
+        }
+        observer.loadConvos(endingAtTimestamp: convo.timestamp,
+                            proxyKey: nil,
+                            querySize: Setting.querySize,
+                            uid: uid,
+                            manager: self)
     }
 }

@@ -29,10 +29,10 @@ extension ProxyTableViewDelegate: UITableViewDelegate {
                 return
         }
         tableView.deselectRow(at: indexPath, animated: true)
-        controller?.navigationController?.showConvoViewController(convo: convo,
-                                                                  presenceManager: presenceManager,
-                                                                  proxiesManager: proxiesManager,
-                                                                  unreadMessagesManager: unreadMessagesManager)
+        controller?.showConvoController(convo: convo,
+                                        presenceManager: presenceManager,
+                                        proxiesManager: proxiesManager,
+                                        unreadMessagesManager: unreadMessagesManager)
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -58,13 +58,13 @@ extension ProxyTableViewDelegate: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        guard
-            indexPath.section == 1,
-            let convoCount = convosManager?.convos.count,
-            indexPath.row == convoCount - 1,
-            let convo = convosManager?.convos[safe: indexPath.row] else {
-                return
-        }
-        convosManager?.loadConvos(endingAtTimestamp: convo.timestamp)
+//        guard
+//            indexPath.section == 1,
+//            let convoCount = convosManager?.convos.count,
+//            indexPath.row == convoCount - 1,
+//            let convo = convosManager?.convos[safe: indexPath.row] else {
+//                return
+//        }
+        //        convosManager?.loadConvos(endingAtTimestamp: convo.timestamp)
     }
 }

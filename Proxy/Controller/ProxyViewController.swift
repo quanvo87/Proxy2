@@ -1,6 +1,16 @@
 import UIKit
 
-class ProxyViewController: UIViewController, NewConvoManaging, ProxyManaging {
+class ProxyViewController: UIViewController, ConvosManaging, NewConvoManaging, ProxyManaging {
+    var convos = [Convo]() {
+        didSet {
+            if convos.isEmpty {
+                animateButton()
+            } else {
+                stopAnimatingButton()
+            }
+            tableView.reloadData()
+        }
+    }
     var newConvo: Convo?
     var proxy: Proxy? {
         didSet {
@@ -11,41 +21,46 @@ class ProxyViewController: UIViewController, NewConvoManaging, ProxyManaging {
             }
         }
     }
-    private let observer: ProxyObsering
+    private let convosObserver: ConvosObsering
+    private let proxyObserver: ProxyObsering
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private weak var presenceManager: PresenceManaging?
     private weak var proxiesManager: ProxiesManaging?
     private weak var unreadMessagesManager: UnreadMessagesManaging?
-    private lazy var convosManager = ConvosManager(proxyKey: proxy!.key,
-                                                   uid: proxy!.ownerId,
-                                                   manager: self,
-                                                   tableView: tableView)
+    //    private lazy var convosManager = ConvosManager(proxyKey: proxy!.key,
+    //                                                   uid: proxy!.ownerId,
+    //                                                   manager: self,
+    //                                                   tableView: tableView)
     private lazy var dataSource = ProxyTableViewDataSource(controller: self,
-                                                           convosManager: convosManager,
+                                                           convosManager: self,
                                                            proxyManager: self)
     private lazy var delegate = ProxyTableViewDelegate(controller: self,
-                                                       convosManager: convosManager,
+                                                       convosManager: self,
                                                        presenceManager: presenceManager,
                                                        proxiesManager: proxiesManager,
                                                        unreadMessagesManager: unreadMessagesManager)
 
     init(proxy: Proxy,
-         observer: ProxyObsering = ProxyObserver(),
+         convosObserver: ConvosObsering = ConvosObserver(),
+         proxyObserver: ProxyObsering = ProxyObserver(),
          presenceManager: PresenceManaging?,
          proxiesManager: ProxiesManaging?,
          unreadMessagesManager: UnreadMessagesManaging?) {
         self.proxy = proxy
-        self.observer = observer
+        self.convosObserver = convosObserver
+        self.proxyObserver = proxyObserver
         self.presenceManager = presenceManager
         self.proxiesManager = proxiesManager
         self.unreadMessagesManager = unreadMessagesManager
         super.init(nibName: nil, bundle: nil)
+        convosObserver.load(proxyKey: proxy.key, querySize: Setting.querySize, uid: proxy.ownerId, manager: self)
         navigationItem.rightBarButtonItems = [UIBarButtonItem.make(target: self,
                                                                    action: #selector(showMakeNewMessageController),
                                                                    imageName: ButtonName.makeNewMessage),
                                               UIBarButtonItem.make(target: self,
                                                                    action: #selector(deleteProxy),
                                                                    imageName: ButtonName.delete)]
+        proxyObserver.load(proxyKey: proxy.key, uid: proxy.ownerId, manager: self)
         tableView.dataSource = dataSource
         tableView.delaysContentTouches = false
         tableView.delegate = delegate
@@ -62,25 +77,16 @@ class ProxyViewController: UIViewController, NewConvoManaging, ProxyManaging {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if convosManager.convos.isEmpty {
+        if convos.isEmpty {
             animateButton()
         }
         if let newConvo = newConvo {
-            navigationController?.showConvoViewController(convo: newConvo,
-                                                          presenceManager: presenceManager,
-                                                          proxiesManager: proxiesManager,
-                                                          unreadMessagesManager: unreadMessagesManager)
+            showConvoController(convo: newConvo,
+                                presenceManager: presenceManager,
+                                proxiesManager: proxiesManager,
+                                unreadMessagesManager: unreadMessagesManager)
             self.newConvo = nil
         }
-        guard let proxy = proxy else {
-            return
-        }
-        observer.load(proxyKey: proxy.key, uid: proxy.ownerId, manager: self)
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        observer.stopObserving()
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -93,7 +99,7 @@ extension ProxyViewController: ButtonManaging {
         guard let item = navigationItem.rightBarButtonItems?[safe: 0] else {
             return
         }
-        item.morph(loop: true)
+        item.animate(loop: true)
     }
 
     func stopAnimatingButton() {
@@ -125,7 +131,7 @@ private extension ProxyViewController {
             let proxy = proxy else {
                 return
         }
-        item.morph()
-        showMakeNewMessageController(sender: proxy, uid: proxy.ownerId, manager: proxiesManager, controller: self)
+        item.animate()
+        showMakeNewMessageController(sender: proxy, uid: proxy.ownerId, manager: proxiesManager)
     }
 }

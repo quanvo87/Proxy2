@@ -57,10 +57,10 @@ class ProxiesViewController: UIViewController, ItemsToDeleteManaging, NewConvoMa
             buttonManager.animateButton()
         }
         if let newConvo = newConvo {
-            navigationController?.showConvoViewController(convo: newConvo,
-                                                          presenceManager: presenceManager,
-                                                          proxiesManager: proxiesManager,
-                                                          unreadMessagesManager: unreadMessagesManager)
+            showConvoController(convo: newConvo,
+                                presenceManager: presenceManager,
+                                proxiesManager: proxiesManager,
+                                unreadMessagesManager: unreadMessagesManager)
             self.newConvo = nil
         }
     }

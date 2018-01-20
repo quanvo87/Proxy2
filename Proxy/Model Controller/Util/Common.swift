@@ -166,7 +166,7 @@ extension UIBarButtonItem {
         return UIBarButtonItem(customView: button)
     }
 
-    func morph(loop: Bool = false) {
+    func animate(loop: Bool = false) {
         customView?.layer.stopAnimating()
         (customView as? SpringButton)?.morph(loop: loop)
         if loop {
@@ -218,25 +218,7 @@ extension UInt {
 }
 
 extension UINavigationController {
-    func showConvoViewController(convo: Convo,
-                                 presenceManager: PresenceManaging?,
-                                 proxiesManager: ProxiesManaging?,
-                                 unreadMessagesManager: UnreadMessagesManaging?) {
-        pushViewController(ConvoViewController(convo: convo,
-                                               presenceManager: presenceManager,
-                                               proxiesManager: proxiesManager,
-                                               unreadMessagesManager: unreadMessagesManager), animated: true)
-    }
 
-    func showProxyController(proxy: Proxy,
-                             presenceManager: PresenceManaging?,
-                             proxiesManager: ProxiesManaging?,
-                             unreadMessagesManager: UnreadMessagesManaging?) {
-        pushViewController(ProxyViewController(proxy: proxy,
-                                               presenceManager: presenceManager,
-                                               proxiesManager: proxiesManager,
-                                               unreadMessagesManager: unreadMessagesManager), animated: true)
-    }
 }
 
 extension UIStoryboard {
@@ -272,6 +254,17 @@ extension UIViewController {
         present(alert, animated: true)
     }
 
+    func showConvoController(convo: Convo,
+                             presenceManager: PresenceManaging?,
+                             proxiesManager: ProxiesManaging?,
+                             unreadMessagesManager: UnreadMessagesManaging?) {
+        navigationController?.pushViewController(ConvoViewController(convo: convo,
+                                                                     presenceManager: presenceManager,
+                                                                     proxiesManager: proxiesManager,
+                                                                     unreadMessagesManager: unreadMessagesManager),
+                                                 animated: true)
+    }
+
     func showEditProxyNicknameAlert(_ proxy: Proxy) {
         let alert = UIAlertController(title: "Edit Nickname", message: "Only you see your nickname.", preferredStyle: .alert)
         alert.addTextField { (textField) in
@@ -304,6 +297,17 @@ extension UIViewController {
         let viewController = IconPickerViewController(proxy)
         let navigationController = UINavigationController(rootViewController: viewController)
         present(navigationController, animated: true)
+    }
+
+    func showProxyController(proxy: Proxy,
+                             presenceManager: PresenceManaging?,
+                             proxiesManager: ProxiesManaging?,
+                             unreadMessagesManager: UnreadMessagesManaging?) {
+        navigationController?.pushViewController(ProxyViewController(proxy: proxy,
+                                                                     presenceManager: presenceManager,
+                                                                     proxiesManager: proxiesManager,
+                                                                     unreadMessagesManager: unreadMessagesManager),
+                                                 animated: true)
     }
 }
 

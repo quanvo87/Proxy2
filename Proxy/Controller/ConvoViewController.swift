@@ -35,11 +35,15 @@ class ConvoViewController: MessagesViewController, ConvoManaging, MessagesManagi
         self.proxiesManager = proxiesManager
         self.unreadMessagesManager = unreadMessagesManager
         super.init(nibName: nil, bundle: nil)
+        convoObserver.load(convoKey: convo.key, convoSenderId: convo.senderId, manager: self)
         icons["blank"] = UIImage.make(color: .white)
+        messagesObserver.load(convoKey: convo.key,
+                              querySize: Setting.querySize,
+                              collectionView: messagesCollectionView,
+                              manager: self)
         navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self,
                                                                  action: #selector(showConvoDetailViewController),
                                                                  imageName: ButtonName.info)
-        navigationItem.title = convo.receiverProxyName
         maintainPositionOnKeyboardFrameChanged = true
         messageInputBar.delegate = self
         messagesCollectionView.messagesDataSource = self
@@ -53,19 +57,12 @@ class ConvoViewController: MessagesViewController, ConvoManaging, MessagesManagi
         guard let convo = convo else {
             return
         }
-        convoObserver.load(convoKey: convo.key, convoSenderId: convo.senderId, manager: self)
-        messagesObserver.load(convoKey: convo.key,
-                              querySize: Setting.querySize,
-                              collectionView: messagesCollectionView,
-                              manager: self)
         presenceManager?.enterConvo(convo.key)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         tabBarController?.tabBar.isHidden = false
-        convoObserver.stopObserving()
-        messagesObserver.stopObserving()
         guard let convo = convo else {
             return
         }
@@ -146,13 +143,13 @@ extension ConvoViewController: MessagesDataSource {
 
     func messageForItem(at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageType {
         return messages[safe: indexPath.section] ?? Message(sender: currentSender(),
-                                                                             messageId: "",
-                                                                             data: .text(""),
-                                                                             dateRead: Date(),
-                                                                             parentConvoKey: "",
-                                                                             receiverId: "",
-                                                                             receiverProxyKey: "",
-                                                                             senderProxyKey: "")
+                                                            messageId: "",
+                                                            data: .text(""),
+                                                            dateRead: Date(),
+                                                            parentConvoKey: "",
+                                                            receiverId: "",
+                                                            receiverProxyKey: "",
+                                                            senderProxyKey: "")
     }
 
     func numberOfMessages(in messagesCollectionView: MessagesCollectionView) -> Int {

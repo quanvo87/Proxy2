@@ -29,10 +29,10 @@ extension ProxiesTableViewDelegate: UITableViewDelegate {
             itemsToDeleteManager?.itemsToDelete[proxy.key] = proxy
         } else {
             tableView.deselectRow(at: indexPath, animated: true)
-            controller?.navigationController?.showProxyController(proxy: proxy,
-                                                                  presenceManager: presenceManager,
-                                                                  proxiesManager: proxiesManager,
-                                                                  unreadMessagesManager: unreadMessagesManager)
+            controller?.showProxyController(proxy: proxy,
+                                            presenceManager: presenceManager,
+                                            proxiesManager: proxiesManager,
+                                            unreadMessagesManager: unreadMessagesManager)
         }
     }
 
