@@ -1,12 +1,11 @@
 import UIKit
 
-class ProxyViewController: UIViewController, Closing, NewConvoManaging, ProxyManaging {
-    var shouldClose: Bool = false
+class ProxyViewController: UIViewController, NewConvoManaging, ProxyManaging {
     var newConvo: Convo?
     var proxy: Proxy? {
         didSet {
             if proxy == nil {
-                shouldClose = true
+                _ = navigationController?.popViewController(animated: false)
             } else {
                 tableView.reloadData()
             }
@@ -40,18 +39,13 @@ class ProxyViewController: UIViewController, Closing, NewConvoManaging, ProxyMan
         self.presenceManager = presenceManager
         self.proxiesManager = proxiesManager
         self.unreadMessagesManager = unreadMessagesManager
-
         super.init(nibName: nil, bundle: nil)
-
         navigationItem.rightBarButtonItems = [UIBarButtonItem.make(target: self,
                                                                    action: #selector(showMakeNewMessageController),
                                                                    imageName: ButtonName.makeNewMessage),
                                               UIBarButtonItem.make(target: self,
                                                                    action: #selector(deleteProxy),
                                                                    imageName: ButtonName.delete)]
-
-        observer.load(proxyKey: proxy.key, uid: proxy.ownerId, manager: self)
-
         tableView.dataSource = dataSource
         tableView.delaysContentTouches = false
         tableView.delegate = delegate
@@ -63,15 +57,11 @@ class ProxyViewController: UIViewController, Closing, NewConvoManaging, ProxyMan
         tableView.sectionHeaderHeight = 0
         tableView.separatorStyle = .none
         tableView.setDelaysContentTouchesForScrollViews()
-
         view.addSubview(tableView)
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if shouldClose {
-            _ = navigationController?.popViewController(animated: false)
-        }
         if convosManager.convos.isEmpty {
             animateButton()
         }
@@ -82,6 +72,15 @@ class ProxyViewController: UIViewController, Closing, NewConvoManaging, ProxyMan
                                                           unreadMessagesManager: unreadMessagesManager)
             self.newConvo = nil
         }
+        guard let proxy = proxy else {
+            return
+        }
+        observer.load(proxyKey: proxy.key, uid: proxy.ownerId, manager: self)
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        observer.stopObserving()
     }
 
     required init?(coder aDecoder: NSCoder) {

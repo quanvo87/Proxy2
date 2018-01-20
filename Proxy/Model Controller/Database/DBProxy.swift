@@ -131,6 +131,7 @@ extension DB {
         let work = GroupWork()
         work.set(.icon(icon), for: proxy)
         work.setReceiverIcon(to: icon, for: convos)
+        work.setSenderIcon(to: icon, for: convos)
         work.allDone {
             completion(work.result)
         }
@@ -232,6 +233,12 @@ extension GroupWork {
     func setReceiverIcon(to icon: String, for convos: [Convo]) {
         for convo in convos {
             set(.receiverIcon(icon), for: convo, asSender: false)
+        }
+    }
+
+    func setSenderIcon(to icon: String, for convos: [Convo]) {
+        for convo in convos {
+            set(.senderIcon(icon), for: convo, asSender: true)
         }
     }
 

@@ -9,7 +9,6 @@ class SenderProxyTableViewCell: UITableViewCell {
     func load(_ proxy: Proxy) {
         nameLabel.text = proxy.name
         nicknameButton.setTitle(proxy.nickname == "" ? "Enter A Nickname" : proxy.nickname, for: .normal)
-
         iconImageView.image = nil
         UIImage.make(name: proxy.icon) { (image) in
             DispatchQueue.main.async {

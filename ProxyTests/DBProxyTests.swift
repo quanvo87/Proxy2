@@ -143,6 +143,7 @@ class DBProxyTests: DBTest {
                 let work = GroupWork()
                 work.check(.icon(newIcon), for: proxy)
                 work.check(.receiverIcon(newIcon), for: convo, asSender: false)
+                work.check(.senderIcon(newIcon), for: convo, asSender: true)
                 work.allDone {
                     expectation.fulfill()
                 }

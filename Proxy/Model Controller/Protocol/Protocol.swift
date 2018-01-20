@@ -14,8 +14,8 @@ extension ButtonManaging {
     func setButtons(_ isEnabled: Bool) {}
 }
 
-protocol Closing: class {
-    var shouldClose: Bool { get set }
+protocol ConvoManaging: class {
+    var convo: Convo? { get set }
 }
 
 protocol FirstResponderSetting: class {
@@ -24,6 +24,10 @@ protocol FirstResponderSetting: class {
 
 protocol ItemsToDeleteManaging: class {
     var itemsToDelete: [String: Any] { get set }
+}
+
+protocol MessagesManaging: class {
+    var messages: [Message] { get set }
 }
 
 protocol NewConvoManaging: class {
