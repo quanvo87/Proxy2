@@ -88,7 +88,7 @@ extension MakeNewMessageViewController: ButtonManaging {
         guard let item = navigationItem.rightBarButtonItems?[safe: 1] else {
             return
         }
-        item.morph(loop: true)
+        item.animate(loop: true)
     }
 
     func stopAnimatingButton() {
@@ -140,7 +140,7 @@ private extension MakeNewMessageViewController {
         guard let item = navigationItem.rightBarButtonItems?[safe: 1] else {
             return
         }
-        item.morph()
+        item.animate()
         guard let proxyCount = proxiesManager?.proxies.count else {
             return
         }

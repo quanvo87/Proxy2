@@ -39,6 +39,8 @@ class ConvoDetailViewController: UIViewController, ConvoManaging, ProxyManaging 
         self.proxiesManager = proxiesManager
         self.unreadMessagesManager = unreadMessagesManager
         super.init(nibName: nil, bundle: nil)
+        convoObserver.load(convoKey: convo.key, convoSenderId: convo.senderId, manager: self)
+        proxyObserver.load(proxyKey: convo.senderProxyKey, uid: convo.senderId, manager: self)
         tableView.dataSource = self
         tableView.delegate = self
         tableView.delaysContentTouches = false
@@ -49,21 +51,6 @@ class ConvoDetailViewController: UIViewController, ConvoManaging, ProxyManaging 
                            forCellReuseIdentifier: Identifier.convoDetailSenderProxyTableViewCell)
         tableView.setDelaysContentTouchesForScrollViews()
         view.addSubview(tableView)
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        guard let convo = convo else {
-            return
-        }
-        convoObserver.load(convoKey: convo.key, convoSenderId: convo.senderId, manager: self)
-        proxyObserver.load(proxyKey: convo.senderProxyKey, uid: convo.senderId, manager: self)
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        convoObserver.stopObserving()
-        proxyObserver.stopObserving()
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -185,10 +172,10 @@ extension ConvoDetailViewController: UITableViewDelegate {
         }
         switch indexPath.section {
         case 1:
-            navigationController?.showProxyController(proxy: proxy,
-                                                      presenceManager: presenceManager,
-                                                      proxiesManager: proxiesManager,
-                                                      unreadMessagesManager: unreadMessagesManager)
+            showProxyController(proxy: proxy,
+                                presenceManager: presenceManager,
+                                proxiesManager: proxiesManager,
+                                unreadMessagesManager: unreadMessagesManager)
         case 2:
             switch indexPath.row {
             case 0:

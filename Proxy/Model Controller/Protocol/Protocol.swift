@@ -2,6 +2,7 @@ import FirebaseDatabase
 import MessageKit
 import SearchTextField
 
+// todo: delete?
 protocol ButtonManaging: class {
     func animateButton()
     func stopAnimatingButton()
@@ -16,6 +17,10 @@ extension ButtonManaging {
 
 protocol ConvoManaging: class {
     var convo: Convo? { get set }
+}
+
+protocol ConvosManaging: class {
+    var convos: [Convo] { get set }
 }
 
 protocol FirstResponderSetting: class {
@@ -34,17 +39,16 @@ protocol NewConvoManaging: class {
     var newConvo: Convo? { get set }
 }
 
-extension NewConvoManaging {
+extension NewConvoManaging where Self: UIViewController {
     func showMakeNewMessageController(sender: Proxy?,
                                       uid: String,
-                                      manager: ProxiesManaging?,
-                                      controller: UIViewController?) {
+                                      manager: ProxiesManaging?) {
         let makeNewMessageViewController = MakeNewMessageViewController(sender: sender,
                                                                         uid: uid,
                                                                         newConvoManager: self,
                                                                         proxiesManager: manager)
         let navigationController = UINavigationController(rootViewController: makeNewMessageViewController)
-        controller?.present(navigationController, animated: true)
+        present(navigationController, animated: true)
     }
 }
 
@@ -52,6 +56,7 @@ protocol ProxyManaging: class {
     var proxy: Proxy? { get set }
 }
 
+// todo: is class bound necessary?
 protocol ReferenceObserving: class {
     var handle: DatabaseHandle? { get }
     var ref: DatabaseReference? { get }

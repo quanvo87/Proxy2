@@ -53,7 +53,7 @@ class SenderPickerViewController: UIViewController {
 
 extension SenderPickerViewController: ButtonManaging {
     func animateButton() {
-        navigationItem.rightBarButtonItem?.morph(loop: true)
+        navigationItem.rightBarButtonItem?.animate(loop: true)
     }
 
     func stopAnimatingButton() {
@@ -67,7 +67,7 @@ private extension SenderPickerViewController {
             return
         }
         navigationItem.rightBarButtonItem?.isEnabled = false
-        navigationItem.rightBarButtonItem?.morph()
+        navigationItem.rightBarButtonItem?.animate()
         DB.makeProxy(uid: uid, currentProxyCount: proxyCount) { [weak self] (result) in
             switch result {
             case .failure(let error):
