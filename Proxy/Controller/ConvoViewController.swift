@@ -1,95 +1,262 @@
 import MessageKit
 
-class ConvoViewController: MessagesViewController, Closing {
-    var shouldClose = false
-    private let convo: Convo
-    private let layoutDelegate = ConvoLayoutDelegate()
+class ConvoViewController: MessagesViewController, ConvoManaging, MessagesManaging {
+    var convo: Convo? {
+        didSet {
+            if let convo = convo {
+                icons[convo.receiverProxyKey] = UIImage(named: convo.receiverIcon)
+                icons[convo.senderProxyKey] = UIImage(named: convo.senderIcon)
+                messagesCollectionView.reloadDataAndKeepOffset()
+                navigationItem.title = convo.receiverDisplayName
+
+            } else {
+                navigationController?.popViewController(animated: false)
+            }
+        }
+    }
+    var messages = [Message]()
+    private let convoObserver: ConvoObserving
+    private let messagesObserver: MessagesObserving
+    private var icons = [String: UIImage]()
     private weak var presenceManager: PresenceManaging?
     private weak var proxiesManager: ProxiesManaging?
     private weak var unreadMessagesManager: UnreadMessagesManaging?
-    private lazy var convoManager = ConvoManager(convo)
-    private lazy var dataSource = ConvoDataSource(convoManager: convoManager,
-                                                  iconManager: iconManager,
-                                                  messagesManager: messagesManager)
-    private lazy var displayDelegate = ConvoDisplayDelegate(dataSource: dataSource,
-                                                            manager: messagesManager)
-    private lazy var iconManager = IconManager(receiverId: convo.receiverId,
-                                               receiverProxyKey: convo.receiverProxyKey,
-                                               senderId: convo.senderId,
-                                               senderProxyKey: convo.senderProxyKey,
-                                               collectionView: messagesCollectionView)
-    private lazy var inputBarDelegate = ConvoInputBarDelegate(controller: self,
-                                                              manager: convoManager)
-    private lazy var messagesManager = MessagesManager(convoKey: convo.key,
-                                                       collectionView: messagesCollectionView)
 
     init(convo: Convo,
+         convoObserver: ConvoObserving = ConvoObserver(),
+         messagesObserver: MessagesObserving = MessagesObserver(),
          presenceManager: PresenceManaging?,
          proxiesManager: ProxiesManaging?,
          unreadMessagesManager: UnreadMessagesManaging?) {
         self.convo = convo
+        self.convoObserver = convoObserver
+        self.messagesObserver = messagesObserver
         self.presenceManager = presenceManager
         self.proxiesManager = proxiesManager
         self.unreadMessagesManager = unreadMessagesManager
-
         super.init(nibName: nil, bundle: nil)
-
-        convoManager.addCloser(self)
-        convoManager.addCollectionView(messagesCollectionView)
-        convoManager.addController(self)
-
+        icons["blank"] = UIImage.make(color: .white)
         navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self,
-                                                                 action: #selector(showConvoDetailView),
+                                                                 action: #selector(showConvoDetailViewController),
                                                                  imageName: ButtonName.info)
         navigationItem.title = convo.receiverProxyName
-
         maintainPositionOnKeyboardFrameChanged = true
-
-        messageInputBar.delegate = inputBarDelegate
-
-        messagesCollectionView.messagesDataSource = dataSource
-        messagesCollectionView.messagesDisplayDelegate = displayDelegate
-        messagesCollectionView.messagesLayoutDelegate = layoutDelegate
+        messageInputBar.delegate = self
+        messagesCollectionView.messagesDataSource = self
+        messagesCollectionView.messagesDisplayDelegate = self
+        messagesCollectionView.messagesLayoutDelegate = self
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if shouldClose {
-            navigationController?.popViewController(animated: false)
-        }
-        presenceManager?.enterConvo(convo.key)
         tabBarController?.tabBar.isHidden = true
+        guard let convo = convo else {
+            return
+        }
+        convoObserver.load(convoKey: convo.key, convoSenderId: convo.senderId, manager: self)
+        messagesObserver.load(convoKey: convo.key,
+                              querySize: Setting.querySize,
+                              collectionView: messagesCollectionView,
+                              manager: self)
+        presenceManager?.enterConvo(convo.key)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        presenceManager?.leaveConvo(convo.key)
         tabBarController?.tabBar.isHidden = false
-    }
-
-    func collectionView(_ collectionView: UICollectionView,
-                        willDisplay cell: UICollectionViewCell,
-                        forItemAt indexPath: IndexPath) {
-        guard
-            indexPath.section == 0,
-            let message = messagesManager.messages[safe: indexPath.section] else {
-                return
+        convoObserver.stopObserving()
+        messagesObserver.stopObserving()
+        guard let convo = convo else {
+            return
         }
-        messagesManager.loadMessages(endingAtMessageId: message.messageId)
+        presenceManager?.leaveConvo(convo.key)
     }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-}
 
-private extension ConvoViewController {
-    @objc private func showConvoDetailView() {
+    @objc private func showConvoDetailViewController() {
+        guard let convo = convo else {
+            return
+        }
         navigationController?.pushViewController(ConvoDetailViewController(convo: convo,
-                                                                           convoManager: convoManager,
                                                                            presenceManager: presenceManager,
                                                                            proxiesManager: proxiesManager,
                                                                            unreadMessagesManager: unreadMessagesManager),
                                                  animated: true)
+    }
+}
+
+// MARK: - MessageInputBarDelegate
+extension ConvoViewController: MessageInputBarDelegate {
+    func messageInputBar(_ inputBar: MessageInputBar, didPressSendButtonWith text: String) {
+        inputBar.inputTextView.text = ""
+        guard text.count > 0, let convo = convo else {
+            return
+        }
+        DB.sendMessage(convo: convo, text: text) { [weak self] (result) in
+            switch result {
+            case .failure(let error):
+                switch error {
+                case .inputTooLong:
+                    self?.showAlert(title: "Message Too Long", message: error.localizedDescription)
+                case .receiverDeletedProxy:
+                    self?.showAlert(title: "Receiver Deleted Proxy", message: error.localizedDescription)
+                default:
+                    self?.showAlert(title: "Error Sending Message", message: error.localizedDescription)
+                }
+            default:
+                break
+            }
+        }
+    }
+}
+
+// MARK: - MessagesDataSource
+extension ConvoViewController: MessagesDataSource {
+    func avatar(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> Avatar {
+        if indexPath.section == messages.count - 1 {
+            return makeAvatar(message)
+        }
+        if let nextMessage = messages[safe: indexPath.section + 1],
+            nextMessage.sender != message.sender {
+            return makeAvatar(message)
+        }
+        return Avatar(image: icons["blank"], initials: "")
+    }
+
+    func cellTopLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
+        if indexPath.section == 0 {
+            return makeDisplayName(message)
+        }
+        if let previousMessage = messages[safe: indexPath.section - 1],
+            previousMessage.sender != message.sender {
+            return makeDisplayName(message)
+        }
+        return nil
+    }
+
+    func currentSender() -> Sender {
+        guard let convo = convo else {
+            return Sender(id: "", displayName: "")
+        }
+        return Sender(id: convo.senderId, displayName: convo.senderDisplayName)
+    }
+
+    func messageForItem(at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageType {
+        return messages[safe: indexPath.section] ?? Message(sender: currentSender(),
+                                                                             messageId: "",
+                                                                             data: .text(""),
+                                                                             dateRead: Date(),
+                                                                             parentConvoKey: "",
+                                                                             receiverId: "",
+                                                                             receiverProxyKey: "",
+                                                                             senderProxyKey: "")
+    }
+
+    func numberOfMessages(in messagesCollectionView: MessagesCollectionView) -> Int {
+        return messages.count
+    }
+
+    private func makeAvatar(_ message: MessageType) -> Avatar {
+        guard let convo = convo else {
+            return Avatar()
+        }
+        if isFromCurrentSender(message: message) {
+            return Avatar(image: icons[convo.senderProxyKey],
+                          initials: convo.senderDisplayName.getFirstNChars(2).capitalized)
+        } else {
+            return Avatar(image: icons[convo.receiverProxyKey],
+                          initials: convo.receiverDisplayName.getFirstNChars(2).capitalized)
+        }
+    }
+
+    private func makeDisplayName(_ message: MessageType) -> NSAttributedString {
+        guard let convo = convo else {
+            return NSAttributedString()
+        }
+        return NSAttributedString(string: isFromCurrentSender(message: message) ? convo.senderDisplayName : convo.receiverDisplayName,
+                                  attributes: [NSAttributedStringKey.font: UIFont.preferredFont(forTextStyle: .caption1)])
+    }
+}
+
+// MARK: - MessagesDisplayDelegate
+extension ConvoViewController: MessagesDisplayDelegate {
+    func backgroundColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
+        if isFromCurrentSender(message: message) {
+            return UIColor.blue
+        } else {
+            return UIColor(red: 230/255, green: 230/255, blue: 230/255, alpha: 1)
+        }
+    }
+
+    func detectorAttributes(for detector: DetectorType, and message: MessageType, at indexPath: IndexPath) -> [NSAttributedStringKey: Any] {
+        return MessageLabel.defaultAttributes
+    }
+
+    func enabledDetectors(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> [DetectorType] {
+        return [.url, .address, .phoneNumber, .date]
+    }
+
+    func messageStyle(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageStyle {
+        if indexPath.section == messages.count - 1 {
+            if isFromCurrentSender(message: message) {
+                return .bubbleTail(.bottomRight, .curved)
+            } else {
+                return .bubbleTail(.bottomLeft, .curved)
+            }
+        }
+        if let nextMessage = messages[safe: indexPath.section + 1],
+            nextMessage.sender != message.sender {
+            if isFromCurrentSender(message: message) {
+                return .bubbleTail(.bottomRight, .curved)
+            } else {
+                return .bubbleTail(.bottomLeft, .curved)
+            }
+        }
+        return .bubble
+    }
+}
+
+// MARK: - MessagesLayoutDelegate
+extension ConvoViewController: MessagesLayoutDelegate {
+    func heightForLocation(message: MessageType, at indexPath: IndexPath, with maxWidth: CGFloat, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
+        return 200
+    }
+}
+
+// MARK: - UICollectionViewDelegate
+extension ConvoViewController {
+    func collectionView(_ collectionView: UICollectionView,
+                        willDisplay cell: UICollectionViewCell,
+                        forItemAt indexPath: IndexPath) {
+        guard
+            indexPath.section == 0,
+            let message = messages[safe: indexPath.section] else {
+                return
+        }
+        messagesObserver.loadMessages(endingAtMessageId: message.messageId,
+                                      querySize: Setting.querySize,
+                                      collectionView: messagesCollectionView,
+                                      manager: self)
+    }
+}
+
+// MARK: - UIImage
+// https://stackoverflow.com/questions/26542035/create-uiimage-with-solid-color-in-swift
+private extension UIImage {
+    static func make(color: UIColor, size: CGSize = CGSize(width: 1, height: 1)) -> UIImage {
+        let rect = CGRect(origin: .zero, size: size)
+        UIGraphicsBeginImageContextWithOptions(rect.size, false, 0.0)
+        color.setFill()
+        UIRectFill(rect)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        if let cgImage = image?.cgImage {
+            return UIImage(cgImage: cgImage)
+        } else {
+            return UIImage()
+        }
     }
 }

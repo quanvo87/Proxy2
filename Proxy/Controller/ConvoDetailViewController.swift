@@ -1,44 +1,44 @@
 import UIKit
 
-class ConvoDetailViewController: UIViewController, Closing, ProxyManaging {
-    var shouldClose: Bool = false
-    var proxy: Proxy? {
+class ConvoDetailViewController: UIViewController, ConvoManaging, ProxyManaging {
+    var convo: Convo? {
         didSet {
-            if proxy == nil {
-                shouldClose = true
+            if convo == nil {
+                _ = navigationController?.popViewController(animated: false)
             } else {
                 tableView.reloadData()
             }
         }
     }
-    private let convo: Convo
-    private let observer: ProxyObsering
+    var proxy: Proxy? {
+        didSet {
+            if proxy == nil {
+                _ = navigationController?.popViewController(animated: false)
+            } else {
+                tableView.reloadData()
+            }
+        }
+    }
+    private let convoObserver: ConvoObserving
+    private let proxyObserver: ProxyObsering
     private let tableView = UITableView(frame: .zero, style: .grouped)
-    private weak var convoManager: ConvoManaging?
     private weak var presenceManager: PresenceManaging?
     private weak var proxiesManager: ProxiesManaging?
     private weak var unreadMessagesManager: UnreadMessagesManaging?
 
     init(convo: Convo,
-         observer: ProxyObsering = ProxyObserver(),
-         convoManager: ConvoManaging?,
+         convoObserver: ConvoObserving = ConvoObserver(),
+         proxyObserver: ProxyObsering = ProxyObserver(),
          presenceManager: PresenceManaging?,
          proxiesManager: ProxiesManaging?,
          unreadMessagesManager: UnreadMessagesManaging?) {
         self.convo = convo
-        self.observer = observer
-        self.convoManager = convoManager
+        self.convoObserver = convoObserver
+        self.proxyObserver = proxyObserver
         self.presenceManager = presenceManager
         self.proxiesManager = proxiesManager
         self.unreadMessagesManager = unreadMessagesManager
-
         super.init(nibName: nil, bundle: nil)
-
-        convoManager?.addCloser(self)
-        convoManager?.addTableView(tableView)
-
-        observer.load(proxyKey: convo.senderProxyKey, uid: convo.senderId, manager: self)
-
         tableView.dataSource = self
         tableView.delegate = self
         tableView.delaysContentTouches = false
@@ -48,15 +48,22 @@ class ConvoDetailViewController: UIViewController, Closing, ProxyManaging {
         tableView.register(UINib(nibName: Identifier.convoDetailSenderProxyTableViewCell, bundle: nil),
                            forCellReuseIdentifier: Identifier.convoDetailSenderProxyTableViewCell)
         tableView.setDelaysContentTouchesForScrollViews()
-
         view.addSubview(tableView)
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if shouldClose {
-            _ = navigationController?.popViewController(animated: false)
+        guard let convo = convo else {
+            return
         }
+        convoObserver.load(convoKey: convo.key, convoSenderId: convo.senderId, manager: self)
+        proxyObserver.load(proxyKey: convo.senderProxyKey, uid: convo.senderId, manager: self)
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        convoObserver.stopObserving()
+        proxyObserver.stopObserving()
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -75,7 +82,7 @@ extension ConvoDetailViewController: UITableViewDataSource {
         case 0:
             guard
                 let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.convoDetailReceiverProxyTableViewCell) as? ConvoDetailReceiverProxyTableViewCell,
-                let convo = convoManager?.convo else {
+                let convo = convo else {
                     return tableView.dequeueReusableCell(withIdentifier: Identifier.convoDetailReceiverProxyTableViewCell, for: indexPath)
             }
             cell.load(convo)
@@ -120,6 +127,52 @@ extension ConvoDetailViewController: UITableViewDataSource {
         default:
             return 0
         }
+    }
+
+    @objc private func showEditReceiverNicknameAlert() {
+        guard let convo = convo else {
+            return
+        }
+        let alert = UIAlertController(title: "Edit Receiver's Nickname", message: "Only you see this nickname.", preferredStyle: .alert)
+        alert.addTextField { (textField) in
+            textField.autocapitalizationType = .sentences
+            textField.autocorrectionType = .yes
+            textField.clearButtonMode = .whileEditing
+            textField.placeholder = "Enter A Nickname"
+            textField.text = convo.receiverNickname
+        }
+        alert.addAction(UIAlertAction(title: "Save", style: .default) { [weak self, weak alert] _ in
+            guard let nickname = alert?.textFields?[0].text else {
+                return
+            }
+            let trimmed = nickname.trimmed
+            if !(nickname != "" && trimmed == "") {
+                DB.setReceiverNickname(to: nickname, for: convo) { (error) in
+                    if let error = error, case .inputTooLong = error {
+                        self?.showAlert(title: "Nickname Too Long",
+                                        message: "Please try a shorter nickname.") {
+                                            self?.showEditReceiverNicknameAlert()
+                        }
+                    }
+                }
+            }
+        })
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(alert, animated: true)
+    }
+
+    @objc private func showEditSenderNicknameAlert() {
+        guard let proxy = proxy else {
+            return
+        }
+        showEditProxyNicknameAlert(proxy)
+    }
+
+    @objc private func _showIconPickerController() {
+        guard let proxy = proxy else {
+            return
+        }
+        showIconPickerController(proxy)
     }
 }
 
@@ -202,54 +255,5 @@ extension ConvoDetailViewController: UITableViewDelegate {
         default:
             return nil
         }
-    }
-}
-
-// MARK: - Util
-private extension ConvoDetailViewController {
-    @objc func showEditReceiverNicknameAlert() {
-        guard let convo = convoManager?.convo else {
-            return
-        }
-        let alert = UIAlertController(title: "Edit Receiver's Nickname", message: "Only you see this nickname.", preferredStyle: .alert)
-        alert.addTextField { (textField) in
-            textField.autocapitalizationType = .sentences
-            textField.autocorrectionType = .yes
-            textField.clearButtonMode = .whileEditing
-            textField.placeholder = "Enter A Nickname"
-            textField.text = convo.receiverNickname
-        }
-        alert.addAction(UIAlertAction(title: "Save", style: .default) { [weak self, weak alert] _ in
-            guard let nickname = alert?.textFields?[0].text else {
-                return
-            }
-            let trimmed = nickname.trimmed
-            if !(nickname != "" && trimmed == "") {
-                DB.setReceiverNickname(to: nickname, for: convo) { (error) in
-                    if let error = error, case .inputTooLong = error {
-                        self?.showAlert(title: "Nickname Too Long",
-                                        message: "Please try a shorter nickname.") {
-                            self?.showEditReceiverNicknameAlert()
-                        }
-                    }
-                }
-            }
-        })
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        present(alert, animated: true)
-    }
-
-    @objc func showEditSenderNicknameAlert() {
-        guard let proxy = proxy else {
-            return
-        }
-        showEditProxyNicknameAlert(proxy)
-    }
-
-    @objc func _showIconPickerController() {
-        guard let proxy = proxy else {
-            return
-        }
-        showIconPickerController(proxy)
     }
 }

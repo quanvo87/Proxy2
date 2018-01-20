@@ -95,8 +95,24 @@ extension DB {
     }
 
     private static func makeConvo(convoKey: String, sender: Proxy, receiver: Proxy, completion: @escaping (Convo?) -> Void) {
-        let senderConvo = Convo(key: convoKey, receiverIcon: receiver.icon, receiverId: receiver.ownerId, receiverProxyKey: receiver.key, receiverProxyName: receiver.name, senderId: sender.ownerId, senderProxyKey: sender.key, senderProxyName: sender.name)
-        let receiverConvo = Convo(key: convoKey, receiverIcon: sender.icon, receiverId: sender.ownerId, receiverProxyKey: sender.key, receiverProxyName: sender.name, senderId: receiver.ownerId, senderProxyKey: receiver.key, senderProxyName: receiver.name)
+        let senderConvo = Convo(key: convoKey,
+                                receiverIcon: receiver.icon,
+                                receiverId: receiver.ownerId,
+                                receiverProxyKey: receiver.key,
+                                receiverProxyName: receiver.name,
+                                senderIcon: sender.icon,
+                                senderId: sender.ownerId,
+                                senderProxyKey: sender.key,
+                                senderProxyName: sender.name)
+        let receiverConvo = Convo(key: convoKey,
+                                  receiverIcon: sender.icon,
+                                  receiverId: sender.ownerId,
+                                  receiverProxyKey: sender.key,
+                                  receiverProxyName: sender.name,
+                                  senderIcon: receiver.icon,
+                                  senderId: receiver.ownerId,
+                                  senderProxyKey: receiver.key,
+                                  senderProxyName: receiver.name)
         let work = GroupWork()
         work.increment(1, property: .proxiesInteractedWith, uid: receiver.ownerId)
         work.increment(1, property: .proxiesInteractedWith, uid: sender.ownerId)

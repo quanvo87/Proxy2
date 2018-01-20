@@ -11,6 +11,7 @@ struct Convo {
     let receiverNickname: String
     let receiverProxyKey: String
     let receiverProxyName: String
+    let senderIcon: String
     let senderId: String
     let senderNickname: String
     let senderProxyKey: String
@@ -34,6 +35,7 @@ struct Convo {
          receiverNickname: String = "",
          receiverProxyKey: String,
          receiverProxyName: String,
+         senderIcon: String,
          senderId: String,
          senderNickname: String = "",
          senderProxyKey: String,
@@ -48,6 +50,7 @@ struct Convo {
         self.receiverNickname = receiverNickname
         self.receiverProxyKey = receiverProxyKey
         self.receiverProxyName = receiverProxyName
+        self.senderIcon = senderIcon
         self.senderId = senderId
         self.senderNickname = senderNickname
         self.senderProxyKey = senderProxyKey
@@ -67,6 +70,7 @@ struct Convo {
             let receiverNickname = dictionary["receiverNickname"] as? String,
             let receiverProxyKey = dictionary["receiverProxyKey"] as? String,
             let receiverProxyName = dictionary["receiverProxyName"] as? String,
+            let senderIcon = dictionary["senderIcon"] as? String,
             let senderId = dictionary["senderId"] as? String,
             let senderNickname = dictionary["senderNickname"] as? String,
             let senderProxyKey = dictionary["senderProxyKey"] as? String,
@@ -83,6 +87,7 @@ struct Convo {
         self.receiverNickname = receiverNickname
         self.receiverProxyKey = receiverProxyKey
         self.receiverProxyName = receiverProxyName
+        self.senderIcon = senderIcon
         self.senderId = senderId
         self.senderNickname = senderNickname
         self.senderProxyKey = senderProxyKey
@@ -101,6 +106,7 @@ struct Convo {
             "receiverNickname": receiverNickname,
             "receiverProxyKey": receiverProxyKey,
             "receiverProxyName": receiverProxyName,
+            "senderIcon": senderIcon,
             "senderId": senderId,
             "senderNickname": senderNickname,
             "senderProxyKey": senderProxyKey,
@@ -121,6 +127,7 @@ extension Convo: Equatable {
             lhs.receiverNickname == rhs.receiverNickname &&
             lhs.receiverProxyKey == rhs.receiverProxyKey &&
             lhs.receiverProxyName == rhs.receiverProxyName &&
+            lhs.senderIcon == rhs.senderIcon &&
             lhs.senderId == rhs.senderId &&
             lhs.senderNickname == rhs.senderNickname &&
             lhs.senderProxyKey == rhs.senderProxyKey &&
@@ -135,6 +142,7 @@ enum SettableConvoProperty {
     case lastMessage(String)
     case receiverIcon(String)
     case receiverNickname(String)
+    case senderIcon(String)
     case senderNickname(String)
 
     var properties: (name: String, value: Any) {
@@ -151,6 +159,8 @@ enum SettableConvoProperty {
             return ("receiverIcon", value)
         case .receiverNickname(let value):
             return ("receiverNickname", value)
+        case .senderIcon(let value):
+            return ("senderIcon", value)
         case .senderNickname(let value):
             return ("senderNickname", value)
         }
