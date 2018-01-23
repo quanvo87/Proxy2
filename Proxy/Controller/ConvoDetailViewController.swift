@@ -142,12 +142,9 @@ extension ConvoDetailViewController: UITableViewDataSource {
             }
             let trimmed = nickname.trimmed
             if !(nickname != "" && trimmed == "") {
-                FirebaseHelper.setReceiverNickname(to: nickname, for: convo) { (error) in
-                    if let error = error, case .inputTooLong = error {
-                        self?.showAlert(title: "Nickname Too Long",
-                                        message: "Please try a shorter nickname.") {
-                                            self?.showEditReceiverNicknameAlert()
-                        }
+                self?.database.setReceiverNickname(to: nickname, for: convo) { (error) in
+                    if let error = error {
+                        self?.showErrorAlert(error)
                     }
                 }
             }

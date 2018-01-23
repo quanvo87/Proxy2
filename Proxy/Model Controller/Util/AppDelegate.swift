@@ -15,19 +15,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
     }
 
-    func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
-        return FBSDKApplicationDelegate.sharedInstance().application(application, open: url, sourceApplication: sourceApplication, annotation: annotation)
-    }
-
-    func applicationDidBecomeActive(_ application: UIApplication) {
-        FBSDKAppEvents.activateApp()
-    }
-}
-
-private extension AppDelegate {
-    func setAudioSession(_ session: AVAudioSession = AVAudioSession.sharedInstance(),
-                         category: String = AVAudioSessionCategoryAmbient,
-                         mode: String = AVAudioSessionModeDefault) {
+    private func setAudioSession(_ session: AVAudioSession = AVAudioSession.sharedInstance(),
+                                 category: String = AVAudioSessionCategoryAmbient,
+                                 mode: String = AVAudioSessionModeDefault) {
         do {
             if #available(iOS 10.0, *) {
                 try session.setCategory(category, mode: mode)
@@ -36,5 +26,13 @@ private extension AppDelegate {
         } catch let error as NSError {
             print("Failed to set the audio session category and mode: \(error.localizedDescription)")
         }
+    }
+
+    func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
+        return FBSDKApplicationDelegate.sharedInstance().application(application, open: url, sourceApplication: sourceApplication, annotation: annotation)
+    }
+
+    func applicationDidBecomeActive(_ application: UIApplication) {
+        FBSDKAppEvents.activateApp()
     }
 }

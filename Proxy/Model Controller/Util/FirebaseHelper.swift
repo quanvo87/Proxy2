@@ -1,24 +1,10 @@
 import FirebaseDatabase
-import GroupWork
 
 typealias Path = String
 
 struct FirebaseHelper {
     private static let ref = Database.database().reference()
 
-    static func makeReference(_ first: String, _ rest: String...) -> DatabaseReference? {
-        return makeReference(first, rest)
-    }
-
-    static func makeReference(_ first: String, _ rest: [String]) -> DatabaseReference? {
-        guard let path = Path.makePath(first, rest) else {
-            return nil
-        }
-        return ref.child(path)
-    }
-}
-
-extension FirebaseHelper {
     static func delete(_ first: String, _ rest: String..., completion: @escaping (Bool) -> Void) {
         delete(first, rest, completion: completion)
     }
@@ -72,10 +58,23 @@ extension FirebaseHelper {
         }
     }
 
+    static func makeReference(_ first: String, _ rest: String...) -> DatabaseReference? {
+        return makeReference(first, rest)
+    }
+
+    // todo: return invalid path?
+    static func makeReference(_ first: String, _ rest: [String]) -> DatabaseReference? {
+        guard let path = Path.makePath(first, rest) else {
+            return nil
+        }
+        return ref.child(path)
+    }
+
     static func set(_ value: Any, at first: String, _ rest: String..., completion: @escaping (Bool) -> Void) {
         set(value, at: first, rest, completion: completion)
     }
 
+    // todo: pass these errors to top?
     static func set(_ value: Any, at first: String, _ rest: [String], completion: @escaping (Bool) -> Void) {
         guard let ref = makeReference(first, rest) else {
             completion(false)
@@ -83,36 +82,6 @@ extension FirebaseHelper {
         }
         ref.setValue(value) { (error, _) in
             completion(error == nil)
-        }
-    }
-}
-
-extension GroupWork {
-    static func getOwnerIdAndProxyKey(convo: Convo, asSender: Bool) -> (ownerId: String, proxyKey: String) {
-        return
-            asSender ?
-            (convo.senderId, convo.senderProxyKey) :
-            (convo.receiverId, convo.receiverProxyKey)
-    }
-
-    func delete(_ first: String, _ rest: String...) {
-        start()
-        FirebaseHelper.delete(first, rest) { (success) in
-            self.finish(withResult: success)
-        }
-    }
-
-    func increment(_ amount: Int, at first: String, _ rest: String...) {
-        start()
-        FirebaseHelper.increment(amount, at: first, rest) { (success) in
-            self.finish(withResult: success)
-        }
-    }
-
-    func set(_ value: Any, at first: String, _ rest: String...) {
-        start()
-        FirebaseHelper.set(value, at: first, rest) { (success) in
-            self.finish(withResult: success)
         }
     }
 }

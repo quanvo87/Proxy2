@@ -2,6 +2,7 @@ import FacebookLogin
 import FBSDKCoreKit
 import FirebaseAuth
 
+// todo: extract to protocol
 struct LoginService {
     static func emailLogin(email: String?, password: String?, completion: @escaping (Error) -> Void) {
         guard

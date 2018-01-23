@@ -16,6 +16,7 @@ class ConvoViewController: MessagesViewController, ConvoManaging, MessagesManagi
     }
     var messages = [Message]()
     private let convoObserver: ConvoObserving
+    private let database: DatabaseType
     private let messagesObserver: MessagesObserving
     private var icons = [String: UIImage]()
     private weak var presenceManager: PresenceManaging?
@@ -24,12 +25,14 @@ class ConvoViewController: MessagesViewController, ConvoManaging, MessagesManagi
 
     init(convo: Convo,
          convoObserver: ConvoObserving = ConvoObserver(),
+         database: DatabaseType = FirebaseDatabase(),
          messagesObserver: MessagesObserving = MessagesObserver(),
          presenceManager: PresenceManaging?,
          proxiesManager: ProxiesManaging?,
          unreadMessagesManager: UnreadMessagesManaging?) {
         self.convo = convo
         self.convoObserver = convoObserver
+        self.database = database
         self.messagesObserver = messagesObserver
         self.presenceManager = presenceManager
         self.proxiesManager = proxiesManager
@@ -98,17 +101,10 @@ extension ConvoViewController: MessageInputBarDelegate {
         guard text.count > 0, let convo = convo else {
             return
         }
-        FirebaseHelper.sendMessage(convo: convo, text: text) { [weak self] (result) in
+        database.sendMessage(convo: convo, text: text) { [weak self] (result) in
             switch result {
             case .failure(let error):
-                switch error {
-                case .inputTooLong:
-                    self?.showAlert(title: "Message Too Long", message: error.localizedDescription)
-                case .receiverDeletedProxy:
-                    self?.showAlert(title: "Receiver Deleted Proxy", message: error.localizedDescription)
-                default:
-                    self?.showAlert(title: "Error Sending Message", message: error.localizedDescription)
-                }
+                self?.showErrorAlert(error)
             default:
                 break
             }

@@ -2,7 +2,7 @@ import GroupWork
 import XCTest
 @testable import Proxy
 
-class CommonDBTests: FirebaseTest {
+class FirebaseUtilTests: FirebaseTest {
     func testIcons() {
         XCTAssertEqual(ProxyPropertyGenerator().iconNames.count, 101)
 
