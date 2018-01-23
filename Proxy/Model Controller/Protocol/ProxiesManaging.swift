@@ -43,7 +43,7 @@ class ProxiesManager: ProxiesManaging {
     private let tableViews = NSHashTable<AnyObject>(options: .weakMemory)
 
     init(_ uid: String) {
-        ref = DB.makeReference(Child.proxies, uid)
+        ref = FirebaseHelper.makeReference(Child.proxies, uid)
         handle = ref?.queryOrdered(byChild: Child.timestamp).observe(.value) { [weak self] (data) in
             self?.proxies = data.toProxiesArray(uid: uid).reversed()
         }

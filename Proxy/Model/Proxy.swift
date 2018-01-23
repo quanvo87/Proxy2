@@ -14,7 +14,7 @@ struct Proxy {
     init(hasUnreadMessage: Bool = false,
          dateCreated: Double = Date().timeIntervalSince1970,
          timestamp: Double = Date().timeIntervalSince1970,
-         icon: String = ProxyService.makeRandomIconName(),
+         icon: String,
          lastMessage: String = "",
          name: String,
          nickname: String = "",
@@ -73,8 +73,8 @@ struct Proxy {
 extension Proxy: Equatable {
     static func == (_ lhs: Proxy, _ rhs: Proxy) -> Bool {
         return lhs.hasUnreadMessage == rhs.hasUnreadMessage &&
-            lhs.dateCreated.rounded() == rhs.dateCreated.rounded() &&
-            lhs.timestamp.rounded() == rhs.timestamp.rounded() &&
+            lhs.dateCreated.isWithinRangeOf(rhs.dateCreated) &&
+            lhs.timestamp.isWithinRangeOf(rhs.timestamp) &&
             lhs.icon == rhs.icon &&
             lhs.key == rhs.key &&
             lhs.lastMessage == rhs.lastMessage &&

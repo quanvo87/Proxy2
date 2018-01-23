@@ -31,20 +31,20 @@ class LoginViewController: UIViewController {
     }
 
     @IBAction func login(_ sender: AnyObject) {
-        LoginService.emailLogin(email: emailTextField.text?.lowercased(), password: passwordTextField.text) { (error) in
-            self.showAlert(title: "Error Logging In", message: error.description)
+        LoginService.emailLogin(email: emailTextField.text?.lowercased(), password: passwordTextField.text) { [weak self] (error) in
+            self?.showErrorAlert(error)
         }
     }
 
     @IBAction func loginWithFacebook(_ sender: AnyObject) {
-        LoginService.facebookLogin { (error) in
-            self.showAlert(title: "Error Logging In With Facebook", message: error.description)
+        LoginService.facebookLogin { [weak self] (error) in
+            self?.showErrorAlert(error)
         }
     }
 
     @IBAction func signUp(_ sender: AnyObject) {
-        LoginService.emailSignUp(email: emailTextField.text?.lowercased(), password: passwordTextField.text) { (error) in
-            self.showAlert(title: "Error Signing Up", message: error.description)
+        LoginService.emailSignUp(email: emailTextField.text?.lowercased(), password: passwordTextField.text) { [weak self] (error) in
+            self?.showErrorAlert(error)
         }
     }
 }

@@ -34,16 +34,22 @@ class ConvoViewController: MessagesViewController, ConvoManaging, MessagesManagi
         self.presenceManager = presenceManager
         self.proxiesManager = proxiesManager
         self.unreadMessagesManager = unreadMessagesManager
+
         super.init(nibName: nil, bundle: nil)
+
         convoObserver.load(convoKey: convo.key, convoSenderId: convo.senderId, manager: self)
+
         icons["blank"] = UIImage.make(color: .white)
+
         messagesObserver.load(convoKey: convo.key,
                               querySize: Setting.querySize,
                               collectionView: messagesCollectionView,
                               manager: self)
+
         navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self,
                                                                  action: #selector(showConvoDetailViewController),
                                                                  imageName: ButtonName.info)
+
         maintainPositionOnKeyboardFrameChanged = true
         messageInputBar.delegate = self
         messagesCollectionView.messagesDataSource = self
@@ -69,10 +75,6 @@ class ConvoViewController: MessagesViewController, ConvoManaging, MessagesManagi
         presenceManager?.leaveConvo(convo.key)
     }
 
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
     @objc private func showConvoDetailViewController() {
         guard let convo = convo else {
             return
@@ -83,6 +85,10 @@ class ConvoViewController: MessagesViewController, ConvoManaging, MessagesManagi
                                                                            unreadMessagesManager: unreadMessagesManager),
                                                  animated: true)
     }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 }
 
 // MARK: - MessageInputBarDelegate
@@ -92,7 +98,7 @@ extension ConvoViewController: MessageInputBarDelegate {
         guard text.count > 0, let convo = convo else {
             return
         }
-        DB.sendMessage(convo: convo, text: text) { [weak self] (result) in
+        FirebaseHelper.sendMessage(convo: convo, text: text) { [weak self] (result) in
             switch result {
             case .failure(let error):
                 switch error {

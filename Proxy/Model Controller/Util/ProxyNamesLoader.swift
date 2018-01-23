@@ -3,7 +3,7 @@ import SearchTextField
 
 // https://www.swiftbysundell.com/posts/a-deep-dive-into-grand-central-dispatch-in-swift
 class ProxyNamesLoader {
-    private let ref = DB.makeReference(Child.proxyNames)
+    private let ref = FirebaseHelper.makeReference(Child.proxyNames)
     private let uid: String
     private var pendingWorkItem: DispatchWorkItem?
 

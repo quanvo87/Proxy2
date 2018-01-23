@@ -1,5 +1,5 @@
-extension ProxyService {
-    static func makeAdjectives() -> [String] {
+extension ProxyPropertyGenerator {
+    static func loadAdjectives() -> [String] {
         var adjectives = [String]()
         adjectives.append("able")
         adjectives.append("added")

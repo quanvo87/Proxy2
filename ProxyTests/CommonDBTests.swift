@@ -2,15 +2,15 @@ import GroupWork
 import XCTest
 @testable import Proxy
 
-class CommonDBTests: DBTest {
+class CommonDBTests: FirebaseTest {
     func testIcons() {
-        XCTAssertEqual(ProxyService.iconNames.count, 101)
+        XCTAssertEqual(ProxyPropertyGenerator().iconNames.count, 101)
 
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
         let work = GroupWork()
-        for icon in ProxyService.iconNames {
+        for icon in ProxyPropertyGenerator().iconNames {
             work.start()
             UIImage.make(name: icon) { (image) in
                 XCTAssertNotNil(image)
@@ -26,8 +26,8 @@ class CommonDBTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        DBTest.sendMessage { (message, _, _, _) in
-            DB.get(Child.messages, message.parentConvoKey) { (data) in
+        FirebaseTest.sendMessage { (message, _, _, _) in
+            FirebaseHelper.get(Child.messages, message.parentConvoKey) { (data) in
                 XCTAssert(data?.asMessagesArray.contains(message) ?? false)
                 expectation.fulfill()
             }
@@ -38,8 +38,8 @@ class CommonDBTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        DBTest.sendMessage { (_, convo, _, _) in
-            DB.get(Child.convos, convo.senderId) { (data) in
+        FirebaseTest.sendMessage { (_, convo, _, _) in
+            FirebaseHelper.get(Child.convos, convo.senderId) { (data) in
                 let convos = data!.toConvosArray(uid: "", proxyKey: nil)
                 XCTAssertEqual(convos.count, 1)
                 XCTAssert(convos.contains(convo))
@@ -52,9 +52,9 @@ class CommonDBTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        DBTest.makeProxy { (proxy1) in
-            DBTest.makeProxy { (proxy2) in
-                DB.get(Child.proxies, DBTest.uid) { (data) in
+        FirebaseTest.makeProxy { (proxy1) in
+            FirebaseTest.makeProxy { (proxy2) in
+                FirebaseHelper.get(Child.proxies, FirebaseTest.uid) { (data) in
                     let proxies = data!.toProxiesArray(uid: "")
                     XCTAssertEqual(proxies.count, 2)
                     XCTAssert(proxies.contains(proxy1))

@@ -1,7 +1,7 @@
 import GroupWork
 import MessageKit
 
-extension DB {
+extension FirebaseHelper {
     typealias SendMessageCallback = (Result<(message: Message, convo: Convo), ProxyError>) -> Void
 
     static func deleteUnreadMessage(_ message: Message, completion: @escaping (Bool) -> Void) {
@@ -144,13 +144,13 @@ extension GroupWork {
 
     func setReceiverConvo(_ convo: Convo) {
         start()
-        DB.set(convo.toDictionary(), at: Child.convos, convo.senderId, convo.key) { (success) in
+        FirebaseHelper.set(convo.toDictionary(), at: Child.convos, convo.senderId, convo.key) { (success) in
             self.finish(withResult: success)
-            DB.getProxy(uid: convo.senderId, key: convo.senderProxyKey) { (proxy) in
-                if proxy == nil {
-                    DB.delete(convo, asSender: true) {_ in }
-                }
-            }
+//            Database.getProxy(uid: convo.senderId, key: convo.senderProxyKey) { (proxy) in
+//                if proxy == nil {
+//                    DB.delete(convo, asSender: true) {_ in }
+//                }
+//            }
         }
     }
 
@@ -161,27 +161,27 @@ extension GroupWork {
         switch message.data {
         case .text(let text):
             start()
-            DB.set(message.toDictionary(), at: Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId) { (success) in
+            FirebaseHelper.set(message.toDictionary(), at: Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId) { (success) in
                 self.finish(withResult: success)
-                DB.getProxy(uid: message.receiverId, key: message.receiverProxyKey) { (proxy) in
-                    if proxy == nil {
-                        DB.delete(Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId) { _ in }
-                        let work = GroupWork()
-                        work.set(.receiverDeletedProxy(true), for: convo, asSender: true)
-                        work.allDone {}
-                    }
-                }
+//                Database.getProxy(uid: message.receiverId, key: message.receiverProxyKey) { (proxy) in
+//                    if proxy == nil {
+//                        DB.delete(Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId) { _ in }
+//                        let work = GroupWork()
+//                        work.set(.receiverDeletedProxy(true), for: convo, asSender: true)
+//                        work.allDone {}
+//                    }
+//                }
             }
             let convoUpdates: [String: Any] = [Child.hasUnreadMessage: true,
                                                Child.lastMessage: text,
                                                Child.timestamp: currentTime]
             start()
-            DB.makeReference(Child.convos, convo.receiverId, convo.key)?
+            FirebaseHelper.makeReference(Child.convos, convo.receiverId, convo.key)?
                 .updateChildValues(convoUpdates) { (error, _) in
                     self.finish(withResult: error == nil)
-                    DB.getConvo(uid: convo.receiverId, key: convo.key) { (receiverConvo) in
+                    FirebaseHelper.getConvo(uid: convo.receiverId, key: convo.key) { (receiverConvo) in
                         if receiverConvo == nil {
-                            DB.delete(Child.convos, convo.receiverId, convo.key) { _ in }
+                            FirebaseHelper.delete(Child.convos, convo.receiverId, convo.key) { _ in }
                         }
                     }
             }
@@ -189,17 +189,17 @@ extension GroupWork {
                                                Child.lastMessage: text,
                                                Child.timestamp: currentTime]
             start()
-            DB.makeReference(Child.proxies, convo.receiverId, convo.receiverProxyKey)?
+            FirebaseHelper.makeReference(Child.proxies, convo.receiverId, convo.receiverProxyKey)?
                 .updateChildValues(proxyUpdates) { (error, _) in
                     self.finish(withResult: error == nil)
-                    DB.getProxy(uid: convo.receiverId, key: convo.receiverProxyKey) { (proxy) in
-                        if proxy == nil {
-                            DB.delete(Child.proxies, convo.receiverId, convo.receiverProxyKey) { _ in }
-                            let work = GroupWork()
-                            work.set(.receiverDeletedProxy(true), for: convo, asSender: true)
-                            work.allDone {}
-                        }
-                    }
+//                    Database.getProxy(uid: convo.receiverId, key: convo.receiverProxyKey) { (proxy) in
+//                        if proxy == nil {
+//                            DB.delete(Child.proxies, convo.receiverId, convo.receiverProxyKey) { _ in }
+//                            let work = GroupWork()
+//                            work.set(.receiverDeletedProxy(true), for: convo, asSender: true)
+//                            work.allDone {}
+//                        }
+//                    }
             }
         default:
             break

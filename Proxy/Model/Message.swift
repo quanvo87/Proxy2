@@ -78,9 +78,9 @@ extension Message: Equatable {
     static func == (_ lhs: Message, _ rhs: Message) -> Bool {
         return lhs.sender == rhs.sender &&
             lhs.messageId == rhs.messageId &&
-            lhs.sentDate.timeIntervalSince1970.rounded() == rhs.sentDate.timeIntervalSince1970.rounded() &&
+            lhs.sentDate.timeIntervalSince1970.isWithinRangeOf(rhs.sentDate.timeIntervalSince1970) &&
             lhs.data == rhs.data &&
-            lhs.dateRead.timeIntervalSince1970.rounded() == rhs.dateRead.timeIntervalSince1970.rounded() &&
+            lhs.dateRead.timeIntervalSince1970.isWithinRangeOf(rhs.dateRead.timeIntervalSince1970) &&
             lhs.parentConvoKey == rhs.parentConvoKey &&
             lhs.receiverId == rhs.receiverId &&
             lhs.receiverProxyKey == rhs.receiverProxyKey &&

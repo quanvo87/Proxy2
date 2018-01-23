@@ -19,9 +19,9 @@ class UserStatsManager: UserStatsManaging {
     private var proxiesInteractedWithHandle: DatabaseHandle?
 
     init(uid: String, tableView: UITableView) {
-        messagesReceivedRef = DB.makeReference(Child.userInfo, uid, IncrementableUserProperty.messagesReceived.rawValue)
-        messagesSentRef = DB.makeReference(Child.userInfo, uid, IncrementableUserProperty.messagesSent.rawValue)
-        proxiesInteractedWithRef = DB.makeReference(Child.userInfo, uid, IncrementableUserProperty.proxiesInteractedWith.rawValue)
+        messagesReceivedRef = FirebaseHelper.makeReference(Child.userInfo, uid, IncrementableUserProperty.messagesReceived.rawValue)
+        messagesSentRef = FirebaseHelper.makeReference(Child.userInfo, uid, IncrementableUserProperty.messagesSent.rawValue)
+        proxiesInteractedWithRef = FirebaseHelper.makeReference(Child.userInfo, uid, IncrementableUserProperty.proxiesInteractedWith.rawValue)
         messagesReceivedHandle = messagesReceivedRef?.observe(.value) { [weak self, weak tableView] (data) in
             self?.messagesReceivedCount = data.asNumberLabel
             tableView?.reloadData()

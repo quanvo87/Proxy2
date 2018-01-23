@@ -3,13 +3,13 @@ import GroupWork
 import XCTest
 @testable import Proxy
 
-class DBConvoTests: DBTest {
+class DBConvoTests: FirebaseTest {
     func testDelete() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        DBTest.sendMessage { (_, convo, _, _) in
-            DB.delete(convo, asSender: true) { (success) in
+        FirebaseTest.sendMessage { (_, convo, _, _) in
+            FirebaseHelper.delete(convo, asSender: true) { (success) in
                 XCTAssert(success)
                 let work = GroupWork()
                 work.checkDeleted(Child.convos, convo.senderId, convo.key)
@@ -24,8 +24,8 @@ class DBConvoTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        DBTest.sendMessage { (_, convo, _, _) in
-            DB.getConvo(uid: convo.senderId, key: convo.key) { (retrievedConvo) in
+        FirebaseTest.sendMessage { (_, convo, _, _) in
+            FirebaseHelper.getConvo(uid: convo.senderId, key: convo.key) { (retrievedConvo) in
                 XCTAssertEqual(retrievedConvo, convo)
                 expectation.fulfill()
             }
@@ -36,9 +36,9 @@ class DBConvoTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        DBTest.sendMessage { (_, convo, _, _) in
+        FirebaseTest.sendMessage { (_, convo, _, _) in
             let testNickname = "test nickname"
-            DB.setReceiverNickname(to: testNickname, for: convo) { (error) in
+            FirebaseHelper.setReceiverNickname(to: testNickname, for: convo) { (error) in
                 XCTAssertNil(error)
                 let work = GroupWork()
                 work.check(.receiverNickname(testNickname), for: convo, asSender: true)

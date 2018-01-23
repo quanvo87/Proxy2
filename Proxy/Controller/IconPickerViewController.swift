@@ -2,13 +2,16 @@ import UIKit
 
 class IconPickerViewController: UIViewController {
     private let collectionView: UICollectionView
+    private let generator: ProxyPropertyGenerating
     private let proxy: Proxy
-    private lazy var dataSource = IconPickerCollectionViewDataSource(ProxyService.iconNames)
-    private lazy var delegate = IconPickerCollectionViewDelegate(iconNames: ProxyService.iconNames,
+    private lazy var dataSource = IconPickerCollectionViewDataSource(generator.iconNames)
+    private lazy var delegate = IconPickerCollectionViewDelegate(iconNames: generator.iconNames,
                                                                  proxy: proxy,
                                                                  controller: self)
 
-    init(_ proxy: Proxy) {
+    init(proxyPropertyGenerator: ProxyPropertyGenerating = ProxyPropertyGenerator(),
+         proxy: Proxy) {
+        self.generator = proxyPropertyGenerator
         self.proxy = proxy
 
         let layout = UICollectionViewFlowLayout()
@@ -33,13 +36,11 @@ class IconPickerViewController: UIViewController {
         view.addSubview(collectionView)
     }
 
+    @objc private func close() {
+        dismiss(animated: true)
+    }
+
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-}
-
-private extension IconPickerViewController {
-    @objc func close() {
-        dismiss(animated: true)
     }
 }

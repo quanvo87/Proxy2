@@ -5,7 +5,7 @@ import GroupWork
 import XCTest
 @testable import Proxy
 
-class DBTest: XCTestCase {
+class FirebaseTest: XCTestCase {
     private let auth = Auth.auth(app: FirebaseApp.app!)
     private let email = "ahettisele-0083@yopmail.com"
     private let password = "BGbN92GY6_W+rR!Q"
@@ -14,18 +14,20 @@ class DBTest: XCTestCase {
     static let testUser = "test user"
     static let text = "🤤"
 
+    static let firebase = FirebaseDatabase()
+
     override func setUp() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        if auth.currentUser?.uid == DBTest.uid {
-            DBTest.clearDB {
+        if auth.currentUser?.uid == FirebaseTest.uid {
+            FirebaseTest.clearDB {
                 expectation.fulfill()
             }
         } else {
             auth.addStateDidChangeListener { (auth, user) in
-                if user?.uid == DBTest.uid {
-                    DBTest.clearDB {
+                if user?.uid == FirebaseTest.uid {
+                    FirebaseTest.clearDB {
                         expectation.fulfill()
                     }
                 } else {
@@ -51,9 +53,9 @@ class DBTest: XCTestCase {
     }
 }
 
-extension DBTest {
-    static func makeProxy(withName name: String = ProxyService.makeRandomProxyName(), forUser uid: String = DBTest.uid, completion: @escaping (Proxy) -> Void) {
-        DB.makeProxy(uid: uid, name: name, currentProxyCount: 0) { (result) in
+extension FirebaseTest {
+    static func makeProxy(ownerId: String = FirebaseTest.uid, completion: @escaping (Proxy) -> Void) {
+        firebase.makeProxy(ownerId: ownerId) { (result) in
             switch result {
             case .failure:
                 XCTFail()
@@ -65,13 +67,13 @@ extension DBTest {
 
     static func sendMessage(completion: @escaping (_ message: Message, _ convo: Convo, _ sender: Proxy, _ receiver: Proxy) -> Void) {
         makeProxy { (sender) in
-            makeProxy (forUser: testUser) { (receiver) in
-                DB.sendMessage(sender: sender, receiver: receiver, text: text) { (result) in
+            makeProxy (ownerId: testUser) { (receiver) in
+                FirebaseHelper.sendMessage(sender: sender, receiver: receiver, text: text) { (result) in
                     switch result {
                     case .failure:
                         XCTFail()
                     case .success(let tuple):
-                        DB.getConvo(uid: tuple.convo.senderId, key: tuple.convo.key) { (convo) in
+                        FirebaseHelper.getConvo(uid: tuple.convo.senderId, key: tuple.convo.key) { (convo) in
                             guard let convo = convo else {
                                 XCTFail()
                                 return
@@ -108,7 +110,7 @@ extension GroupWork {
 
     func checkDeleted(_ first: String, _ rest: String..., function: String = #function, line: Int = #line) {
         start()
-        DB.get(first, rest) { (data) in
+        FirebaseHelper.get(first, rest) { (data) in
             XCTAssertFalse(data!.exists(), GroupWork.makeErrorMessage(function: function, line: line))
             self.finish(withResult: true)
         }
@@ -123,17 +125,15 @@ extension GroupWork {
 
     func check(_ property: SettableConvoProperty, uid: String, convoKey: String, function: String = #function, line: Int = #line) {
         start()
-        DB.get(Child.convos, uid, convoKey, property.properties.name) { (data) in
+        FirebaseHelper.get(Child.convos, uid, convoKey, property.properties.name) { (data) in
             GroupWork.checkEquals(data, property.properties.value, function: function, line: line)
             self.finish(withResult: true)
         }
     }
-}
 
-extension GroupWork {
     func check(_ property: SettableMessageProperty, for message: Message, function: String = #function, line: Int = #line) {
         start()
-        DB.get(Child.messages, message.parentConvoKey, message.messageId, property.properties.name) { (data) in
+        FirebaseHelper.get(Child.messages, message.parentConvoKey, message.messageId, property.properties.name) { (data) in
             switch property {
             case .dateRead(let date):
                 GroupWork.checkEquals(data, date.timeIntervalSince1970, function: function, line: line)
@@ -141,9 +141,7 @@ extension GroupWork {
             self.finish(withResult: true)
         }
     }
-}
 
-extension GroupWork {
     func check(_ property: SettableProxyProperty, for proxy: Proxy, function: String = #function, line: Int = #line) {
         check(property, uid: proxy.ownerId, proxyKey: proxy.key, function: function, line: line)
     }
@@ -155,17 +153,15 @@ extension GroupWork {
 
     func check(_ property: SettableProxyProperty, uid: String, proxyKey: String, function: String = #function, line: Int = #line) {
         start()
-        DB.get(Child.proxies, uid, proxyKey, property.properties.name) { (data) in
+        FirebaseHelper.get(Child.proxies, uid, proxyKey, property.properties.name) { (data) in
             GroupWork.checkEquals(data, property.properties.value, function: function, line: line)
             self.finish(withResult: true)
         }
     }
-}
 
-extension GroupWork {
     func check(_ property: IncrementableUserProperty, equals value: Int, uid: String, function: String = #function, line: Int = #line) {
         start()
-        DB.get(Child.userInfo, uid, property.rawValue) { (data) in
+        FirebaseHelper.get(Child.userInfo, uid, property.rawValue) { (data) in
             GroupWork.checkEquals(data, value, function: function, line: line)
             self.finish(withResult: true)
         }

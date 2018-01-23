@@ -22,7 +22,7 @@ class MessagesObserver: MessagesObserving {
               collectionView: MessagesCollectionView?,
               manager: MessagesManaging?) {
         stopObserving()
-        ref = DB.makeReference(Child.messages, convoKey)
+        ref = FirebaseHelper.makeReference(Child.messages, convoKey)
         handle = ref?
             .queryOrdered(byChild: Child.timestamp)
             .queryLimited(toLast: querySize)

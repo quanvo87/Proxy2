@@ -27,7 +27,7 @@ class UnreadMessagesManager: UnreadMessagesManaging {
     private weak var proxiesManager: ProxiesManaging?
 
     init(_ uid: String) {
-        ref = DB.makeReference(Child.userInfo, uid, Child.unreadMessages)
+        ref = FirebaseHelper.makeReference(Child.userInfo, uid, Child.unreadMessages)
         addedHandle = ref?.observe(.childAdded) { [weak self] (data) in
             guard
                 let message = Message(data),
@@ -35,11 +35,11 @@ class UnreadMessagesManager: UnreadMessagesManaging {
                     return
             }
             guard proxiesManager.proxies.contains(where: { $0.key == message.receiverProxyKey }) else {
-                DB.deleteUnreadMessage(message) { _ in }
+                FirebaseHelper.deleteUnreadMessage(message) { _ in }
                 return
             }
             if self?.presenceManager?.presentInConvo == message.parentConvoKey {
-                DB.read(message) { _ in }
+                FirebaseHelper.read(message) { _ in }
             } else {
                 self?.unreadMessages.append(message)
             }

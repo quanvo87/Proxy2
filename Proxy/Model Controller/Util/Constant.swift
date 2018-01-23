@@ -46,7 +46,7 @@ struct Child {
 struct Setting {
     static let maxMessageSize = 20000
     static let maxNameSize = 50
-    static let maxMakeProxyAttempts = 50
+    static let makeProxyRetries = 50
     static let maxProxyCount = 30
     static let navBarButtonCGDouble = 30.0
     static let navBarButtonCGRect = CGRect(x: 0, y: 0, width: Setting.navBarButtonCGDouble, height: Setting.navBarButtonCGDouble)

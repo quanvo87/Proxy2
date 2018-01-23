@@ -3,25 +3,25 @@ import GroupWork
 import XCTest
 @testable import Proxy
 
-class DBTests: DBTest {
+class FirebaseHelperTests: FirebaseTest {
     func testDecrement() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
         let rand1 = Int(arc4random_uniform(500))
         let rand2 = Int(arc4random_uniform(500))
-        DB.set(rand1, at: "test") { (success) in
+        FirebaseHelper.set(rand1, at: "test") { (success) in
             XCTAssert(success)
             let work = GroupWork()
             for _ in 1...rand2 {
                 work.start()
-                DB.increment(-1, at: "test") { (success) in
+                FirebaseHelper.increment(-1, at: "test") { (success) in
                     XCTAssert(success)
                     work.finish(withResult: true)
                 }
             }
             work.allDone {
-                DB.get("test") { (data) in
+                FirebaseHelper.get("test") { (data) in
                     XCTAssertEqual(data?.value as? Int, rand1 - rand2)
                     expectation.fulfill()
                 }
@@ -33,13 +33,13 @@ class DBTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        DB.set("a", at: "test") { (success) in
+        FirebaseHelper.set("a", at: "test") { (success) in
             XCTAssert(success)
-            DB.get("test") { (data) in
+            FirebaseHelper.get("test") { (data) in
                 XCTAssertEqual(data?.value as? String, "a")
-                DB.delete("test") { (success) in
+                FirebaseHelper.delete("test") { (success) in
                     XCTAssert(success)
-                    DB.get("test") { (data) in
+                    FirebaseHelper.get("test") { (data) in
                         XCTAssertFalse(data!.exists())
                         expectation.fulfill()
                     }
@@ -52,9 +52,9 @@ class DBTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        DB.increment(1, at: "test") { (success) in
+        FirebaseHelper.increment(1, at: "test") { (success) in
             XCTAssert(success)
-            DB.get("test") { (data) in
+            FirebaseHelper.get("test") { (data) in
                 XCTAssertEqual(data?.value as? Int, 1)
                 expectation.fulfill()
             }
@@ -68,13 +68,13 @@ class DBTests: DBTest {
         let incrementsDone = DispatchGroup()
         for _ in 1...2 {
             incrementsDone.enter()
-            DB.increment(1, at: "test") { (success) in
+            FirebaseHelper.increment(1, at: "test") { (success) in
                 XCTAssert(success)
                 incrementsDone.leave()
             }
         }
         incrementsDone.notify(queue: .main) {
-            DB.get("test") { (data) in
+            FirebaseHelper.get("test") { (data) in
                 XCTAssertEqual(data?.value as? Int, 2)
                 expectation.fulfill()
             }
@@ -82,20 +82,20 @@ class DBTests: DBTest {
     }
 
     func testMakeDatabaseReference() {
-        XCTAssertNotNil(DB.makeReference("a"))
-        XCTAssertNotNil(DB.makeReference("a", "b"))
-        XCTAssertNotNil(DB.makeReference("/a/"))
-        XCTAssertNotNil(DB.makeReference("//a//"))
-        XCTAssertNotNil(DB.makeReference("/a/a/"))
+        XCTAssertNotNil(FirebaseHelper.makeReference("a"))
+        XCTAssertNotNil(FirebaseHelper.makeReference("a", "b"))
+        XCTAssertNotNil(FirebaseHelper.makeReference("/a/"))
+        XCTAssertNotNil(FirebaseHelper.makeReference("//a//"))
+        XCTAssertNotNil(FirebaseHelper.makeReference("/a/a/"))
     }
 
     func testMakeDatabaseReferenceFail() {
-        XCTAssertNil(DB.makeReference(""))
-        XCTAssertNil(DB.makeReference("a", ""))
-        XCTAssertNil(DB.makeReference("", "a"))
-        XCTAssertNil(DB.makeReference("/"))
-        XCTAssertNil(DB.makeReference("//"))
-        XCTAssertNil(DB.makeReference("///"))
-        XCTAssertNil(DB.makeReference("/a//a/"))
+        XCTAssertNil(FirebaseHelper.makeReference(""))
+        XCTAssertNil(FirebaseHelper.makeReference("a", ""))
+        XCTAssertNil(FirebaseHelper.makeReference("", "a"))
+        XCTAssertNil(FirebaseHelper.makeReference("/"))
+        XCTAssertNil(FirebaseHelper.makeReference("//"))
+        XCTAssertNil(FirebaseHelper.makeReference("///"))
+        XCTAssertNil(FirebaseHelper.makeReference("/a//a/"))
     }
 }
