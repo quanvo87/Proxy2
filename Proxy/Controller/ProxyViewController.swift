@@ -22,15 +22,12 @@ class ProxyViewController: UIViewController, ConvosManaging, NewConvoManaging, P
         }
     }
     private let convosObserver: ConvosObsering
+    private let database: DatabaseType
     private let proxyObserver: ProxyObsering
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private weak var presenceManager: PresenceManaging?
     private weak var proxiesManager: ProxiesManaging?
     private weak var unreadMessagesManager: UnreadMessagesManaging?
-    //    private lazy var convosManager = ConvosManager(proxyKey: proxy!.key,
-    //                                                   uid: proxy!.ownerId,
-    //                                                   manager: self,
-    //                                                   tableView: tableView)
     private lazy var dataSource = ProxyTableViewDataSource(controller: self,
                                                            convosManager: self,
                                                            proxyManager: self)
@@ -42,25 +39,32 @@ class ProxyViewController: UIViewController, ConvosManaging, NewConvoManaging, P
 
     init(proxy: Proxy,
          convosObserver: ConvosObsering = ConvosObserver(),
+         database: DatabaseType = FirebaseDatabase(),
          proxyObserver: ProxyObsering = ProxyObserver(),
          presenceManager: PresenceManaging?,
          proxiesManager: ProxiesManaging?,
          unreadMessagesManager: UnreadMessagesManaging?) {
         self.proxy = proxy
         self.convosObserver = convosObserver
+        self.database = database
         self.proxyObserver = proxyObserver
         self.presenceManager = presenceManager
         self.proxiesManager = proxiesManager
         self.unreadMessagesManager = unreadMessagesManager
+
         super.init(nibName: nil, bundle: nil)
+
         convosObserver.load(proxyKey: proxy.key, querySize: Setting.querySize, uid: proxy.ownerId, manager: self)
+
         navigationItem.rightBarButtonItems = [UIBarButtonItem.make(target: self,
                                                                    action: #selector(showMakeNewMessageController),
                                                                    imageName: ButtonName.makeNewMessage),
                                               UIBarButtonItem.make(target: self,
                                                                    action: #selector(deleteProxy),
                                                                    imageName: ButtonName.delete)]
+
         proxyObserver.load(proxyKey: proxy.key, uid: proxy.ownerId, manager: self)
+
         tableView.dataSource = dataSource
         tableView.delaysContentTouches = false
         tableView.delegate = delegate
@@ -72,6 +76,7 @@ class ProxyViewController: UIViewController, ConvosManaging, NewConvoManaging, P
         tableView.sectionHeaderHeight = 0
         tableView.separatorStyle = .none
         tableView.setDelaysContentTouchesForScrollViews()
+
         view.addSubview(tableView)
     }
 
@@ -117,8 +122,12 @@ private extension ProxyViewController {
             guard let proxy = self?.proxy else {
                 return
             }
-            DB.deleteProxy(proxy) { _ in
-                self?.navigationController?.popViewController(animated: true)
+            self?.database.delete(proxy) { (error) in
+                if let error = error {
+                    self?.showErrorAlert(error)
+                } else {
+                    self?.navigationController?.popViewController(animated: true)
+                }
             }
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))

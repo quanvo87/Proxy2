@@ -12,6 +12,8 @@ class ConvosViewController: UIViewController, ConvosManaging, NewConvoManaging {
         }
     }
     var newConvo: Convo?
+    private let database: DatabaseType
+    private let maxProxyCount: Int
     private let observer: ConvosObsering
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
@@ -25,20 +27,28 @@ class ConvosViewController: UIViewController, ConvosManaging, NewConvoManaging {
                                                                action: #selector(makeNewProxy),
                                                                imageName: ButtonName.makeNewProxy)
 
-    init(observer: ConvosObsering = ConvosObserver(),
+    init(database: DatabaseType = FirebaseDatabase(),
+         maxProxyCount: Int = Setting.maxProxyCount,
+         observer: ConvosObsering = ConvosObserver(),
          uid: String,
          presenceManager: PresenceManaging?,
          proxiesManager: ProxiesManaging?,
          unreadMessagesManager: UnreadMessagesManaging?) {
+        self.database = database
+        self.maxProxyCount = maxProxyCount
         self.observer = observer
         self.uid = uid
         self.presenceManager = presenceManager
         self.proxiesManager = proxiesManager
         self.unreadMessagesManager = unreadMessagesManager
+
         super.init(nibName: nil, bundle: nil)
+
         navigationItem.rightBarButtonItems = [makeNewMessageButton, makeNewProxyButton]
         navigationItem.title = "Messages"
+
         observer.load(proxyKey: nil, querySize: Setting.querySize, uid: uid, manager: self)
+
         tableView.dataSource = self
         tableView.delegate = self
         tableView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
@@ -46,6 +56,7 @@ class ConvosViewController: UIViewController, ConvosManaging, NewConvoManaging {
                            forCellReuseIdentifier: Identifier.convosTableViewCell)
         tableView.rowHeight = 80
         tableView.sectionHeaderHeight = 0
+
         view.addSubview(tableView)
     }
 
@@ -63,20 +74,17 @@ class ConvosViewController: UIViewController, ConvosManaging, NewConvoManaging {
         }
     }
 
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
     @objc private func makeNewProxy() {
-        guard let proxyCount = proxiesManager?.proxies.count else {
+        guard proxiesManager?.proxies.count ?? Int.max < maxProxyCount else {
+            showAlert(title: "You have too many Proxies", message: "Try deleting some and try again!")
             return
         }
         makeNewProxyButton.animate()
         makeNewProxyButton.isEnabled = false
-        DB.makeProxy(uid: uid, currentProxyCount: proxyCount) { [weak self] (result) in
+        database.makeProxy(ownerId: uid) { [weak self] (result) in
             switch result {
             case .failure(let error):
-                self?.showAlert(title: "Error Creating Proxy", message: error.description)
+                self?.showErrorAlert(error)
             case .success:
                 guard
                     let proxiesNavigationController = self?.tabBarController?.viewControllers?[safe: 1] as? UINavigationController,
@@ -95,6 +103,10 @@ class ConvosViewController: UIViewController, ConvosManaging, NewConvoManaging {
         makeNewMessageButton.isEnabled = false
         showMakeNewMessageController(sender: nil, uid: uid, manager: proxiesManager)
         makeNewMessageButton.isEnabled = true
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
 

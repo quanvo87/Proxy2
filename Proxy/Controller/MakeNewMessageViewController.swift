@@ -4,7 +4,9 @@ class MakeNewMessageViewController: UIViewController {
     override var inputAccessoryView: UIView? {
         return inputBar
     }
+    private let database: DatabaseType
     private let inputBar = MessageInputBar()
+    private let maxProxyCount: Int
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
     private var firstResponder: FirstResponder = .receiverTextField
@@ -30,10 +32,15 @@ class MakeNewMessageViewController: UIViewController {
                                                                          proxiesManager: proxiesManager,
                                                                          senderManager: senderManager)
 
+    // todo: use the sender that's passed in
     init(sender: Proxy?,
+         database: DatabaseType = FirebaseDatabase(),
+         maxProxyCount: Int = Setting.maxProxyCount,
          uid: String,
          newConvoManager: NewConvoManaging?,
          proxiesManager: ProxiesManaging?) {
+        self.database = database
+        self.maxProxyCount = maxProxyCount
         self.uid = uid
         self.newConvoManager = newConvoManager
         self.proxiesManager = proxiesManager
@@ -141,14 +148,15 @@ private extension MakeNewMessageViewController {
             return
         }
         item.animate()
-        guard let proxyCount = proxiesManager?.proxies.count else {
+        guard proxiesManager?.proxies.count ?? Int.max < maxProxyCount else {
+            showErrorAlert(ProxyError.tooManyProxies)
             return
         }
         setButtons(false)
-        DB.makeProxy(uid: uid, currentProxyCount: proxyCount) { [weak self] (result) in
+        database.makeProxy(ownerId: uid) { [weak self] (result) in
             switch result {
             case .failure(let error):
-                self?.showAlert(title: "Error Making New Proxy", message: error.description)
+                self?.showErrorAlert(error)
             case .success(let newProxy):
                 self?.senderManager.sender = newProxy
             }

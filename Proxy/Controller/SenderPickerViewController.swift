@@ -1,6 +1,8 @@
 import UIKit
 
 class SenderPickerViewController: UIViewController {
+    private let database: DatabaseType
+    private let maxProxyCount: Int
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
     private weak var proxiesManager: ProxiesManaging?
@@ -11,9 +13,13 @@ class SenderPickerViewController: UIViewController {
                                                                        proxiesManager: proxiesManager,
                                                                        senderManager: senderManager)
 
-    init(uid: String,
+    init(database: DatabaseType = FirebaseDatabase(),
+         maxProxyCount: Int = Setting.maxProxyCount,
+         uid: String,
          proxiesManager: ProxiesManaging?,
          senderManager: SenderManaging?) {
+        self.database = database
+        self.maxProxyCount = maxProxyCount
         self.uid = uid
         self.proxiesManager = proxiesManager
         self.senderManager = senderManager
@@ -63,17 +69,18 @@ extension SenderPickerViewController: ButtonManaging {
 
 private extension SenderPickerViewController {
     @objc func makeNewProxy() {
-        guard let proxyCount = proxiesManager?.proxies.count else {
+        navigationItem.rightBarButtonItem?.animate()
+        guard proxiesManager?.proxies.count ?? Int.max < maxProxyCount else {
+            showErrorAlert(ProxyError.tooManyProxies)
             return
         }
         navigationItem.rightBarButtonItem?.isEnabled = false
-        navigationItem.rightBarButtonItem?.animate()
-        DB.makeProxy(uid: uid, currentProxyCount: proxyCount) { [weak self] (result) in
+        database.makeProxy(ownerId: uid) { [weak self] (result) in
             switch result {
             case .failure(let error):
-                self?.showAlert(title: "Error Making New Proxy", message: error.description)
-            case .success:
-                self?.stopAnimatingButton()
+                self?.showErrorAlert(error)
+            default:
+                break
             }
             self?.navigationItem.rightBarButtonItem?.isEnabled = true
         }

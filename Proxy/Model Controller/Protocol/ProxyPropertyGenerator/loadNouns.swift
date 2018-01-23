@@ -1,5 +1,5 @@
-extension ProxyService {
-    static func makeNouns() -> [String] {
+extension ProxyPropertyGenerator {
+    static func loadNouns() -> [String] {
         var nouns = [String]()
         nouns.append("ability")
         nouns.append("acid")

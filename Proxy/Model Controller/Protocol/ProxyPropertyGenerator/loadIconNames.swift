@@ -1,5 +1,5 @@
-extension ProxyService {
-    static func makeIconNames() -> [String] {
+extension ProxyPropertyGenerator {
+    static func loadIconNames() -> [String] {
         var iconNames = [String]()
         iconNames.append("Acorn")
         iconNames.append("Aquarium")

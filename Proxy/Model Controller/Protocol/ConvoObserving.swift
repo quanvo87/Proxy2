@@ -11,12 +11,12 @@ class ConvoObserver: ConvoObserving {
 
     func load(convoKey: String, convoSenderId: String, manager: ConvoManaging?) {
         stopObserving()
-        ref = DB.makeReference(Child.convos, convoSenderId, convoKey)
+        ref = FirebaseHelper.makeReference(Child.convos, convoSenderId, convoKey)
         handle = ref?.observe(.value) { [weak manager] (data) in
             if let convo = Convo(data) {
                 manager?.convo = convo
             } else {
-                DB.getConvo(uid: convoSenderId, key: convoKey) { (convo) in
+                FirebaseHelper.getConvo(uid: convoSenderId, key: convoKey) { (convo) in
                     manager?.convo = convo
                 }
             }

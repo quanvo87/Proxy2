@@ -20,6 +20,7 @@ class ConvoDetailViewController: UIViewController, ConvoManaging, ProxyManaging 
         }
     }
     private let convoObserver: ConvoObserving
+    private let database: DatabaseType
     private let proxyObserver: ProxyObsering
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private weak var presenceManager: PresenceManaging?
@@ -28,19 +29,25 @@ class ConvoDetailViewController: UIViewController, ConvoManaging, ProxyManaging 
 
     init(convo: Convo,
          convoObserver: ConvoObserving = ConvoObserver(),
+         database: DatabaseType = FirebaseDatabase(),
          proxyObserver: ProxyObsering = ProxyObserver(),
          presenceManager: PresenceManaging?,
          proxiesManager: ProxiesManaging?,
          unreadMessagesManager: UnreadMessagesManaging?) {
         self.convo = convo
         self.convoObserver = convoObserver
+        self.database = database
         self.proxyObserver = proxyObserver
         self.presenceManager = presenceManager
         self.proxiesManager = proxiesManager
         self.unreadMessagesManager = unreadMessagesManager
+
         super.init(nibName: nil, bundle: nil)
+
         convoObserver.load(convoKey: convo.key, convoSenderId: convo.senderId, manager: self)
+
         proxyObserver.load(proxyKey: convo.senderProxyKey, uid: convo.senderId, manager: self)
+
         tableView.dataSource = self
         tableView.delegate = self
         tableView.delaysContentTouches = false
@@ -50,6 +57,7 @@ class ConvoDetailViewController: UIViewController, ConvoManaging, ProxyManaging 
         tableView.register(UINib(nibName: Identifier.convoDetailSenderProxyTableViewCell, bundle: nil),
                            forCellReuseIdentifier: Identifier.convoDetailSenderProxyTableViewCell)
         tableView.setDelaysContentTouchesForScrollViews()
+
         view.addSubview(tableView)
     }
 
@@ -134,7 +142,7 @@ extension ConvoDetailViewController: UITableViewDataSource {
             }
             let trimmed = nickname.trimmed
             if !(nickname != "" && trimmed == "") {
-                DB.setReceiverNickname(to: nickname, for: convo) { (error) in
+                FirebaseHelper.setReceiverNickname(to: nickname, for: convo) { (error) in
                     if let error = error, case .inputTooLong = error {
                         self?.showAlert(title: "Nickname Too Long",
                                         message: "Please try a shorter nickname.") {
@@ -183,8 +191,12 @@ extension ConvoDetailViewController: UITableViewDelegate {
                                               message: "Your conversations for this proxy will be deleted.",
                                               preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
-                    DB.deleteProxy(proxy) { _ in
-                        self?.navigationController?.popViewController(animated: true)
+                    self?.database.delete(proxy) { (error) in
+                        if let error = error {
+                            self?.showErrorAlert(error)
+                        } else {
+                            self?.navigationController?.popViewController(animated: true)
+                        }
                     }
                 })
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))

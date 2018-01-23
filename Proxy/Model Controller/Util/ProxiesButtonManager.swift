@@ -79,7 +79,7 @@ private extension ProxiesButtonManager {
                 guard let proxy = item as? Proxy else {
                     continue
                 }
-                DB.deleteProxy(proxy) { _ in }
+//                Database.deleteProxy(proxy) { _ in }
             }
             self?.itemsToDeleteManager?.itemsToDelete.removeAll()
             self?.setDefaultButtons()
@@ -94,18 +94,18 @@ private extension ProxiesButtonManager {
         }
         makeNewProxyButton.isEnabled = false
         makeNewProxyButton.animate()
-        DB.makeProxy(uid: uid, currentProxyCount: proxyCount) { [weak self] (result) in
-            switch result {
-            case .failure(let error):
-                self?.controller?.showAlert(title: "Error Creating Proxy", message: error.description)
-            case .success:
-                guard let controller = self?.controller as? ProxiesViewController else {
-                    return
-                }
-                controller.scrollToTop()
-            }
-            self?.makeNewProxyButton.isEnabled = true
-        }
+//        Database.makeProxy(uid: uid, currentProxyCount: proxyCount) { [weak self] (result) in
+//            switch result {
+//            case .failure(let error):
+//                self?.controller?.showAlert(title: "Error Creating Proxy", message: error.description)
+//            case .success:
+//                guard let controller = self?.controller as? ProxiesViewController else {
+//                    return
+//                }
+//                controller.scrollToTop()
+//            }
+//            self?.makeNewProxyButton.isEnabled = true
+//        }
     }
 
     @objc func showMakeNewMessageController() {

@@ -2,37 +2,28 @@ enum ProxyError: Error {
     case blankCredentials
     case facebookLoginFail
     case inputTooLong
-    case proxyLimitReached
     case receiverDeletedProxy
+    case tooManyProxies
     case unknown
 
-    var localizedDescription: String {
+    var alertFields: (title: String, description: String) {
         switch self {
         case .blankCredentials:
-            return "Please enter a valid email and password."
+            return ("Invalid email/password", "Please enter a valid email and password.")
         case .facebookLoginFail:
-            return "Please check your Facebook username and password."
+            return ("Facebook login failed", "Please try again.")
         case .inputTooLong:
-            return "Input too long. Please try something shorter."
-        case .proxyLimitReached:
-            return "The maximum allowed proxies is \(Setting.maxProxyCount). Try deleting some and try again!"
+            return ("Input too long", "Please try something shorter.")
         case .receiverDeletedProxy:
-            return "The receiver for this conversation has deleted their Proxy."
+            return ("Receiver no longer exists", "You can no longer message this Proxy.")
+        case .tooManyProxies:
+            return ("Too many Proxies", "You have too many Proxies. Please delete some and try again.")
         case .unknown:
-            return "An unknown error occurred. Please try again."
+            return ("😢", "An unknown error occurred.")
         }
     }
 
     init(_ error: ProxyError) {
         self = error
-    }
-}
-
-extension Error {
-    var description: String {
-        if let proxyError = self as? ProxyError {
-            return proxyError.localizedDescription
-        }
-        return self.localizedDescription
     }
 }

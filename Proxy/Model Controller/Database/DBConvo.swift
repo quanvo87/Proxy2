@@ -2,7 +2,7 @@ import FirebaseDatabase
 import GroupWork
 import UIKit
 
-extension DB {
+extension FirebaseHelper {
     static func delete(_ convo: Convo, asSender: Bool, completion: @escaping (Bool) -> Void) {
         let work = GroupWork()
         work.delete(convo, asSender: asSender)

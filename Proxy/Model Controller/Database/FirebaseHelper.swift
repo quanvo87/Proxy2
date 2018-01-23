@@ -3,7 +3,7 @@ import GroupWork
 
 typealias Path = String
 
-struct DB {
+struct FirebaseHelper {
     private static let ref = Database.database().reference()
 
     static func makeReference(_ first: String, _ rest: String...) -> DatabaseReference? {
@@ -18,7 +18,7 @@ struct DB {
     }
 }
 
-extension DB {
+extension FirebaseHelper {
     static func delete(_ first: String, _ rest: String..., completion: @escaping (Bool) -> Void) {
         delete(first, rest, completion: completion)
     }
@@ -97,21 +97,21 @@ extension GroupWork {
 
     func delete(_ first: String, _ rest: String...) {
         start()
-        DB.delete(first, rest) { (success) in
+        FirebaseHelper.delete(first, rest) { (success) in
             self.finish(withResult: success)
         }
     }
 
     func increment(_ amount: Int, at first: String, _ rest: String...) {
         start()
-        DB.increment(amount, at: first, rest) { (success) in
+        FirebaseHelper.increment(amount, at: first, rest) { (success) in
             self.finish(withResult: success)
         }
     }
 
     func set(_ value: Any, at first: String, _ rest: String...) {
         start()
-        DB.set(value, at: first, rest) { (success) in
+        FirebaseHelper.set(value, at: first, rest) { (success) in
             self.finish(withResult: success)
         }
     }

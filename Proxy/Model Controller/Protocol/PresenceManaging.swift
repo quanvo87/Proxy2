@@ -21,7 +21,7 @@ class PresenceManager: PresenceManaging {
         var untouchedMessages = [Message]()
         for message in unreadMessages {
             if message.parentConvoKey == key {
-                DB.read(message) { _ in }
+                FirebaseHelper.read(message) { _ in }
             } else {
                 untouchedMessages.append(message)
             }

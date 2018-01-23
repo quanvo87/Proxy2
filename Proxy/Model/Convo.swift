@@ -119,7 +119,7 @@ extension Convo: Equatable {
     static func == (_ lhs: Convo, _ rhs: Convo) -> Bool {
         return lhs.hasUnreadMessage == rhs.hasUnreadMessage &&
             lhs.receiverDeletedProxy == rhs.receiverDeletedProxy &&
-            lhs.timestamp.rounded() == rhs.timestamp.rounded() &&
+            lhs.timestamp.isWithinRangeOf(rhs.timestamp) &&
             lhs.key == rhs.key &&
             lhs.lastMessage == rhs.lastMessage &&
             lhs.receiverIcon == rhs.receiverIcon &&

@@ -36,6 +36,10 @@ extension Double {
     var asTimeAgo: String {
         return NSDate(timeIntervalSince1970: self).formattedAsTimeAgo()
     }
+
+    func isWithinRangeOf(_ rhs: Double, range: Double = 1) -> Bool {
+        return (self - range)...(self + range) ~= rhs
+    }
 }
 
 extension FirebaseApp {
@@ -108,10 +112,6 @@ extension Int {
 
     var asStringWithParens: String {
         return self == 0 ? "" : " (\(self))"
-    }
-
-    var random: Int {
-        return Int(arc4random_uniform(UInt32(self)))
     }
 }
 
@@ -265,7 +265,7 @@ extension UIViewController {
                                                  animated: true)
     }
 
-    func showEditProxyNicknameAlert(_ proxy: Proxy) {
+    func showEditProxyNicknameAlert(_ proxy: Proxy, database: DatabaseType = FirebaseDatabase()) {
         let alert = UIAlertController(title: "Edit Nickname", message: "Only you see your nickname.", preferredStyle: .alert)
         alert.addTextField { (textField) in
             textField.autocapitalizationType = .sentences
@@ -280,11 +280,9 @@ extension UIViewController {
             }
             let trimmed = nickname.trimmed
             if !(nickname != "" && trimmed == "") {
-                DB.setNickname(to: nickname, for: proxy) { (error) in
-                    if let error = error, case .inputTooLong = error {
-                        self?.showAlert(title: "Nickname Too Long", message: "Please try a shorter nickname.") {
-                            self?.showEditProxyNicknameAlert(proxy)
-                        }
+                database.setNickname(to: nickname, for: proxy) { (error) in
+                    if let error = error {
+                        self?.showErrorAlert(error)
                     }
                 }
             }
@@ -293,8 +291,16 @@ extension UIViewController {
         present(alert, animated: true)
     }
 
+    func showErrorAlert(_ error: Error) {
+        if let error = error as? ProxyError {
+            showAlert(title: error.alertFields.title, message: error.alertFields.description)
+        } else {
+            showAlert(title: ProxyError.unknown.alertFields.title, message: ProxyError.unknown.alertFields.description)
+        }
+    }
+
     func showIconPickerController(_ proxy: Proxy) {
-        let viewController = IconPickerViewController(proxy)
+        let viewController = IconPickerViewController(proxy: proxy)
         let navigationController = UINavigationController(rootViewController: viewController)
         present(navigationController, animated: true)
     }

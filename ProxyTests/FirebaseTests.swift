@@ -3,21 +3,29 @@ import GroupWork
 import XCTest
 @testable import Proxy
 
-class DBProxyTests: DBTest {
+class GeneratorMock: ProxyPropertyGenerating {
+    var iconNames = [String]()
+    var randomIconName = "test"
+    var randomProxyName = "test"
+}
+
+class FirebaseTests: FirebaseTest {
+    var firebase: FirebaseDatabase!
+
     func testDeleteProxy() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        DBTest.makeProxy { (sender) in
-            DBTest.makeProxy(forUser: DBTest.testUser) { (receiver) in
-                DB.sendMessage(sender: sender, receiver: receiver, text: DBTest.text) { (result) in
+        FirebaseTest.makeProxy { (sender) in
+            FirebaseTest.makeProxy(ownerId: FirebaseTest.testUser) { (receiver) in
+                FirebaseHelper.sendMessage(sender: sender, receiver: receiver, text: FirebaseTest.text) { (result) in
                     switch result {
-                    case .failure:
-                        XCTFail()
+                    case .failure(let error):
+                        XCTFail(String(describing: error))
                         expectation.fulfill()
                     case .success(let tuple):
-                        DB.deleteProxy(receiver) { (success) in
-                            XCTAssert(success)
+                        FirebaseTest.firebase.delete(receiver) { (error) in
+                            XCTAssertNil(error)
                             let work = GroupWork()
                             work.checkDeleted(Child.proxies, receiver.ownerId, receiver.key)
                             work.checkDeleted(Child.proxyNames, receiver.key)
@@ -38,10 +46,16 @@ class DBProxyTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        DBTest.makeProxy { (proxy) in
-            DB.getProxy(key: proxy.key) { (retrievedProxy) in
-                XCTAssertEqual(retrievedProxy, proxy)
-                expectation.fulfill()
+        FirebaseTest.makeProxy { (proxy) in
+            FirebaseTest.firebase.getProxy(key: proxy.key) { (result) in
+                switch result {
+                case .failure(let error):
+                    XCTFail(String(describing: error))
+                    expectation.fulfill()
+                case .success(let retrievedProxy):
+                    XCTAssertEqual(retrievedProxy, proxy)
+                    expectation.fulfill()
+                }
             }
         }
     }
@@ -50,9 +64,14 @@ class DBProxyTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        DB.getProxy(key: "invalid key") { (proxy) in
-            XCTAssertNil(proxy)
-            expectation.fulfill()
+        FirebaseTest.firebase.getProxy(key: "invalid key") { (result) in
+            switch result {
+            case .failure:
+                expectation.fulfill()
+            case .success:
+                XCTFail()
+                expectation.fulfill()
+            }
         }
     }
 
@@ -60,10 +79,16 @@ class DBProxyTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        DBTest.makeProxy { (proxy) in
-            DB.getProxy(uid: proxy.ownerId, key: proxy.key) { (retrievedProxy) in
-                XCTAssertEqual(retrievedProxy, proxy)
-                expectation.fulfill()
+        FirebaseTest.makeProxy { (proxy) in
+            FirebaseTest.firebase.getProxy(key: proxy.key, ownerId: proxy.ownerId) { (result) in
+                switch result {
+                case .failure(let error):
+                    XCTFail(String(describing: error))
+                    expectation.fulfill()
+                case .success(let retrievedProxy):
+                    XCTAssertEqual(retrievedProxy, proxy)
+                    expectation.fulfill()
+                }
             }
         }
     }
@@ -72,9 +97,14 @@ class DBProxyTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        DB.getProxy(uid: DBTest.uid, key: "invalid key") { (proxy) in
-            XCTAssertNil(proxy)
-            expectation.fulfill()
+        FirebaseTest.firebase.getProxy(key: "invalid key", ownerId: FirebaseTest.uid) { (result) in
+            switch result {
+            case .failure:
+                expectation.fulfill()
+            case .success:
+                XCTFail()
+                expectation.fulfill()
+            }
         }
     }
 
@@ -82,49 +112,44 @@ class DBProxyTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        DBTest.makeProxy { (proxy) in
-            XCTAssertNotEqual(proxy.icon, "")
-            let work = GroupWork()
-            work.checkProxyCreated(proxy)
-            work.checkProxyNameCreated(forProxy: proxy)
-            work.allDone {
-                expectation.fulfill()
-            }
-        }
-    }
-
-    func testMakeProxyAtProxyLimit() {
-        let expectation = self.expectation(description: #function)
-        defer { waitForExpectations(timeout: 10) }
-
-        DB.makeProxy(uid: DBTest.uid, currentProxyCount: 0, maxProxyCount: 0) { (result) in
+        FirebaseTest.firebase.makeProxy(ownerId: FirebaseTest.uid) { (result) in
             switch result {
             case .failure(let error):
-                XCTAssertEqual(error, ProxyError.proxyLimitReached)
+                XCTFail(String(describing: error))
                 expectation.fulfill()
-            case .success:
-                XCTFail()
-                expectation.fulfill()
+            case .success(let proxy):
+                let work = GroupWork()
+                work.checkProxyCreated(proxy)
+                work.checkProxyNameCreated(forProxy: proxy)
+                // todo: check proxy deleted at test key
+                work.allDone {
+                    expectation.fulfill()
+                }
             }
         }
     }
 
-    func testMakeProxyFailAtMaxAttempts() {
+    func testMakeProxyFailAtMaxRetries() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        DB.makeProxy(uid: DBTest.uid, name: "test", currentProxyCount: 0) { (result) in
+        var settings = [String: Any]()
+        settings["generator"] = GeneratorMock()
+        settings["makeProxyRetries"] = 0
+        firebase = FirebaseDatabase(settings)
+
+        firebase.makeProxy(ownerId: FirebaseTest.uid) { (result) in
             switch result {
-            case .failure:
-                XCTFail()
+            case .failure(let error):
+                XCTFail(String(describing: error))
+                expectation.fulfill()
             case .success:
-                DB.makeProxy(uid: DBTest.uid, name: "test", currentProxyCount: 1) { (result) in
+                self.firebase.makeProxy(ownerId: FirebaseTest.uid) { (result) in
                     switch result {
                     case .failure:
-                        XCTFail()
                         expectation.fulfill()
-                    case .success(let proxy):
-                        XCTAssert(proxy.name != "test")
+                    case .success:
+                        XCTFail()
                         expectation.fulfill()
                     }
                 }
@@ -136,10 +161,10 @@ class DBProxyTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        DBTest.sendMessage { (_, convo, proxy, _) in
+        FirebaseTest.sendMessage { (_, convo, proxy, _) in
             let newIcon = "new icon"
-            DB.setIcon(to: newIcon, for: proxy) { (success) in
-                XCTAssert(success)
+            FirebaseTest.firebase.setIcon(to: newIcon, for: proxy) { (error) in
+                XCTAssertNil(error, String(describing: error))
                 let work = GroupWork()
                 work.check(.icon(newIcon), for: proxy)
                 work.check(.receiverIcon(newIcon), for: convo, asSender: false)
@@ -155,10 +180,10 @@ class DBProxyTests: DBTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        DBTest.sendMessage { (_, convo, proxy, _) in
+        FirebaseTest.sendMessage { (_, convo, proxy, _) in
             let newNickname = "new nickname"
-            DB.setNickname(to: newNickname, for: proxy) { (error) in
-                XCTAssertNil(error)
+            FirebaseTest.firebase.setNickname(to: newNickname, for: proxy) { (error) in
+                XCTAssertNil(error, String(describing: error))
                 let work = GroupWork()
                 work.check(.nickname(newNickname), for: proxy)
                 work.check(.senderNickname(newNickname), for: convo, asSender: true)
@@ -173,7 +198,7 @@ class DBProxyTests: DBTest {
 extension GroupWork {
     func checkProxyCreated(_ proxy: Proxy) {
         start()
-        DB.get(Child.proxies, DBTest.uid, proxy.key) { (data) in
+        FirebaseHelper.get(Child.proxies, FirebaseTest.uid, proxy.key) { (data) in
             XCTAssertEqual(Proxy(data!), proxy)
             self.finish(withResult: true)
         }
@@ -181,7 +206,7 @@ extension GroupWork {
 
     func checkProxyNameCreated(forProxy proxy: Proxy) {
         start()
-        DB.get(Child.proxyNames, proxy.key) { (data) in
+        FirebaseHelper.get(Child.proxyNames, proxy.key) { (data) in
             let testProxy = Proxy(icon: proxy.icon, name: proxy.name, ownerId: proxy.ownerId)
             XCTAssertEqual(Proxy(data!), testProxy)
             self.finish(withResult: true)

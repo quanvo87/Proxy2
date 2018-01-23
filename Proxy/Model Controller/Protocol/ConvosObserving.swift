@@ -16,7 +16,7 @@ class ConvosObserver: ConvosObsering {
 
     func load(proxyKey: String?, querySize: UInt, uid: String, manager: ConvosManaging?) {
         stopObserving()
-        ref = DB.makeReference(Child.convos, uid)
+        ref = FirebaseHelper.makeReference(Child.convos, uid)
         handle = ref?
             .queryOrdered(byChild: Child.timestamp)
             .queryLimited(toLast: querySize)
