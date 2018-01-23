@@ -19,6 +19,7 @@ class UnreadMessagesManager: UnreadMessagesManaging {
             }
         }
     }
+    private let database = FirebaseDatabase()
     private let ref: DatabaseReference?
     private var addedHandle: DatabaseHandle?
     private var removedHandle: DatabaseHandle?
@@ -35,11 +36,11 @@ class UnreadMessagesManager: UnreadMessagesManaging {
                     return
             }
             guard proxiesManager.proxies.contains(where: { $0.key == message.receiverProxyKey }) else {
-                FirebaseHelper.deleteUnreadMessage(message) { _ in }
+                self?.database.deleteUnreadMessage(message) { _ in }
                 return
             }
             if self?.presenceManager?.presentInConvo == message.parentConvoKey {
-                FirebaseHelper.read(message) { _ in }
+                self?.database.read(message, at: Date()) { _ in }
             } else {
                 self?.unreadMessages.append(message)
             }

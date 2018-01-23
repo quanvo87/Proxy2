@@ -7,11 +7,6 @@ enum FirstResponder {
     case newMessageTextView
 }
 
-enum Result<T, Error> {
-    case success(T)
-    case failure(Error)
-}
-
 extension Auth {
     static let auth: Auth = {
         Auth.auth()

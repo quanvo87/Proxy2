@@ -2,7 +2,7 @@ import FirebaseDatabase
 import XCTest
 @testable import Proxy
 
-class CommonTests: XCTestCase {
+class UtilTests: XCTestCase {
     func testDoubleAsTimeAgo() {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "h:mm a"

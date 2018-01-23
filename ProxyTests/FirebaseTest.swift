@@ -14,7 +14,7 @@ class FirebaseTest: XCTestCase {
     static let testUser = "test user"
     static let text = "🤤"
 
-    static let firebase = FirebaseDatabase()
+    static let database = FirebaseDatabase()
 
     override func setUp() {
         let expectation = self.expectation(description: #function)
@@ -38,7 +38,7 @@ class FirebaseTest: XCTestCase {
                         expectation.fulfill()
                     }
                     auth.signIn(withEmail: self.email, password: self.password) { (_, error) in
-                        XCTAssertNil(error)
+                        XCTAssertNil(error, String(describing: error))
                     }
                 }
             }
@@ -55,7 +55,7 @@ class FirebaseTest: XCTestCase {
 
 extension FirebaseTest {
     static func makeProxy(ownerId: String = FirebaseTest.uid, completion: @escaping (Proxy) -> Void) {
-        firebase.makeProxy(ownerId: ownerId) { (result) in
+        database.makeProxy(ownerId: ownerId) { (result) in
             switch result {
             case .failure:
                 XCTFail()
@@ -68,17 +68,18 @@ extension FirebaseTest {
     static func sendMessage(completion: @escaping (_ message: Message, _ convo: Convo, _ sender: Proxy, _ receiver: Proxy) -> Void) {
         makeProxy { (sender) in
             makeProxy (ownerId: testUser) { (receiver) in
-                FirebaseHelper.sendMessage(sender: sender, receiver: receiver, text: text) { (result) in
+                database.sendMessage(sender: sender, receiver: receiver, text: text) { (result) in
                     switch result {
                     case .failure:
                         XCTFail()
                     case .success(let tuple):
-                        FirebaseHelper.getConvo(uid: tuple.convo.senderId, key: tuple.convo.key) { (convo) in
-                            guard let convo = convo else {
-                                XCTFail()
-                                return
+                        database.getConvo(key: tuple.convo.key, ownerId: tuple.convo.senderId) { (result) in
+                            switch result {
+                            case .failure(let error):
+                                XCTFail(String(describing: error))
+                            case .success(let convo):
+                                completion(tuple.message, convo, sender, receiver)
                             }
-                            completion(tuple.message, convo, sender, receiver)
                         }
                     }
                 }

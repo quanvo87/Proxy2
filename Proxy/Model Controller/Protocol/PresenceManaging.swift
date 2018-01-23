@@ -11,6 +11,7 @@ extension PresenceManaging {
 
 class PresenceManager: PresenceManaging {
     var presentInConvo = ""
+    private let database = FirebaseDatabase()
     private weak var manager: UnreadMessagesManaging?
 
     func enterConvo(_ key: String) {
@@ -21,7 +22,7 @@ class PresenceManager: PresenceManaging {
         var untouchedMessages = [Message]()
         for message in unreadMessages {
             if message.parentConvoKey == key {
-                FirebaseHelper.read(message) { _ in }
+                database.read(message, at: Date()) { _ in }
             } else {
                 untouchedMessages.append(message)
             }

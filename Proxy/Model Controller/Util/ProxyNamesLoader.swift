@@ -1,6 +1,7 @@
 import FirebaseDatabase
 import SearchTextField
 
+// todo: extract to protocol
 // https://www.swiftbysundell.com/posts/a-deep-dive-into-grand-central-dispatch-in-swift
 class ProxyNamesLoader {
     private let ref = FirebaseHelper.makeReference(Child.proxyNames)

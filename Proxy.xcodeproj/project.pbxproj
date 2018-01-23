@@ -12,7 +12,7 @@
 		590441EB1F98351E0015CE16 /* ConvosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 590441EA1F98351E0015CE16 /* ConvosViewController.swift */; };
 		590823C31F9EED6A00A3B6A9 /* IconPickerCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 590823C21F9EED6A00A3B6A9 /* IconPickerCollectionViewCell.xib */; };
 		590823C51F9EF6DA00A3B6A9 /* ProxyPropertyGenerating.swift in Sources */ = {isa = PBXBuildFile; fileRef = 590823C41F9EF6DA00A3B6A9 /* ProxyPropertyGenerating.swift */; };
-		591E305E1FF9729C00094EB3 /* CommonDBTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 591E305D1FF9729C00094EB3 /* CommonDBTests.swift */; };
+		591E305E1FF9729C00094EB3 /* FirebaseUtilTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 591E305D1FF9729C00094EB3 /* FirebaseUtilTests.swift */; };
 		5920EFBD2008F402006570F6 /* SenderPickerTableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5920EFBC2008F401006570F6 /* SenderPickerTableViewDelegate.swift */; };
 		5932BA18200963AC0041BD7B /* ConvoObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5932BA17200963AC0041BD7B /* ConvoObserving.swift */; };
 		5932BA1A20096FD60041BD7B /* ConvosObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5932BA1920096FD60041BD7B /* ConvosObserving.swift */; };
@@ -29,9 +29,7 @@
 		5973C8101F60844A00647492 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5973C80F1F60840F00647492 /* GoogleService-Info.plist */; };
 		5973C8111F60844A00647492 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5973C80F1F60840F00647492 /* GoogleService-Info.plist */; };
 		5973C8121F60844B00647492 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5973C80F1F60840F00647492 /* GoogleService-Info.plist */; };
-		5973C8491F608A2200647492 /* DBConvo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8151F608A1A00647492 /* DBConvo.swift */; };
 		5973C84A1F608A2200647492 /* ConvosTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8161F608A1A00647492 /* ConvosTableViewCell.swift */; };
-		5973C84B1F608A2200647492 /* DBUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8171F608A1A00647492 /* DBUser.swift */; };
 		5973C84C1F608A2200647492 /* NSDate+NVTimeAgo.m in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8181F608A1A00647492 /* NSDate+NVTimeAgo.m */; };
 		5973C8511F608A2200647492 /* ProxyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C81D1F608A1B00647492 /* ProxyError.swift */; };
 		5973C8531F608A2200647492 /* ConvoDetailReceiverProxyTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C81F1F608A1B00647492 /* ConvoDetailReceiverProxyTableViewCell.swift */; };
@@ -53,16 +51,13 @@
 		5973C8691F608A2200647492 /* loadNouns.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8361F608A1F00647492 /* loadNouns.swift */; };
 		5973C86B1F608A2200647492 /* Convo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8381F608A1F00647492 /* Convo.swift */; };
 		5973C86C1F608A2200647492 /* LoginService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8391F608A1F00647492 /* LoginService.swift */; };
-		5973C86E1F608A2200647492 /* DBMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C83B1F608A2000647492 /* DBMessage.swift */; };
 		5973C8721F608A2200647492 /* Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C83F1F608A2000647492 /* Constant.swift */; };
 		5973C8751F608A2200647492 /* loadIconNames.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8421F608A2100647492 /* loadIconNames.swift */; };
 		5973C8761F608A2200647492 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8431F608A2100647492 /* SettingsViewController.swift */; };
 		5973C8771F608A2200647492 /* SenderPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8441F608A2100647492 /* SenderPickerViewController.swift */; };
 		5973C8791F608A2200647492 /* loadAdjectives.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8461F608A2100647492 /* loadAdjectives.swift */; };
 		5973C8841F608A4E00647492 /* FirebaseHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C87B1F608A4D00647492 /* FirebaseHelperTests.swift */; };
-		5973C8861F608A4E00647492 /* DBConvoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C87D1F608A4D00647492 /* DBConvoTests.swift */; };
-		5973C8871F608A4E00647492 /* DBMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C87E1F608A4D00647492 /* DBMessageTests.swift */; };
-		5973C8891F608A4E00647492 /* CommonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8801F608A4E00647492 /* CommonTests.swift */; };
+		5973C8891F608A4E00647492 /* UtilTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8801F608A4E00647492 /* UtilTests.swift */; };
 		5973C88A1F608A4E00647492 /* FirebaseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8811F608A4E00647492 /* FirebaseTest.swift */; };
 		5973C88C1F608A4E00647492 /* FirebaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8831F608A4E00647492 /* FirebaseTests.swift */; };
 		598420511FEA598300855647 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598420501FEA598300855647 /* Message.swift */; };
@@ -80,6 +75,7 @@
 		59B432EA1F60648400622DEA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 59B432E81F60648400622DEA /* LaunchScreen.storyboard */; };
 		59B90C211FF3411E00449569 /* UnreadMessagesManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59B90C201FF3411E00449569 /* UnreadMessagesManaging.swift */; };
 		59BDAE512003849C002A5A6C /* ProxyNamesLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BDAE502003849C002A5A6C /* ProxyNamesLoader.swift */; };
+		59BE6ABB2016C74B00CCD27E /* GroupWork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BE6ABA2016C74B00CCD27E /* GroupWork.swift */; };
 		59C171B11F60C64500EDE032 /* arabiangulf.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 59C171AD1F60C64400EDE032 /* arabiangulf.mp4 */; };
 		59C171B21F60C64500EDE032 /* beachpalm.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 59C171AE1F60C64400EDE032 /* beachpalm.mp4 */; };
 		59C171B41F60C64500EDE032 /* hawaiiancoast.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 59C171B01F60C64500EDE032 /* hawaiiancoast.mp4 */; };
@@ -125,7 +121,7 @@
 		590441EA1F98351E0015CE16 /* ConvosViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvosViewController.swift; sourceTree = "<group>"; };
 		590823C21F9EED6A00A3B6A9 /* IconPickerCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IconPickerCollectionViewCell.xib; sourceTree = "<group>"; };
 		590823C41F9EF6DA00A3B6A9 /* ProxyPropertyGenerating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyPropertyGenerating.swift; sourceTree = "<group>"; };
-		591E305D1FF9729C00094EB3 /* CommonDBTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonDBTests.swift; sourceTree = "<group>"; };
+		591E305D1FF9729C00094EB3 /* FirebaseUtilTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseUtilTests.swift; sourceTree = "<group>"; };
 		5920EFBC2008F401006570F6 /* SenderPickerTableViewDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SenderPickerTableViewDelegate.swift; sourceTree = "<group>"; };
 		5932BA17200963AC0041BD7B /* ConvoObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoObserving.swift; sourceTree = "<group>"; };
 		5932BA1920096FD60041BD7B /* ConvosObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvosObserving.swift; sourceTree = "<group>"; };
@@ -141,9 +137,7 @@
 		596D7FD31F62EC1100E6AF8D /* ProxiesTableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxiesTableViewDelegate.swift; sourceTree = "<group>"; };
 		5973C80F1F60840F00647492 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5973C8131F608A1A00647492 /* NSDate+NVTimeAgo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+NVTimeAgo.h"; sourceTree = "<group>"; };
-		5973C8151F608A1A00647492 /* DBConvo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBConvo.swift; sourceTree = "<group>"; };
 		5973C8161F608A1A00647492 /* ConvosTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvosTableViewCell.swift; sourceTree = "<group>"; };
-		5973C8171F608A1A00647492 /* DBUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBUser.swift; sourceTree = "<group>"; };
 		5973C8181F608A1A00647492 /* NSDate+NVTimeAgo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+NVTimeAgo.m"; sourceTree = "<group>"; };
 		5973C81D1F608A1B00647492 /* ProxyError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyError.swift; sourceTree = "<group>"; };
 		5973C81F1F608A1B00647492 /* ConvoDetailReceiverProxyTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvoDetailReceiverProxyTableViewCell.swift; sourceTree = "<group>"; };
@@ -165,16 +159,13 @@
 		5973C8361F608A1F00647492 /* loadNouns.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = loadNouns.swift; sourceTree = "<group>"; };
 		5973C8381F608A1F00647492 /* Convo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Convo.swift; sourceTree = "<group>"; };
 		5973C8391F608A1F00647492 /* LoginService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginService.swift; sourceTree = "<group>"; };
-		5973C83B1F608A2000647492 /* DBMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBMessage.swift; sourceTree = "<group>"; };
 		5973C83F1F608A2000647492 /* Constant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constant.swift; sourceTree = "<group>"; };
 		5973C8421F608A2100647492 /* loadIconNames.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = loadIconNames.swift; sourceTree = "<group>"; };
 		5973C8431F608A2100647492 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		5973C8441F608A2100647492 /* SenderPickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SenderPickerViewController.swift; sourceTree = "<group>"; };
 		5973C8461F608A2100647492 /* loadAdjectives.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = loadAdjectives.swift; sourceTree = "<group>"; };
 		5973C87B1F608A4D00647492 /* FirebaseHelperTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseHelperTests.swift; sourceTree = "<group>"; };
-		5973C87D1F608A4D00647492 /* DBConvoTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBConvoTests.swift; sourceTree = "<group>"; };
-		5973C87E1F608A4D00647492 /* DBMessageTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBMessageTests.swift; sourceTree = "<group>"; };
-		5973C8801F608A4E00647492 /* CommonTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonTests.swift; sourceTree = "<group>"; };
+		5973C8801F608A4E00647492 /* UtilTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UtilTests.swift; sourceTree = "<group>"; };
 		5973C8811F608A4E00647492 /* FirebaseTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseTest.swift; sourceTree = "<group>"; };
 		5973C8831F608A4E00647492 /* FirebaseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseTests.swift; sourceTree = "<group>"; };
 		598420501FEA598300855647 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
@@ -199,6 +190,7 @@
 		59B433AD1F60807400622DEA /* Proxy-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Proxy-Bridging-Header.h"; sourceTree = "<group>"; };
 		59B90C201FF3411E00449569 /* UnreadMessagesManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnreadMessagesManaging.swift; sourceTree = "<group>"; };
 		59BDAE502003849C002A5A6C /* ProxyNamesLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyNamesLoader.swift; sourceTree = "<group>"; };
+		59BE6ABA2016C74B00CCD27E /* GroupWork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupWork.swift; sourceTree = "<group>"; };
 		59C171AD1F60C64400EDE032 /* arabiangulf.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = arabiangulf.mp4; sourceTree = "<group>"; };
 		59C171AE1F60C64400EDE032 /* beachpalm.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = beachpalm.mp4; sourceTree = "<group>"; };
 		59C171B01F60C64500EDE032 /* hawaiiancoast.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = hawaiiancoast.mp4; sourceTree = "<group>"; };
@@ -294,26 +286,12 @@
 		5966076C1F977CA300874741 /* Model Controller */ = {
 			isa = PBXGroup;
 			children = (
-				5966076D1F977CB500874741 /* Database */,
 				59D896A31F977D44008B3A05 /* Data Source */,
 				59D896A21F977D2B008B3A05 /* Delegate */,
 				59D896A41F977D70008B3A05 /* Protocol */,
 				59D896A81F977EEA008B3A05 /* Util */,
 			);
 			path = "Model Controller";
-			sourceTree = "<group>";
-		};
-		5966076D1F977CB500874741 /* Database */ = {
-			isa = PBXGroup;
-			children = (
-				5973C8271F608A1C00647492 /* DatabaseType.swift */,
-				5996F19A2016233100CF36FD /* FirebaseDatabase.swift */,
-				5973C82E1F608A1D00647492 /* FirebaseHelper.swift */,
-				5973C8151F608A1A00647492 /* DBConvo.swift */,
-				5973C83B1F608A2000647492 /* DBMessage.swift */,
-				5973C8171F608A1A00647492 /* DBUser.swift */,
-			);
-			path = Database;
 			sourceTree = "<group>";
 		};
 		59B432D31F60648400622DEA = {
@@ -356,10 +334,8 @@
 				5973C8811F608A4E00647492 /* FirebaseTest.swift */,
 				5973C8831F608A4E00647492 /* FirebaseTests.swift */,
 				5973C87B1F608A4D00647492 /* FirebaseHelperTests.swift */,
-				5973C8801F608A4E00647492 /* CommonTests.swift */,
-				591E305D1FF9729C00094EB3 /* CommonDBTests.swift */,
-				5973C87D1F608A4D00647492 /* DBConvoTests.swift */,
-				5973C87E1F608A4D00647492 /* DBMessageTests.swift */,
+				591E305D1FF9729C00094EB3 /* FirebaseUtilTests.swift */,
+				5973C8801F608A4E00647492 /* UtilTests.swift */,
 				59B432F61F60648400622DEA /* Info.plist */,
 			);
 			path = ProxyTests;
@@ -423,10 +399,11 @@
 		59D896A41F977D70008B3A05 /* Protocol */ = {
 			isa = PBXGroup;
 			children = (
-				59C6138E1F9F7EFE0014F414 /* ProxyPropertyGenerator */,
 				598F8A651FEB9B2300CCF024 /* Protocol.swift */,
 				5932BA17200963AC0041BD7B /* ConvoObserving.swift */,
 				5932BA1920096FD60041BD7B /* ConvosObserving.swift */,
+				5973C8271F608A1C00647492 /* DatabaseType.swift */,
+				5996F19A2016233100CF36FD /* FirebaseDatabase.swift */,
 				5932BA1D2009837D0041BD7B /* MessagesObserving.swift */,
 				59F060571FFC4AFA000B9223 /* PresenceManaging.swift */,
 				59E75B2D1F846F550033A407 /* ProxiesManaging.swift */,
@@ -436,6 +413,7 @@
 				59D430D2200FBE3C00F927DC /* SenderManaging.swift */,
 				59B90C201FF3411E00449569 /* UnreadMessagesManaging.swift */,
 				593D7D431F851F7D00D3FBD5 /* UserStatsManaging.swift */,
+				59C6138E1F9F7EFE0014F414 /* ProxyPropertyGenerator */,
 			);
 			path = Protocol;
 			sourceTree = "<group>";
@@ -472,6 +450,8 @@
 				59FF373C1F97984200FA1AF0 /* AuthManager.swift */,
 				5973C8291F608A1C00647492 /* Common.swift */,
 				5973C83F1F608A2000647492 /* Constant.swift */,
+				5973C82E1F608A1D00647492 /* FirebaseHelper.swift */,
+				59BE6ABA2016C74B00CCD27E /* GroupWork.swift */,
 				5973C8391F608A1F00647492 /* LoginService.swift */,
 				59AF0E7B1F7B5129009F6F38 /* ProxiesButtonManager.swift */,
 				5973C81D1F608A1B00647492 /* ProxyError.swift */,
@@ -912,7 +892,6 @@
 				5973C8641F608A2200647492 /* ProxiesViewController.swift in Sources */,
 				5932BA1A20096FD60041BD7B /* ConvosObserving.swift in Sources */,
 				5904054C2008DDE3005F4638 /* MakeNewMessageSenderTableViewCell.swift in Sources */,
-				5973C8491F608A2200647492 /* DBConvo.swift in Sources */,
 				590823C51F9EF6DA00A3B6A9 /* ProxyPropertyGenerating.swift in Sources */,
 				598420511FEA598300855647 /* Message.swift in Sources */,
 				5973C8671F608A2200647492 /* IconPickerCollectionViewCell.swift in Sources */,
@@ -937,6 +916,7 @@
 				598F89FE1FEB401200CCF024 /* ConvoDetailViewController.swift in Sources */,
 				5973C8601F608A2200647492 /* SettingsTableViewCell.swift in Sources */,
 				5973C8511F608A2200647492 /* ProxyError.swift in Sources */,
+				59BE6ABB2016C74B00CCD27E /* GroupWork.swift in Sources */,
 				5973C85D1F608A2200647492 /* Common.swift in Sources */,
 				5973C84A1F608A2200647492 /* ConvosTableViewCell.swift in Sources */,
 				5973C8561F608A2200647492 /* LoginViewController.swift in Sources */,
@@ -949,9 +929,7 @@
 				590441EB1F98351E0015CE16 /* ConvosViewController.swift in Sources */,
 				59AF0E7C1F7B5129009F6F38 /* ProxiesButtonManager.swift in Sources */,
 				5973C85B1F608A2200647492 /* DatabaseType.swift in Sources */,
-				5973C84B1F608A2200647492 /* DBUser.swift in Sources */,
 				59FF37421F97A6AA00FA1AF0 /* TabBarController.swift in Sources */,
-				5973C86E1F608A2200647492 /* DBMessage.swift in Sources */,
 				5973C8541F608A2200647492 /* ProxyTableViewDataSource.swift in Sources */,
 				5973C85F1F608A2200647492 /* IconPickerViewController.swift in Sources */,
 				59DCE5FC1F65FCC900AC9CEC /* ProxyTableViewDelegate.swift in Sources */,
@@ -962,13 +940,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				591E305E1FF9729C00094EB3 /* CommonDBTests.swift in Sources */,
+				591E305E1FF9729C00094EB3 /* FirebaseUtilTests.swift in Sources */,
 				5973C8841F608A4E00647492 /* FirebaseHelperTests.swift in Sources */,
-				5973C8871F608A4E00647492 /* DBMessageTests.swift in Sources */,
-				5973C8891F608A4E00647492 /* CommonTests.swift in Sources */,
+				5973C8891F608A4E00647492 /* UtilTests.swift in Sources */,
 				5973C88A1F608A4E00647492 /* FirebaseTest.swift in Sources */,
 				5973C88C1F608A4E00647492 /* FirebaseTests.swift in Sources */,
-				5973C8861F608A4E00647492 /* DBConvoTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
