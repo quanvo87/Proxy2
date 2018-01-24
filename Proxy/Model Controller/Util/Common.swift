@@ -118,7 +118,8 @@ extension NSAttributedString {
     static func makeConvoTitle(_ convo: Convo) -> NSAttributedString {
         let grayAttribute = [NSAttributedStringKey.foregroundColor: UIColor.gray]
         let receiver = NSMutableAttributedString(string: (convo.receiverNickname == "" ? convo.receiverProxyName : convo.receiverNickname) + ", ")
-        let sender = NSMutableAttributedString(string: convo.senderNickname == "" ? convo.senderProxyName : convo.senderNickname, attributes: grayAttribute)
+        let sender = NSMutableAttributedString(string: convo.senderNickname == "" ? convo.senderProxyName : convo.senderNickname,
+                                               attributes: grayAttribute)
         receiver.append(sender)
         return receiver
     }
@@ -263,7 +264,8 @@ extension UIViewController {
     }
 
     func showEditProxyNicknameAlert(_ proxy: Proxy, database: DatabaseType = FirebaseDatabase()) {
-        let alert = UIAlertController(title: "Edit Nickname", message: "Only you see your nickname.", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Edit Nickname",
+                                      message: "Only you see your nickname.", preferredStyle: .alert)
         alert.addTextField { (textField) in
             textField.autocapitalizationType = .sentences
             textField.autocorrectionType = .yes
@@ -288,11 +290,15 @@ extension UIViewController {
         present(alert, animated: true)
     }
 
-    func showErrorAlert(_ error: Error) {
+    func showErrorAlert(_ error: Error, completion: (() -> Void)? = nil) {
         if let error = error as? ProxyError {
-            showAlert(title: error.alertFields.title, message: error.alertFields.description)
+            showAlert(title: error.alertFields.title,
+                      message: error.alertFields.description,
+                      completion: completion)
         } else {
-            showAlert(title: ProxyError.unknown.alertFields.title, message: ProxyError.unknown.alertFields.description)
+            showAlert(title: ProxyError.unknown.alertFields.title,
+                      message: ProxyError.unknown.alertFields.description,
+                      completion: completion)
         }
     }
 
