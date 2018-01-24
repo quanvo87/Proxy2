@@ -15,6 +15,7 @@ class ConvosViewController: UIViewController, ConvosManaging, NewConvoManaging {
     private let database: DatabaseType
     private let maxProxyCount: Int
     private let observer: ConvosObsering
+    private let querySize: UInt
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
     private weak var presenceManager: PresenceManaging?
@@ -30,6 +31,7 @@ class ConvosViewController: UIViewController, ConvosManaging, NewConvoManaging {
     init(database: DatabaseType = FirebaseDatabase(),
          maxProxyCount: Int = Setting.maxProxyCount,
          observer: ConvosObsering = ConvosObserver(),
+         querySize: UInt = Setting.querySize,
          uid: String,
          presenceManager: PresenceManaging?,
          proxiesManager: ProxiesManaging?,
@@ -37,6 +39,7 @@ class ConvosViewController: UIViewController, ConvosManaging, NewConvoManaging {
         self.database = database
         self.maxProxyCount = maxProxyCount
         self.observer = observer
+        self.querySize = querySize
         self.uid = uid
         self.presenceManager = presenceManager
         self.proxiesManager = proxiesManager
@@ -160,7 +163,7 @@ extension ConvosViewController: UITableViewDelegate {
         }
         observer.loadConvos(endingAtTimestamp: convo.timestamp,
                             proxyKey: nil,
-                            querySize: Setting.querySize,
+                            querySize: querySize,
                             uid: uid,
                             manager: self)
     }

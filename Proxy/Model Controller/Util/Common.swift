@@ -108,6 +108,10 @@ extension Int {
     var asStringWithParens: String {
         return self == 0 ? "" : " (\(self))"
     }
+
+    var random: Int {
+        return Int(arc4random_uniform(UInt32(self)))
+    }
 }
 
 extension NSAttributedString {
