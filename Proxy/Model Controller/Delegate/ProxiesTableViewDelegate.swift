@@ -31,7 +31,6 @@ extension ProxiesTableViewDelegate: UITableViewDelegate {
             tableView.deselectRow(at: indexPath, animated: true)
             controller?.showProxyController(proxy: proxy,
                                             presenceManager: presenceManager,
-                                            proxiesManager: proxiesManager,
                                             unreadMessagesManager: unreadMessagesManager)
         }
     }

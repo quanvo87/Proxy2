@@ -20,7 +20,6 @@ class ConvoViewController: MessagesViewController, ConvoManaging, MessagesManagi
     private let messagesObserver: MessagesObserving
     private var icons = [String: UIImage]()
     private weak var presenceManager: PresenceManaging?
-    private weak var proxiesManager: ProxiesManaging?
     private weak var unreadMessagesManager: UnreadMessagesManaging?
 
     init(convo: Convo,
@@ -28,14 +27,12 @@ class ConvoViewController: MessagesViewController, ConvoManaging, MessagesManagi
          database: DatabaseType = FirebaseDatabase(),
          messagesObserver: MessagesObserving = MessagesObserver(),
          presenceManager: PresenceManaging?,
-         proxiesManager: ProxiesManaging?,
          unreadMessagesManager: UnreadMessagesManaging?) {
         self.convo = convo
         self.convoObserver = convoObserver
         self.database = database
         self.messagesObserver = messagesObserver
         self.presenceManager = presenceManager
-        self.proxiesManager = proxiesManager
         self.unreadMessagesManager = unreadMessagesManager
 
         super.init(nibName: nil, bundle: nil)
@@ -84,7 +81,6 @@ class ConvoViewController: MessagesViewController, ConvoManaging, MessagesManagi
         }
         navigationController?.pushViewController(ConvoDetailViewController(convo: convo,
                                                                            presenceManager: presenceManager,
-                                                                           proxiesManager: proxiesManager,
                                                                            unreadMessagesManager: unreadMessagesManager),
                                                  animated: true)
     }

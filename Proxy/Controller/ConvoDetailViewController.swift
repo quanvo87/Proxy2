@@ -24,7 +24,6 @@ class ConvoDetailViewController: UIViewController, ConvoManaging, ProxyManaging 
     private let proxyObserver: ProxyObsering
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private weak var presenceManager: PresenceManaging?
-    private weak var proxiesManager: ProxiesManaging?
     private weak var unreadMessagesManager: UnreadMessagesManaging?
 
     init(convo: Convo,
@@ -32,14 +31,12 @@ class ConvoDetailViewController: UIViewController, ConvoManaging, ProxyManaging 
          database: DatabaseType = FirebaseDatabase(),
          proxyObserver: ProxyObsering = ProxyObserver(),
          presenceManager: PresenceManaging?,
-         proxiesManager: ProxiesManaging?,
          unreadMessagesManager: UnreadMessagesManaging?) {
         self.convo = convo
         self.convoObserver = convoObserver
         self.database = database
         self.proxyObserver = proxyObserver
         self.presenceManager = presenceManager
-        self.proxiesManager = proxiesManager
         self.unreadMessagesManager = unreadMessagesManager
 
         super.init(nibName: nil, bundle: nil)
@@ -179,7 +176,6 @@ extension ConvoDetailViewController: UITableViewDelegate {
         case 1:
             showProxyController(proxy: proxy,
                                 presenceManager: presenceManager,
-                                proxiesManager: proxiesManager,
                                 unreadMessagesManager: unreadMessagesManager)
         case 2:
             switch indexPath.row {
