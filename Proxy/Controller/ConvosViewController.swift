@@ -1,6 +1,6 @@
 import UIKit
 
-class ConvosViewController: UIViewController, ConvosManaging, NewConvoManaging {
+class ConvosViewController: UIViewController, ConvosManaging, NewConvoManaging, ProxiesManaging {
     var convos = [Convo]() {
         didSet {
             if convos.isEmpty {
@@ -12,14 +12,15 @@ class ConvosViewController: UIViewController, ConvosManaging, NewConvoManaging {
         }
     }
     var newConvo: Convo?
+    var proxies = [Proxy]()
     private let database: DatabaseType
+    private let convosObserver: ConvosObsering
     private let maxProxyCount: Int
-    private let observer: ConvosObsering
+    private let proxiesObserver: ProxiesObserving
     private let querySize: UInt
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
     private weak var presenceManager: PresenceManaging?
-    private weak var proxiesManager: ProxiesManaging?
     private weak var unreadMessagesManager: UnreadMessagesManaging?
     private lazy var makeNewMessageButton = UIBarButtonItem.make(target: self,
                                                                  action: #selector(showMakeNewMessageController),
@@ -29,28 +30,30 @@ class ConvosViewController: UIViewController, ConvosManaging, NewConvoManaging {
                                                                imageName: ButtonName.makeNewProxy)
 
     init(database: DatabaseType = FirebaseDatabase(),
+         convosObserver: ConvosObsering = ConvosObserver(),
          maxProxyCount: Int = Setting.maxProxyCount,
-         observer: ConvosObsering = ConvosObserver(),
+         proxiesObserver: ProxiesObserving = ProxiesObserver(),
          querySize: UInt = Setting.querySize,
          uid: String,
          presenceManager: PresenceManaging?,
-         proxiesManager: ProxiesManaging?,
          unreadMessagesManager: UnreadMessagesManaging?) {
         self.database = database
         self.maxProxyCount = maxProxyCount
-        self.observer = observer
+        self.convosObserver = convosObserver
+        self.proxiesObserver = proxiesObserver
         self.querySize = querySize
         self.uid = uid
         self.presenceManager = presenceManager
-        self.proxiesManager = proxiesManager
         self.unreadMessagesManager = unreadMessagesManager
 
         super.init(nibName: nil, bundle: nil)
 
+        convosObserver.load(proxyKey: nil, querySize: Setting.querySize, uid: uid, manager: self)
+
         navigationItem.rightBarButtonItems = [makeNewMessageButton, makeNewProxyButton]
         navigationItem.title = "Messages"
 
-        observer.load(proxyKey: nil, querySize: Setting.querySize, uid: uid, manager: self)
+        proxiesObserver.load(manager: self, uid: uid)
 
         tableView.dataSource = self
         tableView.delegate = self
@@ -71,18 +74,17 @@ class ConvosViewController: UIViewController, ConvosManaging, NewConvoManaging {
         if let newConvo = newConvo {
             showConvoController(convo: newConvo,
                                 presenceManager: presenceManager,
-                                proxiesManager: proxiesManager,
                                 unreadMessagesManager: unreadMessagesManager)
             self.newConvo = nil
         }
     }
 
     @objc private func makeNewProxy() {
-        guard proxiesManager?.proxies.count ?? Int.max < maxProxyCount else {
-            showAlert(title: "You have too many Proxies", message: "Try deleting some and try again!")
+        makeNewProxyButton.animate()
+        guard proxies.count < maxProxyCount else {
+            showErrorAlert(ProxyError.tooManyProxies)
             return
         }
-        makeNewProxyButton.animate()
         makeNewProxyButton.isEnabled = false
         database.makeProxy(ownerId: uid) { [weak self] (result) in
             switch result {
@@ -104,7 +106,7 @@ class ConvosViewController: UIViewController, ConvosManaging, NewConvoManaging {
     @objc private func showMakeNewMessageController() {
         makeNewMessageButton.animate()
         makeNewMessageButton.isEnabled = false
-        showMakeNewMessageController(sender: nil, uid: uid, manager: proxiesManager)
+        showMakeNewMessageController(sender: nil, uid: uid)
         makeNewMessageButton.isEnabled = true
     }
 
@@ -147,7 +149,6 @@ extension ConvosViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         showConvoController(convo: convo,
                             presenceManager: presenceManager,
-                            proxiesManager: proxiesManager,
                             unreadMessagesManager: unreadMessagesManager)
     }
 
@@ -161,10 +162,10 @@ extension ConvosViewController: UITableViewDelegate {
             let convo = convos[safe: indexPath.row] else {
                 return
         }
-        observer.loadConvos(endingAtTimestamp: convo.timestamp,
-                            proxyKey: nil,
-                            querySize: querySize,
-                            uid: uid,
-                            manager: self)
+        convosObserver.loadConvos(endingAtTimestamp: convo.timestamp,
+                                  proxyKey: nil,
+                                  querySize: querySize,
+                                  uid: uid,
+                                  manager: self)
     }
 }

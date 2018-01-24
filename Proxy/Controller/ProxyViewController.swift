@@ -27,7 +27,6 @@ class ProxyViewController: UIViewController, ConvosManaging, NewConvoManaging, P
     private let querySize: UInt
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private weak var presenceManager: PresenceManaging?
-    private weak var proxiesManager: ProxiesManaging?
     private weak var unreadMessagesManager: UnreadMessagesManaging?
     private lazy var makeNewMessageButton = UIBarButtonItem.make(target: self,
                                                                  action: #selector(showMakeNewMessageController),
@@ -42,7 +41,6 @@ class ProxyViewController: UIViewController, ConvosManaging, NewConvoManaging, P
          proxyObserver: ProxyObsering = ProxyObserver(),
          querySize: UInt = Setting.querySize,
          presenceManager: PresenceManaging?,
-         proxiesManager: ProxiesManaging?,
          unreadMessagesManager: UnreadMessagesManaging?) {
         self.proxy = proxy
         self.convosObserver = convosObserver
@@ -50,7 +48,6 @@ class ProxyViewController: UIViewController, ConvosManaging, NewConvoManaging, P
         self.proxyObserver = proxyObserver
         self.querySize = querySize
         self.presenceManager = presenceManager
-        self.proxiesManager = proxiesManager
         self.unreadMessagesManager = unreadMessagesManager
 
         super.init(nibName: nil, bundle: nil)
@@ -84,7 +81,6 @@ class ProxyViewController: UIViewController, ConvosManaging, NewConvoManaging, P
         if let newConvo = newConvo {
             showConvoController(convo: newConvo,
                                 presenceManager: presenceManager,
-                                proxiesManager: proxiesManager,
                                 unreadMessagesManager: unreadMessagesManager)
             self.newConvo = nil
         }
@@ -113,7 +109,7 @@ class ProxyViewController: UIViewController, ConvosManaging, NewConvoManaging, P
             return
         }
         makeNewMessageButton.animate()
-        showMakeNewMessageController(sender: proxy, uid: proxy.ownerId, manager: proxiesManager)
+        showMakeNewMessageController(sender: proxy, uid: proxy.ownerId)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -208,7 +204,6 @@ extension ProxyViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         showConvoController(convo: convo,
                             presenceManager: presenceManager,
-                            proxiesManager: proxiesManager,
                             unreadMessagesManager: unreadMessagesManager)
     }
 

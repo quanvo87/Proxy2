@@ -255,11 +255,9 @@ extension UIViewController {
 
     func showConvoController(convo: Convo,
                              presenceManager: PresenceManaging?,
-                             proxiesManager: ProxiesManaging?,
                              unreadMessagesManager: UnreadMessagesManaging?) {
         navigationController?.pushViewController(ConvoViewController(convo: convo,
                                                                      presenceManager: presenceManager,
-                                                                     proxiesManager: proxiesManager,
                                                                      unreadMessagesManager: unreadMessagesManager),
                                                  animated: true)
     }
@@ -306,11 +304,9 @@ extension UIViewController {
 
     func showProxyController(proxy: Proxy,
                              presenceManager: PresenceManaging?,
-                             proxiesManager: ProxiesManaging?,
                              unreadMessagesManager: UnreadMessagesManaging?) {
         navigationController?.pushViewController(ProxyViewController(proxy: proxy,
                                                                      presenceManager: presenceManager,
-                                                                     proxiesManager: proxiesManager,
                                                                      unreadMessagesManager: unreadMessagesManager),
                                                  animated: true)
     }

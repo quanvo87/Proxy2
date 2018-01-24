@@ -1,17 +1,23 @@
 import MessageKit
 
-class MakeNewMessageViewController: UIViewController {
+// todo: put keyboard movements on main queue
+class MakeNewMessageViewController: UIViewController, ProxiesManaging {
+    var proxies = [Proxy]() {
+        didSet {
+            // todo: animate make new proxy button
+        }
+    }
     override var inputAccessoryView: UIView? {
         return inputBar
     }
     private let database: DatabaseType
     private let inputBar = MessageInputBar()
     private let maxProxyCount: Int
+    private let proxiesObserver: ProxiesObserving
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
     private var firstResponder: FirstResponder = .receiverTextField
     private weak var newConvoManager: NewConvoManaging?
-    private weak var proxiesManager: ProxiesManaging?
     private lazy var inputBarDelegate = MakeNewMessageInputBarDelegate(buttonManager: self,
                                                                        controller: self,
                                                                        newConvoManager: newConvoManager,
@@ -23,34 +29,32 @@ class MakeNewMessageViewController: UIViewController {
     private lazy var tableViewDataSource = MakeNewMessageTableViewDataSource(uid: uid,
                                                                              controller: self,
                                                                              inputBar: inputBar,
-                                                                             proxiesManager: proxiesManager,
+                                                                             proxiesManager: self,
                                                                              receiverIconImageManager: receiverIconImageManager,
                                                                              receiverTextFieldDelegate: self,
                                                                              senderManager: senderManager)
     private lazy var tableViewDelegate = MakeNewMessageTableViewDelegate(uid: uid,
                                                                          controller: self,
-                                                                         proxiesManager: proxiesManager,
+                                                                         proxiesManager: self,
                                                                          senderManager: senderManager)
 
     // todo: use the sender that's passed in
     init(sender: Proxy?,
          database: DatabaseType = FirebaseDatabase(),
          maxProxyCount: Int = Setting.maxProxyCount,
+         proxiesObserver: ProxiesObserving = ProxiesObserver(),
          uid: String,
-         newConvoManager: NewConvoManaging?,
-         proxiesManager: ProxiesManaging?) {
+         newConvoManager: NewConvoManaging?) {
         self.database = database
         self.maxProxyCount = maxProxyCount
+        self.proxiesObserver = proxiesObserver
         self.uid = uid
         self.newConvoManager = newConvoManager
-        self.proxiesManager = proxiesManager
 
         super.init(nibName: nil, bundle: nil)
 
         inputBar.delegate = inputBarDelegate
         inputBar.inputTextView.delegate = self
-
-        proxiesManager?.addManager(self)
 
         navigationItem.rightBarButtonItems = [UIBarButtonItem.make(target: self,
                                                                    action: #selector(close),
@@ -59,6 +63,8 @@ class MakeNewMessageViewController: UIViewController {
                                                                    action: #selector(makeNewProxy),
                                                                    imageName: ButtonName.makeNewProxy)]
         navigationItem.title = "New Message"
+
+        proxiesObserver.load(manager: self, uid: uid)
 
         tableView.dataSource = tableViewDataSource
         tableView.delegate = tableViewDelegate
@@ -80,7 +86,7 @@ class MakeNewMessageViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if proxiesManager?.proxies.isEmpty ?? false {
+        if proxies.isEmpty {
             animateButton()
         }
     }
@@ -144,11 +150,12 @@ private extension MakeNewMessageViewController {
     }
 
     @objc func makeNewProxy() {
+        // todo: extract item
         guard let item = navigationItem.rightBarButtonItems?[safe: 1] else {
             return
         }
         item.animate()
-        guard proxiesManager?.proxies.count ?? Int.max < maxProxyCount else {
+        guard proxies.count < maxProxyCount else {
             showErrorAlert(ProxyError.tooManyProxies)
             return
         }

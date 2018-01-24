@@ -41,15 +41,17 @@ protocol NewConvoManaging: class {
 
 extension NewConvoManaging where Self: UIViewController {
     func showMakeNewMessageController(sender: Proxy?,
-                                      uid: String,
-                                      manager: ProxiesManaging?) {
+                                      uid: String) {
         let makeNewMessageViewController = MakeNewMessageViewController(sender: sender,
                                                                         uid: uid,
-                                                                        newConvoManager: self,
-                                                                        proxiesManager: manager)
+                                                                        newConvoManager: self)
         let navigationController = UINavigationController(rootViewController: makeNewMessageViewController)
         present(navigationController, animated: true)
     }
+}
+
+protocol ProxiesManaging: class {
+    var proxies: [Proxy] { get set }
 }
 
 protocol ProxyManaging: class {
