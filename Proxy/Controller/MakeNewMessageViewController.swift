@@ -1,6 +1,7 @@
 import Device_swift
 import MessageKit
 
+// todo: use fuller variable names
 class MakeNewMessageViewController: UIViewController, ProxiesManaging, SenderManaging {
     var proxies = [Proxy]() {
         didSet {
@@ -19,11 +20,12 @@ class MakeNewMessageViewController: UIViewController, ProxiesManaging, SenderMan
         }
     }
     override var inputAccessoryView: UIView? {
-        return inputBar
+        return messageInputBar
     }
     private let database: DatabaseType
-    private let inputBar = MessageInputBar()
+    private var lockKeyboard = true
     private let maxProxyCount: Int
+    private let messageInputBar = MessageInputBar()
     private let proxiesObserver: ProxiesObserving
     private let proxyNamesLoader: ProxyNamesLoading
     private let querySize: UInt
@@ -58,11 +60,16 @@ class MakeNewMessageViewController: UIViewController, ProxiesManaging, SenderMan
 
         super.init(nibName: nil, bundle: nil)
 
-        inputBar.delegate = self
-        inputBar.inputTextView.delegate = self
+        messageInputBar.delegate = self
+        messageInputBar.inputTextView.delegate = self
 
         navigationItem.rightBarButtonItems = [cancelButton, makeNewProxyButton]
         navigationItem.title = "New Message"
+
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(keyboardWillHide),
+                                               name: NSNotification.Name.UIKeyboardWillHide,
+                                               object: nil)
 
         proxiesObserver.load(manager: self, uid: uid)
 
@@ -85,11 +92,20 @@ class MakeNewMessageViewController: UIViewController, ProxiesManaging, SenderMan
         if proxies.isEmpty {
             makeNewProxyButton.animate(loop: true)
         }
+        lockKeyboard = true
         setFirstResponder()
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        lockKeyboard = false
+        DispatchQueue.main.async {
+            self.view.endEditing(true)
+        }
+    }
+
     private func setButtons(_ isEnabled: Bool) {
-        inputBar.sendButton.isEnabled = isEnabled
+        messageInputBar.sendButton.isEnabled = isEnabled
         navigationItem.rightBarButtonItems?.forEach { $0.isEnabled = isEnabled }
     }
 
@@ -101,34 +117,48 @@ class MakeNewMessageViewController: UIViewController, ProxiesManaging, SenderMan
             }
             cell.receiverTextField.becomeFirstResponder()
         case .newMessageTextView:
-            inputBar.inputTextView.becomeFirstResponder()
+            messageInputBar.inputTextView.becomeFirstResponder()
+        }
+    }
+
+    private func _showErrorAlert(_ error: Error) {
+        lockKeyboard = false
+        showErrorAlert(error) { [weak self] in
+            self?.lockKeyboard = true
         }
     }
 
     @objc private func close() {
-        DispatchQueue.main.async {
-            self.view.endEditing(true)
-        }
         setButtons(false)
         dismiss(animated: true)
+    }
+
+    @objc private func keyboardWillHide() {
+        if lockKeyboard {
+            setFirstResponder()
+        }
     }
 
     @objc private func makeNewProxy() {
         makeNewProxyButton.animate()
         guard proxies.count < maxProxyCount else {
-            showErrorAlert(ProxyError.tooManyProxies)
+            _showErrorAlert(ProxyError.tooManyProxies)
             return
         }
         setButtons(false)
         database.makeProxy(ownerId: uid) { [weak self] (result) in
             switch result {
             case .failure(let error):
-                self?.showErrorAlert(error)
+                self?._showErrorAlert(error)
             case .success(let newProxy):
                 self?.sender = newProxy
             }
             self?.setButtons(true)
         }
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -154,7 +184,7 @@ extension MakeNewMessageViewController: MessageInputBarDelegate {
         isSending = true
         setButtons(false)
         guard let sender = sender else {
-            showErrorAlert(ProxyError.senderMissing)
+            _showErrorAlert(ProxyError.senderMissing)
             isSending = false
             setButtons(true)
             return
@@ -162,7 +192,7 @@ extension MakeNewMessageViewController: MessageInputBarDelegate {
         guard
             let receiverName = (tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? MakeNewMessageReceiverTableViewCell)?.receiverTextField.text,
             receiverName != "" else {
-                showErrorAlert(ProxyError.receiverMissing)
+                _showErrorAlert(ProxyError.receiverMissing)
                 isSending = false
                 setButtons(true)
                 return
@@ -170,7 +200,7 @@ extension MakeNewMessageViewController: MessageInputBarDelegate {
         database.getProxy(key: receiverName) { [weak self] (result) in
             switch result {
             case .failure(let error):
-                self?.showErrorAlert(error)
+                self?._showErrorAlert(error)
                 self?.isSending = false
                 self?.setButtons(true)
                 return
@@ -178,7 +208,7 @@ extension MakeNewMessageViewController: MessageInputBarDelegate {
                 self?.database.sendMessage(sender: sender, receiver: receiver, text: text) { [weak self] (result) in
                     switch result {
                     case .failure(let error):
-                        self?.showErrorAlert(error)
+                        self?._showErrorAlert(error)
                         self?.isSending = false
                         self?.setButtons(true)
                     case .success(let tuple):
@@ -223,7 +253,7 @@ extension MakeNewMessageViewController: UITableViewDataSource {
                 }
                 cell.iconImageView.image = item.image
                 cell.receiverTextField.text = item.title
-                self?.inputBar.inputTextView.becomeFirstResponder()
+                self?.messageInputBar.inputTextView.becomeFirstResponder()
             }
             cell.receiverTextField.userStoppedTypingHandler = { [weak self] in
                 guard
