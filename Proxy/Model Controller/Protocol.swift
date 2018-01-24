@@ -1,19 +1,5 @@
 import FirebaseDatabase
-import MessageKit
-import SearchTextField
-
-// todo: delete?
-protocol ButtonManaging: class {
-    func animateButton()
-    func stopAnimatingButton()
-    func setButtons(_ isEnabled: Bool)
-}
-
-extension ButtonManaging {
-    func animateButton() {}
-    func stopAnimatingButton() {}
-    func setButtons(_ isEnabled: Bool) {}
-}
+import UIKit
 
 protocol ConvoManaging: class {
     var convo: Convo? { get set }
@@ -21,10 +7,6 @@ protocol ConvoManaging: class {
 
 protocol ConvosManaging: class {
     var convos: [Convo] { get set }
-}
-
-protocol FirstResponderSetting: class {
-    func setFirstResponder()
 }
 
 protocol MessagesManaging: class {
@@ -36,8 +18,7 @@ protocol NewConvoManaging: class {
 }
 
 extension NewConvoManaging where Self: UIViewController {
-    func showMakeNewMessageController(sender: Proxy?,
-                                      uid: String) {
+    func showMakeNewMessageController(sender: Proxy?, uid: String) {
         let makeNewMessageViewController = MakeNewMessageViewController(sender: sender,
                                                                         uid: uid,
                                                                         newConvoManager: self)
@@ -66,6 +47,10 @@ extension ReferenceObserving {
             ref?.removeObserver(withHandle: handle)
         }
     }
+}
+
+protocol SenderManaging: class {
+    var sender: Proxy? { get set }
 }
 
 protocol StoryboardMakable {

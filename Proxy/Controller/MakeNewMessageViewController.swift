@@ -1,10 +1,21 @@
+import Device_swift
 import MessageKit
 
-// todo: put keyboard movements on main queue
-class MakeNewMessageViewController: UIViewController, ProxiesManaging {
+class MakeNewMessageViewController: UIViewController, ProxiesManaging, SenderManaging {
     var proxies = [Proxy]() {
         didSet {
-            // todo: animate make new proxy button
+            if proxies.isEmpty {
+                makeNewProxyButton.animate(loop: true)
+            } else {
+                makeNewProxyButton.stopAnimating()
+            }
+            tableView.reloadData()
+        }
+    }
+    var sender: Proxy? {
+        didSet {
+            tableView.reloadData()
+            setFirstResponder()
         }
     }
     override var inputAccessoryView: UIView? {
@@ -14,60 +25,49 @@ class MakeNewMessageViewController: UIViewController, ProxiesManaging {
     private let inputBar = MessageInputBar()
     private let maxProxyCount: Int
     private let proxiesObserver: ProxiesObserving
+    private let proxyNamesLoader: ProxyNamesLoading
+    private let querySize: UInt
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
     private var firstResponder: FirstResponder = .receiverTextField
+    private var isSending = false
     private weak var newConvoManager: NewConvoManaging?
-    private lazy var inputBarDelegate = MakeNewMessageInputBarDelegate(buttonManager: self,
-                                                                       controller: self,
-                                                                       newConvoManager: newConvoManager,
-                                                                       senderManager: senderManager,
-                                                                       tableView: tableView)
-    private lazy var receiverIconImageManager = ReceiverIconImageManager(setter: self,
-                                                                         tableView: tableView)
-    private lazy var senderManager = SenderManager(setter: self, tableView: tableView)
-    private lazy var tableViewDataSource = MakeNewMessageTableViewDataSource(uid: uid,
-                                                                             controller: self,
-                                                                             inputBar: inputBar,
-                                                                             proxiesManager: self,
-                                                                             receiverIconImageManager: receiverIconImageManager,
-                                                                             receiverTextFieldDelegate: self,
-                                                                             senderManager: senderManager)
-    private lazy var tableViewDelegate = MakeNewMessageTableViewDelegate(uid: uid,
-                                                                         controller: self,
-                                                                         proxiesManager: self,
-                                                                         senderManager: senderManager)
+    private lazy var cancelButton = UIBarButtonItem.make(target: self,
+                                                         action: #selector(close),
+                                                         imageName: ButtonName.cancel)
+    private lazy var makeNewProxyButton = UIBarButtonItem.make(target: self,
+                                                         action: #selector(makeNewProxy),
+                                                         imageName: ButtonName.makeNewProxy)
 
-    // todo: use the sender that's passed in
     init(sender: Proxy?,
          database: DatabaseType = FirebaseDatabase(),
          maxProxyCount: Int = Setting.maxProxyCount,
          proxiesObserver: ProxiesObserving = ProxiesObserver(),
+         proxyNamesLoader: ProxyNamesLoading = ProxyNamesLoader(),
+         querySize: UInt = Setting.querySize,
          uid: String,
          newConvoManager: NewConvoManaging?) {
+        self.sender = sender
         self.database = database
         self.maxProxyCount = maxProxyCount
         self.proxiesObserver = proxiesObserver
+        self.proxyNamesLoader = proxyNamesLoader
+        self.querySize = querySize
         self.uid = uid
         self.newConvoManager = newConvoManager
 
         super.init(nibName: nil, bundle: nil)
 
-        inputBar.delegate = inputBarDelegate
+        inputBar.delegate = self
         inputBar.inputTextView.delegate = self
 
-        navigationItem.rightBarButtonItems = [UIBarButtonItem.make(target: self,
-                                                                   action: #selector(close),
-                                                                   imageName: ButtonName.cancel),
-                                              UIBarButtonItem.make(target: self,
-                                                                   action: #selector(makeNewProxy),
-                                                                   imageName: ButtonName.makeNewProxy)]
+        navigationItem.rightBarButtonItems = [cancelButton, makeNewProxyButton]
         navigationItem.title = "New Message"
 
         proxiesObserver.load(manager: self, uid: uid)
 
-        tableView.dataSource = tableViewDataSource
-        tableView.delegate = tableViewDelegate
+        tableView.dataSource = self
+        tableView.delegate = self
         tableView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
         tableView.register(UINib(nibName: Identifier.makeNewMessageReceiverTableViewCell, bundle: nil),
                            forCellReuseIdentifier: Identifier.makeNewMessageReceiverTableViewCell)
@@ -77,48 +77,23 @@ class MakeNewMessageViewController: UIViewController, ProxiesManaging {
         tableView.sectionHeaderHeight = 0
         tableView.reloadData()
 
-        senderManager.sender = sender
-
-        setFirstResponder()
-
         view.addSubview(tableView)
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if proxies.isEmpty {
-            animateButton()
+            makeNewProxyButton.animate(loop: true)
         }
+        setFirstResponder()
     }
 
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
-
-extension MakeNewMessageViewController: ButtonManaging {
-    func animateButton() {
-        guard let item = navigationItem.rightBarButtonItems?[safe: 1] else {
-            return
-        }
-        item.animate(loop: true)
-    }
-
-    func stopAnimatingButton() {
-        guard let item = navigationItem.rightBarButtonItems?[safe: 1] else {
-            return
-        }
-        item.stopAnimating()
-    }
-
-    func setButtons(_ isEnabled: Bool) {
+    private func setButtons(_ isEnabled: Bool) {
         inputBar.sendButton.isEnabled = isEnabled
         navigationItem.rightBarButtonItems?.forEach { $0.isEnabled = isEnabled }
     }
-}
 
-extension MakeNewMessageViewController: FirstResponderSetting {
-    func setFirstResponder() {
+    private func setFirstResponder() {
         switch firstResponder {
         case .receiverTextField:
             guard let cell = tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? MakeNewMessageReceiverTableViewCell else {
@@ -128,6 +103,36 @@ extension MakeNewMessageViewController: FirstResponderSetting {
         case .newMessageTextView:
             inputBar.inputTextView.becomeFirstResponder()
         }
+    }
+
+    @objc private func close() {
+        DispatchQueue.main.async {
+            self.view.endEditing(true)
+        }
+        setButtons(false)
+        dismiss(animated: true)
+    }
+
+    @objc private func makeNewProxy() {
+        makeNewProxyButton.animate()
+        guard proxies.count < maxProxyCount else {
+            showErrorAlert(ProxyError.tooManyProxies)
+            return
+        }
+        setButtons(false)
+        database.makeProxy(ownerId: uid) { [weak self] (result) in
+            switch result {
+            case .failure(let error):
+                self?.showErrorAlert(error)
+            case .success(let newProxy):
+                self?.sender = newProxy
+            }
+            self?.setButtons(true)
+        }
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
 
@@ -143,31 +148,168 @@ extension MakeNewMessageViewController: UITextViewDelegate {
     }
 }
 
-private extension MakeNewMessageViewController {
-    @objc func close() {
+// MARK: - MessageInputBarDelegate
+extension MakeNewMessageViewController: MessageInputBarDelegate {
+    func messageInputBar(_ inputBar: MessageInputBar, didPressSendButtonWith text: String) {
+        isSending = true
         setButtons(false)
-        dismiss(animated: true)
-    }
-
-    @objc func makeNewProxy() {
-        // todo: extract item
-        guard let item = navigationItem.rightBarButtonItems?[safe: 1] else {
+        guard let sender = sender else {
+            showErrorAlert(ProxyError.senderMissing)
+            isSending = false
+            setButtons(true)
             return
         }
-        item.animate()
-        guard proxies.count < maxProxyCount else {
-            showErrorAlert(ProxyError.tooManyProxies)
-            return
+        guard
+            let receiverName = (tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? MakeNewMessageReceiverTableViewCell)?.receiverTextField.text,
+            receiverName != "" else {
+                showErrorAlert(ProxyError.receiverMissing)
+                isSending = false
+                setButtons(true)
+                return
         }
-        setButtons(false)
-        database.makeProxy(ownerId: uid) { [weak self] (result) in
+        database.getProxy(key: receiverName) { [weak self] (result) in
             switch result {
             case .failure(let error):
                 self?.showErrorAlert(error)
-            case .success(let newProxy):
-                self?.senderManager.sender = newProxy
+                self?.isSending = false
+                self?.setButtons(true)
+                return
+            case .success(let receiver):
+                self?.database.sendMessage(sender: sender, receiver: receiver, text: text) { [weak self] (result) in
+                    switch result {
+                    case .failure(let error):
+                        self?.showErrorAlert(error)
+                        self?.isSending = false
+                        self?.setButtons(true)
+                    case .success(let tuple):
+                        self?.newConvoManager?.newConvo = tuple.convo
+                        self?.navigationController?.dismiss(animated: false)
+                    }
+                }
             }
-            self?.setButtons(true)
         }
+    }
+
+    func messageInputBar(_ inputBar: MessageInputBar, textViewTextDidChangeTo text: String) {
+        if isSending {
+            inputBar.sendButton.isEnabled = false
+        } else {
+            inputBar.sendButton.isEnabled = text != ""
+        }
+    }
+}
+
+// MARK: - UITableViewDataSource
+extension MakeNewMessageViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 2
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        switch indexPath.row {
+        case 0:
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.makeNewMessageSenderTableViewCell) as? MakeNewMessageSenderTableViewCell else {
+                return tableView.dequeueReusableCell(withIdentifier: Identifier.makeNewMessageSenderTableViewCell, for: indexPath)
+            }
+            cell.load(sender)
+            return cell
+        case 1:
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.makeNewMessageReceiverTableViewCell) as? MakeNewMessageReceiverTableViewCell else {
+                return tableView.dequeueReusableCell(withIdentifier: Identifier.makeNewMessageReceiverTableViewCell, for: indexPath)
+            }
+            cell.receiverTextField.itemSelectionHandler = { [weak self] (items, index) in
+                guard let item = items[safe: index] else {
+                    return
+                }
+                cell.iconImageView.image = item.image
+                cell.receiverTextField.text = item.title
+                self?.inputBar.inputTextView.becomeFirstResponder()
+            }
+            cell.receiverTextField.userStoppedTypingHandler = { [weak self] in
+                guard
+                    let _self = self,
+                    let query = cell.receiverTextField.text,
+                    query.count > 0 else {
+                        return
+                }
+                cell.iconImageView.image = nil
+                cell.receiverTextField.showLoadingIndicator()
+                self?.proxyNamesLoader.load(query: query, querySize: _self.querySize, uid: _self.uid) { (items) in
+                    cell.receiverTextField.filterItems(items)
+                    cell.receiverTextField.stopLoadingIndicator()
+                }
+            }
+            let fontSize: CGFloat = isSmallDevice() ? 14 : 17
+            cell.receiverTextField.highlightAttributes = [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: fontSize)]
+            cell.receiverTextField.theme.font = .systemFont(ofSize: fontSize)
+            cell.receiverTextField.comparisonOptions = [.caseInsensitive]
+            cell.receiverTextField.delegate = self
+            cell.receiverTextField.maxResultsListHeight = Int(view.frame.height / 2)
+            cell.receiverTextField.theme.cellHeight = 50
+            cell.receiverTextField.theme.separatorColor = UIColor.lightGray.withAlphaComponent(0.5)
+            return cell
+        default:
+            return UITableViewCell()
+        }
+    }
+
+    func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+        if section == 0 && proxies.isEmpty {
+            return "Tap the bouncing button to make a new Proxy 🎉."
+        } else {
+            return nil
+        }
+    }
+
+    private func isSmallDevice() -> Bool {
+        let deviceType = UIDevice.current.deviceType
+        switch deviceType {
+        case .iPhone2G:
+            return true
+        case .iPhone3G:
+            return true
+        case .iPhone3GS:
+            return true
+        case .iPhone4:
+            return true
+        case .iPhone4S:
+            return true
+        case .iPhone5:
+            return true
+        case .iPhone5C:
+            return true
+        case .iPhone5S:
+            return true
+        case .iPhoneSE:
+            return true
+        case .iPodTouch1G:
+            return true
+        case .iPodTouch2G:
+            return true
+        case .iPodTouch3G:
+            return true
+        case .iPodTouch4G:
+            return true
+        case .iPodTouch5G:
+            return true
+        default:
+            return false
+        }
+    }
+}
+
+// MARK: - UITableViewDelegate
+extension MakeNewMessageViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard indexPath.row == 0 else {
+            return
+        }
+        tableView.deselectRow(at: indexPath, animated: true)
+        let senderPickerViewController = SenderPickerViewController(uid: uid, senderManager: self)
+        navigationController?.pushViewController(senderPickerViewController, animated: true)
+    }
+
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return CGFloat.leastNormalMagnitude
     }
 }

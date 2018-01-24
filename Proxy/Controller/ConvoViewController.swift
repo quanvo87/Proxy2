@@ -3,15 +3,14 @@ import MessageKit
 class ConvoViewController: MessagesViewController, ConvoManaging, MessagesManaging {
     var convo: Convo? {
         didSet {
-            if let convo = convo {
-                icons[convo.receiverProxyKey] = UIImage(named: convo.receiverIcon)
-                icons[convo.senderProxyKey] = UIImage(named: convo.senderIcon)
-                messagesCollectionView.reloadDataAndKeepOffset()
-                navigationItem.title = convo.receiverDisplayName
-
-            } else {
-                navigationController?.popViewController(animated: false)
+            guard let convo = convo else {
+                _ = navigationController?.popViewController(animated: false)
+                return
             }
+            icons[convo.receiverProxyKey] = UIImage(named: convo.receiverIcon)
+            icons[convo.senderProxyKey] = UIImage(named: convo.senderIcon)
+            messagesCollectionView.reloadDataAndKeepOffset()
+            navigationItem.title = convo.receiverDisplayName
         }
     }
     var messages = [Message]()
@@ -51,7 +50,9 @@ class ConvoViewController: MessagesViewController, ConvoManaging, MessagesManagi
                                                                  imageName: ButtonName.info)
 
         maintainPositionOnKeyboardFrameChanged = true
+
         messageInputBar.delegate = self
+
         messagesCollectionView.messagesDataSource = self
         messagesCollectionView.messagesDisplayDelegate = self
         messagesCollectionView.messagesLayoutDelegate = self
@@ -59,10 +60,11 @@ class ConvoViewController: MessagesViewController, ConvoManaging, MessagesManagi
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        tabBarController?.tabBar.isHidden = true
         guard let convo = convo else {
+            _ = navigationController?.popViewController(animated: false)
             return
         }
+        tabBarController?.tabBar.isHidden = true
         presenceManager?.enterConvo(convo.key)
     }
 

@@ -1,5 +1,6 @@
 import FirebaseDatabase
 
+// todo: order?
 protocol ConvosObsering: ReferenceObserving {
     func load(proxyKey: String?, querySize: UInt, uid: String, manager: ConvosManaging?)
     func loadConvos(endingAtTimestamp timestamp: Double,

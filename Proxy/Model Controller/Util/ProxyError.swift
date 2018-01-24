@@ -3,6 +3,8 @@ enum ProxyError: Error {
     case facebookLoginFail
     case inputTooLong
     case receiverDeletedProxy
+    case receiverMissing
+    case senderMissing
     case tooManyProxies
     case unknown
 
@@ -16,6 +18,10 @@ enum ProxyError: Error {
             return ("Input too long", "Please try something shorter.")
         case .receiverDeletedProxy:
             return ("Receiver no longer exists", "You can no longer message this Proxy.")
+        case .receiverMissing:
+            return ("Receiver Missing", "Please pick a receiver and try again.")
+        case .senderMissing:
+            return ("Sender Missing", "Please pick a sender and try again.")
         case .tooManyProxies:
             return ("Too many Proxies", "You have too many Proxies. Please delete some and try again.")
         case .unknown:
