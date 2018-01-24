@@ -44,6 +44,7 @@ class IconPickerViewController: UIViewController {
     }
 }
 
+// MARK: - UICollectionViewDataSource
 extension IconPickerViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard
@@ -60,6 +61,7 @@ extension IconPickerViewController: UICollectionViewDataSource {
     }
 }
 
+// MARK: - UICollectionViewDelegate
 extension IconPickerViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let iconName = generator.iconNames[safe: indexPath.row] else {
