@@ -25,7 +25,6 @@ class SenderPickerViewController: UIViewController, ProxiesManaging {
          maxProxyCount: Int = Setting.maxProxyCount,
          proxiesObserver: ProxiesObserving = ProxiesObserver(),
          uid: String,
-         proxiesManager: ProxiesManaging?,
          senderManager: SenderManaging?) {
         self.database = database
         self.maxProxyCount = maxProxyCount
@@ -49,14 +48,6 @@ class SenderPickerViewController: UIViewController, ProxiesManaging {
         tableView.sectionHeaderHeight = 0
 
         view.addSubview(tableView)
-    }
-
-    // todo: delete
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        if proxies.isEmpty {
-            makeNewProxyButton.animate(loop: true)
-        }
     }
 
     @objc private func makeNewProxy() {

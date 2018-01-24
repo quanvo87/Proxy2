@@ -21,8 +21,8 @@ class ConvoObserver: ConvoObserving {
                     switch result {
                     case .success(let convo):
                         manager?.convo = convo
-                    default:
-                        break
+                    case .failure:
+                        manager?.convo = nil
                     }
                 }
             }

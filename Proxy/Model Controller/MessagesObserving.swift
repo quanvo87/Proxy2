@@ -1,6 +1,7 @@
 import FirebaseDatabase
 import MessageKit
 
+// todo: order?
 protocol MessagesObserving: ReferenceObserving {
     func load(convoKey: String,
               querySize: UInt,

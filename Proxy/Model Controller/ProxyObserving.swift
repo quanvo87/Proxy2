@@ -20,8 +20,8 @@ class ProxyObserver: ProxyObsering {
                     switch result {
                     case .success(let proxy):
                         manager?.proxy = proxy
-                    default:
-                        break
+                    case .failure:
+                        manager?.proxy = nil
                     }
                 }
             }

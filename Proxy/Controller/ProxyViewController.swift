@@ -8,17 +8,17 @@ class ProxyViewController: UIViewController, ConvosManaging, NewConvoManaging, P
             } else {
                 makeNewMessageButton.stopAnimating()
             }
-            tableView.reloadData()
+            tableView.reloadSections(IndexSet(integer: 1), with: .automatic)
         }
     }
     var newConvo: Convo?
     var proxy: Proxy? {
         didSet {
-            if proxy == nil {
+            guard proxy != nil else {
                 _ = navigationController?.popViewController(animated: false)
-            } else {
-                tableView.reloadData()
+                return
             }
+            tableView.reloadData()
         }
     }
     private let convosObserver: ConvosObsering
@@ -75,6 +75,10 @@ class ProxyViewController: UIViewController, ConvosManaging, NewConvoManaging, P
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        guard proxy != nil else {
+            _ = navigationController?.popViewController(animated: false)
+            return
+        }
         if convos.isEmpty {
             makeNewMessageButton.animate(loop: true)
         }

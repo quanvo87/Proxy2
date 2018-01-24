@@ -3,20 +3,20 @@ import UIKit
 class ConvoDetailViewController: UIViewController, ConvoManaging, ProxyManaging {
     var convo: Convo? {
         didSet {
-            if convo == nil {
+            guard convo != nil else {
                 _ = navigationController?.popViewController(animated: false)
-            } else {
-                tableView.reloadData()
+                return
             }
+            tableView.reloadData()
         }
     }
     var proxy: Proxy? {
         didSet {
-            if proxy == nil {
+            guard proxy != nil else {
                 _ = navigationController?.popViewController(animated: false)
-            } else {
-                tableView.reloadData()
+                return
             }
+            tableView.reloadData()
         }
     }
     private let convoObserver: ConvoObserving
@@ -56,6 +56,14 @@ class ConvoDetailViewController: UIViewController, ConvoManaging, ProxyManaging 
         tableView.setDelaysContentTouchesForScrollViews()
 
         view.addSubview(tableView)
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        guard convo != nil else {
+            _ = navigationController?.popViewController(animated: false)
+            return
+        }
     }
 
     required init?(coder aDecoder: NSCoder) {
