@@ -27,10 +27,6 @@ protocol FirstResponderSetting: class {
     func setFirstResponder()
 }
 
-protocol ItemsToDeleteManaging: class {
-    var itemsToDelete: [String: Any] { get set }
-}
-
 protocol MessagesManaging: class {
     var messages: [Message] { get set }
 }
