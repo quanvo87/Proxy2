@@ -35,8 +35,7 @@ protocol ProxyManaging: class {
     var proxy: Proxy? { get set }
 }
 
-// todo: is class bound necessary?
-protocol ReferenceObserving: class {
+protocol ReferenceObserving {
     var handle: DatabaseHandle? { get }
     var ref: DatabaseReference? { get }
 }

@@ -54,3 +54,32 @@ class UserStatsObserver: UserStatsObserving {
         stopObservering()
     }
 }
+
+private extension DataSnapshot {
+    var asNumberLabel: String {
+        if let number = self.value as? UInt {
+            return number.asStringWithCommas
+        } else {
+            return "-"
+        }
+    }
+}
+
+private extension NumberFormatter {
+    static let decimal: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        return formatter
+    }()
+}
+
+private extension UInt {
+    var asStringWithCommas: String {
+        var num = Double(self)
+        num = fabs(num)
+        if let string = NumberFormatter.decimal.string(from: NSNumber(integerLiteral: Int(num))) {
+            return string
+        }
+        return "-"
+    }
+}

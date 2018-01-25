@@ -1,27 +1,25 @@
 import FirebaseDatabase
 import MessageKit
 
-// todo: order?
 protocol MessagesObserving: ReferenceObserving {
-    func load(convoKey: String,
-              querySize: UInt,
-              collectionView: MessagesCollectionView?,
-              manager: MessagesManaging?)
+    init(querySize: UInt)
+    func load(convoKey: String, collectionView: MessagesCollectionView, manager: MessagesManaging)
     func loadMessages(endingAtMessageId id: String,
-                      querySize: UInt,
-                      collectionView: MessagesCollectionView?,
-                      manager: MessagesManaging?)
+                      collectionView: MessagesCollectionView,
+                      manager: MessagesManaging)
 }
 
 class MessagesObserver: MessagesObserving {
     private (set) var handle: DatabaseHandle?
     private (set) var ref: DatabaseReference?
+    private let querySize: UInt
     private var loading = true
 
-    func load(convoKey: String,
-              querySize: UInt,
-              collectionView: MessagesCollectionView?,
-              manager: MessagesManaging?) {
+    required init(querySize: UInt = Setting.querySize) {
+        self.querySize = querySize
+    }
+
+    func load(convoKey: String, collectionView: MessagesCollectionView, manager: MessagesManaging) {
         stopObserving()
         ref = FirebaseHelper.makeReference(Child.messages, convoKey)
         handle = ref?
@@ -37,9 +35,8 @@ class MessagesObserver: MessagesObserving {
     }
 
     func loadMessages(endingAtMessageId id: String,
-                      querySize: UInt,
-                      collectionView: MessagesCollectionView?,
-                      manager: MessagesManaging?) {
+                      collectionView: MessagesCollectionView,
+                      manager: MessagesManaging) {
         guard !loading else {
             return
         }
