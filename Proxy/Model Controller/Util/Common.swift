@@ -2,6 +2,8 @@ import Firebase
 import Spring
 import UIKit
 
+// todo: move properties with only one user into the file that's using it
+
 enum FirstResponder {
     case receiverTextField
     case newMessageTextView
@@ -101,10 +103,6 @@ extension DataSnapshot {
 }
 
 extension Int {
-    var asLabel: String {
-        return self == 0 ? "" : String(self)
-    }
-
     var asStringWithParens: String {
         return self == 0 ? "" : " (\(self))"
     }
@@ -254,12 +252,8 @@ extension UIViewController {
         present(alert, animated: true)
     }
 
-    func showConvoController(convo: Convo,
-                             presenceManager: PresenceManaging?,
-                             unreadMessagesManager: UnreadMessagesManaging?) {
-        navigationController?.pushViewController(ConvoViewController(convo: convo,
-                                                                     presenceManager: presenceManager,
-                                                                     unreadMessagesManager: unreadMessagesManager),
+    func showConvoController(_ convo: Convo) {
+        navigationController?.pushViewController(ConvoViewController(convo: convo),
                                                  animated: true)
     }
 
@@ -308,12 +302,8 @@ extension UIViewController {
         present(navigationController, animated: true)
     }
 
-    func showProxyController(proxy: Proxy,
-                             presenceManager: PresenceManaging?,
-                             unreadMessagesManager: UnreadMessagesManaging?) {
-        navigationController?.pushViewController(ProxyViewController(proxy: proxy,
-                                                                     presenceManager: presenceManager,
-                                                                     unreadMessagesManager: unreadMessagesManager),
+    func showProxyController(_ proxy: Proxy) {
+        navigationController?.pushViewController(ProxyViewController(proxy: proxy),
                                                  animated: true)
     }
 }

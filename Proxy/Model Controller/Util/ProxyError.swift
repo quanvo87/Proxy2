@@ -3,6 +3,7 @@ enum ProxyError: Error {
     case missingCredentials
     case receiverDeletedProxy
     case receiverMissing
+    case receiverNotFound
     case senderMissing
     case tooManyProxies
     case unknown
@@ -14,9 +15,11 @@ enum ProxyError: Error {
         case .missingCredentials:
             return ("Missing email/password", "Please make sure to enter an email and password.")
         case .receiverDeletedProxy:
-            return ("Receiver deleted", "You cannot message them anymore.")
+            return ("Receiver deleted", "They can no longer be messaged.")
         case .receiverMissing:
             return ("Missing recipient", "Please select a recipient and try again.")
+        case .receiverNotFound:
+            return ("Receveiver not found", "Unable to find the specified recipient.")
         case .senderMissing:
             return ("Missing sender", "Please select one of your Proxies to send from.")
         case .tooManyProxies:

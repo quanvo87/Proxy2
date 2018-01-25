@@ -23,7 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 try session.setCategory(category, mode: mode)
                 try session.setActive(true)
             }
-        } catch let error as NSError {
+        } catch {
             print("Failed to set the audio session category and mode: \(error.localizedDescription)")
         }
     }

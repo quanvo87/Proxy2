@@ -20,8 +20,6 @@ class ProxiesViewController: UIViewController, NewConvoManaging, ProxiesManaging
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
     private var itemsToDelete: [String: Any] = [:]
-    private weak var presenceManager: PresenceManaging?
-    private weak var unreadMessagesManager: UnreadMessagesManaging?
     private lazy var cancelButton = UIBarButtonItem.make(target: self,
                                                          action: #selector(setDefaultButtons),
                                                          imageName: ButtonName.cancel)
@@ -41,15 +39,11 @@ class ProxiesViewController: UIViewController, NewConvoManaging, ProxiesManaging
     init(database: Database = Firebase(),
          maxProxyCount: Int = Setting.maxProxyCount,
          proxiesObserver: ProxiesObserving = ProxiesObserver(),
-         uid: String,
-         presenceManager: PresenceManaging?,
-         unreadMessagesManager: UnreadMessagesManaging?) {
+         uid: String) {
         self.database = database
         self.maxProxyCount = maxProxyCount
         self.proxiesObserver = proxiesObserver
         self.uid = uid
-        self.presenceManager = presenceManager
-        self.unreadMessagesManager = unreadMessagesManager
 
         super.init(nibName: nil, bundle: nil)
 
@@ -77,9 +71,7 @@ class ProxiesViewController: UIViewController, NewConvoManaging, ProxiesManaging
             makeNewProxyButton.animate(loop: true)
         }
         if let newConvo = newConvo {
-            showConvoController(convo: newConvo,
-                                presenceManager: presenceManager,
-                                unreadMessagesManager: unreadMessagesManager)
+            showConvoController(newConvo)
             self.newConvo = nil
         }
     }
@@ -196,9 +188,7 @@ extension ProxiesViewController: UITableViewDelegate {
             itemsToDelete[proxy.key] = proxy
         } else {
             tableView.deselectRow(at: indexPath, animated: true)
-            showProxyController(proxy: proxy,
-                                presenceManager: presenceManager,
-                                unreadMessagesManager: unreadMessagesManager)
+            showProxyController(proxy)
         }
     }
 

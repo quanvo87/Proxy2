@@ -21,15 +21,8 @@ class AuthManager {
                     changeRequest.displayName = email
                     changeRequest.commitChanges()
                 }
-                let presenceManager = PresenceManager()
-                let unreadMessagesManager = UnreadMessagesManager(user.uid)
-                presenceManager.load(unreadMessagesManager)
-                // todo: fix
-                unreadMessagesManager.load(presenceManager: presenceManager, proxiesManager: nil)
                 self?.window?.rootViewController = TabBarController(uid: user.uid,
-                                                                    displayName: displayName,
-                                                                    presenceManager: presenceManager,
-                                                                    unreadMessagesManager: unreadMessagesManager)
+                                                                    displayName: displayName)
                 self?.loggedIn = true
             } else {
                 guard

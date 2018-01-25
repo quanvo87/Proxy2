@@ -10,16 +10,6 @@ class UtilTests: XCTestCase {
         XCTAssertEqual(date.timeIntervalSince1970.asTimeAgo, dateFormatter.string(from: date))
     }
 
-    func testIntAsLabel() {
-        XCTAssertEqual(0.asLabel, "")
-        XCTAssertEqual(1.asLabel, "1")
-    }
-
-    func testIntAsLabelWithParens() {
-        XCTAssertEqual(0.asStringWithParens, "")
-        XCTAssertEqual(1.asStringWithParens, " (1)")
-    }
-
     func testStringGetFirstNChars() {
         XCTAssertEqual("cat".getFirstNChars(2), "ca")
     }
