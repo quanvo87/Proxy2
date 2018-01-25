@@ -13,7 +13,7 @@ class ConvosViewController: UIViewController, ConvosManaging, NewConvoManaging, 
     }
     var newConvo: Convo?
     var proxies = [Proxy]()
-    private let database: DatabaseType
+    private let database: Database
     private let convosObserver: ConvosObsering
     private let maxProxyCount: Int
     private let proxiesObserver: ProxiesObserving
@@ -29,7 +29,7 @@ class ConvosViewController: UIViewController, ConvosManaging, NewConvoManaging, 
                                                                action: #selector(makeNewProxy),
                                                                imageName: ButtonName.makeNewProxy)
 
-    init(database: DatabaseType = FirebaseDatabase(),
+    init(database: Database = Firebase(),
          convosObserver: ConvosObsering = ConvosObserver(),
          maxProxyCount: Int = Setting.maxProxyCount,
          proxiesObserver: ProxiesObserving = ProxiesObserver(),

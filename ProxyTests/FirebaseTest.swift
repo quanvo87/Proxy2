@@ -14,7 +14,7 @@ class FirebaseTest: XCTestCase {
     static let testUser = "test user"
     static let text = "🤤"
 
-    static let database = FirebaseDatabase()
+    static let database = Firebase()
 
     override func setUp() {
         let expectation = self.expectation(description: #function)

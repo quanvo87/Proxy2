@@ -3,7 +3,7 @@ import FirebaseDatabase
 typealias Path = String
 
 struct FirebaseHelper {
-    private static let ref = Database.database().reference()
+    private static let ref = FirebaseDatabase.Database.database().reference()
 
     static func delete(_ first: String, _ rest: String..., completion: @escaping (Bool) -> Void) {
         delete(first, rest, completion: completion)

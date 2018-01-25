@@ -11,7 +11,7 @@ extension PresenceManaging {
 
 class PresenceManager: PresenceManaging {
     var presentInConvo = ""
-    private let database = FirebaseDatabase()
+    private let database = Firebase()
     private weak var manager: UnreadMessagesManaging?
 
     func enterConvo(_ key: String) {

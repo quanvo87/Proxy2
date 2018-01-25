@@ -8,6 +8,7 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var passwordTextField: UITextField!
 
     private let videoBackground = VideoBackground()
+    private var loginManager: LoginManaging = LoginManager()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,8 +29,22 @@ class LoginViewController: UIViewController {
         passwordTextField.isSecureTextEntry = true
     }
 
+    static func make(_ loginManager: LoginManaging = LoginManager()) -> LoginViewController? {
+        guard let loginViewController = UIStoryboard.main.instantiateViewController(withIdentifier: Identifier.loginViewController) as? LoginViewController else {
+            return nil
+        }
+        loginViewController.loginManager = loginManager
+        return loginViewController
+    }
+
     @IBAction func login(_ sender: AnyObject) {
-        LoginService.emailLogin(email: emailTextField.text?.lowercased(), password: passwordTextField.text) { [weak self] (error) in
+        guard
+            let email = emailTextField.text, email != "",
+            let password = passwordTextField.text, password != "" else {
+                showErrorAlert(ProxyError.missingCredentials)
+                return
+        }
+        loginManager.emailLogin(email: email.lowercased(), password: password) { [weak self] (error) in
             if let error = error {
                 self?.showErrorAlert(error)
             }
@@ -37,7 +52,7 @@ class LoginViewController: UIViewController {
     }
 
     @IBAction func loginWithFacebook(_ sender: AnyObject) {
-        LoginService.facebookLogin { [weak self] (error) in
+        loginManager.facebookLogin { [weak self] (error) in
             if let error = error {
                 self?.showErrorAlert(error)
             }
@@ -45,17 +60,17 @@ class LoginViewController: UIViewController {
     }
 
     @IBAction func signUp(_ sender: AnyObject) {
-        LoginService.emailSignUp(email: emailTextField.text?.lowercased(), password: passwordTextField.text) { [weak self] (error) in
+        guard
+            let email = emailTextField.text, email != "",
+            let password = passwordTextField.text, password != "" else {
+                showErrorAlert(ProxyError.missingCredentials)
+                return
+        }
+        loginManager.emailSignUp(email: email.lowercased(), password: password) { [weak self] (error) in
             if let error = error {
                 self?.showErrorAlert(error)
             }
         }
-    }
-}
-
-extension LoginViewController: StoryboardMakable {
-    static var identifier: String {
-        return Identifier.loginViewController
     }
 }
 

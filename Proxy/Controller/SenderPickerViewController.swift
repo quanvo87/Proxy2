@@ -11,7 +11,7 @@ class SenderPickerViewController: UIViewController, ProxiesManaging {
             tableView.reloadData()
         }
     }
-    private let database: DatabaseType
+    private let database: Database
     private let maxProxyCount: Int
     private let proxiesObserver: ProxiesObserving
     private let tableView = UITableView(frame: .zero, style: .grouped)
@@ -21,7 +21,7 @@ class SenderPickerViewController: UIViewController, ProxiesManaging {
                                                                action: #selector(makeNewProxy),
                                                                imageName: ButtonName.makeNewProxy)
 
-    init(database: DatabaseType = FirebaseDatabase(),
+    init(database: Database = Firebase(),
          maxProxyCount: Int = Setting.maxProxyCount,
          proxiesObserver: ProxiesObserving = ProxiesObserver(),
          uid: String,

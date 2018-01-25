@@ -263,7 +263,7 @@ extension UIViewController {
                                                  animated: true)
     }
 
-    func showEditProxyNicknameAlert(_ proxy: Proxy, database: DatabaseType = FirebaseDatabase()) {
+    func showEditProxyNicknameAlert(_ proxy: Proxy, database: Database = Firebase()) {
         let alert = UIAlertController(title: "Edit Nickname",
                                       message: "Only you see your nickname.", preferredStyle: .alert)
         alert.addTextField { (textField) in
@@ -297,7 +297,7 @@ extension UIViewController {
                       completion: completion)
         } else {
             showAlert(title: ProxyError.unknown.alertFields.title,
-                      message: ProxyError.unknown.alertFields.description,
+                      message: error.localizedDescription,
                       completion: completion)
         }
     }

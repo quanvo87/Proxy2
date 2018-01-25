@@ -2,11 +2,11 @@ import UIKit
 
 class IconPickerViewController: UIViewController {
     private let collectionView: UICollectionView
-    private let database: DatabaseType
+    private let database: Database
     private let generator: ProxyPropertyGenerating
     private let proxy: Proxy
 
-    init(database: DatabaseType = FirebaseDatabase(),
+    init(database: Database = Firebase(),
          generator: ProxyPropertyGenerating = ProxyPropertyGenerator(),
          proxy: Proxy) {
         self.database = database

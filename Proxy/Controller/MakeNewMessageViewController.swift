@@ -22,7 +22,7 @@ class MakeNewMessageViewController: UIViewController, ProxiesManaging, SenderMan
     override var inputAccessoryView: UIView? {
         return messageInputBar
     }
-    private let database: DatabaseType
+    private let database: Database
     private var lockKeyboard = true
     private let maxProxyCount: Int
     private let messageInputBar = MessageInputBar()
@@ -42,7 +42,7 @@ class MakeNewMessageViewController: UIViewController, ProxiesManaging, SenderMan
                                                          imageName: ButtonName.makeNewProxy)
 
     init(sender: Proxy?,
-         database: DatabaseType = FirebaseDatabase(),
+         database: Database = Firebase(),
          maxProxyCount: Int = Setting.maxProxyCount,
          proxiesObserver: ProxiesObserving = ProxiesObserver(),
          proxyNamesLoader: ProxyNamesLoading = ProxyNamesLoader(),

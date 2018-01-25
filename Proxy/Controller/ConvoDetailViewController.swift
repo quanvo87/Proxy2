@@ -20,7 +20,7 @@ class ConvoDetailViewController: UIViewController, ConvoManaging, ProxyManaging 
         }
     }
     private let convoObserver: ConvoObserving
-    private let database: DatabaseType
+    private let database: Database
     private let proxyObserver: ProxyObsering
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private weak var presenceManager: PresenceManaging?
@@ -28,7 +28,7 @@ class ConvoDetailViewController: UIViewController, ConvoManaging, ProxyManaging 
 
     init(convo: Convo,
          convoObserver: ConvoObserving = ConvoObserver(),
-         database: DatabaseType = FirebaseDatabase(),
+         database: Database = Firebase(),
          proxyObserver: ProxyObsering = ProxyObserver(),
          presenceManager: PresenceManaging?,
          unreadMessagesManager: UnreadMessagesManaging?) {

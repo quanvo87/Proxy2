@@ -1,7 +1,6 @@
 enum ProxyError: Error {
-    case blankCredentials
-    case facebookLoginFail
     case inputTooLong
+    case missingCredentials
     case receiverDeletedProxy
     case receiverMissing
     case senderMissing
@@ -10,22 +9,20 @@ enum ProxyError: Error {
 
     var alertFields: (title: String, description: String) {
         switch self {
-        case .blankCredentials:
-            return ("Invalid email/password", "Please enter a valid email and password.")
-        case .facebookLoginFail:
-            return ("Facebook login failed", "Please try again.")
         case .inputTooLong:
             return ("Input too long", "Please try something shorter.")
+        case .missingCredentials:
+            return ("Missing email/password", "Please make sure to enter an email and password.")
         case .receiverDeletedProxy:
-            return ("Receiver no longer exists", "You can no longer message this Proxy.")
+            return ("Receiver deleted", "You cannot message them anymore.")
         case .receiverMissing:
-            return ("Receiver Missing", "Please pick a receiver and try again.")
+            return ("Missing recipient", "Please select a recipient and try again.")
         case .senderMissing:
-            return ("Sender Missing", "Please pick a sender and try again.")
+            return ("Missing sender", "Please select one of your Proxies to send from.")
         case .tooManyProxies:
             return ("Too many Proxies", "You have too many Proxies. Please delete some and try again.")
         case .unknown:
-            return ("😢", "An unknown error occurred.")
+            return ("😢", "Unknown error occurred.")
         }
     }
 
