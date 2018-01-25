@@ -1,7 +1,7 @@
 import FirebaseDatabase
 
 protocol UnreadMessagesObserving {
-    func load(manager: UnreadMessagesManaging, uid: String)
+    func load(uid: String, unreadMessagesManager: UnreadMessagesManaging)
 }
 
 class UnreadMessagesObserver: UnreadMessagesObserving {
@@ -9,21 +9,21 @@ class UnreadMessagesObserver: UnreadMessagesObserving {
     private var addedHandle: DatabaseHandle?
     private var removedHandle: DatabaseHandle?
 
-    func load(manager: UnreadMessagesManaging, uid: String) {
+    func load(uid: String, unreadMessagesManager: UnreadMessagesManaging) {
         stopObserving()
         ref = FirebaseHelper.makeReference(Child.userInfo, uid, Child.unreadMessages)
-        addedHandle = ref?.observe(.childAdded) { [weak manager] (data) in
+        addedHandle = ref?.observe(.childAdded) { [weak unreadMessagesManager] (data) in
             guard let message = Message(data) else {
                 FirebaseHelper.delete(Child.userInfo, uid, Child.unreadMessages, data.key) { _ in }
                 return
             }
-            manager?.unreadMessageAdded(message)
+            unreadMessagesManager?.unreadMessageAdded(message)
         }
-        removedHandle = ref?.observe(.childRemoved) { [weak manager] (data) in
+        removedHandle = ref?.observe(.childRemoved) { [weak unreadMessagesManager] (data) in
             guard let message = Message(data) else {
                 return
             }
-            manager?.unreadMessageRemoved(message)
+            unreadMessagesManager?.unreadMessageRemoved(message)
         }
     }
 

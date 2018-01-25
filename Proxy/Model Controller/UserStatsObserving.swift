@@ -2,7 +2,7 @@ import FirebaseDatabase
 import UIKit
 
 protocol UserStatsObserving {
-    func load(manager: UserStatsManaging, uid: String)
+    func load(uid: String, userStatsManager: UserStatsManaging)
 }
 
 class UserStatsObserver: UserStatsObserving {
@@ -13,28 +13,28 @@ class UserStatsObserver: UserStatsObserving {
     private var proxiesInteractedWithHandle: DatabaseHandle?
     private var proxiesInteractedWithRef: DatabaseReference?
 
-    func load(manager: UserStatsManaging, uid: String) {
+    func load(uid: String, userStatsManager: UserStatsManaging) {
         stopObservering()
 
         messagesReceivedRef = FirebaseHelper.makeReference(Child.userInfo,
                                                            uid,
                                                            IncrementableUserProperty.messagesReceived.rawValue)
-        messagesReceivedHandle = messagesReceivedRef?.observe(.value) { [weak manager] (data) in
-            manager?.messagesReceivedCount = data.asNumberLabel
+        messagesReceivedHandle = messagesReceivedRef?.observe(.value) { [weak userStatsManager] (data) in
+            userStatsManager?.messagesReceivedCount = data.asNumberLabel
         }
 
         messagesSentRef = FirebaseHelper.makeReference(Child.userInfo,
                                                        uid,
                                                        IncrementableUserProperty.messagesSent.rawValue)
-        messagesSentHandle = messagesSentRef?.observe(.value) { [weak manager] (data) in
-            manager?.messagesSentCount = data.asNumberLabel
+        messagesSentHandle = messagesSentRef?.observe(.value) { [weak userStatsManager] (data) in
+            userStatsManager?.messagesSentCount = data.asNumberLabel
         }
 
         proxiesInteractedWithRef = FirebaseHelper.makeReference(Child.userInfo,
                                                                 uid,
                                                                 IncrementableUserProperty.proxiesInteractedWith.rawValue)
-        proxiesInteractedWithHandle = proxiesInteractedWithRef?.observe(.value) { [weak manager] (data) in
-            manager?.proxiesInteractedWithCount = data.asNumberLabel
+        proxiesInteractedWithHandle = proxiesInteractedWithRef?.observe(.value) { [weak userStatsManager] (data) in
+            userStatsManager?.proxiesInteractedWithCount = data.asNumberLabel
         }
     }
 

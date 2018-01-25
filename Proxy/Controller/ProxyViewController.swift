@@ -43,11 +43,11 @@ class ProxyViewController: UIViewController, ConvosManaging, NewConvoManaging, P
 
         super.init(nibName: nil, bundle: nil)
 
-        convosObserver.load(manager: self, uid: proxy.ownerId, proxyKey: proxy.key)
+        convosObserver.load(convosOwnerId: proxy.ownerId, proxyKey: proxy.key, convosManager: self)
 
         navigationItem.rightBarButtonItems = [makeNewMessageButton, deleteProxyButton]
 
-        proxyObserver.load(proxyKey: proxy.key, uid: proxy.ownerId, manager: self)
+        proxyObserver.load(proxyKey: proxy.key, proxyOwnerId: proxy.ownerId, proxyManager: self)
 
         tableView.dataSource = self
         tableView.delaysContentTouches = false
@@ -229,8 +229,7 @@ extension ProxyViewController: UITableViewDelegate {
                 return
         }
         convosObserver.loadConvos(endingAtTimestamp: convo.timestamp,
-                                  manager: self,
-                                  uid: proxy.ownerId,
-                                  proxyKey: proxy.key)
+                                  proxyKey: proxy.key,
+                                  convosManager: self)
     }
 }

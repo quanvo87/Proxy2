@@ -313,7 +313,7 @@ class Firebase: Database {
 
     private func getConvosForProxy(key: String, ownerId: String, completion: @escaping ([Convo]?) -> Void) {
         FirebaseHelper.get(Child.convos, ownerId) { (data) in
-            completion(data?.toConvosArray(uid: ownerId, proxyKey: key))
+            completion(data?.toConvosArray(proxyKey: key))
         }
     }
 }

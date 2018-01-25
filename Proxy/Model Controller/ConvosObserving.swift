@@ -2,11 +2,10 @@ import FirebaseDatabase
 
 protocol ConvosObsering: ReferenceObserving {
     init(querySize: UInt)
-    func load(manager: ConvosManaging, uid: String, proxyKey: String?)
+    func load(convosOwnerId: String, proxyKey: String?, convosManager: ConvosManaging)
     func loadConvos(endingAtTimestamp timestamp: Double,
-                    manager: ConvosManaging,
-                    uid: String,
-                    proxyKey: String?)
+                    proxyKey: String?,
+                    convosManager: ConvosManaging)
 }
 
 class ConvosObserver: ConvosObsering {
@@ -19,23 +18,22 @@ class ConvosObserver: ConvosObsering {
         self.querySize = querySize
     }
 
-    func load(manager: ConvosManaging, uid: String, proxyKey: String?) {
+    func load(convosOwnerId: String, proxyKey: String?, convosManager: ConvosManaging) {
         stopObserving()
-        ref = FirebaseHelper.makeReference(Child.convos, uid)
+        ref = FirebaseHelper.makeReference(Child.convos, convosOwnerId)
         handle = ref?
             .queryOrdered(byChild: Child.timestamp)
             .queryLimited(toLast: querySize)
-            .observe(.value) { [weak self, weak manager] (data) in
+            .observe(.value) { [weak self, weak convosManager] (data) in
                 self?.loading = true
-                manager?.convos = data.toConvosArray(uid: uid, proxyKey: proxyKey).reversed()
+                convosManager?.convos = data.toConvosArray(proxyKey: proxyKey).reversed()
                 self?.loading = false
         }
     }
 
     func loadConvos(endingAtTimestamp timestamp: Double,
-                    manager: ConvosManaging,
-                    uid: String,
-                    proxyKey: String?) {
+                    proxyKey: String?,
+                    convosManager: ConvosManaging) {
         guard !loading else {
             return
         }
@@ -43,13 +41,13 @@ class ConvosObserver: ConvosObsering {
         ref?.queryOrdered(byChild: Child.timestamp)
             .queryEnding(atValue: timestamp)
             .queryLimited(toLast: querySize)
-            .observeSingleEvent(of: .value) { [weak self, weak manager] (data) in
-                var convos = data.toConvosArray(uid: uid, proxyKey: proxyKey)
+            .observeSingleEvent(of: .value) { [weak self, weak convosManager] (data) in
+                var convos = data.toConvosArray(proxyKey: proxyKey)
                 guard convos.count > 1 else {
                     return
                 }
                 convos.removeLast(1)
-                manager?.convos += convos.reversed()
+                convosManager?.convos += convos.reversed()
                 self?.loading = false
         }
     }

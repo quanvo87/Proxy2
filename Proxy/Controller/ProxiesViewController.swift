@@ -49,7 +49,7 @@ class ProxiesViewController: UIViewController, NewConvoManaging, ProxiesManaging
 
         navigationItem.title = "My Proxies"
 
-        proxiesObserver.load(manager: self, uid: uid)
+        proxiesObserver.load(proxiesOwnerId: uid, proxiesManager: self)
 
         setDefaultButtons()
 

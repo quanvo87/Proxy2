@@ -23,7 +23,6 @@ class ConvosViewController: UIViewController, ConvosManaging, NewConvoManaging, 
     private let convosObserver: ConvosObsering
     private let maxProxyCount: Int
     private let proxiesObserver: ProxiesObserving
-    private let querySize: UInt
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
     private let unreadMessagesObserver: UnreadMessagesObserving
@@ -38,25 +37,23 @@ class ConvosViewController: UIViewController, ConvosManaging, NewConvoManaging, 
          convosObserver: ConvosObsering = ConvosObserver(),
          maxProxyCount: Int = Setting.maxProxyCount,
          proxiesObserver: ProxiesObserving = ProxiesObserver(),
-         querySize: UInt = Setting.querySize,
          uid: String,
          unreadMessagesObserver: UnreadMessagesObserving = UnreadMessagesObserver()) {
         self.database = database
         self.maxProxyCount = maxProxyCount
         self.convosObserver = convosObserver
         self.proxiesObserver = proxiesObserver
-        self.querySize = querySize
         self.uid = uid
         self.unreadMessagesObserver = unreadMessagesObserver
 
         super.init(nibName: nil, bundle: nil)
 
-        convosObserver.load(manager: self, uid: uid, proxyKey: nil)
+        convosObserver.load(convosOwnerId: uid, proxyKey: nil, convosManager: self)
 
         navigationItem.rightBarButtonItems = [makeNewMessageButton, makeNewProxyButton]
         navigationItem.title = "Messages"
 
-        proxiesObserver.load(manager: self, uid: uid)
+        proxiesObserver.load(proxiesOwnerId: uid, proxiesManager: self)
 
         tableView.dataSource = self
         tableView.delegate = self
@@ -66,7 +63,7 @@ class ConvosViewController: UIViewController, ConvosManaging, NewConvoManaging, 
         tableView.rowHeight = 80
         tableView.sectionHeaderHeight = 0
 
-        unreadMessagesObserver.load(manager: self, uid: uid)
+        unreadMessagesObserver.load(uid: uid, unreadMessagesManager: self)
 
         view.addSubview(tableView)
     }
@@ -164,9 +161,8 @@ extension ConvosViewController: UITableViewDelegate {
                 return
         }
         convosObserver.loadConvos(endingAtTimestamp: convo.timestamp,
-                                  manager: self,
-                                  uid: uid,
-                                  proxyKey: nil)
+                                  proxyKey: nil,
+                                  convosManager: self)
     }
 }
 

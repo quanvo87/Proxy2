@@ -29,20 +29,7 @@ extension FirebaseApp {
 
 // todo: flatmap
 extension DataSnapshot {
-    var asMessagesArray: [Message] {
-        var messages = [Message]()
-        for child in self.children {
-            guard let data = child as? DataSnapshot else {
-                continue
-            }
-            if let message = Message(data) {
-                messages.append(message)
-            }
-        }
-        return messages
-    }
-
-    func toConvosArray(uid: String, proxyKey: String?) -> [Convo] {
+    func toConvosArray(proxyKey: String?) -> [Convo] {
         var convos = [Convo]()
         for child in self.children {
             guard let data = child as? DataSnapshot else {
@@ -62,7 +49,20 @@ extension DataSnapshot {
         return convos
     }
 
-    func toProxiesArray(uid: String) -> [Proxy] {
+    var toMessagesArray: [Message] {
+        var messages = [Message]()
+        for child in self.children {
+            guard let data = child as? DataSnapshot else {
+                continue
+            }
+            if let message = Message(data) {
+                messages.append(message)
+            }
+        }
+        return messages
+    }
+
+    var toProxiesArray: [Proxy] {
         var proxies = [Proxy]()
         for child in self.children {
             guard let data = child as? DataSnapshot else {
@@ -166,8 +166,7 @@ extension UIViewController {
     }
 
     func showConvoController(_ convo: Convo) {
-        navigationController?.pushViewController(ConvoViewController(convo: convo),
-                                                 animated: true)
+        navigationController?.pushViewController(ConvoViewController(convo: convo), animated: true)
     }
 
     func showEditProxyNicknameAlert(_ proxy: Proxy, database: Database = Firebase()) {
