@@ -7,7 +7,7 @@ protocol ProxyObsering: ReferenceObserving {
 class ProxyObserver: ProxyObsering {
     private (set) var handle: DatabaseHandle?
     private (set) var ref: DatabaseReference?
-    private let database = FirebaseDatabase()
+    private let database = Firebase()
 
     func load(proxyKey: String, uid: String, manager: ProxyManaging?) {
         stopObserving()

@@ -15,7 +15,7 @@ class ConvoViewController: MessagesViewController, ConvoManaging, MessagesManagi
     }
     var messages = [Message]()
     private let convoObserver: ConvoObserving
-    private let database: DatabaseType
+    private let database: Database
     private let messagesObserver: MessagesObserving
     private var icons = [String: UIImage]()
     private weak var presenceManager: PresenceManaging?
@@ -23,7 +23,7 @@ class ConvoViewController: MessagesViewController, ConvoManaging, MessagesManagi
 
     init(convo: Convo,
          convoObserver: ConvoObserving = ConvoObserver(),
-         database: DatabaseType = FirebaseDatabase(),
+         database: Database = Firebase(),
          messagesObserver: MessagesObserving = MessagesObserver(),
          presenceManager: PresenceManaging?,
          unreadMessagesManager: UnreadMessagesManaging?) {

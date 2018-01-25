@@ -13,7 +13,7 @@ enum IncrementableUserProperty: String {
     case proxiesInteractedWith
 }
 
-protocol DatabaseType {
+protocol Database {
     typealias ConvoCallback = (Result<Convo, Error>) -> Void
     typealias ErrorCallback = (Error?) -> Void
     typealias MessageCallback = (Result<(convo: Convo, message: Message), Error>) -> Void
@@ -33,7 +33,7 @@ protocol DatabaseType {
     func setReceiverNickname(to nickname: String, for convo: Convo, completion: @escaping ErrorCallback)
 }
 
-class FirebaseDatabase: DatabaseType {
+class Firebase: Database {
     private let generator: ProxyPropertyGenerating
     private let maxMessageSize: Int
     private let maxNameSize: Int

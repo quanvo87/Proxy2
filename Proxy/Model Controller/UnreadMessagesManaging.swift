@@ -19,7 +19,7 @@ class UnreadMessagesManager: UnreadMessagesManaging {
             }
         }
     }
-    private let database = FirebaseDatabase()
+    private let database = Firebase()
     private let ref: DatabaseReference?
     private var addedHandle: DatabaseHandle?
     private var removedHandle: DatabaseHandle?

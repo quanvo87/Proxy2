@@ -22,7 +22,7 @@ class ProxyViewController: UIViewController, ConvosManaging, NewConvoManaging, P
         }
     }
     private let convosObserver: ConvosObsering
-    private let database: DatabaseType
+    private let database: Database
     private let proxyObserver: ProxyObsering
     private let querySize: UInt
     private let tableView = UITableView(frame: .zero, style: .grouped)
@@ -37,7 +37,7 @@ class ProxyViewController: UIViewController, ConvosManaging, NewConvoManaging, P
 
     init(proxy: Proxy,
          convosObserver: ConvosObsering = ConvosObserver(),
-         database: DatabaseType = FirebaseDatabase(),
+         database: Database = Firebase(),
          proxyObserver: ProxyObsering = ProxyObserver(),
          querySize: UInt = Setting.querySize,
          presenceManager: PresenceManaging?,

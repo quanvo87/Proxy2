@@ -11,7 +11,7 @@ class GeneratorMock: ProxyPropertyGenerating {
 
 class FirebaseTests: FirebaseTest {
     private static let senderText = "You: \(text)"
-    private var firebase: FirebaseDatabase!
+    private var firebase: Firebase!
 
     func testDeleteProxy() {
         let expectation = self.expectation(description: #function)
@@ -161,7 +161,7 @@ class FirebaseTests: FirebaseTest {
         var settings = [String: Any]()
         settings["generator"] = GeneratorMock()
         settings["makeProxyRetries"] = 0
-        firebase = FirebaseDatabase(settings)
+        firebase = Firebase(settings)
 
         firebase.makeProxy(ownerId: FirebaseTest.uid) { (result) in
             switch result {
