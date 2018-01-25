@@ -3,27 +3,27 @@ import XCTest
 @testable import Proxy
 
 class FirebaseUtilTests: FirebaseTest {
-    func testDatasnapshotAsMessagesArray() {
-        let expectation = self.expectation(description: #function)
-        defer { waitForExpectations(timeout: 10) }
-
-        FirebaseTest.sendMessage { (message, _, _, _) in
-            FirebaseHelper.get(Child.messages, message.parentConvoKey) { (data) in
-                XCTAssert(data?.asMessagesArray.contains(message) ?? false)
-                expectation.fulfill()
-            }
-        }
-    }
-
-    func testDatasnapshotToConvosArray() {
+     func testDatasnapshotToConvosArray() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
         FirebaseTest.sendMessage { (_, convo, _, _) in
             FirebaseHelper.get(Child.convos, convo.senderId) { (data) in
-                let convos = data!.toConvosArray(uid: "", proxyKey: nil)
+                let convos = data!.toConvosArray(proxyKey: nil)
                 XCTAssertEqual(convos.count, 1)
                 XCTAssert(convos.contains(convo))
+                expectation.fulfill()
+            }
+        }
+    }
+
+    func testDatasnapshotToMessagesArray() {
+        let expectation = self.expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
+
+        FirebaseTest.sendMessage { (message, _, _, _) in
+            FirebaseHelper.get(Child.messages, message.parentConvoKey) { (data) in
+                XCTAssert(data?.toMessagesArray.contains(message) ?? false)
                 expectation.fulfill()
             }
         }
@@ -36,7 +36,7 @@ class FirebaseUtilTests: FirebaseTest {
         FirebaseTest.makeProxy { (proxy1) in
             FirebaseTest.makeProxy { (proxy2) in
                 FirebaseHelper.get(Child.proxies, FirebaseTest.uid) { (data) in
-                    let proxies = data!.toProxiesArray(uid: "")
+                    let proxies = data!.toProxiesArray
                     XCTAssertEqual(proxies.count, 2)
                     XCTAssert(proxies.contains(proxy1))
                     XCTAssert(proxies.contains(proxy2))

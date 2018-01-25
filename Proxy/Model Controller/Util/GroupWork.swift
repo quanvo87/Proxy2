@@ -49,7 +49,7 @@ extension GroupWork {
             return
         }
         ref.queryOrdered(byChild: Child.receiverProxyKey).queryEqual(toValue: key).observeSingleEvent(of: .value) { (data) in
-            completion(data.asMessagesArray)
+            completion(data.toMessagesArray)
         }
     }
 

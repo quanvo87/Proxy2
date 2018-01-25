@@ -4,16 +4,16 @@ class TabBarController: UITabBarController {
     init(uid: String, displayName: String?) {
         super.init(nibName: nil, bundle: nil)
 
-        let convosController = ConvosViewController(uid: uid)
-        convosController.tabBarItem = UITabBarItem(title: "Messages", image: UIImage(named: "messages"), tag: 0)
+        let convosViewController = ConvosViewController(uid: uid)
+        convosViewController.tabBarItem = UITabBarItem(title: "Messages", image: UIImage(named: "messages"), tag: 0)
 
-        let proxiesController = ProxiesViewController(uid: uid)
-        proxiesController.tabBarItem = UITabBarItem(title: "Proxies", image: UIImage(named: "proxies"), tag: 1)
+        let proxiesViewController = ProxiesViewController(uid: uid)
+        proxiesViewController.tabBarItem = UITabBarItem(title: "Proxies", image: UIImage(named: "proxies"), tag: 1)
 
-        let settingsController = SettingsViewController(uid: uid, displayName: displayName)
-        settingsController.tabBarItem = UITabBarItem(title: "Settings", image: UIImage(named: "settings"), tag: 2)
+        let settingsViewController = SettingsViewController(uid: uid, displayName: displayName)
+        settingsViewController.tabBarItem = UITabBarItem(title: "Settings", image: UIImage(named: "settings"), tag: 2)
 
-        viewControllers = [convosController, proxiesController, settingsController].map {
+        viewControllers = [convosViewController, proxiesViewController, settingsViewController].map {
             UINavigationController(rootViewController: $0)
         }
     }

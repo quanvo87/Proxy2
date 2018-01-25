@@ -6,7 +6,6 @@ private enum FirstResponder {
     case newMessageTextView
 }
 
-// todo: use fuller variable names and non optional values
 class MakeNewMessageViewController: UIViewController, ProxiesManaging, SenderManaging {
     var proxies = [Proxy]() {
         didSet {
@@ -34,7 +33,7 @@ class MakeNewMessageViewController: UIViewController, ProxiesManaging, SenderMan
     private let proxyNamesLoader: ProxyNamesLoading
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
-    private var firstResponder: FirstResponder = .receiverTextField
+    private var firstResponder = FirstResponder.receiverTextField
     private var lockKeyboard = true
     private var isSending = false
     private weak var newConvoManager: NewConvoManaging?
@@ -73,7 +72,7 @@ class MakeNewMessageViewController: UIViewController, ProxiesManaging, SenderMan
                                                name: NSNotification.Name.UIKeyboardWillHide,
                                                object: nil)
 
-        proxiesObserver.load(manager: self, uid: uid)
+        proxiesObserver.load(proxiesOwnerId: uid, proxiesManager: self)
 
         tableView.dataSource = self
         tableView.delegate = self
@@ -266,7 +265,7 @@ extension MakeNewMessageViewController: UITableViewDataSource {
                 }
                 cell.iconImageView.image = nil
                 cell.receiverTextField.showLoadingIndicator()
-                self?.proxyNamesLoader.load(query: query, uid: _self.uid) { (items) in
+                self?.proxyNamesLoader.load(query: query, senderId: _self.uid) { (items) in
                     cell.receiverTextField.filterItems(items)
                     cell.receiverTextField.stopLoadingIndicator()
                 }

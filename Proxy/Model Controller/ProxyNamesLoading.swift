@@ -3,7 +3,7 @@ import SearchTextField
 
 protocol ProxyNamesLoading {
     init(querySize: UInt)
-    func load(query: String, uid: String, completion: @escaping ([SearchTextFieldItem]) -> Void)
+    func load(query: String, senderId: String, completion: @escaping ([SearchTextFieldItem]) -> Void)
 }
 
 // https://www.swiftbysundell.com/posts/a-deep-dive-into-grand-central-dispatch-in-swift
@@ -16,7 +16,7 @@ class ProxyNamesLoader: ProxyNamesLoading {
         self.querySize = querySize
     }
 
-    func load(query: String, uid: String, completion: @escaping ([SearchTextFieldItem]) -> Void) {
+    func load(query: String, senderId: String, completion: @escaping ([SearchTextFieldItem]) -> Void) {
         pendingWorkItem?.cancel()
         let workItem = DispatchWorkItem { [weak self] in
             guard let _self = self else {
@@ -32,7 +32,7 @@ class ProxyNamesLoader: ProxyNamesLoading {
                         guard
                             let data = child as? DataSnapshot,
                             let proxy = Proxy(data),
-                            proxy.ownerId != uid else {
+                            proxy.ownerId != senderId else {
                                 continue
                         }
                         items.append(SearchTextFieldItem.init(title: proxy.name,

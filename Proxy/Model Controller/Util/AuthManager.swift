@@ -3,7 +3,7 @@ import UIKit
 
 class AuthManager {
     private var handle: AuthStateDidChangeListenerHandle?
-    private var loggedIn = false
+    private var isLoggedIn = false
     private weak var window: UIWindow?
 
     init(_ window: UIWindow?) {
@@ -23,15 +23,15 @@ class AuthManager {
                 }
                 self?.window?.rootViewController = TabBarController(uid: user.uid,
                                                                     displayName: displayName)
-                self?.loggedIn = true
+                self?.isLoggedIn = true
             } else {
                 guard
-                    self?.loggedIn ?? false,
+                    self?.isLoggedIn ?? false,
                     let loginController = LoginViewController.make() else {
                         return
                 }
                 self?.window?.rootViewController = loginController
-                self?.loggedIn = false
+                self?.isLoggedIn = false
             }
         }
     }

@@ -50,7 +50,5 @@ struct Setting {
     static let maxProxyCount = 30
     static let navBarButtonCGDouble = 30.0
     static let navBarButtonCGRect = CGRect(x: 0, y: 0, width: Setting.navBarButtonCGDouble, height: Setting.navBarButtonCGDouble)
-    static let navBarButtonCGSize = CGSize(width: Setting.navBarButtonCGDouble, height: Setting.navBarButtonCGDouble)
     static let querySize: UInt = 30
-    static let querySizeForProxyNames: UInt = 100
 }

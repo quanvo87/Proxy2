@@ -1,18 +1,18 @@
 import FirebaseDatabase
 
 protocol ProxiesObserving: ReferenceObserving {
-    func load(manager: ProxiesManaging?, uid: String)
+    func load(proxiesOwnerId: String, proxiesManager: ProxiesManaging)
 }
 
 class ProxiesObserver: ProxiesObserving {
     private (set) var handle: DatabaseHandle?
     private (set) var ref: DatabaseReference?
 
-    func load(manager: ProxiesManaging?, uid: String) {
+    func load(proxiesOwnerId: String, proxiesManager: ProxiesManaging) {
         stopObserving()
-        ref = FirebaseHelper.makeReference(Child.proxies, uid)
-        handle = ref?.queryOrdered(byChild: Child.timestamp).observe(.value) { [weak manager] (data) in
-            manager?.proxies = data.toProxiesArray(uid: uid).reversed()
+        ref = FirebaseHelper.makeReference(Child.proxies, proxiesOwnerId)
+        handle = ref?.queryOrdered(byChild: Child.timestamp).observe(.value) { [weak proxiesManager] (data) in
+            proxiesManager?.proxies = data.toProxiesArray.reversed()
         }
     }
 

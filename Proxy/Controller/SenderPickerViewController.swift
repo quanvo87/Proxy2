@@ -37,7 +37,7 @@ class SenderPickerViewController: UIViewController, ProxiesManaging {
         navigationItem.rightBarButtonItem = makeNewProxyButton
         navigationItem.title = "Pick Your Sender"
 
-        proxiesObserver.load(manager: self, uid: uid)
+        proxiesObserver.load(proxiesOwnerId: uid, proxiesManager: self)
 
         tableView.dataSource = self
         tableView.delegate = self
