@@ -52,3 +52,9 @@ extension ReferenceObserving {
 protocol SenderManaging: class {
     var sender: Proxy? { get set }
 }
+
+protocol UserStatsManaging: class {
+    var messagesReceivedCount: String { get set }
+    var messagesSentCount: String { get set }
+    var proxiesInteractedWithCount: String { get set }
+}
