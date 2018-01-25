@@ -199,8 +199,8 @@ extension MakeNewMessageViewController: MessageInputBarDelegate {
         }
         database.getProxy(key: receiverName) { [weak self] (result) in
             switch result {
-            case .failure(let error):
-                self?._showErrorAlert(error)
+            case .failure:
+                self?._showErrorAlert(ProxyError.receiverNotFound)
                 self?.isSending = false
                 self?.setButtons(true)
                 return

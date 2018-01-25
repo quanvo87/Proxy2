@@ -11,7 +11,6 @@ class ProxyViewController: UIViewController, ConvosManaging, NewConvoManaging, P
             tableView.reloadSections(IndexSet(integer: 1), with: .automatic)
         }
     }
-    var newConvo: Convo?
     var proxy: Proxy? {
         didSet {
             guard proxy != nil else {
@@ -21,13 +20,12 @@ class ProxyViewController: UIViewController, ConvosManaging, NewConvoManaging, P
             tableView.reloadData()
         }
     }
+    var newConvo: Convo?
     private let convosObserver: ConvosObsering
     private let database: Database
     private let proxyObserver: ProxyObsering
     private let querySize: UInt
     private let tableView = UITableView(frame: .zero, style: .grouped)
-    private weak var presenceManager: PresenceManaging?
-    private weak var unreadMessagesManager: UnreadMessagesManaging?
     private lazy var makeNewMessageButton = UIBarButtonItem.make(target: self,
                                                                  action: #selector(showMakeNewMessageController),
                                                                  imageName: ButtonName.makeNewMessage)
@@ -39,16 +37,12 @@ class ProxyViewController: UIViewController, ConvosManaging, NewConvoManaging, P
          convosObserver: ConvosObsering = ConvosObserver(),
          database: Database = Firebase(),
          proxyObserver: ProxyObsering = ProxyObserver(),
-         querySize: UInt = Setting.querySize,
-         presenceManager: PresenceManaging?,
-         unreadMessagesManager: UnreadMessagesManaging?) {
+         querySize: UInt = Setting.querySize) {
         self.proxy = proxy
         self.convosObserver = convosObserver
         self.database = database
         self.proxyObserver = proxyObserver
         self.querySize = querySize
-        self.presenceManager = presenceManager
-        self.unreadMessagesManager = unreadMessagesManager
 
         super.init(nibName: nil, bundle: nil)
 
@@ -83,9 +77,7 @@ class ProxyViewController: UIViewController, ConvosManaging, NewConvoManaging, P
             makeNewMessageButton.animate(loop: true)
         }
         if let newConvo = newConvo {
-            showConvoController(convo: newConvo,
-                                presenceManager: presenceManager,
-                                unreadMessagesManager: unreadMessagesManager)
+            showConvoController(newConvo)
             self.newConvo = nil
         }
     }
@@ -206,9 +198,7 @@ extension ProxyViewController: UITableViewDelegate {
                 return
         }
         tableView.deselectRow(at: indexPath, animated: true)
-        showConvoController(convo: convo,
-                            presenceManager: presenceManager,
-                            unreadMessagesManager: unreadMessagesManager)
+        showConvoController(convo)
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

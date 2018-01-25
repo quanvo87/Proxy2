@@ -53,6 +53,11 @@ protocol SenderManaging: class {
     var sender: Proxy? { get set }
 }
 
+protocol UnreadMessagesManaging: class {
+    func unreadMessageAdded(_ message: Message)
+    func unreadMessageRemoved(_ message: Message)
+}
+
 protocol UserStatsManaging: class {
     var messagesReceivedCount: String { get set }
     var messagesSentCount: String { get set }

@@ -11,6 +11,12 @@ class ConvosViewController: UIViewController, ConvosManaging, NewConvoManaging, 
             tableView.reloadData()
         }
     }
+    private var unreadMessageCount = 0 {
+        didSet {
+            navigationItem.title = "Messages" +  unreadMessageCount.asStringWithParens
+            tabBarController?.tabBar.items?.first?.badgeValue = unreadMessageCount.asBadgeValue
+        }
+    }
     var newConvo: Convo?
     var proxies = [Proxy]()
     private let database: Database
@@ -20,8 +26,7 @@ class ConvosViewController: UIViewController, ConvosManaging, NewConvoManaging, 
     private let querySize: UInt
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
-    private weak var presenceManager: PresenceManaging?
-    private weak var unreadMessagesManager: UnreadMessagesManaging?
+    private let unreadMessagesObserver: UnreadMessagesObserving
     private lazy var makeNewMessageButton = UIBarButtonItem.make(target: self,
                                                                  action: #selector(showMakeNewMessageController),
                                                                  imageName: ButtonName.makeNewMessage)
@@ -35,16 +40,14 @@ class ConvosViewController: UIViewController, ConvosManaging, NewConvoManaging, 
          proxiesObserver: ProxiesObserving = ProxiesObserver(),
          querySize: UInt = Setting.querySize,
          uid: String,
-         presenceManager: PresenceManaging?,
-         unreadMessagesManager: UnreadMessagesManaging?) {
+         unreadMessagesObserver: UnreadMessagesObserving = UnreadMessagesObserver()) {
         self.database = database
         self.maxProxyCount = maxProxyCount
         self.convosObserver = convosObserver
         self.proxiesObserver = proxiesObserver
         self.querySize = querySize
         self.uid = uid
-        self.presenceManager = presenceManager
-        self.unreadMessagesManager = unreadMessagesManager
+        self.unreadMessagesObserver = unreadMessagesObserver
 
         super.init(nibName: nil, bundle: nil)
 
@@ -63,6 +66,8 @@ class ConvosViewController: UIViewController, ConvosManaging, NewConvoManaging, 
         tableView.rowHeight = 80
         tableView.sectionHeaderHeight = 0
 
+        unreadMessagesObserver.load(manager: self, uid: uid)
+
         view.addSubview(tableView)
     }
 
@@ -72,9 +77,7 @@ class ConvosViewController: UIViewController, ConvosManaging, NewConvoManaging, 
             makeNewMessageButton.animate(loop: true)
         }
         if let newConvo = newConvo {
-            showConvoController(convo: newConvo,
-                                presenceManager: presenceManager,
-                                unreadMessagesManager: unreadMessagesManager)
+            showConvoController(newConvo)
             self.newConvo = nil
         }
     }
@@ -147,9 +150,7 @@ extension ConvosViewController: UITableViewDelegate {
             return
         }
         tableView.deselectRow(at: indexPath, animated: true)
-        showConvoController(convo: convo,
-                            presenceManager: presenceManager,
-                            unreadMessagesManager: unreadMessagesManager)
+        showConvoController(convo)
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -167,5 +168,23 @@ extension ConvosViewController: UITableViewDelegate {
                                   querySize: querySize,
                                   uid: uid,
                                   manager: self)
+    }
+}
+
+// MARK: - UnreadMessagesManaging
+extension ConvosViewController: UnreadMessagesManaging {
+    func unreadMessageAdded(_ message: Message) {
+        unreadMessageCount += 1
+    }
+
+    func unreadMessageRemoved(_ message: Message) {
+        unreadMessageCount -= 1
+    }
+}
+
+// MARK: - Util
+private extension Int {
+    var asBadgeValue: String? {
+        return self == 0 ? nil : String(self)
     }
 }

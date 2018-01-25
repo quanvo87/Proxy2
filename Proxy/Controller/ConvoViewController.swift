@@ -17,22 +17,21 @@ class ConvoViewController: MessagesViewController, ConvoManaging, MessagesManagi
     private let convoObserver: ConvoObserving
     private let database: Database
     private let messagesObserver: MessagesObserving
+    private let unreadMessagesObserver: UnreadMessagesObserving
     private var icons = [String: UIImage]()
-    private weak var presenceManager: PresenceManaging?
-    private weak var unreadMessagesManager: UnreadMessagesManaging?
+    private var isPresent = false
+    private var messagesToRead = [String: Message]()
 
     init(convo: Convo,
          convoObserver: ConvoObserving = ConvoObserver(),
          database: Database = Firebase(),
          messagesObserver: MessagesObserving = MessagesObserver(),
-         presenceManager: PresenceManaging?,
-         unreadMessagesManager: UnreadMessagesManaging?) {
+         unreadMessagesObserver: UnreadMessagesObserving = UnreadMessagesObserver()) {
         self.convo = convo
         self.convoObserver = convoObserver
         self.database = database
         self.messagesObserver = messagesObserver
-        self.presenceManager = presenceManager
-        self.unreadMessagesManager = unreadMessagesManager
+        self.unreadMessagesObserver = unreadMessagesObserver
 
         super.init(nibName: nil, bundle: nil)
 
@@ -56,34 +55,34 @@ class ConvoViewController: MessagesViewController, ConvoManaging, MessagesManagi
         messagesCollectionView.messagesDataSource = self
         messagesCollectionView.messagesDisplayDelegate = self
         messagesCollectionView.messagesLayoutDelegate = self
+
+        unreadMessagesObserver.load(manager: self, uid: convo.senderId)
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        guard let convo = convo else {
+        guard convo != nil else {
             _ = navigationController?.popViewController(animated: false)
             return
         }
+        for message in messagesToRead.values {
+            database.read(message, at: Date()) { _ in }
+        }
+        isPresent = true
         tabBarController?.tabBar.isHidden = true
-        presenceManager?.enterConvo(convo.key)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        isPresent = false
         tabBarController?.tabBar.isHidden = false
-        guard let convo = convo else {
-            return
-        }
-        presenceManager?.leaveConvo(convo.key)
     }
 
     @objc private func showConvoDetailViewController() {
         guard let convo = convo else {
             return
         }
-        navigationController?.pushViewController(ConvoDetailViewController(convo: convo,
-                                                                           presenceManager: presenceManager,
-                                                                           unreadMessagesManager: unreadMessagesManager),
+        navigationController?.pushViewController(ConvoDetailViewController(convo: convo),
                                                  animated: true)
     }
 
@@ -240,7 +239,26 @@ extension ConvoViewController {
     }
 }
 
-// MARK: - UIImage
+// MARK: - UnreadMessagesManaging
+extension ConvoViewController: UnreadMessagesManaging {
+    func unreadMessageAdded(_ message: Message) {
+        if message.parentConvoKey == convo?.key {
+            if isPresent {
+                database.read(message, at: Date()) { _ in }
+            } else {
+                messagesToRead[message.messageId] = message
+            }
+        }
+    }
+
+    func unreadMessageRemoved(_ message: Message) {
+        if message.parentConvoKey == convo?.key {
+            messagesToRead.removeValue(forKey: message.messageId)
+        }
+    }
+}
+
+// MARK: - Util
 // https://stackoverflow.com/questions/26542035/create-uiimage-with-solid-color-in-swift
 private extension UIImage {
     static func make(color: UIColor, size: CGSize = CGSize(width: 1, height: 1)) -> UIImage {
