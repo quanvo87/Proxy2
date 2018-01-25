@@ -1,7 +1,12 @@
 import Device_swift
 import MessageKit
 
-// todo: use fuller variable names
+private enum FirstResponder {
+    case receiverTextField
+    case newMessageTextView
+}
+
+// todo: use fuller variable names and non optional values
 class MakeNewMessageViewController: UIViewController, ProxiesManaging, SenderManaging {
     var proxies = [Proxy]() {
         didSet {
@@ -23,15 +28,14 @@ class MakeNewMessageViewController: UIViewController, ProxiesManaging, SenderMan
         return messageInputBar
     }
     private let database: Database
-    private var lockKeyboard = true
     private let maxProxyCount: Int
     private let messageInputBar = MessageInputBar()
     private let proxiesObserver: ProxiesObserving
     private let proxyNamesLoader: ProxyNamesLoading
-    private let querySize: UInt
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
     private var firstResponder: FirstResponder = .receiverTextField
+    private var lockKeyboard = true
     private var isSending = false
     private weak var newConvoManager: NewConvoManaging?
     private lazy var cancelButton = UIBarButtonItem.make(target: self,
@@ -46,7 +50,6 @@ class MakeNewMessageViewController: UIViewController, ProxiesManaging, SenderMan
          maxProxyCount: Int = Setting.maxProxyCount,
          proxiesObserver: ProxiesObserving = ProxiesObserver(),
          proxyNamesLoader: ProxyNamesLoading = ProxyNamesLoader(),
-         querySize: UInt = Setting.querySize,
          uid: String,
          newConvoManager: NewConvoManaging?) {
         self.sender = sender
@@ -54,7 +57,6 @@ class MakeNewMessageViewController: UIViewController, ProxiesManaging, SenderMan
         self.maxProxyCount = maxProxyCount
         self.proxiesObserver = proxiesObserver
         self.proxyNamesLoader = proxyNamesLoader
-        self.querySize = querySize
         self.uid = uid
         self.newConvoManager = newConvoManager
 
@@ -264,7 +266,7 @@ extension MakeNewMessageViewController: UITableViewDataSource {
                 }
                 cell.iconImageView.image = nil
                 cell.receiverTextField.showLoadingIndicator()
-                self?.proxyNamesLoader.load(query: query, querySize: _self.querySize, uid: _self.uid) { (items) in
+                self?.proxyNamesLoader.load(query: query, uid: _self.uid) { (items) in
                     cell.receiverTextField.filterItems(items)
                     cell.receiverTextField.stopLoadingIndicator()
                 }

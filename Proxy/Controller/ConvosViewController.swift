@@ -51,7 +51,7 @@ class ConvosViewController: UIViewController, ConvosManaging, NewConvoManaging, 
 
         super.init(nibName: nil, bundle: nil)
 
-        convosObserver.load(proxyKey: nil, querySize: Setting.querySize, uid: uid, manager: self)
+        convosObserver.load(manager: self, uid: uid, proxyKey: nil)
 
         navigationItem.rightBarButtonItems = [makeNewMessageButton, makeNewProxyButton]
         navigationItem.title = "Messages"
@@ -164,10 +164,9 @@ extension ConvosViewController: UITableViewDelegate {
                 return
         }
         convosObserver.loadConvos(endingAtTimestamp: convo.timestamp,
-                                  proxyKey: nil,
-                                  querySize: querySize,
+                                  manager: self,
                                   uid: uid,
-                                  manager: self)
+                                  proxyKey: nil)
     }
 }
 

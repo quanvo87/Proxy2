@@ -39,10 +39,7 @@ class ConvoViewController: MessagesViewController, ConvoManaging, MessagesManagi
 
         icons["blank"] = UIImage.make(color: .white)
 
-        messagesObserver.load(convoKey: convo.key,
-                              querySize: Setting.querySize,
-                              collectionView: messagesCollectionView,
-                              manager: self)
+        messagesObserver.load(convoKey: convo.key, collectionView: messagesCollectionView, manager: self)
 
         navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self,
                                                                  action: #selector(showConvoDetailViewController),
@@ -233,7 +230,6 @@ extension ConvoViewController {
                 return
         }
         messagesObserver.loadMessages(endingAtMessageId: message.messageId,
-                                      querySize: Setting.querySize,
                                       collectionView: messagesCollectionView,
                                       manager: self)
     }
@@ -259,6 +255,15 @@ extension ConvoViewController: UnreadMessagesManaging {
 }
 
 // MARK: - Util
+private extension String {
+    func getFirstNChars(_ n: Int) -> String {
+        guard count >= n else {
+            return ""
+        }
+        return String(self[..<self.index(self.startIndex, offsetBy: n)])
+    }
+}
+
 // https://stackoverflow.com/questions/26542035/create-uiimage-with-solid-color-in-swift
 private extension UIImage {
     static func make(color: UIColor, size: CGSize = CGSize(width: 1, height: 1)) -> UIImage {

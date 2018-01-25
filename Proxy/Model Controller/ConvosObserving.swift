@@ -1,21 +1,25 @@
 import FirebaseDatabase
 
-// todo: order?
 protocol ConvosObsering: ReferenceObserving {
-    func load(proxyKey: String?, querySize: UInt, uid: String, manager: ConvosManaging?)
+    init(querySize: UInt)
+    func load(manager: ConvosManaging, uid: String, proxyKey: String?)
     func loadConvos(endingAtTimestamp timestamp: Double,
-                    proxyKey: String?,
-                    querySize: UInt,
+                    manager: ConvosManaging,
                     uid: String,
-                    manager: ConvosManaging?)
+                    proxyKey: String?)
 }
 
 class ConvosObserver: ConvosObsering {
     private (set) var handle: DatabaseHandle?
     private (set) var ref: DatabaseReference?
+    private let querySize: UInt
     private var loading = true
 
-    func load(proxyKey: String?, querySize: UInt, uid: String, manager: ConvosManaging?) {
+    required init(querySize: UInt = Setting.querySize) {
+        self.querySize = querySize
+    }
+
+    func load(manager: ConvosManaging, uid: String, proxyKey: String?) {
         stopObserving()
         ref = FirebaseHelper.makeReference(Child.convos, uid)
         handle = ref?
@@ -29,10 +33,9 @@ class ConvosObserver: ConvosObsering {
     }
 
     func loadConvos(endingAtTimestamp timestamp: Double,
-                    proxyKey: String?,
-                    querySize: UInt,
+                    manager: ConvosManaging,
                     uid: String,
-                    manager: ConvosManaging?) {
+                    proxyKey: String?) {
         guard !loading else {
             return
         }

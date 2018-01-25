@@ -25,3 +25,20 @@ class ConvosTableViewCell: UITableViewCell {
         }
     }
 }
+
+private extension Double {
+    var asTimeAgo: String {
+        return NSDate(timeIntervalSince1970: self).formattedAsTimeAgo()
+    }
+}
+
+extension NSAttributedString {
+    static func makeConvoTitle(_ convo: Convo) -> NSAttributedString {
+        let grayAttribute = [NSAttributedStringKey.foregroundColor: UIColor.gray]
+        let receiver = NSMutableAttributedString(string: (convo.receiverNickname == "" ? convo.receiverProxyName : convo.receiverNickname) + ", ")
+        let sender = NSMutableAttributedString(string: convo.senderNickname == "" ? convo.senderProxyName : convo.senderNickname,
+                                               attributes: grayAttribute)
+        receiver.append(sender)
+        return receiver
+    }
+}

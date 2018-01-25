@@ -1,6 +1,5 @@
 import FirebaseDatabase
 
-// todo: change all uid & key to more descriptive name
 protocol ConvoObserving: ReferenceObserving {
     func load(convoKey: String, convoSenderId: String, manager: ConvoManaging?)
 }

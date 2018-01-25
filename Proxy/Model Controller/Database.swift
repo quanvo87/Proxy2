@@ -85,7 +85,6 @@ class Firebase: Database {
         }
     }
 
-    // todo: remove punctuation as well
     func getProxy(key: String, completion: @escaping ProxyCallback) {
         FirebaseHelper.get(Child.proxyNames, key.lowercased().noWhiteSpaces) { (data) in
             guard
@@ -316,5 +315,11 @@ class Firebase: Database {
         FirebaseHelper.get(Child.convos, ownerId) { (data) in
             completion(data?.toConvosArray(uid: ownerId, proxyKey: key))
         }
+    }
+}
+
+private extension String {
+    var noWhiteSpaces: String {
+        return components(separatedBy: .whitespacesAndNewlines).joined()
     }
 }

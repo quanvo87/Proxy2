@@ -24,7 +24,6 @@ class ProxyViewController: UIViewController, ConvosManaging, NewConvoManaging, P
     private let convosObserver: ConvosObsering
     private let database: Database
     private let proxyObserver: ProxyObsering
-    private let querySize: UInt
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private lazy var makeNewMessageButton = UIBarButtonItem.make(target: self,
                                                                  action: #selector(showMakeNewMessageController),
@@ -36,17 +35,15 @@ class ProxyViewController: UIViewController, ConvosManaging, NewConvoManaging, P
     init(proxy: Proxy,
          convosObserver: ConvosObsering = ConvosObserver(),
          database: Database = Firebase(),
-         proxyObserver: ProxyObsering = ProxyObserver(),
-         querySize: UInt = Setting.querySize) {
+         proxyObserver: ProxyObsering = ProxyObserver()) {
         self.proxy = proxy
         self.convosObserver = convosObserver
         self.database = database
         self.proxyObserver = proxyObserver
-        self.querySize = querySize
 
         super.init(nibName: nil, bundle: nil)
 
-        convosObserver.load(proxyKey: proxy.key, querySize: Setting.querySize, uid: proxy.ownerId, manager: self)
+        convosObserver.load(manager: self, uid: proxy.ownerId, proxyKey: proxy.key)
 
         navigationItem.rightBarButtonItems = [makeNewMessageButton, deleteProxyButton]
 
@@ -232,9 +229,8 @@ extension ProxyViewController: UITableViewDelegate {
                 return
         }
         convosObserver.loadConvos(endingAtTimestamp: convo.timestamp,
-                                  proxyKey: proxy.key,
-                                  querySize: querySize,
+                                  manager: self,
                                   uid: proxy.ownerId,
-                                  manager: self)
+                                  proxyKey: proxy.key)
     }
 }

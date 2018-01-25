@@ -2,24 +2,10 @@ import Firebase
 import Spring
 import UIKit
 
-// todo: move properties with only one user into the file that's using it
-
-enum FirstResponder {
-    case receiverTextField
-    case newMessageTextView
-}
-
 extension Auth {
     static let auth: Auth = {
         Auth.auth()
     }()
-}
-
-extension CALayer {
-    func stopAnimating() {
-        removeAllAnimations()
-        shadowColor = UIColor.clear.cgColor
-    }
 }
 
 // https://stackoverflow.com/questions/25329186/safe-bounds-checked-array-lookup-in-swift-through-optional-bindings
@@ -30,10 +16,6 @@ extension Collection {
 }
 
 extension Double {
-    var asTimeAgo: String {
-        return NSDate(timeIntervalSince1970: self).formattedAsTimeAgo()
-    }
-
     func isWithinRangeOf(_ rhs: Double, range: Double = 1) -> Bool {
         return (self - range)...(self + range) ~= rhs
     }
@@ -45,15 +27,8 @@ extension FirebaseApp {
     }()
 }
 
+// todo: flatmap
 extension DataSnapshot {
-    var asNumberLabel: String {
-        if let number = self.value as? UInt {
-            return number.asStringWithCommas
-        } else {
-            return "-"
-        }
-    }
-
     var asMessagesArray: [Message] {
         var messages = [Message]()
         for child in self.children {
@@ -112,46 +87,9 @@ extension Int {
     }
 }
 
-extension NSAttributedString {
-    static func makeConvoTitle(_ convo: Convo) -> NSAttributedString {
-        let grayAttribute = [NSAttributedStringKey.foregroundColor: UIColor.gray]
-        let receiver = NSMutableAttributedString(string: (convo.receiverNickname == "" ? convo.receiverProxyName : convo.receiverNickname) + ", ")
-        let sender = NSMutableAttributedString(string: convo.senderNickname == "" ? convo.senderProxyName : convo.senderNickname,
-                                               attributes: grayAttribute)
-        receiver.append(sender)
-        return receiver
-    }
-}
-
-extension SpringButton {
-    func morph(loop: Bool = false) {
-        animation = "morph"
-        curve = "spring"
-        duration = loop ? 1.2 : 0.8
-        repeatCount = loop ? .infinity : 0
-        animate()
-    }
-}
-
 extension String {
-    var noWhiteSpaces: String {
-        return components(separatedBy: .whitespacesAndNewlines).joined()
-    }
-
     var trimmed: String {
         return trimmingCharacters(in: .whitespacesAndNewlines)
-    }
-
-    func getFirstNChars(_ n: Int) -> String {
-        guard count >= n else {
-            return ""
-        }
-        return String(self[..<self.index(self.startIndex, offsetBy: n)])
-    }
-
-    func makeBold(withSize size: CGFloat) -> NSMutableAttributedString {
-        let boldAttr = [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: size)]
-        return NSMutableAttributedString(string: self, attributes: boldAttr)
     }
 }
 
@@ -204,21 +142,6 @@ extension UIImage {
     }
 }
 
-extension UInt {
-    var asStringWithCommas: String {
-        var num = Double(self)
-        num = fabs(num)
-        if let string = NumberFormatter.decimal.string(from: NSNumber(integerLiteral: Int(num))) {
-            return string
-        }
-        return "-"
-    }
-}
-
-extension UINavigationController {
-
-}
-
 extension UIStoryboard {
     static let main: UIStoryboard = {
         return UIStoryboard(name: "Main", bundle: nil)
@@ -230,16 +153,6 @@ extension UITableView {
         for case let scrollView as UIScrollView in self.subviews {
             scrollView.delaysContentTouches = value
         }
-    }
-}
-
-extension UIView {
-    func addGlow(color: CGColor = UIColor.blue.cgColor) {
-        layer.shadowColor = color
-        layer.shadowRadius = 4
-        layer.shadowOpacity = 0.9
-        layer.shadowOffset = .zero
-        layer.masksToBounds = false
     }
 }
 
@@ -303,15 +216,33 @@ extension UIViewController {
     }
 
     func showProxyController(_ proxy: Proxy) {
-        navigationController?.pushViewController(ProxyViewController(proxy: proxy),
-                                                 animated: true)
+        navigationController?.pushViewController(ProxyViewController(proxy: proxy), animated: true)
     }
 }
 
-private extension NumberFormatter {
-    static let decimal: NumberFormatter = {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        return formatter
-    }()
+private extension CALayer {
+    func stopAnimating() {
+        removeAllAnimations()
+        shadowColor = UIColor.clear.cgColor
+    }
+}
+
+private extension SpringButton {
+    func morph(loop: Bool = false) {
+        animation = "morph"
+        curve = "spring"
+        duration = loop ? 1.2 : 0.8
+        repeatCount = loop ? .infinity : 0
+        animate()
+    }
+}
+
+private extension UIView {
+    func addGlow(color: CGColor = UIColor.blue.cgColor) {
+        layer.shadowColor = color
+        layer.shadowRadius = 4
+        layer.shadowOpacity = 0.9
+        layer.shadowOffset = .zero
+        layer.masksToBounds = false
+    }
 }
