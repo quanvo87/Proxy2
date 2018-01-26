@@ -11,7 +11,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         setAudioSession()
         FirebaseApp.configure()
-        //        Database.database().isPersistenceEnabled = true
+//        Database.database().isPersistenceEnabled = true
         authObserver.observe()
         return FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
     }
