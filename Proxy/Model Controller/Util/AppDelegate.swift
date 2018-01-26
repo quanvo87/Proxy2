@@ -4,14 +4,15 @@ import FBSDKCoreKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    private lazy var authManager = AuthManager(window)
     var window: UIWindow? = UIWindow(frame: UIScreen.main.bounds)
+    private var isLoggedIn = false
+    private lazy var authObserver = AuthObserver(self)
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         setAudioSession()
         FirebaseApp.configure()
 //        Database.database().isPersistenceEnabled = true
-        authManager.observe()
+        authObserver.observe()
         return FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
     }
 
@@ -34,5 +35,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         FBSDKAppEvents.activateApp()
+    }
+}
+
+extension AppDelegate: AuthManaging {
+    func logIn(_ user: User) {
+        var displayName = user.displayName
+        if (user.displayName == nil || user.displayName == ""), let email = user.email, email != "" {
+            displayName = email
+            let changeRequest = user.createProfileChangeRequest()
+            changeRequest.displayName = email
+            changeRequest.commitChanges()
+        }
+        window?.rootViewController = TabBarController(uid: user.uid, displayName: displayName)
+        isLoggedIn = true
+    }
+
+    func logOut() {
+        guard
+            isLoggedIn,
+            let loginController = LoginViewController.make() else {
+                return
+        }
+        window?.rootViewController = loginController
+        isLoggedIn = false
     }
 }

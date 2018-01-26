@@ -1,5 +1,11 @@
+import FirebaseAuth
 import FirebaseDatabase
 import UIKit
+
+protocol AuthManaging: class {
+    func logIn(_ user: User)
+    func logOut()
+}
 
 protocol ConvoManaging: class {
     var convo: Convo? { get set }
