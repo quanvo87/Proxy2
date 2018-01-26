@@ -27,53 +27,46 @@ extension FirebaseApp {
     }()
 }
 
-// todo: flatmap
 extension DataSnapshot {
     func toConvosArray(proxyKey: String?) -> [Convo] {
-        var convos = [Convo]()
-        for child in self.children {
-            guard let data = child as? DataSnapshot else {
-                return convos
-            }
-            guard let convo = Convo(data) else {
-                continue
+        return children.flatMap({ (child) in
+            guard
+                let data = child as? DataSnapshot,
+                let convo = Convo(data) else {
+                    return nil
             }
             if let proxyKey = proxyKey {
                 if convo.senderProxyKey == proxyKey {
-                    convos.append(convo)
+                    return convo
+                } else {
+                    return nil
                 }
             } else {
-                convos.append(convo)
+                return convo
             }
-        }
-        return convos
+        })
     }
 
     var toMessagesArray: [Message] {
-        var messages = [Message]()
-        for child in self.children {
-            guard let data = child as? DataSnapshot else {
-                continue
+        return children.flatMap({ (child) in
+            guard
+                let data = child as? DataSnapshot,
+                let message = Message(data) else {
+                    return nil
             }
-            if let message = Message(data) {
-                messages.append(message)
-            }
-        }
-        return messages
+            return message
+        })
     }
 
     var toProxiesArray: [Proxy] {
-        var proxies = [Proxy]()
-        for child in self.children {
-            guard let data = child as? DataSnapshot else {
-                return proxies
+        return children.flatMap({ (child) in
+            guard
+                let data = child as? DataSnapshot,
+                let proxy = Proxy(data) else {
+                    return nil
             }
-            guard let proxy = Proxy(data) else {
-                continue
-            }
-            proxies.append(proxy)
-        }
-        return proxies
+            return proxy
+        })
     }
 }
 

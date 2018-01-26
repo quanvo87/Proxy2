@@ -62,7 +62,6 @@ struct FirebaseHelper {
         return makeReference(first, rest)
     }
 
-    // todo: return invalid path?
     static func makeReference(_ first: String, _ rest: [String]) -> DatabaseReference? {
         guard let path = Path.makePath(first, rest) else {
             return nil
@@ -74,7 +73,6 @@ struct FirebaseHelper {
         set(value, at: first, rest, completion: completion)
     }
 
-    // todo: pass these errors to top?
     static func set(_ value: Any, at first: String, _ rest: [String], completion: @escaping (Bool) -> Void) {
         guard let ref = makeReference(first, rest) else {
             completion(false)
