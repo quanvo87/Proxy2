@@ -26,4 +26,5 @@ Icons from [Icons8](https://icons8.com/).
 - Inside the `Proxy` directory, there is another directory called `Proxy`, `cd` into that, and make a directory called `Firebase`, then in that directory make a directory called `Dev`
 - Place the `GoogleService-Info.plist` in the `Dev` folder
 - The path should be `/Proxy/Proxy/Firebase/Dev/GoogleService-Info.plist`
+- Make a test user in your database, and put in the appropriate credentials in `ProxyTests/FirebaseTest.swift` 
 - You should now be able to run Proxy tests on your database (in debug mode, which is the default)
