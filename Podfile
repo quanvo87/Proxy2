@@ -4,13 +4,12 @@ platform :ios, '11.0'
 inhibit_all_warnings!
 
 def pods
-  pod 'Device.swift'
+  pod 'Device'
   pod 'FacebookCore'
   pod 'FacebookLogin'
   pod 'Firebase'
   pod 'FirebaseAuth'
   pod 'Firebase/Database'
-  pod 'Firebase/Storage'
   pod 'GroupWork'
   pod 'MessageKit'
   pod 'SearchTextField'

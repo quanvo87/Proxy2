@@ -1,4 +1,4 @@
-import Device_swift
+import Device
 import MessageKit
 
 private enum FirstResponder {
@@ -182,6 +182,7 @@ extension MakeNewMessageViewController: UITextViewDelegate {
 // MARK: - MessageInputBarDelegate
 extension MakeNewMessageViewController: MessageInputBarDelegate {
     func messageInputBar(_ inputBar: MessageInputBar, didPressSendButtonWith text: String) {
+        inputBar.inputTextView.text = ""
         isSending = true
         setButtons(false)
         guard let sender = sender else {
@@ -293,35 +294,10 @@ extension MakeNewMessageViewController: UITableViewDataSource {
     }
 
     private func isSmallDevice() -> Bool {
-        let deviceType = UIDevice.current.deviceType
-        switch deviceType {
-        case .iPhone2G:
+        switch Device.size() {
+        case .screen3_5Inch:
             return true
-        case .iPhone3G:
-            return true
-        case .iPhone3GS:
-            return true
-        case .iPhone4:
-            return true
-        case .iPhone4S:
-            return true
-        case .iPhone5:
-            return true
-        case .iPhone5C:
-            return true
-        case .iPhone5S:
-            return true
-        case .iPhoneSE:
-            return true
-        case .iPodTouch1G:
-            return true
-        case .iPodTouch2G:
-            return true
-        case .iPodTouch3G:
-            return true
-        case .iPodTouch4G:
-            return true
-        case .iPodTouch5G:
+        case .screen4Inch:
             return true
         default:
             return false

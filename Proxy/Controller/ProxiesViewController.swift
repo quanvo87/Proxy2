@@ -8,8 +8,9 @@ class ProxiesViewController: UIViewController, NewConvoManaging, ProxiesManaging
             } else {
                 makeNewProxyButton.stopAnimating()
             }
-            navigationItem.title = "My Proxies\(proxies.count.asStringWithParens)"
-            navigationController?.tabBarController?.tabBar.items?[1].title = "Proxies\(proxies.count.asStringWithParens)"
+            let title = "My Proxies\(proxies.count.asStringWithParens)"
+            navigationItem.title = title
+            navigationController?.tabBarController?.tabBar.items?[1].title = title
             tableView.reloadData()
         }
     }

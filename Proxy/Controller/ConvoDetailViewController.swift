@@ -54,7 +54,7 @@ class ConvoDetailViewController: UIViewController, ConvoManaging, ProxyManaging 
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        guard convo != nil else {
+        guard convo != nil && proxy != nil else {
             _ = navigationController?.popViewController(animated: false)
             return
         }

@@ -85,12 +85,8 @@ class ProxyViewController: UIViewController, ConvosManaging, NewConvoManaging, P
             guard let proxy = self?.proxy else {
                 return
             }
-            self?.database.delete(proxy) { (error) in
-                if let error = error {
-                    self?.showErrorAlert(error)
-                } else {
-                    self?.navigationController?.popViewController(animated: true)
-                }
+            self?.database.delete(proxy) { _ in
+                self?.navigationController?.popViewController(animated: true)
             }
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
@@ -228,8 +224,6 @@ extension ProxyViewController: UITableViewDelegate {
             let proxy = proxy else {
                 return
         }
-        convosObserver.loadConvos(endingAtTimestamp: convo.timestamp,
-                                  proxyKey: proxy.key,
-                                  convosManager: self)
+        convosObserver.loadConvos(endingAtTimestamp: convo.timestamp, proxyKey: proxy.key, convosManager: self)
     }
 }

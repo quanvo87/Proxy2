@@ -163,13 +163,13 @@ class FirebaseTests: FirebaseTest {
         settings["makeProxyRetries"] = 0
         firebase = Firebase(settings)
 
-        firebase.makeProxy(ownerId: FirebaseTest.uid) { (result) in
+        firebase.makeProxy(ownerId: FirebaseTest.uid) { [weak self] (result) in
             switch result {
             case .failure(let error):
                 XCTFail(String(describing: error))
                 expectation.fulfill()
             case .success:
-                self.firebase.makeProxy(ownerId: FirebaseTest.uid) { (result) in
+                self?.firebase.makeProxy(ownerId: FirebaseTest.uid) { (result) in
                     switch result {
                     case .failure:
                         expectation.fulfill()

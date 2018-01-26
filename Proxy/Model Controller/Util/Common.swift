@@ -159,7 +159,8 @@ extension UIViewController {
     }
 
     func showConvoController(_ convo: Convo) {
-        navigationController?.pushViewController(ConvoViewController(convo: convo), animated: true)
+        let convoViewController = ConvoViewController(convo: convo)
+        navigationController?.pushViewController(convoViewController, animated: true)
     }
 
     func showEditProxyNicknameAlert(_ proxy: Proxy, database: Database = Firebase()) {
@@ -202,13 +203,14 @@ extension UIViewController {
     }
 
     func showIconPickerController(_ proxy: Proxy) {
-        let viewController = IconPickerViewController(proxy: proxy)
-        let navigationController = UINavigationController(rootViewController: viewController)
+        let iconPickerViewController = IconPickerViewController(proxy: proxy)
+        let navigationController = UINavigationController(rootViewController: iconPickerViewController)
         present(navigationController, animated: true)
     }
 
     func showProxyController(_ proxy: Proxy) {
-        navigationController?.pushViewController(ProxyViewController(proxy: proxy), animated: true)
+        let proxyViewController = ProxyViewController(proxy: proxy)
+        navigationController?.pushViewController(proxyViewController, animated: true)
     }
 }
 

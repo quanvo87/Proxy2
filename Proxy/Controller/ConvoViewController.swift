@@ -62,8 +62,8 @@ class ConvoViewController: MessagesViewController, ConvoManaging, MessagesManagi
             _ = navigationController?.popViewController(animated: false)
             return
         }
-        for message in messagesToRead.values {
-            database.read(message, at: Date()) { _ in }
+        messagesToRead.values.forEach { [weak self] (message) in
+            self?.database.read(message, at: Date()) { _ in }
         }
         isPresent = true
         tabBarController?.tabBar.isHidden = true
@@ -79,8 +79,7 @@ class ConvoViewController: MessagesViewController, ConvoManaging, MessagesManagi
         guard let convo = convo else {
             return
         }
-        navigationController?.pushViewController(ConvoDetailViewController(convo: convo),
-                                                 animated: true)
+        navigationController?.pushViewController(ConvoDetailViewController(convo: convo), animated: true)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -138,14 +137,7 @@ extension ConvoViewController: MessagesDataSource {
     }
 
     func messageForItem(at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageType {
-        return messages[safe: indexPath.section] ?? Message(sender: currentSender(),
-                                                            messageId: "",
-                                                            data: .text(""),
-                                                            dateRead: Date(),
-                                                            parentConvoKey: "",
-                                                            receiverId: "",
-                                                            receiverProxyKey: "",
-                                                            senderProxyKey: "")
+        return messages[indexPath.section]
     }
 
     func numberOfMessages(in messagesCollectionView: MessagesCollectionView) -> Int {
@@ -189,7 +181,7 @@ extension ConvoViewController: MessagesDisplayDelegate {
     }
 
     func enabledDetectors(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> [DetectorType] {
-        return [.url, .address, .phoneNumber, .date]
+        return [.address, .date, .phoneNumber, .url]
     }
 
     func messageStyle(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageStyle {
@@ -260,7 +252,7 @@ private extension String {
         guard count >= n else {
             return ""
         }
-        return String(self[..<self.index(self.startIndex, offsetBy: n)])
+        return String(self[..<index(startIndex, offsetBy: n)])
     }
 }
 

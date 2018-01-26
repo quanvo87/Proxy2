@@ -160,9 +160,7 @@ extension ConvosViewController: UITableViewDelegate {
             let convo = convos[safe: indexPath.row] else {
                 return
         }
-        convosObserver.loadConvos(endingAtTimestamp: convo.timestamp,
-                                  proxyKey: nil,
-                                  convosManager: self)
+        convosObserver.loadConvos(endingAtTimestamp: convo.timestamp, proxyKey: nil, convosManager: self)
     }
 }
 
