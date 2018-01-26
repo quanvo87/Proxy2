@@ -1,6 +1,0 @@
-framework module GroupWork {
-  umbrella header "GroupWork-umbrella.h"
-
-  export *
-  module * { export * }
-}
