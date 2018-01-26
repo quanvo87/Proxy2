@@ -22,7 +22,6 @@
 		5954AE181F9A4E95004A351F /* ProxiesTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5954AE171F9A4E95004A351F /* ProxiesTableViewCell.xib */; };
 		5958E34A1F9D5E8D00CC0560 /* SenderProxyTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5958E3491F9D5E8D00CC0560 /* SenderProxyTableViewCell.xib */; };
 		5973C84A1F608A2200647492 /* ConvosTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8161F608A1A00647492 /* ConvosTableViewCell.swift */; };
-		5973C84C1F608A2200647492 /* NSDate+NVTimeAgo.m in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8181F608A1A00647492 /* NSDate+NVTimeAgo.m */; };
 		5973C8511F608A2200647492 /* ProxyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C81D1F608A1B00647492 /* ProxyError.swift */; };
 		5973C8531F608A2200647492 /* ConvoDetailReceiverProxyTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C81F1F608A1B00647492 /* ConvoDetailReceiverProxyTableViewCell.swift */; };
 		5973C8561F608A2200647492 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8221F608A1B00647492 /* LoginViewController.swift */; };
@@ -109,9 +108,7 @@
 		593D7D431F851F7D00D3FBD5 /* UserStatsObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserStatsObserving.swift; sourceTree = "<group>"; };
 		5954AE171F9A4E95004A351F /* ProxiesTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = ProxiesTableViewCell.xib; path = Proxy/View/ProxiesTableViewCell.xib; sourceTree = SOURCE_ROOT; };
 		5958E3491F9D5E8D00CC0560 /* SenderProxyTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SenderProxyTableViewCell.xib; sourceTree = "<group>"; };
-		5973C8131F608A1A00647492 /* NSDate+NVTimeAgo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+NVTimeAgo.h"; sourceTree = "<group>"; };
 		5973C8161F608A1A00647492 /* ConvosTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvosTableViewCell.swift; sourceTree = "<group>"; };
-		5973C8181F608A1A00647492 /* NSDate+NVTimeAgo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+NVTimeAgo.m"; sourceTree = "<group>"; };
 		5973C81D1F608A1B00647492 /* ProxyError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyError.swift; sourceTree = "<group>"; };
 		5973C81F1F608A1B00647492 /* ConvoDetailReceiverProxyTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvoDetailReceiverProxyTableViewCell.swift; sourceTree = "<group>"; };
 		5973C8221F608A1B00647492 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
@@ -154,7 +151,6 @@
 		59B432F61F60648400622DEA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		59B432FB1F60648400622DEA /* ProxyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ProxyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		59B433011F60648400622DEA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		59B433AD1F60807400622DEA /* Proxy-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Proxy-Bridging-Header.h"; sourceTree = "<group>"; };
 		59B90C201FF3411E00449569 /* UnreadMessagesObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnreadMessagesObserving.swift; sourceTree = "<group>"; };
 		59BDAE502003849C002A5A6C /* ProxyNamesLoading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyNamesLoading.swift; sourceTree = "<group>"; };
 		59BE6ABA2016C74B00CCD27E /* GroupWork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupWork.swift; sourceTree = "<group>"; };
@@ -349,6 +345,7 @@
 				590823C21F9EED6A00A3B6A9 /* IconPickerCollectionViewCell.xib */,
 				5973C8161F608A1A00647492 /* ConvosTableViewCell.swift */,
 				5988E8311F9A5A7E002C8C95 /* ConvosTableViewCell.xib */,
+				59B432E81F60648400622DEA /* LaunchScreen.storyboard */,
 				59B432E31F60648400622DEA /* Main.storyboard */,
 				5939F05F200D174300AECD35 /* MakeNewMessageReceiverTableViewCell.swift */,
 				5939F05D200D13BA00AECD35 /* MakeNewMessageReceiverTableViewCell.xib */,
@@ -374,8 +371,6 @@
 				5973C82E1F608A1D00647492 /* FirebaseHelper.swift */,
 				59BE6ABA2016C74B00CCD27E /* GroupWork.swift */,
 				5973C81D1F608A1B00647492 /* ProxyError.swift */,
-				5973C8131F608A1A00647492 /* NSDate+NVTimeAgo.h */,
-				5973C8181F608A1A00647492 /* NSDate+NVTimeAgo.m */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -386,8 +381,6 @@
 				59B432E61F60648400622DEA /* Assets.xcassets */,
 				59C171B51F60C65000EDE032 /* Login Splash Videos */,
 				59B432EB1F60648400622DEA /* Info.plist */,
-				59B432E81F60648400622DEA /* LaunchScreen.storyboard */,
-				59B433AD1F60807400622DEA /* Proxy-Bridging-Header.h */,
 			);
 			path = Other;
 			sourceTree = "<group>";
@@ -810,7 +803,6 @@
 				5932BA1E2009837D0041BD7B /* MessagesObserving.swift in Sources */,
 				59E75B2E1F846F550033A407 /* ProxiesObserving.swift in Sources */,
 				59BDAE512003849C002A5A6C /* ProxyNamesLoading.swift in Sources */,
-				5973C84C1F608A2200647492 /* NSDate+NVTimeAgo.m in Sources */,
 				5973C8641F608A2200647492 /* ProxiesViewController.swift in Sources */,
 				5932BA1A20096FD60041BD7B /* ConvosObserving.swift in Sources */,
 				5904054C2008DDE3005F4638 /* MakeNewMessageSenderTableViewCell.swift in Sources */,
@@ -1020,7 +1012,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.quan.proxy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "Proxy/Other/Proxy-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1039,7 +1030,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.quan.proxy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "Proxy/Other/Proxy-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
