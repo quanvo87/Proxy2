@@ -4,15 +4,14 @@ import XCTest
 @testable import Proxy
 
 class FirebaseTest: XCTestCase {
-    private let auth = Auth.auth(app: FirebaseApp.app!)
-    private let email = "ahettisele-0083@yopmail.com"
-    private let password = "BGbN92GY6_W+rR!Q"
-
-    static let uid = "bKx62eEMy9gbynfbxvVsAr3nXQJ2"
-    static let testUser = "test user"
-    static let text = "🤤"
-
     static let database = Firebase()
+    static let testUserId = "testUserId"
+    static let text = "🤤"
+    static let uid = "37Xoavv6znT6DrJjnx1I6hTQVr23"
+    private static let email = "test@test.com"
+    private static let password = "test123"
+    private let auth = Auth.auth(app: FirebaseApp.app!)
+    private var handle: AuthStateDidChangeListenerHandle?
 
     override func setUp() {
         let expectation = self.expectation(description: #function)
@@ -23,7 +22,7 @@ class FirebaseTest: XCTestCase {
                 expectation.fulfill()
             }
         } else {
-            auth.addStateDidChangeListener { (auth, user) in
+            handle = auth.addStateDidChangeListener { (auth, user) in
                 if user?.uid == FirebaseTest.uid {
                     FirebaseTest.clearDB {
                         expectation.fulfill()
@@ -32,11 +31,14 @@ class FirebaseTest: XCTestCase {
                     do {
                         try auth.signOut()
                     } catch {
-                        XCTFail()
+                        XCTFail(String(describing: error))
                         expectation.fulfill()
                     }
-                    auth.signIn(withEmail: self.email, password: self.password) { (_, error) in
-                        XCTAssertNil(error, String(describing: error))
+                    auth.signIn(withEmail: FirebaseTest.email, password: FirebaseTest.password) { (user, _) in
+                        if user?.uid != FirebaseTest.uid {
+                            XCTFail()
+                            expectation.fulfill()
+                        }
                     }
                 }
             }
@@ -47,6 +49,12 @@ class FirebaseTest: XCTestCase {
         Database.database().reference().removeValue { (error, _) in
             XCTAssertNil(error)
             completion()
+        }
+    }
+
+    deinit {
+        if let handle = handle {
+            auth.removeStateDidChangeListener(handle)
         }
     }
 }
@@ -65,7 +73,7 @@ extension FirebaseTest {
 
     static func sendMessage(completion: @escaping (_ message: Message, _ convo: Convo, _ sender: Proxy, _ receiver: Proxy) -> Void) {
         makeProxy { (sender) in
-            makeProxy (ownerId: testUser) { (receiver) in
+            makeProxy (ownerId: testUserId) { (receiver) in
                 database.sendMessage(sender: sender, receiver: receiver, text: text) { (result) in
                     switch result {
                     case .failure:
