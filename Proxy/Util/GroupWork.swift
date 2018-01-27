@@ -24,15 +24,16 @@ extension GroupWork {
 
     func deleteUnreadMessages(for proxy: Proxy) {
         start()
-        GroupWork.getUnreadMessagesForProxy(uid: proxy.ownerId, key: proxy.key) { (messages) in
-            guard let messages = messages else {
+        GroupWork.getUnreadMessagesForProxy(uid: proxy.ownerId, key: proxy.key) { (result) in
+            switch result {
+            case .failure:
                 self.finish(withResult: false)
-                return
+            case .success(let messages):
+                messages.forEach {
+                    self.delete(Child.userInfo, $0.receiverId, Child.unreadMessages, $0.messageId)
+                }
+                self.finish(withResult: true)
             }
-            for message in messages {
-                self.delete(Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
-            }
-            self.finish(withResult: true)
         }
     }
 
@@ -43,16 +44,15 @@ extension GroupWork {
                 (convo.receiverId, convo.receiverProxyKey)
     }
 
-    // todo: make proper
-    static func getUnreadMessagesForProxy(uid: String, key: String, completion: @escaping ([Message]?) -> Void) {
+    static func getUnreadMessagesForProxy(uid: String, key: String, completion: @escaping (Result<[Message], Error>) -> Void) {
         do {
             try FirebaseHelper.main.makeReference(Child.userInfo, uid, Child.unreadMessages)
                 .queryOrdered(byChild: Child.receiverProxyKey)
                 .queryEqual(toValue: key).observeSingleEvent(of: .value) { (data) in
-                    completion(data.toMessagesArray)
+                    completion(.success(data.toMessagesArray))
             }
         } catch {
-            completion(nil)
+            completion(.failure(error))
         }
     }
 
@@ -110,11 +110,16 @@ extension GroupWork {
 
     func setHasUnreadMessageForProxy(uid: String, key: String) {
         start()
-        GroupWork.getUnreadMessagesForProxy(uid: uid, key: key) { (messages) in
-            if let messageCount = messages?.count, messageCount <= 0 {
-                self.set(.hasUnreadMessage(false), uid: uid, proxyKey: key)
+        GroupWork.getUnreadMessagesForProxy(uid: uid, key: key) { (result) in
+            switch result {
+            case .failure:
+                self.finish(withResult: false)
+            case .success(let messages):
+                if messages.count < 1 {
+                    self.set(.hasUnreadMessage(false), uid: uid, proxyKey: key)
+                }
+                self.finish(withResult: true)
             }
-            self.finish(withResult: true)
         }
     }
 

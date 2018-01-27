@@ -30,7 +30,7 @@ struct Proxy {
         self.ownerId = ownerId
     }
 
-    init?(_ data: DataSnapshot) {
+    init(_ data: DataSnapshot) throws {
         let dictionary = data.value as AnyObject
         guard
             let hasUnreadMessage = dictionary["hasUnreadMessage"] as? Bool,
@@ -42,7 +42,7 @@ struct Proxy {
             let name = dictionary["name"] as? String,
             let nickname = dictionary["nickname"] as? String,
             let ownerId = dictionary["ownerId"] as? String else {
-                return nil
+                throw ProxyError.invalidData
         }
         self.hasUnreadMessage = hasUnreadMessage
         self.dateCreated = dateCreated

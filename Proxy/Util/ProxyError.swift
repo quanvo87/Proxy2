@@ -1,5 +1,6 @@
 enum ProxyError: Error {
     case inputTooLong
+    case invalidData
     case missingCredentials
     case receiverDeletedProxy
     case receiverMissing
@@ -12,6 +13,8 @@ enum ProxyError: Error {
         switch self {
         case .inputTooLong:
             return ("Input too long", "Please try something shorter.")
+        case .invalidData:
+            return ("Invalid Data", "Invalid data read in database.")
         case .missingCredentials:
             return ("Missing email/password", "Please make sure to enter an email and password.")
         case .receiverDeletedProxy:

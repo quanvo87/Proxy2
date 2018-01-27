@@ -379,7 +379,7 @@ extension GroupWork {
             case .failure(let error):
                 XCTFail(String(describing: error))
             case .success(let data):
-                XCTAssertNotNil(Convo(data))
+                XCTAssertNotNil(try? Convo(data))
             }
             self.finish(withResult: true)
         }
@@ -392,7 +392,7 @@ extension GroupWork {
             case .failure(let error):
                 XCTFail(String(describing: error))
             case .success(let data):
-                XCTAssertEqual(Message(data), message)
+                XCTAssertEqual(try? Message(data), message)
             }
             self.finish(withResult: true)
         }
@@ -405,7 +405,7 @@ extension GroupWork {
             case .failure(let error):
                 XCTFail(String(describing: error))
             case .success(let data):
-                XCTAssertEqual(Proxy(data), proxy)
+                XCTAssertEqual(try? Proxy(data), proxy)
             }
             self.finish(withResult: true)
         }
@@ -419,7 +419,7 @@ extension GroupWork {
             case .failure(let error):
                 XCTFail(String(describing: error))
             case .success(let data):
-                XCTAssertEqual(Proxy(data), testProxy)
+                XCTAssertEqual(try? Proxy(data), testProxy)
             }
             self.finish(withResult: true)
         }
@@ -432,7 +432,7 @@ extension GroupWork {
             case .failure(let error):
                 XCTFail(String(describing: error))
             case .success(let data):
-                XCTAssertEqual(Message(data), message)
+                XCTAssertEqual(try? Message(data), message)
             }
             self.finish(withResult: true)
         }
