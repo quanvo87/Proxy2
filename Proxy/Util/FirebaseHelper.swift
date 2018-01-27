@@ -1,106 +1,124 @@
 import FirebaseDatabase
 
-typealias Path = String
+typealias DataCallback = (Result<DataSnapshot, Error>) -> Void
+typealias ErrorCallback = (Error?) -> Void
 
-struct FirebaseHelper {
-    private static let ref = FirebaseDatabase.Database.database().reference()
+enum FirebaseHelperError: Error {
+    case invalidPath
 
-    static func delete(_ first: String, _ rest: String..., completion: @escaping (Bool) -> Void) {
-        delete(first, rest, completion: completion)
-    }
-
-    static func delete(_ first: String, _ rest: [String], completion: @escaping (Bool) -> Void) {
-        guard let ref = makeReference(first, rest) else {
-            completion(false)
-            return
-        }
-        ref.removeValue { (error, _) in
-            completion(error == nil)
-        }
-    }
-
-    static func get(_ first: String, _ rest: String..., completion: @escaping (DataSnapshot?) -> Void) {
-        get(first, rest, completion: completion)
-    }
-
-    static func get(_ first: String, _ rest: [String], completion: @escaping (DataSnapshot?) -> Void) {
-        guard let ref = makeReference(first, rest) else {
-            completion(nil)
-            return
-        }
-        ref.observeSingleEvent(of: .value) { (data) in
-            completion(data)
-        }
-    }
-
-    static func increment(_ amount: Int, at first: String, _ rest: String..., completion: @escaping (Bool) -> Void) {
-        increment(amount, at: first, rest, completion: completion)
-    }
-
-    static func increment(_ amount: Int, at first: String, _ rest: [String], completion: @escaping (Bool) -> Void) {
-        guard let ref = makeReference(first, rest) else {
-            completion(false)
-            return
-        }
-        ref.runTransactionBlock({ (currentData) -> TransactionResult in
-            if let value = currentData.value {
-                var newValue = value as? Int ?? 0
-                newValue += amount
-                currentData.value = newValue
-                return .success(withValue: currentData)
-            }
-            return .success(withValue: currentData)
-        }) { (error, _, _) in
-            if let error = error {
-                fatalError(String(describing: error))
-            }
-            completion(error == nil)
-        }
-    }
-
-    static func makeReference(_ first: String, _ rest: String...) -> DatabaseReference? {
-        return makeReference(first, rest)
-    }
-
-    static func makeReference(_ first: String, _ rest: [String]) -> DatabaseReference? {
-        guard let path = Path.makePath(first, rest) else {
-            return nil
-        }
-        return ref.child(path)
-    }
-
-    static func set(_ value: Any, at first: String, _ rest: String..., completion: @escaping (Bool) -> Void) {
-        set(value, at: first, rest, completion: completion)
-    }
-
-    static func set(_ value: Any, at first: String, _ rest: [String], completion: @escaping (Bool) -> Void) {
-        guard let ref = makeReference(first, rest) else {
-            completion(false)
-            return
-        }
-        ref.setValue(value) { (error, _) in
-            completion(error == nil)
+    var localizedDescription: String {
+        switch self {
+        case .invalidPath:
+            return "Attempted to read the database at an invalid location."
         }
     }
 }
 
-extension Path {
-    static func makePath(_ first: String, _ rest: String...) -> String? {
-        return makePath(first, rest)
+//enum Result<T, Error> {
+//    case success(T)
+//    case failure(Error)
+//}
+
+struct FirebaseHelper {
+    private let ref: DatabaseReference
+
+    init(_ ref: DatabaseReference) {
+        self.ref = ref
     }
 
-    static func makePath(_ first: String, _ rest: [String]) -> String? {
+    func delete(_ first: String, _ rest: String..., completion: @escaping ErrorCallback) {
+        delete(first, rest, completion: completion)
+    }
+
+    func delete(_ first: String, _ rest: [String], completion: @escaping ErrorCallback) {
+        do {
+            try makeReference(first, rest).removeValue { (error, _) in
+                completion(error)
+            }
+        } catch {
+            completion(error)
+        }
+    }
+
+    func get(_ first: String, _ rest: String..., completion: @escaping DataCallback) {
+        get(first, rest, completion: completion)
+    }
+
+    func get(_ first: String, _ rest: [String], completion: @escaping DataCallback) {
+        do {
+            try makeReference(first, rest).observeSingleEvent(of: .value) { (data) in
+                completion(.success(data))
+            }
+        } catch {
+            completion(.failure(error))
+        }
+    }
+
+    func increment(_ amount: Int, at first: String, _ rest: String..., completion: @escaping ErrorCallback) {
+        increment(amount, at: first, rest, completion: completion)
+    }
+
+    func increment(_ amount: Int, at first: String, _ rest: [String], completion: @escaping ErrorCallback) {
+        do {
+            try makeReference(first, rest).runTransactionBlock({ (currentData) -> TransactionResult in
+                if let value = currentData.value {
+                    var newValue = value as? Int ?? 0
+                    newValue += amount
+                    currentData.value = newValue
+                    return .success(withValue: currentData)
+                }
+                return .success(withValue: currentData)
+            }) { (error, _, _) in
+                completion(error)
+            }
+        } catch {
+            completion(error)
+        }
+    }
+
+    func makeReference(_ first: String, _ rest: String...) throws -> DatabaseReference {
+        return try makeReference(first, rest)
+    }
+
+    func makeReference(_ first: String, _ rest: [String]) throws -> DatabaseReference {
+        do {
+            return try ref.child(String.makePath(first, rest))
+        } catch {
+            throw error
+        }
+    }
+
+    func set(_ value: Any, at first: String, _ rest: String..., completion: @escaping ErrorCallback) {
+        set(value, at: first, rest, completion: completion)
+    }
+
+    func set(_ value: Any, at first: String, _ rest: [String], completion: @escaping ErrorCallback) {
+        do {
+            try makeReference(first, rest).setValue(value) { (error, _) in
+                completion(error)
+            }
+        } catch {
+            completion(error)
+        }
+    }
+}
+
+private extension String {
+    static func makePath(_ first: String, _ rest: String...) throws -> String {
+        return try makePath(first, rest)
+    }
+
+    static func makePath(_ first: String, _ rest: [String]) throws -> String {
         var children = rest
         children.insert(first, at: 0)
-
-        let trimmed = children.map {
+        let trimmedChildren = children.map {
             $0.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
         }
-
-        for child in trimmed where child == "" || child.contains("//") {
-            return nil
+        try trimmedChildren.forEach {
+            guard $0 != "" && !$0.contains("//") else {
+                throw FirebaseHelperError.invalidPath
+            }
         }
-
-        return trimmed.joined(separator: "/")
+        return trimmedChildren.joined(separator: "/")
     }
 }

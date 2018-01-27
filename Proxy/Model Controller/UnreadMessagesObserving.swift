@@ -11,10 +11,10 @@ class UnreadMessagesObserver: UnreadMessagesObserving {
 
     func load(uid: String, unreadMessagesManager: UnreadMessagesManaging) {
         stopObserving()
-        ref = FirebaseHelper.makeReference(Child.userInfo, uid, Child.unreadMessages)
+        ref = try? FirebaseHelper.main.makeReference(Child.userInfo, uid, Child.unreadMessages)
         addedHandle = ref?.observe(.childAdded) { [weak unreadMessagesManager] (data) in
             guard let message = Message(data) else {
-                FirebaseHelper.delete(Child.userInfo, uid, Child.unreadMessages, data.key) { _ in }
+                FirebaseHelper.main.delete(Child.userInfo, uid, Child.unreadMessages, data.key) { _ in }
                 return
             }
             unreadMessagesManager?.unreadMessageAdded(message)

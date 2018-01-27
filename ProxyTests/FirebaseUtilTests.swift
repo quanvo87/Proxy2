@@ -8,11 +8,17 @@ class FirebaseUtilTests: FirebaseTest {
         defer { waitForExpectations(timeout: 10) }
 
         FirebaseTest.sendMessage { (_, convo, _, _) in
-            FirebaseHelper.get(Child.convos, convo.senderId) { (data) in
-                let convos = data!.toConvosArray(proxyKey: nil)
-                XCTAssertEqual(convos.count, 1)
-                XCTAssert(convos.contains(convo))
-                expectation.fulfill()
+            FirebaseHelper.main.get(Child.convos, convo.senderId) { (result) in
+                switch result {
+                case .failure(let error):
+                    XCTFail(String(describing: error))
+                    expectation.fulfill()
+                case .success(let data):
+                    let convos = data.toConvosArray(proxyKey: nil)
+                    XCTAssertEqual(convos.count, 1)
+                    XCTAssert(convos.contains(convo))
+                    expectation.fulfill()
+                }
             }
         }
     }
@@ -22,9 +28,17 @@ class FirebaseUtilTests: FirebaseTest {
         defer { waitForExpectations(timeout: 10) }
 
         FirebaseTest.sendMessage { (message, _, _, _) in
-            FirebaseHelper.get(Child.messages, message.parentConvoKey) { (data) in
-                XCTAssert(data?.toMessagesArray.contains(message) ?? false)
-                expectation.fulfill()
+            FirebaseHelper.main.get(Child.messages, message.parentConvoKey) { (result) in
+                switch result {
+                case .failure(let error):
+                    XCTFail(String(describing: error))
+                    expectation.fulfill()
+                case .success(let data):
+                    let messages = data.toMessagesArray
+                    XCTAssertEqual(messages.count, 1)
+                    XCTAssert(messages.contains(message))
+                    expectation.fulfill()
+                }
             }
         }
     }
@@ -35,12 +49,18 @@ class FirebaseUtilTests: FirebaseTest {
 
         FirebaseTest.makeProxy { (proxy1) in
             FirebaseTest.makeProxy { (proxy2) in
-                FirebaseHelper.get(Child.proxies, FirebaseTest.uid) { (data) in
-                    let proxies = data!.toProxiesArray
-                    XCTAssertEqual(proxies.count, 2)
-                    XCTAssert(proxies.contains(proxy1))
-                    XCTAssert(proxies.contains(proxy2))
-                    expectation.fulfill()
+                FirebaseHelper.main.get(Child.proxies, FirebaseTest.uid) { (result) in
+                    switch result {
+                    case .failure(let error):
+                        XCTFail(String(describing: error))
+                        expectation.fulfill()
+                    case .success(let data):
+                        let proxies = data.toProxiesArray
+                        XCTAssertEqual(proxies.count, 2)
+                        XCTAssert(proxies.contains(proxy1))
+                        XCTAssert(proxies.contains(proxy2))
+                        expectation.fulfill()
+                    }
                 }
             }
         }

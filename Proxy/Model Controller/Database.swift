@@ -73,39 +73,50 @@ class Firebase: Database {
         }
     }
 
+    // todo: make model inits throwing?
+    // todo: make an error for invalid object?
     func getConvo(key: String, ownerId: String, completion: @escaping ConvoCallback) {
-        FirebaseHelper.get(Child.convos, ownerId, key) { (data) in
-            guard
-                let data = data,
-                let convo = Convo(data) else {
+        FirebaseHelper.main.get(Child.convos, ownerId, key) { (result) in
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+            case .success(let data):
+                if let convo = Convo(data) {
+                    completion(.success(convo))
+                } else {
                     completion(.failure(ProxyError.unknown))
-                    return
+                }
             }
-            completion(.success(convo))
         }
     }
 
     func getProxy(key: String, completion: @escaping ProxyCallback) {
-        FirebaseHelper.get(Child.proxyNames, key.lowercased().noWhiteSpaces) { (data) in
-            guard
-                let data = data,
-                let proxy = Proxy(data) else {
+        FirebaseHelper.main.get(Child.proxyNames, key.lowercased().noWhiteSpaces) { [weak self] (result) in
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+            case .success(let data):
+                if let proxy = Proxy(data) {
+                    self?.getProxy(key: proxy.key, ownerId: proxy.ownerId, completion: completion)
+                } else {
                     completion(.failure(ProxyError.unknown))
-                    return
+                }
             }
-            self.getProxy(key: proxy.key, ownerId: proxy.ownerId, completion: completion)
         }
     }
 
     func getProxy(key: String, ownerId: String, completion: @escaping ProxyCallback) {
-        FirebaseHelper.get(Child.proxies, ownerId, key) { (data) in
-            guard
-                let data = data,
-                let proxy = Proxy(data) else {
+        FirebaseHelper.main.get(Child.proxies, ownerId, key) { (result) in
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+            case .success(let data):
+                if let proxy = Proxy(data) {
+                    completion(.success(proxy))
+                } else {
                     completion(.failure(ProxyError.unknown))
-                    return
+                }
             }
-            completion(.success(proxy))
         }
     }
 
@@ -114,38 +125,39 @@ class Firebase: Database {
     }
 
     private func makeProxy(ownerId: String, attempt: Int, completion: @escaping ProxyCallback) {
-        guard let ref = FirebaseHelper.makeReference(Child.proxyNames) else {
-            completion(.failure(ProxyError.unknown))
-            return
-        }
-        let name = generator.randomProxyName
-        let proxy = Proxy(icon: generator.randomIconName, name: name, ownerId: ownerId)
-        let testKey = ref.childByAutoId().key
-        FirebaseHelper.set(proxy.toDictionary(), at: Child.proxyNames, testKey) { [weak self] (success) in
-            guard success else {
-                completion(.failure(ProxyError.unknown))
-                return
-            }
-            self?.getProxyNameCount(ref: ref, name: name) { (count) in
-                FirebaseHelper.delete(Child.proxyNames, testKey) { _ in }
-                guard let _self = self else {
+        do {
+            let ref = try FirebaseHelper.main.makeReference(Child.proxyNames)
+            let name = generator.randomProxyName
+            let proxy = Proxy(icon: generator.randomIconName, name: name, ownerId: ownerId)
+            let testKey = ref.childByAutoId().key
+            FirebaseHelper.main.set(proxy.toDictionary(), at: Child.proxyNames, testKey) { [weak self] (error) in
+                if let error = error {
+                    completion(.failure(error))
                     return
                 }
-                if count == 1 {
-                    let work = GroupWork()
-                    work.set(proxy.toDictionary(), at: Child.proxies, proxy.ownerId, proxy.key)
-                    work.set(proxy.toDictionary(), at: Child.proxyNames, proxy.key)
-                    work.allDone {
-                        completion(work.result ? .success(proxy) : .failure(ProxyError.unknown))
+                self?.getProxyNameCount(ref: ref, name: name) { (count) in
+                    FirebaseHelper.main.delete(Child.proxyNames, testKey) { _ in }
+                    guard let _self = self else {
+                        return
                     }
-                } else {
-                    if attempt < _self.makeProxyRetries {
-                        self?.makeProxy(ownerId: ownerId, attempt: attempt + 1, completion: completion)
+                    if count == 1 {
+                        let work = GroupWork()
+                        work.set(proxy.toDictionary(), at: Child.proxies, proxy.ownerId, proxy.key)
+                        work.set(proxy.toDictionary(), at: Child.proxyNames, proxy.key)
+                        work.allDone {
+                            completion(work.result ? .success(proxy) : .failure(ProxyError.unknown))
+                        }
                     } else {
-                        completion(.failure(ProxyError.unknown))
+                        if attempt < _self.makeProxyRetries {
+                            self?.makeProxy(ownerId: ownerId, attempt: attempt + 1, completion: completion)
+                        } else {
+                            completion(.failure(ProxyError.unknown))
+                        }
                     }
                 }
             }
+        } catch {
+            completion(.failure(error))
         }
     }
 
@@ -234,42 +246,43 @@ class Firebase: Database {
             completion(.failure(ProxyError.inputTooLong))
             return
         }
-        guard let ref = FirebaseHelper.makeReference(Child.messages, convo.key) else {
-            completion(.failure(ProxyError.unknown))
-            return
-        }
-        let message = Message(sender: Sender(id: convo.senderId,
-                                             displayName: convo.senderProxyName),
-                              messageId: ref.childByAutoId().key,
-                              data: .text(trimmedText),
-                              dateRead: Date.distantPast,
-                              parentConvoKey: convo.key,
-                              receiverId: convo.receiverId,
-                              receiverProxyKey: convo.receiverProxyKey,
-                              senderProxyKey: convo.senderProxyKey)
-        let work = GroupWork()
-        work.set(message.toDictionary(), at: Child.messages, message.parentConvoKey, message.messageId)
-        let currentTime = Date().timeIntervalSince1970
-        // Receiver updates
-        work.increment(1, property: .messagesReceived, uid: convo.receiverId)
-        work.setReceiverMessageValues(convo: convo, currentTime: currentTime, message: message)
-        // Sender updates
-        work.increment(1, property: .messagesSent, uid: convo.senderId)
-        work.set(.timestamp(currentTime), for: convo, asSender: true)
-        work.set(.timestamp(currentTime), forProxyIn: convo, asSender: true)
-        switch message.data {
-        case .text(let s):
-            work.set(.lastMessage("You: \(s)"), for: convo, asSender: true)
-            work.set(.lastMessage("You: \(s)"), forProxyIn: convo, asSender: true)
-        default:
-            break
-        }
-        work.allDone {
-            if work.result {
-                completion(.success((convo, message)))
-            } else {
-                completion(.failure(ProxyError.unknown))
+        do {
+            let ref = try FirebaseHelper.main.makeReference(Child.messages, convo.key)
+            let message = Message(sender: Sender(id: convo.senderId,
+                                                 displayName: convo.senderProxyName),
+                                  messageId: ref.childByAutoId().key,
+                                  data: .text(trimmedText),
+                                  dateRead: Date.distantPast,
+                                  parentConvoKey: convo.key,
+                                  receiverId: convo.receiverId,
+                                  receiverProxyKey: convo.receiverProxyKey,
+                                  senderProxyKey: convo.senderProxyKey)
+            let work = GroupWork()
+            work.set(message.toDictionary(), at: Child.messages, message.parentConvoKey, message.messageId)
+            let currentTime = Date().timeIntervalSince1970
+            // Receiver updates
+            work.increment(1, property: .messagesReceived, uid: convo.receiverId)
+            work.setReceiverMessageValues(convo: convo, currentTime: currentTime, message: message)
+            // Sender updates
+            work.increment(1, property: .messagesSent, uid: convo.senderId)
+            work.set(.timestamp(currentTime), for: convo, asSender: true)
+            work.set(.timestamp(currentTime), forProxyIn: convo, asSender: true)
+            switch message.data {
+            case .text(let s):
+                work.set(.lastMessage("You: \(s)"), for: convo, asSender: true)
+                work.set(.lastMessage("You: \(s)"), forProxyIn: convo, asSender: true)
+            default:
+                break
             }
+            work.allDone {
+                if work.result {
+                    completion(.success((convo, message)))
+                } else {
+                    completion(.failure(ProxyError.unknown))
+                }
+            }
+        } catch {
+            completion(.failure(error))
         }
     }
 
@@ -316,9 +329,15 @@ class Firebase: Database {
         }
     }
 
+    // todo: make proper
     private func getConvosForProxy(key: String, ownerId: String, completion: @escaping ([Convo]?) -> Void) {
-        FirebaseHelper.get(Child.convos, ownerId) { (data) in
-            completion(data?.toConvosArray(proxyKey: key))
+        FirebaseHelper.main.get(Child.convos, ownerId) { (result) in
+            switch result {
+            case .failure:
+                completion(nil)
+            case .success(let data):
+                completion(data.toConvosArray(proxyKey: key))
+            }
         }
     }
 }
