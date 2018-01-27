@@ -29,7 +29,7 @@ enum ProxyError: Error {
         }
     }
 
-    init(_ error: ProxyError) {
-        self = error
+    var localizedDescription: String {
+        return alertFields.description
     }
 }

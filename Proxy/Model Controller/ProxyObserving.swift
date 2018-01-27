@@ -11,7 +11,7 @@ class ProxyObserver: ProxyObsering {
 
     func load(proxyKey: String, proxyOwnerId: String, proxyManager: ProxyManaging) {
         stopObserving()
-        ref = FirebaseHelper.makeReference(Child.proxies, proxyOwnerId, proxyKey)
+        ref = try? FirebaseHelper.main.makeReference(Child.proxies, proxyOwnerId, proxyKey)
         handle = ref?.observe(.value) { [weak self, weak proxyManager] (data) in
             if let proxy = Proxy(data) {
                 proxyManager?.proxy = proxy

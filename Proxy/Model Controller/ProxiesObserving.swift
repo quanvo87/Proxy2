@@ -10,7 +10,7 @@ class ProxiesObserver: ProxiesObserving {
 
     func load(proxiesOwnerId: String, proxiesManager: ProxiesManaging) {
         stopObserving()
-        ref = FirebaseHelper.makeReference(Child.proxies, proxiesOwnerId)
+        ref = try? FirebaseHelper.main.makeReference(Child.proxies, proxiesOwnerId)
         handle = ref?.queryOrdered(byChild: Child.timestamp).observe(.value) { [weak proxiesManager] (data) in
             proxiesManager?.proxies = data.toProxiesArray.reversed()
         }

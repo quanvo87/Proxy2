@@ -10,20 +10,26 @@ class FirebaseHelperTests: FirebaseTest {
 
         let rand1 = Int(arc4random_uniform(500))
         let rand2 = Int(arc4random_uniform(500))
-        FirebaseHelper.set(rand1, at: "test") { (success) in
-            XCTAssert(success)
+        FirebaseHelper.main.set(rand1, at: "test") { (error) in
+            XCTAssertNil(error, String(describing: error))
             let work = GroupWork()
             for _ in 1...rand2 {
                 work.start()
-                FirebaseHelper.increment(-1, at: "test") { (success) in
-                    XCTAssert(success)
+                FirebaseHelper.main.increment(-1, at: "test") { (error) in
+                    XCTAssertNil(error, String(describing: error))
                     work.finish(withResult: true)
                 }
             }
             work.allDone {
-                FirebaseHelper.get("test") { (data) in
-                    XCTAssertEqual(data?.value as? Int, rand1 - rand2)
-                    expectation.fulfill()
+                FirebaseHelper.main.get("test") { (result) in
+                    switch result {
+                    case .failure(let error):
+                        XCTFail(String(describing: error))
+                        expectation.fulfill()
+                    case .success(let data):
+                        XCTAssertEqual(data.value as? Int, rand1 - rand2)
+                        expectation.fulfill()
+                    }
                 }
             }
         }
@@ -33,15 +39,30 @@ class FirebaseHelperTests: FirebaseTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        FirebaseHelper.set("a", at: "test") { (success) in
-            XCTAssert(success)
-            FirebaseHelper.get("test") { (data) in
-                XCTAssertEqual(data?.value as? String, "a")
-                FirebaseHelper.delete("test") { (success) in
-                    XCTAssert(success)
-                    FirebaseHelper.get("test") { (data) in
-                        XCTAssertFalse(data!.exists())
-                        expectation.fulfill()
+        FirebaseHelper.main.set("a", at: "test") { (error) in
+            XCTAssertNil(error, String(describing: error))
+
+            FirebaseHelper.main.get("test") { (result) in
+                switch result {
+                case .failure(let error):
+                    XCTFail(String(describing: error))
+                    expectation.fulfill()
+                case .success(let data):
+                    XCTAssertEqual(data.value as? String, "a")
+
+                    FirebaseHelper.main.delete("test") { (error) in
+                        XCTAssertNil(error, String(describing: error))
+
+                        FirebaseHelper.main.get("test") { (result) in
+                            switch result {
+                            case .failure(let error):
+                                XCTFail(String(describing: error))
+                                expectation.fulfill()
+                            case .success(let data):
+                                XCTAssertFalse(data.exists())
+                                expectation.fulfill()
+                            }
+                        }
                     }
                 }
             }
@@ -52,11 +73,18 @@ class FirebaseHelperTests: FirebaseTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        FirebaseHelper.increment(1, at: "test") { (success) in
-            XCTAssert(success)
-            FirebaseHelper.get("test") { (data) in
-                XCTAssertEqual(data?.value as? Int, 1)
-                expectation.fulfill()
+        FirebaseHelper.main.increment(1, at: "test") { (error) in
+            XCTAssertNil(error, String(describing: error))
+
+            FirebaseHelper.main.get("test") { (result) in
+                switch result {
+                case .failure(let error):
+                    XCTFail(String(describing: error))
+                    expectation.fulfill()
+                case .success(let data):
+                    XCTAssertEqual(data.value as? Int, 1)
+                    expectation.fulfill()
+                }
             }
         }
     }
@@ -68,34 +96,44 @@ class FirebaseHelperTests: FirebaseTest {
         let incrementsDone = DispatchGroup()
         for _ in 1...2 {
             incrementsDone.enter()
-            FirebaseHelper.increment(1, at: "test") { (success) in
-                XCTAssert(success)
+            FirebaseHelper.main.increment(1, at: "test") { (error) in
+                XCTAssertNil(error, String(describing: error))
                 incrementsDone.leave()
             }
         }
         incrementsDone.notify(queue: .main) {
-            FirebaseHelper.get("test") { (data) in
-                XCTAssertEqual(data?.value as? Int, 2)
-                expectation.fulfill()
+            FirebaseHelper.main.get("test") { (result) in
+                switch result {
+                case .failure(let error):
+                    XCTFail(String(describing: error))
+                    expectation.fulfill()
+                case .success(let data):
+                    XCTAssertEqual(data.value as? Int, 2)
+                    expectation.fulfill()
+                }
             }
         }
     }
 
     func testMakeDatabaseReference() {
-        XCTAssertNotNil(FirebaseHelper.makeReference("a"))
-        XCTAssertNotNil(FirebaseHelper.makeReference("a", "b"))
-        XCTAssertNotNil(FirebaseHelper.makeReference("/a/"))
-        XCTAssertNotNil(FirebaseHelper.makeReference("//a//"))
-        XCTAssertNotNil(FirebaseHelper.makeReference("/a/a/"))
+        do {
+            _ = try FirebaseHelper.main.makeReference("a")
+            _ = try FirebaseHelper.main.makeReference("a", "b")
+            _ = try FirebaseHelper.main.makeReference("/a/")
+            _ = try FirebaseHelper.main.makeReference("//a//")
+            _ = try FirebaseHelper.main.makeReference("/a/a/")
+        } catch {
+            XCTFail()
+        }
     }
 
     func testMakeDatabaseReferenceFail() {
-        XCTAssertNil(FirebaseHelper.makeReference(""))
-        XCTAssertNil(FirebaseHelper.makeReference("a", ""))
-        XCTAssertNil(FirebaseHelper.makeReference("", "a"))
-        XCTAssertNil(FirebaseHelper.makeReference("/"))
-        XCTAssertNil(FirebaseHelper.makeReference("//"))
-        XCTAssertNil(FirebaseHelper.makeReference("///"))
-        XCTAssertNil(FirebaseHelper.makeReference("/a//a/"))
+        XCTAssertThrowsError(_ = try FirebaseHelper.main.makeReference(""))
+        XCTAssertThrowsError(_ = try FirebaseHelper.main.makeReference("a", ""))
+        XCTAssertThrowsError(_ = try FirebaseHelper.main.makeReference("", "a"))
+        XCTAssertThrowsError(_ = try FirebaseHelper.main.makeReference("/"))
+        XCTAssertThrowsError(_ = try FirebaseHelper.main.makeReference("//"))
+        XCTAssertThrowsError(_ = try FirebaseHelper.main.makeReference("///"))
+        XCTAssertThrowsError(_ = try FirebaseHelper.main.makeReference("/a//a/"))
     }
 }

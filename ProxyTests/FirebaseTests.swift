@@ -374,41 +374,66 @@ extension GroupWork {
     func checkConvoCreated(_ convo: Convo, asSender: Bool) {
         let (uid, _) = GroupWork.getOwnerIdAndProxyKey(convo: convo, asSender: asSender)
         start()
-        FirebaseHelper.get(Child.convos, uid, convo.key) { (data) in
-            XCTAssertNotNil(Convo(data!))
+        FirebaseHelper.main.get(Child.convos, uid, convo.key) { (result) in
+            switch result {
+            case .failure(let error):
+                XCTFail(String(describing: error))
+            case .success(let data):
+                XCTAssertNotNil(Convo(data))
+            }
             self.finish(withResult: true)
         }
     }
 
     func checkMessageCreated(_ message: Message) {
         start()
-        FirebaseHelper.get(Child.messages, message.parentConvoKey, message.messageId) { (data) in
-            XCTAssertEqual(Message(data!), message)
+        FirebaseHelper.main.get(Child.messages, message.parentConvoKey, message.messageId) { (result) in
+            switch result {
+            case .failure(let error):
+                XCTFail(String(describing: error))
+            case .success(let data):
+                XCTAssertEqual(Message(data), message)
+            }
             self.finish(withResult: true)
         }
     }
 
     func checkProxyCreated(_ proxy: Proxy) {
         start()
-        FirebaseHelper.get(Child.proxies, FirebaseTest.uid, proxy.key) { (data) in
-            XCTAssertEqual(Proxy(data!), proxy)
+        FirebaseHelper.main.get(Child.proxies, FirebaseTest.uid, proxy.key) { (result) in
+            switch result {
+            case .failure(let error):
+                XCTFail(String(describing: error))
+            case .success(let data):
+                XCTAssertEqual(Proxy(data), proxy)
+            }
             self.finish(withResult: true)
         }
     }
 
     func checkProxyNameCreated(forProxy proxy: Proxy) {
         start()
-        FirebaseHelper.get(Child.proxyNames, proxy.key) { (data) in
+        FirebaseHelper.main.get(Child.proxyNames, proxy.key) { (result) in
             let testProxy = Proxy(icon: proxy.icon, name: proxy.name, ownerId: proxy.ownerId)
-            XCTAssertEqual(Proxy(data!), testProxy)
+            switch result {
+            case .failure(let error):
+                XCTFail(String(describing: error))
+            case .success(let data):
+                XCTAssertEqual(Proxy(data), testProxy)
+            }
             self.finish(withResult: true)
         }
     }
 
     func checkUnreadMessageCreated(_ message: Message) {
         start()
-        FirebaseHelper.get(Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId) { (data) in
-            XCTAssertEqual(Message(data!), message)
+        FirebaseHelper.main.get(Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId) { (result) in
+            switch result {
+            case .failure(let error):
+                XCTFail(String(describing: error))
+            case .success(let data):
+                XCTAssertEqual(Message(data), message)
+            }
             self.finish(withResult: true)
         }
     }

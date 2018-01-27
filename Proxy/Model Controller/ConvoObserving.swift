@@ -11,7 +11,7 @@ class ConvoObserver: ConvoObserving {
 
     func load(convoKey: String, convoSenderId: String, convoManager: ConvoManaging) {
         stopObserving()
-        ref = FirebaseHelper.makeReference(Child.convos, convoSenderId, convoKey)
+        ref = try? FirebaseHelper.main.makeReference(Child.convos, convoSenderId, convoKey)
         handle = ref?.observe(.value) { [weak self, weak convoManager] (data) in
             if let convo = Convo(data) {
                 convoManager?.convo = convo

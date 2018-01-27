@@ -117,8 +117,13 @@ extension GroupWork {
 
     func checkDeleted(_ first: String, _ rest: String..., function: String = #function, line: Int = #line) {
         start()
-        FirebaseHelper.get(first, rest) { (data) in
-            XCTAssertFalse(data!.exists(), GroupWork.makeErrorMessage(function: function, line: line))
+        FirebaseHelper.main.get(first, rest) { (result) in
+            switch result {
+            case .failure(let error):
+                XCTFail(String(describing: error))
+            case .success(let data):
+                XCTAssertFalse(data.exists(), GroupWork.makeErrorMessage(function: function, line: line))
+            }
             self.finish(withResult: true)
         }
     }
@@ -132,18 +137,28 @@ extension GroupWork {
 
     func check(_ property: SettableConvoProperty, uid: String, convoKey: String, function: String = #function, line: Int = #line) {
         start()
-        FirebaseHelper.get(Child.convos, uid, convoKey, property.properties.name) { (data) in
-            GroupWork.checkEquals(data, property.properties.value, function: function, line: line)
+        FirebaseHelper.main.get(Child.convos, uid, convoKey, property.properties.name) { (result) in
+            switch result {
+            case .failure(let error):
+                XCTFail(String(describing: error))
+            case .success(let data):
+                GroupWork.checkEquals(data, property.properties.value, function: function, line: line)
+            }
             self.finish(withResult: true)
         }
     }
 
     func check(_ property: SettableMessageProperty, for message: Message, function: String = #function, line: Int = #line) {
         start()
-        FirebaseHelper.get(Child.messages, message.parentConvoKey, message.messageId, property.properties.name) { (data) in
-            switch property {
-            case .dateRead(let date):
-                GroupWork.checkEquals(data, date.timeIntervalSince1970, function: function, line: line)
+        FirebaseHelper.main.get(Child.messages, message.parentConvoKey, message.messageId, property.properties.name) { (result) in
+            switch result {
+            case .failure(let error):
+                XCTFail(String(describing: error))
+            case .success(let data):
+                switch property {
+                case .dateRead(let date):
+                    GroupWork.checkEquals(data, date.timeIntervalSince1970, function: function, line: line)
+                }
             }
             self.finish(withResult: true)
         }
@@ -160,16 +175,26 @@ extension GroupWork {
 
     func check(_ property: SettableProxyProperty, uid: String, proxyKey: String, function: String = #function, line: Int = #line) {
         start()
-        FirebaseHelper.get(Child.proxies, uid, proxyKey, property.properties.name) { (data) in
-            GroupWork.checkEquals(data, property.properties.value, function: function, line: line)
+        FirebaseHelper.main.get(Child.proxies, uid, proxyKey, property.properties.name) { (result) in
+            switch result {
+            case .failure(let error):
+                XCTFail(String(describing: error))
+            case .success(let data):
+                GroupWork.checkEquals(data, property.properties.value, function: function, line: line)
+            }
             self.finish(withResult: true)
         }
     }
 
     func check(_ property: IncrementableUserProperty, equals value: Int, uid: String, function: String = #function, line: Int = #line) {
         start()
-        FirebaseHelper.get(Child.userInfo, uid, property.rawValue) { (data) in
-            GroupWork.checkEquals(data, value, function: function, line: line)
+        FirebaseHelper.main.get(Child.userInfo, uid, property.rawValue) { (result) in
+            switch result {
+            case .failure(let error):
+                XCTFail(String(describing: error))
+            case .success(let data):
+                GroupWork.checkEquals(data, value, function: function, line: line)
+            }
             self.finish(withResult: true)
         }
     }

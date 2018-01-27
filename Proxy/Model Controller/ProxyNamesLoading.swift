@@ -9,7 +9,7 @@ protocol ProxyNamesLoading {
 // https://www.swiftbysundell.com/posts/a-deep-dive-into-grand-central-dispatch-in-swift
 class ProxyNamesLoader: ProxyNamesLoading {
     private let querySize: UInt
-    private let ref = FirebaseHelper.makeReference(Child.proxyNames)
+    private let ref = try? FirebaseHelper.main.makeReference(Child.proxyNames)
     private var pendingWorkItem: DispatchWorkItem?
 
     required init(querySize: UInt = Setting.querySize) {

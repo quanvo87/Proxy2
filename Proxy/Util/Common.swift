@@ -27,11 +27,17 @@ extension FirebaseApp {
     }()
 }
 
+extension FirebaseHelper {
+    static let main: FirebaseHelper = {
+        return FirebaseHelper(FirebaseDatabase.Database.database().reference())
+    }()
+}
+
 extension DataSnapshot {
     func toConvosArray(proxyKey: String?) -> [Convo] {
-        return children.flatMap({ (child) in
+        return children.flatMap {
             guard
-                let data = child as? DataSnapshot,
+                let data = $0 as? DataSnapshot,
                 let convo = Convo(data) else {
                     return nil
             }
@@ -44,29 +50,29 @@ extension DataSnapshot {
             } else {
                 return convo
             }
-        })
+        }
     }
 
     var toMessagesArray: [Message] {
-        return children.flatMap({ (child) in
+        return children.flatMap {
             guard
-                let data = child as? DataSnapshot,
+                let data = $0 as? DataSnapshot,
                 let message = Message(data) else {
                     return nil
             }
             return message
-        })
+        }
     }
 
     var toProxiesArray: [Proxy] {
-        return children.flatMap({ (child) in
+        return children.flatMap {
             guard
-                let data = child as? DataSnapshot,
+                let data = $0 as? DataSnapshot,
                 let proxy = Proxy(data) else {
                     return nil
             }
             return proxy
-        })
+        }
     }
 }
 

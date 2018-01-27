@@ -21,7 +21,7 @@ class MessagesObserver: MessagesObserving {
 
     func load(convoKey: String, messagesCollectionView: MessagesCollectionView, messagesManager: MessagesManaging) {
         stopObserving()
-        ref = FirebaseHelper.makeReference(Child.messages, convoKey)
+        ref = try? FirebaseHelper.main.makeReference(Child.messages, convoKey)
         handle = ref?
             .queryOrdered(byChild: Child.timestamp)
             .queryLimited(toLast: querySize)
