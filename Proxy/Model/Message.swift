@@ -13,7 +13,14 @@ struct Message: MessageType {
     let receiverProxyKey: String
     let senderProxyKey: String
 
-    init(sender: Sender, messageId: String, data: MessageData, dateRead: Date, parentConvoKey: String, receiverId: String, receiverProxyKey: String, senderProxyKey: String) {
+    init(sender: Sender,
+         messageId: String,
+         data: MessageData,
+         dateRead: Date,
+         parentConvoKey: String,
+         receiverId: String,
+         receiverProxyKey: String,
+         senderProxyKey: String) {
         self.sender = sender
         self.messageId = messageId
         self.sentDate = Date()
@@ -25,7 +32,7 @@ struct Message: MessageType {
         self.senderProxyKey = senderProxyKey
     }
 
-    init?(_ data: DataSnapshot) {
+    init(_ data: DataSnapshot) throws {
         let dictionary = data.value as AnyObject
         guard
             let senderId = dictionary["senderId"] as? String,
@@ -38,7 +45,7 @@ struct Message: MessageType {
             let receiverId = dictionary["receiverId"] as? String,
             let receiverProxyKey = dictionary["receiverProxyKey"] as? String,
             let senderProxyKey = dictionary["senderProxyKey"] as? String else {
-                return nil
+                throw ProxyError.invalidData
         }
         self.sender = Sender(id: senderId, displayName: senderDisplayName)
         self.messageId = messageId

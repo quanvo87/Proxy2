@@ -31,7 +31,7 @@ class ProxyNamesLoader: ProxyNamesLoading {
                     for child in data.children {
                         guard
                             let data = child as? DataSnapshot,
-                            let proxy = Proxy(data),
+                            let proxy = try? Proxy(data),
                             proxy.ownerId != senderId else {
                                 continue
                         }

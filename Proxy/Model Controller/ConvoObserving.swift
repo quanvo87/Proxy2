@@ -13,9 +13,9 @@ class ConvoObserver: ConvoObserving {
         stopObserving()
         ref = try? FirebaseHelper.main.makeReference(Child.convos, convoSenderId, convoKey)
         handle = ref?.observe(.value) { [weak self, weak convoManager] (data) in
-            if let convo = Convo(data) {
-                convoManager?.convo = convo
-            } else {
+            do {
+                convoManager?.convo = try Convo(data)
+            } catch {
                 self?.database.getConvo(key: convoKey, ownerId: convoSenderId) { (result) in
                     switch result {
                     case .success(let convo):

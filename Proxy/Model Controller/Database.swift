@@ -47,19 +47,20 @@ class Firebase: Database {
     }
 
     func delete(_ proxy: Proxy, completion: @escaping ErrorCallback) {
-        getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { (convos) in
-            guard let convos = convos else {
-                completion(ProxyError.unknown)
-                return
-            }
-            let work = GroupWork()
-            work.delete(Child.proxies, proxy.ownerId, proxy.key)
-            work.delete(Child.proxyNames, proxy.key)
-            work.delete(convos)
-            work.deleteUnreadMessages(for: proxy)
-            work.setReceiverDeletedProxy(for: convos)
-            work.allDone {
-                completion(work.result ? nil : ProxyError.unknown)
+        getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { (result) in
+            switch result {
+            case .failure(let error):
+                completion(error)
+            case .success(let convos):
+                let work = GroupWork()
+                work.delete(Child.proxies, proxy.ownerId, proxy.key)
+                work.delete(Child.proxyNames, proxy.key)
+                work.delete(convos)
+                work.deleteUnreadMessages(for: proxy)
+                work.setReceiverDeletedProxy(for: convos)
+                work.allDone {
+                    completion(work.result ? nil : ProxyError.unknown)
+                }
             }
         }
     }
@@ -73,18 +74,16 @@ class Firebase: Database {
         }
     }
 
-    // todo: make model inits throwing?
-    // todo: make an error for invalid object?
     func getConvo(key: String, ownerId: String, completion: @escaping ConvoCallback) {
         FirebaseHelper.main.get(Child.convos, ownerId, key) { (result) in
             switch result {
             case .failure(let error):
                 completion(.failure(error))
             case .success(let data):
-                if let convo = Convo(data) {
-                    completion(.success(convo))
-                } else {
-                    completion(.failure(ProxyError.unknown))
+                do {
+                    completion(.success(try Convo(data)))
+                } catch {
+                    completion(.failure(error))
                 }
             }
         }
@@ -96,10 +95,11 @@ class Firebase: Database {
             case .failure(let error):
                 completion(.failure(error))
             case .success(let data):
-                if let proxy = Proxy(data) {
+                do {
+                    let proxy = try Proxy(data)
                     self?.getProxy(key: proxy.key, ownerId: proxy.ownerId, completion: completion)
-                } else {
-                    completion(.failure(ProxyError.unknown))
+                } catch {
+                    completion(.failure(error))
                 }
             }
         }
@@ -111,10 +111,10 @@ class Firebase: Database {
             case .failure(let error):
                 completion(.failure(error))
             case .success(let data):
-                if let proxy = Proxy(data) {
-                    completion(.success(proxy))
-                } else {
-                    completion(.failure(ProxyError.unknown))
+                do {
+                    completion(.success(try Proxy(data)))
+                } catch {
+                    completion(.failure(error))
                 }
             }
         }
@@ -287,32 +287,34 @@ class Firebase: Database {
     }
 
     func setIcon(to icon: String, for proxy: Proxy, completion: @escaping ErrorCallback) {
-        getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { (convos) in
-            guard let convos = convos else {
-                completion(ProxyError.unknown)
-                return
-            }
-            let work = GroupWork()
-            work.set(.icon(icon), for: proxy)
-            work.setReceiverIcon(to: icon, for: convos)
-            work.setSenderIcon(to: icon, for: convos)
-            work.allDone {
-                completion(work.result ? nil : ProxyError.unknown)
+        getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { (result) in
+            switch result {
+            case .failure(let error):
+                completion(error)
+            case .success(let convos):
+                let work = GroupWork()
+                work.set(.icon(icon), for: proxy)
+                work.setReceiverIcon(to: icon, for: convos)
+                work.setSenderIcon(to: icon, for: convos)
+                work.allDone {
+                    completion(work.result ? nil : ProxyError.unknown)
+                }
             }
         }
     }
 
     func setNickname(to nickname: String, for proxy: Proxy, completion: @escaping ErrorCallback) {
-        getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { (convos) in
-            guard let convos = convos else {
-                completion(ProxyError.unknown)
-                return
-            }
-            let work = GroupWork()
-            work.set(.nickname(nickname), for: proxy)
-            work.setSenderNickname(to: nickname, for: convos)
-            work.allDone {
-                completion(work.result ? nil : ProxyError.unknown)
+        getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { (result) in
+            switch result {
+            case .failure(let error):
+                completion(error)
+            case .success(let convos):
+                let work = GroupWork()
+                work.set(.nickname(nickname), for: proxy)
+                work.setSenderNickname(to: nickname, for: convos)
+                work.allDone {
+                    completion(work.result ? nil : ProxyError.unknown)
+                }
             }
         }
     }
@@ -329,14 +331,13 @@ class Firebase: Database {
         }
     }
 
-    // todo: make proper
-    private func getConvosForProxy(key: String, ownerId: String, completion: @escaping ([Convo]?) -> Void) {
+    private func getConvosForProxy(key: String, ownerId: String, completion: @escaping (Result<[Convo], Error>) -> Void) {
         FirebaseHelper.main.get(Child.convos, ownerId) { (result) in
             switch result {
-            case .failure:
-                completion(nil)
+            case .failure(let error):
+                completion(.failure(error))
             case .success(let data):
-                completion(data.toConvosArray(proxyKey: key))
+                completion(.success(data.toConvosArray(proxyKey: key)))
             }
         }
     }

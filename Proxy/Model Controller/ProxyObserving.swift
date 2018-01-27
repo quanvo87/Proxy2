@@ -13,7 +13,7 @@ class ProxyObserver: ProxyObsering {
         stopObserving()
         ref = try? FirebaseHelper.main.makeReference(Child.proxies, proxyOwnerId, proxyKey)
         handle = ref?.observe(.value) { [weak self, weak proxyManager] (data) in
-            if let proxy = Proxy(data) {
+            if let proxy = try? Proxy(data) {
                 proxyManager?.proxy = proxy
             } else {
                 self?.database.getProxy(key: proxyKey, ownerId: proxyOwnerId) { (result) in

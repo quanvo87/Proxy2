@@ -38,7 +38,7 @@ extension DataSnapshot {
         return children.flatMap {
             guard
                 let data = $0 as? DataSnapshot,
-                let convo = Convo(data) else {
+                let convo = try? Convo(data) else {
                     return nil
             }
             if let proxyKey = proxyKey {
@@ -57,7 +57,7 @@ extension DataSnapshot {
         return children.flatMap {
             guard
                 let data = $0 as? DataSnapshot,
-                let message = Message(data) else {
+                let message = try? Message(data) else {
                     return nil
             }
             return message
@@ -68,7 +68,7 @@ extension DataSnapshot {
         return children.flatMap {
             guard
                 let data = $0 as? DataSnapshot,
-                let proxy = Proxy(data) else {
+                let proxy = try? Proxy(data) else {
                     return nil
             }
             return proxy
