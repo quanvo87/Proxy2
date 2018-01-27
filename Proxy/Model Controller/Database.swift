@@ -167,6 +167,11 @@ class Firebase: Database {
     }
 
     func sendMessage(sender: Proxy, receiver: Proxy, text: String, completion: @escaping MessageCallback) {
+        let trimmedText = text.trimmed
+        guard trimmedText.count < maxMessageSize else {
+            completion(.failure(ProxyError.inputTooLong))
+            return
+        }
         let convoKey = makeConvoKey(sender: sender, receiver: receiver)
         getConvo(key: convoKey, ownerId: sender.ownerId) { [weak self] (result) in
             switch result {
@@ -177,11 +182,11 @@ class Firebase: Database {
                         completion(.failure(error))
                         return
                     case .success(let convo):
-                        self?.sendMessage(convo: convo, text: text, completion: completion)
+                        self?.sendMessage(convo: convo, text: trimmedText, completion: completion)
                     }
                 }
             case .success(let convo):
-                self?.sendMessage(convo: convo, text: text, completion: completion)
+                self?.sendMessage(convo: convo, text: trimmedText, completion: completion)
             }
         }
     }

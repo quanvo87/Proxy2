@@ -47,8 +47,8 @@ extension AppDelegate: AuthManaging {
             changeRequest.displayName = email
             changeRequest.commitChanges()
         }
-        window?.rootViewController = TabBarController(uid: user.uid, displayName: displayName)
         isLoggedIn = true
+        window?.rootViewController = TabBarController(uid: user.uid, displayName: displayName)
     }
 
     func logOut() {
@@ -57,7 +57,7 @@ extension AppDelegate: AuthManaging {
             let loginController = LoginViewController.make() else {
                 return
         }
-        window?.rootViewController = loginController
         isLoggedIn = false
+        window?.rootViewController = loginController
     }
 }

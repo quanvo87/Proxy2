@@ -256,8 +256,6 @@
 				590823C41F9EF6DA00A3B6A9 /* ProxyPropertyGenerating.swift */,
 				59B90C201FF3411E00449569 /* UnreadMessagesObserving.swift */,
 				593D7D431F851F7D00D3FBD5 /* UserStatsObserving.swift */,
-				59C6138E1F9F7EFE0014F414 /* ProxyPropertyGenerator */,
-				59D896A81F977EEA008B3A05 /* Util */,
 			);
 			path = "Model Controller";
 			sourceTree = "<group>";
@@ -291,6 +289,7 @@
 				5966076B1F977C3100874741 /* Model */,
 				5966076C1F977CA300874741 /* Model Controller */,
 				59D896A71F977EC7008B3A05 /* View */,
+				59D896A81F977EEA008B3A05 /* Util */,
 				59D8D2B31F977F3500909572 /* Other */,
 			);
 			path = Proxy;
@@ -371,6 +370,7 @@
 				5973C82E1F608A1D00647492 /* FirebaseHelper.swift */,
 				59BE6ABA2016C74B00CCD27E /* GroupWork.swift */,
 				5973C81D1F608A1B00647492 /* ProxyError.swift */,
+				59C6138E1F9F7EFE0014F414 /* ProxyPropertyGenerator */,
 			);
 			path = Util;
 			sourceTree = "<group>";
