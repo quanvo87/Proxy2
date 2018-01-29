@@ -28,19 +28,16 @@ class ProxyNamesLoader: ProxyNamesLoading {
                 .queryStarting(atValue: query)
                 .queryLimited(toFirst: _self.querySize)
                 .observeSingleEvent(of: .value) { (data) in
-                    var items = [SearchTextFieldItem]()
-                    for child in data.children {
+                    completion(data.children.flatMap {
                         guard
-                            let data = child as? DataSnapshot,
-                            let proxy = try? Proxy(data),
-                            proxy.ownerId != senderId else {
-                                continue
+                            let data = $0 as? DataSnapshot,
+                            let proxy = try? Proxy(data) else {
+                                return nil
                         }
-                        items.append(SearchTextFieldItem.init(title: proxy.name,
-                                                              subtitle: nil,
-                                                              image: UIImage(named: proxy.icon)))
-                    }
-                    completion(items)
+                        return SearchTextFieldItem(title: proxy.name,
+                                                   subtitle: nil,
+                                                   image: UIImage(named: proxy.icon))
+                    })
             }
         }
         pendingWorkItem = workItem
