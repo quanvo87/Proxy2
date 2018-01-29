@@ -1,4 +1,5 @@
 import FirebaseDatabase
+import FirebaseHelper
 import GroupWork
 import XCTest
 @testable import Proxy

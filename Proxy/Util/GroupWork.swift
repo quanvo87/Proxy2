@@ -1,4 +1,5 @@
 import GroupWork
+import FirebaseHelper
 
 extension GroupWork {
     func delete(_ first: String, _ rest: String...) {

@@ -10,6 +10,7 @@ def pods
   pod 'Firebase'
   pod 'FirebaseAuth'
   pod 'Firebase/Database'
+  pod 'FirebaseHelper', '~> 0.1'
   pod 'GroupWork'
   pod 'MessageKit'
   pod 'SearchTextField'
