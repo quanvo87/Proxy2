@@ -1,4 +1,5 @@
 import FirebaseDatabase
+import FirebaseHelper
 
 protocol ConvosObsering: ReferenceObserving {
     init(querySize: UInt)

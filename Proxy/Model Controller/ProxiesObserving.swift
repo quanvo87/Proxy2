@@ -1,4 +1,5 @@
 import FirebaseDatabase
+import FirebaseHelper
 
 protocol ProxiesObserving: ReferenceObserving {
     func load(proxiesOwnerId: String, proxiesManager: ProxiesManaging)

@@ -1,4 +1,5 @@
 import FirebaseDatabase
+import FirebaseHelper
 import SearchTextField
 
 protocol ProxyNamesLoading {

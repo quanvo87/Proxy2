@@ -1,4 +1,5 @@
 import Firebase
+import FirebaseHelper
 import Spring
 import UIKit
 
@@ -23,13 +24,13 @@ extension Double {
 
 extension FirebaseApp {
     static let app: FirebaseApp? = {
-        return FirebaseApp.app()
+        FirebaseApp.app()
     }()
 }
 
 extension FirebaseHelper {
     static let main: FirebaseHelper = {
-        return FirebaseHelper(FirebaseDatabase.Database.database().reference())
+        FirebaseHelper(FirebaseDatabase.Database.database().reference())
     }()
 }
 

@@ -31,7 +31,6 @@
 		5973C85E1F608A2200647492 /* SenderProxyTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C82B1F608A1D00647492 /* SenderProxyTableViewCell.swift */; };
 		5973C85F1F608A2200647492 /* IconPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C82C1F608A1D00647492 /* IconPickerViewController.swift */; };
 		5973C8601F608A2200647492 /* SettingsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C82D1F608A1D00647492 /* SettingsTableViewCell.swift */; };
-		5973C8611F608A2200647492 /* FirebaseHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C82E1F608A1D00647492 /* FirebaseHelper.swift */; };
 		5973C8641F608A2200647492 /* ProxiesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8311F608A1D00647492 /* ProxiesViewController.swift */; };
 		5973C8651F608A2200647492 /* Proxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8321F608A1E00647492 /* Proxy.swift */; };
 		5973C8671F608A2200647492 /* IconPickerCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8341F608A1E00647492 /* IconPickerCollectionViewCell.swift */; };
@@ -44,7 +43,6 @@
 		5973C8761F608A2200647492 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8431F608A2100647492 /* SettingsViewController.swift */; };
 		5973C8771F608A2200647492 /* SenderPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8441F608A2100647492 /* SenderPickerViewController.swift */; };
 		5973C8791F608A2200647492 /* loadAdjectives.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8461F608A2100647492 /* loadAdjectives.swift */; };
-		5973C8841F608A4E00647492 /* FirebaseHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C87B1F608A4D00647492 /* FirebaseHelperTests.swift */; };
 		5973C88A1F608A4E00647492 /* FirebaseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8811F608A4E00647492 /* FirebaseTest.swift */; };
 		5973C88C1F608A4E00647492 /* FirebaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8831F608A4E00647492 /* FirebaseTests.swift */; };
 		598420511FEA598300855647 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598420501FEA598300855647 /* Message.swift */; };
@@ -118,7 +116,6 @@
 		5973C82B1F608A1D00647492 /* SenderProxyTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SenderProxyTableViewCell.swift; sourceTree = "<group>"; };
 		5973C82C1F608A1D00647492 /* IconPickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IconPickerViewController.swift; sourceTree = "<group>"; };
 		5973C82D1F608A1D00647492 /* SettingsTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTableViewCell.swift; sourceTree = "<group>"; };
-		5973C82E1F608A1D00647492 /* FirebaseHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseHelper.swift; sourceTree = "<group>"; };
 		5973C8311F608A1D00647492 /* ProxiesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxiesViewController.swift; sourceTree = "<group>"; };
 		5973C8321F608A1E00647492 /* Proxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Proxy.swift; sourceTree = "<group>"; };
 		5973C8341F608A1E00647492 /* IconPickerCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IconPickerCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -131,7 +128,6 @@
 		5973C8431F608A2100647492 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		5973C8441F608A2100647492 /* SenderPickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SenderPickerViewController.swift; sourceTree = "<group>"; };
 		5973C8461F608A2100647492 /* loadAdjectives.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = loadAdjectives.swift; sourceTree = "<group>"; };
-		5973C87B1F608A4D00647492 /* FirebaseHelperTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseHelperTests.swift; sourceTree = "<group>"; };
 		5973C8811F608A4E00647492 /* FirebaseTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseTest.swift; sourceTree = "<group>"; };
 		5973C8831F608A4E00647492 /* FirebaseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseTests.swift; sourceTree = "<group>"; };
 		598420501FEA598300855647 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
@@ -300,7 +296,6 @@
 			children = (
 				5973C8811F608A4E00647492 /* FirebaseTest.swift */,
 				5973C8831F608A4E00647492 /* FirebaseTests.swift */,
-				5973C87B1F608A4D00647492 /* FirebaseHelperTests.swift */,
 				591E305D1FF9729C00094EB3 /* FirebaseUtilTests.swift */,
 				59B432F61F60648400622DEA /* Info.plist */,
 			);
@@ -367,7 +362,6 @@
 			children = (
 				5973C8291F608A1C00647492 /* Common.swift */,
 				5973C83F1F608A2000647492 /* Constant.swift */,
-				5973C82E1F608A1D00647492 /* FirebaseHelper.swift */,
 				59BE6ABA2016C74B00CCD27E /* GroupWork.swift */,
 				5973C81D1F608A1B00647492 /* ProxyError.swift */,
 				59C6138E1F9F7EFE0014F414 /* ProxyPropertyGenerator */,
@@ -832,7 +826,6 @@
 				5973C8561F608A2200647492 /* LoginViewController.swift in Sources */,
 				5973C8681F608A2200647492 /* ProxyViewController.swift in Sources */,
 				593D7D441F851F7D00D3FBD5 /* UserStatsObserving.swift in Sources */,
-				5973C8611F608A2200647492 /* FirebaseHelper.swift in Sources */,
 				5973C85E1F608A2200647492 /* SenderProxyTableViewCell.swift in Sources */,
 				590441EB1F98351E0015CE16 /* ConvosViewController.swift in Sources */,
 				59FF37421F97A6AA00FA1AF0 /* TabBarController.swift in Sources */,
@@ -845,7 +838,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				591E305E1FF9729C00094EB3 /* FirebaseUtilTests.swift in Sources */,
-				5973C8841F608A4E00647492 /* FirebaseHelperTests.swift in Sources */,
 				5973C88A1F608A4E00647492 /* FirebaseTest.swift in Sources */,
 				5973C88C1F608A4E00647492 /* FirebaseTests.swift in Sources */,
 			);

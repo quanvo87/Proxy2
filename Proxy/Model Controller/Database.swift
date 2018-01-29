@@ -1,4 +1,5 @@
 import FirebaseDatabase
+import FirebaseHelper
 import GroupWork
 import MessageKit
 
@@ -172,9 +173,11 @@ class Firebase: Database {
         work.delete(Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
         work.set(.dateRead(date), for: message)
         work.set(.hasUnreadMessage(false), uid: message.receiverId, convoKey: message.parentConvoKey)
-        work.setHasUnreadMessageForProxy(uid: message.receiverId, key: message.receiverProxyKey)
         work.allDone {
-            completion(work.result ? nil : ProxyError.unknown)
+            work.setHasUnreadMessageForProxy(uid: message.receiverId, key: message.receiverProxyKey)
+            work.allDone {
+                completion(work.result ? nil : ProxyError.unknown)
+            }
         }
     }
 

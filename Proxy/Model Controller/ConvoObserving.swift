@@ -1,4 +1,5 @@
 import FirebaseDatabase
+import FirebaseHelper
 
 protocol ConvoObserving: ReferenceObserving {
     func load(convoKey: String, convoSenderId: String, convoManager: ConvoManaging)

@@ -1,4 +1,5 @@
 import FirebaseDatabase
+import FirebaseHelper
 import MessageKit
 
 protocol MessagesObserving: ReferenceObserving {

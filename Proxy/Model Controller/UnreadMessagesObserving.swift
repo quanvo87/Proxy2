@@ -1,4 +1,5 @@
 import FirebaseDatabase
+import FirebaseHelper
 
 protocol UnreadMessagesObserving {
     func load(uid: String, unreadMessagesManager: UnreadMessagesManaging)
