@@ -6,6 +6,7 @@ Create unlimited, anonymous user names (Proxy's) with just one tap. Chat with an
 - [Device](https://cocoapods.org/pods/Device)
 - [Facebook](https://cocoapods.org/pods/FacebookCore)
 - [Firebase](https://cocoapods.org/pods/Firebase)
+- [FirebaseHelper](https://github.com/quanvo87/FirebaseHelper)
 - [GroupWork](https://github.com/quanvo87/GroupWork)
 - [MessageKit](https://cocoapods.org/pods/MessageKit)
 - [SearchTextField](https://cocoapods.org/pods/SearchTextField)
