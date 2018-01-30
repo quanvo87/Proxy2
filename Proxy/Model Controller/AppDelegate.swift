@@ -6,13 +6,13 @@ import FBSDKCoreKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow? = UIWindow(frame: UIScreen.main.bounds)
     private var isLoggedIn = false
-    private lazy var authObserver = AuthObserver(self)
+    private lazy var authObserver = AuthObserver()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         setAudioSession()
         FirebaseApp.configure()
 //        Database.database().isPersistenceEnabled = true
-        authObserver.observe()
+        authObserver.observe(self)
         return FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
     }
 

@@ -48,12 +48,12 @@ class ConvosViewController: UIViewController, ConvosManaging, NewConvoManaging, 
 
         super.init(nibName: nil, bundle: nil)
 
-        convosObserver.load(convosOwnerId: uid, proxyKey: nil, convosManager: self)
+        convosObserver.observe(convosOwnerId: uid, proxyKey: nil, convosManager: self)
 
         navigationItem.rightBarButtonItems = [makeNewMessageButton, makeNewProxyButton]
         navigationItem.title = "Messages"
 
-        proxiesObserver.load(proxiesOwnerId: uid, proxiesManager: self)
+        proxiesObserver.observe(proxiesOwnerId: uid, proxiesManager: self)
 
         tableView.dataSource = self
         tableView.delegate = self
@@ -63,7 +63,7 @@ class ConvosViewController: UIViewController, ConvosManaging, NewConvoManaging, 
         tableView.rowHeight = 80
         tableView.sectionHeaderHeight = 0
 
-        unreadMessagesObserver.load(uid: uid, unreadMessagesManager: self)
+        unreadMessagesObserver.observe(uid: uid, unreadMessagesManager: self)
 
         view.addSubview(tableView)
     }

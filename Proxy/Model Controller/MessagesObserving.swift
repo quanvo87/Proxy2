@@ -4,7 +4,7 @@ import MessageKit
 
 protocol MessagesObserving: ReferenceObserving {
     init(querySize: UInt)
-    func load(convoKey: String, messagesCollectionView: MessagesCollectionView, messagesManager: MessagesManaging)
+    func observe(convoKey: String, messagesCollectionView: MessagesCollectionView, messagesManager: MessagesManaging)
     func loadMessages(endingAtMessageId id: String,
                       messagesCollectionView: MessagesCollectionView,
                       messagesManager: MessagesManaging)
@@ -20,7 +20,7 @@ class MessagesObserver: MessagesObserving {
         self.querySize = querySize
     }
 
-    func load(convoKey: String, messagesCollectionView: MessagesCollectionView, messagesManager: MessagesManaging) {
+    func observe(convoKey: String, messagesCollectionView: MessagesCollectionView, messagesManager: MessagesManaging) {
         stopObserving()
         ref = try? FirebaseHelper.main.makeReference(Child.messages, convoKey)
         handle = ref?

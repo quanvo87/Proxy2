@@ -35,9 +35,9 @@ class ConvoDetailViewController: UIViewController, ConvoManaging, ProxyManaging 
 
         super.init(nibName: nil, bundle: nil)
 
-        convoObserver.load(convoKey: convo.key, convoSenderId: convo.senderId, convoManager: self)
+        convoObserver.observe(convoKey: convo.key, convoSenderId: convo.senderId, convoManager: self)
 
-        proxyObserver.load(proxyKey: convo.senderProxyKey, proxyOwnerId: convo.senderId, proxyManager: self)
+        proxyObserver.observe(proxyKey: convo.senderProxyKey, proxyOwnerId: convo.senderId, proxyManager: self)
 
         tableView.dataSource = self
         tableView.delegate = self

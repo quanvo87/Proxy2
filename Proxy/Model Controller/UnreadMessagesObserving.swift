@@ -2,7 +2,7 @@ import FirebaseDatabase
 import FirebaseHelper
 
 protocol UnreadMessagesObserving {
-    func load(uid: String, unreadMessagesManager: UnreadMessagesManaging)
+    func observe(uid: String, unreadMessagesManager: UnreadMessagesManaging)
 }
 
 class UnreadMessagesObserver: UnreadMessagesObserving {
@@ -10,7 +10,7 @@ class UnreadMessagesObserver: UnreadMessagesObserving {
     private var addedHandle: DatabaseHandle?
     private var removedHandle: DatabaseHandle?
 
-    func load(uid: String, unreadMessagesManager: UnreadMessagesManaging) {
+    func observe(uid: String, unreadMessagesManager: UnreadMessagesManaging) {
         stopObserving()
         ref = try? FirebaseHelper.main.makeReference(Child.userInfo, uid, Child.unreadMessages)
         addedHandle = ref?.observe(.childAdded) { [weak unreadMessagesManager] (data) in

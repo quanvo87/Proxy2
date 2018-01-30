@@ -72,7 +72,7 @@ class MakeNewMessageViewController: UIViewController, ProxiesManaging, SenderMan
                                                name: NSNotification.Name.UIKeyboardWillHide,
                                                object: nil)
 
-        proxiesObserver.load(proxiesOwnerId: uid, proxiesManager: self)
+        proxiesObserver.observe(proxiesOwnerId: uid, proxiesManager: self)
 
         tableView.dataSource = self
         tableView.delegate = self

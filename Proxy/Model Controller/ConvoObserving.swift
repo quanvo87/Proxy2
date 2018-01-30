@@ -2,7 +2,7 @@ import FirebaseDatabase
 import FirebaseHelper
 
 protocol ConvoObserving: ReferenceObserving {
-    func load(convoKey: String, convoSenderId: String, convoManager: ConvoManaging)
+    func observe(convoKey: String, convoSenderId: String, convoManager: ConvoManaging)
 }
 
 class ConvoObserver: ConvoObserving {
@@ -10,7 +10,7 @@ class ConvoObserver: ConvoObserving {
     private (set) var ref: DatabaseReference?
     private let database = Firebase()
 
-    func load(convoKey: String, convoSenderId: String, convoManager: ConvoManaging) {
+    func observe(convoKey: String, convoSenderId: String, convoManager: ConvoManaging) {
         stopObserving()
         ref = try? FirebaseHelper.main.makeReference(Child.convos, convoSenderId, convoKey)
         handle = ref?.observe(.value) { [weak self, weak convoManager] (data) in

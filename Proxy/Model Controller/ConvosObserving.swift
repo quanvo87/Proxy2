@@ -3,7 +3,7 @@ import FirebaseHelper
 
 protocol ConvosObsering: ReferenceObserving {
     init(querySize: UInt)
-    func load(convosOwnerId: String, proxyKey: String?, convosManager: ConvosManaging)
+    func observe(convosOwnerId: String, proxyKey: String?, convosManager: ConvosManaging)
     func loadConvos(endingAtTimestamp timestamp: Double,
                     proxyKey: String?,
                     convosManager: ConvosManaging)
@@ -19,7 +19,7 @@ class ConvosObserver: ConvosObsering {
         self.querySize = querySize
     }
 
-    func load(convosOwnerId: String, proxyKey: String?, convosManager: ConvosManaging) {
+    func observe(convosOwnerId: String, proxyKey: String?, convosManager: ConvosManaging) {
         stopObserving()
         ref = try? FirebaseHelper.main.makeReference(Child.convos, convosOwnerId)
         handle = ref?

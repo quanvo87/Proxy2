@@ -38,7 +38,7 @@ class SettingsViewController: UIViewController, UserStatsManaging {
                            forCellReuseIdentifier: Identifier.settingsTableViewCell)
         tableView.rowHeight = 44
 
-        userStatsObserver.load(uid: uid, userStatsManager: self)
+        userStatsObserver.observe(uid: uid, userStatsManager: self)
 
         view.addSubview(tableView)
     }

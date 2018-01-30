@@ -43,11 +43,11 @@ class ProxyViewController: UIViewController, ConvosManaging, NewConvoManaging, P
 
         super.init(nibName: nil, bundle: nil)
 
-        convosObserver.load(convosOwnerId: proxy.ownerId, proxyKey: proxy.key, convosManager: self)
+        convosObserver.observe(convosOwnerId: proxy.ownerId, proxyKey: proxy.key, convosManager: self)
 
         navigationItem.rightBarButtonItems = [makeNewMessageButton, deleteProxyButton]
 
-        proxyObserver.load(proxyKey: proxy.key, proxyOwnerId: proxy.ownerId, proxyManager: self)
+        proxyObserver.observe(proxyKey: proxy.key, proxyOwnerId: proxy.ownerId, proxyManager: self)
 
         tableView.dataSource = self
         tableView.delaysContentTouches = false

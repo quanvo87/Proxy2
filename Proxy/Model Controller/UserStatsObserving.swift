@@ -3,7 +3,7 @@ import FirebaseHelper
 import UIKit
 
 protocol UserStatsObserving {
-    func load(uid: String, userStatsManager: UserStatsManaging)
+    func observe(uid: String, userStatsManager: UserStatsManaging)
 }
 
 class UserStatsObserver: UserStatsObserving {
@@ -14,7 +14,7 @@ class UserStatsObserver: UserStatsObserving {
     private var proxiesInteractedWithHandle: DatabaseHandle?
     private var proxiesInteractedWithRef: DatabaseReference?
 
-    func load(uid: String, userStatsManager: UserStatsManaging) {
+    func observe(uid: String, userStatsManager: UserStatsManaging) {
         stopObservering()
 
         messagesReceivedRef = try? FirebaseHelper.main.makeReference(Child.userInfo,

@@ -2,7 +2,7 @@ import FirebaseDatabase
 import FirebaseHelper
 
 protocol ProxyObsering: ReferenceObserving {
-    func load(proxyKey: String, proxyOwnerId: String, proxyManager: ProxyManaging)
+    func observe(proxyKey: String, proxyOwnerId: String, proxyManager: ProxyManaging)
 }
 
 class ProxyObserver: ProxyObsering {
@@ -10,7 +10,7 @@ class ProxyObserver: ProxyObsering {
     private (set) var ref: DatabaseReference?
     private let database = Firebase()
 
-    func load(proxyKey: String, proxyOwnerId: String, proxyManager: ProxyManaging) {
+    func observe(proxyKey: String, proxyOwnerId: String, proxyManager: ProxyManaging) {
         stopObserving()
         ref = try? FirebaseHelper.main.makeReference(Child.proxies, proxyOwnerId, proxyKey)
         handle = ref?.observe(.value) { [weak self, weak proxyManager] (data) in

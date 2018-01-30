@@ -35,11 +35,11 @@ class ConvoViewController: MessagesViewController, ConvoManaging, MessagesManagi
 
         super.init(nibName: nil, bundle: nil)
 
-        convoObserver.load(convoKey: convo.key, convoSenderId: convo.senderId, convoManager: self)
+        convoObserver.observe(convoKey: convo.key, convoSenderId: convo.senderId, convoManager: self)
 
         icons["blank"] = UIImage.make(color: .white)
 
-        messagesObserver.load(convoKey: convo.key, messagesCollectionView: messagesCollectionView, messagesManager: self)
+        messagesObserver.observe(convoKey: convo.key, messagesCollectionView: messagesCollectionView, messagesManager: self)
 
         navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self,
                                                                  action: #selector(showConvoDetailViewController),
@@ -53,7 +53,7 @@ class ConvoViewController: MessagesViewController, ConvoManaging, MessagesManagi
         messagesCollectionView.messagesDisplayDelegate = self
         messagesCollectionView.messagesLayoutDelegate = self
 
-        unreadMessagesObserver.load(uid: convo.senderId, unreadMessagesManager: self)
+        unreadMessagesObserver.observe(uid: convo.senderId, unreadMessagesManager: self)
     }
 
     override func viewWillAppear(_ animated: Bool) {
