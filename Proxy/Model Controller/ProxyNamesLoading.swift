@@ -31,7 +31,8 @@ class ProxyNamesLoader: ProxyNamesLoading {
                     completion(data.children.flatMap {
                         guard
                             let data = $0 as? DataSnapshot,
-                            let proxy = try? Proxy(data) else {
+                            let proxy = try? Proxy(data),
+                            proxy.ownerId != senderId else {
                                 return nil
                         }
                         return SearchTextFieldItem(title: proxy.name,

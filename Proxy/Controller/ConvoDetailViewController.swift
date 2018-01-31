@@ -3,26 +3,27 @@ import UIKit
 class ConvoDetailViewController: UIViewController, ConvoManaging, ProxyManaging {
     var convo: Convo? {
         didSet {
-            guard convo != nil else {
-                _ = navigationController?.popViewController(animated: false)
-                return
+            if convo == nil {
+                shouldClose = true
+            } else {
+                tableView.reloadData()
             }
-            tableView.reloadData()
         }
     }
     var proxy: Proxy? {
         didSet {
-            guard proxy != nil else {
-                _ = navigationController?.popViewController(animated: false)
-                return
+            if proxy == nil {
+                shouldClose = true
+            } else {
+                tableView.reloadData()
             }
-            tableView.reloadData()
         }
     }
     private let convoObserver: ConvoObserving
     private let database: Database
     private let proxyObserver: ProxyObsering
     private let tableView = UITableView(frame: .zero, style: .grouped)
+    private var shouldClose = false
 
     init(convo: Convo,
          convoObserver: ConvoObserving = ConvoObserver(),
@@ -54,9 +55,8 @@ class ConvoDetailViewController: UIViewController, ConvoManaging, ProxyManaging 
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        guard convo != nil && proxy != nil else {
+        if shouldClose {
             _ = navigationController?.popViewController(animated: false)
-            return
         }
     }
 
@@ -184,7 +184,7 @@ extension ConvoDetailViewController: UITableViewDelegate {
                                               message: "Your conversations for this proxy will be deleted.",
                                               preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
-                    self?.database.delete(proxy) { _ in }
+                    self?.database.deleteProxy(proxy) { _ in }
                     self?.navigationController?.popViewController(animated: true)
                 })
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))

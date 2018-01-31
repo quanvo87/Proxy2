@@ -20,7 +20,7 @@ protocol Database {
     typealias MessageCallback = (Result<(convo: Convo, message: Message), Error>) -> Void
     typealias ProxyCallback = (Result<Proxy, Error>) -> Void
     init(_ settings: [String: Any])
-    func delete(_ proxy: Proxy, completion: @escaping ErrorCallback)
+    func deleteProxy(_ proxy: Proxy, completion: @escaping ErrorCallback)
     func deleteUnreadMessage(_ message: Message, completion: @escaping ErrorCallback)
     func getConvo(key: String, ownerId: String, completion: @escaping ConvoCallback)
     func getProxy(key: String, completion: @escaping ProxyCallback)
@@ -47,7 +47,7 @@ class Firebase: Database {
         makeProxyRetries = settings["makeProxyRetries"] as? Int ?? Setting.makeProxyRetries
     }
 
-    func delete(_ proxy: Proxy, completion: @escaping ErrorCallback) {
+    func deleteProxy(_ proxy: Proxy, completion: @escaping ErrorCallback) {
         getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { (result) in
             switch result {
             case .failure(let error):

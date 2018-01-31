@@ -121,8 +121,7 @@ extension ConvoViewController: MessagesDataSource {
         avatarView.image = nil
         if indexPath.section == messages.count - 1 {
             avatarView.set(avatar: makeAvatar(message))
-        } else if let nextMessage = messages[safe: indexPath.section + 1],
-            nextMessage.sender != message.sender {
+        } else if let nextMessage = messages[safe: indexPath.section + 1], nextMessage.sender != message.sender {
             avatarView.set(avatar: makeAvatar(message))
         }
     }
@@ -190,8 +189,7 @@ extension ConvoViewController: MessagesDisplayDelegate {
                 return .bubbleTail(.bottomLeft, .curved)
             }
         }
-        if let nextMessage = messages[safe: indexPath.section + 1],
-            nextMessage.sender != message.sender {
+        if let nextMessage = messages[safe: indexPath.section + 1], nextMessage.sender != message.sender {
             if isFromCurrentSender(message: message) {
                 return .bubbleTail(.bottomRight, .curved)
             } else {
@@ -211,9 +209,7 @@ extension ConvoViewController: MessagesLayoutDelegate {
 
 // MARK: - UICollectionViewDelegate
 extension ConvoViewController {
-    func collectionView(_ collectionView: UICollectionView,
-                        willDisplay cell: UICollectionViewCell,
-                        forItemAt indexPath: IndexPath) {
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         guard
             indexPath.section == 0,
             let message = messages[safe: indexPath.section] else {

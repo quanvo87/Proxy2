@@ -19,7 +19,7 @@ class FirebaseTests: FirebaseTest {
         defer { waitForExpectations(timeout: 10) }
 
         FirebaseTest.sendMessage { (message, convo, _, receiver) in
-            FirebaseTest.database.delete(receiver) { (error) in
+            FirebaseTest.database.deleteProxy(receiver) { (error) in
                 XCTAssertNil(error, String(describing: error))
                 let work = GroupWork()
                 work.checkDeleted(Child.proxies, receiver.ownerId, receiver.key)
@@ -265,7 +265,7 @@ class FirebaseTests: FirebaseTest {
         defer { waitForExpectations(timeout: 10) }
 
         FirebaseTest.sendMessage { (_, senderConvo, _, receiverProxy) in
-            FirebaseTest.database.delete(receiverProxy) { (error) in
+            FirebaseTest.database.deleteProxy(receiverProxy) { (error) in
                 XCTAssertNil(error, String(describing: error))
                 FirebaseTest.database.getConvo(key: senderConvo.key, ownerId: senderConvo.senderId) { (result) in
                     switch result {
