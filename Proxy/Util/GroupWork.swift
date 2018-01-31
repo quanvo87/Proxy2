@@ -59,7 +59,7 @@ extension GroupWork {
 
     func increment(_ amount: Int, at first: String, _ rest: String...) {
         start()
-        FirebaseHelper.main.increment(amount, at: first, rest) { (error) in
+        FirebaseHelper.main.increment(by: amount, at: first, rest) { (error) in
             self.finish(withResult: error == nil)
         }
     }
