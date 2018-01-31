@@ -6,14 +6,14 @@ Create unlimited, anonymous user names (Proxy's) with just one tap. Chat with an
 - Architecture
   - Dependency injection:
     - All dependencies are protocols, so that everything is mockable and easily testable
-    - Dependencies have default values in function calls, so that in production, the calls are short and simple
+    - Dependencies have default values in function definitions, so that in production, the calls are short and simple
   - Controllers, classes, etc. only know about themselves
   - All properties and functions declared private except when required for protocol conformance
   - No singleton abuse
 
 - Database
   - [Firebase](https://firebase.google.com/)
-  - Wrote the dependency [FirebaseHelper](https://github.com/quanvo87/FirebaseHelper), safe and easy to use wrappers around common database functions
+  - Wrote the CocoaPod [FirebaseHelper](https://github.com/quanvo87/FirebaseHelper), used for its safe and easy to use wrappers around common database functions
   - Flat data structure for performant queries
   - Dealt with race conditions by checking if an invalid write occurred after the fact, then correcting the error
   - All data that is no longer needed is cleaned up when appropriate
@@ -22,7 +22,7 @@ Create unlimited, anonymous user names (Proxy's) with just one tap. Chat with an
   - Email or Facebook authentication
 
 - Concurrency:
-  - Wrote the dependency [GroupWork](https://github.com/quanvo87/GroupWork) to help with calling and waiting on multiple asynchronous tasks in a clean and easily debuggable way
+  - Wrote the CocoaPod [GroupWork](https://github.com/quanvo87/GroupWork) to help with calling and waiting on multiple asynchronous tasks in a clean and easily debuggable way
   - Search text field:
     - User stops typing -> cancel previous `DispatchWorkItem`
     - Fire off search query after 250 ms
@@ -48,6 +48,7 @@ Create unlimited, anonymous user names (Proxy's) with just one tap. Chat with an
   - Storyboard, xibs, and programmatically
   - Constraints for correct display on different device sizes
   - Different UI element and font sizes based on device size
+  - Co-authored the CocoaPod [SwiftVideoBackground](https://github.com/dingwilson/SwiftVideoBackground), which plays the log in screen background video
 
 - Testing
   - End to end tests against development database
@@ -64,7 +65,7 @@ Create unlimited, anonymous user names (Proxy's) with just one tap. Chat with an
   ```
 
   > Avoid unnecessary optionals
-  
+
   > More error information than just a `nil` object
 
 - Consistent style:
