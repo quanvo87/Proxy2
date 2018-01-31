@@ -1,7 +1,85 @@
 # Proxy - iOS
 Create unlimited, anonymous user names (Proxy's) with just one tap. Chat with any other Proxy. Delete your Proxy when you're done. Never share your phone number or email with strangers again.
 
-#### Libraries Used:
+#### Software Development Best Practices Applied:
+
+- Architecture
+  - Dependency injection:
+    - All dependencies are protocols, so that everything is mockable and easily testable
+    - Dependencies have default values in function calls, so that in production, the calls are short and simple
+  - Controllers, classes, etc. only know about themselves
+  - All properties and functions declared private except when required for protocol conformance
+  - No singleton abuse
+
+- Database
+  - [Firebase](https://firebase.google.com/)
+  - Wrote the dependency [FirebaseHelper](https://github.com/quanvo87/FirebaseHelper), safe and easy to use wrappers around common database functions
+  - Flat data structure for performant queries
+  - Dealt with race conditions by checking if an invalid write occurred after the fact, then correcting the error
+  - All data that is no longer needed is cleaned up when appropriate
+  - Data is indexed on server for performance
+  - Load partial data in controller, load more when scroll up, for performance
+  - Email or Facebook authentication
+
+- Concurrency:
+  - Wrote the dependency [GroupWork](https://github.com/quanvo87/GroupWork) to help with calling and waiting on multiple asynchronous tasks in a clean and easily debuggable way
+  - Search text field:
+    - User stops typing -> cancel previous `DispatchWorkItem`
+    - Fire off search query after 250 ms
+
+- Memory management:
+    - Weak references in closure capture lists
+    - Instruments for memory profiling
+
+- Swift features:
+  - Protocols:
+    - Composition
+      - Separation of concerns
+      - Multiple protocol conformance when needed
+    - Extensions with constraints
+    - Default implementations
+    - Separate protocol conformance in extensions for readability
+  - Collections operations: forEach, flatMap
+  - Lazy properties
+  - Self executing closures
+  - Never force down cast
+
+- UI:
+  - Storyboard, xibs, and programmatically
+  - Constraints for correct display on different device sizes
+  - Different UI element and font sizes based on device size
+
+- Testing
+  - End to end tests against development database
+
+- Error handling:
+  - `ProxyError` implements `Error`
+  - Callbacks return `Result` enum when appropriate:
+
+  ```swift
+  enum Result<T, Error> {
+      case success(T)
+      case failure(Error)
+  }
+  ```
+
+  > Avoid unnecessary optionals
+  
+  > More error information than just a `nil` object
+
+- Consistent style:
+  - Function and property naming
+  - Function and property ordering
+  - Spacing
+  - [SwiftLint](https://github.com/realm/SwiftLint)
+
+#### Acknowledgements:
+
+Knowledge:
+ - @johnsundell and his [Swift blog](https://www.swiftbysundell.com/)
+ - Many others
+
+Libraries used:
 
 - [Device](https://cocoapods.org/pods/Device)
 - [Facebook](https://cocoapods.org/pods/FacebookCore)
