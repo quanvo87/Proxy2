@@ -37,8 +37,6 @@ class ConvoViewController: MessagesViewController, ConvoManaging, MessagesManagi
 
         convoObserver.observe(convoKey: convo.key, convoSenderId: convo.senderId, convoManager: self)
 
-        icons["blank"] = UIImage.make(color: .white)
-
         messagesObserver.observe(convoKey: convo.key, messagesCollectionView: messagesCollectionView, messagesManager: self)
 
         navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self,
@@ -107,17 +105,6 @@ extension ConvoViewController: MessageInputBarDelegate {
 
 // MARK: - MessagesDataSource
 extension ConvoViewController: MessagesDataSource {
-    func avatar(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> Avatar {
-        if indexPath.section == messages.count - 1 {
-            return makeAvatar(message)
-        }
-        if let nextMessage = messages[safe: indexPath.section + 1],
-            nextMessage.sender != message.sender {
-            return makeAvatar(message)
-        }
-        return Avatar(image: icons["blank"], initials: "")
-    }
-
     func cellTopLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
         if indexPath.section == 0 {
             return makeDisplayName(message)
@@ -127,6 +114,17 @@ extension ConvoViewController: MessagesDataSource {
             return makeDisplayName(message)
         }
         return nil
+    }
+
+    func configureAvatarView(_ avatarView: AvatarView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
+        avatarView.backgroundColor = .clear
+        avatarView.image = nil
+        if indexPath.section == messages.count - 1 {
+            avatarView.set(avatar: makeAvatar(message))
+        } else if let nextMessage = messages[safe: indexPath.section + 1],
+            nextMessage.sender != message.sender {
+            avatarView.set(avatar: makeAvatar(message))
+        }
     }
 
     func currentSender() -> Sender {
@@ -253,22 +251,5 @@ private extension String {
             return ""
         }
         return String(self[..<index(startIndex, offsetBy: n)])
-    }
-}
-
-// https://stackoverflow.com/questions/26542035/create-uiimage-with-solid-color-in-swift
-private extension UIImage {
-    static func make(color: UIColor, size: CGSize = CGSize(width: 1, height: 1)) -> UIImage {
-        let rect = CGRect(origin: .zero, size: size)
-        UIGraphicsBeginImageContextWithOptions(rect.size, false, 0.0)
-        color.setFill()
-        UIRectFill(rect)
-        let image = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        if let cgImage = image?.cgImage {
-            return UIImage(cgImage: cgImage)
-        } else {
-            return UIImage()
-        }
     }
 }

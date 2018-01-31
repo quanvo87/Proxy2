@@ -4,19 +4,19 @@ platform :ios, '11.0'
 inhibit_all_warnings!
 
 def pods
-  pod 'Device'
-  pod 'FacebookCore'
-  pod 'FacebookLogin'
-  pod 'Firebase'
-  pod 'FirebaseAuth'
-  pod 'Firebase/Database'
-  pod 'FirebaseHelper', '~> 0.1'
-  pod 'GroupWork'
-  pod 'MessageKit'
-  pod 'SearchTextField'
-  pod 'Spring', :git => 'https://github.com/MengTo/Spring.git'
-  pod 'SwiftLint'
-  pod 'SwiftVideoBackground'
+  pod 'Device', '~> 3.0'
+  pod 'FacebookCore', '~> 0.3'
+  pod 'FacebookLogin', '~> 0.3'
+  pod 'Firebase', '~> 4.8'
+  pod 'FirebaseAuth', '~> 4.4'
+  pod 'FirebaseDatabase', '~> 4.1'
+  pod 'FirebaseHelper', '~> 1.0'
+  pod 'GroupWork', '~> 0.0'
+  pod 'MessageKit', '~> 0.13'
+  pod 'SearchTextField', '~> 1.2'
+  pod 'Spring', '~> 1.0'
+  pod 'SwiftLint', '~> 0.24'
+  pod 'SwiftVideoBackground', '~> 2.0'
 end
 
 target 'Proxy' do
