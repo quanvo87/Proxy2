@@ -17,13 +17,16 @@ class SettingsViewController: UIViewController, UserStatsManaging {
             tableView.reloadData()
         }
     }
+    private let auth: Auth
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
     private let userStatsObserver: UserStatsObserving
 
-    init(uid: String,
+    init(auth: Auth = Auth.auth(),
+         uid: String,
          userStatsObserver: UserStatsObserving = UserStatsObserver(),
          displayName: String?) {
+        self.auth = auth
         self.uid = uid
         self.userStatsObserver = userStatsObserver
 
@@ -123,7 +126,7 @@ extension SettingsViewController: UITableViewDelegate {
                                               message: "Are you sure you want to log out?", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "Log Out", style: .destructive) { [weak self] _ in
                     do {
-                        try Auth.auth().signOut()
+                        try self?.auth.signOut()
                     } catch {
                         self?.showErrorAlert(error)
                     }
