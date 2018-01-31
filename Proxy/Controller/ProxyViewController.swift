@@ -85,7 +85,7 @@ class ProxyViewController: UIViewController, ConvosManaging, NewConvoManaging, P
             guard let proxy = self?.proxy else {
                 return
             }
-            self?.database.delete(proxy) { _ in
+            self?.database.deleteProxy(proxy) { _ in
                 self?.navigationController?.popViewController(animated: true)
             }
         })

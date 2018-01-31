@@ -276,7 +276,7 @@ extension MakeNewMessageViewController: UITableViewDataSource {
             cell.receiverTextField.theme.font = .systemFont(ofSize: fontSize)
             cell.receiverTextField.comparisonOptions = [.caseInsensitive]
             cell.receiverTextField.delegate = self
-            cell.receiverTextField.maxResultsListHeight = Int(view.frame.height / 2)
+            cell.receiverTextField.maxResultsListHeight = isSmallDevice() ? Int(view.frame.height / 4) : Int(view.frame.height / 3)
             cell.receiverTextField.theme.cellHeight = 50
             cell.receiverTextField.theme.separatorColor = UIColor.lightGray.withAlphaComponent(0.5)
             return cell

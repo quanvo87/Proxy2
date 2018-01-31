@@ -115,7 +115,7 @@ class ProxiesViewController: UIViewController, NewConvoManaging, ProxiesManaging
                 guard let proxy = item as? Proxy else {
                     continue
                 }
-                self?.database.delete(proxy) { _ in }
+                self?.database.deleteProxy(proxy) { _ in }
             }
             self?.itemsToDelete.removeAll()
             self?.setDefaultButtons()
