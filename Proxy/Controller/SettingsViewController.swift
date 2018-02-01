@@ -117,7 +117,7 @@ extension SettingsViewController: UITableViewDelegate {
             switch indexPath.row {
             case 0:
                 let alert = UIAlertController(title: "Proxy 0.1.0",
-                                              message: "Send bugs, suggestions, etc., to:\nqvo1987@gmail.com\n\nIcons from icons8.com",
+                                              message: "Send bugs, suggestions, etc., to:\nqvo1987@gmail.com",
                                               preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "OK", style: .cancel) { _ in })
                 present(alert, animated: true)

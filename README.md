@@ -6,10 +6,10 @@ Create unlimited, anonymous user names (Proxy's) with just one tap. Chat with an
 - Architecture
   - Dependency injection:
     - All dependencies are protocols, so that everything is mockable and easily testable
-    - Dependencies have default values in function definitions, so that in production, the calls are short and simple
+    - Dependencies have default values in function definitions, so call sites in production are short and simple
   - Controllers, classes, etc. only know about themselves
   - All properties and functions declared private except when required for protocol conformance
-  - No singleton abuse
+  - Careful usage of singletons
 
 - Database
   - [Firebase](https://firebase.google.com/)

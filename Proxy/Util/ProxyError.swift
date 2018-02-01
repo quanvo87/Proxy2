@@ -1,4 +1,5 @@
 enum ProxyError: Error {
+    case blankMessage
     case inputTooLong
     case invalidData
     case missingCredentials
@@ -11,6 +12,8 @@ enum ProxyError: Error {
 
     var alertFields: (title: String, description: String) {
         switch self {
+        case .blankMessage:
+            return ("Blank message", "Please enter a message to send.")
         case .inputTooLong:
             return ("Input too long", "Please try something shorter.")
         case .invalidData:

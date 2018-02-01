@@ -6,6 +6,11 @@ private enum FirstResponder {
     case newMessageTextView
 }
 
+private enum SendMessageOutcome {
+    case failed(Error)
+    case succeeded(Convo)
+}
+
 class MakeNewMessageViewController: UIViewController, ProxiesManaging, SenderManaging {
     var proxies = [Proxy]() {
         didSet {
@@ -107,7 +112,7 @@ class MakeNewMessageViewController: UIViewController, ProxiesManaging, SenderMan
 
     private func setButtons(_ isEnabled: Bool) {
         messageInputBar.sendButton.isEnabled = isEnabled
-        navigationItem.rightBarButtonItems?.forEach { $0.isEnabled = isEnabled }
+        makeNewProxyButton.isEnabled = isEnabled
     }
 
     private func setFirstResponder() {
@@ -185,37 +190,45 @@ extension MakeNewMessageViewController: MessageInputBarDelegate {
         inputBar.inputTextView.text = ""
         isSending = true
         setButtons(false)
+        sendMessage(text) { [weak self] outcome in
+            switch outcome {
+            case .failed(let error):
+                self?._showErrorAlert(error)
+                self?.isSending = false
+                self?.setButtons(true)
+            case .succeeded(let convo):
+                self?.newConvoManager?.newConvo = convo
+                self?.navigationController?.dismiss(animated: false)
+            }
+        }
+    }
+
+    private func sendMessage(_ text: String, completion: @escaping (SendMessageOutcome) -> Void) {
+        guard text != "" else {
+            completion(.failed(ProxyError.blankMessage))
+            return
+        }
         guard let sender = sender else {
-            _showErrorAlert(ProxyError.senderMissing)
-            isSending = false
-            setButtons(true)
+            completion(.failed(ProxyError.senderMissing))
             return
         }
         guard
             let receiverName = (tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? MakeNewMessageReceiverTableViewCell)?.receiverTextField.text,
             receiverName != "" else {
-                _showErrorAlert(ProxyError.receiverMissing)
-                isSending = false
-                setButtons(true)
+                completion(.failed(ProxyError.receiverMissing))
                 return
         }
-        database.getProxy(key: receiverName) { [weak self] (result) in
+        database.getProxy(key: receiverName) { [weak self] result in
             switch result {
             case .failure:
-                self?._showErrorAlert(ProxyError.receiverNotFound)
-                self?.isSending = false
-                self?.setButtons(true)
-                return
+                completion(.failed(ProxyError.receiverNotFound))
             case .success(let receiver):
-                self?.database.sendMessage(sender: sender, receiver: receiver, text: text) { [weak self] (result) in
+                self?.database.sendMessage(sender: sender, receiver: receiver, text: text) { result in
                     switch result {
                     case .failure(let error):
-                        self?._showErrorAlert(error)
-                        self?.isSending = false
-                        self?.setButtons(true)
+                        completion(.failed(error))
                     case .success(let tuple):
-                        self?.newConvoManager?.newConvo = tuple.convo
-                        self?.navigationController?.dismiss(animated: false)
+                        completion(.succeeded(tuple.convo))
                     }
                 }
             }
