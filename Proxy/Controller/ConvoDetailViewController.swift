@@ -128,7 +128,7 @@ extension ConvoDetailViewController: UITableViewDataSource {
             return
         }
         let alert = UIAlertController(title: "Edit Receiver's Nickname", message: "Only you see this nickname.", preferredStyle: .alert)
-        alert.addTextField { (textField) in
+        alert.addTextField { textField in
             textField.autocapitalizationType = .sentences
             textField.autocorrectionType = .yes
             textField.clearButtonMode = .whileEditing
@@ -141,7 +141,7 @@ extension ConvoDetailViewController: UITableViewDataSource {
             }
             let trimmed = nickname.trimmed
             if !(nickname != "" && trimmed == "") {
-                self?.database.setReceiverNickname(to: nickname, for: convo) { (error) in
+                self?.database.setReceiverNickname(to: nickname, for: convo) { error in
                     if let error = error {
                         self?.showErrorAlert(error)
                     }

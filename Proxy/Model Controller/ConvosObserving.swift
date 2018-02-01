@@ -25,7 +25,7 @@ class ConvosObserver: ConvosObsering {
         handle = ref?
             .queryOrdered(byChild: Child.timestamp)
             .queryLimited(toLast: querySize)
-            .observe(.value) { [weak self, weak convosManager] (data) in
+            .observe(.value) { [weak self, weak convosManager] data in
                 self?.loading = true
                 convosManager?.convos = data.toConvosArray(proxyKey: proxyKey).reversed()
                 self?.loading = false
@@ -42,7 +42,7 @@ class ConvosObserver: ConvosObsering {
         ref?.queryOrdered(byChild: Child.timestamp)
             .queryEnding(atValue: timestamp)
             .queryLimited(toLast: querySize)
-            .observeSingleEvent(of: .value) { [weak self, weak convosManager] (data) in
+            .observeSingleEvent(of: .value) { [weak self, weak convosManager] data in
                 var convos = data.toConvosArray(proxyKey: proxyKey)
                 guard convos.count > 1 else {
                     return

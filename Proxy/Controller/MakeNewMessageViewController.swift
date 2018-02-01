@@ -38,6 +38,13 @@ class MakeNewMessageViewController: UIViewController, ProxiesManaging, SenderMan
     private let proxyNamesLoader: ProxyNamesLoading
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
+    private var receiverCell: MakeNewMessageReceiverTableViewCell? {
+        if let receiverCell = tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? MakeNewMessageReceiverTableViewCell {
+            return receiverCell
+        } else {
+            return nil
+        }
+    }
     private var firstResponder = FirstResponder.receiverTextField
     private var lockKeyboard = true
     private var isSending = false
@@ -118,10 +125,9 @@ class MakeNewMessageViewController: UIViewController, ProxiesManaging, SenderMan
     private func setFirstResponder() {
         switch firstResponder {
         case .receiverTextField:
-            guard let cell = tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? MakeNewMessageReceiverTableViewCell else {
-                return
+            if let receiverCell = receiverCell {
+                receiverCell.receiverTextField.becomeFirstResponder()
             }
-            cell.receiverTextField.becomeFirstResponder()
         case .newMessageTextView:
             messageInputBar.inputTextView.becomeFirstResponder()
         }
@@ -152,7 +158,7 @@ class MakeNewMessageViewController: UIViewController, ProxiesManaging, SenderMan
             return
         }
         setButtons(false)
-        database.makeProxy(ownerId: uid) { [weak self] (result) in
+        database.makeProxy(ownerId: uid) { [weak self] result in
             switch result {
             case .failure(let error):
                 self?._showErrorAlert(error)
@@ -213,7 +219,7 @@ extension MakeNewMessageViewController: MessageInputBarDelegate {
             return
         }
         guard
-            let receiverName = (tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? MakeNewMessageReceiverTableViewCell)?.receiverTextField.text,
+            let receiverName = receiverCell?.receiverTextField.text,
             receiverName != "" else {
                 completion(.failed(ProxyError.receiverMissing))
                 return
@@ -262,7 +268,7 @@ extension MakeNewMessageViewController: UITableViewDataSource {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.makeNewMessageReceiverTableViewCell) as? MakeNewMessageReceiverTableViewCell else {
                 return tableView.dequeueReusableCell(withIdentifier: Identifier.makeNewMessageReceiverTableViewCell, for: indexPath)
             }
-            cell.receiverTextField.itemSelectionHandler = { [weak self] (items, index) in
+            cell.receiverTextField.itemSelectionHandler = { [weak self] items, index in
                 guard let item = items[safe: index] else {
                     return
                 }
@@ -279,7 +285,7 @@ extension MakeNewMessageViewController: UITableViewDataSource {
                 }
                 cell.iconImageView.image = nil
                 cell.receiverTextField.showLoadingIndicator()
-                self?.proxyNamesLoader.load(query: query, senderId: _self.uid) { (items) in
+                self?.proxyNamesLoader.load(query: query, senderId: _self.uid) { items in
                     cell.receiverTextField.filterItems(items)
                     cell.receiverTextField.stopLoadingIndicator()
                 }

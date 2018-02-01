@@ -57,7 +57,7 @@ class SenderPickerViewController: UIViewController, ProxiesManaging {
             return
         }
         makeNewProxyButton.isEnabled = false
-        database.makeProxy(ownerId: uid) { [weak self] (result) in
+        database.makeProxy(ownerId: uid) { [weak self] result in
             switch result {
             case .failure(let error):
                 self?.showErrorAlert(error)

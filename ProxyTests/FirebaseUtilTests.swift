@@ -8,8 +8,8 @@ class FirebaseUtilTests: FirebaseTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        FirebaseTest.sendMessage { (_, convo, _, _) in
-            FirebaseHelper.main.get(Child.convos, convo.senderId) { (result) in
+        FirebaseTest.sendMessage { _, convo, _, _ in
+            FirebaseHelper.main.get(Child.convos, convo.senderId) { result in
                 switch result {
                 case .failure(let error):
                     XCTFail(String(describing: error))
@@ -28,8 +28,8 @@ class FirebaseUtilTests: FirebaseTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        FirebaseTest.sendMessage { (message, _, _, _) in
-            FirebaseHelper.main.get(Child.messages, message.parentConvoKey) { (result) in
+        FirebaseTest.sendMessage { message, _, _, _ in
+            FirebaseHelper.main.get(Child.messages, message.parentConvoKey) { result in
                 switch result {
                 case .failure(let error):
                     XCTFail(String(describing: error))
@@ -48,9 +48,9 @@ class FirebaseUtilTests: FirebaseTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        FirebaseTest.makeProxy { (proxy1) in
-            FirebaseTest.makeProxy { (proxy2) in
-                FirebaseHelper.main.get(Child.proxies, FirebaseTest.uid) { (result) in
+        FirebaseTest.makeProxy { proxy1 in
+            FirebaseTest.makeProxy { proxy2 in
+                FirebaseHelper.main.get(Child.proxies, FirebaseTest.uid) { result in
                     switch result {
                     case .failure(let error):
                         XCTFail(String(describing: error))
@@ -74,7 +74,7 @@ class FirebaseUtilTests: FirebaseTest {
         let work = GroupWork()
         for icon in ProxyPropertyGenerator().iconNames {
             work.start()
-            UIImage.make(name: icon) { (image) in
+            UIImage.make(name: icon) { image in
                 XCTAssertNotNil(image)
                 work.finish(withResult: true)
             }

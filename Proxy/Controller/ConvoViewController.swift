@@ -60,7 +60,7 @@ class ConvoViewController: MessagesViewController, ConvoManaging, MessagesManagi
             _ = navigationController?.popViewController(animated: false)
             return
         }
-        messagesToRead.values.forEach { [weak self] (message) in
+        messagesToRead.values.forEach { [weak self] message in
             self?.database.read(message, at: Date()) { _ in }
         }
         isPresent = true
@@ -92,7 +92,7 @@ extension ConvoViewController: MessageInputBarDelegate {
         guard text.count > 0, let convo = convo else {
             return
         }
-        database.sendMessage(convo: convo, text: text) { [weak self] (result) in
+        database.sendMessage(convo: convo, text: text) { [weak self] result in
             switch result {
             case .failure(let error):
                 self?.showErrorAlert(error)

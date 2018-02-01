@@ -13,9 +13,9 @@ class ProxiesTableViewCell: UITableViewCell {
         nicknameLabel.text = proxy.nickname
 
         iconImageView.image = nil
-        UIImage.make(name: proxy.icon) { (image) in
+        UIImage.make(name: proxy.icon) { [weak self] image in
             DispatchQueue.main.async {
-                self.iconImageView.image = image
+                self?.iconImageView.image = image
             }
         }
 

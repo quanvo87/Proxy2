@@ -27,7 +27,7 @@ class ProxyNamesLoader: ProxyNamesLoading {
                 .queryOrderedByKey()
                 .queryStarting(atValue: query)
                 .queryLimited(toFirst: _self.querySize)
-                .observeSingleEvent(of: .value) { (data) in
+                .observeSingleEvent(of: .value) { data in
                     completion(data.children.flatMap {
                         guard
                             let data = $0 as? DataSnapshot,

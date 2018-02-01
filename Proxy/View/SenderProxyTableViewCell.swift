@@ -10,9 +10,9 @@ class SenderProxyTableViewCell: UITableViewCell {
         nameLabel.text = proxy.name
         nicknameButton.setTitle(proxy.nickname == "" ? "Enter A Nickname" : proxy.nickname, for: .normal)
         iconImageView.image = nil
-        UIImage.make(name: proxy.icon) { (image) in
+        UIImage.make(name: proxy.icon) { [weak self] image in
             DispatchQueue.main.async {
-                self.iconImageView.image = image
+                self?.iconImageView.image = image
             }
         }
     }

@@ -13,9 +13,9 @@ class ConvosTableViewCell: UITableViewCell {
         timestampLabel.text = convo.timestamp.asTimeAgo
 
         iconImageView.image = nil
-        UIImage.make(name: convo.receiverIcon) { (image) in
+        UIImage.make(name: convo.receiverIcon) { [weak self] image in
             DispatchQueue.main.async {
-                self.iconImageView.image = image
+                self?.iconImageView.image = image
             }
         }
 

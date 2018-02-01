@@ -26,7 +26,7 @@ class MessagesObserver: MessagesObserving {
         handle = ref?
             .queryOrdered(byChild: Child.timestamp)
             .queryLimited(toLast: querySize)
-            .observe(.value) { [weak self, weak messagesCollectionView, weak messagesManager] (data) in
+            .observe(.value) { [weak self, weak messagesCollectionView, weak messagesManager] data in
                 self?.loading = true
                 messagesManager?.messages = data.toMessagesArray
                 messagesCollectionView?.reloadData()
@@ -45,7 +45,7 @@ class MessagesObserver: MessagesObserving {
         ref?.queryOrderedByKey()
             .queryEnding(atValue: id)
             .queryLimited(toLast: querySize)
-            .observeSingleEvent(of: .value) { [weak self, weak messagesCollectionView, weak messagesManager] (data) in
+            .observeSingleEvent(of: .value) { [weak self, weak messagesCollectionView, weak messagesManager] data in
                 var olderMessages = data.toMessagesArray
                 guard olderMessages.count > 1 else {
                     return

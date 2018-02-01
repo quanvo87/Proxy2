@@ -173,7 +173,7 @@ extension UIViewController {
     func showEditProxyNicknameAlert(_ proxy: Proxy, database: Database = Firebase()) {
         let alert = UIAlertController(title: "Edit Nickname",
                                       message: "Only you see your nickname.", preferredStyle: .alert)
-        alert.addTextField { (textField) in
+        alert.addTextField { textField in
             textField.autocapitalizationType = .sentences
             textField.autocorrectionType = .yes
             textField.clearButtonMode = .whileEditing
@@ -186,7 +186,7 @@ extension UIViewController {
             }
             let trimmed = nickname.trimmed
             if !(nickname != "" && trimmed == "") {
-                database.setNickname(to: nickname, for: proxy) { (error) in
+                database.setNickname(to: nickname, for: proxy) { error in
                     if let error = error {
                         self?.showErrorAlert(error)
                     }

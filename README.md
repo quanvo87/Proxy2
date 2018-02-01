@@ -24,12 +24,14 @@ Create unlimited, anonymous user names (Proxy's) with just one tap. Chat with an
 - Concurrency:
   - Wrote the CocoaPod [GroupWork](https://github.com/quanvo87/GroupWork) to help with calling and waiting on multiple asynchronous tasks in a clean and easily debuggable way
   - Search text field:
-    - User stops typing -> cancel previous `DispatchWorkItem`
-    - Fire off search query after 250 ms
+    - When user stops typing:
+      - Cancel previous `DispatchWorkItem`
+      - Fire off search query after 250 ms
+      - Limits amount of unnecessary queries
 
 - Memory management:
     - Weak references in closure capture lists
-    - Instruments for memory profiling
+    - Use Instruments for memory profiling
 
 - Swift features:
   - Protocols:
@@ -51,7 +53,7 @@ Create unlimited, anonymous user names (Proxy's) with just one tap. Chat with an
   - Co-authored the CocoaPod [SwiftVideoBackground](https://github.com/dingwilson/SwiftVideoBackground), which plays the log in screen background video
 
 - Testing
-  - End to end tests against development database
+  - Tests against development database using XCTest
 
 - Error handling:
   - `ProxyError` implements `Error`
@@ -80,7 +82,7 @@ Knowledge:
  - @johnsundell and his [Swift blog](https://www.swiftbysundell.com/)
  - Many others
 
-Libraries used:
+[CocoaPods](https://cocoapods.org/) used:
 
 - [Device](https://cocoapods.org/pods/Device)
 - [Facebook](https://cocoapods.org/pods/FacebookCore)

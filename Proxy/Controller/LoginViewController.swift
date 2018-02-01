@@ -44,7 +44,7 @@ class LoginViewController: UIViewController {
                 showErrorAlert(ProxyError.missingCredentials)
                 return
         }
-        loginManager.emailLogin(email: email.lowercased(), password: password) { [weak self] (error) in
+        loginManager.emailLogin(email: email.lowercased(), password: password) { [weak self] error in
             if let error = error {
                 self?.showErrorAlert(error)
             }
@@ -52,7 +52,7 @@ class LoginViewController: UIViewController {
     }
 
     @IBAction func loginWithFacebook(_ sender: AnyObject) {
-        loginManager.facebookLogin { [weak self] (error) in
+        loginManager.facebookLogin { [weak self] error in
             if let error = error {
                 self?.showErrorAlert(error)
             }
@@ -66,7 +66,7 @@ class LoginViewController: UIViewController {
                 showErrorAlert(ProxyError.missingCredentials)
                 return
         }
-        loginManager.emailSignUp(email: email.lowercased(), password: password) { [weak self] (error) in
+        loginManager.emailSignUp(email: email.lowercased(), password: password) { [weak self] error in
             if let error = error {
                 self?.showErrorAlert(error)
             }

@@ -48,7 +48,7 @@ class Firebase: Database {
     }
 
     func deleteProxy(_ proxy: Proxy, completion: @escaping ErrorCallback) {
-        getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { (result) in
+        getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { result in
             switch result {
             case .failure(let error):
                 completion(error)
@@ -76,7 +76,7 @@ class Firebase: Database {
     }
 
     func getConvo(key: String, ownerId: String, completion: @escaping ConvoCallback) {
-        FirebaseHelper.main.get(Child.convos, ownerId, key) { (result) in
+        FirebaseHelper.main.get(Child.convos, ownerId, key) { result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))
@@ -91,7 +91,7 @@ class Firebase: Database {
     }
 
     func getProxy(key: String, completion: @escaping ProxyCallback) {
-        FirebaseHelper.main.get(Child.proxyNames, key.lowercased().noWhiteSpaces) { [weak self] (result) in
+        FirebaseHelper.main.get(Child.proxyNames, key.lowercased().noWhiteSpaces) { [weak self] result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))
@@ -107,7 +107,7 @@ class Firebase: Database {
     }
 
     func getProxy(key: String, ownerId: String, completion: @escaping ProxyCallback) {
-        FirebaseHelper.main.get(Child.proxies, ownerId, key) { (result) in
+        FirebaseHelper.main.get(Child.proxies, ownerId, key) { result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))
@@ -131,12 +131,12 @@ class Firebase: Database {
             let name = generator.randomProxyName
             let proxy = Proxy(icon: generator.randomIconName, name: name, ownerId: ownerId)
             let testKey = ref.childByAutoId().key
-            FirebaseHelper.main.set(proxy.toDictionary(), at: Child.proxyNames, testKey) { [weak self] (error) in
+            FirebaseHelper.main.set(proxy.toDictionary(), at: Child.proxyNames, testKey) { [weak self] error in
                 if let error = error {
                     completion(.failure(error))
                     return
                 }
-                self?.getProxyNameCount(ref: ref, name: name) { (count) in
+                self?.getProxyNameCount(ref: ref, name: name) { count in
                     FirebaseHelper.main.delete(Child.proxyNames, testKey) { _ in }
                     guard let _self = self else {
                         return
@@ -163,7 +163,7 @@ class Firebase: Database {
     }
 
     private func getProxyNameCount(ref: DatabaseReference, name: String, completion: @escaping (UInt?) -> Void) {
-        ref.queryOrdered(byChild: Child.name).queryEqual(toValue: name).observeSingleEvent(of: .value) { (data) in
+        ref.queryOrdered(byChild: Child.name).queryEqual(toValue: name).observeSingleEvent(of: .value) { data in
             completion(data.childrenCount)
         }
     }
@@ -188,10 +188,10 @@ class Firebase: Database {
             return
         }
         let convoKey = makeConvoKey(sender: sender, receiver: receiver)
-        getConvo(key: convoKey, ownerId: sender.ownerId) { [weak self] (result) in
+        getConvo(key: convoKey, ownerId: sender.ownerId) { [weak self] result in
             switch result {
             case .failure:
-                self?.makeConvo(convoKey: convoKey, sender: sender, receiver: receiver) { (result) in
+                self?.makeConvo(convoKey: convoKey, sender: sender, receiver: receiver) { result in
                     switch result {
                     case .failure(let error):
                         completion(.failure(error))
@@ -290,7 +290,7 @@ class Firebase: Database {
     }
 
     func setIcon(to icon: String, for proxy: Proxy, completion: @escaping ErrorCallback) {
-        getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { (result) in
+        getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { result in
             switch result {
             case .failure(let error):
                 completion(error)
@@ -307,7 +307,7 @@ class Firebase: Database {
     }
 
     func setNickname(to nickname: String, for proxy: Proxy, completion: @escaping ErrorCallback) {
-        getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { (result) in
+        getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { result in
             switch result {
             case .failure(let error):
                 completion(error)
@@ -335,7 +335,7 @@ class Firebase: Database {
     }
 
     private func getConvosForProxy(key: String, ownerId: String, completion: @escaping (Result<[Convo], Error>) -> Void) {
-        FirebaseHelper.main.get(Child.convos, ownerId) { (result) in
+        FirebaseHelper.main.get(Child.convos, ownerId) { result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))
