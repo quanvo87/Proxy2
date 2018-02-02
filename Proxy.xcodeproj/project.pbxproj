@@ -66,6 +66,7 @@
 		59DECF5F1FEA56AD009ABB36 /* ConvoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59DECF5E1FEA56AD009ABB36 /* ConvoViewController.swift */; };
 		59E75B2E1F846F550033A407 /* ProxiesObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E75B2D1F846F550033A407 /* ProxiesObserving.swift */; };
 		59E75B301F846F6B0033A407 /* ProxyObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E75B2F1F846F6B0033A407 /* ProxyObserving.swift */; };
+		59F590BE2023DDBB00A03B24 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F590BD2023DDBB00A03B24 /* LoadingViewController.swift */; };
 		59FF373D1F97984200FA1AF0 /* AuthObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59FF373C1F97984200FA1AF0 /* AuthObserving.swift */; };
 		59FF37421F97A6AA00FA1AF0 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59FF37411F97A6AA00FA1AF0 /* TabBarController.swift */; };
 		9F0C2E94B3D2ACDB881894D0 /* Pods_ProxyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 677A1D9397BD6DC3C3277EF9 /* Pods_ProxyTests.framework */; };
@@ -157,6 +158,7 @@
 		59DECF5E1FEA56AD009ABB36 /* ConvoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoViewController.swift; sourceTree = "<group>"; };
 		59E75B2D1F846F550033A407 /* ProxiesObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxiesObserving.swift; sourceTree = "<group>"; };
 		59E75B2F1F846F6B0033A407 /* ProxyObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyObserving.swift; sourceTree = "<group>"; };
+		59F590BD2023DDBB00A03B24 /* LoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
 		59FF373C1F97984200FA1AF0 /* AuthObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthObserving.swift; sourceTree = "<group>"; };
 		59FF37411F97A6AA00FA1AF0 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		677A1D9397BD6DC3C3277EF9 /* Pods_ProxyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ProxyTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -214,6 +216,7 @@
 				59DECF5E1FEA56AD009ABB36 /* ConvoViewController.swift */,
 				590441EA1F98351E0015CE16 /* ConvosViewController.swift */,
 				5973C82C1F608A1D00647492 /* IconPickerViewController.swift */,
+				59F590BD2023DDBB00A03B24 /* LoadingViewController.swift */,
 				5973C8221F608A1B00647492 /* LoginViewController.swift */,
 				5973C8231F608A1C00647492 /* MakeNewMessageViewController.swift */,
 				5973C8311F608A1D00647492 /* ProxiesViewController.swift */,
@@ -806,6 +809,7 @@
 				598F8A661FEB9B2300CCF024 /* Protocol.swift in Sources */,
 				59DECF5F1FEA56AD009ABB36 /* ConvoViewController.swift in Sources */,
 				5973C8721F608A2200647492 /* Constant.swift in Sources */,
+				59F590BE2023DDBB00A03B24 /* LoadingViewController.swift in Sources */,
 				5973C8791F608A2200647492 /* loadAdjectives.swift in Sources */,
 				5973C85A1F608A2200647492 /* ProxiesTableViewCell.swift in Sources */,
 				5973C8771F608A2200647492 /* SenderPickerViewController.swift in Sources */,
