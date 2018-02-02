@@ -75,7 +75,14 @@ class ConvosViewController: UIViewController, NewConvoManaging {
         tableView.rowHeight = 80
         tableView.sectionHeaderHeight = 0
 
-        unreadMessagesObserver.observe(uid: uid, unreadMessagesManager: self)
+        unreadMessagesObserver.observe(uid: uid) { [weak self] update in
+            switch update {
+            case .added:
+                self?.unreadMessageCount += 1
+            case .removed:
+                self?.unreadMessageCount -= 1
+            }
+        }
 
         view.addSubview(tableView)
     }
@@ -175,17 +182,6 @@ extension ConvosViewController: UITableViewDelegate {
         convosObserver.loadConvos(endingAtTimestamp: convo.timestamp, proxyKey: nil) { [weak self] convos in
             self?.convos += convos
         }
-    }
-}
-
-// MARK: - UnreadMessagesManaging
-extension ConvosViewController: UnreadMessagesManaging {
-    func unreadMessageAdded(_ message: Message) {
-        unreadMessageCount += 1
-    }
-
-    func unreadMessageRemoved(_ message: Message) {
-        unreadMessageCount -= 1
     }
 }
 

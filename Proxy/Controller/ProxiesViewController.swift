@@ -52,15 +52,15 @@ class ProxiesViewController: UIViewController, NewConvoManaging {
             UIApplication.shared.isNetworkActivityIndicatorVisible = true
         }
 
+        makeNewProxyButton.isEnabled = false
+
+        navigationItem.title = "My Proxies"
+
         proxiesObserver.observe(proxiesOwnerId: uid) { [weak self] proxies in
             UIApplication.shared.isNetworkActivityIndicatorVisible = false
             self?.makeNewProxyButton.isEnabled = true
             self?.proxies = proxies
         }
-
-        makeNewProxyButton.isEnabled = false
-
-        navigationItem.title = "My Proxies"
 
         setDefaultButtons()
 

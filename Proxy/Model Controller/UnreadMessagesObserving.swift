@@ -1,8 +1,13 @@
 import FirebaseDatabase
 import FirebaseHelper
 
+enum UnreadMessageUpdate {
+    case added(Message)
+    case removed(Message)
+}
+
 protocol UnreadMessagesObserving {
-    func observe(uid: String, unreadMessagesManager: UnreadMessagesManaging)
+    func observe(uid: String, completion: @escaping (UnreadMessageUpdate) -> Void)
 }
 
 class UnreadMessagesObserver: UnreadMessagesObserving {
@@ -10,21 +15,20 @@ class UnreadMessagesObserver: UnreadMessagesObserving {
     private var addedHandle: DatabaseHandle?
     private var removedHandle: DatabaseHandle?
 
-    func observe(uid: String, unreadMessagesManager: UnreadMessagesManaging) {
+    func observe(uid: String, completion: @escaping (UnreadMessageUpdate) -> Void) {
         stopObserving()
         ref = try? FirebaseHelper.main.makeReference(Child.userInfo, uid, Child.unreadMessages)
-        addedHandle = ref?.observe(.childAdded) { [weak unreadMessagesManager] data in
-            guard let message = try? Message(data) else {
+        addedHandle = ref?.observe(.childAdded) { data in
+            do {
+                completion(.added(try Message(data)))
+            } catch {
                 FirebaseHelper.main.delete(Child.userInfo, uid, Child.unreadMessages, data.key) { _ in }
-                return
             }
-            unreadMessagesManager?.unreadMessageAdded(message)
         }
-        removedHandle = ref?.observe(.childRemoved) { [weak unreadMessagesManager] data in
-            guard let message = try? Message(data) else {
-                return
-            }
-            unreadMessagesManager?.unreadMessageRemoved(message)
+        removedHandle = ref?.observe(.childRemoved) { data in
+            do {
+                completion(.removed(try Message(data)))
+            } catch {}
         }
     }
 

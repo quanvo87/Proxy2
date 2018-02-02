@@ -34,23 +34,6 @@ class FirebaseTests: FirebaseTest {
         }
     }
 
-    func testDeleteUnreadMessage() {
-        let expectation = self.expectation(description: #function)
-        defer { waitForExpectations(timeout: 10) }
-
-        FirebaseTest.sendMessage { message, _, _, _ in
-            FirebaseTest.database.deleteUnreadMessage(message) { error in
-                XCTAssertNil(error, String(describing: error))
-                let work = GroupWork()
-                work.checkDeleted(Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
-                work.checkDeleted(Child.convos, message.receiverId, message.parentConvoKey)
-                work.allDone {
-                    expectation.fulfill()
-                }
-            }
-        }
-    }
-
     func testGetConvo() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }

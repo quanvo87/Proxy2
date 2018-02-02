@@ -62,7 +62,25 @@ class ConvoViewController: MessagesViewController {
         messagesCollectionView.messagesDisplayDelegate = self
         messagesCollectionView.messagesLayoutDelegate = self
 
-        unreadMessagesObserver.observe(uid: convo.senderId, unreadMessagesManager: self)
+        unreadMessagesObserver.observe(uid: convo.senderId) { [weak self] update in
+            guard let _self = self else {
+                return
+            }
+            switch update {
+            case .added(let message):
+                if message.parentConvoKey == _self.convo?.key {
+                    if _self.isPresent {
+                        _self.database.read(message, at: Date()) { _ in }
+                    } else {
+                        _self.messagesToRead[message.messageId] = message
+                    }
+                }
+            case .removed(let message):
+                if message.parentConvoKey == _self.convo?.key {
+                    _self.messagesToRead.removeValue(forKey: message.messageId)
+                }
+            }
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -231,25 +249,6 @@ extension ConvoViewController {
                 self?.messages = olderMessages + messages
                 self?.messagesCollectionView.reloadDataAndKeepOffset()
             }
-        }
-    }
-}
-
-// MARK: - UnreadMessagesManaging
-extension ConvoViewController: UnreadMessagesManaging {
-    func unreadMessageAdded(_ message: Message) {
-        if message.parentConvoKey == convo?.key {
-            if isPresent {
-                database.read(message, at: Date()) { _ in }
-            } else {
-                messagesToRead[message.messageId] = message
-            }
-        }
-    }
-
-    func unreadMessageRemoved(_ message: Message) {
-        if message.parentConvoKey == convo?.key {
-            messagesToRead.removeValue(forKey: message.messageId)
         }
     }
 }

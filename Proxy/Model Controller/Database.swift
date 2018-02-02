@@ -21,7 +21,6 @@ protocol Database {
     typealias ProxyCallback = (Result<Proxy, Error>) -> Void
     init(_ settings: [String: Any])
     func deleteProxy(_ proxy: Proxy, completion: @escaping ErrorCallback)
-    func deleteUnreadMessage(_ message: Message, completion: @escaping ErrorCallback)
     func getConvo(convoKey: String, ownerId: String, completion: @escaping ConvoCallback)
     func getProxy(proxyKey: String, completion: @escaping ProxyCallback)
     func getProxy(proxyKey: String, ownerId: String, completion: @escaping ProxyCallback)
@@ -43,7 +42,7 @@ class Firebase: Database {
     required init(_ settings: [String: Any] = [:]) {
         generator = settings["generator"] as? ProxyPropertyGenerating ?? ProxyPropertyGenerator()
         maxMessageSize = settings["maxMessageSize"] as? Int ?? Setting.maxMessageSize
-        maxNameSize = settings["makeNameSize"] as? Int ?? Setting.maxNameSize
+        maxNameSize = settings["maxNameSize"] as? Int ?? Setting.maxNameSize
         makeProxyRetries = settings["makeProxyRetries"] as? Int ?? Setting.makeProxyRetries
     }
 
@@ -63,15 +62,6 @@ class Firebase: Database {
                     completion(work.result ? nil : ProxyError.unknown)
                 }
             }
-        }
-    }
-
-    func deleteUnreadMessage(_ message: Message, completion: @escaping ErrorCallback) {
-        let work = GroupWork()
-        work.delete(Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
-        work.delete(Child.convos, message.receiverId, message.parentConvoKey)
-        work.allDone {
-            completion(work.result ? nil : ProxyError.unknown)
         }
     }
 
