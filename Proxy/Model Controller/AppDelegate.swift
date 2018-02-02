@@ -5,14 +5,34 @@ import FBSDKCoreKit
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow? = UIWindow(frame: UIScreen.main.bounds)
+    private let authObserver = AuthObserver()
     private var isLoggedIn = false
-    private lazy var authObserver = AuthObserver()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         setAudioSession()
         FirebaseApp.configure()
 //        Database.database().isPersistenceEnabled = true
-        authObserver.observe(self)
+        authObserver.observe { [weak self] user in
+            if let user = user {
+                var displayName = user.displayName
+                if (user.displayName == nil || user.displayName == ""), let email = user.email, email != "" {
+                    displayName = email
+                    let changeRequest = user.createProfileChangeRequest()
+                    changeRequest.displayName = email
+                    changeRequest.commitChanges()
+                }
+                self?.isLoggedIn = true
+                self?.window?.rootViewController = TabBarController(uid: user.uid, displayName: displayName)
+            } else {
+                guard
+                    let isLoggedIn = self?.isLoggedIn, isLoggedIn,
+                    let loginController = LoginViewController.make() else {
+                        return
+                }
+                self?.isLoggedIn = false
+                self?.window?.rootViewController = loginController
+            }
+        }
         return FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
     }
 
@@ -35,29 +55,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         FBSDKAppEvents.activateApp()
-    }
-}
-
-extension AppDelegate: AuthManaging {
-    func logIn(_ user: User) {
-        var displayName = user.displayName
-        if (user.displayName == nil || user.displayName == ""), let email = user.email, email != "" {
-            displayName = email
-            let changeRequest = user.createProfileChangeRequest()
-            changeRequest.displayName = email
-            changeRequest.commitChanges()
-        }
-        isLoggedIn = true
-        window?.rootViewController = TabBarController(uid: user.uid, displayName: displayName)
-    }
-
-    func logOut() {
-        guard
-            isLoggedIn,
-            let loginController = LoginViewController.make() else {
-                return
-        }
-        isLoggedIn = false
-        window?.rootViewController = loginController
     }
 }

@@ -1,20 +1,16 @@
 import FirebaseAuth
 
 protocol AuthObserving {
-    func observe(_ authManager: AuthManaging)
+    func observe(completion: @escaping (User?) -> Void)
 }
 
 class AuthObserver: AuthObserving {
     private var handle: AuthStateDidChangeListenerHandle?
 
-    func observe(_ authManager: AuthManaging) {
+    func observe(completion: @escaping (User?) -> Void) {
         stopObserving()
-        handle = Auth.auth.addStateDidChangeListener { [weak authManager] (_, user) in
-            if let user = user {
-                authManager?.logIn(user)
-            } else {
-                authManager?.logOut()
-            }
+        handle = Auth.auth.addStateDidChangeListener { (_, user) in
+            completion(user)
         }
     }
 
