@@ -36,12 +36,13 @@ class ConvoDetailViewController: UIViewController, ProxyManaging {
 
         super.init(nibName: nil, bundle: nil)
 
-        let loadingViewController = LoadingViewController()
-        add(loadingViewController)
+        DispatchQueue.main.async {
+            UIApplication.shared.isNetworkActivityIndicatorVisible = true
+        }
 
         convoObserver.observe(convoKey: convo.key, convoSenderId: convo.senderId) { [weak self] convo in
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
             self?.convo = convo
-            loadingViewController.remove()
         }
 
         proxyObserver.observe(proxyKey: convo.senderProxyKey, proxyOwnerId: convo.senderId, proxyManager: self)

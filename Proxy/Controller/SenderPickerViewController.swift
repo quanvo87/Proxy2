@@ -34,13 +34,14 @@ class SenderPickerViewController: UIViewController {
 
         super.init(nibName: nil, bundle: nil)
 
-        let loadingViewController = LoadingViewController()
-        add(loadingViewController)
+        DispatchQueue.main.async {
+            UIApplication.shared.isNetworkActivityIndicatorVisible = true
+        }
 
         proxiesObserver.observe(proxiesOwnerId: uid) { [weak self] proxies in
-            self?.proxies = proxies
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
             self?.makeNewProxyButton.isEnabled = true
-            loadingViewController.remove()
+            self?.proxies = proxies
         }
 
         makeNewProxyButton.isEnabled = false

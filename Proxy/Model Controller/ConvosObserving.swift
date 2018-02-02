@@ -1,5 +1,6 @@
 import FirebaseDatabase
 import FirebaseHelper
+import UIKit
 
 protocol ConvosObsering: ReferenceObserving {
     init(querySize: UInt)
@@ -39,10 +40,14 @@ class ConvosObserver: ConvosObsering {
             return
         }
         loading = true
+        DispatchQueue.main.async {
+            UIApplication.shared.isNetworkActivityIndicatorVisible = true
+        }
         ref?.queryOrdered(byChild: Child.timestamp)
             .queryEnding(atValue: timestamp)
             .queryLimited(toLast: querySize)
             .observeSingleEvent(of: .value) { [weak self] data in
+                UIApplication.shared.isNetworkActivityIndicatorVisible = false
                 var convos = data.toConvosArray(proxyKey: proxyKey)
                 guard convos.count > 1 else {
                     return

@@ -1,6 +1,6 @@
 import MessageKit
 
-class ConvoViewController: MessagesViewController, MessagesManaging {
+class ConvoViewController: MessagesViewController {
     var convo: Convo? {
         didSet {
             guard let convo = convo else {
@@ -35,11 +35,20 @@ class ConvoViewController: MessagesViewController, MessagesManaging {
 
         super.init(nibName: nil, bundle: nil)
 
+        DispatchQueue.main.async {
+            UIApplication.shared.isNetworkActivityIndicatorVisible = true
+        }
+
         convoObserver.observe(convoKey: convo.key, convoSenderId: convo.senderId) { [weak self] convo in
             self?.convo = convo
         }
 
-        messagesObserver.observe(convoKey: convo.key, messagesCollectionView: messagesCollectionView, messagesManager: self)
+        messagesObserver.observe(convoKey: convo.key) { [weak self] messages in
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
+            self?.messages = messages
+            self?.messagesCollectionView.reloadData()
+            self?.messagesCollectionView.scrollToBottom()
+        }
 
         navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self,
                                                                  action: #selector(showConvoDetailViewController),
@@ -217,9 +226,12 @@ extension ConvoViewController {
             let message = messages[safe: indexPath.section] else {
                 return
         }
-        messagesObserver.loadMessages(endingAtMessageId: message.messageId,
-                                      messagesCollectionView: messagesCollectionView,
-                                      messagesManager: self)
+        messagesObserver.loadMessages(endingAtMessageId: message.messageId) { [weak self] olderMessages in
+            if let messages = self?.messages {
+                self?.messages = olderMessages + messages
+                self?.messagesCollectionView.reloadDataAndKeepOffset()
+            }
+        }
     }
 }
 

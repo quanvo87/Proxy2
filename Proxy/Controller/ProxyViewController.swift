@@ -1,6 +1,6 @@
 import UIKit
 
-class ProxyViewController: UIViewController, ConvosManaging, NewConvoManaging, ProxyManaging {
+class ProxyViewController: UIViewController, NewConvoManaging, ProxyManaging {
     var convos = [Convo]() {
         didSet {
             if convos.isEmpty {

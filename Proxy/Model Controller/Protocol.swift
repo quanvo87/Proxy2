@@ -2,10 +2,6 @@ import FirebaseAuth
 import FirebaseDatabase
 import UIKit
 
-protocol MessagesManaging: class {
-    var messages: [Message] { get set }
-}
-
 protocol NewConvoManaging: class {
     var newConvo: Convo? { get set }
 }
