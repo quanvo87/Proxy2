@@ -18,22 +18,22 @@ class UserStatsObserver: UserStatsObserving {
         stopObservering()
 
         messagesReceivedRef = try? FirebaseHelper.main.makeReference(Child.userInfo,
-                                                           uid,
-                                                           IncrementableUserProperty.messagesReceived.rawValue)
+                                                                     uid,
+                                                                     IncrementableUserProperty.messagesReceived.rawValue)
         messagesReceivedHandle = messagesReceivedRef?.observe(.value) { [weak userStatsManager] data in
             userStatsManager?.messagesReceivedCount = data.asNumberLabel
         }
 
         messagesSentRef = try? FirebaseHelper.main.makeReference(Child.userInfo,
-                                                       uid,
-                                                       IncrementableUserProperty.messagesSent.rawValue)
+                                                                 uid,
+                                                                 IncrementableUserProperty.messagesSent.rawValue)
         messagesSentHandle = messagesSentRef?.observe(.value) { [weak userStatsManager] data in
             userStatsManager?.messagesSentCount = data.asNumberLabel
         }
 
         proxiesInteractedWithRef = try? FirebaseHelper.main.makeReference(Child.userInfo,
-                                                                uid,
-                                                                IncrementableUserProperty.proxiesInteractedWith.rawValue)
+                                                                          uid,
+                                                                          IncrementableUserProperty.proxiesInteractedWith.rawValue)
         proxiesInteractedWithHandle = proxiesInteractedWithRef?.observe(.value) { [weak userStatsManager] data in
             userStatsManager?.proxiesInteractedWithCount = data.asNumberLabel
         }

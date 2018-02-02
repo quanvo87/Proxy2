@@ -14,17 +14,25 @@ enum IncrementableUserProperty: String {
     case proxiesInteractedWith
 }
 
+struct DatabaseOptions {
+    static let generator = (name: "generator", value: ProxyPropertyGenerator())
+    static let makeProxyRetries = (name: "makeProxyRetries", value: 50)
+    static let maxMessageSize = (name: "maxMessageSize", value: 20000)
+    static let maxNameSize = (name: "maxNameSize", value: 50)
+    static let maxProxyCount = (name: "maxProxyCount", value: 30)
+}
+
 protocol Database {
     typealias ConvoCallback = (Result<Convo, Error>) -> Void
     typealias ErrorCallback = (Error?) -> Void
     typealias MessageCallback = (Result<(convo: Convo, message: Message), Error>) -> Void
     typealias ProxyCallback = (Result<Proxy, Error>) -> Void
-    init(_ settings: [String: Any])
+    init(_ options: [String: Any])
     func deleteProxy(_ proxy: Proxy, completion: @escaping ErrorCallback)
     func getConvo(convoKey: String, ownerId: String, completion: @escaping ConvoCallback)
     func getProxy(proxyKey: String, completion: @escaping ProxyCallback)
     func getProxy(proxyKey: String, ownerId: String, completion: @escaping ProxyCallback)
-    func makeProxy(ownerId: String, completion: @escaping ProxyCallback)
+    func makeProxy(currentProxyCount: Int, ownerId: String, completion: @escaping ProxyCallback)
     func read(_ message: Message, at date: Date, completion: @escaping ErrorCallback)
     func sendMessage(sender: Proxy, receiver: Proxy, text: String, completion: @escaping MessageCallback)
     func sendMessage(convo: Convo, text: String, completion: @escaping MessageCallback)
@@ -35,15 +43,18 @@ protocol Database {
 
 class Firebase: Database {
     private let generator: ProxyPropertyGenerating
+    private let makeProxyRetries: Int
     private let maxMessageSize: Int
     private let maxNameSize: Int
-    private let makeProxyRetries: Int
+    private let maxProxyCount: Int
+    private var isMakingProxy = false
 
-    required init(_ settings: [String: Any] = [:]) {
-        generator = settings["generator"] as? ProxyPropertyGenerating ?? ProxyPropertyGenerator()
-        maxMessageSize = settings["maxMessageSize"] as? Int ?? Setting.maxMessageSize
-        maxNameSize = settings["maxNameSize"] as? Int ?? Setting.maxNameSize
-        makeProxyRetries = settings["makeProxyRetries"] as? Int ?? Setting.makeProxyRetries
+    required init(_ options: [String: Any] = [:]) {
+        generator = options[DatabaseOptions.generator.name] as? ProxyPropertyGenerating ?? DatabaseOptions.generator.value
+        makeProxyRetries = options[DatabaseOptions.makeProxyRetries.name] as? Int ?? DatabaseOptions.makeProxyRetries.value
+        maxMessageSize = options[DatabaseOptions.maxMessageSize.name] as? Int ?? DatabaseOptions.maxMessageSize.value
+        maxNameSize = options[DatabaseOptions.maxNameSize.name] as? Int ?? DatabaseOptions.maxNameSize.value
+        maxProxyCount = options[DatabaseOptions.maxProxyCount.name] as? Int ?? DatabaseOptions.maxProxyCount.value
     }
 
     func deleteProxy(_ proxy: Proxy, completion: @escaping ErrorCallback) {
@@ -111,8 +122,25 @@ class Firebase: Database {
         }
     }
 
-    func makeProxy(ownerId: String, completion: @escaping ProxyCallback) {
-        makeProxy(ownerId: ownerId, attempt: 0, completion: completion)
+    func makeProxy(currentProxyCount: Int, ownerId: String, completion: @escaping ProxyCallback) {
+        guard !isMakingProxy else {
+            return
+        }
+        guard currentProxyCount < maxProxyCount else {
+            completion(.failure(ProxyError.tooManyProxies))
+            return
+        }
+        isMakingProxy = true
+        DispatchQueue.main.async {
+            UIApplication.shared.isNetworkActivityIndicatorVisible = true
+        }
+        makeProxy(ownerId: ownerId, attempt: 0) { [weak self] result in
+            DispatchQueue.main.async {
+                UIApplication.shared.isNetworkActivityIndicatorVisible = false
+            }
+            self?.isMakingProxy = false
+            completion(result)
+        }
     }
 
     private func makeProxy(ownerId: String, attempt: Int, completion: @escaping ProxyCallback) {

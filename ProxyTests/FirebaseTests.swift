@@ -122,7 +122,7 @@ class FirebaseTests: FirebaseTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        FirebaseTest.database.makeProxy(ownerId: FirebaseTest.uid) { result in
+        FirebaseTest.database.makeProxy(currentProxyCount: 0, ownerId: FirebaseTest.uid) { result in
             switch result {
             case .failure(let error):
                 XCTFail(String(describing: error))
@@ -143,17 +143,17 @@ class FirebaseTests: FirebaseTest {
         defer { waitForExpectations(timeout: 10) }
 
         var settings = [String: Any]()
-        settings["generator"] = GeneratorMock()
-        settings["makeProxyRetries"] = 0
+        settings[DatabaseOptions.generator.name] = GeneratorMock()
+        settings[DatabaseOptions.makeProxyRetries.name] = 0
         firebase = Firebase(settings)
 
-        firebase.makeProxy(ownerId: FirebaseTest.uid) { [weak self] result in
+        firebase.makeProxy(currentProxyCount: 0, ownerId: FirebaseTest.uid) { [weak self] result in
             switch result {
             case .failure(let error):
                 XCTFail(String(describing: error))
                 expectation.fulfill()
             case .success:
-                self?.firebase.makeProxy(ownerId: FirebaseTest.uid) { result in
+                self?.firebase.makeProxy(currentProxyCount: 1, ownerId: FirebaseTest.uid) { result in
                     switch result {
                     case .failure:
                         expectation.fulfill()

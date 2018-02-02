@@ -4,12 +4,11 @@ class ConvosViewController: UIViewController, NewConvoManaging {
     var newConvo: Convo?
     private let database: Database
     private let convosObserver: ConvosObsering
-    private let maxProxyCount: Int
     private let proxiesObserver: ProxiesObserving
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
     private let unreadMessagesObserver: UnreadMessagesObserving
-    private var proxyCount = 0
+    private var currentProxyCount = 0
     private var convos = [Convo]() {
         didSet {
             if convos.isEmpty {
@@ -35,12 +34,10 @@ class ConvosViewController: UIViewController, NewConvoManaging {
 
     init(database: Database = Firebase(),
          convosObserver: ConvosObsering = ConvosObserver(),
-         maxProxyCount: Int = Setting.maxProxyCount,
          proxiesObserver: ProxiesObserving = ProxiesObserver(),
          uid: String,
          unreadMessagesObserver: UnreadMessagesObserving = UnreadMessagesObserver()) {
         self.database = database
-        self.maxProxyCount = maxProxyCount
         self.convosObserver = convosObserver
         self.proxiesObserver = proxiesObserver
         self.uid = uid
@@ -53,7 +50,9 @@ class ConvosViewController: UIViewController, NewConvoManaging {
         }
 
         convosObserver.observe(convosOwnerId: uid, proxyKey: nil) { [weak self] convos in
-            UIApplication.shared.isNetworkActivityIndicatorVisible = false
+            DispatchQueue.main.async {
+                UIApplication.shared.isNetworkActivityIndicatorVisible = false
+            }
             self?.convos = convos
         }
 
@@ -64,7 +63,7 @@ class ConvosViewController: UIViewController, NewConvoManaging {
 
         proxiesObserver.observe(proxiesOwnerId: uid) { [weak self] proxies in
             self?.makeNewProxyButton.isEnabled = true
-            self?.proxyCount = proxies.count
+            self?.currentProxyCount = proxies.count
         }
 
         tableView.dataSource = self
@@ -100,14 +99,9 @@ class ConvosViewController: UIViewController, NewConvoManaging {
 
     @objc private func makeNewProxy() {
         makeNewProxyButton.animate()
-        tabBarController?.selectedIndex = 1
-        guard proxyCount < maxProxyCount else {
-            showErrorAlert(ProxyError.tooManyProxies)
-            return
-        }
         makeNewProxyButton.isEnabled = false
-        database.makeProxy(ownerId: uid) { [weak self] result in
-            self?.makeNewProxyButton.isEnabled = true
+        tabBarController?.selectedIndex = 1
+        database.makeProxy(currentProxyCount: currentProxyCount, ownerId: uid) { [weak self] result in
             switch result {
             case .failure(let error):
                 self?.showErrorAlert(error)
@@ -119,6 +113,7 @@ class ConvosViewController: UIViewController, NewConvoManaging {
                 }
                 proxiesViewController.scrollToTop()
             }
+            self?.makeNewProxyButton.isEnabled = true
         }
     }
 

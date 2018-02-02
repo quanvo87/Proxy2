@@ -47,7 +47,9 @@ class ConvosObserver: ConvosObsering {
             .queryLimited(toLast: querySize)
             .queryOrdered(byChild: Child.timestamp)
             .observeSingleEvent(of: .value) { [weak self] data in
-                UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                DispatchQueue.main.async {
+                    UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                }
                 var convos = data.toConvosArray(proxyKey: proxyKey)
                 guard convos.count > 1 else {
                     return

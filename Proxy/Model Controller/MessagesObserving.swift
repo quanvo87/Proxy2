@@ -43,7 +43,9 @@ class MessagesObserver: MessagesObserving {
             .queryLimited(toLast: querySize)
             .queryOrderedByKey()
             .observeSingleEvent(of: .value) { [weak self] data in
-                UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                DispatchQueue.main.async {
+                    UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                }
                 var messages = data.toMessagesArray
                 guard messages.count > 1 else {
                     return

@@ -44,7 +44,9 @@ class ConvoViewController: MessagesViewController {
         }
 
         messagesObserver.observe(convoKey: convo.key) { [weak self] messages in
-            UIApplication.shared.isNetworkActivityIndicatorVisible = false
+            DispatchQueue.main.async {
+                UIApplication.shared.isNetworkActivityIndicatorVisible = false
+            }
             self?.messages = messages
             self?.messagesCollectionView.reloadData()
             self?.messagesCollectionView.scrollToBottom()
