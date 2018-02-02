@@ -4,10 +4,8 @@ import MessageKit
 
 protocol MessagesObserving: ReferenceObserving {
     init(querySize: UInt)
-    func observe(convoKey: String, messagesCollectionView: MessagesCollectionView, messagesManager: MessagesManaging)
-    func loadMessages(endingAtMessageId id: String,
-                      messagesCollectionView: MessagesCollectionView,
-                      messagesManager: MessagesManaging)
+    func observe(convoKey: String, completion: @escaping ([Message]) -> Void)
+    func loadMessages(endingAtMessageId id: String, completion: @escaping ([Message]) -> Void)
 }
 
 class MessagesObserver: MessagesObserving {
@@ -20,40 +18,38 @@ class MessagesObserver: MessagesObserving {
         self.querySize = querySize
     }
 
-    func observe(convoKey: String, messagesCollectionView: MessagesCollectionView, messagesManager: MessagesManaging) {
+    func observe(convoKey: String, completion: @escaping ([Message]) -> Void) {
         stopObserving()
         ref = try? FirebaseHelper.main.makeReference(Child.messages, convoKey)
         handle = ref?
             .queryOrdered(byChild: Child.timestamp)
             .queryLimited(toLast: querySize)
-            .observe(.value) { [weak self, weak messagesCollectionView, weak messagesManager] data in
+            .observe(.value) { [weak self] data in
                 self?.loading = true
-                messagesManager?.messages = data.toMessagesArray
-                messagesCollectionView?.reloadData()
-                messagesCollectionView?.scrollToBottom()
+                completion(data.toMessagesArray)
                 self?.loading = false
         }
     }
 
-    func loadMessages(endingAtMessageId id: String,
-                      messagesCollectionView: MessagesCollectionView,
-                      messagesManager: MessagesManaging) {
+    func loadMessages(endingAtMessageId id: String, completion: @escaping ([Message]) -> Void) {
         guard !loading else {
             return
         }
         loading = true
+        DispatchQueue.main.async {
+            UIApplication.shared.isNetworkActivityIndicatorVisible = true
+        }
         ref?.queryOrderedByKey()
             .queryEnding(atValue: id)
             .queryLimited(toLast: querySize)
-            .observeSingleEvent(of: .value) { [weak self, weak messagesCollectionView, weak messagesManager] data in
-                var olderMessages = data.toMessagesArray
-                guard olderMessages.count > 1 else {
+            .observeSingleEvent(of: .value) { [weak self] data in
+                UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                var messages = data.toMessagesArray
+                guard messages.count > 1 else {
                     return
                 }
-                olderMessages.removeLast(1)
-                let currentMessages = messagesManager?.messages ?? []
-                messagesManager?.messages = olderMessages + currentMessages
-                messagesCollectionView?.reloadDataAndKeepOffset()
+                messages.removeLast(1)
+                completion(messages)
                 self?.loading = false
         }
     }

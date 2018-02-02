@@ -1,6 +1,6 @@
 import UIKit
 
-class ConvosViewController: UIViewController, ConvosManaging, NewConvoManaging {
+class ConvosViewController: UIViewController, NewConvoManaging {
     var convos = [Convo]() {
         didSet {
             if convos.isEmpty {
@@ -48,12 +48,13 @@ class ConvosViewController: UIViewController, ConvosManaging, NewConvoManaging {
 
         super.init(nibName: nil, bundle: nil)
 
-        let loadingViewController = LoadingViewController()
-        add(loadingViewController)
+        DispatchQueue.main.async {
+            UIApplication.shared.isNetworkActivityIndicatorVisible = true
+        }
 
         convosObserver.observe(convosOwnerId: uid, proxyKey: nil) { [weak self] convos in
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
             self?.convos = convos
-            loadingViewController.remove()
         }
 
         makeNewProxyButton.isEnabled = false
@@ -62,8 +63,8 @@ class ConvosViewController: UIViewController, ConvosManaging, NewConvoManaging {
         navigationItem.title = "Messages"
 
         proxiesObserver.observe(proxiesOwnerId: uid) { [weak self] proxies in
-            self?.proxyCount = proxies.count
             self?.makeNewProxyButton.isEnabled = true
+            self?.proxyCount = proxies.count
         }
 
         tableView.dataSource = self
@@ -172,7 +173,7 @@ extension ConvosViewController: UITableViewDelegate {
                 return
         }
         convosObserver.loadConvos(endingAtTimestamp: convo.timestamp, proxyKey: nil) { [weak self] convos in
-            self?.convos = convos
+            self?.convos += convos
         }
     }
 }

@@ -87,8 +87,8 @@ class MakeNewMessageViewController: UIViewController, SenderManaging {
                                                object: nil)
 
         proxiesObserver.observe(proxiesOwnerId: uid) { [weak self] proxies in
-            self?.proxies = proxies
             self?.makeNewProxyButton.isEnabled = true
+            self?.proxies = proxies
         }
 
         tableView.dataSource = self

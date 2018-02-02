@@ -157,21 +157,6 @@ extension UITableView {
 }
 
 extension UIViewController {
-    func add(_ child: UIViewController) {
-        addChildViewController(child)
-        view.addSubview(child.view)
-        child.didMove(toParentViewController: self)
-    }
-
-    func remove() {
-        guard parent != nil else {
-            return
-        }
-        willMove(toParentViewController: nil)
-        removeFromParentViewController()
-        view.removeFromSuperview()
-    }
-
     func showAlert(title: String?, message: String?, completion: (() -> Void)? = nil) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default) { _ in
