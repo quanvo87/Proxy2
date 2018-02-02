@@ -1,6 +1,6 @@
 import MessageKit
 
-class ConvoViewController: MessagesViewController, ConvoManaging, MessagesManaging {
+class ConvoViewController: MessagesViewController, MessagesManaging {
     var convo: Convo? {
         didSet {
             guard let convo = convo else {
@@ -35,7 +35,9 @@ class ConvoViewController: MessagesViewController, ConvoManaging, MessagesManagi
 
         super.init(nibName: nil, bundle: nil)
 
-        convoObserver.observe(convoKey: convo.key, convoSenderId: convo.senderId, convoManager: self)
+        convoObserver.observe(convoKey: convo.key, convoSenderId: convo.senderId) { [weak self] convo in
+            self?.convo = convo
+        }
 
         messagesObserver.observe(convoKey: convo.key, messagesCollectionView: messagesCollectionView, messagesManager: self)
 

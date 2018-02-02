@@ -1,6 +1,6 @@
 import UIKit
 
-class ConvoDetailViewController: UIViewController, ConvoManaging, ProxyManaging {
+class ConvoDetailViewController: UIViewController, ProxyManaging {
     var convo: Convo? {
         didSet {
             if convo == nil {
@@ -36,7 +36,13 @@ class ConvoDetailViewController: UIViewController, ConvoManaging, ProxyManaging 
 
         super.init(nibName: nil, bundle: nil)
 
-        convoObserver.observe(convoKey: convo.key, convoSenderId: convo.senderId, convoManager: self)
+        let loadingViewController = LoadingViewController()
+        add(loadingViewController)
+
+        convoObserver.observe(convoKey: convo.key, convoSenderId: convo.senderId) { [weak self] convo in
+            self?.convo = convo
+            loadingViewController.remove()
+        }
 
         proxyObserver.observe(proxyKey: convo.senderProxyKey, proxyOwnerId: convo.senderId, proxyManager: self)
 
