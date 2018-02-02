@@ -43,7 +43,9 @@ class ProxyViewController: UIViewController, ConvosManaging, NewConvoManaging, P
 
         super.init(nibName: nil, bundle: nil)
 
-        convosObserver.observe(convosOwnerId: proxy.ownerId, proxyKey: proxy.key, convosManager: self)
+        convosObserver.observe(convosOwnerId: proxy.ownerId, proxyKey: proxy.key) { [weak self] convos in
+            self?.convos = convos
+        }
 
         navigationItem.rightBarButtonItems = [makeNewMessageButton, deleteProxyButton]
 
@@ -224,6 +226,8 @@ extension ProxyViewController: UITableViewDelegate {
             let proxy = proxy else {
                 return
         }
-        convosObserver.loadConvos(endingAtTimestamp: convo.timestamp, proxyKey: proxy.key, convosManager: self)
+        convosObserver.loadConvos(endingAtTimestamp: convo.timestamp, proxyKey: proxy.key) { [weak self] convos in
+            self?.convos += convos
+        }
     }
 }

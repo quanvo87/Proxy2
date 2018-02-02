@@ -48,7 +48,13 @@ class ConvosViewController: UIViewController, ConvosManaging, NewConvoManaging {
 
         super.init(nibName: nil, bundle: nil)
 
-        convosObserver.observe(convosOwnerId: uid, proxyKey: nil, convosManager: self)
+        let loadingViewController = LoadingViewController()
+        add(loadingViewController)
+
+        convosObserver.observe(convosOwnerId: uid, proxyKey: nil) { [weak self] convos in
+            self?.convos = convos
+            loadingViewController.remove()
+        }
 
         makeNewProxyButton.isEnabled = false
 
@@ -165,7 +171,9 @@ extension ConvosViewController: UITableViewDelegate {
             let convo = convos[safe: indexPath.row] else {
                 return
         }
-        convosObserver.loadConvos(endingAtTimestamp: convo.timestamp, proxyKey: nil, convosManager: self)
+        convosObserver.loadConvos(endingAtTimestamp: convo.timestamp, proxyKey: nil) { [weak self] convos in
+            self?.convos = convos
+        }
     }
 }
 
