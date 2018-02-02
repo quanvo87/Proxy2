@@ -1,6 +1,6 @@
 import UIKit
 
-class ProxiesViewController: UIViewController, NewConvoManaging, ProxiesManaging {
+class ProxiesViewController: UIViewController, NewConvoManaging {
     var proxies = [Proxy]() {
         didSet {
             if proxies.isEmpty {
@@ -48,9 +48,18 @@ class ProxiesViewController: UIViewController, NewConvoManaging, ProxiesManaging
 
         super.init(nibName: nil, bundle: nil)
 
-        navigationItem.title = "My Proxies"
+        let loadingViewController = LoadingViewController()
+        add(loadingViewController)
 
-        proxiesObserver.observe(proxiesOwnerId: uid, proxiesManager: self)
+        proxiesObserver.observe(proxiesOwnerId: uid) { [weak self] proxies in
+            self?.proxies = proxies
+            self?.makeNewProxyButton.isEnabled = true
+            loadingViewController.remove()
+        }
+
+        makeNewProxyButton.isEnabled = false
+
+        navigationItem.title = "My Proxies"
 
         setDefaultButtons()
 

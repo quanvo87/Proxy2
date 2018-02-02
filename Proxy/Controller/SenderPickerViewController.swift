@@ -1,6 +1,6 @@
 import UIKit
 
-class SenderPickerViewController: UIViewController, ProxiesManaging {
+class SenderPickerViewController: UIViewController {
     var proxies = [Proxy]() {
         didSet {
             if proxies.isEmpty {
@@ -34,10 +34,19 @@ class SenderPickerViewController: UIViewController, ProxiesManaging {
 
         super.init(nibName: nil, bundle: nil)
 
+        let loadingViewController = LoadingViewController()
+        add(loadingViewController)
+
+        proxiesObserver.observe(proxiesOwnerId: uid) { [weak self] proxies in
+            self?.proxies = proxies
+            self?.makeNewProxyButton.isEnabled = true
+            loadingViewController.remove()
+        }
+
+        makeNewProxyButton.isEnabled = false
+
         navigationItem.rightBarButtonItem = makeNewProxyButton
         navigationItem.title = "Pick Your Sender"
-
-        proxiesObserver.observe(proxiesOwnerId: uid, proxiesManager: self)
 
         tableView.dataSource = self
         tableView.delegate = self

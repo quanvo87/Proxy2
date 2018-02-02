@@ -33,10 +33,6 @@ extension NewConvoManaging where Self: UIViewController {
     }
 }
 
-protocol ProxiesManaging: class {
-    var proxies: [Proxy] { get set }
-}
-
 protocol ProxyManaging: class {
     var proxy: Proxy? { get set }
 }

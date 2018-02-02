@@ -11,7 +11,7 @@ private enum SendMessageOutcome {
     case succeeded(Convo)
 }
 
-class MakeNewMessageViewController: UIViewController, ProxiesManaging, SenderManaging {
+class MakeNewMessageViewController: UIViewController, SenderManaging {
     var proxies = [Proxy]() {
         didSet {
             if proxies.isEmpty {
@@ -73,6 +73,8 @@ class MakeNewMessageViewController: UIViewController, ProxiesManaging, SenderMan
 
         super.init(nibName: nil, bundle: nil)
 
+        makeNewProxyButton.isEnabled = false
+
         messageInputBar.delegate = self
         messageInputBar.inputTextView.delegate = self
 
@@ -84,7 +86,10 @@ class MakeNewMessageViewController: UIViewController, ProxiesManaging, SenderMan
                                                name: NSNotification.Name.UIKeyboardWillHide,
                                                object: nil)
 
-        proxiesObserver.observe(proxiesOwnerId: uid, proxiesManager: self)
+        proxiesObserver.observe(proxiesOwnerId: uid) { [weak self] proxies in
+            self?.proxies = proxies
+            self?.makeNewProxyButton.isEnabled = true
+        }
 
         tableView.dataSource = self
         tableView.delegate = self

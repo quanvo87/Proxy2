@@ -1,6 +1,6 @@
 import UIKit
 
-class ConvosViewController: UIViewController, ConvosManaging, NewConvoManaging, ProxiesManaging {
+class ConvosViewController: UIViewController, ConvosManaging, NewConvoManaging {
     var convos = [Convo]() {
         didSet {
             if convos.isEmpty {
@@ -18,7 +18,7 @@ class ConvosViewController: UIViewController, ConvosManaging, NewConvoManaging, 
         }
     }
     var newConvo: Convo?
-    var proxies = [Proxy]()
+    var proxyCount = 0
     private let database: Database
     private let convosObserver: ConvosObsering
     private let maxProxyCount: Int
@@ -50,10 +50,15 @@ class ConvosViewController: UIViewController, ConvosManaging, NewConvoManaging, 
 
         convosObserver.observe(convosOwnerId: uid, proxyKey: nil, convosManager: self)
 
+        makeNewProxyButton.isEnabled = false
+
         navigationItem.rightBarButtonItems = [makeNewMessageButton, makeNewProxyButton]
         navigationItem.title = "Messages"
 
-        proxiesObserver.observe(proxiesOwnerId: uid, proxiesManager: self)
+        proxiesObserver.observe(proxiesOwnerId: uid) { [weak self] proxies in
+            self?.proxyCount = proxies.count
+            self?.makeNewProxyButton.isEnabled = true
+        }
 
         tableView.dataSource = self
         tableView.delegate = self
@@ -81,12 +86,14 @@ class ConvosViewController: UIViewController, ConvosManaging, NewConvoManaging, 
 
     @objc private func makeNewProxy() {
         makeNewProxyButton.animate()
-        guard proxies.count < maxProxyCount else {
+        tabBarController?.selectedIndex = 1
+        guard proxyCount < maxProxyCount else {
             showErrorAlert(ProxyError.tooManyProxies)
             return
         }
         makeNewProxyButton.isEnabled = false
         database.makeProxy(ownerId: uid) { [weak self] result in
+            self?.makeNewProxyButton.isEnabled = true
             switch result {
             case .failure(let error):
                 self?.showErrorAlert(error)
@@ -98,8 +105,6 @@ class ConvosViewController: UIViewController, ConvosManaging, NewConvoManaging, 
                 }
                 proxiesViewController.scrollToTop()
             }
-            self?.tabBarController?.selectedIndex = 1
-            self?.makeNewProxyButton.isEnabled = true
         }
     }
 
