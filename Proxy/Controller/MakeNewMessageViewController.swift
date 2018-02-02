@@ -12,16 +12,6 @@ private enum SendMessageOutcome {
 }
 
 class MakeNewMessageViewController: UIViewController, SenderManaging {
-    var proxies = [Proxy]() {
-        didSet {
-            if proxies.isEmpty {
-                makeNewProxyButton.animate(loop: true)
-            } else {
-                makeNewProxyButton.stopAnimating()
-            }
-            tableView.reloadData()
-        }
-    }
     var sender: Proxy? {
         didSet {
             tableView.reloadData()
@@ -38,6 +28,19 @@ class MakeNewMessageViewController: UIViewController, SenderManaging {
     private let proxyNamesLoader: ProxyNamesLoading
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
+    private var firstResponder = FirstResponder.receiverTextField
+    private var isSending = false
+    private var lockKeyboard = true
+    private var proxies = [Proxy]() {
+        didSet {
+            if proxies.isEmpty {
+                makeNewProxyButton.animate(loop: true)
+            } else {
+                makeNewProxyButton.stopAnimating()
+            }
+            tableView.reloadData()
+        }
+    }
     private var receiverCell: MakeNewMessageReceiverTableViewCell? {
         if let receiverCell = tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? MakeNewMessageReceiverTableViewCell {
             return receiverCell
@@ -45,9 +48,6 @@ class MakeNewMessageViewController: UIViewController, SenderManaging {
             return nil
         }
     }
-    private var firstResponder = FirstResponder.receiverTextField
-    private var lockKeyboard = true
-    private var isSending = false
     private weak var newConvoManager: NewConvoManaging?
     private lazy var cancelButton = UIBarButtonItem.make(target: self,
                                                          action: #selector(close),
@@ -229,7 +229,7 @@ extension MakeNewMessageViewController: MessageInputBarDelegate {
                 completion(.failed(ProxyError.receiverMissing))
                 return
         }
-        database.getProxy(key: receiverName) { [weak self] result in
+        database.getProxy(proxyKey: receiverName) { [weak self] result in
             switch result {
             case .failure:
                 completion(.failed(ProxyError.receiverNotFound))

@@ -127,7 +127,7 @@ extension GroupWork {
     func setReceiverConvo(_ convo: Convo, database: Database = Firebase()) {
         start()
         FirebaseHelper.main.set(convo.toDictionary(), at: Child.convos, convo.senderId, convo.key) { [weak self] error in
-            database.getProxy(key: convo.senderProxyKey, ownerId: convo.senderId) { result in
+            database.getProxy(proxyKey: convo.senderProxyKey, ownerId: convo.senderId) { result in
                 switch result {
                 case .failure:
                     FirebaseHelper.main.delete(Child.convos, convo.senderId, convo.key) { _ in }
@@ -143,7 +143,7 @@ extension GroupWork {
         for convo in convos {
             start()
             FirebaseHelper.main.set(true, at: Child.convos, convo.receiverId, convo.key, Child.receiverDeletedProxy) { [weak self] error in
-                database.getConvo(key: convo.key, ownerId: convo.receiverId) { result in
+                database.getConvo(convoKey: convo.key, ownerId: convo.receiverId) { result in
                     switch result {
                     case .failure:
                         FirebaseHelper.main.delete(Child.convos, convo.receiverId, convo.key) { _ in }
@@ -170,7 +170,7 @@ extension GroupWork {
         case .text(let text):
             start()
             FirebaseHelper.main.set(message.toDictionary(), at: Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId) { [weak self] error in
-                database.getProxy(key: message.receiverProxyKey, ownerId: message.receiverId) { result in
+                database.getProxy(proxyKey: message.receiverProxyKey, ownerId: message.receiverId) { result in
                     switch result {
                     case .failure:
                         FirebaseHelper.main.delete(Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId) { _ in }
@@ -190,7 +190,7 @@ extension GroupWork {
             try? FirebaseHelper.main.makeReference(Child.convos, convo.receiverId, convo.key)
                 .updateChildValues(convoUpdates) { [weak self] error, _ in
                     self?.finish(withResult: error == nil)
-                    database.getConvo(key: convo.key, ownerId: convo.receiverId) { result in
+                    database.getConvo(convoKey: convo.key, ownerId: convo.receiverId) { result in
                         switch result {
                         case .failure:
                             FirebaseHelper.main.delete(Child.convos, convo.receiverId, convo.key) { _ in }
@@ -206,7 +206,7 @@ extension GroupWork {
             try? FirebaseHelper.main.makeReference(Child.proxies, convo.receiverId, convo.receiverProxyKey)
                 .updateChildValues(proxyUpdates) { [weak self] error, _ in
                     self?.finish(withResult: error == nil)
-                    database.getProxy(key: message.receiverProxyKey, ownerId: message.receiverId) { result in
+                    database.getProxy(proxyKey: message.receiverProxyKey, ownerId: message.receiverId) { result in
                         switch result {
                         case .failure:
                             FirebaseHelper.main.delete(Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId) { _ in }

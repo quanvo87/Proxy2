@@ -1,7 +1,12 @@
 import UIKit
 
 class SenderPickerViewController: UIViewController {
-    var proxies = [Proxy]() {
+    private let database: Database
+    private let maxProxyCount: Int
+    private let proxiesObserver: ProxiesObserving
+    private let tableView = UITableView(frame: .zero, style: .grouped)
+    private let uid: String
+    private var proxies = [Proxy]() {
         didSet {
             if proxies.isEmpty {
                 makeNewProxyButton.animate(loop: true)
@@ -11,11 +16,6 @@ class SenderPickerViewController: UIViewController {
             tableView.reloadData()
         }
     }
-    private let database: Database
-    private let maxProxyCount: Int
-    private let proxiesObserver: ProxiesObserving
-    private let tableView = UITableView(frame: .zero, style: .grouped)
-    private let uid: String
     private weak var senderManager: SenderManaging?
     private lazy var makeNewProxyButton = UIBarButtonItem.make(target: self,
                                                                action: #selector(makeNewProxy),

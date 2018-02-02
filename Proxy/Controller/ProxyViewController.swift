@@ -1,7 +1,12 @@
 import UIKit
 
-class ProxyViewController: UIViewController, NewConvoManaging, ProxyManaging {
-    var convos = [Convo]() {
+class ProxyViewController: UIViewController, NewConvoManaging {
+    var newConvo: Convo?
+    private let convosObserver: ConvosObsering
+    private let database: Database
+    private let proxyObserver: ProxyObsering
+    private let tableView = UITableView(frame: .zero, style: .grouped)
+    private var convos = [Convo]() {
         didSet {
             if convos.isEmpty {
                 makeNewMessageButton.animate(loop: true)
@@ -11,7 +16,7 @@ class ProxyViewController: UIViewController, NewConvoManaging, ProxyManaging {
             tableView.reloadSections(IndexSet(integer: 1), with: .automatic)
         }
     }
-    var proxy: Proxy? {
+    private var proxy: Proxy? {
         didSet {
             guard proxy != nil else {
                 _ = navigationController?.popViewController(animated: false)
@@ -20,11 +25,6 @@ class ProxyViewController: UIViewController, NewConvoManaging, ProxyManaging {
             tableView.reloadData()
         }
     }
-    var newConvo: Convo?
-    private let convosObserver: ConvosObsering
-    private let database: Database
-    private let proxyObserver: ProxyObsering
-    private let tableView = UITableView(frame: .zero, style: .grouped)
     private lazy var makeNewMessageButton = UIBarButtonItem.make(target: self,
                                                                  action: #selector(showMakeNewMessageController),
                                                                  imageName: ButtonName.makeNewMessage)
@@ -43,13 +43,20 @@ class ProxyViewController: UIViewController, NewConvoManaging, ProxyManaging {
 
         super.init(nibName: nil, bundle: nil)
 
+        DispatchQueue.main.async {
+            UIApplication.shared.isNetworkActivityIndicatorVisible = true
+        }
+
         convosObserver.observe(convosOwnerId: proxy.ownerId, proxyKey: proxy.key) { [weak self] convos in
             self?.convos = convos
         }
 
         navigationItem.rightBarButtonItems = [makeNewMessageButton, deleteProxyButton]
 
-        proxyObserver.observe(proxyKey: proxy.key, proxyOwnerId: proxy.ownerId, proxyManager: self)
+        proxyObserver.observe(proxyKey: proxy.key, proxyOwnerId: proxy.ownerId) { [weak self] proxy in
+            UIApplication.shared.isNetworkActivityIndicatorVisible = true
+            self?.proxy = proxy
+        }
 
         tableView.dataSource = self
         tableView.delaysContentTouches = false

@@ -1,7 +1,15 @@
 import MessageKit
 
 class ConvoViewController: MessagesViewController {
-    var convo: Convo? {
+    private let convoObserver: ConvoObserving
+    private let database: Database
+    private let messagesObserver: MessagesObserving
+    private let unreadMessagesObserver: UnreadMessagesObserving
+    private var icons = [String: UIImage]()
+    private var isPresent = false
+    private var messages = [Message]()
+    private var messagesToRead = [String: Message]()
+    private var convo: Convo? {
         didSet {
             guard let convo = convo else {
                 _ = navigationController?.popViewController(animated: false)
@@ -13,14 +21,6 @@ class ConvoViewController: MessagesViewController {
             navigationItem.title = convo.receiverDisplayName
         }
     }
-    var messages = [Message]()
-    private let convoObserver: ConvoObserving
-    private let database: Database
-    private let messagesObserver: MessagesObserving
-    private let unreadMessagesObserver: UnreadMessagesObserving
-    private var icons = [String: UIImage]()
-    private var isPresent = false
-    private var messagesToRead = [String: Message]()
 
     init(convo: Convo,
          convoObserver: ConvoObserving = ConvoObserver(),

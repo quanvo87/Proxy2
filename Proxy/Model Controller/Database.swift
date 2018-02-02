@@ -22,9 +22,9 @@ protocol Database {
     init(_ settings: [String: Any])
     func deleteProxy(_ proxy: Proxy, completion: @escaping ErrorCallback)
     func deleteUnreadMessage(_ message: Message, completion: @escaping ErrorCallback)
-    func getConvo(key: String, ownerId: String, completion: @escaping ConvoCallback)
-    func getProxy(key: String, completion: @escaping ProxyCallback)
-    func getProxy(key: String, ownerId: String, completion: @escaping ProxyCallback)
+    func getConvo(convoKey: String, ownerId: String, completion: @escaping ConvoCallback)
+    func getProxy(proxyKey: String, completion: @escaping ProxyCallback)
+    func getProxy(proxyKey: String, ownerId: String, completion: @escaping ProxyCallback)
     func makeProxy(ownerId: String, completion: @escaping ProxyCallback)
     func read(_ message: Message, at date: Date, completion: @escaping ErrorCallback)
     func sendMessage(sender: Proxy, receiver: Proxy, text: String, completion: @escaping MessageCallback)
@@ -75,8 +75,8 @@ class Firebase: Database {
         }
     }
 
-    func getConvo(key: String, ownerId: String, completion: @escaping ConvoCallback) {
-        FirebaseHelper.main.get(Child.convos, ownerId, key) { result in
+    func getConvo(convoKey: String, ownerId: String, completion: @escaping ConvoCallback) {
+        FirebaseHelper.main.get(Child.convos, ownerId, convoKey) { result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))
@@ -90,15 +90,15 @@ class Firebase: Database {
         }
     }
 
-    func getProxy(key: String, completion: @escaping ProxyCallback) {
-        FirebaseHelper.main.get(Child.proxyNames, key.lowercased().noWhiteSpaces) { [weak self] result in
+    func getProxy(proxyKey: String, completion: @escaping ProxyCallback) {
+        FirebaseHelper.main.get(Child.proxyNames, proxyKey.lowercased().noWhiteSpaces) { [weak self] result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))
             case .success(let data):
                 do {
                     let proxy = try Proxy(data)
-                    self?.getProxy(key: proxy.key, ownerId: proxy.ownerId, completion: completion)
+                    self?.getProxy(proxyKey: proxy.key, ownerId: proxy.ownerId, completion: completion)
                 } catch {
                     completion(.failure(error))
                 }
@@ -106,8 +106,8 @@ class Firebase: Database {
         }
     }
 
-    func getProxy(key: String, ownerId: String, completion: @escaping ProxyCallback) {
-        FirebaseHelper.main.get(Child.proxies, ownerId, key) { result in
+    func getProxy(proxyKey: String, ownerId: String, completion: @escaping ProxyCallback) {
+        FirebaseHelper.main.get(Child.proxies, ownerId, proxyKey) { result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))
@@ -188,7 +188,7 @@ class Firebase: Database {
             return
         }
         let convoKey = makeConvoKey(sender: sender, receiver: receiver)
-        getConvo(key: convoKey, ownerId: sender.ownerId) { [weak self] result in
+        getConvo(convoKey: convoKey, ownerId: sender.ownerId) { [weak self] result in
             switch result {
             case .failure:
                 self?.makeConvo(convoKey: convoKey, sender: sender, receiver: receiver) { result in

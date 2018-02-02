@@ -24,9 +24,9 @@ class ProxyNamesLoader: ProxyNamesLoading {
                 return
             }
             self?.ref?
+                .queryLimited(toFirst: _self.querySize)
                 .queryOrderedByKey()
                 .queryStarting(atValue: query)
-                .queryLimited(toFirst: _self.querySize)
                 .observeSingleEvent(of: .value) { data in
                     completion(data.children.flatMap {
                         guard

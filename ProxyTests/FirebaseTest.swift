@@ -72,7 +72,7 @@ class FirebaseTest: XCTestCase {
                     case .failure:
                         XCTFail()
                     case .success(let tuple):
-                        database.getConvo(key: tuple.convo.key, ownerId: tuple.convo.senderId) { result in
+                        database.getConvo(convoKey: tuple.convo.key, ownerId: tuple.convo.senderId) { result in
                             switch result {
                             case .failure(let error):
                                 XCTFail(String(describing: error))
