@@ -1,26 +1,14 @@
 import FirebaseAuth
 import UIKit
 
-class SettingsViewController: UIViewController, UserStatsManaging {
-    var messagesReceivedCount = "-" {
-        didSet {
-            tableView.reloadData()
-        }
-    }
-    var messagesSentCount = "-" {
-        didSet {
-            tableView.reloadData()
-        }
-    }
-    var proxiesInteractedWithCount = "-" {
-        didSet {
-            tableView.reloadData()
-        }
-    }
+class SettingsViewController: UIViewController {
     private let auth: Auth
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
     private let userStatsObserver: UserStatsObserving
+    private var messagesReceivedCount = "-"
+    private var messagesSentCount = "-"
+    private var proxiesInteractedWithCount = "-"
 
     init(auth: Auth = Auth.auth(),
          uid: String,
@@ -41,7 +29,17 @@ class SettingsViewController: UIViewController, UserStatsManaging {
                            forCellReuseIdentifier: Identifier.settingsTableViewCell)
         tableView.rowHeight = 44
 
-        userStatsObserver.observe(uid: uid, userStatsManager: self)
+        userStatsObserver.observe(uid: uid) { [weak self] update in
+            switch update {
+            case .messagesReceived(let val):
+                self?.messagesReceivedCount = val
+            case .messagesSent(let val):
+                self?.messagesSentCount = val
+            case .proxiesInteractedWith(let val):
+                self?.proxiesInteractedWithCount = val
+            }
+            self?.tableView.reloadData()
+        }
 
         view.addSubview(tableView)
     }

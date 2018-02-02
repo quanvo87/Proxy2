@@ -2,8 +2,14 @@ import FirebaseDatabase
 import FirebaseHelper
 import UIKit
 
+enum UserStatsUpdate {
+    case messagesReceived(String)
+    case messagesSent(String)
+    case proxiesInteractedWith(String)
+}
+
 protocol UserStatsObserving {
-    func observe(uid: String, userStatsManager: UserStatsManaging)
+    func observe(uid: String, completion: @escaping (UserStatsUpdate) -> Void)
 }
 
 class UserStatsObserver: UserStatsObserving {
@@ -14,28 +20,19 @@ class UserStatsObserver: UserStatsObserving {
     private var proxiesInteractedWithHandle: DatabaseHandle?
     private var proxiesInteractedWithRef: DatabaseReference?
 
-    func observe(uid: String, userStatsManager: UserStatsManaging) {
+    func observe(uid: String, completion: @escaping (UserStatsUpdate) -> Void) {
         stopObservering()
-
-        messagesReceivedRef = try? FirebaseHelper.main.makeReference(Child.userInfo,
-                                                                     uid,
-                                                                     IncrementableUserProperty.messagesReceived.rawValue)
-        messagesReceivedHandle = messagesReceivedRef?.observe(.value) { [weak userStatsManager] data in
-            userStatsManager?.messagesReceivedCount = data.asNumberLabel
+        messagesReceivedRef = try? FirebaseHelper.main.makeReference(Child.userInfo, uid, IncrementableUserProperty.messagesReceived.rawValue)
+        messagesReceivedHandle = messagesReceivedRef?.observe(.value) { data in
+            completion(.messagesReceived(data.asNumberLabel))
         }
-
-        messagesSentRef = try? FirebaseHelper.main.makeReference(Child.userInfo,
-                                                                 uid,
-                                                                 IncrementableUserProperty.messagesSent.rawValue)
-        messagesSentHandle = messagesSentRef?.observe(.value) { [weak userStatsManager] data in
-            userStatsManager?.messagesSentCount = data.asNumberLabel
+        messagesSentRef = try? FirebaseHelper.main.makeReference(Child.userInfo, uid, IncrementableUserProperty.messagesSent.rawValue)
+        messagesSentHandle = messagesSentRef?.observe(.value) { data in
+            completion(.messagesSent(data.asNumberLabel))
         }
-
-        proxiesInteractedWithRef = try? FirebaseHelper.main.makeReference(Child.userInfo,
-                                                                          uid,
-                                                                          IncrementableUserProperty.proxiesInteractedWith.rawValue)
-        proxiesInteractedWithHandle = proxiesInteractedWithRef?.observe(.value) { [weak userStatsManager] data in
-            userStatsManager?.proxiesInteractedWithCount = data.asNumberLabel
+        proxiesInteractedWithRef = try? FirebaseHelper.main.makeReference(Child.userInfo, uid, IncrementableUserProperty.proxiesInteractedWith.rawValue)
+        proxiesInteractedWithHandle = proxiesInteractedWithRef?.observe(.value) { data in
+            completion(.proxiesInteractedWith(data.asNumberLabel))
         }
     }
 
