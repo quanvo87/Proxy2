@@ -54,7 +54,7 @@ class FirebaseTest: XCTestCase {
     }
 
     static func makeProxy(ownerId: String = FirebaseTest.uid, completion: @escaping (Proxy) -> Void) {
-        database.makeProxy(ownerId: ownerId) { result in
+        database.makeProxy(currentProxyCount: 0, ownerId: ownerId) { result in
             switch result {
             case .failure:
                 XCTFail()

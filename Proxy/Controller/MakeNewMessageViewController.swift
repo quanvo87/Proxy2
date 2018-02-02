@@ -22,7 +22,6 @@ class MakeNewMessageViewController: UIViewController, SenderManaging {
         return messageInputBar
     }
     private let database: Database
-    private let maxProxyCount: Int
     private let messageInputBar = MessageInputBar()
     private let proxiesObserver: ProxiesObserving
     private let proxyNamesLoader: ProxyNamesLoading
@@ -58,14 +57,12 @@ class MakeNewMessageViewController: UIViewController, SenderManaging {
 
     init(sender: Proxy?,
          database: Database = Firebase(),
-         maxProxyCount: Int = Setting.maxProxyCount,
          proxiesObserver: ProxiesObserving = ProxiesObserver(),
          proxyNamesLoader: ProxyNamesLoading = ProxyNamesLoader(),
          uid: String,
          newConvoManager: NewConvoManaging?) {
         self.sender = sender
         self.database = database
-        self.maxProxyCount = maxProxyCount
         self.proxiesObserver = proxiesObserver
         self.proxyNamesLoader = proxyNamesLoader
         self.uid = uid
@@ -158,12 +155,8 @@ class MakeNewMessageViewController: UIViewController, SenderManaging {
 
     @objc private func makeNewProxy() {
         makeNewProxyButton.animate()
-        guard proxies.count < maxProxyCount else {
-            _showErrorAlert(ProxyError.tooManyProxies)
-            return
-        }
         setButtons(false)
-        database.makeProxy(ownerId: uid) { [weak self] result in
+        database.makeProxy(currentProxyCount: proxies.count, ownerId: uid) { [weak self] result in
             switch result {
             case .failure(let error):
                 self?._showErrorAlert(error)

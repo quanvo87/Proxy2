@@ -54,7 +54,9 @@ class ProxyViewController: UIViewController, NewConvoManaging {
         navigationItem.rightBarButtonItems = [makeNewMessageButton, deleteProxyButton]
 
         proxyObserver.observe(proxyKey: proxy.key, proxyOwnerId: proxy.ownerId) { [weak self] proxy in
-            UIApplication.shared.isNetworkActivityIndicatorVisible = true
+            DispatchQueue.main.async {
+                UIApplication.shared.isNetworkActivityIndicatorVisible = false
+            }
             self?.proxy = proxy
         }
 

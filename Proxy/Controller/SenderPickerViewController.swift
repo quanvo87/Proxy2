@@ -2,7 +2,6 @@ import UIKit
 
 class SenderPickerViewController: UIViewController {
     private let database: Database
-    private let maxProxyCount: Int
     private let proxiesObserver: ProxiesObserving
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
@@ -22,12 +21,10 @@ class SenderPickerViewController: UIViewController {
                                                                imageName: ButtonName.makeNewProxy)
 
     init(database: Database = Firebase(),
-         maxProxyCount: Int = Setting.maxProxyCount,
          proxiesObserver: ProxiesObserving = ProxiesObserver(),
          uid: String,
          senderManager: SenderManaging?) {
         self.database = database
-        self.maxProxyCount = maxProxyCount
         self.proxiesObserver = proxiesObserver
         self.uid = uid
         self.senderManager = senderManager
@@ -39,7 +36,9 @@ class SenderPickerViewController: UIViewController {
         }
 
         proxiesObserver.observe(proxiesOwnerId: uid) { [weak self] proxies in
-            UIApplication.shared.isNetworkActivityIndicatorVisible = false
+            DispatchQueue.main.async {
+                UIApplication.shared.isNetworkActivityIndicatorVisible = false
+            }
             self?.makeNewProxyButton.isEnabled = true
             self?.proxies = proxies
         }
@@ -62,12 +61,8 @@ class SenderPickerViewController: UIViewController {
 
     @objc private func makeNewProxy() {
         makeNewProxyButton.animate()
-        guard proxies.count < maxProxyCount else {
-            showErrorAlert(ProxyError.tooManyProxies)
-            return
-        }
         makeNewProxyButton.isEnabled = false
-        database.makeProxy(ownerId: uid) { [weak self] result in
+        database.makeProxy(currentProxyCount: proxies.count, ownerId: uid) { [weak self] result in
             switch result {
             case .failure(let error):
                 self?.showErrorAlert(error)
