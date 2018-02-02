@@ -8,23 +8,9 @@ class ConvosViewController: UIViewController, NewConvoManaging {
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
     private let unreadMessagesObserver: UnreadMessagesObserving
+    private var convos = [Convo]()
     private var currentProxyCount = 0
-    private var convos = [Convo]() {
-        didSet {
-            if convos.isEmpty {
-                makeNewMessageButton.animate(loop: true)
-            } else {
-                makeNewMessageButton.stopAnimating()
-            }
-            tableView.reloadData()
-        }
-    }
-    private var unreadMessageCount = 0 {
-        didSet {
-            navigationItem.title = "Messages" +  unreadMessageCount.asStringWithParens
-            tabBarController?.tabBar.items?.first?.badgeValue = unreadMessageCount.asBadgeValue
-        }
-    }
+    private var unreadMessageCount = 0
     private lazy var makeNewMessageButton = UIBarButtonItem.make(target: self,
                                                                  action: #selector(showMakeNewMessageController),
                                                                  imageName: ButtonName.makeNewMessage)
@@ -53,7 +39,13 @@ class ConvosViewController: UIViewController, NewConvoManaging {
             DispatchQueue.main.async {
                 UIApplication.shared.isNetworkActivityIndicatorVisible = false
             }
+            if convos.isEmpty {
+                self?.makeNewMessageButton.animate(loop: true)
+            } else {
+                self?.makeNewMessageButton.stopAnimating()
+            }
             self?.convos = convos
+            self?.tableView.reloadData()
         }
 
         makeNewProxyButton.isEnabled = false
@@ -75,12 +67,17 @@ class ConvosViewController: UIViewController, NewConvoManaging {
         tableView.sectionHeaderHeight = 0
 
         unreadMessagesObserver.observe(uid: uid) { [weak self] update in
+            guard let _self = self else {
+                return
+            }
             switch update {
             case .added:
-                self?.unreadMessageCount += 1
+                _self.unreadMessageCount += 1
             case .removed:
-                self?.unreadMessageCount -= 1
+                _self.unreadMessageCount -= 1
             }
+            _self.navigationItem.title = "Messages" +  _self.unreadMessageCount.asStringWithParens
+            _self.tabBarController?.tabBar.items?.first?.badgeValue = _self.unreadMessageCount.asBadgeValue
         }
 
         view.addSubview(tableView)

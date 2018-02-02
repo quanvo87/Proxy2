@@ -30,16 +30,7 @@ class MakeNewMessageViewController: UIViewController, SenderManaging {
     private var firstResponder = FirstResponder.receiverTextField
     private var isSending = false
     private var lockKeyboard = true
-    private var proxies = [Proxy]() {
-        didSet {
-            if proxies.isEmpty {
-                makeNewProxyButton.animate(loop: true)
-            } else {
-                makeNewProxyButton.stopAnimating()
-            }
-            tableView.reloadData()
-        }
-    }
+    private var proxies = [Proxy]()
     private var receiverCell: MakeNewMessageReceiverTableViewCell? {
         if let receiverCell = tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? MakeNewMessageReceiverTableViewCell {
             return receiverCell
@@ -84,8 +75,14 @@ class MakeNewMessageViewController: UIViewController, SenderManaging {
                                                object: nil)
 
         proxiesObserver.observe(proxiesOwnerId: uid) { [weak self] proxies in
+            if proxies.isEmpty {
+                self?.makeNewProxyButton.animate(loop: true)
+            } else {
+                self?.makeNewProxyButton.stopAnimating()
+            }
             self?.makeNewProxyButton.isEnabled = true
             self?.proxies = proxies
+            self?.tableView.reloadData()
         }
 
         tableView.dataSource = self

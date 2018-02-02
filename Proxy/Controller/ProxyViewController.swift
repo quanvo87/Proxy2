@@ -6,16 +6,7 @@ class ProxyViewController: UIViewController, NewConvoManaging {
     private let database: Database
     private let proxyObserver: ProxyObsering
     private let tableView = UITableView(frame: .zero, style: .grouped)
-    private var convos = [Convo]() {
-        didSet {
-            if convos.isEmpty {
-                makeNewMessageButton.animate(loop: true)
-            } else {
-                makeNewMessageButton.stopAnimating()
-            }
-            tableView.reloadSections(IndexSet(integer: 1), with: .automatic)
-        }
-    }
+    private var convos = [Convo]()
     private var proxy: Proxy? {
         didSet {
             guard proxy != nil else {
@@ -48,7 +39,13 @@ class ProxyViewController: UIViewController, NewConvoManaging {
         }
 
         convosObserver.observe(convosOwnerId: proxy.ownerId, proxyKey: proxy.key) { [weak self] convos in
+            if convos.isEmpty {
+                self?.makeNewMessageButton.animate(loop: true)
+            } else {
+                self?.makeNewMessageButton.stopAnimating()
+            }
             self?.convos = convos
+            self?.tableView.reloadData()
         }
 
         navigationItem.rightBarButtonItems = [makeNewMessageButton, deleteProxyButton]
