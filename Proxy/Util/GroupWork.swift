@@ -48,8 +48,9 @@ extension GroupWork {
     static func getUnreadMessagesForProxy(uid: String, key: String, completion: @escaping (Result<[Message], Error>) -> Void) {
         do {
             try FirebaseHelper.main.makeReference(Child.userInfo, uid, Child.unreadMessages)
+                .queryEqual(toValue: key)
                 .queryOrdered(byChild: Child.receiverProxyKey)
-                .queryEqual(toValue: key).observeSingleEvent(of: .value) { data in
+                .observeSingleEvent(of: .value) { data in
                     completion(.success(data.toMessagesArray))
             }
         } catch {
