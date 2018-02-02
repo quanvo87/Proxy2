@@ -5,16 +5,7 @@ class SenderPickerViewController: UIViewController {
     private let proxiesObserver: ProxiesObserving
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
-    private var proxies = [Proxy]() {
-        didSet {
-            if proxies.isEmpty {
-                makeNewProxyButton.animate(loop: true)
-            } else {
-                makeNewProxyButton.stopAnimating()
-            }
-            tableView.reloadData()
-        }
-    }
+    private var proxies = [Proxy]()
     private weak var senderManager: SenderManaging?
     private lazy var makeNewProxyButton = UIBarButtonItem.make(target: self,
                                                                action: #selector(makeNewProxy),
@@ -39,8 +30,14 @@ class SenderPickerViewController: UIViewController {
             DispatchQueue.main.async {
                 UIApplication.shared.isNetworkActivityIndicatorVisible = false
             }
+            if proxies.isEmpty {
+                self?.makeNewProxyButton.animate(loop: true)
+            } else {
+                self?.makeNewProxyButton.stopAnimating()
+            }
             self?.makeNewProxyButton.isEnabled = true
             self?.proxies = proxies
+            self?.tableView.reloadData()
         }
 
         makeNewProxyButton.isEnabled = false

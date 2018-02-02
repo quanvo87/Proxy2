@@ -6,20 +6,8 @@ class ProxiesViewController: UIViewController, NewConvoManaging {
     private let proxiesObserver: ProxiesObserving
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
+    private var proxies = [Proxy]()
     private var proxiesToDelete = [String: Any]()
-    private var proxies = [Proxy]() {
-        didSet {
-            if proxies.isEmpty {
-                makeNewProxyButton.animate(loop: true)
-            } else {
-                makeNewProxyButton.stopAnimating()
-            }
-            let title = "My Proxies\(proxies.count.asStringWithParens)"
-            navigationItem.title = title
-            navigationController?.tabBarController?.tabBar.items?[1].title = title
-            tableView.reloadData()
-        }
-    }
     private lazy var cancelButton = UIBarButtonItem.make(target: self,
                                                          action: #selector(setDefaultButtons),
                                                          imageName: ButtonName.cancel)
@@ -57,8 +45,17 @@ class ProxiesViewController: UIViewController, NewConvoManaging {
             DispatchQueue.main.async {
                 UIApplication.shared.isNetworkActivityIndicatorVisible = false
             }
+            if proxies.isEmpty {
+                self?.makeNewProxyButton.animate(loop: true)
+            } else {
+                self?.makeNewProxyButton.stopAnimating()
+            }
+            let title = "My Proxies\(proxies.count.asStringWithParens)"
+            self?.navigationController?.tabBarController?.tabBar.items?[1].title = title
+            self?.navigationItem.title = title
             self?.makeNewProxyButton.isEnabled = true
             self?.proxies = proxies
+            self?.tableView.reloadData()
         }
 
         setDefaultButtons()

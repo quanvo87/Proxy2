@@ -5,19 +5,11 @@ class ConvoDetailViewController: UIViewController {
     private let database: Database
     private let proxyObserver: ProxyObsering
     private let tableView = UITableView(frame: .zero, style: .grouped)
+    private var proxy: Proxy?
     private var shouldClose = false
     private var convo: Convo? {
         didSet {
             if convo == nil {
-                shouldClose = true
-            } else {
-                tableView.reloadData()
-            }
-        }
-    }
-    private var proxy: Proxy? {
-        didSet {
-            if proxy == nil {
                 shouldClose = true
             } else {
                 tableView.reloadData()
@@ -49,6 +41,11 @@ class ConvoDetailViewController: UIViewController {
 
         proxyObserver.observe(proxyKey: convo.senderProxyKey, proxyOwnerId: convo.senderId) { [weak self] proxy in
             self?.proxy = proxy
+            if proxy == nil {
+                self?.shouldClose = true
+            } else {
+                self?.tableView.reloadData()
+            }
         }
 
         tableView.dataSource = self
