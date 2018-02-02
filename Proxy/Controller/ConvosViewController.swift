@@ -1,7 +1,16 @@
 import UIKit
 
 class ConvosViewController: UIViewController, NewConvoManaging {
-    var convos = [Convo]() {
+    var newConvo: Convo?
+    private let database: Database
+    private let convosObserver: ConvosObsering
+    private let maxProxyCount: Int
+    private let proxiesObserver: ProxiesObserving
+    private let tableView = UITableView(frame: .zero, style: .grouped)
+    private let uid: String
+    private let unreadMessagesObserver: UnreadMessagesObserving
+    private var proxyCount = 0
+    private var convos = [Convo]() {
         didSet {
             if convos.isEmpty {
                 makeNewMessageButton.animate(loop: true)
@@ -17,15 +26,6 @@ class ConvosViewController: UIViewController, NewConvoManaging {
             tabBarController?.tabBar.items?.first?.badgeValue = unreadMessageCount.asBadgeValue
         }
     }
-    var newConvo: Convo?
-    var proxyCount = 0
-    private let database: Database
-    private let convosObserver: ConvosObsering
-    private let maxProxyCount: Int
-    private let proxiesObserver: ProxiesObserving
-    private let tableView = UITableView(frame: .zero, style: .grouped)
-    private let uid: String
-    private let unreadMessagesObserver: UnreadMessagesObserving
     private lazy var makeNewMessageButton = UIBarButtonItem.make(target: self,
                                                                  action: #selector(showMakeNewMessageController),
                                                                  imageName: ButtonName.makeNewMessage)

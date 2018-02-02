@@ -1,7 +1,12 @@
 import UIKit
 
-class ConvoDetailViewController: UIViewController, ProxyManaging {
-    var convo: Convo? {
+class ConvoDetailViewController: UIViewController {
+    private let convoObserver: ConvoObserving
+    private let database: Database
+    private let proxyObserver: ProxyObsering
+    private let tableView = UITableView(frame: .zero, style: .grouped)
+    private var shouldClose = false
+    private var convo: Convo? {
         didSet {
             if convo == nil {
                 shouldClose = true
@@ -10,7 +15,7 @@ class ConvoDetailViewController: UIViewController, ProxyManaging {
             }
         }
     }
-    var proxy: Proxy? {
+    private var proxy: Proxy? {
         didSet {
             if proxy == nil {
                 shouldClose = true
@@ -19,11 +24,6 @@ class ConvoDetailViewController: UIViewController, ProxyManaging {
             }
         }
     }
-    private let convoObserver: ConvoObserving
-    private let database: Database
-    private let proxyObserver: ProxyObsering
-    private let tableView = UITableView(frame: .zero, style: .grouped)
-    private var shouldClose = false
 
     init(convo: Convo,
          convoObserver: ConvoObserving = ConvoObserver(),
@@ -45,7 +45,9 @@ class ConvoDetailViewController: UIViewController, ProxyManaging {
             self?.convo = convo
         }
 
-        proxyObserver.observe(proxyKey: convo.senderProxyKey, proxyOwnerId: convo.senderId, proxyManager: self)
+        proxyObserver.observe(proxyKey: convo.senderProxyKey, proxyOwnerId: convo.senderId) { [weak self] proxy in
+            self?.proxy = proxy
+        }
 
         tableView.dataSource = self
         tableView.delegate = self

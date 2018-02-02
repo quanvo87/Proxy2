@@ -24,8 +24,8 @@ class ConvosObserver: ConvosObsering {
         stopObserving()
         ref = try? FirebaseHelper.main.makeReference(Child.convos, convosOwnerId)
         handle = ref?
-            .queryOrdered(byChild: Child.timestamp)
             .queryLimited(toLast: querySize)
+            .queryOrdered(byChild: Child.timestamp)
             .observe(.value) { [weak self] data in
                 self?.loading = true
                 completion(data.toConvosArray(proxyKey: proxyKey).reversed())
@@ -43,9 +43,9 @@ class ConvosObserver: ConvosObsering {
         DispatchQueue.main.async {
             UIApplication.shared.isNetworkActivityIndicatorVisible = true
         }
-        ref?.queryOrdered(byChild: Child.timestamp)
-            .queryEnding(atValue: timestamp)
+        ref?.queryEnding(atValue: timestamp)
             .queryLimited(toLast: querySize)
+            .queryOrdered(byChild: Child.timestamp)
             .observeSingleEvent(of: .value) { [weak self] data in
                 UIApplication.shared.isNetworkActivityIndicatorVisible = false
                 var convos = data.toConvosArray(proxyKey: proxyKey)

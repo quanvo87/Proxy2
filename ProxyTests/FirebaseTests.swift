@@ -56,7 +56,7 @@ class FirebaseTests: FirebaseTest {
         defer { waitForExpectations(timeout: 10) }
 
         FirebaseTest.sendMessage { _, convo, _, _ in
-            FirebaseTest.database.getConvo(key: convo.key, ownerId: convo.senderId) { result in
+            FirebaseTest.database.getConvo(convoKey: convo.key, ownerId: convo.senderId) { result in
                 switch result {
                 case .failure(let error):
                     XCTFail(String(describing: error))
@@ -74,7 +74,7 @@ class FirebaseTests: FirebaseTest {
         defer { waitForExpectations(timeout: 10) }
 
         FirebaseTest.makeProxy { proxy in
-            FirebaseTest.database.getProxy(key: proxy.key) { result in
+            FirebaseTest.database.getProxy(proxyKey: proxy.key) { result in
                 switch result {
                 case .failure(let error):
                     XCTFail(String(describing: error))
@@ -91,7 +91,7 @@ class FirebaseTests: FirebaseTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        FirebaseTest.database.getProxy(key: "invalid key") { result in
+        FirebaseTest.database.getProxy(proxyKey: "invalid key") { result in
             switch result {
             case .failure:
                 expectation.fulfill()
@@ -107,7 +107,7 @@ class FirebaseTests: FirebaseTest {
         defer { waitForExpectations(timeout: 10) }
 
         FirebaseTest.makeProxy { proxy in
-            FirebaseTest.database.getProxy(key: proxy.key, ownerId: proxy.ownerId) { result in
+            FirebaseTest.database.getProxy(proxyKey: proxy.key, ownerId: proxy.ownerId) { result in
                 switch result {
                 case .failure(let error):
                     XCTFail(String(describing: error))
@@ -124,7 +124,7 @@ class FirebaseTests: FirebaseTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        FirebaseTest.database.getProxy(key: "invalid key", ownerId: FirebaseTest.uid) { result in
+        FirebaseTest.database.getProxy(proxyKey: "invalid key", ownerId: FirebaseTest.uid) { result in
             switch result {
             case .failure:
                 expectation.fulfill()
@@ -267,7 +267,7 @@ class FirebaseTests: FirebaseTest {
         FirebaseTest.sendMessage { _, senderConvo, _, receiverProxy in
             FirebaseTest.database.deleteProxy(receiverProxy) { error in
                 XCTAssertNil(error, String(describing: error))
-                FirebaseTest.database.getConvo(key: senderConvo.key, ownerId: senderConvo.senderId) { result in
+                FirebaseTest.database.getConvo(convoKey: senderConvo.key, ownerId: senderConvo.senderId) { result in
                     switch result {
                     case .failure(let error):
                         XCTFail(String(describing: error))

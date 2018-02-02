@@ -1,7 +1,14 @@
 import UIKit
 
 class ProxiesViewController: UIViewController, NewConvoManaging {
-    var proxies = [Proxy]() {
+    var newConvo: Convo?
+    private let database: Database
+    private let maxProxyCount: Int
+    private let proxiesObserver: ProxiesObserving
+    private let tableView = UITableView(frame: .zero, style: .grouped)
+    private let uid: String
+    private var proxiesToDelete = [String: Any]()
+    private var proxies = [Proxy]() {
         didSet {
             if proxies.isEmpty {
                 makeNewProxyButton.animate(loop: true)
@@ -14,13 +21,6 @@ class ProxiesViewController: UIViewController, NewConvoManaging {
             tableView.reloadData()
         }
     }
-    var newConvo: Convo?
-    private let database: Database
-    private let maxProxyCount: Int
-    private let proxiesObserver: ProxiesObserving
-    private let tableView = UITableView(frame: .zero, style: .grouped)
-    private let uid: String
-    private var itemsToDelete: [String: Any] = [:]
     private lazy var cancelButton = UIBarButtonItem.make(target: self,
                                                          action: #selector(setDefaultButtons),
                                                          imageName: ButtonName.cancel)
@@ -98,7 +98,7 @@ class ProxiesViewController: UIViewController, NewConvoManaging {
         if proxies.isEmpty {
             makeNewProxyButton.animate(loop: true)
         }
-        itemsToDelete.removeAll()
+        proxiesToDelete.removeAll()
         makeNewProxyButton.customView?.isHidden = false
         makeNewProxyButton.isEnabled = true
         navigationItem.leftBarButtonItem = deleteButton
@@ -115,19 +115,19 @@ class ProxiesViewController: UIViewController, NewConvoManaging {
     }
 
     @objc private func deleteSelectedItems() {
-        if itemsToDelete.isEmpty {
+        if proxiesToDelete.isEmpty {
             setDefaultButtons()
             return
         }
         let alert = UIAlertController(title: "Delete Proxies?", message: "The conversations will also be deleted.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
-            for (_, item) in self?.itemsToDelete ?? [:] {
+            for (_, item) in self?.proxiesToDelete ?? [:] {
                 guard let proxy = item as? Proxy else {
                     continue
                 }
                 self?.database.deleteProxy(proxy) { _ in }
             }
-            self?.itemsToDelete.removeAll()
+            self?.proxiesToDelete.removeAll()
             self?.setDefaultButtons()
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
@@ -196,7 +196,7 @@ extension ProxiesViewController: UITableViewDelegate {
             return
         }
         if tableView.isEditing {
-            itemsToDelete[proxy.key] = proxy
+            proxiesToDelete[proxy.key] = proxy
         } else {
             tableView.deselectRow(at: indexPath, animated: true)
             showProxyController(proxy)
@@ -209,7 +209,7 @@ extension ProxiesViewController: UITableViewDelegate {
             let proxy = proxies[safe: indexPath.row] else {
                 return
         }
-        itemsToDelete.removeValue(forKey: proxy.key)
+        proxiesToDelete.removeValue(forKey: proxy.key)
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

@@ -22,8 +22,8 @@ class MessagesObserver: MessagesObserving {
         stopObserving()
         ref = try? FirebaseHelper.main.makeReference(Child.messages, convoKey)
         handle = ref?
-            .queryOrdered(byChild: Child.timestamp)
             .queryLimited(toLast: querySize)
+            .queryOrdered(byChild: Child.timestamp)
             .observe(.value) { [weak self] data in
                 self?.loading = true
                 completion(data.toMessagesArray)
@@ -39,9 +39,9 @@ class MessagesObserver: MessagesObserving {
         DispatchQueue.main.async {
             UIApplication.shared.isNetworkActivityIndicatorVisible = true
         }
-        ref?.queryOrderedByKey()
-            .queryEnding(atValue: id)
+        ref?.queryEnding(atValue: id)
             .queryLimited(toLast: querySize)
+            .queryOrderedByKey()
             .observeSingleEvent(of: .value) { [weak self] data in
                 UIApplication.shared.isNetworkActivityIndicatorVisible = false
                 var messages = data.toMessagesArray

@@ -17,7 +17,7 @@ class ConvoObserver: ConvoObserving {
             do {
                 completion(try Convo(data))
             } catch {
-                self?.database.getConvo(key: convoKey, ownerId: convoSenderId) { result in
+                self?.database.getConvo(convoKey: convoKey, ownerId: convoSenderId) { result in
                     switch result {
                     case .success(let convo):
                         completion(convo)
