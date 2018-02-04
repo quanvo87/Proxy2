@@ -31,14 +31,7 @@ class ConvosViewController: UIViewController, NewConvoManaging {
 
         super.init(nibName: nil, bundle: nil)
 
-        DispatchQueue.main.async {
-            UIApplication.shared.isNetworkActivityIndicatorVisible = true
-        }
-
         convosObserver.observe(convosOwnerId: uid, proxyKey: nil) { [weak self] convos in
-            DispatchQueue.main.async {
-                UIApplication.shared.isNetworkActivityIndicatorVisible = false
-            }
             if convos.isEmpty {
                 self?.makeNewMessageButton.animate(loop: true)
             } else {
@@ -54,8 +47,8 @@ class ConvosViewController: UIViewController, NewConvoManaging {
         navigationItem.title = "Messages"
 
         proxiesObserver.observe(proxiesOwnerId: uid) { [weak self] proxies in
-            self?.makeNewProxyButton.isEnabled = true
             self?.currentProxyCount = proxies.count
+            self?.makeNewProxyButton.isEnabled = true
         }
 
         tableView.dataSource = self

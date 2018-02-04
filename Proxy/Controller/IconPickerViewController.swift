@@ -3,15 +3,15 @@ import UIKit
 class IconPickerViewController: UIViewController {
     private let collectionView: UICollectionView
     private let database: Database
+    private let iconNames: [String]
     private let proxy: Proxy
-    private let proxyPropertyGenerator: ProxyPropertyGenerating
 
     init(database: Database = Firebase(),
-         proxy: Proxy,
-         proxyPropertyGenerator: ProxyPropertyGenerating = ProxyPropertyGenerator()) {
+         iconNames: [String] = ProxyPropertyGenerator().iconNames,
+         proxy: Proxy) {
         self.database = database
+        self.iconNames = iconNames
         self.proxy = proxy
-        self.proxyPropertyGenerator = proxyPropertyGenerator
 
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = CGSize(width: 60, height: 90)
@@ -49,7 +49,7 @@ extension IconPickerViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifier.iconPickerCollectionViewCell, for: indexPath) as? IconPickerCollectionViewCell,
-            let iconName = proxyPropertyGenerator.iconNames[safe: indexPath.row] else {
+            let iconName = iconNames[safe: indexPath.row] else {
                 return collectionView.dequeueReusableCell(withReuseIdentifier: Identifier.iconPickerCollectionViewCell, for: indexPath)
         }
         cell.load(iconName)
@@ -57,14 +57,14 @@ extension IconPickerViewController: UICollectionViewDataSource {
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return proxyPropertyGenerator.iconNames.count
+        return iconNames.count
     }
 }
 
 // MARK: - UICollectionViewDelegate
 extension IconPickerViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let iconName = proxyPropertyGenerator.iconNames[safe: indexPath.row] else {
+        guard let iconName = iconNames[safe: indexPath.row] else {
             return
         }
         collectionView.cellForItem(at: indexPath)?.backgroundColor = UIColor.blue

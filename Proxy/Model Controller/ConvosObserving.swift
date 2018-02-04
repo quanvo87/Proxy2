@@ -1,6 +1,6 @@
 import FirebaseDatabase
 import FirebaseHelper
-import UIKit
+import WQNetworkActivityIndicator
 
 protocol ConvosObsering: ReferenceObserving {
     init(querySize: UInt)
@@ -14,6 +14,7 @@ class ConvosObserver: ConvosObsering {
     private (set) var handle: DatabaseHandle?
     private (set) var ref: DatabaseReference?
     private let querySize: UInt
+    private var firstCallback = true
     private var loading = true
 
     required init(querySize: UInt = Setting.querySize) {
@@ -22,11 +23,17 @@ class ConvosObserver: ConvosObsering {
 
     func observe(convosOwnerId: String, proxyKey: String?, completion: @escaping ([Convo]) -> Void) {
         stopObserving()
+        firstCallback = true
         ref = try? FirebaseHelper.main.makeReference(Child.convos, convosOwnerId)
+        WQNetworkActivityIndicator.shared.show()
         handle = ref?
             .queryLimited(toLast: querySize)
             .queryOrdered(byChild: Child.timestamp)
             .observe(.value) { [weak self] data in
+                if let firstCallback = self?.firstCallback, firstCallback {
+                    self?.firstCallback = false
+                    WQNetworkActivityIndicator.shared.hide()
+                }
                 self?.loading = true
                 completion(data.toConvosArray(proxyKey: proxyKey).reversed())
                 self?.loading = false
@@ -40,16 +47,12 @@ class ConvosObserver: ConvosObsering {
             return
         }
         loading = true
-        DispatchQueue.main.async {
-            UIApplication.shared.isNetworkActivityIndicatorVisible = true
-        }
+        WQNetworkActivityIndicator.shared.show()
         ref?.queryEnding(atValue: timestamp)
             .queryLimited(toLast: querySize)
             .queryOrdered(byChild: Child.timestamp)
             .observeSingleEvent(of: .value) { [weak self] data in
-                DispatchQueue.main.async {
-                    UIApplication.shared.isNetworkActivityIndicatorVisible = false
-                }
+                WQNetworkActivityIndicator.shared.hide()
                 var convos = data.toConvosArray(proxyKey: proxyKey)
                 guard convos.count > 1 else {
                     return

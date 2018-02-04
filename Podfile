@@ -17,6 +17,7 @@ def pods
   pod 'Spring', '~> 1.0'
   pod 'SwiftLint', '~> 0.24'
   pod 'SwiftVideoBackground', '~> 2.0'
+  pod 'WQNetworkActivityIndicator', '~> 0.1'
 end
 
 target 'Proxy' do
