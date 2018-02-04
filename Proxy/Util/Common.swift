@@ -3,6 +3,11 @@ import FirebaseHelper
 import Spring
 import UIKit
 
+enum Result<T, Error> {
+    case success(T)
+    case failure(Error)
+}
+
 extension Auth {
     static let auth: Auth = {
         Auth.auth()
@@ -122,6 +127,7 @@ extension UIColor {
 }
 
 extension UIImage {
+    // todo: necessary?
     static func make(name: String, completion: @escaping (UIImage) -> Void) {
         if let image = UIImage(named: name) {
             completion(image)
@@ -172,7 +178,8 @@ extension UIViewController {
 
     func showEditProxyNicknameAlert(_ proxy: Proxy, database: Database = Firebase()) {
         let alert = UIAlertController(title: "Edit Nickname",
-                                      message: "Only you see your nickname.", preferredStyle: .alert)
+                                      message: "Only you see your nickname.",
+                                      preferredStyle: .alert)
         alert.addTextField { textField in
             textField.autocapitalizationType = .sentences
             textField.autocorrectionType = .yes

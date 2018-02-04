@@ -1,4 +1,3 @@
-import FirebaseAuth
 import FirebaseDatabase
 import UIKit
 

@@ -3,11 +3,6 @@ import FirebaseHelper
 import GroupWork
 import MessageKit
 
-enum Result<T, Error> {
-    case success(T)
-    case failure(Error)
-}
-
 enum IncrementableUserProperty: String {
     case messagesReceived
     case messagesSent
@@ -181,7 +176,7 @@ class Firebase: Database {
     }
 
     private func getProxyNameCount(ref: DatabaseReference, name: String, completion: @escaping (UInt?) -> Void) {
-        ref.queryOrdered(byChild: Child.name).queryEqual(toValue: name).observeSingleEvent(of: .value) { data in
+        ref.queryEqual(toValue: name).queryOrdered(byChild: Child.name).observeSingleEvent(of: .value) { data in
             completion(data.childrenCount)
         }
     }

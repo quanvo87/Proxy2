@@ -28,14 +28,7 @@ class ConvoDetailViewController: UIViewController {
 
         super.init(nibName: nil, bundle: nil)
 
-        DispatchQueue.main.async {
-            UIApplication.shared.isNetworkActivityIndicatorVisible = true
-        }
-
         convoObserver.observe(convoKey: convo.key, convoSenderId: convo.senderId) { [weak self] convo in
-            DispatchQueue.main.async {
-                UIApplication.shared.isNetworkActivityIndicatorVisible = false
-            }
             self?.convo = convo
         }
 

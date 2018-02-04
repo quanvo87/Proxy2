@@ -22,14 +22,7 @@ class SenderPickerViewController: UIViewController {
 
         super.init(nibName: nil, bundle: nil)
 
-        DispatchQueue.main.async {
-            UIApplication.shared.isNetworkActivityIndicatorVisible = true
-        }
-
         proxiesObserver.observe(proxiesOwnerId: uid) { [weak self] proxies in
-            DispatchQueue.main.async {
-                UIApplication.shared.isNetworkActivityIndicatorVisible = false
-            }
             if proxies.isEmpty {
                 self?.makeNewProxyButton.animate(loop: true)
             } else {

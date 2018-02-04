@@ -33,18 +33,11 @@ class ProxiesViewController: UIViewController, NewConvoManaging {
 
         super.init(nibName: nil, bundle: nil)
 
-        DispatchQueue.main.async {
-            UIApplication.shared.isNetworkActivityIndicatorVisible = true
-        }
-
         makeNewProxyButton.isEnabled = false
 
         navigationItem.title = "My Proxies"
 
         proxiesObserver.observe(proxiesOwnerId: uid) { [weak self] proxies in
-            DispatchQueue.main.async {
-                UIApplication.shared.isNetworkActivityIndicatorVisible = false
-            }
             if proxies.isEmpty {
                 self?.makeNewProxyButton.animate(loop: true)
             } else {
@@ -115,7 +108,9 @@ class ProxiesViewController: UIViewController, NewConvoManaging {
             setDefaultButtons()
             return
         }
-        let alert = UIAlertController(title: "Delete Proxies?", message: "The conversations will also be deleted.", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Delete Proxies?",
+                                      message: "The conversations will also be deleted.",
+                                      preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
             for (_, item) in self?.proxiesToDelete ?? [:] {
                 guard let proxy = item as? Proxy else {

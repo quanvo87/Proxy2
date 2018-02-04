@@ -8,7 +8,7 @@ class TabBarController: UITabBarController {
         convosViewController.tabBarItem = UITabBarItem(title: "Messages", image: UIImage(named: "messages"), tag: 0)
 
         let proxiesViewController = ProxiesViewController(uid: uid)
-        proxiesViewController.tabBarItem = UITabBarItem(title: "Proxies", image: UIImage(named: "proxies"), tag: 1)
+        proxiesViewController.tabBarItem = UITabBarItem(title: "My Proxies", image: UIImage(named: "proxies"), tag: 1)
 
         let settingsViewController = SettingsViewController(uid: uid, displayName: displayName)
         settingsViewController.tabBarItem = UITabBarItem(title: "Settings", image: UIImage(named: "settings"), tag: 2)

@@ -6,11 +6,6 @@ private enum FirstResponder {
     case newMessageTextView
 }
 
-private enum SendMessageOutcome {
-    case failed(Error)
-    case succeeded(Convo)
-}
-
 class MakeNewMessageViewController: UIViewController, SenderManaging {
     var sender: Proxy? {
         didSet {
@@ -111,8 +106,8 @@ class MakeNewMessageViewController: UIViewController, SenderManaging {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         lockKeyboard = false
-        DispatchQueue.main.async {
-            self.view.endEditing(true)
+        DispatchQueue.main.async { [weak self] in
+            self?.view.endEditing(true)
         }
     }
 
@@ -193,43 +188,43 @@ extension MakeNewMessageViewController: MessageInputBarDelegate {
         setButtons(false)
         sendMessage(text) { [weak self] outcome in
             switch outcome {
-            case .failed(let error):
+            case .failure(let error):
                 self?._showErrorAlert(error)
                 self?.isSending = false
                 self?.setButtons(true)
-            case .succeeded(let convo):
+            case .success(let convo):
                 self?.newConvoManager?.newConvo = convo
                 self?.navigationController?.dismiss(animated: false)
             }
         }
     }
 
-    private func sendMessage(_ text: String, completion: @escaping (SendMessageOutcome) -> Void) {
+    private func sendMessage(_ text: String, completion: @escaping (Result<Convo, Error>) -> Void) {
         guard text != "" else {
-            completion(.failed(ProxyError.blankMessage))
+            completion(.failure(ProxyError.blankMessage))
             return
         }
         guard let sender = sender else {
-            completion(.failed(ProxyError.senderMissing))
+            completion(.failure(ProxyError.senderMissing))
             return
         }
         guard
             let receiverName = receiverCell?.receiverTextField.text,
             receiverName != "" else {
-                completion(.failed(ProxyError.receiverMissing))
+                completion(.failure(ProxyError.receiverMissing))
                 return
         }
         database.getProxy(proxyKey: receiverName) { [weak self] result in
             switch result {
             case .failure:
-                completion(.failed(ProxyError.receiverNotFound))
+                completion(.failure(ProxyError.receiverNotFound))
             case .success(let receiver):
                 self?.database.sendMessage(sender: sender, receiver: receiver, text: text) { result in
                     switch result {
                     case .failure(let error):
-                        completion(.failed(error))
+                        completion(.failure(error))
                     case .success(let tuple):
-                        completion(.succeeded(tuple.convo))
+                        completion(.success(tuple.convo))
                     }
                 }
             }
@@ -285,12 +280,12 @@ extension MakeNewMessageViewController: UITableViewDataSource {
                     cell.receiverTextField.stopLoadingIndicator()
                 }
             }
-            let fontSize: CGFloat = isSmallDevice() ? 14 : 17
+            let fontSize: CGFloat = isSmallDevice ? 14 : 17
             cell.receiverTextField.highlightAttributes = [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: fontSize)]
             cell.receiverTextField.theme.font = .systemFont(ofSize: fontSize)
             cell.receiverTextField.comparisonOptions = [.caseInsensitive]
             cell.receiverTextField.delegate = self
-            cell.receiverTextField.maxResultsListHeight = isSmallDevice() ? Int(view.frame.height / 4) : Int(view.frame.height / 3)
+            cell.receiverTextField.maxResultsListHeight = isSmallDevice ? Int(view.frame.height / 4) : Int(view.frame.height / 3)
             cell.receiverTextField.theme.cellHeight = 50
             cell.receiverTextField.theme.separatorColor = UIColor.lightGray.withAlphaComponent(0.5)
             return cell
@@ -307,7 +302,7 @@ extension MakeNewMessageViewController: UITableViewDataSource {
         }
     }
 
-    private func isSmallDevice() -> Bool {
+    private var isSmallDevice: Bool {
         switch Device.size() {
         case .screen3_5Inch:
             return true

@@ -34,10 +34,6 @@ class ProxyViewController: UIViewController, NewConvoManaging {
 
         super.init(nibName: nil, bundle: nil)
 
-        DispatchQueue.main.async {
-            UIApplication.shared.isNetworkActivityIndicatorVisible = true
-        }
-
         convosObserver.observe(convosOwnerId: proxy.ownerId, proxyKey: proxy.key) { [weak self] convos in
             if convos.isEmpty {
                 self?.makeNewMessageButton.animate(loop: true)
@@ -51,9 +47,6 @@ class ProxyViewController: UIViewController, NewConvoManaging {
         navigationItem.rightBarButtonItems = [makeNewMessageButton, deleteProxyButton]
 
         proxyObserver.observe(proxyKey: proxy.key, proxyOwnerId: proxy.ownerId) { [weak self] proxy in
-            DispatchQueue.main.async {
-                UIApplication.shared.isNetworkActivityIndicatorVisible = false
-            }
             self?.proxy = proxy
         }
 
@@ -88,7 +81,9 @@ class ProxyViewController: UIViewController, NewConvoManaging {
     }
 
     @objc private func deleteProxy() {
-        let alert = UIAlertController(title: "Delete Proxy?", message: "You will not be able to see this proxy or its conversations again.", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Delete Proxy?",
+                                      message: "You will not be able to see this proxy or its conversations again.",
+                                      preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
             guard let proxy = self?.proxy else {
                 return

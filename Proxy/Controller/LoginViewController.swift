@@ -14,7 +14,6 @@ class LoginViewController: UIViewController {
         super.viewDidLoad()
 
         let videos = ["arabiangulf", "beachpalm", "hawaiiancoast"]
-
         videoBackground.play(view: view, videoName: videos[videos.count.random], videoType: "mp4", alpha: 0.1)
 
         facebookButton.configure()

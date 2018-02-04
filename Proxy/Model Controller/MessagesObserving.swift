@@ -1,6 +1,7 @@
 import FirebaseDatabase
 import FirebaseHelper
 import MessageKit
+import WQNetworkActivityIndicator
 
 protocol MessagesObserving: ReferenceObserving {
     init(querySize: UInt)
@@ -12,6 +13,7 @@ class MessagesObserver: MessagesObserving {
     private (set) var handle: DatabaseHandle?
     private (set) var ref: DatabaseReference?
     private let querySize: UInt
+    private var firstCallback = true
     private var loading = true
 
     required init(querySize: UInt = Setting.querySize) {
@@ -20,11 +22,17 @@ class MessagesObserver: MessagesObserving {
 
     func observe(convoKey: String, completion: @escaping ([Message]) -> Void) {
         stopObserving()
+        firstCallback = true
         ref = try? FirebaseHelper.main.makeReference(Child.messages, convoKey)
+        WQNetworkActivityIndicator.shared.show()
         handle = ref?
             .queryLimited(toLast: querySize)
             .queryOrdered(byChild: Child.timestamp)
             .observe(.value) { [weak self] data in
+                if let firstCallback = self?.firstCallback, firstCallback {
+                    self?.firstCallback = false
+                    WQNetworkActivityIndicator.shared.hide()
+                }
                 self?.loading = true
                 completion(data.toMessagesArray)
                 self?.loading = false
@@ -36,16 +44,12 @@ class MessagesObserver: MessagesObserving {
             return
         }
         loading = true
-        DispatchQueue.main.async {
-            UIApplication.shared.isNetworkActivityIndicatorVisible = true
-        }
+        WQNetworkActivityIndicator.shared.show()
         ref?.queryEnding(atValue: id)
             .queryLimited(toLast: querySize)
             .queryOrderedByKey()
             .observeSingleEvent(of: .value) { [weak self] data in
-                DispatchQueue.main.async {
-                    UIApplication.shared.isNetworkActivityIndicatorVisible = false
-                }
+                WQNetworkActivityIndicator.shared.hide()
                 var messages = data.toMessagesArray
                 guard messages.count > 1 else {
                     return

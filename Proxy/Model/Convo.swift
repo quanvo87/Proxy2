@@ -1,5 +1,6 @@
 import FirebaseDatabase
 
+// todo: order
 struct Convo {
     let hasUnreadMessage: Bool
     let receiverDeletedProxy: Bool
