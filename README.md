@@ -50,6 +50,7 @@ Create unlimited, anonymous user names (Proxy's) with just one tap. Chat with an
   - Storyboard, xibs, and programmatically
   - Constraints for correct display on different device sizes
   - Different UI element and font sizes based on device size
+  - Wrote the CocoaPod [WQNetworkActivityIndicator](https://github.com/quanvo87/WQNetworkActivityIndicator) to manage showing the network activity indicator during network requests
   - Co-authored the CocoaPod [SwiftVideoBackground](https://github.com/dingwilson/SwiftVideoBackground), which plays the log in screen background video
 
 - Testing
@@ -94,6 +95,7 @@ Knowledge:
 - [Spring](https://cocoapods.org/pods/Spring)
 - [SwiftLint](https://cocoapods.org/pods/SwiftLint)
 - [SwiftVideoBackground](https://cocoapods.org/pods/SwiftVideoBackground)
+- [WQNetworkActivityIndicator](https://github.com/quanvo87/WQNetworkActivityIndicator)
 
 Icons from [Icons8](https://icons8.com/).
 

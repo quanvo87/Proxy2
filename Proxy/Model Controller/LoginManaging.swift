@@ -3,7 +3,6 @@ import FBSDKCoreKit
 import FirebaseAuth
 import WQNetworkActivityIndicator
 
-// todo: inject auth
 protocol LoginManaging {
     typealias Callback = (Error?) -> Void
     func emailLogin(email: String, password: String, completion: @escaping Callback)

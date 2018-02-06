@@ -7,13 +7,9 @@ class SenderProxyTableViewCell: UITableViewCell {
     @IBOutlet weak var nicknameButton: UIButton!
 
     func load(_ proxy: Proxy) {
+        iconImageView.image = nil
+        iconImageView.image = UIImage(named: proxy.icon)
         nameLabel.text = proxy.name
         nicknameButton.setTitle(proxy.nickname == "" ? "Enter A Nickname" : proxy.nickname, for: .normal)
-        iconImageView.image = nil
-        UIImage.make(name: proxy.icon) { [weak self] image in
-            DispatchQueue.main.async {
-                self?.iconImageView.image = image
-            }
-        }
     }
 }

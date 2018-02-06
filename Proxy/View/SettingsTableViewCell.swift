@@ -2,17 +2,12 @@ import UIKit
 
 class SettingsTableViewCell: UITableViewCell {
     @IBOutlet weak var iconImageView: UIImageView!
-    @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var subtitleLabel: UILabel!
+    @IBOutlet weak var titleLabel: UILabel!
 
     func load(icon: String, title: String?, subtitle: String?) {
-        titleLabel.text = title
+        iconImageView.image = UIImage(named: icon)
         subtitleLabel.text = subtitle
-
-        UIImage.make(name: icon) { [weak self] image in
-            DispatchQueue.main.async {
-                self?.iconImageView.image = image
-            }
-        }
+        titleLabel.text = title
     }
 }
