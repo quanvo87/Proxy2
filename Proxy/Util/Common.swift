@@ -127,13 +127,6 @@ extension UIColor {
 }
 
 extension UIImage {
-    // todo: necessary?
-    static func make(name: String, completion: @escaping (UIImage) -> Void) {
-        if let image = UIImage(named: name) {
-            completion(image)
-        }
-    }
-
     static func makeCircle(diameter: CGFloat, color: UIColor = .blue) -> UIImage? {
         UIGraphicsBeginImageContextWithOptions(CGSize(width: diameter, height: diameter), false, 0)
         let context = UIGraphicsGetCurrentContext()

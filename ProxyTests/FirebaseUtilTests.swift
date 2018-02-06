@@ -68,20 +68,8 @@ class FirebaseUtilTests: FirebaseTest {
     }
 
     func testIcons() {
-        let expectation = self.expectation(description: #function)
-        defer { waitForExpectations(timeout: 10) }
-
-        let work = GroupWork()
         for icon in ProxyPropertyGenerator().iconNames {
-            work.start()
-            UIImage.make(name: icon) { image in
-                XCTAssertNotNil(image)
-                work.finish(withResult: true)
-            }
-        }
-        work.allDone {
-            expectation.fulfill()
+            XCTAssertNotNil(UIImage(named: icon))
         }
     }
-
 }

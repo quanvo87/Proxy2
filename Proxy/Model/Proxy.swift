@@ -1,108 +1,108 @@
 import FirebaseDatabase
 
 struct Proxy {
-    let hasUnreadMessage: Bool
     let dateCreated: Double
-    let timestamp: Double
+    let hasUnreadMessage: Bool
     let icon: String
     let key: String
     let lastMessage: String
     let name: String
     let nickname: String
     let ownerId: String
+    let timestamp: Double
 
-    init(hasUnreadMessage: Bool = false,
-         dateCreated: Double = Date().timeIntervalSince1970,
-         timestamp: Double = Date().timeIntervalSince1970,
+    init(dateCreated: Double = Date().timeIntervalSince1970,
+         hasUnreadMessage: Bool = false,
          icon: String,
          lastMessage: String = "",
          name: String,
          nickname: String = "",
-         ownerId: String) {
-        self.hasUnreadMessage = hasUnreadMessage
+         ownerId: String,
+         timestamp: Double = Date().timeIntervalSince1970) {
         self.dateCreated = dateCreated
-        self.timestamp = timestamp
+        self.hasUnreadMessage = hasUnreadMessage
         self.icon = icon
         self.key = name.lowercased()
         self.lastMessage = lastMessage
         self.name = name
         self.nickname = nickname
         self.ownerId = ownerId
+        self.timestamp = timestamp
     }
 
     init(_ data: DataSnapshot) throws {
         let dictionary = data.value as AnyObject
         guard
-            let hasUnreadMessage = dictionary["hasUnreadMessage"] as? Bool,
             let dateCreated = dictionary["dateCreated"] as? Double,
-            let timestamp = dictionary["timestamp"] as? Double,
+            let hasUnreadMessage = dictionary["hasUnreadMessage"] as? Bool,
             let icon = dictionary["icon"] as? String,
             let key = dictionary["key"] as? String,
             let lastMessage = dictionary["lastMessage"] as? String,
             let name = dictionary["name"] as? String,
             let nickname = dictionary["nickname"] as? String,
-            let ownerId = dictionary["ownerId"] as? String else {
+            let ownerId = dictionary["ownerId"] as? String,
+            let timestamp = dictionary["timestamp"] as? Double else {
                 throw ProxyError.invalidData
         }
-        self.hasUnreadMessage = hasUnreadMessage
         self.dateCreated = dateCreated
-        self.timestamp = timestamp
+        self.hasUnreadMessage = hasUnreadMessage
         self.icon = icon
         self.key = key
         self.lastMessage = lastMessage
         self.name = name
         self.nickname = nickname
         self.ownerId = ownerId
+        self.timestamp = timestamp
     }
 
     func toDictionary() -> Any {
         return [
-            "hasUnreadMessage": hasUnreadMessage,
             "dateCreated": dateCreated,
-            "timestamp": timestamp,
+            "hasUnreadMessage": hasUnreadMessage,
             "icon": icon,
             "key": key,
             "lastMessage": lastMessage,
             "name": name,
             "nickname": nickname,
-            "ownerId": ownerId
+            "ownerId": ownerId,
+            "timestamp": timestamp
         ]
     }
 }
 
 extension Proxy: Equatable {
     static func == (_ lhs: Proxy, _ rhs: Proxy) -> Bool {
-        return lhs.hasUnreadMessage == rhs.hasUnreadMessage &&
-            lhs.dateCreated.isWithinRangeOf(rhs.dateCreated) &&
-            lhs.timestamp.isWithinRangeOf(rhs.timestamp) &&
+        return lhs.dateCreated.isWithinRangeOf(rhs.dateCreated) &&
+            lhs.hasUnreadMessage == rhs.hasUnreadMessage &&
             lhs.icon == rhs.icon &&
             lhs.key == rhs.key &&
             lhs.lastMessage == rhs.lastMessage &&
             lhs.name == rhs.name &&
             lhs.nickname == rhs.nickname &&
-            lhs.ownerId == rhs.ownerId
+            lhs.ownerId == rhs.ownerId &&
+            lhs.timestamp.isWithinRangeOf(rhs.timestamp)
     }
 }
 
 enum SettableProxyProperty {
     case hasUnreadMessage(Bool)
-    case timestamp(Double)
     case icon(String)
     case lastMessage(String)
     case nickname(String)
+    case timestamp(Double)
 
     var properties: (name: String, value: Any) {
         switch self {
         case .hasUnreadMessage(let value):
             return ("hasUnreadMessage", value)
-        case .timestamp(let value):
-            return ("timestamp", value)
         case .icon(let value):
             return ("icon", value)
         case .lastMessage(let value):
             return ("lastMessage", value)
         case .nickname(let value):
             return ("nickname", value)
+        case .timestamp(let value):
+            return ("timestamp", value)
         }
     }
 }
