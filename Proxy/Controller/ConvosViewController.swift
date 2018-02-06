@@ -98,12 +98,7 @@ private extension ConvosViewController {
             case .failure(let error):
                 self?.showErrorAlert(error)
             case .success:
-                guard
-                    let proxiesNavigationController = self?.tabBarController?.viewControllers?[safe: 1] as? UINavigationController,
-                    let proxiesViewController = proxiesNavigationController.viewControllers[safe: 0] as? ProxiesViewController else {
-                        return
-                }
-                proxiesViewController.scrollToTop()
+                break
             }
             self?.makeNewProxyButton.isEnabled = true
         }

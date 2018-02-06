@@ -8,6 +8,7 @@ class ProxiesViewController: UIViewController, NewConvoManaging {
     private let uid: String
     private var proxies = [Proxy]()
     private var proxiesToDelete = [String: Any]()
+    private var proxyCount = 0
     private lazy var cancelButton = makeCancelButton()
     private lazy var confirmButton = makeConfirmButton()
     private lazy var deleteButton = makeDeleteButton()
@@ -39,6 +40,10 @@ class ProxiesViewController: UIViewController, NewConvoManaging {
             self?.makeNewProxyButton.isEnabled = true
             self?.proxies = proxies
             self?.tableView.reloadData()
+            if let proxyCount = self?.proxyCount, proxyCount < proxies.count {
+                self?.scrollToTop()
+            }
+            self?.proxyCount = proxies.count
         }
 
         setDefaultButtons()
@@ -64,14 +69,6 @@ class ProxiesViewController: UIViewController, NewConvoManaging {
             showConvoController(newConvo)
             self.newConvo = nil
         }
-    }
-
-    // todo: change..notification?
-    func scrollToTop() {
-        guard tableView.numberOfRows(inSection: 0) > 0 else {
-            return
-        }
-        tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .bottom, animated: true)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -130,7 +127,7 @@ private extension ProxiesViewController {
             case .failure(let error):
                 self?.showErrorAlert(error)
             case .success:
-                self?.scrollToTop()
+                break
             }
             self?.makeNewProxyButton.isEnabled = true
         }
@@ -171,6 +168,13 @@ private extension ProxiesViewController {
         return UIBarButtonItem.make(target: self,
                                     action: #selector(makeNewProxy),
                                     imageName: ButtonName.makeNewProxy)
+    }
+
+    func scrollToTop() {
+        guard tableView.numberOfRows(inSection: 0) > 0 else {
+            return
+        }
+        tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .bottom, animated: true)
     }
 }
 
