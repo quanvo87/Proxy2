@@ -11,12 +11,8 @@ class ConvosViewController: UIViewController, NewConvoManaging {
     private var convos = [Convo]()
     private var currentProxyCount = 0
     private var unreadMessageCount = 0
-    private lazy var makeNewMessageButton = UIBarButtonItem.make(target: self,
-                                                                 action: #selector(showMakeNewMessageController),
-                                                                 imageName: ButtonName.makeNewMessage)
-    private lazy var makeNewProxyButton = UIBarButtonItem.make(target: self,
-                                                               action: #selector(makeNewProxy),
-                                                               imageName: ButtonName.makeNewProxy)
+    private lazy var makeNewMessageButton = makeMakeNewMessageButton()
+    private lazy var makeNewProxyButton = makeMakeNewProxyButton()
 
     init(database: Database = Firebase(),
          convosObserver: ConvosObsering = ConvosObserver(),
@@ -87,7 +83,13 @@ class ConvosViewController: UIViewController, NewConvoManaging {
         }
     }
 
-    @objc private func makeNewProxy() {
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+private extension ConvosViewController {
+    @objc func makeNewProxy() {
         makeNewProxyButton.animate()
         makeNewProxyButton.isEnabled = false
         tabBarController?.selectedIndex = 1
@@ -107,15 +109,23 @@ class ConvosViewController: UIViewController, NewConvoManaging {
         }
     }
 
-    @objc private func showMakeNewMessageController() {
+    @objc func showMakeNewMessageController() {
         makeNewMessageButton.animate()
         makeNewMessageButton.isEnabled = false
         showMakeNewMessageController(sender: nil, uid: uid)
         makeNewMessageButton.isEnabled = true
     }
 
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    func makeMakeNewMessageButton() -> UIBarButtonItem {
+        return UIBarButtonItem.make(target: self,
+                                    action: #selector(showMakeNewMessageController),
+                                    imageName: ButtonName.makeNewMessage)
+    }
+
+    func makeMakeNewProxyButton() -> UIBarButtonItem {
+        return UIBarButtonItem.make(target: self,
+                                    action: #selector(makeNewProxy),
+                                    imageName: ButtonName.makeNewProxy)
     }
 }
 

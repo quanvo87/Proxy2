@@ -1,12 +1,11 @@
 import SwiftVideoBackground
 
 class LoginViewController: UIViewController {
+    @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var facebookButton: UIButton!
     @IBOutlet weak var loginButton: UIButton!
-    @IBOutlet weak var signUpButton: UIButton!
-    @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
-
+    @IBOutlet weak var signUpButton: UIButton!
     private let videoBackground = VideoBackground()
     private var loginManager: LoginManaging = LoginManager()
 
@@ -16,16 +15,16 @@ class LoginViewController: UIViewController {
         let videos = ["arabiangulf", "beachpalm", "hawaiiancoast"]
         videoBackground.play(view: view, videoName: videos[videos.count.random], videoType: "mp4", alpha: 0.1)
 
+        emailTextField.clearButtonMode = .whileEditing
+
         facebookButton.configure()
 
         loginButton.configure()
 
-        signUpButton.configure()
-
-        emailTextField.clearButtonMode = .whileEditing
-
         passwordTextField.clearButtonMode = .whileEditing
         passwordTextField.isSecureTextEntry = true
+
+        signUpButton.configure()
     }
 
     static func make(_ loginManager: LoginManaging = LoginManager()) -> LoginViewController? {

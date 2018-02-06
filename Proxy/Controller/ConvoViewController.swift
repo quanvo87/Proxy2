@@ -5,22 +5,11 @@ class ConvoViewController: MessagesViewController {
     private let database: Database
     private let messagesObserver: MessagesObserving
     private let unreadMessagesObserver: UnreadMessagesObserving
+    private var convo: Convo? { didSet { didSetConvo() } }
     private var icons = [String: UIImage]()
     private var isPresent = false
     private var messages = [Message]()
     private var messagesToRead = [String: Message]()
-    private var convo: Convo? {
-        didSet {
-            guard let convo = convo else {
-                _ = navigationController?.popViewController(animated: false)
-                return
-            }
-            icons[convo.receiverProxyKey] = UIImage(named: convo.receiverIcon)
-            icons[convo.senderProxyKey] = UIImage(named: convo.senderIcon)
-            messagesCollectionView.reloadDataAndKeepOffset()
-            navigationItem.title = convo.receiverDisplayName
-        }
-    }
 
     init(convo: Convo,
          convoObserver: ConvoObserving = ConvoObserver(),
@@ -97,15 +86,28 @@ class ConvoViewController: MessagesViewController {
         tabBarController?.tabBar.isHidden = false
     }
 
-    @objc private func showConvoDetailViewController() {
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+private extension ConvoViewController {
+    @objc func showConvoDetailViewController() {
         guard let convo = convo else {
             return
         }
         navigationController?.pushViewController(ConvoDetailViewController(convo: convo), animated: true)
     }
 
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    func didSetConvo() {
+        guard let convo = convo else {
+            _ = navigationController?.popViewController(animated: false)
+            return
+        }
+        icons[convo.receiverProxyKey] = UIImage(named: convo.receiverIcon)
+        icons[convo.senderProxyKey] = UIImage(named: convo.senderIcon)
+        messagesCollectionView.reloadDataAndKeepOffset()
+        navigationItem.title = convo.receiverDisplayName
     }
 }
 

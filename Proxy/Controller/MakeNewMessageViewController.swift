@@ -7,15 +7,8 @@ private enum FirstResponder {
 }
 
 class MakeNewMessageViewController: UIViewController, SenderManaging {
-    var sender: Proxy? {
-        didSet {
-            tableView.reloadData()
-            setFirstResponder()
-        }
-    }
-    override var inputAccessoryView: UIView? {
-        return messageInputBar
-    }
+    var sender: Proxy? { didSet { didSetSender() } }
+    override var inputAccessoryView: UIView? { return messageInputBar }
     private let database: Database
     private let messageInputBar = MessageInputBar()
     private let proxiesObserver: ProxiesObserving
@@ -26,27 +19,16 @@ class MakeNewMessageViewController: UIViewController, SenderManaging {
     private var isSending = false
     private var lockKeyboard = true
     private var proxies = [Proxy]()
-    private var receiverCell: MakeNewMessageReceiverTableViewCell? {
-        if let receiverCell = tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? MakeNewMessageReceiverTableViewCell {
-            return receiverCell
-        } else {
-            return nil
-        }
-    }
+    private lazy var cancelButton = makeCancelButton()
+    private lazy var makeNewProxyButton = makeMakeNewProxyButton()
     private weak var newConvoManager: NewConvoManaging?
-    private lazy var cancelButton = UIBarButtonItem.make(target: self,
-                                                         action: #selector(close),
-                                                         imageName: ButtonName.cancel)
-    private lazy var makeNewProxyButton = UIBarButtonItem.make(target: self,
-                                                         action: #selector(makeNewProxy),
-                                                         imageName: ButtonName.makeNewProxy)
 
     init(sender: Proxy?,
          database: Database = Firebase(),
          proxiesObserver: ProxiesObserving = ProxiesObserver(),
          proxyNamesLoader: ProxyNamesLoading = ProxyNamesLoader(),
          uid: String,
-         newConvoManager: NewConvoManaging?) {
+         newConvoManager: NewConvoManaging) {
         self.sender = sender
         self.database = database
         self.proxiesObserver = proxiesObserver
@@ -111,41 +93,36 @@ class MakeNewMessageViewController: UIViewController, SenderManaging {
         }
     }
 
-    private func setButtons(_ isEnabled: Bool) {
-        messageInputBar.sendButton.isEnabled = isEnabled
-        makeNewProxyButton.isEnabled = isEnabled
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 
-    private func setFirstResponder() {
-        switch firstResponder {
-        case .receiverTextField:
-            if let receiverCell = receiverCell {
-                receiverCell.receiverTextField.becomeFirstResponder()
-            }
-        case .newMessageTextView:
-            messageInputBar.inputTextView.becomeFirstResponder()
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+private extension MakeNewMessageViewController {
+    var receiverCell: MakeNewMessageReceiverTableViewCell? {
+        if let receiverCell = tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? MakeNewMessageReceiverTableViewCell {
+            return receiverCell
+        } else {
+            return nil
         }
     }
 
-    private func _showErrorAlert(_ error: Error) {
-        lockKeyboard = false
-        showErrorAlert(error) { [weak self] in
-            self?.lockKeyboard = true
-        }
-    }
-
-    @objc private func close() {
+    @objc func close() {
         setButtons(false)
         dismiss(animated: true)
     }
 
-    @objc private func keyboardWillHide() {
+    @objc func keyboardWillHide() {
         if lockKeyboard {
             setFirstResponder()
         }
     }
 
-    @objc private func makeNewProxy() {
+    @objc func makeNewProxy() {
         makeNewProxyButton.animate()
         setButtons(false)
         database.makeProxy(currentProxyCount: proxies.count, ownerId: uid) { [weak self] result in
@@ -159,24 +136,44 @@ class MakeNewMessageViewController: UIViewController, SenderManaging {
         }
     }
 
-    deinit {
-        NotificationCenter.default.removeObserver(self)
+    func _showErrorAlert(_ error: Error) {
+        lockKeyboard = false
+        showErrorAlert(error) { [weak self] in
+            self?.lockKeyboard = true
+        }
     }
 
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    func didSetSender() {
+        tableView.reloadData()
+        setFirstResponder()
     }
-}
 
-extension MakeNewMessageViewController: UITextFieldDelegate {
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        firstResponder = .receiverTextField
+    func makeCancelButton() -> UIBarButtonItem {
+        return UIBarButtonItem.make(target: self,
+                                    action: #selector(close),
+                                    imageName: ButtonName.cancel)
     }
-}
 
-extension MakeNewMessageViewController: UITextViewDelegate {
-    func textViewDidBeginEditing(_ textView: UITextView) {
-        firstResponder = .newMessageTextView
+    func makeMakeNewProxyButton() -> UIBarButtonItem {
+        return UIBarButtonItem.make(target: self,
+                                    action: #selector(makeNewProxy),
+                                    imageName: ButtonName.makeNewProxy)
+    }
+
+    func setButtons(_ isEnabled: Bool) {
+        messageInputBar.sendButton.isEnabled = isEnabled
+        makeNewProxyButton.isEnabled = isEnabled
+    }
+
+    func setFirstResponder() {
+        switch firstResponder {
+        case .receiverTextField:
+            if let receiverCell = receiverCell {
+                receiverCell.receiverTextField.becomeFirstResponder()
+            }
+        case .newMessageTextView:
+            messageInputBar.inputTextView.becomeFirstResponder()
+        }
     }
 }
 
@@ -327,5 +324,19 @@ extension MakeNewMessageViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return CGFloat.leastNormalMagnitude
+    }
+}
+
+// MARK: - UITextFieldDelegate
+extension MakeNewMessageViewController: UITextFieldDelegate {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        firstResponder = .receiverTextField
+    }
+}
+
+// MARK: - UITextViewDelegate
+extension MakeNewMessageViewController: UITextViewDelegate {
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        firstResponder = .newMessageTextView
     }
 }

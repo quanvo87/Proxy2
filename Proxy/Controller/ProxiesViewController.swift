@@ -8,21 +8,11 @@ class ProxiesViewController: UIViewController, NewConvoManaging {
     private let uid: String
     private var proxies = [Proxy]()
     private var proxiesToDelete = [String: Any]()
-    private lazy var cancelButton = UIBarButtonItem.make(target: self,
-                                                         action: #selector(setDefaultButtons),
-                                                         imageName: ButtonName.cancel)
-    private lazy var confirmButton = UIBarButtonItem.make(target: self,
-                                                          action: #selector(deleteSelectedItems),
-                                                          imageName: ButtonName.confirm)
-    private lazy var deleteButton = UIBarButtonItem.make(target: self,
-                                                         action: #selector(setEditModeButtons),
-                                                         imageName: ButtonName.delete)
-    private lazy var makeNewMessageButton = UIBarButtonItem.make(target: self,
-                                                                 action: #selector(showMakeNewMessageController),
-                                                                 imageName: ButtonName.makeNewMessage)
-    private lazy var makeNewProxyButton = UIBarButtonItem.make(target: self,
-                                                               action: #selector(makeNewProxy),
-                                                               imageName: ButtonName.makeNewProxy)
+    private lazy var cancelButton = makeCancelButton()
+    private lazy var confirmButton = makeConfirmButton()
+    private lazy var deleteButton = makeDeleteButton()
+    private lazy var makeNewMessageButton = makeMakeNewMessageButton()
+    private lazy var makeNewProxyButton = makeMakeNewProxyButton()
 
     init(database: Database = Firebase(),
          proxiesObserver: ProxiesObserving = ProxiesObserver(),
@@ -76,6 +66,7 @@ class ProxiesViewController: UIViewController, NewConvoManaging {
         }
     }
 
+    // todo: change..notification?
     func scrollToTop() {
         guard tableView.numberOfRows(inSection: 0) > 0 else {
             return
@@ -83,7 +74,13 @@ class ProxiesViewController: UIViewController, NewConvoManaging {
         tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .bottom, animated: true)
     }
 
-    @objc private func setDefaultButtons() {
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+private extension ProxiesViewController {
+    @objc func setDefaultButtons() {
         if proxies.isEmpty {
             makeNewProxyButton.animate(loop: true)
         }
@@ -95,7 +92,7 @@ class ProxiesViewController: UIViewController, NewConvoManaging {
         tableView.setEditing(false, animated: true)
     }
 
-    @objc private func setEditModeButtons() {
+    @objc func setEditModeButtons() {
         makeNewProxyButton.customView?.isHidden = true
         makeNewProxyButton.isEnabled = false
         navigationItem.leftBarButtonItem = cancelButton
@@ -103,7 +100,7 @@ class ProxiesViewController: UIViewController, NewConvoManaging {
         tableView.setEditing(true, animated: true)
     }
 
-    @objc private func deleteSelectedItems() {
+    @objc func deleteSelectedItems() {
         if proxiesToDelete.isEmpty {
             setDefaultButtons()
             return
@@ -125,7 +122,7 @@ class ProxiesViewController: UIViewController, NewConvoManaging {
         present(alert, animated: true)
     }
 
-    @objc private func makeNewProxy() {
+    @objc func makeNewProxy() {
         makeNewProxyButton.animate()
         makeNewProxyButton.isEnabled = false
         database.makeProxy(currentProxyCount: proxies.count, ownerId: uid) { [weak self] result in
@@ -139,15 +136,41 @@ class ProxiesViewController: UIViewController, NewConvoManaging {
         }
     }
 
-    @objc private func showMakeNewMessageController() {
+    @objc func showMakeNewMessageController() {
         makeNewMessageButton.animate()
         makeNewMessageButton.isEnabled = false
         showMakeNewMessageController(sender: nil, uid: uid)
         makeNewMessageButton.isEnabled = true
     }
 
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    func makeCancelButton() -> UIBarButtonItem {
+        return UIBarButtonItem.make(target: self,
+                                    action: #selector(setDefaultButtons),
+                                    imageName: ButtonName.cancel)
+    }
+
+    func makeConfirmButton() -> UIBarButtonItem {
+        return UIBarButtonItem.make(target: self,
+                                    action: #selector(deleteSelectedItems),
+                                    imageName: ButtonName.confirm)
+    }
+
+    func makeDeleteButton() -> UIBarButtonItem {
+        return UIBarButtonItem.make(target: self,
+                                    action: #selector(setEditModeButtons),
+                                    imageName: ButtonName.delete)
+    }
+
+    func makeMakeNewMessageButton() -> UIBarButtonItem {
+        return UIBarButtonItem.make(target: self,
+                                    action: #selector(showMakeNewMessageController),
+                                    imageName: ButtonName.makeNewMessage)
+    }
+
+    func makeMakeNewProxyButton() -> UIBarButtonItem {
+        return UIBarButtonItem.make(target: self,
+                                    action: #selector(makeNewProxy),
+                                    imageName: ButtonName.makeNewProxy)
     }
 }
 

@@ -7,9 +7,7 @@ class SenderPickerViewController: UIViewController {
     private let uid: String
     private var proxies = [Proxy]()
     private weak var senderManager: SenderManaging?
-    private lazy var makeNewProxyButton = UIBarButtonItem.make(target: self,
-                                                               action: #selector(makeNewProxy),
-                                                               imageName: ButtonName.makeNewProxy)
+    private lazy var makeNewProxyButton = makeMakeNewProxyButton()
 
     init(database: Database = Firebase(),
          proxiesObserver: ProxiesObserving = ProxiesObserver(),
@@ -49,7 +47,13 @@ class SenderPickerViewController: UIViewController {
         view.addSubview(tableView)
     }
 
-    @objc private func makeNewProxy() {
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+private extension SenderPickerViewController {
+    @objc func makeNewProxy() {
         makeNewProxyButton.animate()
         makeNewProxyButton.isEnabled = false
         database.makeProxy(currentProxyCount: proxies.count, ownerId: uid) { [weak self] result in
@@ -63,8 +67,10 @@ class SenderPickerViewController: UIViewController {
         }
     }
 
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    func makeMakeNewProxyButton() -> UIBarButtonItem {
+        return UIBarButtonItem.make(target: self,
+                                    action: #selector(makeNewProxy),
+                                    imageName: ButtonName.makeNewProxy)
     }
 }
 

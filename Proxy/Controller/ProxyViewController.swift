@@ -7,21 +7,9 @@ class ProxyViewController: UIViewController, NewConvoManaging {
     private let proxyObserver: ProxyObsering
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private var convos = [Convo]()
-    private var proxy: Proxy? {
-        didSet {
-            guard proxy != nil else {
-                _ = navigationController?.popViewController(animated: false)
-                return
-            }
-            tableView.reloadData()
-        }
-    }
-    private lazy var makeNewMessageButton = UIBarButtonItem.make(target: self,
-                                                                 action: #selector(showMakeNewMessageController),
-                                                                 imageName: ButtonName.makeNewMessage)
-    private lazy var deleteProxyButton = UIBarButtonItem.make(target: self,
-                                                              action: #selector(deleteProxy),
-                                                              imageName: ButtonName.delete)
+    private var proxy: Proxy? { didSet { didSetProxy() } }
+    private lazy var makeNewMessageButton = makeMakeNewMessageButton()
+    private lazy var deleteProxyButton = makeDeleteProxyButton()
 
     init(proxy: Proxy,
          convosObserver: ConvosObsering = ConvosObserver(),
@@ -80,7 +68,13 @@ class ProxyViewController: UIViewController, NewConvoManaging {
         }
     }
 
-    @objc private func deleteProxy() {
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+private extension ProxyViewController {
+    @objc func deleteProxy() {
         let alert = UIAlertController(title: "Delete Proxy?",
                                       message: "You will not be able to see this proxy or its conversations again.",
                                       preferredStyle: .alert)
@@ -96,7 +90,7 @@ class ProxyViewController: UIViewController, NewConvoManaging {
         present(alert, animated: true)
     }
 
-    @objc private func showMakeNewMessageController() {
+    @objc func showMakeNewMessageController() {
         guard let proxy = proxy else {
             return
         }
@@ -104,8 +98,24 @@ class ProxyViewController: UIViewController, NewConvoManaging {
         showMakeNewMessageController(sender: proxy, uid: proxy.ownerId)
     }
 
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    func didSetProxy() {
+        guard proxy != nil else {
+            _ = navigationController?.popViewController(animated: false)
+            return
+        }
+        tableView.reloadData()
+    }
+
+    func makeMakeNewMessageButton() -> UIBarButtonItem {
+        return UIBarButtonItem.make(target: self,
+                                    action: #selector(showMakeNewMessageController),
+                                    imageName: ButtonName.makeNewMessage)
+    }
+
+    func makeDeleteProxyButton() -> UIBarButtonItem {
+        return UIBarButtonItem.make(target: self,
+                                    action: #selector(deleteProxy),
+                                    imageName: ButtonName.delete)
     }
 }
 

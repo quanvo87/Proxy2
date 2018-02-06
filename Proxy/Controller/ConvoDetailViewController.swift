@@ -5,17 +5,9 @@ class ConvoDetailViewController: UIViewController {
     private let database: Database
     private let proxyObserver: ProxyObsering
     private let tableView = UITableView(frame: .zero, style: .grouped)
+    private var convo: Convo? { didSet { didSetConvo() } }
     private var proxy: Proxy?
     private var shouldClose = false
-    private var convo: Convo? {
-        didSet {
-            if convo == nil {
-                shouldClose = true
-            } else {
-                tableView.reloadData()
-            }
-        }
-    }
 
     init(convo: Convo,
          convoObserver: ConvoObserving = ConvoObserver(),
@@ -63,6 +55,16 @@ class ConvoDetailViewController: UIViewController {
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+}
+
+private extension ConvoDetailViewController {
+    func didSetConvo() {
+        if convo == nil {
+            shouldClose = true
+        } else {
+            tableView.reloadData()
+        }
     }
 }
 
