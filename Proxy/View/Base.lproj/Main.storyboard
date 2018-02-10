@@ -22,20 +22,20 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Proxy" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iOd-L5-l08">
-                                <rect key="frame" x="137.5" y="30" width="100.5" height="50.5"/>
+                                <rect key="frame" x="137.5" y="40" width="100.5" height="50.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="42"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="K1D-g8-4AH" customClass="Segmentio" customModule="Segmentio">
-                                <rect key="frame" x="20" y="100.5" width="335" height="45"/>
+                                <rect key="frame" x="20" y="110.5" width="335" height="45"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="45" id="TDm-yv-h7I"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Yc3-R9-7Ep">
-                                <rect key="frame" x="20" y="166" width="335" height="457"/>
+                                <rect key="frame" x="20" y="176" width="335" height="447"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fxv-zJ-MKG" customClass="CustomPressableButton" customModule="SwiftyButton">
@@ -49,7 +49,7 @@
                             <constraint firstItem="iOd-L5-l08" firstAttribute="centerX" secondItem="a7O-1B-Est" secondAttribute="centerX" id="IFf-vj-oib"/>
                             <constraint firstItem="a7O-1B-Est" firstAttribute="bottom" secondItem="fxv-zJ-MKG" secondAttribute="bottom" constant="5" id="R4P-kM-Iaa"/>
                             <constraint firstItem="fxv-zJ-MKG" firstAttribute="top" secondItem="Yc3-R9-7Ep" secondAttribute="bottom" constant="5" id="XIf-xH-I8d"/>
-                            <constraint firstItem="iOd-L5-l08" firstAttribute="top" secondItem="a7O-1B-Est" secondAttribute="top" constant="10" id="YS1-Qx-GHb"/>
+                            <constraint firstItem="iOd-L5-l08" firstAttribute="top" secondItem="a7O-1B-Est" secondAttribute="top" constant="20" id="YS1-Qx-GHb"/>
                             <constraint firstItem="K1D-g8-4AH" firstAttribute="top" secondItem="iOd-L5-l08" secondAttribute="bottom" constant="20" id="aS2-FL-56C"/>
                             <constraint firstItem="K1D-g8-4AH" firstAttribute="leading" secondItem="a7O-1B-Est" secondAttribute="leading" constant="20" id="fzF-xg-8lP"/>
                             <constraint firstItem="a7O-1B-Est" firstAttribute="trailing" secondItem="K1D-g8-4AH" secondAttribute="trailing" constant="20" id="mH5-fD-vPq"/>
@@ -63,17 +63,17 @@
                         <outlet property="contentView" destination="Yc3-R9-7Ep" id="8aS-jo-5DG"/>
                         <outlet property="facebookButton" destination="fxv-zJ-MKG" id="T9E-Gc-MFT"/>
                         <outlet property="facebookButtonBottomConstraint" destination="R4P-kM-Iaa" id="mQV-Jo-PQW"/>
-                        <outlet property="segmentio" destination="K1D-g8-4AH" id="Ox1-u2-Sk6"/>
+                        <outlet property="segmentControl" destination="K1D-g8-4AH" id="Ox1-u2-Sk6"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cl9-LD-2Cy" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-2644" y="2184.5577211394307"/>
         </scene>
-        <!--View Controller-->
+        <!--Sign Up View Controller-->
         <scene sceneID="YO2-Qj-eSo">
             <objects>
-                <viewController id="oIl-XN-QEb" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SignUpViewController" id="oIl-XN-QEb" customClass="SignUpViewController" customModule="Proxy" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="TnL-II-qL9">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -87,15 +87,41 @@
                                     <userDefinedRuntimeAttribute type="string" keyPath="placeholder" value="Email"/>
                                 </userDefinedRuntimeAttributes>
                             </textField>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="2FU-iX-iJ7" customClass="SkyFloatingLabelTextField" customModule="SkyFloatingLabelTextField">
+                                <rect key="frame" x="0.0" y="79" width="375" height="39.5"/>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" secureTextEntry="YES" textContentType="password"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="placeholder" value="Password"/>
+                                </userDefinedRuntimeAttributes>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kzC-ki-r2K" customClass="CustomPressableButton" customModule="SwiftyButton">
+                                <rect key="frame" x="0.0" y="138.5" width="375" height="45"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="45" id="kI0-7E-BJa"/>
+                                </constraints>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="CaZ-3c-GNa" firstAttribute="trailing" secondItem="2FU-iX-iJ7" secondAttribute="trailing" id="4Tr-UD-8gP"/>
+                            <constraint firstItem="2FU-iX-iJ7" firstAttribute="top" secondItem="ZTw-y5-JWT" secondAttribute="bottom" constant="20" id="7Zi-ux-lev"/>
+                            <constraint firstItem="kzC-ki-r2K" firstAttribute="leading" secondItem="CaZ-3c-GNa" secondAttribute="leading" id="8Hr-WG-3jH"/>
                             <constraint firstItem="CaZ-3c-GNa" firstAttribute="trailing" secondItem="ZTw-y5-JWT" secondAttribute="trailing" id="EmR-my-uV5"/>
                             <constraint firstItem="ZTw-y5-JWT" firstAttribute="leading" secondItem="CaZ-3c-GNa" secondAttribute="leading" id="NiF-k8-eRt"/>
+                            <constraint firstItem="2FU-iX-iJ7" firstAttribute="leading" secondItem="CaZ-3c-GNa" secondAttribute="leading" id="WS3-wp-1ab"/>
+                            <constraint firstItem="CaZ-3c-GNa" firstAttribute="trailing" secondItem="kzC-ki-r2K" secondAttribute="trailing" id="WTC-y6-efD"/>
+                            <constraint firstItem="kzC-ki-r2K" firstAttribute="top" secondItem="2FU-iX-iJ7" secondAttribute="bottom" constant="20" id="pz8-w2-Llv"/>
                             <constraint firstItem="ZTw-y5-JWT" firstAttribute="top" secondItem="CaZ-3c-GNa" secondAttribute="top" id="s2N-yY-ggC"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="CaZ-3c-GNa"/>
                     </view>
+                    <connections>
+                        <outlet property="emailTextField" destination="ZTw-y5-JWT" id="qy6-6f-SXu"/>
+                        <outlet property="passwordTextField" destination="2FU-iX-iJ7" id="3oZ-LB-Gl9"/>
+                        <outlet property="signUpButton" destination="kzC-ki-r2K" id="FCs-Hb-8kz"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ekh-bq-rHI" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

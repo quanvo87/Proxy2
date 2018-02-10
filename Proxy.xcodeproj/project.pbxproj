@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		59038A35202FA43B006C1B73 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59038A34202FA43B006C1B73 /* SignUpViewController.swift */; };
 		5904054A20087C90005F4638 /* MakeNewMessageSenderTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5904054920087C90005F4638 /* MakeNewMessageSenderTableViewCell.xib */; };
 		5904054C2008DDE3005F4638 /* MakeNewMessageSenderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5904054B2008DDE3005F4638 /* MakeNewMessageSenderTableViewCell.swift */; };
 		590441EB1F98351E0015CE16 /* ConvosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 590441EA1F98351E0015CE16 /* ConvosViewController.swift */; };
@@ -92,6 +93,7 @@
 
 /* Begin PBXFileReference section */
 		3BAAA6C3B4320D57BE4DCA56 /* Pods-ProxyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ProxyTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ProxyTests/Pods-ProxyTests.debug.xcconfig"; sourceTree = "<group>"; };
+		59038A34202FA43B006C1B73 /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		5904054920087C90005F4638 /* MakeNewMessageSenderTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MakeNewMessageSenderTableViewCell.xib; sourceTree = "<group>"; };
 		5904054B2008DDE3005F4638 /* MakeNewMessageSenderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MakeNewMessageSenderTableViewCell.swift; sourceTree = "<group>"; };
 		590441EA1F98351E0015CE16 /* ConvosViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvosViewController.swift; sourceTree = "<group>"; };
@@ -207,14 +209,23 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		59038A36202FA476006C1B73 /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				5973C8221F608A1B00647492 /* LoginViewController.swift */,
+				59038A34202FA43B006C1B73 /* SignUpViewController.swift */,
+			);
+			path = Login;
+			sourceTree = "<group>";
+		};
 		5966076A1F977C1500874741 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				59038A36202FA476006C1B73 /* Login */,
 				598F89FD1FEB401200CCF024 /* ConvoDetailViewController.swift */,
 				59DECF5E1FEA56AD009ABB36 /* ConvoViewController.swift */,
 				590441EA1F98351E0015CE16 /* ConvosViewController.swift */,
 				5973C82C1F608A1D00647492 /* IconPickerViewController.swift */,
-				5973C8221F608A1B00647492 /* LoginViewController.swift */,
 				5973C8231F608A1C00647492 /* NewMessageMakerViewController.swift */,
 				5973C8311F608A1D00647492 /* ProxiesViewController.swift */,
 				5973C8351F608A1E00647492 /* ProxyViewController.swift */,
@@ -334,6 +345,8 @@
 		59D896A71F977EC7008B3A05 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				59B432E31F60648400622DEA /* Main.storyboard */,
+				59B432E81F60648400622DEA /* LaunchScreen.storyboard */,
 				5973C81F1F608A1B00647492 /* ConvoDetailReceiverProxyTableViewCell.swift */,
 				59D3AE4F1FA1A4FF009F18A5 /* ConvoDetailReceiverProxyTableViewCell.xib */,
 				598F8A591FEB501400CCF024 /* ConvoDetailSenderProxyTableViewCell.xib */,
@@ -341,8 +354,6 @@
 				590823C21F9EED6A00A3B6A9 /* IconPickerCollectionViewCell.xib */,
 				5973C8161F608A1A00647492 /* ConvosTableViewCell.swift */,
 				5988E8311F9A5A7E002C8C95 /* ConvosTableViewCell.xib */,
-				59B432E81F60648400622DEA /* LaunchScreen.storyboard */,
-				59B432E31F60648400622DEA /* Main.storyboard */,
 				5939F05F200D174300AECD35 /* MakeNewMessageReceiverTableViewCell.swift */,
 				5939F05D200D13BA00AECD35 /* MakeNewMessageReceiverTableViewCell.xib */,
 				5904054B2008DDE3005F4638 /* MakeNewMessageSenderTableViewCell.swift */,
@@ -833,6 +844,7 @@
 				5973C8791F608A2200647492 /* loadAdjectives.swift in Sources */,
 				5973C85A1F608A2200647492 /* ProxiesTableViewCell.swift in Sources */,
 				5973C8771F608A2200647492 /* SenderPickerViewController.swift in Sources */,
+				59038A35202FA43B006C1B73 /* SignUpViewController.swift in Sources */,
 				5973C86B1F608A2200647492 /* Convo.swift in Sources */,
 				5939F060200D174300AECD35 /* MakeNewMessageReceiverTableViewCell.swift in Sources */,
 				5973C8751F608A2200647492 /* loadIconNames.swift in Sources */,

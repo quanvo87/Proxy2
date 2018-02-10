@@ -21,6 +21,7 @@ struct Identifier {
     static let proxiesTableViewCell = "ProxiesTableViewCell"
     static let senderProxyTableViewCell = "SenderProxyTableViewCell"
     static let settingsTableViewCell = "SettingsTableViewCell"
+    static let signUpViewController = "SignUpViewController"
 }
 
 struct Child {
