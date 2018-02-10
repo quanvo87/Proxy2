@@ -13,10 +13,15 @@ def pods
   pod 'FirebaseHelper', '~> 1.0'
   pod 'GroupWork', '~> 0.0'
   pod 'MessageKit', '~> 0.13'
+  pod 'PureLayout', '~> 3.0'
   pod 'SearchTextField', '~> 1.2'
+  pod 'Segmentio', '~> 3.0'
+  pod 'SkyFloatingLabelTextField', '~> 3.4'
   pod 'Spring', '~> 1.0'
   pod 'SwiftLint', '~> 0.24'
   pod 'SwiftVideoBackground', '~> 2.0'
+  pod 'SwiftyButton', '~> 0.8'
+  pod 'FontAwesome.swift', '~> 1.3'
   pod 'WQNetworkActivityIndicator', '~> 0.1'
 end
 

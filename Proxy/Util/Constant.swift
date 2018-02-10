@@ -9,6 +9,7 @@ struct ButtonName {
     static let makeNewProxy = "makeNewProxy"
 }
 
+// todo: String(describing: Type.self)
 struct Identifier {
     static let convoDetailReceiverProxyTableViewCell = "ConvoDetailReceiverProxyTableViewCell"
     static let convoDetailSenderProxyTableViewCell = "ConvoDetailSenderProxyTableViewCell"

@@ -6,17 +6,17 @@ class SenderPickerViewController: UIViewController {
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
     private var proxies = [Proxy]()
-    private weak var senderManager: SenderManaging?
     private lazy var makeNewProxyButton = makeMakeNewProxyButton()
+    private weak var senderPickerDelegate: SenderPickerDelegate?
 
     init(database: Database = Firebase(),
          proxiesObserver: ProxiesObserving = ProxiesObserver(),
          uid: String,
-         senderManager: SenderManaging?) {
+         senderPickerDelegate: SenderPickerDelegate?) {
         self.database = database
         self.proxiesObserver = proxiesObserver
         self.uid = uid
-        self.senderManager = senderManager
+        self.senderPickerDelegate = senderPickerDelegate
 
         super.init(nibName: nil, bundle: nil)
 
@@ -105,7 +105,7 @@ extension SenderPickerViewController: UITableViewDelegate {
         guard let proxy = proxies[safe: indexPath.row] else {
             return
         }
-        senderManager?.sender = proxy
+        senderPickerDelegate?.sender = proxy
         navigationController?.popViewController(animated: true)
     }
 

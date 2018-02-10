@@ -35,6 +35,7 @@ Create unlimited, anonymous user names (Proxy's) with just one tap. Chat with an
 
 - Swift features:
   - Protocols:
+  // todo: class bound for weak references
     - Composition
       - Separation of concerns
       - Multiple protocol conformance when needed

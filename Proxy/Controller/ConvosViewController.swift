@@ -1,6 +1,6 @@
 import UIKit
 
-class ConvosViewController: UIViewController, NewConvoManaging {
+class ConvosViewController: UIViewController, NewMessageMakerDelegate {
     var newConvo: Convo?
     private let database: Database
     private let convosObserver: ConvosObsering
@@ -104,16 +104,16 @@ private extension ConvosViewController {
         }
     }
 
-    @objc func showMakeNewMessageController() {
+    @objc func showNewMessageMakerViewController() {
         makeNewMessageButton.animate()
         makeNewMessageButton.isEnabled = false
-        showMakeNewMessageController(sender: nil, uid: uid)
+        showNewMessageMakerViewController(sender: nil, uid: uid)
         makeNewMessageButton.isEnabled = true
     }
 
     func makeMakeNewMessageButton() -> UIBarButtonItem {
         return UIBarButtonItem.make(target: self,
-                                    action: #selector(showMakeNewMessageController),
+                                    action: #selector(showNewMessageMakerViewController),
                                     imageName: ButtonName.makeNewMessage)
     }
 

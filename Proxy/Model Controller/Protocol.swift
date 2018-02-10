@@ -1,15 +1,16 @@
 import FirebaseDatabase
 import UIKit
 
-protocol NewConvoManaging: class {
+// todo: make these functions instead of vars
+protocol NewMessageMakerDelegate: class {
     var newConvo: Convo? { get set }
 }
 
-extension NewConvoManaging where Self: UIViewController {
-    func showMakeNewMessageController(sender: Proxy?, uid: String) {
-        let makeNewMessageViewController = MakeNewMessageViewController(sender: sender,
-                                                                        uid: uid,
-                                                                        newConvoManager: self)
+extension NewMessageMakerDelegate where Self: UIViewController {
+    func showNewMessageMakerViewController(sender: Proxy?, uid: String) {
+        let makeNewMessageViewController = NewMessageMakerViewController(sender: sender,
+                                                                         uid: uid,
+                                                                         newMessageMakerDelegate: self)
         let navigationController = UINavigationController(rootViewController: makeNewMessageViewController)
         present(navigationController, animated: true)
     }
@@ -28,6 +29,6 @@ extension ReferenceObserving {
     }
 }
 
-protocol SenderManaging: class {
+protocol SenderPickerDelegate: class {
     var sender: Proxy? { get set }
 }

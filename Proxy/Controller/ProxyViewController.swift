@@ -1,6 +1,6 @@
 import UIKit
 
-class ProxyViewController: UIViewController, NewConvoManaging {
+class ProxyViewController: UIViewController, NewMessageMakerDelegate {
     var newConvo: Convo?
     private let convosObserver: ConvosObsering
     private let database: Database
@@ -90,12 +90,12 @@ private extension ProxyViewController {
         present(alert, animated: true)
     }
 
-    @objc func showMakeNewMessageController() {
+    @objc func showNewMessageMakerViewController() {
         guard let proxy = proxy else {
             return
         }
         makeNewMessageButton.animate()
-        showMakeNewMessageController(sender: proxy, uid: proxy.ownerId)
+        showNewMessageMakerViewController(sender: proxy, uid: proxy.ownerId)
     }
 
     func didSetProxy() {
@@ -108,7 +108,7 @@ private extension ProxyViewController {
 
     func makeMakeNewMessageButton() -> UIBarButtonItem {
         return UIBarButtonItem.make(target: self,
-                                    action: #selector(showMakeNewMessageController),
+                                    action: #selector(showNewMessageMakerViewController),
                                     imageName: ButtonName.makeNewMessage)
     }
 

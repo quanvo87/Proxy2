@@ -25,7 +25,7 @@
 		5973C8511F608A2200647492 /* ProxyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C81D1F608A1B00647492 /* ProxyError.swift */; };
 		5973C8531F608A2200647492 /* ConvoDetailReceiverProxyTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C81F1F608A1B00647492 /* ConvoDetailReceiverProxyTableViewCell.swift */; };
 		5973C8561F608A2200647492 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8221F608A1B00647492 /* LoginViewController.swift */; };
-		5973C8571F608A2200647492 /* MakeNewMessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8231F608A1C00647492 /* MakeNewMessageViewController.swift */; };
+		5973C8571F608A2200647492 /* NewMessageMakerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8231F608A1C00647492 /* NewMessageMakerViewController.swift */; };
 		5973C85A1F608A2200647492 /* ProxiesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8261F608A1C00647492 /* ProxiesTableViewCell.swift */; };
 		5973C85D1F608A2200647492 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8291F608A1C00647492 /* Common.swift */; };
 		5973C85E1F608A2200647492 /* SenderProxyTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C82B1F608A1D00647492 /* SenderProxyTableViewCell.swift */; };
@@ -110,7 +110,7 @@
 		5973C81D1F608A1B00647492 /* ProxyError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyError.swift; sourceTree = "<group>"; };
 		5973C81F1F608A1B00647492 /* ConvoDetailReceiverProxyTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvoDetailReceiverProxyTableViewCell.swift; sourceTree = "<group>"; };
 		5973C8221F608A1B00647492 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
-		5973C8231F608A1C00647492 /* MakeNewMessageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MakeNewMessageViewController.swift; sourceTree = "<group>"; };
+		5973C8231F608A1C00647492 /* NewMessageMakerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewMessageMakerViewController.swift; sourceTree = "<group>"; };
 		5973C8261F608A1C00647492 /* ProxiesTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxiesTableViewCell.swift; sourceTree = "<group>"; };
 		5973C8291F608A1C00647492 /* Common.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
 		5973C82B1F608A1D00647492 /* SenderProxyTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SenderProxyTableViewCell.swift; sourceTree = "<group>"; };
@@ -215,7 +215,7 @@
 				590441EA1F98351E0015CE16 /* ConvosViewController.swift */,
 				5973C82C1F608A1D00647492 /* IconPickerViewController.swift */,
 				5973C8221F608A1B00647492 /* LoginViewController.swift */,
-				5973C8231F608A1C00647492 /* MakeNewMessageViewController.swift */,
+				5973C8231F608A1C00647492 /* NewMessageMakerViewController.swift */,
 				5973C8311F608A1D00647492 /* ProxiesViewController.swift */,
 				5973C8351F608A1E00647492 /* ProxyViewController.swift */,
 				5973C8441F608A2100647492 /* SenderPickerViewController.swift */,
@@ -313,8 +313,8 @@
 		59C171B51F60C65000EDE032 /* Login Splash Videos */ = {
 			isa = PBXGroup;
 			children = (
-				59C171AD1F60C64400EDE032 /* arabiangulf.mp4 */,
 				59C171AE1F60C64400EDE032 /* beachpalm.mp4 */,
+				59C171AD1F60C64400EDE032 /* arabiangulf.mp4 */,
 				59C171B01F60C64500EDE032 /* hawaiiancoast.mp4 */,
 			);
 			name = "Login Splash Videos";
@@ -638,13 +638,18 @@
 				"${BUILT_PRODUCTS_DIR}/FBSDKLoginKit/FBSDKLoginKit.framework",
 				"${BUILT_PRODUCTS_DIR}/FacebookCore/FacebookCore.framework",
 				"${BUILT_PRODUCTS_DIR}/FacebookLogin/FacebookLogin.framework",
+				"${BUILT_PRODUCTS_DIR}/FontAwesome.swift/FontAwesome_swift.framework",
 				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
 				"${BUILT_PRODUCTS_DIR}/GroupWork/GroupWork.framework",
 				"${BUILT_PRODUCTS_DIR}/MessageKit/MessageKit.framework",
+				"${BUILT_PRODUCTS_DIR}/PureLayout/PureLayout.framework",
 				"${BUILT_PRODUCTS_DIR}/SearchTextField/SearchTextField.framework",
+				"${BUILT_PRODUCTS_DIR}/Segmentio/Segmentio.framework",
+				"${BUILT_PRODUCTS_DIR}/SkyFloatingLabelTextField/SkyFloatingLabelTextField.framework",
 				"${BUILT_PRODUCTS_DIR}/Spring/Spring.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftVideoBackground/SwiftVideoBackground.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyButton/SwiftyButton.framework",
 				"${BUILT_PRODUCTS_DIR}/WQNetworkActivityIndicator/WQNetworkActivityIndicator.framework",
 				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
@@ -657,13 +662,18 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKLoginKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FacebookCore.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FacebookLogin.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FontAwesome_swift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GroupWork.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MessageKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PureLayout.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SearchTextField.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Segmentio.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SkyFloatingLabelTextField.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Spring.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftVideoBackground.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyButton.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WQNetworkActivityIndicator.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
@@ -719,13 +729,18 @@
 				"${BUILT_PRODUCTS_DIR}/FBSDKLoginKit/FBSDKLoginKit.framework",
 				"${BUILT_PRODUCTS_DIR}/FacebookCore/FacebookCore.framework",
 				"${BUILT_PRODUCTS_DIR}/FacebookLogin/FacebookLogin.framework",
+				"${BUILT_PRODUCTS_DIR}/FontAwesome.swift/FontAwesome_swift.framework",
 				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
 				"${BUILT_PRODUCTS_DIR}/GroupWork/GroupWork.framework",
 				"${BUILT_PRODUCTS_DIR}/MessageKit/MessageKit.framework",
+				"${BUILT_PRODUCTS_DIR}/PureLayout/PureLayout.framework",
 				"${BUILT_PRODUCTS_DIR}/SearchTextField/SearchTextField.framework",
+				"${BUILT_PRODUCTS_DIR}/Segmentio/Segmentio.framework",
+				"${BUILT_PRODUCTS_DIR}/SkyFloatingLabelTextField/SkyFloatingLabelTextField.framework",
 				"${BUILT_PRODUCTS_DIR}/Spring/Spring.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftVideoBackground/SwiftVideoBackground.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyButton/SwiftyButton.framework",
 				"${BUILT_PRODUCTS_DIR}/WQNetworkActivityIndicator/WQNetworkActivityIndicator.framework",
 				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
@@ -738,13 +753,18 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKLoginKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FacebookCore.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FacebookLogin.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FontAwesome_swift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GroupWork.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MessageKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PureLayout.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SearchTextField.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Segmentio.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SkyFloatingLabelTextField.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Spring.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftVideoBackground.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyButton.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WQNetworkActivityIndicator.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
@@ -791,7 +811,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5973C8571F608A2200647492 /* MakeNewMessageViewController.swift in Sources */,
+				5973C8571F608A2200647492 /* NewMessageMakerViewController.swift in Sources */,
 				5932BA18200963AC0041BD7B /* ConvoObserving.swift in Sources */,
 				5973C8531F608A2200647492 /* ConvoDetailReceiverProxyTableViewCell.swift in Sources */,
 				59CDE808201BDEA40048C7E3 /* AppDelegate.swift in Sources */,

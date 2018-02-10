@@ -6,7 +6,7 @@ private enum FirstResponder {
     case newMessageTextView
 }
 
-class MakeNewMessageViewController: UIViewController, SenderManaging {
+class NewMessageMakerViewController: UIViewController, SenderPickerDelegate {
     var sender: Proxy? { didSet { didSetSender() } }
     override var inputAccessoryView: UIView? { return messageInputBar }
     private let database: Database
@@ -21,20 +21,20 @@ class MakeNewMessageViewController: UIViewController, SenderManaging {
     private var proxies = [Proxy]()
     private lazy var cancelButton = makeCancelButton()
     private lazy var makeNewProxyButton = makeMakeNewProxyButton()
-    private weak var newConvoManager: NewConvoManaging?
+    private weak var newMessageMakerDelegate: NewMessageMakerDelegate?
 
     init(sender: Proxy?,
          database: Database = Firebase(),
          proxiesObserver: ProxiesObserving = ProxiesObserver(),
          proxyNamesLoader: ProxyNamesLoading = ProxyNamesLoader(),
          uid: String,
-         newConvoManager: NewConvoManaging) {
+         newMessageMakerDelegate: NewMessageMakerDelegate) {
         self.sender = sender
         self.database = database
         self.proxiesObserver = proxiesObserver
         self.proxyNamesLoader = proxyNamesLoader
         self.uid = uid
-        self.newConvoManager = newConvoManager
+        self.newMessageMakerDelegate = newMessageMakerDelegate
 
         super.init(nibName: nil, bundle: nil)
 
@@ -102,7 +102,7 @@ class MakeNewMessageViewController: UIViewController, SenderManaging {
     }
 }
 
-private extension MakeNewMessageViewController {
+private extension NewMessageMakerViewController {
     var receiverCell: MakeNewMessageReceiverTableViewCell? {
         if let receiverCell = tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? MakeNewMessageReceiverTableViewCell {
             return receiverCell
@@ -178,7 +178,7 @@ private extension MakeNewMessageViewController {
 }
 
 // MARK: - MessageInputBarDelegate
-extension MakeNewMessageViewController: MessageInputBarDelegate {
+extension NewMessageMakerViewController: MessageInputBarDelegate {
     func messageInputBar(_ inputBar: MessageInputBar, didPressSendButtonWith text: String) {
         inputBar.inputTextView.text = ""
         isSending = true
@@ -190,7 +190,7 @@ extension MakeNewMessageViewController: MessageInputBarDelegate {
                 self?.isSending = false
                 self?.setButtons(true)
             case .success(let convo):
-                self?.newConvoManager?.newConvo = convo
+                self?.newMessageMakerDelegate?.newConvo = convo
                 self?.navigationController?.dismiss(animated: false)
             }
         }
@@ -238,7 +238,7 @@ extension MakeNewMessageViewController: MessageInputBarDelegate {
 }
 
 // MARK: - UITableViewDataSource
-extension MakeNewMessageViewController: UITableViewDataSource {
+extension NewMessageMakerViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 2
     }
@@ -312,13 +312,13 @@ extension MakeNewMessageViewController: UITableViewDataSource {
 }
 
 // MARK: - UITableViewDelegate
-extension MakeNewMessageViewController: UITableViewDelegate {
+extension NewMessageMakerViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard indexPath.row == 0 else {
             return
         }
         tableView.deselectRow(at: indexPath, animated: true)
-        let senderPickerViewController = SenderPickerViewController(uid: uid, senderManager: self)
+        let senderPickerViewController = SenderPickerViewController(uid: uid, senderPickerDelegate: self)
         navigationController?.pushViewController(senderPickerViewController, animated: true)
     }
 
@@ -328,14 +328,14 @@ extension MakeNewMessageViewController: UITableViewDelegate {
 }
 
 // MARK: - UITextFieldDelegate
-extension MakeNewMessageViewController: UITextFieldDelegate {
+extension NewMessageMakerViewController: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
         firstResponder = .receiverTextField
     }
 }
 
 // MARK: - UITextViewDelegate
-extension MakeNewMessageViewController: UITextViewDelegate {
+extension NewMessageMakerViewController: UITextViewDelegate {
     func textViewDidBeginEditing(_ textView: UITextView) {
         firstResponder = .newMessageTextView
     }
