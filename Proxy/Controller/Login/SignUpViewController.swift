@@ -2,31 +2,52 @@ import PureLayout
 import SkyFloatingLabelTextField
 import SwiftyButton
 
-// todo: track last first responder
 class SignUpViewController: UIViewController {
     @IBOutlet weak var emailTextField: SkyFloatingLabelTextField!
+    @IBOutlet weak var facebookButton: CustomPressableButton!
     @IBOutlet weak var passwordTextField: SkyFloatingLabelTextField!
     @IBOutlet weak var signUpButton: CustomPressableButton!
+
+    private var loginManager: LoginManaging = LoginManager()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        configureSignUpButton()
+        facebookButton.configure(
+            text: "Sign up with Facebbook",
+            asFacebookButton: true
+        )
+
+        signUpButton.configure(text: "Sign up")
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-
-        emailTextField.becomeFirstResponder()
+    static func make(loginManager: LoginManaging = LoginManager()) -> SignUpViewController {
+        guard let signUpViewController = UIStoryboard.main.instantiateViewController(withIdentifier: Identifier.signUpViewController) as? SignUpViewController else {
+            return SignUpViewController()
+        }
+        signUpViewController.loginManager = loginManager
+        return signUpViewController
     }
-}
 
-private extension SignUpViewController {
-    func configureSignUpButton() {
-        let label = UILabel()
-        label.text = "Sign up!"
-        label.textColor = .white
-        signUpButton.contentView.addSubview(label)
-        label.autoCenterInSuperview()
+    @IBAction func tapSignUpButton(_ sender: Any) {
+        guard
+            let email = emailTextField.text, email != "",
+            let password = passwordTextField.text, password != "" else {
+                showErrorAlert(ProxyError.missingCredentials)
+                return
+        }
+        loginManager.emailSignUp(email: email.lowercased(), password: password) { [weak self] error in
+            if let error = error {
+                self?.showErrorAlert(error)
+            }
+        }
+    }
+
+    @IBAction func tapFacebookButton(_ sender: Any) {
+        loginManager.facebookLogin { [weak self] error in
+            if let error = error {
+                self?.showErrorAlert(error)
+            }
+        }
     }
 }

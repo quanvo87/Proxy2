@@ -9,9 +9,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private var isLoggedIn = false
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        setAudioSession()
+        if #available(iOS 10.0, *) {
+            try? AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryAmbient, mode: AVAudioSessionModeDefault)
+            try? AVAudioSession.sharedInstance().setActive(true)
+        }
+
         FirebaseApp.configure()
+
 //        Database.database().isPersistenceEnabled = true
+
         authObserver.observe { [weak self] user in
             if let user = user {
                 var displayName = user.displayName
@@ -26,27 +32,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             } else {
                 guard
                     let isLoggedIn = self?.isLoggedIn, isLoggedIn,
-                    let loginController = LoginViewController.make() else {
+                    let mainLoginController = UIStoryboard.main.instantiateViewController(withIdentifier: Identifier.mainLoginViewController) as? MainLoginViewController else {
                         return
                 }
                 self?.isLoggedIn = false
-                self?.window?.rootViewController = loginController
+                self?.window?.rootViewController = mainLoginController
             }
         }
-        return FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
-    }
 
-    private func setAudioSession(_ session: AVAudioSession = AVAudioSession.sharedInstance(),
-                                 category: String = AVAudioSessionCategoryAmbient,
-                                 mode: String = AVAudioSessionModeDefault) {
-        do {
-            if #available(iOS 10.0, *) {
-                try session.setCategory(category, mode: mode)
-                try session.setActive(true)
-            }
-        } catch {
-            print("Failed to set the audio session category and mode: \(error.localizedDescription)")
-        }
+        return FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
     }
 
     func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
