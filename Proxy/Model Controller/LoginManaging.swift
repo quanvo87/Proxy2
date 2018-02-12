@@ -11,7 +11,7 @@ protocol LoginManaging {
 }
 
 struct LoginManager: LoginManaging {
-    let facebookLoginManager = FacebookLogin.LoginManager()
+    private let facebookLoginManager = FacebookLogin.LoginManager()
 
     func emailLogin(email: String, password: String, completion: @escaping Callback) {
         WQNetworkActivityIndicator.shared.show()

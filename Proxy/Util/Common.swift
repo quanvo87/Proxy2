@@ -1,8 +1,6 @@
 import Firebase
 import FirebaseHelper
-import PureLayout
 import Spring
-import SwiftyButton
 
 enum Result<T, Error> {
     case success(T)
@@ -19,51 +17,6 @@ extension Auth {
 extension Collection {
     subscript(safe index: Index) -> Element? {
         return indices.contains(index) ? self[index] : nil
-    }
-}
-
-extension CustomPressableButton {
-    func configure(text: String,
-                   asFacebookButton: Bool = false,
-                   colors: ColorSet? = nil,
-                   fontSize: CGFloat? = nil) {
-        cornerRadius = 5
-        shadowHeight = 5
-
-        if asFacebookButton {
-            let icon = UILabel()
-            icon.font = UIFont.fontAwesome(ofSize: 20)
-            icon.text = String.fontAwesomeIcon(name: .facebook)
-            icon.textColor = .white
-
-            self.contentView.addSubview(icon)
-
-            icon.autoPinEdgesToSuperviewEdges(
-                with: UIEdgeInsets(
-                    top: 10, left: 15, bottom: 10, right: 0
-                ),
-                excludingEdge: .right
-            )
-
-            self.colors = .init(button: .facebookBlue, shadow: .facebookDarkBlue)
-        }
-
-        if let colors = colors {
-            self.colors = colors
-        }
-
-        let label = UILabel()
-
-        if let fontSize = fontSize {
-            label.font = UIFont.systemFont(ofSize: fontSize)
-        }
-
-        label.text = text
-        label.textColor = .white
-
-        contentView.addSubview(label)
-
-        label.autoCenterInSuperview()
     }
 }
 
@@ -169,14 +122,6 @@ extension UIBarButtonItem {
 extension UIColor {
     static var blue: UIColor {
         return UIColor(red: 0, green: 122/255, blue: 1, alpha: 1)
-    }
-
-    static var facebookBlue: UIColor {
-        return UIColor(red: 59/255, green: 89/255, blue: 152/255, alpha: 1)
-    }
-
-    static var facebookDarkBlue: UIColor {
-        return UIColor(red: 39/255, green: 69/255, blue: 132/255, alpha: 1)
     }
 }
 

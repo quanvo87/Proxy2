@@ -20,6 +20,7 @@
 		5939F05E200D13BA00AECD35 /* MakeNewMessageReceiverTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5939F05D200D13BA00AECD35 /* MakeNewMessageReceiverTableViewCell.xib */; };
 		5939F060200D174300AECD35 /* MakeNewMessageReceiverTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5939F05F200D174300AECD35 /* MakeNewMessageReceiverTableViewCell.swift */; };
 		593D7D441F851F7D00D3FBD5 /* UserStatsObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 593D7D431F851F7D00D3FBD5 /* UserStatsObserving.swift */; };
+		59539B73203112140054873C /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59539B72203112140054873C /* Button.swift */; };
 		5954AE181F9A4E95004A351F /* ProxiesTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5954AE171F9A4E95004A351F /* ProxiesTableViewCell.xib */; };
 		5958E34A1F9D5E8D00CC0560 /* SenderProxyTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5958E3491F9D5E8D00CC0560 /* SenderProxyTableViewCell.xib */; };
 		5959CA332030C20600083FC8 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5959CA322030C20600083FC8 /* LoginViewController.swift */; };
@@ -107,6 +108,7 @@
 		5939F05D200D13BA00AECD35 /* MakeNewMessageReceiverTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MakeNewMessageReceiverTableViewCell.xib; sourceTree = "<group>"; };
 		5939F05F200D174300AECD35 /* MakeNewMessageReceiverTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MakeNewMessageReceiverTableViewCell.swift; sourceTree = "<group>"; };
 		593D7D431F851F7D00D3FBD5 /* UserStatsObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserStatsObserving.swift; sourceTree = "<group>"; };
+		59539B72203112140054873C /* Button.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
 		5954AE171F9A4E95004A351F /* ProxiesTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = ProxiesTableViewCell.xib; path = Proxy/View/ProxiesTableViewCell.xib; sourceTree = SOURCE_ROOT; };
 		5958E3491F9D5E8D00CC0560 /* SenderProxyTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SenderProxyTableViewCell.xib; sourceTree = "<group>"; };
 		5959CA322030C20600083FC8 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
@@ -215,8 +217,8 @@
 			isa = PBXGroup;
 			children = (
 				5973C8221F608A1B00647492 /* MainLoginViewController.swift */,
-				5959CA322030C20600083FC8 /* LoginViewController.swift */,
 				59038A34202FA43B006C1B73 /* SignUpViewController.swift */,
+				5959CA322030C20600083FC8 /* LoginViewController.swift */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -350,6 +352,7 @@
 			children = (
 				59B432E31F60648400622DEA /* Main.storyboard */,
 				59B432E81F60648400622DEA /* LaunchScreen.storyboard */,
+				59539B72203112140054873C /* Button.swift */,
 				5973C81F1F608A1B00647492 /* ConvoDetailReceiverProxyTableViewCell.swift */,
 				59D3AE4F1FA1A4FF009F18A5 /* ConvoDetailReceiverProxyTableViewCell.xib */,
 				598F8A591FEB501400CCF024 /* ConvoDetailSenderProxyTableViewCell.xib */,
@@ -826,6 +829,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5973C8571F608A2200647492 /* NewMessageMakerViewController.swift in Sources */,
+				59539B73203112140054873C /* Button.swift in Sources */,
 				5932BA18200963AC0041BD7B /* ConvoObserving.swift in Sources */,
 				5973C8531F608A2200647492 /* ConvoDetailReceiverProxyTableViewCell.swift in Sources */,
 				59CDE808201BDEA40048C7E3 /* AppDelegate.swift in Sources */,

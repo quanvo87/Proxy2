@@ -1,7 +1,4 @@
-import FontAwesome_swift
-import PureLayout
 import Segmentio
-import SwiftyButton
 
 // todo: loading indicators
 // todo: better error and success messages
@@ -16,9 +13,6 @@ class MainLoginViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        loginViewController.view.frame = contentView.bounds
-        signUpViewController.view.frame = contentView.bounds
 
         let segmentioOptions = SegmentioOptions(
             backgroundColor: .clear,
@@ -80,6 +74,7 @@ private extension MainLoginViewController {
     func showViewController(_ viewController: UIViewController) {
         addChildViewController(viewController)
         viewController.didMove(toParentViewController: self)
+        viewController.view.frame = contentView.bounds
         contentView.addSubview(viewController.view)
         currentViewController = viewController
     }

@@ -1,11 +1,10 @@
 import SkyFloatingLabelTextField
-import SwiftyButton
 
 class LoginViewController: UIViewController {
     @IBOutlet weak var emailTextField: SkyFloatingLabelTextField!
-    @IBOutlet weak var facebookButton: CustomPressableButton!
-    @IBOutlet weak var forgotPasswordButton: CustomPressableButton!
-    @IBOutlet weak var loginButton: CustomPressableButton!
+    @IBOutlet weak var facebookButton: Button!
+    @IBOutlet weak var forgotPasswordButton: Button!
+    @IBOutlet weak var loginButton: Button!
     @IBOutlet weak var passwordTextField: SkyFloatingLabelTextField!
 
     private var loginManager: LoginManaging = LoginManager()
@@ -13,21 +12,27 @@ class LoginViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        facebookButton.configure(
-            text: "Log in with Facebook",
+        let red = UIColor(red: 231/255, green: 76/255, blue: 60/255, alpha: 1)
+
+        forgotPasswordButton.setup(
+            centerLabelText: "Forgot?",
+            centerLabelFont: UIFont.systemFont(ofSize: 14),
+            colors: .init(
+                button: red,
+                shadow: UIColor(red: 211/255, green: 56/255, blue: 40/255, alpha: 1)
+            ),
+            disabledColors: .init(
+                button: red,
+                shadow: .gray
+            )
+        )
+
+        facebookButton.setup(
+            centerLabelText: "Sign up with Facebook",
             asFacebookButton: true
         )
 
-        forgotPasswordButton.configure(
-            text: "Forgot?",
-            colors: .init(
-                button: UIColor(red: 231/255, green: 76/255, blue: 60/255, alpha: 1),
-                shadow: UIColor(red: 211/255, green: 56/255, blue: 40/255, alpha: 1)
-            ),
-            fontSize: 14
-        )
-
-        loginButton.configure(text: "Log in")
+        loginButton.setup(centerLabelText: "Log in")
     }
 
     static func make(loginManager: LoginManaging = LoginManager()) -> LoginViewController {
@@ -46,6 +51,7 @@ class LoginViewController: UIViewController {
         }
     }
 
+    // todo
     @IBAction func tapForgotPasswordButton(_ sender: Any) {
     }
 
@@ -56,7 +62,9 @@ class LoginViewController: UIViewController {
                 showErrorAlert(ProxyError.missingCredentials)
                 return
         }
+        loginButton.showLoadingIndicator()
         loginManager.emailLogin(email: email.lowercased(), password: password) { [weak self] error in
+            self?.loginButton.hideActivityIndicator()
             if let error = error {
                 self?.showErrorAlert(error)
             }

@@ -1,24 +1,22 @@
-import PureLayout
 import SkyFloatingLabelTextField
-import SwiftyButton
 
 class SignUpViewController: UIViewController {
     @IBOutlet weak var emailTextField: SkyFloatingLabelTextField!
-    @IBOutlet weak var facebookButton: CustomPressableButton!
+    @IBOutlet weak var facebookButton: Button!
     @IBOutlet weak var passwordTextField: SkyFloatingLabelTextField!
-    @IBOutlet weak var signUpButton: CustomPressableButton!
+    @IBOutlet weak var signUpButton: Button!
 
     private var loginManager: LoginManaging = LoginManager()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        facebookButton.configure(
-            text: "Sign up with Facebbook",
+        facebookButton.setup(
+            centerLabelText: "Sign up with Facebook",
             asFacebookButton: true
         )
 
-        signUpButton.configure(text: "Sign up")
+        signUpButton.setup(centerLabelText: "Sign up")
     }
 
     static func make(loginManager: LoginManaging = LoginManager()) -> SignUpViewController {
@@ -36,7 +34,9 @@ class SignUpViewController: UIViewController {
                 showErrorAlert(ProxyError.missingCredentials)
                 return
         }
+        signUpButton.showLoadingIndicator()
         loginManager.emailSignUp(email: email.lowercased(), password: password) { [weak self] error in
+            self?.signUpButton.hideActivityIndicator()
             if let error = error {
                 self?.showErrorAlert(error)
             }
