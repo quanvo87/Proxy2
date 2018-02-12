@@ -2,7 +2,6 @@ import FontAwesome_swift
 import PureLayout
 import SwiftyButton
 
-// todo: swiftybutton has purelayout?
 class Button: CustomPressableButton {
     private let activityIndicator = UIActivityIndicatorView()
     private var leftLabel: UILabel?
@@ -16,6 +15,8 @@ class Button: CustomPressableButton {
                disabledColors: ColorSet? = nil,
                cornerRadius: CGFloat = 5,
                shadowHeight: CGFloat = 5) {
+        self.centerLabel?.removeFromSuperview()
+
         let centerLabel = UILabel(
             text: centerLabelText,
             font: centerLabelFont,
@@ -26,7 +27,7 @@ class Button: CustomPressableButton {
         self.centerLabel = centerLabel
 
         if asFacebookButton {
-            configureAsFacebookButton()
+            setupAsFacebookButton()
         }
 
         if let colors = colors {
@@ -41,7 +42,9 @@ class Button: CustomPressableButton {
         self.shadowHeight = shadowHeight
     }
 
-    private func configureAsFacebookButton() {
+    private func setupAsFacebookButton() {
+        self.leftLabel?.removeFromSuperview()
+
         let leftLabel = UILabel(
             text: String.fontAwesomeIcon(name: .facebook),
             font: UIFont.fontAwesome(ofSize: 20)

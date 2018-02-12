@@ -1,6 +1,5 @@
 import Segmentio
 
-// todo: loading indicators
 // todo: better error and success messages
 // todo: format text views
 class MainLoginViewController: UIViewController {

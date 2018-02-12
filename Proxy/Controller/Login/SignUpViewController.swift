@@ -6,7 +6,7 @@ class SignUpViewController: UIViewController {
     @IBOutlet weak var passwordTextField: SkyFloatingLabelTextField!
     @IBOutlet weak var signUpButton: Button!
 
-    private var loginManager: LoginManaging = LoginManager()
+    private lazy var loginManager: LoginManaging = LoginManager(facebookButton)
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,11 +19,13 @@ class SignUpViewController: UIViewController {
         signUpButton.setup(centerLabelText: "Sign up")
     }
 
-    static func make(loginManager: LoginManaging = LoginManager()) -> SignUpViewController {
+    static func make(loginManager: LoginManaging? = nil) -> SignUpViewController {
         guard let signUpViewController = UIStoryboard.main.instantiateViewController(withIdentifier: Identifier.signUpViewController) as? SignUpViewController else {
             return SignUpViewController()
         }
-        signUpViewController.loginManager = loginManager
+        if let loginManager = loginManager {
+            signUpViewController.loginManager = loginManager
+        }
         return signUpViewController
     }
 

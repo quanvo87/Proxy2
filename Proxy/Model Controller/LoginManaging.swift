@@ -10,8 +10,13 @@ protocol LoginManaging {
     func facebookLogin(completion: @escaping Callback)
 }
 
-struct LoginManager: LoginManaging {
+class LoginManager: LoginManaging {
     private let facebookLoginManager = FacebookLogin.LoginManager()
+    private weak var facebookButton: Button?
+
+    init(_ facebookButton: Button) {
+        self.facebookButton = facebookButton
+    }
 
     func emailLogin(email: String, password: String, completion: @escaping Callback) {
         WQNetworkActivityIndicator.shared.show()
@@ -31,8 +36,10 @@ struct LoginManager: LoginManaging {
 
     func facebookLogin(completion: @escaping Callback) {
         WQNetworkActivityIndicator.shared.show()
-        facebookLoginManager.logIn(readPermissions: [.publicProfile]) { result in
+        facebookButton?.showLoadingIndicator()
+        facebookLoginManager.logIn(readPermissions: [.publicProfile]) { [weak self] result in
             WQNetworkActivityIndicator.shared.hide()
+            self?.facebookButton?.hideActivityIndicator()
             switch result {
             case .success:
                 let credential = FacebookAuthProvider.credential(withAccessToken: FBSDKAccessToken.current().tokenString)

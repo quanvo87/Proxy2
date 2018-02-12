@@ -7,13 +7,17 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var loginButton: Button!
     @IBOutlet weak var passwordTextField: SkyFloatingLabelTextField!
 
-    private var loginManager: LoginManaging = LoginManager()
+    private lazy var loginManager: LoginManaging = LoginManager(facebookButton)
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let red = UIColor(red: 231/255, green: 76/255, blue: 60/255, alpha: 1)
+        facebookButton.setup(
+            centerLabelText: "Log in with Facebook",
+            asFacebookButton: true
+        )
 
+        let red = UIColor(red: 231/255, green: 76/255, blue: 60/255, alpha: 1)
         forgotPasswordButton.setup(
             centerLabelText: "Forgot?",
             centerLabelFont: UIFont.systemFont(ofSize: 14),
@@ -27,19 +31,16 @@ class LoginViewController: UIViewController {
             )
         )
 
-        facebookButton.setup(
-            centerLabelText: "Sign up with Facebook",
-            asFacebookButton: true
-        )
-
         loginButton.setup(centerLabelText: "Log in")
     }
 
-    static func make(loginManager: LoginManaging = LoginManager()) -> LoginViewController {
+    static func make(loginManager: LoginManaging? = nil) -> LoginViewController {
         guard let loginViewController = UIStoryboard.main.instantiateViewController(withIdentifier: Identifier.loginViewController) as? LoginViewController else {
             return LoginViewController()
         }
-        loginViewController.loginManager = loginManager
+        if let loginManager = loginManager {
+            loginViewController.loginManager = loginManager
+        }
         return loginViewController
     }
 
