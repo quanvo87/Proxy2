@@ -1,9 +1,9 @@
 import SkyFloatingLabelTextField
 
-class SignUpViewController: UIViewController {
-    @IBOutlet weak var emailTextField: SkyFloatingLabelTextField!
+class SignUpViewController: UIViewController, UITextFieldDelegate {
+    @IBOutlet weak var emailTextField: SkyFloatingLabelTextFieldWithIcon!
     @IBOutlet weak var facebookButton: Button!
-    @IBOutlet weak var passwordTextField: SkyFloatingLabelTextField!
+    @IBOutlet weak var passwordTextField: SkyFloatingLabelTextFieldWithIcon!
     @IBOutlet weak var signUpButton: Button!
 
     private lazy var loginManager: LoginManaging = LoginManager(facebookButton)
@@ -11,12 +11,20 @@ class SignUpViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        emailTextField.setupAsEmailTextField()
+        emailTextField.delegate = self
+        emailTextField.tag = 0
+
+        passwordTextField.setupAsPasswordTextField()
+        passwordTextField.delegate = self
+        passwordTextField.tag = 1
+
+        signUpButton.setup(centerLabelText: "Sign up")
+
         facebookButton.setup(
             centerLabelText: "Sign up with Facebook",
             asFacebookButton: true
         )
-
-        signUpButton.setup(centerLabelText: "Sign up")
     }
 
     static func make(loginManager: LoginManaging? = nil) -> SignUpViewController {
@@ -29,7 +37,19 @@ class SignUpViewController: UIViewController {
         return signUpViewController
     }
 
-    @IBAction func tapSignUpButton(_ sender: Any) {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        switch textField.tag {
+        case 0:
+            passwordTextField.becomeFirstResponder()
+        case 1:
+            signUp()
+        default:
+            break
+        }
+        return true
+    }
+
+    private func signUp() {
         guard
             let email = emailTextField.text, email != "",
             let password = passwordTextField.text, password != "" else {
@@ -43,6 +63,10 @@ class SignUpViewController: UIViewController {
                 self?.showErrorAlert(error)
             }
         }
+    }
+
+    @IBAction func tapSignUpButton(_ sender: Any) {
+        signUp()
     }
 
     @IBAction func tapFacebookButton(_ sender: Any) {

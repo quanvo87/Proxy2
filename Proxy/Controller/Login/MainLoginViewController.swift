@@ -1,7 +1,6 @@
 import Segmentio
 
 // todo: better error and success messages
-// todo: format text views
 class MainLoginViewController: UIViewController {
     @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var segmentedControl: Segmentio!
@@ -16,7 +15,7 @@ class MainLoginViewController: UIViewController {
         let segmentioOptions = SegmentioOptions(
             backgroundColor: .clear,
             indicatorOptions: SegmentioIndicatorOptions(
-                color: UIColor(red: 53/255, green: 152/255, blue: 217/255, alpha: 1)
+                color: .buttonBlue
             ),
             horizontalSeparatorOptions: SegmentioHorizontalSeparatorOptions(
                 type: .bottom,
@@ -27,7 +26,11 @@ class MainLoginViewController: UIViewController {
             ),
             segmentStates: SegmentioStates(
                 defaultState: segmentioState,
-                selectedState: segmentioState,
+                selectedState: SegmentioState(
+                    backgroundColor: .clear,
+                    titleFont: UIFont.systemFont(ofSize: UIFont.systemFontSize),
+                    titleTextColor: .buttonBlue
+                ),
                 highlightedState: segmentioState
             )
         )

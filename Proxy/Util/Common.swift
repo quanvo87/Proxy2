@@ -1,5 +1,6 @@
 import Firebase
 import FirebaseHelper
+import SkyFloatingLabelTextField
 import Spring
 
 enum Result<T, Error> {
@@ -91,6 +92,34 @@ extension Int {
     }
 }
 
+extension SkyFloatingLabelTextFieldWithIcon {
+    func setupAsEmailTextField() {
+        clearButtonMode = .whileEditing
+        iconFont = UIFont.fontAwesome(ofSize: 15)
+        iconText = String.fontAwesomeIcon(name: .envelope)
+        keyboardType = .emailAddress
+        placeholder = "Email"
+        returnKeyType = .next
+        selectedIconColor = .buttonBlue
+        selectedLineColor = .buttonBlue
+        selectedTitleColor = .buttonBlue
+        textContentType = .emailAddress
+    }
+
+    func setupAsPasswordTextField() {
+        clearButtonMode = .whileEditing
+        iconFont = UIFont.fontAwesome(ofSize: 20)
+        iconText = String.fontAwesomeIcon(name: .lock)
+        isSecureTextEntry = true
+        placeholder = "Password"
+        returnKeyType = .go
+        selectedIconColor = .buttonBlue
+        selectedLineColor = .buttonBlue
+        selectedTitleColor = .buttonBlue
+        textContentType = .password
+    }
+}
+
 extension String {
     var trimmed: String {
         return trimmingCharacters(in: .whitespacesAndNewlines)
@@ -122,6 +151,10 @@ extension UIBarButtonItem {
 extension UIColor {
     static var blue: UIColor {
         return UIColor(red: 0, green: 122/255, blue: 1, alpha: 1)
+    }
+
+    static var buttonBlue: UIColor {
+        return UIColor(red: 53/255, green: 152/255, blue: 217/255, alpha: 1)
     }
 }
 

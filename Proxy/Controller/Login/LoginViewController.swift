@@ -1,21 +1,24 @@
 import SkyFloatingLabelTextField
 
-class LoginViewController: UIViewController {
-    @IBOutlet weak var emailTextField: SkyFloatingLabelTextField!
+class LoginViewController: UIViewController, UITextFieldDelegate {
+    @IBOutlet weak var emailTextField: SkyFloatingLabelTextFieldWithIcon!
     @IBOutlet weak var facebookButton: Button!
     @IBOutlet weak var forgotPasswordButton: Button!
     @IBOutlet weak var loginButton: Button!
-    @IBOutlet weak var passwordTextField: SkyFloatingLabelTextField!
+    @IBOutlet weak var passwordTextField: SkyFloatingLabelTextFieldWithIcon!
 
     private lazy var loginManager: LoginManaging = LoginManager(facebookButton)
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        facebookButton.setup(
-            centerLabelText: "Log in with Facebook",
-            asFacebookButton: true
-        )
+        emailTextField.setupAsEmailTextField()
+        emailTextField.delegate = self
+        emailTextField.tag = 0
+
+        passwordTextField.setupAsPasswordTextField()
+        passwordTextField.delegate = self
+        passwordTextField.tag = 1
 
         let red = UIColor(red: 231/255, green: 76/255, blue: 60/255, alpha: 1)
         forgotPasswordButton.setup(
@@ -32,6 +35,11 @@ class LoginViewController: UIViewController {
         )
 
         loginButton.setup(centerLabelText: "Log in")
+
+        facebookButton.setup(
+            centerLabelText: "Log in with Facebook",
+            asFacebookButton: true
+        )
     }
 
     static func make(loginManager: LoginManaging? = nil) -> LoginViewController {
@@ -44,8 +52,28 @@ class LoginViewController: UIViewController {
         return loginViewController
     }
 
-    @IBAction func tapFacebookButton(_ sender: Any) {
-        loginManager.facebookLogin { [weak self] error in
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        switch textField.tag {
+        case 0:
+            passwordTextField.becomeFirstResponder()
+        case 1:
+            login()
+        default:
+            break
+        }
+        return true
+    }
+
+    private func login() {
+        guard
+            let email = emailTextField.text, email != "",
+            let password = passwordTextField.text, password != "" else {
+                showErrorAlert(ProxyError.missingCredentials)
+                return
+        }
+        loginButton.showLoadingIndicator()
+        loginManager.emailLogin(email: email.lowercased(), password: password) { [weak self] error in
+            self?.loginButton.hideActivityIndicator()
             if let error = error {
                 self?.showErrorAlert(error)
             }
@@ -57,15 +85,11 @@ class LoginViewController: UIViewController {
     }
 
     @IBAction func tapLoginButton(_ sender: Any) {
-        guard
-            let email = emailTextField.text, email != "",
-            let password = passwordTextField.text, password != "" else {
-                showErrorAlert(ProxyError.missingCredentials)
-                return
-        }
-        loginButton.showLoadingIndicator()
-        loginManager.emailLogin(email: email.lowercased(), password: password) { [weak self] error in
-            self?.loginButton.hideActivityIndicator()
+        login()
+    }
+
+    @IBAction func tapFacebookButton(_ sender: Any) {
+        loginManager.facebookLogin { [weak self] error in
             if let error = error {
                 self?.showErrorAlert(error)
             }
