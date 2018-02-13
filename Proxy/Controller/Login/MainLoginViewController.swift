@@ -1,6 +1,6 @@
 import Segmentio
 
-// todo: better error and success messages
+// todo: fancy alerts
 class MainLoginViewController: UIViewController {
     @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var segmentedControl: Segmentio!

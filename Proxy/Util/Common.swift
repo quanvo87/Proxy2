@@ -173,6 +173,19 @@ extension UIImage {
     }
 }
 
+extension UINavigationBar {
+    static func makeCloseKeyboardNavigationBar(width: CGFloat) -> UINavigationBar {
+        return UINavigationBar(
+            frame: CGRect(
+                x: 0,
+                y: 0,
+                width: width,
+                height: 40
+            )
+        )
+    }
+}
+
 extension UIStoryboard {
     static let main: UIStoryboard = {
         return UIStoryboard(name: "Main", bundle: nil)

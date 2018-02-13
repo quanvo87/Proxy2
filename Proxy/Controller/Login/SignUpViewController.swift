@@ -2,21 +2,37 @@ import SkyFloatingLabelTextField
 
 class SignUpViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var emailTextField: SkyFloatingLabelTextFieldWithIcon!
-    @IBOutlet weak var facebookButton: Button!
     @IBOutlet weak var passwordTextField: SkyFloatingLabelTextFieldWithIcon!
     @IBOutlet weak var signUpButton: Button!
+    @IBOutlet weak var facebookButton: Button!
 
-    private lazy var loginManager: LoginManaging = LoginManager(facebookButton)
+    private lazy var loginManager: LoginManaging = LoginManager(
+        facebookButton: facebookButton,
+        signUpButton: signUpButton
+    )
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        emailTextField.setupAsEmailTextField()
+        let closeKeyboardNavigationItem = UINavigationItem()
+        closeKeyboardNavigationItem.rightBarButtonItem = UIBarButtonItem(
+            barButtonSystemItem: UIBarButtonSystemItem.cancel,
+            target: self,
+            action: #selector(closeKeyboard)
+        )
+        let closeKeyboardNavigationBar = UINavigationBar.makeCloseKeyboardNavigationBar(
+            width: view.frame.width
+        )
+        closeKeyboardNavigationBar.pushItem(closeKeyboardNavigationItem, animated: true)
+
         emailTextField.delegate = self
+        emailTextField.inputAccessoryView = closeKeyboardNavigationBar
+        emailTextField.setupAsEmailTextField()
         emailTextField.tag = 0
 
-        passwordTextField.setupAsPasswordTextField()
         passwordTextField.delegate = self
+        passwordTextField.inputAccessoryView = closeKeyboardNavigationBar
+        passwordTextField.setupAsPasswordTextField()
         passwordTextField.tag = 1
 
         signUpButton.setup(centerLabelText: "Sign up")
@@ -25,6 +41,12 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
             centerLabelText: "Sign up with Facebook",
             asFacebookButton: true
         )
+    }
+
+    @objc func closeKeyboard() {
+        DispatchQueue.main.async { [weak self] in
+            self?.view.endEditing(true)
+        }
     }
 
     static func make(loginManager: LoginManaging? = nil) -> SignUpViewController {
@@ -56,9 +78,7 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
                 showErrorAlert(ProxyError.missingCredentials)
                 return
         }
-        signUpButton.showLoadingIndicator()
         loginManager.emailSignUp(email: email.lowercased(), password: password) { [weak self] error in
-            self?.signUpButton.hideActivityIndicator()
             if let error = error {
                 self?.showErrorAlert(error)
             }

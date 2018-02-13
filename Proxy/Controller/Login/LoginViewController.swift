@@ -2,22 +2,38 @@ import SkyFloatingLabelTextField
 
 class LoginViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var emailTextField: SkyFloatingLabelTextFieldWithIcon!
-    @IBOutlet weak var facebookButton: Button!
+    @IBOutlet weak var passwordTextField: SkyFloatingLabelTextFieldWithIcon!
     @IBOutlet weak var forgotPasswordButton: Button!
     @IBOutlet weak var loginButton: Button!
-    @IBOutlet weak var passwordTextField: SkyFloatingLabelTextFieldWithIcon!
+    @IBOutlet weak var facebookButton: Button!
 
-    private lazy var loginManager: LoginManaging = LoginManager(facebookButton)
+    private lazy var loginManager: LoginManaging = LoginManager(
+        facebookButton: facebookButton,
+        loginButton: loginButton
+    )
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        emailTextField.setupAsEmailTextField()
+        let closeKeyboardNavigationItem = UINavigationItem()
+        closeKeyboardNavigationItem.rightBarButtonItem = UIBarButtonItem(
+            barButtonSystemItem: UIBarButtonSystemItem.cancel,
+            target: self,
+            action: #selector(closeKeyboard)
+        )
+        let closeKeyboardNavigationBar = UINavigationBar.makeCloseKeyboardNavigationBar(
+            width: view.frame.width
+        )
+        closeKeyboardNavigationBar.pushItem(closeKeyboardNavigationItem, animated: true)
+
         emailTextField.delegate = self
+        emailTextField.inputAccessoryView = closeKeyboardNavigationBar
+        emailTextField.setupAsEmailTextField()
         emailTextField.tag = 0
 
-        passwordTextField.setupAsPasswordTextField()
         passwordTextField.delegate = self
+        passwordTextField.inputAccessoryView = closeKeyboardNavigationBar
+        passwordTextField.setupAsPasswordTextField()
         passwordTextField.tag = 1
 
         let red = UIColor(red: 231/255, green: 76/255, blue: 60/255, alpha: 1)
@@ -40,6 +56,12 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             centerLabelText: "Log in with Facebook",
             asFacebookButton: true
         )
+    }
+
+    @objc func closeKeyboard() {
+        DispatchQueue.main.async { [weak self] in
+            self?.view.endEditing(true)
+        }
     }
 
     static func make(loginManager: LoginManaging? = nil) -> LoginViewController {
@@ -71,9 +93,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                 showErrorAlert(ProxyError.missingCredentials)
                 return
         }
-        loginButton.showLoadingIndicator()
         loginManager.emailLogin(email: email.lowercased(), password: password) { [weak self] error in
-            self?.loginButton.hideActivityIndicator()
             if let error = error {
                 self?.showErrorAlert(error)
             }

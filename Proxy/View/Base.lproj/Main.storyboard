@@ -5,6 +5,7 @@
     </device>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -21,34 +22,35 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Proxy" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iOd-L5-l08">
-                                <rect key="frame" x="137.5" y="30" width="100.5" height="50.5"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="42"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="K1D-g8-4AH" customClass="Segmentio" customModule="Segmentio">
-                                <rect key="frame" x="10" y="90.5" width="355" height="45"/>
+                                <rect key="frame" x="10" y="95" width="355" height="45"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="45" id="TDm-yv-h7I"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Yc3-R9-7Ep">
-                                <rect key="frame" x="10" y="140.5" width="355" height="526.5"/>
+                                <rect key="frame" x="10" y="145" width="355" height="522"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="pokemon" translatesAutoresizingMaskIntoConstraints="NO" id="Ad1-UK-AeM">
+                                <rect key="frame" x="92" y="25" width="190" height="70"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="Ad1-UK-AeM" secondAttribute="height" multiplier="125:46" id="Nez-w5-vut"/>
+                                    <constraint firstAttribute="width" constant="190" id="bR4-zg-Le4"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="Yc3-R9-7Ep" firstAttribute="leading" secondItem="a7O-1B-Est" secondAttribute="leading" constant="10" id="9fJ-h3-RRq"/>
-                            <constraint firstItem="iOd-L5-l08" firstAttribute="centerX" secondItem="a7O-1B-Est" secondAttribute="centerX" id="IFf-vj-oib"/>
                             <constraint firstItem="a7O-1B-Est" firstAttribute="bottom" secondItem="Yc3-R9-7Ep" secondAttribute="bottom" id="Np2-SZ-KsQ"/>
-                            <constraint firstItem="iOd-L5-l08" firstAttribute="top" secondItem="a7O-1B-Est" secondAttribute="top" constant="10" id="YS1-Qx-GHb"/>
-                            <constraint firstItem="K1D-g8-4AH" firstAttribute="top" secondItem="iOd-L5-l08" secondAttribute="bottom" constant="10" id="aS2-FL-56C"/>
+                            <constraint firstItem="Ad1-UK-AeM" firstAttribute="centerX" secondItem="a7O-1B-Est" secondAttribute="centerX" id="ThY-A4-7cJ"/>
+                            <constraint firstItem="Ad1-UK-AeM" firstAttribute="top" secondItem="a7O-1B-Est" secondAttribute="top" constant="5" id="bTv-qg-OnU"/>
                             <constraint firstItem="K1D-g8-4AH" firstAttribute="leading" secondItem="a7O-1B-Est" secondAttribute="leading" constant="10" id="fzF-xg-8lP"/>
                             <constraint firstItem="a7O-1B-Est" firstAttribute="trailing" secondItem="K1D-g8-4AH" secondAttribute="trailing" constant="10" id="mH5-fD-vPq"/>
                             <constraint firstItem="a7O-1B-Est" firstAttribute="trailing" secondItem="Yc3-R9-7Ep" secondAttribute="trailing" constant="10" id="qcL-vR-0NC"/>
+                            <constraint firstItem="K1D-g8-4AH" firstAttribute="top" secondItem="Ad1-UK-AeM" secondAttribute="bottom" id="usR-DP-aTp"/>
                             <constraint firstItem="Yc3-R9-7Ep" firstAttribute="top" secondItem="K1D-g8-4AH" secondAttribute="bottom" constant="5" id="wgG-j6-Wh7"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="a7O-1B-Est"/>
@@ -210,4 +212,7 @@
             <point key="canvasLocation" x="-1330.4000000000001" y="2184.5577211394307"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="pokemon" width="1000" height="368"/>
+    </resources>
 </document>

@@ -15,6 +15,7 @@ class Button: CustomPressableButton {
                disabledColors: ColorSet? = nil,
                cornerRadius: CGFloat = 5,
                shadowHeight: CGFloat = 5) {
+        self.leftLabel?.removeFromSuperview()
         self.centerLabel?.removeFromSuperview()
 
         let centerLabel = UILabel(
@@ -43,11 +44,9 @@ class Button: CustomPressableButton {
     }
 
     private func setupAsFacebookButton() {
-        self.leftLabel?.removeFromSuperview()
-
         let leftLabel = UILabel(
-            text: String.fontAwesomeIcon(name: .facebook),
-            font: UIFont.fontAwesome(ofSize: 20)
+            text: String.fontAwesomeIcon(name: .facebookSquare),
+            font: UIFont.fontAwesome(ofSize: 25)
         )
 
         contentView.addSubview(leftLabel)
@@ -65,7 +64,7 @@ class Button: CustomPressableButton {
         disabledColors = .init(button: .facebookBlue, shadow: .gray)
     }
 
-    func showLoadingIndicator() {
+    func showActivityIndicator() {
         isEnabled = false
         centerLabel?.isHidden = true
 
