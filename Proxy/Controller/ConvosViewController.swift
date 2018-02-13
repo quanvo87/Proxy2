@@ -112,15 +112,11 @@ private extension ConvosViewController {
     }
 
     func makeMakeNewMessageButton() -> UIBarButtonItem {
-        return UIBarButtonItem.make(target: self,
-                                    action: #selector(showNewMessageMakerViewController),
-                                    imageName: ButtonName.makeNewMessage)
+        return UIBarButtonItem(target: self, action: #selector(showNewMessageMakerViewController), image: .makeNewMessage)
     }
 
     func makeMakeNewProxyButton() -> UIBarButtonItem {
-        return UIBarButtonItem.make(target: self,
-                                    action: #selector(makeNewProxy),
-                                    imageName: ButtonName.makeNewProxy)
+        return UIBarButtonItem(target: self, action: #selector(makeNewProxy), image: .makeNewProxy)
     }
 }
 

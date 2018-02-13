@@ -27,9 +27,7 @@ class IconPickerViewController: UIViewController {
                                 forCellWithReuseIdentifier: Identifier.iconPickerCollectionViewCell)
         collectionView.reloadData()
 
-        navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self,
-                                                                 action: #selector(close),
-                                                                 imageName: ButtonName.cancel)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(target: self, action: #selector(close), image: .cancel)
         navigationItem.title = "Select An Icon"
 
         view.addSubview(collectionView)

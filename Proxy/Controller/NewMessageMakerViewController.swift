@@ -149,15 +149,11 @@ private extension NewMessageMakerViewController {
     }
 
     func makeCancelButton() -> UIBarButtonItem {
-        return UIBarButtonItem.make(target: self,
-                                    action: #selector(close),
-                                    imageName: ButtonName.cancel)
+        return UIBarButtonItem(target: self, action: #selector(close), image: .cancel)
     }
 
     func makeMakeNewProxyButton() -> UIBarButtonItem {
-        return UIBarButtonItem.make(target: self,
-                                    action: #selector(makeNewProxy),
-                                    imageName: ButtonName.makeNewProxy)
+        return UIBarButtonItem(target: self, action: #selector(makeNewProxy), image: .makeNewProxy)
     }
 
     func setButtons(_ isEnabled: Bool) {

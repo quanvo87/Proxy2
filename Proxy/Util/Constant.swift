@@ -1,14 +1,5 @@
 import UIKit
 
-struct ButtonName {
-    static let cancel = "cancel"
-    static let confirm = "confirm"
-    static let delete = "delete"
-    static let info = "info"
-    static let makeNewMessage = "makeNewMessage"
-    static let makeNewProxy = "makeNewProxy"
-}
-
 // todo: String(describing: Type.self)
 struct Identifier {
     static let convoDetailReceiverProxyTableViewCell = "ConvoDetailReceiverProxyTableViewCell"

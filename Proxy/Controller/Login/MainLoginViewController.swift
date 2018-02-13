@@ -15,7 +15,7 @@ class MainLoginViewController: UIViewController {
         let segmentioOptions = SegmentioOptions(
             backgroundColor: .clear,
             indicatorOptions: SegmentioIndicatorOptions(
-                color: .buttonBlue
+                color: .loginButtonBlue
             ),
             horizontalSeparatorOptions: SegmentioHorizontalSeparatorOptions(
                 type: .bottom,
@@ -29,7 +29,7 @@ class MainLoginViewController: UIViewController {
                 selectedState: SegmentioState(
                     backgroundColor: .clear,
                     titleFont: UIFont.systemFont(ofSize: UIFont.systemFontSize),
-                    titleTextColor: .buttonBlue
+                    titleTextColor: .loginButtonBlue
                 ),
                 highlightedState: segmentioState
             )

@@ -141,33 +141,23 @@ private extension ProxiesViewController {
     }
 
     func makeCancelButton() -> UIBarButtonItem {
-        return UIBarButtonItem.make(target: self,
-                                    action: #selector(setDefaultButtons),
-                                    imageName: ButtonName.cancel)
+        return UIBarButtonItem(target: self, action: #selector(setDefaultButtons), image: .cancel)
     }
 
     func makeConfirmButton() -> UIBarButtonItem {
-        return UIBarButtonItem.make(target: self,
-                                    action: #selector(deleteSelectedItems),
-                                    imageName: ButtonName.confirm)
+        return UIBarButtonItem(target: self, action: #selector(deleteSelectedItems), image: .confirm)
     }
 
     func makeDeleteButton() -> UIBarButtonItem {
-        return UIBarButtonItem.make(target: self,
-                                    action: #selector(setEditModeButtons),
-                                    imageName: ButtonName.delete)
+        return UIBarButtonItem(target: self, action: #selector(setEditModeButtons), image: .delete)
     }
 
     func makeMakeNewMessageButton() -> UIBarButtonItem {
-        return UIBarButtonItem.make(target: self,
-                                    action: #selector(showNewMessageMakerViewController),
-                                    imageName: ButtonName.makeNewMessage)
+        return UIBarButtonItem(target: self, action: #selector(showNewMessageMakerViewController), image: .makeNewMessage)
     }
 
     func makeMakeNewProxyButton() -> UIBarButtonItem {
-        return UIBarButtonItem.make(target: self,
-                                    action: #selector(makeNewProxy),
-                                    imageName: ButtonName.makeNewProxy)
+        return UIBarButtonItem(target: self, action: #selector(makeNewProxy), image: .makeNewProxy)
     }
 
     func scrollToTop() {

@@ -4,8 +4,6 @@ import NotificationBannerSwift
 import SkyFloatingLabelTextField
 import Spring
 
-// todo: use convenience inits instead of factory methods
-
 enum Result<T, Error> {
     case success(T)
     case failure(Error)
@@ -103,9 +101,9 @@ extension SkyFloatingLabelTextFieldWithIcon {
         keyboardType = .emailAddress
         placeholder = "Email"
         returnKeyType = .next
-        selectedIconColor = .buttonBlue
-        selectedLineColor = .buttonBlue
-        selectedTitleColor = .buttonBlue
+        selectedIconColor = .loginButtonBlue
+        selectedLineColor = .loginButtonBlue
+        selectedTitleColor = .loginButtonBlue
         textContentType = .emailAddress
     }
 
@@ -116,9 +114,9 @@ extension SkyFloatingLabelTextFieldWithIcon {
         isSecureTextEntry = true
         placeholder = "Password"
         returnKeyType = .go
-        selectedIconColor = .buttonBlue
-        selectedLineColor = .buttonBlue
-        selectedTitleColor = .buttonBlue
+        selectedIconColor = .loginButtonBlue
+        selectedLineColor = .loginButtonBlue
+        selectedTitleColor = .loginButtonBlue
         textContentType = .password
     }
 }
@@ -130,18 +128,10 @@ extension String {
 }
 
 extension UIBarButtonItem {
-    static func make(target: Any?, action: Selector, imageName: String) -> UIBarButtonItem {
-        let button = SpringButton(type: .custom)
-        button.addTarget(target, action: action, for: .touchUpInside)
-        button.frame = Setting.navBarButtonCGRect
-        button.setImage(UIImage(named: imageName), for: .normal)
-        return UIBarButtonItem(customView: button)
-    }
-
     convenience init(target: Any?,
                      action: Selector,
                      frame: CGRect = Setting.navBarButtonCGRect,
-                     image: UIImage) {
+                     image: UIImage?) {
         self.init()
         let button = SpringButton(type: .custom)
         button.addTarget(
@@ -168,16 +158,40 @@ extension UIBarButtonItem {
 }
 
 extension UIColor {
-    static var blue: UIColor {
-        return UIColor(red: 0, green: 122/255, blue: 1, alpha: 1)
-    }
+    static let blue: UIColor = {
+        UIColor(red: 0, green: 122/255, blue: 1, alpha: 1)
+    }()
 
-    static var buttonBlue: UIColor {
+    static let loginButtonBlue: UIColor = {
         return UIColor(red: 53/255, green: 152/255, blue: 217/255, alpha: 1)
-    }
+    }()
 }
 
 extension UIImage {
+    static let cancel: UIImage? = {
+        UIImage(named: "cancel")
+    }()
+
+    static let confirm: UIImage? = {
+        UIImage(named: "confirm")
+    }()
+
+    static let delete: UIImage? = {
+        UIImage(named: "delete")
+    }()
+
+    static let info: UIImage? = {
+        UIImage(named: "info")
+    }()
+
+    static let makeNewMessage: UIImage? = {
+        UIImage(named: "makeNewMessage")
+    }()
+
+    static let makeNewProxy: UIImage? = {
+        UIImage(named: "makeNewProxy")
+    }()
+
     static func makeCircle(diameter: CGFloat, color: UIColor = .blue) -> UIImage? {
         UIGraphicsBeginImageContextWithOptions(CGSize(width: diameter, height: diameter), false, 0)
         let context = UIGraphicsGetCurrentContext()
@@ -214,7 +228,7 @@ extension UINavigationBar {
 
 extension UIStoryboard {
     static let main: UIStoryboard = {
-        return UIStoryboard(name: "Main", bundle: nil)
+        UIStoryboard(name: "Main", bundle: nil)
     }()
 }
 

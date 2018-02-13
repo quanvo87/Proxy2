@@ -107,15 +107,11 @@ private extension ProxyViewController {
     }
 
     func makeDeleteProxyButton() -> UIBarButtonItem {
-        return UIBarButtonItem.make(target: self,
-                                    action: #selector(deleteProxy),
-                                    imageName: ButtonName.delete)
+        return UIBarButtonItem(target: self, action: #selector(deleteProxy), image: .delete)
     }
 
     func makeMakeNewMessageButton() -> UIBarButtonItem {
-        return UIBarButtonItem.make(target: self,
-                                    action: #selector(showNewMessageMakerViewController),
-                                    imageName: ButtonName.makeNewMessage)
+        return UIBarButtonItem(target: self, action: #selector(showNewMessageMakerViewController), image: .makeNewMessage)
     }
 }
 

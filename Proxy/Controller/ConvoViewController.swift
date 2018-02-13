@@ -34,9 +34,11 @@ class ConvoViewController: MessagesViewController {
             self?.messagesCollectionView.scrollToBottom()
         }
 
-        navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self,
-                                                                 action: #selector(showConvoDetailViewController),
-                                                                 imageName: ButtonName.info)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            target: self,
+            action: #selector(showConvoDetailViewController),
+            image: .info
+        )
 
         maintainPositionOnKeyboardFrameChanged = true
 
