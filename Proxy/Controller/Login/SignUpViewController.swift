@@ -14,16 +14,11 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let closeKeyboardNavigationItem = UINavigationItem()
-        closeKeyboardNavigationItem.rightBarButtonItem = UIBarButtonItem(
-            barButtonSystemItem: UIBarButtonSystemItem.cancel,
+        let closeKeyboardNavigationBar = UINavigationBar(
             target: self,
-            action: #selector(closeKeyboard)
-        )
-        let closeKeyboardNavigationBar = UINavigationBar.makeCloseKeyboardNavigationBar(
+            action: #selector(closeKeyboard),
             width: view.frame.width
         )
-        closeKeyboardNavigationBar.pushItem(closeKeyboardNavigationItem, animated: true)
 
         emailTextField.delegate = self
         emailTextField.inputAccessoryView = closeKeyboardNavigationBar
@@ -75,12 +70,12 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
         guard
             let email = emailTextField.text, email != "",
             let password = passwordTextField.text, password != "" else {
-                showErrorAlert(ProxyError.missingCredentials)
+                showErrorBanner(ProxyError.missingCredentials)
                 return
         }
         loginManager.emailSignUp(email: email.lowercased(), password: password) { [weak self] error in
             if let error = error {
-                self?.showErrorAlert(error)
+                self?.showErrorBanner(error)
             }
         }
     }
@@ -92,7 +87,7 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
     @IBAction func tapFacebookButton(_ sender: Any) {
         loginManager.facebookLogin { [weak self] error in
             if let error = error {
-                self?.showErrorAlert(error)
+                self?.showErrorBanner(error)
             }
         }
     }

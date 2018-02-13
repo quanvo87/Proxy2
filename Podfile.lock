@@ -59,19 +59,23 @@ PODS:
   - GroupWork (0.0.6)
   - GTMSessionFetcher/Core (1.1.12)
   - leveldb-library (1.20)
+  - MarqueeLabel/Swift (3.1.4)
   - MessageKit (0.13.1)
   - nanopb (0.3.8):
     - nanopb/decode (= 0.3.8)
     - nanopb/encode (= 0.3.8)
   - nanopb/decode (0.3.8)
   - nanopb/encode (0.3.8)
+  - NotificationBannerSwift (1.6.1):
+    - MarqueeLabel/Swift
+    - SnapKit (~> 4.0)
   - PureLayout (3.0.2)
   - SearchTextField (1.2.0)
   - Segmentio (3.0)
   - SkyFloatingLabelTextField (3.4.0)
+  - SnapKit (4.0.0)
   - Spring (1.0.5)
   - SwiftLint (0.24.2)
-  - SwiftVideoBackground (2.0.0)
   - SwiftyButton (0.8.0)
   - WQNetworkActivityIndicator (0.1.2)
 
@@ -86,13 +90,13 @@ DEPENDENCIES:
   - FontAwesome.swift (~> 1.3)
   - GroupWork (~> 0.0)
   - MessageKit (~> 0.13)
+  - NotificationBannerSwift (~> 1.6)
   - PureLayout (~> 3.0)
   - SearchTextField (~> 1.2)
   - Segmentio (~> 3.0)
   - SkyFloatingLabelTextField (~> 3.4)
   - Spring (~> 1.0)
   - SwiftLint (~> 0.24)
-  - SwiftVideoBackground (~> 2.0)
   - SwiftyButton (~> 0.8)
   - WQNetworkActivityIndicator (~> 0.1)
 
@@ -115,18 +119,20 @@ SPEC CHECKSUMS:
   GroupWork: b6184ee1e14e573ae4d9eeea1d4a6172d6d608bc
   GTMSessionFetcher: ebaa1f79a5366922c1735f1566901f50beba23b7
   leveldb-library: 08cba283675b7ed2d99629a4bc5fd052cd2bb6a5
+  MarqueeLabel: bf768455fe88d427f71476ebb23f9092b660f40b
   MessageKit: fc74d71d9b05385138d47b3a4b7beef5c687daf1
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
+  NotificationBannerSwift: 1fc2955381e6eb26d958ba32160fc41721b9b689
   PureLayout: 4d550abe49a94f24c2808b9b95db9131685fe4cd
   SearchTextField: a5bb7e4c33affadb115afdbe8100d84ef10a8024
   Segmentio: 1607fba3b42230f5f91e997d1a3f337f1176674c
   SkyFloatingLabelTextField: 703aa1420b697392b1e7dba25571180dde018477
+  SnapKit: a42d492c16e80209130a3379f73596c3454b7694
   Spring: 17901566c8ecf3a1327902b940406c64512f9bb1
   SwiftLint: 2aa21b96c8d13396a051bc1cb659d2ce1e0075b0
-  SwiftVideoBackground: 41d030c232284482973e46959de6398a116c6b58
   SwiftyButton: 093e3fe2becf3ae31c0f6c1c6987b79a93fb3ecb
   WQNetworkActivityIndicator: 6a893f95b5500de408b3712f66f4cc4265b49f8d
 
-PODFILE CHECKSUM: a8544fa6451d4dee6a3a5256afe5fd00a8c74b81
+PODFILE CHECKSUM: 74f22f0d0fad199d1f2e845c9d44638397d1e292
 
 COCOAPODS: 1.4.0

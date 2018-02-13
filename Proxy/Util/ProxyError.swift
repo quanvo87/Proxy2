@@ -10,6 +10,7 @@ enum ProxyError: Error {
     case tooManyProxies
     case unknown
 
+    // todo: use custom alerts for everything
     var alertFields: (title: String, description: String) {
         switch self {
         case .blankMessage:
@@ -31,7 +32,7 @@ enum ProxyError: Error {
         case .tooManyProxies:
             return ("Too many Proxies", "You have too many Proxies. Please delete some and try again.")
         case .unknown:
-            return ("😢", "Unknown error occurred.")
+            return ("😵 Error", "An unknown error occurred.")
         }
     }
 

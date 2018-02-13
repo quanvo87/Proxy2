@@ -1,7 +1,10 @@
 import Firebase
 import FirebaseHelper
+import NotificationBannerSwift
 import SkyFloatingLabelTextField
 import Spring
+
+// todo: use convenience inits instead of factory methods
 
 enum Result<T, Error> {
     case success(T)
@@ -135,6 +138,22 @@ extension UIBarButtonItem {
         return UIBarButtonItem(customView: button)
     }
 
+    convenience init(target: Any?,
+                     action: Selector,
+                     frame: CGRect = Setting.navBarButtonCGRect,
+                     image: UIImage) {
+        self.init()
+        let button = SpringButton(type: .custom)
+        button.addTarget(
+            target,
+            action: action,
+            for: .touchUpInside
+        )
+        button.frame = frame
+        button.setImage(image, for: .normal)
+        customView = button
+    }
+
     func animate(loop: Bool = false) {
         customView?.layer.stopAnimating()
         (customView as? SpringButton)?.morph(loop: loop)
@@ -173,16 +192,23 @@ extension UIImage {
     }
 }
 
+extension UILabel {
+    static let warningIcon: UILabel = {
+        let warningIcon = UILabel()
+        warningIcon.font = UIFont.fontAwesome(ofSize: 30)
+        warningIcon.text = String.fontAwesomeIcon(name: .exclamationTriangle)
+        warningIcon.textColor = .white
+        return warningIcon
+    }()
+}
+
 extension UINavigationBar {
-    static func makeCloseKeyboardNavigationBar(width: CGFloat) -> UINavigationBar {
-        return UINavigationBar(
-            frame: CGRect(
-                x: 0,
-                y: 0,
-                width: width,
-                height: 40
-            )
-        )
+    convenience init(target: Any?, action: Selector, width: CGFloat) {
+        self.init(frame: CGRect(x: 0, y: 0, width: width, height: 40))
+        let item = UINavigationItem()
+        let image = UIImage.fontAwesomeIcon(name: .angleDown, textColor: .blue, size: CGSize(width: 30, height: 30))
+        item.rightBarButtonItem = UIBarButtonItem(target: target, action: action, image: image)
+        pushItem(item, animated: false)
     }
 }
 
@@ -252,6 +278,27 @@ extension UIViewController {
                       message: error.localizedDescription,
                       completion: completion)
         }
+    }
+
+    func showErrorBanner(_ error: Error) {
+        var title = ""
+        var subTitle = ""
+        if let error = error as? ProxyError {
+            title = error.alertFields.title
+            subTitle = error.alertFields.description
+        } else {
+            title = ProxyError.unknown.alertFields.title
+            subTitle = error.localizedDescription
+        }
+        NotificationBannerQueue.default.removeAll()
+        let banner = NotificationBanner(
+            attributedTitle: NSAttributedString(string: title),
+            attributedSubtitle: NSAttributedString(string: subTitle),
+            leftView: UILabel.warningIcon,
+            style: .danger
+        )
+        banner.haptic = .light
+        banner.show()
     }
 
     func showIconPickerController(_ proxy: Proxy) {
