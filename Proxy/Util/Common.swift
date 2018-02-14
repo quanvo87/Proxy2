@@ -235,7 +235,7 @@ extension UIViewController {
         let banner = NotificationBanner(
             attributedTitle: NSAttributedString(string: title),
             attributedSubtitle: NSAttributedString(string: subTitle),
-            leftView: UILabel.warningIcon,
+            leftView: Label.warningIcon,
             style: .danger
         )
         banner.haptic = .light

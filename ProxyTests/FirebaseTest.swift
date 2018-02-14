@@ -101,7 +101,7 @@ extension GroupWork {
 
     func check(_ property: SettableConvoProperty, uid: String, convoKey: String, function: String = #function, line: Int = #line) {
         start()
-        FirebaseHelper.main.get(Child.convos, uid, convoKey, property.properties.name) { result in
+        Shared.firebaseHelper.get(Child.convos, uid, convoKey, property.properties.name) { result in
             switch result {
             case .failure(let error):
                 XCTFail(String(describing: error))
@@ -114,7 +114,7 @@ extension GroupWork {
 
     func check(_ property: SettableMessageProperty, for message: Message, function: String = #function, line: Int = #line) {
         start()
-        FirebaseHelper.main.get(Child.messages, message.parentConvoKey, message.messageId, property.properties.name) { result in
+        Shared.firebaseHelper.get(Child.messages, message.parentConvoKey, message.messageId, property.properties.name) { result in
             switch result {
             case .failure(let error):
                 XCTFail(String(describing: error))
@@ -139,7 +139,7 @@ extension GroupWork {
 
     func check(_ property: SettableProxyProperty, uid: String, proxyKey: String, function: String = #function, line: Int = #line) {
         start()
-        FirebaseHelper.main.get(Child.proxies, uid, proxyKey, property.properties.name) { result in
+        Shared.firebaseHelper.get(Child.proxies, uid, proxyKey, property.properties.name) { result in
             switch result {
             case .failure(let error):
                 XCTFail(String(describing: error))
@@ -152,7 +152,7 @@ extension GroupWork {
 
     func check(_ property: IncrementableUserProperty, equals value: Int, uid: String, function: String = #function, line: Int = #line) {
         start()
-        FirebaseHelper.main.get(Child.userInfo, uid, property.rawValue) { result in
+        Shared.firebaseHelper.get(Child.userInfo, uid, property.rawValue) { result in
             switch result {
             case .failure(let error):
                 XCTFail(String(describing: error))
@@ -181,7 +181,7 @@ extension GroupWork {
 
     func checkDeleted(_ first: String, _ rest: String..., function: String = #function, line: Int = #line) {
         start()
-        FirebaseHelper.main.get(first, rest) { result in
+        Shared.firebaseHelper.get(first, rest) { result in
             switch result {
             case .failure(let error):
                 XCTFail(String(describing: error))

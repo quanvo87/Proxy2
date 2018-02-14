@@ -17,12 +17,12 @@ class UnreadMessagesObserver: UnreadMessagesObserving {
 
     func observe(uid: String, completion: @escaping (UnreadMessageUpdate) -> Void) {
         stopObserving()
-        ref = try? FirebaseHelper.main.makeReference(Child.userInfo, uid, Child.unreadMessages)
+        ref = try? Shared.firebaseHelper.makeReference(Child.userInfo, uid, Child.unreadMessages)
         addedHandle = ref?.observe(.childAdded) { data in
             do {
                 completion(.added(try Message(data)))
             } catch {
-                FirebaseHelper.main.delete(Child.userInfo, uid, Child.unreadMessages, data.key) { _ in }
+                Shared.firebaseHelper.delete(Child.userInfo, uid, Child.unreadMessages, data.key) { _ in }
             }
         }
         removedHandle = ref?.observe(.childRemoved) { data in

@@ -23,7 +23,7 @@ class MessagesObserver: MessagesObserving {
     func observe(convoKey: String, completion: @escaping ([Message]) -> Void) {
         stopObserving()
         firstCallback = true
-        ref = try? FirebaseHelper.main.makeReference(Child.messages, convoKey)
+        ref = try? Shared.firebaseHelper.makeReference(Child.messages, convoKey)
         WQNetworkActivityIndicator.shared.show()
         handle = ref?
             .queryLimited(toLast: querySize)

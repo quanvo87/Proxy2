@@ -15,7 +15,7 @@ class ConvoObserver: ConvoObserving {
     func observe(convoKey: String, convoSenderId: String, completion: @escaping (Convo?) -> Void) {
         stopObserving()
         firstCallback = true
-        ref = try? FirebaseHelper.main.makeReference(Child.convos, convoSenderId, convoKey)
+        ref = try? Shared.firebaseHelper.makeReference(Child.convos, convoSenderId, convoKey)
         WQNetworkActivityIndicator.shared.show()
         handle = ref?.observe(.value) { [weak self] data in
             if let firstCallback = self?.firstCallback, firstCallback {

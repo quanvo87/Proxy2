@@ -50,23 +50,7 @@ enum Identifier {
     static let signUpViewController = "SignUpViewController"
 }
 
-enum Setting {
-    static let querySize: UInt = 30
-}
-
-enum Shared {
-    static let auth = Auth.auth()
-    static let firebaseApp = FirebaseApp.app()
-    static let firebaseHelper = FirebaseHelper(FirebaseDatabase.Database.database().reference())
-}
-
-//extension FirebaseHelper {
-//    static let main: FirebaseHelper = {
-//        FirebaseHelper(FirebaseDatabase.Database.database().reference())
-//    }()
-//}
-
-extension UILabel {
+enum Label {
     static let warningIcon: UILabel = {
         let warningIcon = UILabel()
         warningIcon.font = UIFont.fontAwesome(ofSize: 30)
@@ -76,8 +60,13 @@ extension UILabel {
     }()
 }
 
-extension UIStoryboard {
-    static let main: UIStoryboard = {
-        UIStoryboard(name: "Main", bundle: nil)
-    }()
+enum Setting {
+    static let querySize: UInt = 30
+}
+
+enum Shared {
+    static let auth = Auth.auth()
+    static let firebaseApp = FirebaseApp.app()
+    static let firebaseHelper = FirebaseHelper(FirebaseDatabase.Database.database().reference())
+    static let storyboard = UIStoryboard(name: "Main", bundle: nil)
 }
