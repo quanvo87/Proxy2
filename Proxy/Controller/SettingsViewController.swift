@@ -126,7 +126,7 @@ extension SettingsViewController: UITableViewDelegate {
                     do {
                         try self?.auth.signOut()
                     } catch {
-                        self?.showErrorAlert(error)
+                        self?.showErrorBanner(error)
                     }
                 })
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))

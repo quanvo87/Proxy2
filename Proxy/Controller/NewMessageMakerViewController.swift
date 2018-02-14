@@ -136,18 +136,11 @@ private extension NewMessageMakerViewController {
         database.makeProxy(currentProxyCount: proxies.count, ownerId: uid) { [weak self] result in
             switch result {
             case .failure(let error):
-                self?._showErrorAlert(error)
+                self?.showErrorBanner(error)
             case .success(let newProxy):
                 self?.sender = newProxy
             }
             self?.setButtons(true)
-        }
-    }
-
-    func _showErrorAlert(_ error: Error) {
-        lockKeyboard = false
-        showErrorAlert(error) { [weak self] in
-            self?.lockKeyboard = true
         }
     }
 
@@ -182,7 +175,7 @@ extension NewMessageMakerViewController: MessageInputBarDelegate {
         sendMessage(text) { [weak self] outcome in
             switch outcome {
             case .failure(let error):
-                self?._showErrorAlert(error)
+                self?.showErrorBanner(error)
                 self?.isSending = false
                 self?.setButtons(true)
             case .success(let convo):

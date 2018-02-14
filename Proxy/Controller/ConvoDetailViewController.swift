@@ -146,7 +146,7 @@ extension ConvoDetailViewController: UITableViewDataSource {
             if !(nickname != "" && trimmed == "") {
                 self?.database.setReceiverNickname(to: nickname, for: convo) { error in
                     if let error = error {
-                        self?.showErrorAlert(error)
+                        self?.showErrorBanner(error)
                     }
                 }
             }

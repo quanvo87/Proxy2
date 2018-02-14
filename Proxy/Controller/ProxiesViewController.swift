@@ -145,7 +145,7 @@ private extension ProxiesViewController {
         database.makeProxy(currentProxyCount: proxies.count, ownerId: uid) { [weak self] result in
             switch result {
             case .failure(let error):
-                self?.showErrorAlert(error)
+                self?.showErrorBanner(error)
             case .success:
                 break
             }

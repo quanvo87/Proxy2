@@ -10,7 +10,6 @@ enum ProxyError: Error {
     case tooManyProxies
     case unknown
 
-    // todo: use custom alerts for everything?
     var alertFields: (title: String, description: String) {
         switch self {
         case .blankMessage:

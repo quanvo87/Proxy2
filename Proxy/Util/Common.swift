@@ -168,14 +168,6 @@ extension UITableView {
 }
 
 extension UIViewController {
-    func showAlert(title: String?, message: String?, completion: (() -> Void)? = nil) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default) { _ in
-            completion?()
-        })
-        present(alert, animated: true)
-    }
-
     func showConvoController(_ convo: Convo) {
         let convoViewController = ConvoViewController(convo: convo)
         navigationController?.pushViewController(convoViewController, animated: true)
@@ -200,25 +192,13 @@ extension UIViewController {
             if !(nickname != "" && trimmed == "") {
                 database.setNickname(to: nickname, for: proxy) { error in
                     if let error = error {
-                        self?.showErrorAlert(error)
+                        self?.showErrorBanner(error)
                     }
                 }
             }
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         present(alert, animated: true)
-    }
-
-    func showErrorAlert(_ error: Error, completion: (() -> Void)? = nil) {
-        if let error = error as? ProxyError {
-            showAlert(title: error.alertFields.title,
-                      message: error.alertFields.description,
-                      completion: completion)
-        } else {
-            showAlert(title: ProxyError.unknown.alertFields.title,
-                      message: error.localizedDescription,
-                      completion: completion)
-        }
     }
 
     func showErrorBanner(_ error: Error) {
@@ -239,7 +219,7 @@ extension UIViewController {
             style: .danger
         )
         banner.haptic = .light
-        banner.show()
+        banner.show(on: self.navigationController)
     }
 
     func showIconPickerController(_ proxy: Proxy) {
