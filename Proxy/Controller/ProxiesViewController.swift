@@ -130,7 +130,13 @@ private extension ProxiesViewController {
                 guard let proxy = item as? Proxy else {
                     continue
                 }
-                self?.database.deleteProxy(proxy) { _ in }
+                self?.database.deleteProxy(proxy) { error in
+                    if let error = error {
+                        self?.showErrorBanner(error)
+                    } else {
+                        self?.showSuccessStatusBarBanner(title: "\(proxy.name) has been deleted.")
+                    }
+                }
             }
             self?.proxiesToDelete.removeAll()
             self?.setDefaultButtons()

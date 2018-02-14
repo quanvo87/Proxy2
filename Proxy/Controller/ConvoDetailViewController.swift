@@ -187,7 +187,13 @@ extension ConvoDetailViewController: UITableViewDelegate {
                                               message: "Your conversations for this proxy will be deleted.",
                                               preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
-                    self?.database.deleteProxy(proxy) { _ in }
+                    self?.database.deleteProxy(proxy) { error in
+                        if let error = error {
+                            self?.showErrorBanner(error)
+                        } else {
+                            self?.showSuccessStatusBarBanner(title: "\(proxy.name) has been deleted.")
+                        }
+                    }
                     self?.navigationController?.popViewController(animated: true)
                 })
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))

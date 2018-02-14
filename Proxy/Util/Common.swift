@@ -168,6 +168,53 @@ extension UITableView {
 }
 
 extension UIViewController {
+    func showErrorBanner(_ error: Error) {
+        var title = ""
+        var subTitle = ""
+        if let error = error as? ProxyError {
+            title = error.alertFields.title
+            subTitle = error.alertFields.description
+        } else {
+            title = ProxyError.unknown.alertFields.title
+            subTitle = error.localizedDescription
+        }
+        NotificationBannerQueue.default.removeAll()
+        let banner = NotificationBanner(
+            attributedTitle: NSAttributedString(string: title),
+            attributedSubtitle: NSAttributedString(string: subTitle),
+            leftView: Label.warningIcon,
+            style: .danger
+        )
+        banner.haptic = .light
+        banner.show(on: self.navigationController)
+    }
+
+    func showSuccessBanner(title: String, subtitle: String? = nil) {
+        var attributedSubtitle: NSAttributedString?
+        if let subtitle = subtitle {
+            attributedSubtitle = NSAttributedString(string: subtitle)
+        }
+        NotificationBannerQueue.default.removeAll()
+        let banner = NotificationBanner(
+            attributedTitle: NSAttributedString(string: title),
+            attributedSubtitle: attributedSubtitle,
+            leftView: Label.checkIcon,
+            style: .success
+        )
+        banner.duration = 3
+        banner.show(on: self.navigationController)
+    }
+
+    func showSuccessStatusBarBanner(title: String) {
+        NotificationBannerQueue.default.removeAll()
+        let banner = StatusBarNotificationBanner(
+            attributedTitle: NSAttributedString(string: title),
+            style: .success
+        )
+        banner.duration = 3
+        banner.show()
+    }
+
     func showConvoController(_ convo: Convo) {
         let convoViewController = ConvoViewController(convo: convo)
         navigationController?.pushViewController(convoViewController, animated: true)
@@ -199,27 +246,6 @@ extension UIViewController {
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         present(alert, animated: true)
-    }
-
-    func showErrorBanner(_ error: Error) {
-        var title = ""
-        var subTitle = ""
-        if let error = error as? ProxyError {
-            title = error.alertFields.title
-            subTitle = error.alertFields.description
-        } else {
-            title = ProxyError.unknown.alertFields.title
-            subTitle = error.localizedDescription
-        }
-        NotificationBannerQueue.default.removeAll()
-        let banner = NotificationBanner(
-            attributedTitle: NSAttributedString(string: title),
-            attributedSubtitle: NSAttributedString(string: subTitle),
-            leftView: Label.warningIcon,
-            style: .danger
-        )
-        banner.haptic = .light
-        banner.show(on: self.navigationController)
     }
 
     func showIconPickerController(_ proxy: Proxy) {

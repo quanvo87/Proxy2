@@ -9,7 +9,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
 
     private lazy var loginManager: LoginManaging = LoginManager(
         facebookButton: facebookButton,
-        loginButton: loginButton
+        loginButton: loginButton,
+        viewController: self
     )
 
     override func viewDidLoad() {
@@ -48,7 +49,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         loginButton.setup(centerLabelText: "Log in")
 
         facebookButton.setup(
-            centerLabelText: "Log in with Facebook",
+            centerLabelText: "Continue with Facebook",
             asFacebookButton: true
         )
     }
@@ -88,11 +89,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                 showErrorBanner(ProxyError.missingCredentials)
                 return
         }
-        loginManager.emailLogin(email: email.lowercased(), password: password) { [weak self] error in
-            if let error = error {
-                self?.showErrorBanner(error)
-            }
-        }
+        loginManager.emailLogin(email: email.lowercased(), password: password) { _ in }
     }
 
     // todo
@@ -104,10 +101,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     }
 
     @IBAction func tapFacebookButton(_ sender: Any) {
-        loginManager.facebookLogin { [weak self] error in
-            if let error = error {
-                self?.showErrorBanner(error)
-            }
-        }
+        loginManager.facebookLogin { _ in }
     }
 }

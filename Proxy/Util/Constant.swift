@@ -51,9 +51,17 @@ enum Identifier {
 }
 
 enum Label {
+    static let checkIcon: UILabel = {
+        let checkIcon = UILabel()
+        checkIcon.font = UIFont.fontAwesome(ofSize: 35)
+        checkIcon.text = String.fontAwesomeIcon(name: .checkCircle)
+        checkIcon.textColor = .white
+        return checkIcon
+    }()
+
     static let warningIcon: UILabel = {
         let warningIcon = UILabel()
-        warningIcon.font = UIFont.fontAwesome(ofSize: 30)
+        warningIcon.font = UIFont.fontAwesome(ofSize: 35)
         warningIcon.text = String.fontAwesomeIcon(name: .exclamationTriangle)
         warningIcon.textColor = .white
         return warningIcon

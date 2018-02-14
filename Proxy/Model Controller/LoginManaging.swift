@@ -15,13 +15,16 @@ class LoginManager: LoginManaging {
     private weak var facebookButton: Button?
     private weak var loginButton: Button?
     private weak var signUpButton: Button?
+    private weak var viewController: UIViewController?
 
     init(facebookButton: Button? = nil,
          loginButton: Button? = nil,
-         signUpButton: Button? = nil) {
+         signUpButton: Button? = nil,
+         viewController: UIViewController? = nil) {
         self.facebookButton = facebookButton
         self.loginButton = loginButton
         self.signUpButton = signUpButton
+        self.viewController = viewController
     }
 
     func emailLogin(email: String, password: String, completion: @escaping Callback) {
@@ -30,7 +33,14 @@ class LoginManager: LoginManaging {
         Shared.auth.signIn(withEmail: email, password: password) { [weak self] _, error in
             self?.loginButton?.hideActivityIndicator()
             WQNetworkActivityIndicator.shared.hide()
-            completion(error)
+            if let error = error {
+                self?.viewController?.showErrorBanner(error)
+            } else {
+                self?.viewController?.showSuccessBanner(
+                    title: "Login successful",
+                    subtitle: "Welcome back! 😊🎉"
+                )
+            }
         }
     }
 
@@ -40,7 +50,14 @@ class LoginManager: LoginManaging {
         Shared.auth.createUser(withEmail: email, password: password) { [weak self] _, error in
             self?.signUpButton?.hideActivityIndicator()
             WQNetworkActivityIndicator.shared.hide()
-            completion(error)
+            if let error = error {
+                self?.viewController?.showErrorBanner(error)
+            } else {
+                self?.viewController?.showSuccessBanner(
+                    title: "Sign up successful",
+                    subtitle: "Welcome to Proxy!! 🤩🎉"
+                )
+            }
         }
     }
 
@@ -54,10 +71,17 @@ class LoginManager: LoginManaging {
             case .success:
                 let credential = FacebookAuthProvider.credential(withAccessToken: FBSDKAccessToken.current().tokenString)
                 Shared.auth.signIn(with: credential) { _, error in
-                    completion(error)
+                    if let error = error {
+                        self?.viewController?.showErrorBanner(error)
+                    } else {
+                        self?.viewController?.showSuccessBanner(
+                            title: "Log in successful",
+                            subtitle: "Welcome! 🤩🎉"
+                        )
+                    }
                 }
             case .failed(let error):
-                completion(error)
+                self?.viewController?.showErrorBanner(error)
             case .cancelled:
                 return
             }

@@ -83,16 +83,23 @@ class ProxyViewController: UIViewController, NewMessageMakerDelegate {
 
 private extension ProxyViewController {
     @objc func deleteProxy() {
-        let alert = UIAlertController(title: "Delete Proxy?",
-                                      message: "You will not be able to see this proxy or its conversations again.",
-                                      preferredStyle: .alert)
+        let alert = UIAlertController(
+            title: "Delete Proxy?",
+            message: "You will not be able to see this proxy or its conversations again.",
+            preferredStyle: .alert
+        )
         alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
             guard let proxy = self?.proxy else {
                 return
             }
-            self?.database.deleteProxy(proxy) { _ in
-                self?.navigationController?.popViewController(animated: true)
+            self?.database.deleteProxy(proxy) { error in
+                if let error = error {
+                    self?.showErrorBanner(error)
+                } else {
+                    self?.showSuccessStatusBarBanner(title: "\(proxy.name) has been deleted.")
+                }
             }
+            self?.navigationController?.popViewController(animated: true)
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         present(alert, animated: true)
