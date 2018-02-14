@@ -15,7 +15,7 @@ class FirebaseUtilTests: FirebaseTest {
                     XCTFail(String(describing: error))
                     expectation.fulfill()
                 case .success(let data):
-                    let convos = data.toConvosArray(proxyKey: nil)
+                    let convos = data.asConvosArray(proxyKey: nil)
                     XCTAssertEqual(convos.count, 1)
                     XCTAssert(convos.contains(convo))
                     expectation.fulfill()
@@ -35,7 +35,7 @@ class FirebaseUtilTests: FirebaseTest {
                     XCTFail(String(describing: error))
                     expectation.fulfill()
                 case .success(let data):
-                    let messages = data.toMessagesArray
+                    let messages = data.asMessagesArray
                     XCTAssertEqual(messages.count, 1)
                     XCTAssert(messages.contains(message))
                     expectation.fulfill()
@@ -56,7 +56,7 @@ class FirebaseUtilTests: FirebaseTest {
                         XCTFail(String(describing: error))
                         expectation.fulfill()
                     case .success(let data):
-                        let proxies = data.toProxiesArray
+                        let proxies = data.asProxiesArray
                         XCTAssertEqual(proxies.count, 2)
                         XCTAssert(proxies.contains(proxy1))
                         XCTAssert(proxies.contains(proxy2))

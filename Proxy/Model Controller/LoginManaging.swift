@@ -27,7 +27,7 @@ class LoginManager: LoginManaging {
     func emailLogin(email: String, password: String, completion: @escaping Callback) {
         loginButton?.showActivityIndicator()
         WQNetworkActivityIndicator.shared.show()
-        Auth.auth.signIn(withEmail: email, password: password) { [weak self] _, error in
+        Shared.auth.signIn(withEmail: email, password: password) { [weak self] _, error in
             self?.loginButton?.hideActivityIndicator()
             WQNetworkActivityIndicator.shared.hide()
             completion(error)
@@ -37,7 +37,7 @@ class LoginManager: LoginManaging {
     func emailSignUp(email: String, password: String, completion: @escaping Callback) {
         signUpButton?.showActivityIndicator()
         WQNetworkActivityIndicator.shared.show()
-        Auth.auth.createUser(withEmail: email, password: password) { [weak self] _, error in
+        Shared.auth.createUser(withEmail: email, password: password) { [weak self] _, error in
             self?.signUpButton?.hideActivityIndicator()
             WQNetworkActivityIndicator.shared.hide()
             completion(error)
@@ -53,7 +53,7 @@ class LoginManager: LoginManaging {
             switch result {
             case .success:
                 let credential = FacebookAuthProvider.credential(withAccessToken: FBSDKAccessToken.current().tokenString)
-                Auth.auth.signIn(with: credential) { _, error in
+                Shared.auth.signIn(with: credential) { _, error in
                     completion(error)
                 }
             case .failed(let error):

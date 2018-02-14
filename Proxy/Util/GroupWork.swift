@@ -51,7 +51,7 @@ extension GroupWork {
                 .queryEqual(toValue: key)
                 .queryOrdered(byChild: Child.receiverProxyKey)
                 .observeSingleEvent(of: .value) { data in
-                    completion(.success(data.toMessagesArray))
+                    completion(.success(data.asMessagesArray))
             }
         } catch {
             completion(.failure(error))

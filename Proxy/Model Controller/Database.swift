@@ -353,7 +353,7 @@ class Firebase: Database {
             case .failure(let error):
                 completion(.failure(error))
             case .success(let data):
-                completion(.success(data.toConvosArray(proxyKey: key)))
+                completion(.success(data.asConvosArray(proxyKey: key)))
             }
         }
     }

@@ -34,7 +34,7 @@ class MessagesObserver: MessagesObserving {
                     WQNetworkActivityIndicator.shared.hide()
                 }
                 self?.loading = true
-                completion(data.toMessagesArray)
+                completion(data.asMessagesArray)
                 self?.loading = false
         }
     }
@@ -50,7 +50,7 @@ class MessagesObserver: MessagesObserving {
             .queryOrderedByKey()
             .observeSingleEvent(of: .value) { [weak self] data in
                 WQNetworkActivityIndicator.shared.hide()
-                var messages = data.toMessagesArray
+                var messages = data.asMessagesArray
                 guard messages.count > 1 else {
                     return
                 }

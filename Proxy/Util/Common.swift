@@ -1,5 +1,4 @@
-import Firebase
-import FirebaseHelper
+import FirebaseDatabase
 import NotificationBannerSwift
 import SkyFloatingLabelTextField
 import Spring
@@ -7,12 +6,6 @@ import Spring
 enum Result<T, Error> {
     case success(T)
     case failure(Error)
-}
-
-extension Auth {
-    static let auth: Auth = {
-        Auth.auth()
-    }()
 }
 
 // https://stackoverflow.com/questions/25329186/safe-bounds-checked-array-lookup-in-swift-through-optional-bindings
@@ -28,20 +21,8 @@ extension Double {
     }
 }
 
-extension FirebaseApp {
-    static let app: FirebaseApp? = {
-        FirebaseApp.app()
-    }()
-}
-
-extension FirebaseHelper {
-    static let main: FirebaseHelper = {
-        FirebaseHelper(FirebaseDatabase.Database.database().reference())
-    }()
-}
-
 extension DataSnapshot {
-    func toConvosArray(proxyKey: String?) -> [Convo] {
+    func asConvosArray(proxyKey: String?) -> [Convo] {
         return children.flatMap {
             guard
                 let data = $0 as? DataSnapshot,
@@ -60,7 +41,7 @@ extension DataSnapshot {
         }
     }
 
-    var toMessagesArray: [Message] {
+    var asMessagesArray: [Message] {
         return children.flatMap {
             guard
                 let data = $0 as? DataSnapshot,
@@ -71,7 +52,7 @@ extension DataSnapshot {
         }
     }
 
-    var toProxiesArray: [Proxy] {
+    var asProxiesArray: [Proxy] {
         return children.flatMap {
             guard
                 let data = $0 as? DataSnapshot,
@@ -101,9 +82,9 @@ extension SkyFloatingLabelTextFieldWithIcon {
         keyboardType = .emailAddress
         placeholder = "Email"
         returnKeyType = .next
-        selectedIconColor = .loginButtonBlue
-        selectedLineColor = .loginButtonBlue
-        selectedTitleColor = .loginButtonBlue
+        selectedIconColor = Color.loginButtonBlue
+        selectedLineColor = Color.loginButtonBlue
+        selectedTitleColor = Color.loginButtonBlue
         textContentType = .emailAddress
     }
 
@@ -114,9 +95,9 @@ extension SkyFloatingLabelTextFieldWithIcon {
         isSecureTextEntry = true
         placeholder = "Password"
         returnKeyType = .go
-        selectedIconColor = .loginButtonBlue
-        selectedLineColor = .loginButtonBlue
-        selectedTitleColor = .loginButtonBlue
+        selectedIconColor = Color.loginButtonBlue
+        selectedLineColor = Color.loginButtonBlue
+        selectedTitleColor = Color.loginButtonBlue
         textContentType = .password
     }
 }
@@ -130,15 +111,11 @@ extension String {
 extension UIBarButtonItem {
     convenience init(target: Any?,
                      action: Selector,
-                     frame: CGRect = Setting.navBarButtonCGRect,
+                     frame: CGRect = CGRect(x: 0, y: 0, width: 30, height: 30),
                      image: UIImage?) {
         self.init()
         let button = SpringButton(type: .custom)
-        button.addTarget(
-            target,
-            action: action,
-            for: .touchUpInside
-        )
+        button.addTarget(target, action: action, for: .touchUpInside)
         button.frame = frame
         button.setImage(image, for: .normal)
         customView = button
@@ -157,42 +134,8 @@ extension UIBarButtonItem {
     }
 }
 
-extension UIColor {
-    static let blue: UIColor = {
-        UIColor(red: 0, green: 122/255, blue: 1, alpha: 1)
-    }()
-
-    static let loginButtonBlue: UIColor = {
-        return UIColor(red: 53/255, green: 152/255, blue: 217/255, alpha: 1)
-    }()
-}
-
 extension UIImage {
-    static let cancel: UIImage? = {
-        UIImage(named: "cancel")
-    }()
-
-    static let confirm: UIImage? = {
-        UIImage(named: "confirm")
-    }()
-
-    static let delete: UIImage? = {
-        UIImage(named: "delete")
-    }()
-
-    static let info: UIImage? = {
-        UIImage(named: "info")
-    }()
-
-    static let makeNewMessage: UIImage? = {
-        UIImage(named: "makeNewMessage")
-    }()
-
-    static let makeNewProxy: UIImage? = {
-        UIImage(named: "makeNewProxy")
-    }()
-
-    static func makeCircle(diameter: CGFloat, color: UIColor = .blue) -> UIImage? {
+    static func makeCircle(diameter: CGFloat, color: UIColor = Color.blue) -> UIImage? {
         UIGraphicsBeginImageContextWithOptions(CGSize(width: diameter, height: diameter), false, 0)
         let context = UIGraphicsGetCurrentContext()
         context?.saveGState()
@@ -206,30 +149,14 @@ extension UIImage {
     }
 }
 
-extension UILabel {
-    static let warningIcon: UILabel = {
-        let warningIcon = UILabel()
-        warningIcon.font = UIFont.fontAwesome(ofSize: 30)
-        warningIcon.text = String.fontAwesomeIcon(name: .exclamationTriangle)
-        warningIcon.textColor = .white
-        return warningIcon
-    }()
-}
-
 extension UINavigationBar {
     convenience init(target: Any?, action: Selector, width: CGFloat) {
         self.init(frame: CGRect(x: 0, y: 0, width: width, height: 40))
         let item = UINavigationItem()
-        let image = UIImage.fontAwesomeIcon(name: .angleDown, textColor: .blue, size: CGSize(width: 30, height: 30))
+        let image = UIImage.fontAwesomeIcon(name: .angleDown, textColor: Color.blue, size: CGSize(width: 30, height: 30))
         item.rightBarButtonItem = UIBarButtonItem(target: target, action: action, image: image)
         pushItem(item, animated: false)
     }
-}
-
-extension UIStoryboard {
-    static let main: UIStoryboard = {
-        UIStoryboard(name: "Main", bundle: nil)
-    }()
 }
 
 extension UITableView {
@@ -345,7 +272,7 @@ private extension SpringButton {
 }
 
 private extension UIView {
-    func addGlow(color: CGColor = UIColor.blue.cgColor) {
+    func addGlow(color: CGColor = Color.blue.cgColor) {
         layer.shadowColor = color
         layer.shadowRadius = 4
         layer.shadowOpacity = 0.9

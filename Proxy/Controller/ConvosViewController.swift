@@ -11,8 +11,16 @@ class ConvosViewController: UIViewController, NewMessageMakerDelegate {
     private var convos = [Convo]()
     private var currentProxyCount = 0
     private var unreadMessageCount = 0
-    private lazy var makeNewMessageButton = makeMakeNewMessageButton()
-    private lazy var makeNewProxyButton = makeMakeNewProxyButton()
+    private lazy var makeNewMessageButton = UIBarButtonItem(
+        target: self,
+        action: #selector(showNewMessageMakerViewController),
+        image: UIImage(named: ButtonName.makeNewMessage)
+    )
+    private lazy var makeNewProxyButton = UIBarButtonItem(
+        target: self,
+        action: #selector(makeNewProxy),
+        image: UIImage(named: ButtonName.makeNewProxy)
+    )
 
     init(database: Database = Firebase(),
          convosObserver: ConvosObsering = ConvosObserver(),
@@ -109,14 +117,6 @@ private extension ConvosViewController {
         makeNewMessageButton.isEnabled = false
         showNewMessageMakerViewController(sender: nil, uid: uid)
         makeNewMessageButton.isEnabled = true
-    }
-
-    func makeMakeNewMessageButton() -> UIBarButtonItem {
-        return UIBarButtonItem(target: self, action: #selector(showNewMessageMakerViewController), image: .makeNewMessage)
-    }
-
-    func makeMakeNewProxyButton() -> UIBarButtonItem {
-        return UIBarButtonItem(target: self, action: #selector(makeNewProxy), image: .makeNewProxy)
     }
 }
 

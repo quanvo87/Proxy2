@@ -27,7 +27,11 @@ class IconPickerViewController: UIViewController {
                                 forCellWithReuseIdentifier: Identifier.iconPickerCollectionViewCell)
         collectionView.reloadData()
 
-        navigationItem.rightBarButtonItem = UIBarButtonItem(target: self, action: #selector(close), image: .cancel)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            target: self,
+            action: #selector(close),
+            image: UIImage(named: ButtonName.cancel)
+        )
         navigationItem.title = "Select An Icon"
 
         view.addSubview(collectionView)
@@ -67,7 +71,7 @@ extension IconPickerViewController: UICollectionViewDelegate {
         guard let iconName = iconNames[safe: indexPath.row] else {
             return
         }
-        collectionView.cellForItem(at: indexPath)?.backgroundColor = UIColor.blue
+        collectionView.cellForItem(at: indexPath)?.backgroundColor = Color.blue
         database.setIcon(to: iconName, for: proxy) { _ in }
         dismiss(animated: true)
     }

@@ -8,8 +8,16 @@ class ProxyViewController: UIViewController, NewMessageMakerDelegate {
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private var convos = [Convo]()
     private var proxy: Proxy? { didSet { didSetProxy() } }
-    private lazy var deleteProxyButton = makeDeleteProxyButton()
-    private lazy var makeNewMessageButton = makeMakeNewMessageButton()
+    private lazy var deleteProxyButton = UIBarButtonItem(
+        target: self,
+        action: #selector(deleteProxy),
+        image: UIImage(named: ButtonName.delete)
+    )
+    private lazy var makeNewMessageButton = UIBarButtonItem(
+        target: self,
+        action: #selector(showNewMessageMakerViewController),
+        image: UIImage(named: ButtonName.makeNewMessage)
+    )
 
     init(proxy: Proxy,
          convosObserver: ConvosObsering = ConvosObserver(),
@@ -104,14 +112,6 @@ private extension ProxyViewController {
             return
         }
         tableView.reloadData()
-    }
-
-    func makeDeleteProxyButton() -> UIBarButtonItem {
-        return UIBarButtonItem(target: self, action: #selector(deleteProxy), image: .delete)
-    }
-
-    func makeMakeNewMessageButton() -> UIBarButtonItem {
-        return UIBarButtonItem(target: self, action: #selector(showNewMessageMakerViewController), image: .makeNewMessage)
     }
 }
 

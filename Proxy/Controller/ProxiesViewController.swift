@@ -9,11 +9,31 @@ class ProxiesViewController: UIViewController, NewMessageMakerDelegate {
     private var proxies = [Proxy]()
     private var proxiesToDelete = [String: Any]()
     private var proxyCount = 0
-    private lazy var cancelButton = makeCancelButton()
-    private lazy var confirmButton = makeConfirmButton()
-    private lazy var deleteButton = makeDeleteButton()
-    private lazy var makeNewMessageButton = makeMakeNewMessageButton()
-    private lazy var makeNewProxyButton = makeMakeNewProxyButton()
+    private lazy var cancelButton = UIBarButtonItem(
+        target: self,
+        action: #selector(setDefaultButtons),
+        image: UIImage(named: ButtonName.cancel)
+    )
+    private lazy var confirmButton = UIBarButtonItem(
+        target: self,
+        action: #selector(deleteSelectedItems),
+        image: UIImage(named: ButtonName.confirm)
+    )
+    private lazy var deleteButton = UIBarButtonItem(
+        target: self,
+        action: #selector(setEditModeButtons),
+        image: UIImage(named: ButtonName.delete)
+    )
+    private lazy var makeNewMessageButton = UIBarButtonItem(
+        target: self,
+        action: #selector(showNewMessageMakerViewController),
+        image: UIImage(named: ButtonName.makeNewMessage)
+    )
+    private lazy var makeNewProxyButton = UIBarButtonItem(
+        target: self,
+        action: #selector(makeNewProxy),
+        image: UIImage(named: ButtonName.makeNewProxy)
+    )
 
     init(database: Database = Firebase(),
          proxiesObserver: ProxiesObserving = ProxiesObserver(),
@@ -138,26 +158,6 @@ private extension ProxiesViewController {
         makeNewMessageButton.isEnabled = false
         showNewMessageMakerViewController(sender: nil, uid: uid)
         makeNewMessageButton.isEnabled = true
-    }
-
-    func makeCancelButton() -> UIBarButtonItem {
-        return UIBarButtonItem(target: self, action: #selector(setDefaultButtons), image: .cancel)
-    }
-
-    func makeConfirmButton() -> UIBarButtonItem {
-        return UIBarButtonItem(target: self, action: #selector(deleteSelectedItems), image: .confirm)
-    }
-
-    func makeDeleteButton() -> UIBarButtonItem {
-        return UIBarButtonItem(target: self, action: #selector(setEditModeButtons), image: .delete)
-    }
-
-    func makeMakeNewMessageButton() -> UIBarButtonItem {
-        return UIBarButtonItem(target: self, action: #selector(showNewMessageMakerViewController), image: .makeNewMessage)
-    }
-
-    func makeMakeNewProxyButton() -> UIBarButtonItem {
-        return UIBarButtonItem(target: self, action: #selector(makeNewProxy), image: .makeNewProxy)
     }
 
     func scrollToTop() {

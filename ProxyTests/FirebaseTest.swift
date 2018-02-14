@@ -11,7 +11,7 @@ class FirebaseTest: XCTestCase {
     static let uid = "37Xoavv6znT6DrJjnx1I6hTQVr23"
     private static let email = "test@test.com"
     private static let password = "test123"
-    private let auth = Auth.auth(app: FirebaseApp.app!)
+    private let auth = Auth.auth(app: Shared.firebaseApp!)
     private var handle: AuthStateDidChangeListenerHandle?
 
     override func setUp() {

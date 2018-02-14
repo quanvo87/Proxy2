@@ -6,8 +6,12 @@ class SenderPickerViewController: UIViewController {
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
     private var proxies = [Proxy]()
-    private lazy var makeNewProxyButton = makeMakeNewProxyButton()
     private weak var senderPickerDelegate: SenderPickerDelegate?
+    private lazy var makeNewProxyButton = UIBarButtonItem(
+        target: self,
+        action: #selector(makeNewProxy),
+        image: UIImage(named: ButtonName.makeNewProxy)
+    )
 
     init(database: Database = Firebase(),
          proxiesObserver: ProxiesObserving = ProxiesObserver(),
@@ -65,11 +69,6 @@ private extension SenderPickerViewController {
             }
             self?.makeNewProxyButton.isEnabled = true
         }
-    }
-
-    // todo: use these or na?
-    func makeMakeNewProxyButton() -> UIBarButtonItem {
-        return UIBarButtonItem(target: self, action: #selector(makeNewProxy), image: .makeNewProxy)
     }
 }
 

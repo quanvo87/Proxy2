@@ -35,7 +35,7 @@ class ConvosObserver: ConvosObsering {
                     WQNetworkActivityIndicator.shared.hide()
                 }
                 self?.loading = true
-                completion(data.toConvosArray(proxyKey: proxyKey).reversed())
+                completion(data.asConvosArray(proxyKey: proxyKey).reversed())
                 self?.loading = false
         }
     }
@@ -53,7 +53,7 @@ class ConvosObserver: ConvosObsering {
             .queryOrdered(byChild: Child.timestamp)
             .observeSingleEvent(of: .value) { [weak self] data in
                 WQNetworkActivityIndicator.shared.hide()
-                var convos = data.toConvosArray(proxyKey: proxyKey)
+                var convos = data.asConvosArray(proxyKey: proxyKey)
                 guard convos.count > 1 else {
                     return
                 }

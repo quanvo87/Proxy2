@@ -37,7 +37,7 @@ class ConvoViewController: MessagesViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             target: self,
             action: #selector(showConvoDetailViewController),
-            image: .info
+            image: UIImage(named: ButtonName.info)
         )
 
         maintainPositionOnKeyboardFrameChanged = true
@@ -195,7 +195,7 @@ extension ConvoViewController: MessagesDataSource {
 extension ConvoViewController: MessagesDisplayDelegate {
     func backgroundColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
         if isFromCurrentSender(message: message) {
-            return UIColor.blue
+            return Color.blue
         } else {
             return UIColor(red: 230/255, green: 230/255, blue: 230/255, alpha: 1)
         }

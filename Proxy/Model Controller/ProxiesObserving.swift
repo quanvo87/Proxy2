@@ -21,7 +21,7 @@ class ProxiesObserver: ProxiesObserving {
                 self?.firstCallback = false
                 WQNetworkActivityIndicator.shared.hide()
             }
-            completion(data.toProxiesArray.reversed())
+            completion(data.asProxiesArray.reversed())
         }
     }
 

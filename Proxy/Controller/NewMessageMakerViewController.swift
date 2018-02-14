@@ -19,9 +19,17 @@ class NewMessageMakerViewController: UIViewController, SenderPickerDelegate {
     private var isSending = false
     private var lockKeyboard = true
     private var proxies = [Proxy]()
-    private lazy var cancelButton = makeCancelButton()
-    private lazy var makeNewProxyButton = makeMakeNewProxyButton()
     private weak var newMessageMakerDelegate: NewMessageMakerDelegate?
+    private lazy var cancelButton = UIBarButtonItem(
+        target: self,
+        action: #selector(close),
+        image: UIImage(named: ButtonName.cancel)
+    )
+    private lazy var makeNewProxyButton = UIBarButtonItem(
+        target: self,
+        action: #selector(makeNewProxy),
+        image: UIImage(named: ButtonName.makeNewProxy)
+    )
 
     init(sender: Proxy?,
          database: Database = Firebase(),
@@ -146,14 +154,6 @@ private extension NewMessageMakerViewController {
     func didSetSender() {
         tableView.reloadData()
         setFirstResponder()
-    }
-
-    func makeCancelButton() -> UIBarButtonItem {
-        return UIBarButtonItem(target: self, action: #selector(close), image: .cancel)
-    }
-
-    func makeMakeNewProxyButton() -> UIBarButtonItem {
-        return UIBarButtonItem(target: self, action: #selector(makeNewProxy), image: .makeNewProxy)
     }
 
     func setButtons(_ isEnabled: Bool) {
