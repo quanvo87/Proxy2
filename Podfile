@@ -3,6 +3,7 @@ platform :ios, '11.0'
 inhibit_all_warnings!
 
 def pods
+  pod 'CFAlertViewController', '~> 3.0'
   pod 'Device', '~> 3.0'
   pod 'FacebookCore', '~> 0.3'
   pod 'FacebookLogin', '~> 0.3'

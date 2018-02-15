@@ -1,5 +1,6 @@
 import Firebase
 import FirebaseHelper
+import NotificationBannerSwift
 import UIKit
 
 enum ButtonName {
@@ -77,4 +78,14 @@ enum Shared {
     static let firebaseApp = FirebaseApp.app()
     static let firebaseHelper = FirebaseHelper(FirebaseDatabase.Database.database().reference())
     static let storyboard = UIStoryboard(name: "Main", bundle: nil)
+
+    static func showSuccessStatusBarBanner(title: String) {
+        NotificationBannerQueue.default.removeAll()
+        let banner = StatusBarNotificationBanner(
+            attributedTitle: NSAttributedString(string: title),
+            style: .success
+        )
+        banner.duration = 3
+        banner.show()
+    }
 }

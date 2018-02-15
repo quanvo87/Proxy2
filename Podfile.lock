@@ -5,6 +5,7 @@ PODS:
   - Bolts/AppLinks (1.8.4):
     - Bolts/Tasks
   - Bolts/Tasks (1.8.4)
+  - CFAlertViewController (3.0)
   - Device (3.0.3)
   - FacebookCore (0.3.0):
     - Bolts (~> 1.8)
@@ -80,6 +81,7 @@ PODS:
   - WQNetworkActivityIndicator (0.1.2)
 
 DEPENDENCIES:
+  - CFAlertViewController (~> 3.0)
   - Device (~> 3.0)
   - FacebookCore (~> 0.3)
   - FacebookLogin (~> 0.3)
@@ -102,6 +104,7 @@ DEPENDENCIES:
 
 SPEC CHECKSUMS:
   Bolts: 8a7995239dbe724f9cba2248b766d48b7ebdd322
+  CFAlertViewController: 460bb12b42b500bb0838e5595ca144a18344765f
   Device: 9a5264ee4e0f392e7153d2c46b10c8df46b7aad2
   FacebookCore: 3ffa190a3f1f96cec0e44d3fc221bc322c595ffa
   FacebookLogin: 0af839ea858faef99550d16596b87b4a8e8906e6
@@ -133,6 +136,6 @@ SPEC CHECKSUMS:
   SwiftyButton: 093e3fe2becf3ae31c0f6c1c6987b79a93fb3ecb
   WQNetworkActivityIndicator: 6a893f95b5500de408b3712f66f4cc4265b49f8d
 
-PODFILE CHECKSUM: 74f22f0d0fad199d1f2e845c9d44638397d1e292
+PODFILE CHECKSUM: fb7b9ffd33e97463f654adb3382a31b78c6e29f9
 
 COCOAPODS: 1.4.0

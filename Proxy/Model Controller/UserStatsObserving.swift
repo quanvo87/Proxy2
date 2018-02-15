@@ -1,5 +1,4 @@
 import FirebaseDatabase
-import FirebaseHelper
 import UIKit
 
 enum UserStatsUpdate {

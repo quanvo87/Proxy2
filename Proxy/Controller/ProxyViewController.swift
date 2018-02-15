@@ -96,7 +96,7 @@ private extension ProxyViewController {
                 if let error = error {
                     self?.showErrorBanner(error)
                 } else {
-                    self?.showSuccessStatusBarBanner(title: "\(proxy.name) has been deleted.")
+                    Shared.showSuccessStatusBarBanner(title: "\(proxy.name) has been deleted.")
                 }
             }
             self?.navigationController?.popViewController(animated: true)

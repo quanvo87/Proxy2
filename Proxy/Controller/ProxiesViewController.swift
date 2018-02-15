@@ -134,7 +134,7 @@ private extension ProxiesViewController {
                     if let error = error {
                         self?.showErrorBanner(error)
                     } else {
-                        self?.showSuccessStatusBarBanner(title: "\(proxy.name) has been deleted.")
+                        Shared.showSuccessStatusBarBanner(title: "\(proxy.name) has been deleted.")
                     }
                 }
             }

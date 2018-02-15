@@ -2,6 +2,7 @@ import AVKit
 import Firebase
 import FBSDKCoreKit
 
+// todo: remove objc
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow? = UIWindow(frame: UIScreen.main.bounds)
@@ -10,7 +11,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         if #available(iOS 10.0, *) {
-            try? AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryAmbient, mode: AVAudioSessionModeDefault)
+            try? AVAudioSession.sharedInstance().setCategory(
+                AVAudioSessionCategoryAmbient,
+                mode: AVAudioSessionModeDefault
+            )
             try? AVAudioSession.sharedInstance().setActive(true)
         }
 

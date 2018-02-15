@@ -1,5 +1,4 @@
 import FirebaseDatabase
-import FirebaseHelper
 
 enum UnreadMessageUpdate {
     case added(Message)
