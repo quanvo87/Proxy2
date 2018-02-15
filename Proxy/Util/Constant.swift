@@ -1,6 +1,52 @@
+import CFAlertViewController
 import Firebase
 import FirebaseHelper
 import NotificationBannerSwift
+
+enum Alert {
+    static func makeAlert(title: String?,
+                          message: String?,
+                          textAlignment: NSTextAlignment = .left,
+                          handler: CFAlertViewController.CFAlertViewControllerDismissBlock? = nil) -> CFAlertViewController {
+        return CFAlertViewController(
+            title: title,
+            message: message,
+            textAlignment: textAlignment,
+            preferredStyle: .alert,
+            didDismissAlertHandler: handler
+        )
+    }
+
+    static func makeCancelAction(title: String? = "Cancel",
+                                 alignment: CFAlertAction.CFAlertActionAlignment = .justified,
+                                 backgroundColor: UIColor? = nil,
+                                 textColor: UIColor? = nil,
+                                 handler: CFAlertAction.CFAlertActionHandlerBlock? = nil) -> CFAlertAction {
+        return CFAlertAction(
+            title: title,
+            style: .Cancel,
+            alignment: alignment,
+            backgroundColor: backgroundColor,
+            textColor: textColor,
+            handler: handler
+        )
+    }
+
+    static func makeDestructiveAction(title: String?,
+                                      alignment: CFAlertAction.CFAlertActionAlignment = .justified,
+                                      backgroundColor: UIColor? = Color.red,
+                                      textColor: UIColor? = .white,
+                                      handler: CFAlertAction.CFAlertActionHandlerBlock?) -> CFAlertAction {
+        return CFAlertAction(
+            title: title,
+            style: .Destructive,
+            alignment: alignment,
+            backgroundColor: backgroundColor,
+            textColor: textColor,
+            handler: handler
+        )
+    }
+}
 
 enum ButtonName {
     static let cancel = "cancel"
@@ -32,6 +78,7 @@ enum Child {
 enum Color {
     static let blue = UIColor(red: 0, green: 122/255, blue: 1, alpha: 1)
     static let loginButtonBlue = UIColor(red: 53/255, green: 152/255, blue: 217/255, alpha: 1)
+    static let red = UIColor(red: 252/255, green: 49/255, blue: 59/255, alpha: 1)
 }
 
 enum DatabaseOption {
@@ -98,6 +145,7 @@ enum Shared {
     static let firebaseHelper = FirebaseHelper(FirebaseDatabase.Database.database().reference())
 }
 
+// todo: separate
 enum UI {
     static let storyboard = UIStoryboard(name: "Main", bundle: nil)
 

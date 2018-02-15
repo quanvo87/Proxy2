@@ -183,10 +183,11 @@ extension ConvoDetailViewController: UITableViewDelegate {
         case 2:
             switch indexPath.row {
             case 0:
-                let alert = UIAlertController(title: "Delete Proxy?",
-                                              message: "Your conversations for this proxy will be deleted.",
-                                              preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
+                let alert = Alert.makeAlert(
+                    title: "Delete Proxy?",
+                    message: "Your conversations for this proxy will also be deleted."
+                )
+                alert.addAction(Alert.makeDestructiveAction(title: "Delete") { [weak self] _ in
                     self?.database.deleteProxy(proxy) { error in
                         if let error = error {
                             self?.showErrorBanner(error)
@@ -194,9 +195,8 @@ extension ConvoDetailViewController: UITableViewDelegate {
                             UI.showStatusBarNotificationBanner(title: "\(proxy.name) has been deleted.")
                         }
                     }
-                    self?.navigationController?.popViewController(animated: true)
                 })
-                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+                alert.addAction(Alert.makeCancelAction())
                 present(alert, animated: true)
             default:
                 return
