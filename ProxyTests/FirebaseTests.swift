@@ -141,10 +141,10 @@ class FirebaseTests: FirebaseTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        var settings = [String: Any]()
-        settings[DatabaseOptions.generator.name] = GeneratorMock()
-        settings[DatabaseOptions.makeProxyRetries.name] = 0
-        firebase = Firebase(settings)
+        var options = [String: Any]()
+        options[DatabaseOption.generator.name] = GeneratorMock()
+        options[DatabaseOption.makeProxyRetries.name] = 0
+        firebase = Firebase(options)
 
         firebase.makeProxy(currentProxyCount: 0, ownerId: FirebaseTest.uid) { [weak self] result in
             switch result {

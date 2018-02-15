@@ -1,7 +1,6 @@
 import Firebase
 import FirebaseHelper
 import NotificationBannerSwift
-import UIKit
 
 enum ButtonName {
     static let cancel = "cancel"
@@ -35,6 +34,15 @@ enum Color {
     static let loginButtonBlue = UIColor(red: 53/255, green: 152/255, blue: 217/255, alpha: 1)
 }
 
+enum DatabaseOption {
+    static let generator = (name: "generator", value: ProxyPropertyGenerator())
+    static let makeProxyRetries = (name: "makeProxyRetries", value: 50)
+    static let maxMessageSize = (name: "maxMessageSize", value: 20000)
+    static let maxNameSize = (name: "maxNameSize", value: 50)
+    static let maxProxyCount = (name: "maxProxyCount", value: 30)
+    static let querySize: UInt = 30
+}
+
 // todo: String(describing: Type.self)
 enum Identifier {
     static let convoDetailReceiverProxyTableViewCell = "ConvoDetailReceiverProxyTableViewCell"
@@ -49,6 +57,21 @@ enum Identifier {
     static let senderProxyTableViewCell = "SenderProxyTableViewCell"
     static let settingsTableViewCell = "SettingsTableViewCell"
     static let signUpViewController = "SignUpViewController"
+}
+
+enum Image {
+    static func makeCircle(diameter: CGFloat, color: UIColor = Color.blue) -> UIImage? {
+        UIGraphicsBeginImageContextWithOptions(CGSize(width: diameter, height: diameter), false, 0)
+        let context = UIGraphicsGetCurrentContext()
+        context?.saveGState()
+        let rect = CGRect(x: 0, y: 0, width: diameter, height: diameter)
+        context?.setFillColor(color.cgColor)
+        context?.fillEllipse(in: rect)
+        context?.restoreGState()
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return image
+    }
 }
 
 enum Label {
@@ -69,23 +92,24 @@ enum Label {
     }()
 }
 
-enum Setting {
-    static let querySize: UInt = 30
-}
-
 enum Shared {
     static let auth = Auth.auth()
     static let firebaseApp = FirebaseApp.app()
     static let firebaseHelper = FirebaseHelper(FirebaseDatabase.Database.database().reference())
+}
+
+enum UI {
     static let storyboard = UIStoryboard(name: "Main", bundle: nil)
 
-    static func showSuccessStatusBarBanner(title: String) {
+    static func showStatusBarNotificationBanner(title: String,
+                                                style: BannerStyle = .success,
+                                                duration: TimeInterval = 3) {
         NotificationBannerQueue.default.removeAll()
         let banner = StatusBarNotificationBanner(
             attributedTitle: NSAttributedString(string: title),
-            style: .success
+            style: style
         )
-        banner.duration = 3
+        banner.duration = duration
         banner.show()
     }
 }

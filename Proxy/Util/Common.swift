@@ -134,21 +134,6 @@ extension UIBarButtonItem {
     }
 }
 
-extension UIImage {
-    static func makeCircle(diameter: CGFloat, color: UIColor = Color.blue) -> UIImage? {
-        UIGraphicsBeginImageContextWithOptions(CGSize(width: diameter, height: diameter), false, 0)
-        let context = UIGraphicsGetCurrentContext()
-        context?.saveGState()
-        let rect = CGRect(x: 0, y: 0, width: diameter, height: diameter)
-        context?.setFillColor(color.cgColor)
-        context?.fillEllipse(in: rect)
-        context?.restoreGState()
-        let image = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        return image
-    }
-}
-
 extension UINavigationBar {
     convenience init(target: Any?, action: Selector, width: CGFloat) {
         self.init(frame: CGRect(x: 0, y: 0, width: width, height: 40))
@@ -161,7 +146,7 @@ extension UINavigationBar {
 
 extension UITableView {
     func setDelaysContentTouchesForScrollViews(value: Bool = false) {
-        for case let scrollView as UIScrollView in self.subviews {
+        for case let scrollView as UIScrollView in subviews {
             scrollView.delaysContentTouches = value
         }
     }

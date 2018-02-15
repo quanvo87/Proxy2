@@ -15,7 +15,7 @@ class ConvosTableViewCell: UITableViewCell {
         titleLabel.attributedText = NSAttributedString.makeConvoTitle(convo)
         unreadMessagesIndicatorImageView.image = nil
         if convo.hasUnreadMessage {
-            unreadMessagesIndicatorImageView.image = UIImage.makeCircle(diameter: unreadMessagesIndicatorImageView.frame.width)
+            unreadMessagesIndicatorImageView.image = Image.makeCircle(diameter: unreadMessagesIndicatorImageView.frame.width)
         }
     }
 }

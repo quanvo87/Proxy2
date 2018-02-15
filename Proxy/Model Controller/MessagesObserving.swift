@@ -15,7 +15,7 @@ class MessagesObserver: MessagesObserving {
     private var firstCallback = true
     private var loading = true
 
-    required init(querySize: UInt = Setting.querySize) {
+    required init(querySize: UInt = DatabaseOption.querySize) {
         self.querySize = querySize
     }
 

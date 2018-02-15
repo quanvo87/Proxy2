@@ -36,7 +36,7 @@ class LoginManager: LoginManaging {
             if let error = error {
                 self?.viewController?.showErrorBanner(error)
             } else {
-                Shared.showSuccessStatusBarBanner(title: "Login successful! 😊🎉")
+                UI.showStatusBarNotificationBanner(title: "Login successful! 😊🎉")
             }
         }
     }
@@ -50,7 +50,7 @@ class LoginManager: LoginManaging {
             if let error = error {
                 self?.viewController?.showErrorBanner(error)
             } else {
-                Shared.showSuccessStatusBarBanner(title: "Sign up successful! 😊🎉")
+                UI.showStatusBarNotificationBanner(title: "Sign up successful! 😊🎉")
             }
         }
     }
@@ -68,7 +68,7 @@ class LoginManager: LoginManaging {
                     if let error = error {
                         self?.viewController?.showErrorBanner(error)
                     } else {
-                        Shared.showSuccessStatusBarBanner(title: "Log in successful! 🤩🎉")
+                        UI.showStatusBarNotificationBanner(title: "Log in successful! 🤩🎉")
                     }
                 }
             case .failed(let error):

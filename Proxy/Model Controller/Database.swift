@@ -8,14 +8,6 @@ enum IncrementableUserProperty: String {
     case proxiesInteractedWith
 }
 
-struct DatabaseOptions {
-    static let generator = (name: "generator", value: ProxyPropertyGenerator())
-    static let makeProxyRetries = (name: "makeProxyRetries", value: 50)
-    static let maxMessageSize = (name: "maxMessageSize", value: 20000)
-    static let maxNameSize = (name: "maxNameSize", value: 50)
-    static let maxProxyCount = (name: "maxProxyCount", value: 30)
-}
-
 protocol Database {
     typealias ConvoCallback = (Result<Convo, Error>) -> Void
     typealias ErrorCallback = (Error?) -> Void
@@ -44,11 +36,11 @@ class Firebase: Database {
     private var isMakingProxy = false
 
     required init(_ options: [String: Any] = [:]) {
-        generator = options[DatabaseOptions.generator.name] as? ProxyPropertyGenerating ?? DatabaseOptions.generator.value
-        makeProxyRetries = options[DatabaseOptions.makeProxyRetries.name] as? Int ?? DatabaseOptions.makeProxyRetries.value
-        maxMessageSize = options[DatabaseOptions.maxMessageSize.name] as? Int ?? DatabaseOptions.maxMessageSize.value
-        maxNameSize = options[DatabaseOptions.maxNameSize.name] as? Int ?? DatabaseOptions.maxNameSize.value
-        maxProxyCount = options[DatabaseOptions.maxProxyCount.name] as? Int ?? DatabaseOptions.maxProxyCount.value
+        generator = options[DatabaseOption.generator.name] as? ProxyPropertyGenerating ?? DatabaseOption.generator.value
+        makeProxyRetries = options[DatabaseOption.makeProxyRetries.name] as? Int ?? DatabaseOption.makeProxyRetries.value
+        maxMessageSize = options[DatabaseOption.maxMessageSize.name] as? Int ?? DatabaseOption.maxMessageSize.value
+        maxNameSize = options[DatabaseOption.maxNameSize.name] as? Int ?? DatabaseOption.maxNameSize.value
+        maxProxyCount = options[DatabaseOption.maxProxyCount.name] as? Int ?? DatabaseOption.maxProxyCount.value
     }
 
     func deleteProxy(_ proxy: Proxy, completion: @escaping ErrorCallback) {
