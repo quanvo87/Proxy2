@@ -11,12 +11,12 @@ class ProxyViewController: UIViewController, NewMessageMakerDelegate {
     private lazy var deleteProxyButton = UIBarButtonItem(
         target: self,
         action: #selector(deleteProxy),
-        image: UIImage(named: ButtonName.delete)
+        image: Image.delete
     )
     private lazy var makeNewMessageButton = UIBarButtonItem(
         target: self,
         action: #selector(showNewMessageMakerViewController),
-        image: UIImage(named: ButtonName.makeNewMessage)
+        image: Image.makeNewMessage
     )
 
     init(proxy: Proxy,
@@ -95,7 +95,7 @@ private extension ProxyViewController {
                 if let error = error {
                     self?.showErrorBanner(error)
                 } else {
-                    UI.showStatusBarNotificationBanner(title: "\(proxy.name) has been deleted.")
+                    Alert.showStatusBarNotificationBanner(title: "\(proxy.name) has been deleted.")
                 }
             }
             self?.navigationController?.popViewController(animated: true)

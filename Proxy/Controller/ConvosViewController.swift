@@ -14,12 +14,12 @@ class ConvosViewController: UIViewController, NewMessageMakerDelegate {
     private lazy var makeNewMessageButton = UIBarButtonItem(
         target: self,
         action: #selector(showNewMessageMakerViewController),
-        image: UIImage(named: ButtonName.makeNewMessage)
+        image: Image.makeNewMessage
     )
     private lazy var makeNewProxyButton = UIBarButtonItem(
         target: self,
         action: #selector(makeNewProxy),
-        image: UIImage(named: ButtonName.makeNewProxy)
+        image: Image.makeNewProxy
     )
 
     init(database: Database = Firebase(),

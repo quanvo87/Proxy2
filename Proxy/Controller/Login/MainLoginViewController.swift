@@ -1,6 +1,5 @@
 import Segmentio
 
-// todo: fancy alerts
 class MainLoginViewController: UIViewController {
     @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var segmentedControl: Segmentio! // todo: mem leak at badgeviewpresenter

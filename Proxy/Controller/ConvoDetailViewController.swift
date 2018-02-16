@@ -192,7 +192,7 @@ extension ConvoDetailViewController: UITableViewDelegate {
                         if let error = error {
                             self?.showErrorBanner(error)
                         } else {
-                            UI.showStatusBarNotificationBanner(title: "\(proxy.name) has been deleted.")
+                            Alert.showStatusBarNotificationBanner(title: "\(proxy.name) has been deleted.")
                         }
                     }
                 })

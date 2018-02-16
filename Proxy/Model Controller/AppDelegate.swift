@@ -36,7 +36,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             } else {
                 guard
                     let isLoggedIn = self?.isLoggedIn, isLoggedIn,
-                    let mainLoginController = UI.storyboard.instantiateViewController(withIdentifier: Identifier.mainLoginViewController) as? MainLoginViewController else {
+                    let mainLoginController = Shared.storyboard.instantiateViewController(withIdentifier: Identifier.mainLoginViewController) as? MainLoginViewController else {
                         return
                 }
                 self?.isLoggedIn = false

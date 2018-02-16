@@ -10,7 +10,7 @@ class SenderPickerViewController: UIViewController {
     private lazy var makeNewProxyButton = UIBarButtonItem(
         target: self,
         action: #selector(makeNewProxy),
-        image: UIImage(named: ButtonName.makeNewProxy)
+        image: Image.makeNewProxy
     )
 
     init(database: Database = Firebase(),

@@ -9,15 +9,36 @@ enum Alert {
         message: "Your conversations for this proxy will also be deleted."
     )
 
-    static func makeAlert(title: String?,
-                          message: String?,
+    static func showStatusBarNotificationBanner(title: String,
+                                                style: BannerStyle = .success,
+                                                duration: TimeInterval = 3) {
+        NotificationBannerQueue.default.removeAll()
+        let banner = StatusBarNotificationBanner(
+            attributedTitle: NSAttributedString(string: title),
+            style: style
+        )
+        banner.duration = duration
+        banner.show()
+    }
+
+    static func makeAlert(title: String? = nil,
+                          titleColor: UIColor? = nil,
+                          message: String? = nil,
+                          messageColor: UIColor? = nil,
                           textAlignment: NSTextAlignment = .left,
+                          preferredStyle: CFAlertViewController.CFAlertControllerStyle = .alert,
+                          headerView: UIView? = nil,
+                          footerView: UIView? = nil,
                           handler: CFAlertViewController.CFAlertViewControllerDismissBlock? = nil) -> CFAlertViewController {
         return CFAlertViewController(
             title: title,
+            titleColor: titleColor,
             message: message,
+            messageColor: messageColor,
             textAlignment: textAlignment,
-            preferredStyle: .alert,
+            preferredStyle: preferredStyle,
+            headerView: headerView,
+            footerView: footerView,
             didDismissAlertHandler: handler
         )
     }
@@ -66,15 +87,6 @@ enum Alert {
             handler: handler
         )
     }
-}
-
-enum ButtonName {
-    static let cancel = "cancel"
-    static let confirm = "confirm"
-    static let delete = "delete"
-    static let info = "info"
-    static let makeNewMessage = "makeNewMessage"
-    static let makeNewProxy = "makeNewProxy"
 }
 
 enum Child {
@@ -128,6 +140,13 @@ enum Identifier {
 }
 
 enum Image {
+    static let cancel = UIImage(named: "cancel")
+    static let confirm = UIImage(named: "confirm")
+    static let delete = UIImage(named: "delete")
+    static let info = UIImage(named: "info")
+    static let makeNewMessage = UIImage(named: "makeNewMessage")
+    static let makeNewProxy = UIImage(named: "makeNewProxy")
+
     static func makeCircle(diameter: CGFloat, color: UIColor = Color.blue) -> UIImage? {
         UIGraphicsBeginImageContextWithOptions(CGSize(width: diameter, height: diameter), false, 0)
         let context = UIGraphicsGetCurrentContext()
@@ -164,21 +183,5 @@ enum Shared {
     static let auth = Auth.auth()
     static let firebaseApp = FirebaseApp.app()
     static let firebaseHelper = FirebaseHelper(FirebaseDatabase.Database.database().reference())
-}
-
-// todo: separate
-enum UI {
     static let storyboard = UIStoryboard(name: "Main", bundle: nil)
-
-    static func showStatusBarNotificationBanner(title: String,
-                                                style: BannerStyle = .success,
-                                                duration: TimeInterval = 3) {
-        NotificationBannerQueue.default.removeAll()
-        let banner = StatusBarNotificationBanner(
-            attributedTitle: NSAttributedString(string: title),
-            style: style
-        )
-        banner.duration = duration
-        banner.show()
-    }
 }

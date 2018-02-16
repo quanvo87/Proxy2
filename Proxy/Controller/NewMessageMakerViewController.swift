@@ -23,12 +23,12 @@ class NewMessageMakerViewController: UIViewController, SenderPickerDelegate {
     private lazy var cancelButton = UIBarButtonItem(
         target: self,
         action: #selector(close),
-        image: UIImage(named: ButtonName.cancel)
+        image: Image.cancel
     )
     private lazy var makeNewProxyButton = UIBarButtonItem(
         target: self,
         action: #selector(makeNewProxy),
-        image: UIImage(named: ButtonName.makeNewProxy)
+        image: Image.makeNewProxy
     )
 
     init(sender: Proxy?,

@@ -30,7 +30,7 @@ class IconPickerViewController: UIViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             target: self,
             action: #selector(close),
-            image: UIImage(named: ButtonName.cancel)
+            image: Image.cancel
         )
         navigationItem.title = "Select An Icon"
 

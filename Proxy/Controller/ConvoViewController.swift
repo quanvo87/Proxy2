@@ -37,7 +37,7 @@ class ConvoViewController: MessagesViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             target: self,
             action: #selector(showConvoDetailViewController),
-            image: UIImage(named: ButtonName.info)
+            image: Image.info
         )
 
         maintainPositionOnKeyboardFrameChanged = true

@@ -46,7 +46,7 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
     }
 
     static func make(loginManager: LoginManaging? = nil) -> SignUpViewController {
-        guard let signUpViewController = UI.storyboard.instantiateViewController(withIdentifier: Identifier.signUpViewController) as? SignUpViewController else {
+        guard let signUpViewController = Shared.storyboard.instantiateViewController(withIdentifier: Identifier.signUpViewController) as? SignUpViewController else {
             return SignUpViewController()
         }
         if let loginManager = loginManager {

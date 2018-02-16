@@ -12,27 +12,27 @@ class ProxiesViewController: UIViewController, NewMessageMakerDelegate {
     private lazy var cancelButton = UIBarButtonItem(
         target: self,
         action: #selector(setDefaultButtons),
-        image: UIImage(named: ButtonName.cancel)
+        image: Image.cancel
     )
     private lazy var confirmButton = UIBarButtonItem(
         target: self,
         action: #selector(deleteSelectedItems),
-        image: UIImage(named: ButtonName.confirm)
+        image: Image.confirm
     )
     private lazy var deleteButton = UIBarButtonItem(
         target: self,
         action: #selector(setEditModeButtons),
-        image: UIImage(named: ButtonName.delete)
+        image: Image.delete
     )
     private lazy var makeNewMessageButton = UIBarButtonItem(
         target: self,
         action: #selector(showNewMessageMakerViewController),
-        image: UIImage(named: ButtonName.makeNewMessage)
+        image: Image.makeNewMessage
     )
     private lazy var makeNewProxyButton = UIBarButtonItem(
         target: self,
         action: #selector(makeNewProxy),
-        image: UIImage(named: ButtonName.makeNewProxy)
+        image: Image.makeNewProxy
     )
 
     init(database: Database = Firebase(),
@@ -135,7 +135,7 @@ private extension ProxiesViewController {
                     if let error = error {
                         self?.showErrorBanner(error)
                     } else {
-                        UI.showStatusBarNotificationBanner(title: "\(proxy.name) has been deleted.")
+                        Alert.showStatusBarNotificationBanner(title: "\(proxy.name) has been deleted.")
                     }
                 }
             }
