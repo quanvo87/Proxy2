@@ -4,6 +4,11 @@ import FirebaseHelper
 import NotificationBannerSwift
 
 enum Alert {
+    static let deleteProxyMessage = (
+        title: "Delete Proxy?",
+        message: "Your conversations for this proxy will also be deleted."
+    )
+
     static func makeAlert(title: String?,
                           message: String?,
                           textAlignment: NSTextAlignment = .left,
@@ -14,6 +19,21 @@ enum Alert {
             textAlignment: textAlignment,
             preferredStyle: .alert,
             didDismissAlertHandler: handler
+        )
+    }
+
+    static func makeOkAction(title: String? = "OK",
+                             alignment: CFAlertAction.CFAlertActionAlignment = .justified,
+                             backgroundColor: UIColor? = Color.green,
+                             textColor: UIColor? = .white,
+                             handler: CFAlertAction.CFAlertActionHandlerBlock? = nil) -> CFAlertAction {
+        return CFAlertAction(
+            title: title,
+            style: .Default,
+            alignment: alignment,
+            backgroundColor: backgroundColor,
+            textColor: textColor,
+            handler: handler
         )
     }
 
@@ -78,6 +98,7 @@ enum Child {
 enum Color {
     static let blue = UIColor(red: 0, green: 122/255, blue: 1, alpha: 1)
     static let loginButtonBlue = UIColor(red: 53/255, green: 152/255, blue: 217/255, alpha: 1)
+    static let green = UIColor(red: 41/255, green: 191/255, blue: 60/255, alpha: 1)
     static let red = UIColor(red: 252/255, green: 49/255, blue: 59/255, alpha: 1)
 }
 

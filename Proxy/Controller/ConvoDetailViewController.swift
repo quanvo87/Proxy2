@@ -184,8 +184,8 @@ extension ConvoDetailViewController: UITableViewDelegate {
             switch indexPath.row {
             case 0:
                 let alert = Alert.makeAlert(
-                    title: "Delete Proxy?",
-                    message: "Your conversations for this proxy will also be deleted."
+                    title: Alert.deleteProxyMessage.title,
+                    message: Alert.deleteProxyMessage.message
                 )
                 alert.addAction(Alert.makeDestructiveAction(title: "Delete") { [weak self] _ in
                     self?.database.deleteProxy(proxy) { error in

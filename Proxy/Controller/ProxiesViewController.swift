@@ -122,10 +122,11 @@ private extension ProxiesViewController {
             setDefaultButtons()
             return
         }
-        let alert = UIAlertController(title: "Delete Proxies?",
-                                      message: "The conversations will also be deleted.",
-                                      preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
+        let alert = Alert.makeAlert(
+            title: "Delete Proxies?",
+            message: "Their conversations will also be deleted."
+        )
+        alert.addAction(Alert.makeDestructiveAction(title: "Delete") { [weak self] _ in
             for (_, item) in self?.proxiesToDelete ?? [:] {
                 guard let proxy = item as? Proxy else {
                     continue
@@ -141,7 +142,7 @@ private extension ProxiesViewController {
             self?.proxiesToDelete.removeAll()
             self?.setDefaultButtons()
         })
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(Alert.makeCancelAction())
         present(alert, animated: true)
     }
 

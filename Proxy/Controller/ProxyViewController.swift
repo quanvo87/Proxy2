@@ -83,12 +83,11 @@ class ProxyViewController: UIViewController, NewMessageMakerDelegate {
 
 private extension ProxyViewController {
     @objc func deleteProxy() {
-        let alert = UIAlertController(
-            title: "Delete Proxy?",
-            message: "You will not be able to see this proxy or its conversations again.",
-            preferredStyle: .alert
+        let alert = Alert.makeAlert(
+            title: Alert.deleteProxyMessage.title,
+            message: Alert.deleteProxyMessage.message
         )
-        alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
+        alert.addAction(Alert.makeDestructiveAction(title: "Delete") { [weak self] _ in
             guard let proxy = self?.proxy else {
                 return
             }
@@ -101,7 +100,7 @@ private extension ProxyViewController {
             }
             self?.navigationController?.popViewController(animated: true)
         })
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(Alert.makeCancelAction())
         present(alert, animated: true)
     }
 

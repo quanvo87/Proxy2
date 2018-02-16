@@ -1,6 +1,7 @@
 import FirebaseDatabase
 import GroupWork
 import MessageKit
+import WQNetworkActivityIndicator
 
 enum IncrementableUserProperty: String {
     case messagesReceived
@@ -244,6 +245,14 @@ class Firebase: Database {
     }
 
     func sendMessage(convo: Convo, text: String, completion: @escaping MessageCallback) {
+        WQNetworkActivityIndicator.shared.show()
+        _sendMessage(convo: convo, text: text) { result in
+            WQNetworkActivityIndicator.shared.hide()
+            completion(result)
+        }
+    }
+
+    private func _sendMessage(convo: Convo, text: String, completion: @escaping MessageCallback) {
         guard !convo.receiverDeletedProxy else {
             completion(.failure(ProxyError.receiverDeletedProxy))
             return

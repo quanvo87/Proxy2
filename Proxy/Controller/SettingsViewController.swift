@@ -114,22 +114,25 @@ extension SettingsViewController: UITableViewDelegate {
         case 1:
             switch indexPath.row {
             case 0:
-                let alert = UIAlertController(title: "Proxy 0.1.0",
-                                              message: "Send bugs, suggestions, etc., to:\nqvo1987@gmail.com",
-                                              preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "OK", style: .cancel) { _ in })
+                let alert = Alert.makeAlert(
+                    title: "Proxy 0.1.0",
+                    message: "Send bugs, suggestions, etc., to:\nqvo1987@gmail.com"
+                )
+                alert.addAction(Alert.makeOkAction())
                 present(alert, animated: true)
             case 1:
-                let alert = UIAlertController(title: "Log Out",
-                                              message: "Are you sure you want to log out?", preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "Log Out", style: .destructive) { [weak self] _ in
+                let alert = Alert.makeAlert(
+                    title: "Log Out",
+                    message: "Are you sure you want to log out?"
+                )
+                alert.addAction(Alert.makeDestructiveAction(title: "Log Out") { [weak self] _ in
                     do {
                         try self?.auth.signOut()
                     } catch {
                         self?.showErrorBanner(error)
                     }
                 })
-                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+                alert.addAction(Alert.makeCancelAction())
                 present(alert, animated: true)
             default:
                 return

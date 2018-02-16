@@ -13,21 +13,21 @@ enum ProxyError: Error {
     var alertFields: (title: String, description: String) {
         switch self {
         case .blankMessage:
-            return ("Blank message", "Please enter a message to send.")
+            return ("Enter a message", "Cannot send blank message.")
         case .inputTooLong:
             return ("Input too long", "Please try something shorter.")
         case .invalidData:
             return ("Invalid Data", "Invalid data read in database.")
         case .missingCredentials:
-            return ("Missing email/password", "Please make sure to enter an email and password.")
+            return ("Missing email/password", "Please enter an email and password.")
         case .receiverDeletedProxy:
             return ("Receiver deleted", "They can no longer be messaged.")
         case .receiverMissing:
-            return ("Missing recipient", "Please select a recipient and try again.")
+            return ("Pick a recipient", "Who do you want to send the message to?")
         case .receiverNotFound:
-            return ("Receveiver not found", "Unable to find the specified recipient.")
+            return ("Receveiver not found", "Please try again.")
         case .senderMissing:
-            return ("Missing sender", "Please select one of your Proxies to send from.")
+            return ("Pick a sender", "Who do you want to send from?")
         case .tooManyProxies:
             return ("Too many Proxies", "You have too many Proxies. Please delete some and try again.")
         case .unknown:
