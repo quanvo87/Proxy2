@@ -63,7 +63,9 @@ class LoginManager: LoginManaging {
             WQNetworkActivityIndicator.shared.hide()
             switch result {
             case .success:
-                let credential = FacebookAuthProvider.credential(withAccessToken: FBSDKAccessToken.current().tokenString)
+                let credential = FacebookAuthProvider.credential(
+                    withAccessToken: FBSDKAccessToken.current().tokenString
+                )
                 Shared.auth.signIn(with: credential) { _, error in
                     if let error = error {
                         self?.viewController?.showErrorBanner(error)

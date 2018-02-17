@@ -21,15 +21,27 @@ class UserStatsObserver: UserStatsObserving {
 
     func observe(uid: String, completion: @escaping (UserStatsUpdate) -> Void) {
         stopObservering()
-        messagesReceivedRef = try? Shared.firebaseHelper.makeReference(Child.userInfo, uid, IncrementableUserProperty.messagesReceived.rawValue)
+        messagesReceivedRef = try? Shared.firebaseHelper.makeReference(
+            Child.userInfo,
+            uid,
+            IncrementableUserProperty.messagesReceived.rawValue
+        )
         messagesReceivedHandle = messagesReceivedRef?.observe(.value) { data in
             completion(.messagesReceived(data.asNumberLabel))
         }
-        messagesSentRef = try? Shared.firebaseHelper.makeReference(Child.userInfo, uid, IncrementableUserProperty.messagesSent.rawValue)
+        messagesSentRef = try? Shared.firebaseHelper.makeReference(
+            Child.userInfo,
+            uid,
+            IncrementableUserProperty.messagesSent.rawValue
+        )
         messagesSentHandle = messagesSentRef?.observe(.value) { data in
             completion(.messagesSent(data.asNumberLabel))
         }
-        proxiesInteractedWithRef = try? Shared.firebaseHelper.makeReference(Child.userInfo, uid, IncrementableUserProperty.proxiesInteractedWith.rawValue)
+        proxiesInteractedWithRef = try? Shared.firebaseHelper.makeReference(
+            Child.userInfo,
+            uid,
+            IncrementableUserProperty.proxiesInteractedWith.rawValue
+        )
         proxiesInteractedWithHandle = proxiesInteractedWithRef?.observe(.value) { data in
             completion(.proxiesInteractedWith(data.asNumberLabel))
         }

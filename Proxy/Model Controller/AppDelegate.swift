@@ -2,14 +2,14 @@ import AVKit
 import Firebase
 import FBSDKCoreKit
 
-// todo: remove objc
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow? = UIWindow(frame: UIScreen.main.bounds)
     private let authObserver = AuthObserver()
     private var isLoggedIn = false
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         if #available(iOS 10.0, *) {
             try? AVAudioSession.sharedInstance().setCategory(
                 AVAudioSessionCategoryAmbient,
@@ -46,11 +46,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
 
-        return FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
+        return FBSDKApplicationDelegate.sharedInstance().application(
+            application,
+            didFinishLaunchingWithOptions: launchOptions
+        )
     }
 
     func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
-        return FBSDKApplicationDelegate.sharedInstance().application(application, open: url, sourceApplication: sourceApplication, annotation: annotation)
+        return FBSDKApplicationDelegate.sharedInstance().application(
+            application,
+            open: url,
+            sourceApplication: sourceApplication,
+            annotation: annotation
+        )
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {

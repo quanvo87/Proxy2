@@ -1,7 +1,6 @@
 import FirebaseDatabase
 import UIKit
 
-// todo: make these functions instead of vars
 protocol NewMessageMakerDelegate: class {
     var newConvo: Convo? { get set }
 }

@@ -131,7 +131,11 @@ extension UINavigationBar {
     convenience init(target: Any?, action: Selector, width: CGFloat) {
         self.init(frame: CGRect(x: 0, y: 0, width: width, height: 40))
         let item = UINavigationItem()
-        let image = UIImage.fontAwesomeIcon(name: .angleDown, textColor: Color.blue, size: CGSize(width: 30, height: 30))
+        let image = UIImage.fontAwesomeIcon(
+            name: .angleDown,
+            textColor: Color.blue,
+            size: CGSize(width: 30, height: 30)
+        )
         item.rightBarButtonItem = UIBarButtonItem(target: target, action: action, image: image)
         pushItem(item, animated: false)
     }

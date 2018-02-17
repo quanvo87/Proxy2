@@ -52,7 +52,8 @@ private extension IconPickerViewController {
 
 // MARK: - UICollectionViewDataSource
 extension IconPickerViewController: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView,
+                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: String(describing: IconPickerCollectionViewCell.self),
             for: indexPath

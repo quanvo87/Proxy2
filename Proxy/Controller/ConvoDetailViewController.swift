@@ -142,7 +142,11 @@ extension ConvoDetailViewController: UITableViewDataSource {
         guard let convo = convo else {
             return
         }
-        let alert = UIAlertController(title: "Edit Receiver's Nickname", message: "Only you see this nickname.", preferredStyle: .alert)
+        let alert = UIAlertController(
+            title: "Edit Receiver's Nickname",
+            message: "Only you see this nickname.",
+            preferredStyle: .alert
+        )
         alert.addTextField { textField in
             textField.autocapitalizationType = .sentences
             textField.autocorrectionType = .yes

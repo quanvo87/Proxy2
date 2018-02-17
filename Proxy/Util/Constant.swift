@@ -21,15 +21,16 @@ enum Alert {
         banner.show()
     }
 
-    static func makeAlert(title: String? = nil,
-                          titleColor: UIColor? = nil,
-                          message: String? = nil,
-                          messageColor: UIColor? = nil,
-                          textAlignment: NSTextAlignment = .left,
-                          preferredStyle: CFAlertViewController.CFAlertControllerStyle = .alert,
-                          headerView: UIView? = nil,
-                          footerView: UIView? = nil,
-                          handler: CFAlertViewController.CFAlertViewControllerDismissBlock? = nil) -> CFAlertViewController {
+    static func makeAlert(
+        title: String? = nil,
+        titleColor: UIColor? = nil,
+        message: String? = nil,
+        messageColor: UIColor? = nil,
+        textAlignment: NSTextAlignment = .left,
+        preferredStyle: CFAlertViewController.CFAlertControllerStyle = .alert,
+        headerView: UIView? = nil,
+        footerView: UIView? = nil,
+        handler: CFAlertViewController.CFAlertViewControllerDismissBlock? = nil) -> CFAlertViewController {
         return CFAlertViewController(
             title: title,
             titleColor: titleColor,

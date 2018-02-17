@@ -410,7 +410,12 @@ extension GroupWork {
 
     func checkUnreadMessageCreated(_ message: Message) {
         start()
-        Shared.firebaseHelper.get(Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId) { result in
+        Shared.firebaseHelper.get(
+            Child.userInfo,
+            message.receiverId,
+            Child.unreadMessages,
+            message.messageId
+        ) { result in
             switch result {
             case .failure(let error):
                 XCTFail(String(describing: error))

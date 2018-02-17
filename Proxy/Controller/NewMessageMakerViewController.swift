@@ -30,6 +30,15 @@ class NewMessageMakerViewController: UIViewController, SenderPickerDelegate {
         action: #selector(makeNewProxy),
         image: Image.makeNewProxy
     )
+    private lazy var keyboardWillHideObserver = NotificationCenter.default.addObserver(
+        forName: .UIKeyboardWillHide,
+        object: nil,
+        queue: .main
+    ) { [weak self] _ in
+        if let lockKeyboard = self?.lockKeyboard, lockKeyboard {
+            self?.setFirstResponder()
+        }
+    }
 
     init(sender: Proxy?,
          database: Database = Firebase(),
@@ -46,6 +55,8 @@ class NewMessageMakerViewController: UIViewController, SenderPickerDelegate {
 
         super.init(nibName: nil, bundle: nil)
 
+        _ = keyboardWillHideObserver
+
         makeNewProxyButton.isEnabled = false
 
         messageInputBar.delegate = self
@@ -53,11 +64,6 @@ class NewMessageMakerViewController: UIViewController, SenderPickerDelegate {
 
         navigationItem.rightBarButtonItems = [cancelButton, makeNewProxyButton]
         navigationItem.title = "New Message"
-
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(keyboardWillHide),
-                                               name: NSNotification.Name.UIKeyboardWillHide,
-                                               object: nil)
 
         proxiesObserver.observe(proxiesOwnerId: uid) { [weak self] proxies in
             if proxies.isEmpty {
@@ -106,7 +112,7 @@ class NewMessageMakerViewController: UIViewController, SenderPickerDelegate {
     }
 
     deinit {
-        NotificationCenter.default.removeObserver(self)
+        NotificationCenter.default.removeObserver(keyboardWillHideObserver)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -116,7 +122,9 @@ class NewMessageMakerViewController: UIViewController, SenderPickerDelegate {
 
 private extension NewMessageMakerViewController {
     var receiverCell: MakeNewMessageReceiverTableViewCell? {
-        if let receiverCell = tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? MakeNewMessageReceiverTableViewCell {
+        if let receiverCell = tableView.cellForRow(
+            at: IndexPath(row: 1, section: 0)
+            ) as? MakeNewMessageReceiverTableViewCell {
             return receiverCell
         } else {
             return nil
@@ -126,12 +134,6 @@ private extension NewMessageMakerViewController {
     @objc func close() {
         setButtons(false)
         dismiss(animated: true)
-    }
-
-    @objc func keyboardWillHide() {
-        if lockKeyboard {
-            setFirstResponder()
-        }
     }
 
     @objc func makeNewProxy() {
@@ -275,11 +277,13 @@ extension NewMessageMakerViewController: UITableViewDataSource {
                 }
             }
             let fontSize: CGFloat = isSmallDevice ? 14 : 17
-            cell.receiverTextField.highlightAttributes = [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: fontSize)]
+            cell.receiverTextField.highlightAttributes =
+                [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: fontSize)]
             cell.receiverTextField.theme.font = .systemFont(ofSize: fontSize)
             cell.receiverTextField.comparisonOptions = [.caseInsensitive]
             cell.receiverTextField.delegate = self
-            cell.receiverTextField.maxResultsListHeight = isSmallDevice ? Int(view.frame.height / 4) : Int(view.frame.height / 3)
+            cell.receiverTextField.maxResultsListHeight =
+                isSmallDevice ? Int(view.frame.height / 4) : Int(view.frame.height / 3)
             cell.receiverTextField.theme.cellHeight = 50
             cell.receiverTextField.theme.separatorColor = UIColor.lightGray.withAlphaComponent(0.5)
             return cell

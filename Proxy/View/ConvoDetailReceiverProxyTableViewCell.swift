@@ -10,6 +10,8 @@ class ConvoDetailReceiverProxyTableViewCell: UITableViewCell {
         iconImageView.image = nil
         iconImageView.image = UIImage(named: convo.receiverIcon)
         nameLabel.text = convo.receiverProxyName
-        nicknameButton.setTitle(convo.receiverNickname == "" ? "Enter A Nickname" : convo.receiverNickname, for: .normal)
+        nicknameButton.setTitle(
+            convo.receiverNickname == "" ? "Enter A Nickname" : convo.receiverNickname, for: .normal
+        )
     }
 }

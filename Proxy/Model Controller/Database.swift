@@ -38,7 +38,8 @@ class Firebase: Database {
 
     required init(_ options: [String: Any] = [:]) {
         generator = options[DatabaseOption.generator.name] as? ProxyPropertyGenerating ?? DatabaseOption.generator.value
-        makeProxyRetries = options[DatabaseOption.makeProxyRetries.name] as? Int ?? DatabaseOption.makeProxyRetries.value
+        makeProxyRetries =
+            options[DatabaseOption.makeProxyRetries.name] as? Int ?? DatabaseOption.makeProxyRetries.value
         maxMessageSize = options[DatabaseOption.maxMessageSize.name] as? Int ?? DatabaseOption.maxMessageSize.value
         maxNameSize = options[DatabaseOption.maxNameSize.name] as? Int ?? DatabaseOption.maxNameSize.value
         maxProxyCount = options[DatabaseOption.maxProxyCount.name] as? Int ?? DatabaseOption.maxProxyCount.value
@@ -347,7 +348,9 @@ class Firebase: Database {
         }
     }
 
-    private func getConvosForProxy(key: String, ownerId: String, completion: @escaping (Result<[Convo], Error>) -> Void) {
+    private func getConvosForProxy(key: String,
+                                   ownerId: String,
+                                   completion: @escaping (Result<[Convo], Error>) -> Void) {
         Shared.firebaseHelper.get(Child.convos, ownerId) { result in
             switch result {
             case .failure(let error):

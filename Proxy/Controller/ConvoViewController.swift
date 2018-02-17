@@ -144,7 +144,10 @@ extension ConvoViewController: MessagesDataSource {
         return nil
     }
 
-    func configureAvatarView(_ avatarView: AvatarView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
+    func configureAvatarView(_ avatarView: AvatarView,
+                             for message: MessageType,
+                             at indexPath: IndexPath,
+                             in messagesCollectionView: MessagesCollectionView) {
         avatarView.backgroundColor = .clear
         avatarView.image = nil
         if indexPath.section == messages.count - 1 {
@@ -189,14 +192,18 @@ extension ConvoViewController: MessagesDataSource {
         guard let convo = convo else {
             return NSAttributedString()
         }
-        return NSAttributedString(string: isFromCurrentSender(message: message) ? convo.senderDisplayName : convo.receiverDisplayName,
-                                  attributes: [NSAttributedStringKey.font: UIFont.preferredFont(forTextStyle: .caption1)])
+        return NSAttributedString(
+            string: isFromCurrentSender(message: message) ? convo.senderDisplayName : convo.receiverDisplayName,
+            attributes: [NSAttributedStringKey.font: UIFont.preferredFont(forTextStyle: .caption1)]
+        )
     }
 }
 
 // MARK: - MessagesDisplayDelegate
 extension ConvoViewController: MessagesDisplayDelegate {
-    func backgroundColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
+    func backgroundColor(for message: MessageType,
+                         at indexPath: IndexPath,
+                         in messagesCollectionView: MessagesCollectionView) -> UIColor {
         if isFromCurrentSender(message: message) {
             return Color.blue
         } else {
@@ -204,15 +211,21 @@ extension ConvoViewController: MessagesDisplayDelegate {
         }
     }
 
-    func detectorAttributes(for detector: DetectorType, and message: MessageType, at indexPath: IndexPath) -> [NSAttributedStringKey: Any] {
+    func detectorAttributes(for detector: DetectorType,
+                            and message: MessageType,
+                            at indexPath: IndexPath) -> [NSAttributedStringKey: Any] {
         return MessageLabel.defaultAttributes
     }
 
-    func enabledDetectors(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> [DetectorType] {
+    func enabledDetectors(for message: MessageType,
+                          at indexPath: IndexPath,
+                          in messagesCollectionView: MessagesCollectionView) -> [DetectorType] {
         return [.address, .date, .phoneNumber, .url]
     }
 
-    func messageStyle(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageStyle {
+    func messageStyle(for message: MessageType,
+                      at indexPath: IndexPath,
+                      in messagesCollectionView: MessagesCollectionView) -> MessageStyle {
         if indexPath.section == messages.count - 1 {
             if isFromCurrentSender(message: message) {
                 return .bubbleTail(.bottomRight, .curved)
@@ -234,14 +247,19 @@ extension ConvoViewController: MessagesDisplayDelegate {
 
 // MARK: - MessagesLayoutDelegate
 extension ConvoViewController: MessagesLayoutDelegate {
-    func heightForLocation(message: MessageType, at indexPath: IndexPath, with maxWidth: CGFloat, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
+    func heightForLocation(message: MessageType,
+                           at indexPath: IndexPath,
+                           with maxWidth: CGFloat,
+                           in messagesCollectionView: MessagesCollectionView) -> CGFloat {
         return 200
     }
 }
 
 // MARK: - UICollectionViewDelegate
 extension ConvoViewController {
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+    func collectionView(_ collectionView: UICollectionView,
+                        willDisplay cell: UICollectionViewCell,
+                        forItemAt indexPath: IndexPath) {
         if indexPath.section == 0 {
             let message = messages[indexPath.section]
             messagesObserver.loadMessages(endingAtMessageId: message.messageId) { [weak self] olderMessages in

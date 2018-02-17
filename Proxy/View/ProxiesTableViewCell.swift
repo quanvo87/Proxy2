@@ -14,7 +14,9 @@ class ProxiesTableViewCell: UITableViewCell {
         nicknameLabel.text = proxy.nickname
         unreadMessagesIndicatorImageView.image = nil
         if proxy.hasUnreadMessage {
-            unreadMessagesIndicatorImageView.image = Image.makeCircle(diameter: unreadMessagesIndicatorImageView.frame.width)
+            unreadMessagesIndicatorImageView.image = Image.makeCircle(
+                diameter: unreadMessagesIndicatorImageView.frame.width
+            )
         }
     }
 }
