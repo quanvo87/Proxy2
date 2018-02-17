@@ -61,8 +61,11 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     }
 
     static func make(loginManager: LoginManaging? = nil) -> LoginViewController {
-        guard let loginViewController = Shared.storyboard.instantiateViewController(withIdentifier: Identifier.loginViewController) as? LoginViewController else {
-            return LoginViewController()
+        guard let loginViewController = Shared.storyboard.instantiateViewController(
+            withIdentifier: String(describing: LoginViewController.self)
+            ) as? LoginViewController else {
+                assertionFailure()
+                return LoginViewController()
         }
         if let loginManager = loginManager {
             loginViewController.loginManager = loginManager

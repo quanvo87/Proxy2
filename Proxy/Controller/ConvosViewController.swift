@@ -58,8 +58,10 @@ class ConvosViewController: UIViewController, NewMessageMakerDelegate {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
-        tableView.register(UINib(nibName: Identifier.convosTableViewCell, bundle: nil),
-                           forCellReuseIdentifier: Identifier.convosTableViewCell)
+        tableView.register(
+            UINib(nibName: String(describing: ConvosTableViewCell.self), bundle: nil),
+            forCellReuseIdentifier: String(describing: ConvosTableViewCell.self)
+        )
         tableView.rowHeight = 80
         tableView.sectionHeaderHeight = 0
 
@@ -123,12 +125,13 @@ private extension ConvosViewController {
 // MARK: - UITableViewDataSource
 extension ConvosViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard
-            let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.convosTableViewCell) as? ConvosTableViewCell,
-            let convo = convos[safe: indexPath.row] else {
-                return tableView.dequeueReusableCell(withIdentifier: Identifier.convosTableViewCell, for: indexPath)
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: String(describing: ConvosTableViewCell.self)
+            ) as? ConvosTableViewCell else {
+                assertionFailure()
+                return ConvosTableViewCell()
         }
-        cell.load(convo)
+        cell.load(convos[indexPath.row])
         return cell
     }
 

@@ -8,6 +8,7 @@ enum Result<T, Error> {
     case failure(Error)
 }
 
+// todo: remove
 // https://stackoverflow.com/questions/25329186/safe-bounds-checked-array-lookup-in-swift-through-optional-bindings
 extension Collection {
     subscript(safe index: Index) -> Element? {

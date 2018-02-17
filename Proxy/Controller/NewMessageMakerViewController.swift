@@ -73,10 +73,14 @@ class NewMessageMakerViewController: UIViewController, SenderPickerDelegate {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
-        tableView.register(UINib(nibName: Identifier.makeNewMessageReceiverTableViewCell, bundle: nil),
-                           forCellReuseIdentifier: Identifier.makeNewMessageReceiverTableViewCell)
-        tableView.register(UINib(nibName: Identifier.makeNewMessageSenderTableViewCell, bundle: nil),
-                           forCellReuseIdentifier: Identifier.makeNewMessageSenderTableViewCell)
+        tableView.register(
+            UINib(nibName: String(describing: MakeNewMessageReceiverTableViewCell.self), bundle: nil),
+            forCellReuseIdentifier: String(describing: MakeNewMessageReceiverTableViewCell.self)
+        )
+        tableView.register(
+            UINib(nibName: String(describing: MakeNewMessageSenderTableViewCell.self), bundle: nil),
+            forCellReuseIdentifier: String(describing: MakeNewMessageSenderTableViewCell.self)
+        )
         tableView.rowHeight = 44
         tableView.sectionHeaderHeight = 0
         tableView.reloadData()
@@ -235,14 +239,20 @@ extension NewMessageMakerViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.row {
         case 0:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.makeNewMessageSenderTableViewCell) as? MakeNewMessageSenderTableViewCell else {
-                return tableView.dequeueReusableCell(withIdentifier: Identifier.makeNewMessageSenderTableViewCell, for: indexPath)
+            guard let cell = tableView.dequeueReusableCell(
+                withIdentifier: String(describing: MakeNewMessageSenderTableViewCell.self)
+                ) as? MakeNewMessageSenderTableViewCell else {
+                    assertionFailure()
+                    return MakeNewMessageSenderTableViewCell()
             }
             cell.load(sender)
             return cell
         case 1:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.makeNewMessageReceiverTableViewCell) as? MakeNewMessageReceiverTableViewCell else {
-                return tableView.dequeueReusableCell(withIdentifier: Identifier.makeNewMessageReceiverTableViewCell, for: indexPath)
+            guard let cell = tableView.dequeueReusableCell(
+                withIdentifier: String(describing: MakeNewMessageReceiverTableViewCell.self)
+                ) as? MakeNewMessageReceiverTableViewCell else {
+                    assertionFailure()
+                    return MakeNewMessageReceiverTableViewCell()
             }
             cell.receiverTextField.itemSelectionHandler = { [weak self] items, index in
                 guard let item = items[safe: index] else {

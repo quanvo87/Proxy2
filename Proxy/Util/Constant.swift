@@ -123,20 +123,8 @@ enum DatabaseOption {
     static let querySize: UInt = 30
 }
 
-// todo: String(describing: Type.self)
 enum Identifier {
-    static let convoDetailReceiverProxyTableViewCell = "ConvoDetailReceiverProxyTableViewCell"
     static let convoDetailSenderProxyTableViewCell = "ConvoDetailSenderProxyTableViewCell"
-    static let convosTableViewCell = "ConvosTableViewCell"
-    static let iconPickerCollectionViewCell = "IconPickerCollectionViewCell"
-    static let loginViewController = "LoginViewController"
-    static let mainLoginViewController = "MainLoginViewController"
-    static let makeNewMessageSenderTableViewCell = "MakeNewMessageSenderTableViewCell"
-    static let makeNewMessageReceiverTableViewCell = "MakeNewMessageReceiverTableViewCell"
-    static let proxiesTableViewCell = "ProxiesTableViewCell"
-    static let senderProxyTableViewCell = "SenderProxyTableViewCell"
-    static let settingsTableViewCell = "SettingsTableViewCell"
-    static let signUpViewController = "SignUpViewController"
 }
 
 enum Image {

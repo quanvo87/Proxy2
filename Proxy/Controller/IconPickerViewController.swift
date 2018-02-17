@@ -23,8 +23,10 @@ class IconPickerViewController: UIViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
-        collectionView.register(UINib(nibName: Identifier.iconPickerCollectionViewCell, bundle: nil),
-                                forCellWithReuseIdentifier: Identifier.iconPickerCollectionViewCell)
+        collectionView.register(
+            UINib(nibName: String(describing: IconPickerCollectionViewCell.self), bundle: nil),
+            forCellWithReuseIdentifier: String(describing: IconPickerCollectionViewCell.self)
+        )
         collectionView.reloadData()
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(
@@ -51,12 +53,14 @@ private extension IconPickerViewController {
 // MARK: - UICollectionViewDataSource
 extension IconPickerViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifier.iconPickerCollectionViewCell, for: indexPath) as? IconPickerCollectionViewCell,
-            let iconName = iconNames[safe: indexPath.row] else {
-                return collectionView.dequeueReusableCell(withReuseIdentifier: Identifier.iconPickerCollectionViewCell, for: indexPath)
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: String(describing: IconPickerCollectionViewCell.self),
+            for: indexPath
+            ) as? IconPickerCollectionViewCell else {
+                assertionFailure()
+                return IconPickerCollectionViewCell()
         }
-        cell.load(iconName)
+        cell.load(iconNames[indexPath.row])
         return cell
     }
 

@@ -43,8 +43,10 @@ class SenderPickerViewController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
-        tableView.register(UINib(nibName: Identifier.proxiesTableViewCell, bundle: nil),
-                           forCellReuseIdentifier: Identifier.proxiesTableViewCell)
+        tableView.register(
+            UINib(nibName: String(describing: ProxiesTableViewCell.self), bundle: nil),
+            forCellReuseIdentifier: String(describing: ProxiesTableViewCell.self)
+        )
         tableView.rowHeight = 60
         tableView.sectionHeaderHeight = 0
 
@@ -75,12 +77,13 @@ private extension SenderPickerViewController {
 // MARK: - UITableViewDataSource
 extension SenderPickerViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard
-            let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.proxiesTableViewCell) as? ProxiesTableViewCell,
-            let proxy = proxies[safe: indexPath.row] else {
-                return tableView.dequeueReusableCell(withIdentifier: Identifier.proxiesTableViewCell, for: indexPath)
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: String(describing: ProxiesTableViewCell.self)
+            ) as? ProxiesTableViewCell else {
+                assertionFailure()
+                return ProxiesTableViewCell()
         }
-        cell.load(proxy: proxy, accessoryType: .none)
+        cell.load(proxy: proxies[indexPath.row], accessoryType: .none)
         return cell
     }
 

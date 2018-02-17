@@ -50,10 +50,14 @@ class ProxyViewController: UIViewController, NewMessageMakerDelegate {
         tableView.delaysContentTouches = false
         tableView.delegate = self
         tableView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
-        tableView.register(UINib(nibName: Identifier.convosTableViewCell, bundle: nil),
-                           forCellReuseIdentifier: Identifier.convosTableViewCell)
-        tableView.register(UINib(nibName: Identifier.senderProxyTableViewCell, bundle: nil),
-                           forCellReuseIdentifier: Identifier.senderProxyTableViewCell)
+        tableView.register(
+            UINib(nibName: String(describing: ConvosTableViewCell.self), bundle: nil),
+            forCellReuseIdentifier: String(describing: ConvosTableViewCell.self)
+        )
+        tableView.register(
+            UINib(nibName: String(describing: SenderProxyTableViewCell.self), bundle: nil),
+            forCellReuseIdentifier: String(describing: SenderProxyTableViewCell.self)
+        )
         tableView.sectionHeaderHeight = 0
         tableView.separatorStyle = .none
         tableView.setDelaysContentTouchesForScrollViews()
@@ -130,10 +134,14 @@ extension ProxyViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.section {
         case 0:
-            guard
-                let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.senderProxyTableViewCell) as? SenderProxyTableViewCell,
-                let proxy = proxy else {
-                    return tableView.dequeueReusableCell(withIdentifier: Identifier.senderProxyTableViewCell, for: indexPath)
+            guard let proxy = proxy else {
+                return SenderProxyTableViewCell()
+            }
+            guard let cell = tableView.dequeueReusableCell(
+                withIdentifier: String(describing: SenderProxyTableViewCell.self)
+                ) as? SenderProxyTableViewCell else {
+                    assertionFailure()
+                    return SenderProxyTableViewCell()
             }
             cell.changeIconButton.addTarget(self, action: #selector(_showIconPickerController), for: .touchUpInside)
             cell.load(proxy)
@@ -141,12 +149,13 @@ extension ProxyViewController: UITableViewDataSource {
             cell.selectionStyle = .none
             return cell
         case 1:
-            guard
-                let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.convosTableViewCell) as? ConvosTableViewCell,
-                let convo = convos[safe: indexPath.row] else {
-                    return tableView.dequeueReusableCell(withIdentifier: Identifier.convosTableViewCell, for: indexPath)
+            guard let cell = tableView.dequeueReusableCell(
+                withIdentifier: String(describing: ConvosTableViewCell.self)
+                ) as? ConvosTableViewCell else {
+                    assertionFailure()
+                    return UITableViewCell()
             }
-            cell.load(convo)
+            cell.load(convos[indexPath.row])
             return cell
         default:
             return UITableViewCell()

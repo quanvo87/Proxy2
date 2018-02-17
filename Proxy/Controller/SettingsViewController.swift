@@ -25,8 +25,10 @@ class SettingsViewController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
-        tableView.register(UINib(nibName: Identifier.settingsTableViewCell, bundle: nil),
-                           forCellReuseIdentifier: Identifier.settingsTableViewCell)
+        tableView.register(
+            UINib(nibName: String(describing: SettingsTableViewCell.self), bundle: nil),
+            forCellReuseIdentifier: String(describing: SettingsTableViewCell.self)
+        )
         tableView.rowHeight = 44
 
         userStatsObserver.observe(uid: uid) { [weak self] update in
@@ -56,8 +58,11 @@ extension SettingsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.settingsTableViewCell) as? SettingsTableViewCell else {
-            return tableView.dequeueReusableCell(withIdentifier: Identifier.settingsTableViewCell, for: indexPath)
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: String(describing: SettingsTableViewCell.self)
+            ) as? SettingsTableViewCell else {
+                assertionFailure()
+                return SettingsTableViewCell()
         }
         switch indexPath.section {
         case 0:
