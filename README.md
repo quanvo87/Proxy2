@@ -17,7 +17,7 @@ Create unlimited, anonymous user names (Proxy's) with just one tap. Chat with an
     - Animate button taps with [Spring](https://cocoapods.org/pods/Spring)
     - Wrote the CocoaPod [WQNetworkActivityIndicator](https://github.com/quanvo87/WQNetworkActivityIndicator) to manage network activity indicator
     - Show success/error state with [NotificationBannerSwift](https://github.com/Daltron/NotificationBanner) and [SwiftMessages](https://github.com/SwiftKickMobile/SwiftMessages)
-  - Detect device size with [Device]() and adjust UI accordingly
+  - Detect device size with [Device](https://github.com/Ekhoo/Device) and adjust UI accordingly
   - Other UI libraries used:
     - [CFAlertViewController](https://github.com/Codigami/CFAlertViewController)
     - [MessageKit](https://cocoapods.org/pods/MessageKit)
