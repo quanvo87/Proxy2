@@ -34,8 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 self?.isLoggedIn = true
                 self?.window?.rootViewController = TabBarController(uid: user.uid, displayName: displayName)
             } else {
-                guard
-                    let isLoggedIn = self?.isLoggedIn, isLoggedIn,
+                guard let isLoggedIn = self?.isLoggedIn, isLoggedIn,
                     let mainLoginController = Shared.storyboard.instantiateViewController(
                         withIdentifier: String(describing: MainLoginViewController.self)
                         ) as? MainLoginViewController else {

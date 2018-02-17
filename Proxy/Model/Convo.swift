@@ -59,8 +59,7 @@ struct Convo {
 
     init(_ data: DataSnapshot) throws {
         let dictionary = data.value as AnyObject
-        guard
-            let hasUnreadMessage = dictionary["hasUnreadMessage"] as? Bool,
+        guard let hasUnreadMessage = dictionary["hasUnreadMessage"] as? Bool,
             let key = dictionary["key"] as? String,
             let lastMessage = dictionary["lastMessage"] as? String,
             let receiverDeletedProxy = dictionary["receiverDeletedProxy"] as? Bool,

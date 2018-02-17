@@ -86,8 +86,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     }
 
     private func login() {
-        guard
-            let email = emailTextField.text, email != "",
+        guard let email = emailTextField.text, email != "",
             let password = passwordTextField.text, password != "" else {
                 showErrorBanner(ProxyError.missingCredentials)
                 return

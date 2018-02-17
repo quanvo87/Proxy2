@@ -161,11 +161,12 @@ extension ConvosViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if indexPath.row == convos.count - 1 {
-            let convo = convos[indexPath.row]
-            convosObserver.loadConvos(endingAtTimestamp: convo.timestamp, proxyKey: nil) { [weak self] convos in
-                self?.convos += convos
-            }
+        guard indexPath.row == convos.count - 1 else {
+            return
+        }
+        let convo = convos[indexPath.row]
+        convosObserver.loadConvos(endingAtTimestamp: convo.timestamp, proxyKey: nil) { [weak self] convos in
+            self?.convos += convos
         }
     }
 }

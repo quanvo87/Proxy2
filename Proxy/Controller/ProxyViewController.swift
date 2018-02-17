@@ -238,16 +238,14 @@ extension ProxyViewController: UITableViewDelegate {
         }
     }
 
+    // todo: guards
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        guard let proxy = proxy else {
+        guard let proxy = proxy, indexPath.section == 1, indexPath.row == convos.count - 1 else {
             return
         }
-        if indexPath.section == 1,
-            indexPath.row == convos.count - 1 {
-            let convo = convos[indexPath.row]
-            convosObserver.loadConvos(endingAtTimestamp: convo.timestamp, proxyKey: proxy.key) { [weak self] convos in
-                self?.convos += convos
-            }
+        let convo = convos[indexPath.row]
+        convosObserver.loadConvos(endingAtTimestamp: convo.timestamp, proxyKey: proxy.key) { [weak self] convos in
+            self?.convos += convos
         }
     }
 }

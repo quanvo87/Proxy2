@@ -200,11 +200,9 @@ extension NewMessageMakerViewController: MessageInputBarDelegate {
             completion(.failure(ProxyError.senderMissing))
             return
         }
-        guard
-            let receiverName = receiverCell?.receiverTextField.text,
-            receiverName != "" else {
-                completion(.failure(ProxyError.receiverMissing))
-                return
+        guard let receiverName = receiverCell?.receiverTextField.text, receiverName != "" else {
+            completion(.failure(ProxyError.receiverMissing))
+            return
         }
         database.getProxy(proxyKey: receiverName) { [weak self] result in
             switch result {
@@ -223,6 +221,7 @@ extension NewMessageMakerViewController: MessageInputBarDelegate {
         }
     }
 
+    // todo: could prob fix
     func messageInputBar(_ inputBar: MessageInputBar, textViewTextDidChangeTo text: String) {
         if isSending {
             inputBar.sendButton.isEnabled = false
@@ -263,11 +262,8 @@ extension NewMessageMakerViewController: UITableViewDataSource {
                 self?.messageInputBar.inputTextView.becomeFirstResponder()
             }
             cell.receiverTextField.userStoppedTypingHandler = { [weak self] in
-                guard
-                    let _self = self,
-                    let query = cell.receiverTextField.text,
-                    query.count > 0 else {
-                        return
+                guard let _self = self, let query = cell.receiverTextField.text, query.count > 0 else {
+                    return
                 }
                 cell.iconImageView.image = nil
                 cell.receiverTextField.showLoadingIndicator()

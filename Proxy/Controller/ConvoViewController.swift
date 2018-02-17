@@ -260,13 +260,14 @@ extension ConvoViewController {
     func collectionView(_ collectionView: UICollectionView,
                         willDisplay cell: UICollectionViewCell,
                         forItemAt indexPath: IndexPath) {
-        if indexPath.section == 0 {
-            let message = messages[indexPath.section]
-            messagesObserver.loadMessages(endingAtMessageId: message.messageId) { [weak self] olderMessages in
-                if let messages = self?.messages {
-                    self?.messages = olderMessages + messages
-                    self?.messagesCollectionView.reloadDataAndKeepOffset()
-                }
+        guard indexPath.section == 0 else {
+            return
+        }
+        let message = messages[indexPath.section]
+        messagesObserver.loadMessages(endingAtMessageId: message.messageId) { [weak self] olderMessages in
+            if let messages = self?.messages {
+                self?.messages = olderMessages + messages
+                self?.messagesCollectionView.reloadDataAndKeepOffset()
             }
         }
     }
