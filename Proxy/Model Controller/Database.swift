@@ -364,9 +364,3 @@ class Firebase: Database {
         }
     }
 }
-
-private extension String {
-    var noWhiteSpaces: String {
-        return components(separatedBy: .whitespacesAndNewlines).joined()
-    }
-}

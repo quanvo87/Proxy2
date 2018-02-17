@@ -211,7 +211,7 @@ extension ConvoViewController: MessagesDisplayDelegate {
         if isFromCurrentSender(message: message) {
             return Color.blue
         } else {
-            return UIColor(red: 230/255, green: 230/255, blue: 230/255, alpha: 1)
+            return Color.receiverChatBubbleGray
         }
     }
 
@@ -274,15 +274,5 @@ extension ConvoViewController {
                 self?.messagesCollectionView.reloadDataAndKeepOffset()
             }
         }
-    }
-}
-
-// MARK: - Util
-private extension String {
-    func getFirstNChars(_ n: Int) -> String {
-        guard count >= n else {
-            return ""
-        }
-        return String(self[..<index(startIndex, offsetBy: n)])
     }
 }

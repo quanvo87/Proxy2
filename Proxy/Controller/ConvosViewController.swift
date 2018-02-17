@@ -170,10 +170,3 @@ extension ConvosViewController: UITableViewDelegate {
         }
     }
 }
-
-// MARK: - Util
-private extension Int {
-    var asBadgeValue: String? {
-        return self == 0 ? nil : String(self)
-    }
-}

@@ -6,7 +6,6 @@ protocol ProxyNamesLoading {
     func load(query: String, senderId: String, completion: @escaping ([SearchTextFieldItem]) -> Void)
 }
 
-// https://www.swiftbysundell.com/posts/a-deep-dive-into-grand-central-dispatch-in-swift
 class ProxyNamesLoader: ProxyNamesLoading {
     private let querySize: UInt
     private let ref = try? Shared.firebaseHelper.makeReference(Child.proxyNames)

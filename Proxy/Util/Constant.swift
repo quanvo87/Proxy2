@@ -11,7 +11,7 @@ enum Alert {
 
     static func showStatusBarNotificationBanner(title: String,
                                                 style: BannerStyle = .success,
-                                                duration: TimeInterval = 3) {
+                                                duration: TimeInterval = 4) {
         NotificationBannerQueue.default.removeAll()
         let banner = StatusBarNotificationBanner(
             attributedTitle: NSAttributedString(string: title),
@@ -46,7 +46,7 @@ enum Alert {
 
     static func makeOkAction(title: String? = "OK",
                              alignment: CFAlertAction.CFAlertActionAlignment = .justified,
-                             backgroundColor: UIColor? = Color.green,
+                             backgroundColor: UIColor? = Color.alertButtonGreen,
                              textColor: UIColor? = .white,
                              handler: CFAlertAction.CFAlertActionHandlerBlock? = nil) -> CFAlertAction {
         return CFAlertAction(
@@ -76,7 +76,7 @@ enum Alert {
 
     static func makeDestructiveAction(title: String?,
                                       alignment: CFAlertAction.CFAlertActionAlignment = .justified,
-                                      backgroundColor: UIColor? = Color.red,
+                                      backgroundColor: UIColor? = Color.alertButtonRed,
                                       textColor: UIColor? = .white,
                                       handler: CFAlertAction.CFAlertActionHandlerBlock?) -> CFAlertAction {
         return CFAlertAction(
@@ -109,10 +109,13 @@ enum Child {
 }
 
 enum Color {
+    static let alertButtonGreen = UIColor(red: 41/255, green: 191/255, blue: 60/255, alpha: 1)
+    static let alertButtonRed = UIColor(red: 252/255, green: 49/255, blue: 59/255, alpha: 1)
     static let blue = UIColor(red: 0, green: 122/255, blue: 1, alpha: 1)
+    static let facebookBlue = UIColor(red: 59/255, green: 89/255, blue: 152/255, alpha: 1)
+    static let facebookDarkBlue = UIColor(red: 39/255, green: 69/255, blue: 132/255, alpha: 1)
     static let loginButtonBlue = UIColor(red: 53/255, green: 152/255, blue: 217/255, alpha: 1)
-    static let green = UIColor(red: 41/255, green: 191/255, blue: 60/255, alpha: 1)
-    static let red = UIColor(red: 252/255, green: 49/255, blue: 59/255, alpha: 1)
+    static let receiverChatBubbleGray = UIColor(red: 230/255, green: 230/255, blue: 230/255, alpha: 1)
 }
 
 enum DatabaseOption {
@@ -173,4 +176,9 @@ enum Shared {
     static let firebaseApp = FirebaseApp.app()
     static let firebaseHelper = FirebaseHelper(FirebaseDatabase.Database.database().reference())
     static let storyboard = UIStoryboard(name: "Main", bundle: nil)
+    static let decimalNumberFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        return formatter
+    }()
 }

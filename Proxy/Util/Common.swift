@@ -8,13 +8,56 @@ enum Result<T, Error> {
     case failure(Error)
 }
 
+extension CALayer {
+    func stopAnimating() {
+        removeAllAnimations()
+        shadowColor = UIColor.clear.cgColor
+    }
+}
+
 extension Double {
+    var asTimeAgo: String {
+        let calendar = NSCalendar.current
+        let unitFlags: Set<Calendar.Component> = [.minute, .hour, .day, .weekOfYear, .month, .year, .second]
+        let this = Date(timeIntervalSince1970: self)
+        let now = Date()
+        let earliest = now < this ? now : this
+        let latest = earliest == now ? this : now
+        let components = calendar.dateComponents(unitFlags, from: earliest, to: latest)
+
+        if components.year! > 0 {
+            return "\(components.year!)y"
+        } else if components.month! > 0 {
+            return "\(components.month!)mo"
+        } else if components.weekOfYear! > 0 {
+            return "\(components.weekOfYear!)w"
+        } else if components.day! > 0 {
+            return "\(components.day!)d"
+        } else if components.hour! > 0 {
+            return "\(components.hour!)h"
+        } else if components.minute! > 0 {
+            return "\(components.minute!)m"
+        } else if components.second! >= 3 {
+            return "\(components.second!)s"
+        } else {
+            return "Just now"
+        }
+    }
+
     func isWithinRangeOf(_ rhs: Double, range: Double = 1) -> Bool {
         return (self - range)...(self + range) ~= rhs
     }
 }
 
 extension DataSnapshot {
+    var asNumberLabel: String {
+        if let number = self.value as? UInt {
+            return number.asStringWithCommas
+        } else {
+            return "-"
+        }
+    }
+
     func asConvosArray(proxyKey: String?) -> [Convo] {
         return children.flatMap {
             guard let data = $0 as? DataSnapshot, let convo = try? Convo(data) else {
@@ -52,12 +95,30 @@ extension DataSnapshot {
 }
 
 extension Int {
+    var asBadgeValue: String? {
+        return self == 0 ? nil : String(self)
+    }
+
     var asStringWithParens: String {
         return self == 0 ? "" : " (\(self))"
     }
 
     var random: Int {
         return Int(arc4random_uniform(UInt32(self)))
+    }
+}
+
+extension NSAttributedString {
+    convenience init(_ convo: Convo) {
+        let receiver = NSMutableAttributedString(
+            string: (convo.receiverNickname == "" ? convo.receiverProxyName : convo.receiverNickname) + ", "
+        )
+        let sender = NSMutableAttributedString(
+            string: convo.senderNickname == "" ? convo.senderProxyName : convo.senderNickname,
+            attributes: [NSAttributedStringKey.foregroundColor: UIColor.gray]
+        )
+        receiver.append(sender)
+        self.init(attributedString: receiver)
     }
 }
 
@@ -89,7 +150,28 @@ extension SkyFloatingLabelTextFieldWithIcon {
     }
 }
 
+extension SpringButton {
+    func morph(loop: Bool = false) {
+        animation = "morph"
+        curve = "spring"
+        duration = loop ? 1.2 : 0.8
+        repeatCount = loop ? .infinity : 0
+        animate()
+    }
+}
+
 extension String {
+    var noWhiteSpaces: String {
+        return components(separatedBy: .whitespacesAndNewlines).joined()
+    }
+
+    func getFirstNChars(_ n: Int) -> String {
+        guard count >= n else {
+            return ""
+        }
+        return String(self[..<index(startIndex, offsetBy: n)])
+    }
+
     var trimmed: String {
         return trimmingCharacters(in: .whitespacesAndNewlines)
     }
@@ -135,6 +217,30 @@ extension UINavigationBar {
     }
 }
 
+extension UInt {
+    var asStringWithCommas: String {
+        var num = Double(self)
+        num = fabs(num)
+        guard let string = Shared.decimalNumberFormatter.string(from: NSNumber(integerLiteral: Int(num))) else {
+            return "-"
+        }
+        return string
+    }
+}
+
+extension UILabel {
+    convenience init(text: String,
+                     font: UIFont? = nil,
+                     textColor: UIColor = .white) {
+        self.init()
+        if let font = font {
+            self.font = font
+        }
+        self.text = text
+        self.textColor = textColor
+    }
+}
+
 extension UITableView {
     func setDelaysContentTouchesForScrollViews(value: Bool = false) {
         for case let scrollView as UIScrollView in subviews {
@@ -143,28 +249,17 @@ extension UITableView {
     }
 }
 
-extension UIViewController {
-    func showErrorBanner(_ error: Error) {
-        var title = ""
-        var subTitle = ""
-        if let error = error as? ProxyError {
-            title = error.alertFields.title
-            subTitle = error.alertFields.description
-        } else {
-            title = ProxyError.unknown.alertFields.title
-            subTitle = error.localizedDescription
-        }
-        NotificationBannerQueue.default.removeAll()
-        let banner = NotificationBanner(
-            attributedTitle: NSAttributedString(string: title),
-            attributedSubtitle: NSAttributedString(string: subTitle),
-            leftView: Label.warningIcon,
-            style: .danger
-        )
-        banner.haptic = .light
-        banner.show(on: self.navigationController)
+extension UIView {
+    func addGlow(color: CGColor = Color.blue.cgColor) {
+        layer.shadowColor = color
+        layer.shadowRadius = 4
+        layer.shadowOpacity = 0.9
+        layer.shadowOffset = .zero
+        layer.masksToBounds = false
     }
+}
 
+extension UIViewController {
     func showConvoController(_ convo: Convo) {
         let convoViewController = ConvoViewController(convo: convo)
         navigationController?.pushViewController(convoViewController, animated: true)
@@ -198,6 +293,27 @@ extension UIViewController {
         present(alert, animated: true)
     }
 
+    func showErrorBanner(_ error: Error) {
+        var title = ""
+        var subTitle = ""
+        if let error = error as? ProxyError {
+            title = error.alertFields.title
+            subTitle = error.alertFields.description
+        } else {
+            title = ProxyError.unknown.alertFields.title
+            subTitle = error.localizedDescription
+        }
+        NotificationBannerQueue.default.removeAll()
+        let banner = NotificationBanner(
+            attributedTitle: NSAttributedString(string: title),
+            attributedSubtitle: NSAttributedString(string: subTitle),
+            leftView: Label.warningIcon,
+            style: .danger
+        )
+        banner.haptic = .light
+        banner.show(on: self.navigationController)
+    }
+
     func showIconPickerController(_ proxy: Proxy) {
         let iconPickerViewController = IconPickerViewController(proxy: proxy)
         let navigationController = UINavigationController(rootViewController: iconPickerViewController)
@@ -207,32 +323,5 @@ extension UIViewController {
     func showProxyController(_ proxy: Proxy) {
         let proxyViewController = ProxyViewController(proxy: proxy)
         navigationController?.pushViewController(proxyViewController, animated: true)
-    }
-}
-
-private extension CALayer {
-    func stopAnimating() {
-        removeAllAnimations()
-        shadowColor = UIColor.clear.cgColor
-    }
-}
-
-private extension SpringButton {
-    func morph(loop: Bool = false) {
-        animation = "morph"
-        curve = "spring"
-        duration = loop ? 1.2 : 0.8
-        repeatCount = loop ? .infinity : 0
-        animate()
-    }
-}
-
-private extension UIView {
-    func addGlow(color: CGColor = Color.blue.cgColor) {
-        layer.shadowColor = color
-        layer.shadowRadius = 4
-        layer.shadowOpacity = 0.9
-        layer.shadowOffset = .zero
-        layer.masksToBounds = false
     }
 }

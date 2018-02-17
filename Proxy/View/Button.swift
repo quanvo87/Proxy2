@@ -60,8 +60,8 @@ class Button: CustomPressableButton {
 
         self.leftLabel = leftLabel
 
-        colors = .init(button: .facebookBlue, shadow: .facebookDarkBlue)
-        disabledColors = .init(button: .facebookBlue, shadow: .gray)
+        colors = .init(button: Color.facebookBlue, shadow: Color.facebookDarkBlue)
+        disabledColors = .init(button: Color.facebookBlue, shadow: .gray)
     }
 
     func showActivityIndicator() {
@@ -79,29 +79,5 @@ class Button: CustomPressableButton {
 
         activityIndicator.removeFromSuperview()
         activityIndicator.stopAnimating()
-    }
-}
-
-// todo: move all util extensions into common
-private extension UIColor {
-    static var facebookBlue: UIColor {
-        return UIColor(red: 59/255, green: 89/255, blue: 152/255, alpha: 1)
-    }
-
-    static var facebookDarkBlue: UIColor {
-        return UIColor(red: 39/255, green: 69/255, blue: 132/255, alpha: 1)
-    }
-}
-
-private extension UILabel {
-    convenience init(text: String,
-                     font: UIFont? = nil,
-                     textColor: UIColor = .white) {
-        self.init()
-        if let font = font {
-            self.font = font
-        }
-        self.text = text
-        self.textColor = textColor
     }
 }

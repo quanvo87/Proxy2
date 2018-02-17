@@ -39,12 +39,6 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
         )
     }
 
-    @objc func closeKeyboard() {
-        DispatchQueue.main.async { [weak self] in
-            self?.view.endEditing(true)
-        }
-    }
-
     static func make(loginManager: LoginManaging? = nil) -> SignUpViewController {
         guard let signUpViewController = Shared.storyboard.instantiateViewController(
             withIdentifier: String(describing: SignUpViewController.self)
@@ -69,22 +63,29 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
         }
         return true
     }
+}
 
-    private func signUp() {
-        guard
-            let email = emailTextField.text, email != "",
-            let password = passwordTextField.text, password != "" else {
-                showErrorBanner(ProxyError.missingCredentials)
-                return
-        }
-        loginManager.emailSignUp(email: email.lowercased(), password: password) { _ in }
-    }
-
+private extension SignUpViewController {
     @IBAction func tapSignUpButton(_ sender: Any) {
         signUp()
     }
 
     @IBAction func tapFacebookButton(_ sender: Any) {
         loginManager.facebookLogin { _ in }
+    }
+
+    @objc func closeKeyboard() {
+        DispatchQueue.main.async { [weak self] in
+            self?.view.endEditing(true)
+        }
+    }
+
+    func signUp() {
+        guard let email = emailTextField.text, email != "",
+            let password = passwordTextField.text, password != "" else {
+                showErrorBanner(ProxyError.missingCredentials)
+                return
+        }
+        loginManager.emailSignUp(email: email.lowercased(), password: password) { _ in }
     }
 }

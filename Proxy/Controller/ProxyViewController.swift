@@ -238,7 +238,6 @@ extension ProxyViewController: UITableViewDelegate {
         }
     }
 
-    // todo: guards
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         guard let proxy = proxy, indexPath.section == 1, indexPath.row == convos.count - 1 else {
             return

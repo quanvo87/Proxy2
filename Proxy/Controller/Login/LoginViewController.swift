@@ -54,12 +54,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         )
     }
 
-    @objc func closeKeyboard() {
-        DispatchQueue.main.async { [weak self] in
-            self?.view.endEditing(true)
-        }
-    }
-
     static func make(loginManager: LoginManaging? = nil) -> LoginViewController {
         guard let loginViewController = Shared.storyboard.instantiateViewController(
             withIdentifier: String(describing: LoginViewController.self)
@@ -84,14 +78,22 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         }
         return true
     }
+}
 
-    private func login() {
+private extension LoginViewController {
+    func login() {
         guard let email = emailTextField.text, email != "",
             let password = passwordTextField.text, password != "" else {
                 showErrorBanner(ProxyError.missingCredentials)
                 return
         }
         loginManager.emailLogin(email: email.lowercased(), password: password) { _ in }
+    }
+
+    @objc func closeKeyboard() {
+        DispatchQueue.main.async { [weak self] in
+            self?.view.endEditing(true)
+        }
     }
 
     // todo
