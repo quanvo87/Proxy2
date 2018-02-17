@@ -120,10 +120,10 @@ extension ConvoViewController: MessageInputBarDelegate {
         guard text.count > 0, let convo = convo else {
             return
         }
-        database.sendMessage(convo: convo, text: text) { [weak self] result in
+        database.sendMessage(convo: convo, text: text) { result in
             switch result {
             case .failure(let error):
-                self?.showErrorBanner(error)
+                StatusNotification.showError(error)
             default:
                 break
             }

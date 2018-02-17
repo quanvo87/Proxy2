@@ -140,7 +140,7 @@ extension SettingsViewController: UITableViewDelegate {
                     do {
                         try self?.auth.signOut()
                     } catch {
-                        self?.showErrorBanner(error)
+                        StatusNotification.showError(error)
                     }
                 })
                 alert.addAction(Alert.makeCancelAction())

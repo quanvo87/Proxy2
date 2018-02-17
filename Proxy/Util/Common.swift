@@ -1,5 +1,4 @@
 import FirebaseDatabase
-import NotificationBannerSwift
 import SkyFloatingLabelTextField
 import Spring
 
@@ -276,7 +275,7 @@ extension UIViewController {
             textField.placeholder = "Enter A Nickname"
             textField.text = proxy.nickname
         }
-        alert.addAction(UIAlertAction(title: "Save", style: .default) { [weak self, weak alert] _ in
+        alert.addAction(UIAlertAction(title: "Save", style: .default) { [weak alert] _ in
             guard let nickname = alert?.textFields?[0].text else {
                 return
             }
@@ -284,34 +283,13 @@ extension UIViewController {
             if !(nickname != "" && trimmed == "") {
                 database.setNickname(to: nickname, for: proxy) { error in
                     if let error = error {
-                        self?.showErrorBanner(error)
+                        StatusNotification.showError(error)
                     }
                 }
             }
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         present(alert, animated: true)
-    }
-
-    func showErrorBanner(_ error: Error) {
-        var title = ""
-        var subTitle = ""
-        if let error = error as? ProxyError {
-            title = error.alertFields.title
-            subTitle = error.alertFields.description
-        } else {
-            title = ProxyError.unknown.alertFields.title
-            subTitle = error.localizedDescription
-        }
-        NotificationBannerQueue.default.removeAll()
-        let banner = NotificationBanner(
-            attributedTitle: NSAttributedString(string: title),
-            attributedSubtitle: NSAttributedString(string: subTitle),
-            leftView: Label.warningIcon,
-            style: .danger
-        )
-        banner.haptic = .light
-        banner.show(on: self.navigationController)
     }
 
     func showIconPickerController(_ proxy: Proxy) {

@@ -44,7 +44,7 @@ struct Message: MessageType {
             let receiverId = dictionary["receiverId"] as? String,
             let receiverProxyKey = dictionary["receiverProxyKey"] as? String,
             let senderProxyKey = dictionary["senderProxyKey"] as? String else {
-                throw ProxyError.invalidData
+                throw ProxyError.unknown
         }
         self.sender = Sender(id: senderId, displayName: senderDisplayName)
         self.messageId = messageId

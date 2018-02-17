@@ -1,6 +1,7 @@
 import AVKit
 import Firebase
 import FBSDKCoreKit
+import SwiftMessages
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -44,6 +45,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 self?.window?.rootViewController = mainLoginController
             }
         }
+
+        SwiftMessages.defaultConfig.presentationContext = .window(windowLevel: UIWindowLevelStatusBar)
+        SwiftMessages.defaultConfig.duration = .seconds(seconds: 4)
 
         return FBSDKApplicationDelegate.sharedInstance().application(
             application,

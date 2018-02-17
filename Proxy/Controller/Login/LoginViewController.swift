@@ -84,7 +84,7 @@ private extension LoginViewController {
     func login() {
         guard let email = emailTextField.text, email != "",
             let password = passwordTextField.text, password != "" else {
-                showErrorBanner(ProxyError.missingCredentials)
+                StatusNotification.showError(ProxyError.missingCredentials)
                 return
         }
         loginManager.emailLogin(email: email.lowercased(), password: password) { _ in }

@@ -97,9 +97,9 @@ private extension ProxyViewController {
             }
             self?.database.deleteProxy(proxy) { error in
                 if let error = error {
-                    self?.showErrorBanner(error)
+                    StatusNotification.showError(error)
                 } else {
-                    Alert.showStatusBarNotificationBanner(title: "\(proxy.name) has been deleted.")
+                    StatusNotification.showSuccess("\(proxy.name) has been deleted.")
                 }
             }
             self?.navigationController?.popViewController(animated: true)

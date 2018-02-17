@@ -34,9 +34,9 @@ class LoginManager: LoginManaging {
             self?.loginButton?.hideActivityIndicator()
             WQNetworkActivityIndicator.shared.hide()
             if let error = error {
-                self?.viewController?.showErrorBanner(error)
+                StatusNotification.showError(error)
             } else {
-                Alert.showStatusBarNotificationBanner(title: "Login successful! 😊🎉")
+                StatusNotification.showSuccess("Login successful! 😊🎉")
             }
         }
     }
@@ -48,9 +48,9 @@ class LoginManager: LoginManaging {
             self?.signUpButton?.hideActivityIndicator()
             WQNetworkActivityIndicator.shared.hide()
             if let error = error {
-                self?.viewController?.showErrorBanner(error)
+                StatusNotification.showError(error)
             } else {
-                Alert.showStatusBarNotificationBanner(title: "Sign up successful! 😊🎉")
+                StatusNotification.showSuccess("Sign up successful! 😊🎉")
             }
         }
     }
@@ -68,13 +68,13 @@ class LoginManager: LoginManaging {
                 )
                 Shared.auth.signIn(with: credential) { _, error in
                     if let error = error {
-                        self?.viewController?.showErrorBanner(error)
+                        StatusNotification.showError(error)
                     } else {
-                        Alert.showStatusBarNotificationBanner(title: "Log in successful! 🤩🎉")
+                        StatusNotification.showSuccess("Log in successful! 🤩🎉")
                     }
                 }
             case .failed(let error):
-                self?.viewController?.showErrorBanner(error)
+                StatusNotification.showError(error)
             case .cancelled:
                 return
             }

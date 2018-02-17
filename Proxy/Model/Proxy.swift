@@ -41,7 +41,7 @@ struct Proxy {
             let nickname = dictionary["nickname"] as? String,
             let ownerId = dictionary["ownerId"] as? String,
             let timestamp = dictionary["timestamp"] as? Double else {
-                throw ProxyError.invalidData
+                throw ProxyError.unknown
         }
         self.dateCreated = dateCreated
         self.hasUnreadMessage = hasUnreadMessage

@@ -135,9 +135,9 @@ private extension ProxiesViewController {
                 }
                 self?.database.deleteProxy(proxy) { error in
                     if let error = error {
-                        self?.showErrorBanner(error)
+                        StatusNotification.showError(error)
                     } else {
-                        Alert.showStatusBarNotificationBanner(title: "\(proxy.name) has been deleted.")
+                        StatusNotification.showSuccess("\(proxy.name) has been deleted.")
                     }
                 }
             }
@@ -154,7 +154,7 @@ private extension ProxiesViewController {
         database.makeProxy(currentProxyCount: proxies.count, ownerId: uid) { [weak self] result in
             switch result {
             case .failure(let error):
-                self?.showErrorBanner(error)
+                StatusNotification.showError(error)
             case .success:
                 break
             }

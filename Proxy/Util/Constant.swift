@@ -2,24 +2,13 @@ import CFAlertViewController
 import Firebase
 import FirebaseHelper
 import NotificationBannerSwift
+import SwiftMessages
 
 enum Alert {
     static let deleteProxyMessage = (
         title: "Delete Proxy?",
         message: "Your conversations for this proxy will also be deleted."
     )
-
-    static func showStatusBarNotificationBanner(title: String,
-                                                style: BannerStyle = .success,
-                                                duration: TimeInterval = 4) {
-        NotificationBannerQueue.default.removeAll()
-        let banner = StatusBarNotificationBanner(
-            attributedTitle: NSAttributedString(string: title),
-            style: style
-        )
-        banner.duration = duration
-        banner.show()
-    }
 
     static func makeAlert(
         title: String? = nil,
@@ -181,4 +170,31 @@ enum Shared {
         formatter.numberStyle = .decimal
         return formatter
     }()
+}
+
+enum StatusNotification {
+    static func showError(_ error: Error) {
+        var body: String
+        if let error = error as? ProxyError {
+            body = error.description
+        } else {
+            body = "⚠️ " + error.localizedDescription
+        }
+        let view = MessageView.viewFromNib(layout: .statusLine)
+        view.configureTheme(.error)
+        view.configureContent(body: body)
+        NotificationBannerQueue.default.removeAll()
+        SwiftMessages.hideAll()
+        SwiftMessages.show(view: view)
+    }
+
+    static func showSuccess(_ title: String) {
+        let banner = StatusBarNotificationBanner(
+            attributedTitle: NSAttributedString(string: title),
+            style: .success
+        )
+        NotificationBannerQueue.default.removeAll()
+        SwiftMessages.hideAll()
+        banner.show()
+    }
 }

@@ -74,7 +74,7 @@ struct Convo {
             let senderProxyKey = dictionary["senderProxyKey"] as? String,
             let senderProxyName = dictionary["senderProxyName"] as? String,
             let timestamp = dictionary["timestamp"] as? Double else {
-                throw ProxyError.invalidData
+                throw ProxyError.unknown
         }
         self.hasUnreadMessage = hasUnreadMessage
         self.key = key

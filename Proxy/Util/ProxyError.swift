@@ -1,7 +1,6 @@
 enum ProxyError: Error {
     case blankMessage
     case inputTooLong
-    case invalidData
     case missingCredentials
     case receiverDeletedProxy
     case receiverMissing
@@ -10,32 +9,28 @@ enum ProxyError: Error {
     case tooManyProxies
     case unknown
 
-    var alertFields: (title: String, description: String) {
+    var description: String {
+        var _description: String
         switch self {
         case .blankMessage:
-            return ("Enter a message", "Cannot send blank message.")
+            _description = "Cannot send blank message"
         case .inputTooLong:
-            return ("Input too long", "Please try something shorter.")
-        case .invalidData:
-            return ("Invalid Data", "Invalid data read in database.")
+            _description = "Too many characters."
         case .missingCredentials:
-            return ("Missing email/password", "Please enter an email and password.")
+            _description = "Invalid email/password."
         case .receiverDeletedProxy:
-            return ("Receiver deleted", "They can no longer be messaged.")
+            _description = "This receiver no longer exists."
         case .receiverMissing:
-            return ("Pick a recipient", "Who do you want to send the message to?")
+            _description = "Pick a receiver for the message."
         case .receiverNotFound:
-            return ("Receveiver not found", "Please try again.")
+            _description = "Receiver not found."
         case .senderMissing:
-            return ("Pick a sender", "Who do you want to send from?")
+            _description = "Pick a sender for the message."
         case .tooManyProxies:
-            return ("Too many Proxies", "You have too many Proxies. Please delete some and try again.")
+            _description = "You have too many proxies."
         case .unknown:
-            return ("😵 Error", "An unknown error occurred.")
+            _description = "Unknown error occurred."
         }
-    }
-
-    var localizedDescription: String {
-        return alertFields.description
+        return "⚠️ " + _description
     }
 }

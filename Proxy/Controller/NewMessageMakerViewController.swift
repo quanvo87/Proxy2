@@ -142,7 +142,7 @@ private extension NewMessageMakerViewController {
         database.makeProxy(currentProxyCount: proxies.count, ownerId: uid) { [weak self] result in
             switch result {
             case .failure(let error):
-                self?.showErrorBanner(error)
+                StatusNotification.showError(error)
             case .success(let newProxy):
                 self?.sender = newProxy
             }
@@ -156,8 +156,8 @@ private extension NewMessageMakerViewController {
     }
 
     func setButtons(_ isEnabled: Bool) {
-        messageInputBar.sendButton.isEnabled = isEnabled
         makeNewProxyButton.isEnabled = isEnabled
+        setSendButton()
     }
 
     func setFirstResponder() {
@@ -170,6 +170,14 @@ private extension NewMessageMakerViewController {
             messageInputBar.inputTextView.becomeFirstResponder()
         }
     }
+
+    func setSendButton() {
+        if isSending {
+            messageInputBar.sendButton.isEnabled = false
+        } else {
+            messageInputBar.sendButton.isEnabled = messageInputBar.inputTextView.text != ""
+        }
+    }
 }
 
 // MARK: - MessageInputBarDelegate
@@ -178,10 +186,11 @@ extension NewMessageMakerViewController: MessageInputBarDelegate {
         inputBar.inputTextView.text = ""
         isSending = true
         setButtons(false)
-        sendMessage(text) { [weak self] outcome in
-            switch outcome {
+        sendMessage(text) { [weak self] result in
+            switch result {
             case .failure(let error):
-                self?.showErrorBanner(error)
+                StatusNotification.showError(error)
+                self?.messageInputBar.inputTextView.text = text
                 self?.isSending = false
                 self?.setButtons(true)
             case .success(let convo):
@@ -221,13 +230,8 @@ extension NewMessageMakerViewController: MessageInputBarDelegate {
         }
     }
 
-    // todo: could prob fix
     func messageInputBar(_ inputBar: MessageInputBar, textViewTextDidChangeTo text: String) {
-        if isSending {
-            inputBar.sendButton.isEnabled = false
-        } else {
-            inputBar.sendButton.isEnabled = text != ""
-        }
+       setSendButton()
     }
 }
 
