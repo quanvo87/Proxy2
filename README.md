@@ -33,6 +33,8 @@ Create unlimited, anonymous user names (Proxy's) with just one tap. Chat with an
     - Weak references in closure capture lists
     - Use Instruments for memory profiling
 
+// todo: move to Architecture?
+// todo: remove? just redo this whole readme
 - Swift features:
   - Protocols:
   // todo: class bound for weak references
@@ -42,9 +44,6 @@ Create unlimited, anonymous user names (Proxy's) with just one tap. Chat with an
     - Extensions with constraints
     - Default implementations
     - Separate protocol conformance in extensions for readability
-  - Collections operations: forEach, flatMap
-  - Lazy properties
-  - Self executing closures
   - Never force down cast
 
 - UI:

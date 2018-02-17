@@ -7,9 +7,11 @@ protocol NewMessageMakerDelegate: class {
 
 extension NewMessageMakerDelegate where Self: UIViewController {
     func showNewMessageMakerViewController(sender: Proxy?, uid: String) {
-        let makeNewMessageViewController = NewMessageMakerViewController(sender: sender,
-                                                                         uid: uid,
-                                                                         newMessageMakerDelegate: self)
+        let makeNewMessageViewController = NewMessageMakerViewController(
+            sender: sender,
+            uid: uid,
+            newMessageMakerDelegate: self
+        )
         let navigationController = UINavigationController(rootViewController: makeNewMessageViewController)
         present(navigationController, animated: true)
     }

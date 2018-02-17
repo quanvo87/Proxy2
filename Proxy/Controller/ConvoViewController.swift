@@ -180,11 +180,15 @@ extension ConvoViewController: MessagesDataSource {
             return Avatar()
         }
         if isFromCurrentSender(message: message) {
-            return Avatar(image: icons[convo.senderProxyKey],
-                          initials: convo.senderDisplayName.getFirstNChars(2).capitalized)
+            return Avatar(
+                image: icons[convo.senderProxyKey],
+                initials: convo.senderDisplayName.getFirstNChars(2).capitalized
+            )
         } else {
-            return Avatar(image: icons[convo.receiverProxyKey],
-                          initials: convo.receiverDisplayName.getFirstNChars(2).capitalized)
+            return Avatar(
+                image: icons[convo.receiverProxyKey],
+                initials: convo.receiverDisplayName.getFirstNChars(2).capitalized
+            )
         }
     }
 

@@ -119,13 +119,9 @@ class Firebase: Database {
             return
         }
         isMakingProxy = true
-        DispatchQueue.main.async {
-            UIApplication.shared.isNetworkActivityIndicatorVisible = true
-        }
+        WQNetworkActivityIndicator.shared.show()
         makeProxy(ownerId: ownerId, attempt: 0) { [weak self] result in
-            DispatchQueue.main.async {
-                UIApplication.shared.isNetworkActivityIndicatorVisible = false
-            }
+            WQNetworkActivityIndicator.shared.hide()
             self?.isMakingProxy = false
             completion(result)
         }
@@ -217,24 +213,28 @@ class Firebase: Database {
     }
 
     private func makeConvo(convoKey: String, sender: Proxy, receiver: Proxy, completion: @escaping ConvoCallback) {
-        let senderConvo = Convo(key: convoKey,
-                                receiverIcon: receiver.icon,
-                                receiverId: receiver.ownerId,
-                                receiverProxyKey: receiver.key,
-                                receiverProxyName: receiver.name,
-                                senderIcon: sender.icon,
-                                senderId: sender.ownerId,
-                                senderProxyKey: sender.key,
-                                senderProxyName: sender.name)
-        let receiverConvo = Convo(key: convoKey,
-                                  receiverIcon: sender.icon,
-                                  receiverId: sender.ownerId,
-                                  receiverProxyKey: sender.key,
-                                  receiverProxyName: sender.name,
-                                  senderIcon: receiver.icon,
-                                  senderId: receiver.ownerId,
-                                  senderProxyKey: receiver.key,
-                                  senderProxyName: receiver.name)
+        let senderConvo = Convo(
+            key: convoKey,
+            receiverIcon: receiver.icon,
+            receiverId: receiver.ownerId,
+            receiverProxyKey: receiver.key,
+            receiverProxyName: receiver.name,
+            senderIcon: sender.icon,
+            senderId: sender.ownerId,
+            senderProxyKey: sender.key,
+            senderProxyName: sender.name
+        )
+        let receiverConvo = Convo(
+            key: convoKey,
+            receiverIcon: sender.icon,
+            receiverId: sender.ownerId,
+            receiverProxyKey: sender.key,
+            receiverProxyName: sender.name,
+            senderIcon: receiver.icon,
+            senderId: receiver.ownerId,
+            senderProxyKey: receiver.key,
+            senderProxyName: receiver.name
+        )
         let work = GroupWork()
         work.increment(1, property: .proxiesInteractedWith, uid: receiver.ownerId)
         work.increment(1, property: .proxiesInteractedWith, uid: sender.ownerId)
@@ -277,9 +277,11 @@ class Firebase: Database {
             let work = GroupWork()
             work.set(message.toDictionary(), at: Child.messages, message.parentConvoKey, message.messageId)
             let currentTime = Date().timeIntervalSince1970
+
             // Receiver updates
             work.increment(1, property: .messagesReceived, uid: convo.receiverId)
             work.setReceiverMessageValues(convo: convo, currentTime: currentTime, message: message)
+
             // Sender updates
             work.increment(1, property: .messagesSent, uid: convo.senderId)
             work.set(.timestamp(currentTime), for: convo, asSender: true)
@@ -291,6 +293,7 @@ class Firebase: Database {
             default:
                 break
             }
+
             work.allDone {
                 if work.result {
                     completion(.success((convo, message)))

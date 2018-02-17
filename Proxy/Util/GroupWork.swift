@@ -38,10 +38,7 @@ extension GroupWork {
     }
 
     static func getOwnerIdAndProxyKey(convo: Convo, asSender: Bool) -> (ownerId: String, proxyKey: String) {
-        return
-            asSender ?
-                (convo.senderId, convo.senderProxyKey) :
-                (convo.receiverId, convo.receiverProxyKey)
+        return asSender ? (convo.senderId, convo.senderProxyKey) : (convo.receiverId, convo.receiverProxyKey)
     }
 
     static func getUnreadMessagesForProxy(uid: String,
@@ -216,9 +213,11 @@ extension GroupWork {
                     self?.finish(withResult: error == nil)
                 }
             }
-            let convoUpdates: [String: Any] = [Child.hasUnreadMessage: true,
-                                               Child.lastMessage: text,
-                                               Child.timestamp: currentTime]
+            let convoUpdates: [String: Any] = [
+                Child.hasUnreadMessage: true,
+                Child.lastMessage: text,
+                Child.timestamp: currentTime
+            ]
             start()
             try? Shared.firebaseHelper.makeReference(Child.convos, convo.receiverId, convo.key)
                 .updateChildValues(convoUpdates) { [weak self] error, _ in
@@ -232,9 +231,11 @@ extension GroupWork {
                         }
                     }
             }
-            let proxyUpdates: [String: Any] = [Child.hasUnreadMessage: true,
-                                               Child.lastMessage: text,
-                                               Child.timestamp: currentTime]
+            let proxyUpdates: [String: Any] = [
+                Child.hasUnreadMessage: true,
+                Child.lastMessage: text,
+                Child.timestamp: currentTime
+            ]
             start()
             try? Shared.firebaseHelper.makeReference(Child.proxies, convo.receiverId, convo.receiverProxyKey)
                 .updateChildValues(proxyUpdates) { [weak self] error, _ in

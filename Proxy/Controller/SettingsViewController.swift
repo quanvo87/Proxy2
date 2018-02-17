@@ -69,17 +69,23 @@ extension SettingsViewController: UITableViewDataSource {
             cell.selectionStyle = .none
             switch indexPath.row {
             case 0:
-                cell.load(icon: "messagesReceived",
-                          title: "Messages Received",
-                          subtitle: messagesReceivedCount)
+                cell.load(
+                    icon: "messagesReceived",
+                    title: "Messages Received",
+                    subtitle: messagesReceivedCount
+                )
             case 1:
-                cell.load(icon: "messagesSent",
-                          title: "Messages Sent",
-                          subtitle: messagesSentCount)
+                cell.load(
+                    icon: "messagesSent",
+                    title: "Messages Sent",
+                    subtitle: messagesSentCount
+                )
             case 2:
-                cell.load(icon: "proxiesInteractedWith",
-                          title: "Proxies Interacted With",
-                          subtitle: proxiesInteractedWithCount)
+                cell.load(
+                    icon: "proxiesInteractedWith",
+                    title: "Proxies Interacted With",
+                    subtitle: proxiesInteractedWithCount
+                )
             default:
                 break
             }
