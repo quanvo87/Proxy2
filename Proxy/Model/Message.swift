@@ -34,8 +34,7 @@ struct Message: MessageType {
 
     init(_ data: DataSnapshot) throws {
         let dictionary = data.value as AnyObject
-        guard
-            let senderId = dictionary["senderId"] as? String,
+        guard let senderId = dictionary["senderId"] as? String,
             let senderDisplayName = dictionary["senderDisplayName"] as? String,
             let messageId = dictionary["messageId"] as? String,
             let sentDate = dictionary["sentDate"] as? Double,
@@ -45,7 +44,7 @@ struct Message: MessageType {
             let receiverId = dictionary["receiverId"] as? String,
             let receiverProxyKey = dictionary["receiverProxyKey"] as? String,
             let senderProxyKey = dictionary["senderProxyKey"] as? String else {
-                throw ProxyError.invalidData
+                throw ProxyError.unknown
         }
         self.sender = Sender(id: senderId, displayName: senderDisplayName)
         self.messageId = messageId

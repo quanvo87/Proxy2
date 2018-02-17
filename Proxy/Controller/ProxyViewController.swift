@@ -1,6 +1,6 @@
 import UIKit
 
-class ProxyViewController: UIViewController, NewConvoManaging {
+class ProxyViewController: UIViewController, NewMessageMakerDelegate {
     var newConvo: Convo?
     private let convosObserver: ConvosObsering
     private let database: Database
@@ -8,8 +8,16 @@ class ProxyViewController: UIViewController, NewConvoManaging {
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private var convos = [Convo]()
     private var proxy: Proxy? { didSet { didSetProxy() } }
-    private lazy var makeNewMessageButton = makeMakeNewMessageButton()
-    private lazy var deleteProxyButton = makeDeleteProxyButton()
+    private lazy var deleteProxyButton = UIBarButtonItem(
+        target: self,
+        action: #selector(deleteProxy),
+        image: Image.delete
+    )
+    private lazy var makeNewMessageButton = UIBarButtonItem(
+        target: self,
+        action: #selector(showNewMessageMakerViewController),
+        image: Image.makeNewMessage
+    )
 
     init(proxy: Proxy,
          convosObserver: ConvosObsering = ConvosObserver(),
@@ -42,10 +50,14 @@ class ProxyViewController: UIViewController, NewConvoManaging {
         tableView.delaysContentTouches = false
         tableView.delegate = self
         tableView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
-        tableView.register(UINib(nibName: Identifier.convosTableViewCell, bundle: nil),
-                           forCellReuseIdentifier: Identifier.convosTableViewCell)
-        tableView.register(UINib(nibName: Identifier.senderProxyTableViewCell, bundle: nil),
-                           forCellReuseIdentifier: Identifier.senderProxyTableViewCell)
+        tableView.register(
+            UINib(nibName: String(describing: ConvosTableViewCell.self), bundle: nil),
+            forCellReuseIdentifier: String(describing: ConvosTableViewCell.self)
+        )
+        tableView.register(
+            UINib(nibName: String(describing: SenderProxyTableViewCell.self), bundle: nil),
+            forCellReuseIdentifier: String(describing: SenderProxyTableViewCell.self)
+        )
         tableView.sectionHeaderHeight = 0
         tableView.separatorStyle = .none
         tableView.setDelaysContentTouchesForScrollViews()
@@ -75,27 +87,33 @@ class ProxyViewController: UIViewController, NewConvoManaging {
 
 private extension ProxyViewController {
     @objc func deleteProxy() {
-        let alert = UIAlertController(title: "Delete Proxy?",
-                                      message: "You will not be able to see this proxy or its conversations again.",
-                                      preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
+        let alert = Alert.makeAlert(
+            title: Alert.deleteProxyMessage.title,
+            message: Alert.deleteProxyMessage.message
+        )
+        alert.addAction(Alert.makeDestructiveAction(title: "Delete") { [weak self] _ in
             guard let proxy = self?.proxy else {
                 return
             }
-            self?.database.deleteProxy(proxy) { _ in
-                self?.navigationController?.popViewController(animated: true)
+            self?.database.deleteProxy(proxy) { error in
+                if let error = error {
+                    StatusNotification.showError(error)
+                } else {
+                    StatusNotification.showSuccess("\(proxy.name) has been deleted.")
+                }
             }
+            self?.navigationController?.popViewController(animated: true)
         })
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(Alert.makeCancelAction())
         present(alert, animated: true)
     }
 
-    @objc func showMakeNewMessageController() {
+    @objc func showNewMessageMakerViewController() {
         guard let proxy = proxy else {
             return
         }
         makeNewMessageButton.animate()
-        showMakeNewMessageController(sender: proxy, uid: proxy.ownerId)
+        showNewMessageMakerViewController(sender: proxy, uid: proxy.ownerId)
     }
 
     func didSetProxy() {
@@ -104,18 +122,6 @@ private extension ProxyViewController {
             return
         }
         tableView.reloadData()
-    }
-
-    func makeMakeNewMessageButton() -> UIBarButtonItem {
-        return UIBarButtonItem.make(target: self,
-                                    action: #selector(showMakeNewMessageController),
-                                    imageName: ButtonName.makeNewMessage)
-    }
-
-    func makeDeleteProxyButton() -> UIBarButtonItem {
-        return UIBarButtonItem.make(target: self,
-                                    action: #selector(deleteProxy),
-                                    imageName: ButtonName.delete)
     }
 }
 
@@ -128,10 +134,14 @@ extension ProxyViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.section {
         case 0:
-            guard
-                let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.senderProxyTableViewCell) as? SenderProxyTableViewCell,
-                let proxy = proxy else {
-                    return tableView.dequeueReusableCell(withIdentifier: Identifier.senderProxyTableViewCell, for: indexPath)
+            guard let proxy = proxy else {
+                return SenderProxyTableViewCell()
+            }
+            guard let cell = tableView.dequeueReusableCell(
+                withIdentifier: String(describing: SenderProxyTableViewCell.self)
+                ) as? SenderProxyTableViewCell else {
+                    assertionFailure()
+                    return SenderProxyTableViewCell()
             }
             cell.changeIconButton.addTarget(self, action: #selector(_showIconPickerController), for: .touchUpInside)
             cell.load(proxy)
@@ -139,12 +149,13 @@ extension ProxyViewController: UITableViewDataSource {
             cell.selectionStyle = .none
             return cell
         case 1:
-            guard
-                let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.convosTableViewCell) as? ConvosTableViewCell,
-                let convo = convos[safe: indexPath.row] else {
-                    return tableView.dequeueReusableCell(withIdentifier: Identifier.convosTableViewCell, for: indexPath)
+            guard let cell = tableView.dequeueReusableCell(
+                withIdentifier: String(describing: ConvosTableViewCell.self)
+                ) as? ConvosTableViewCell else {
+                    assertionFailure()
+                    return UITableViewCell()
             }
-            cell.load(convo)
+            cell.load(convos[indexPath.row])
             return cell
         default:
             return UITableViewCell()
@@ -197,14 +208,12 @@ extension ProxyViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 extension ProxyViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard
-            indexPath.section == 1,
-            let row = tableView.indexPathForSelectedRow?.row,
-            let convo = convos[safe: row] else {
-                return
-        }
         tableView.deselectRow(at: indexPath, animated: true)
-        showConvoController(convo)
+        if indexPath.section == 1,
+            let row = tableView.indexPathForSelectedRow?.row {
+            let convo = convos[row]
+            showConvoController(convo)
+        }
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -230,13 +239,10 @@ extension ProxyViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        guard
-            indexPath.section == 1,
-            indexPath.row == convos.count - 1,
-            let convo = convos[safe: indexPath.row],
-            let proxy = proxy else {
-                return
+        guard let proxy = proxy, indexPath.section == 1, indexPath.row == convos.count - 1 else {
+            return
         }
+        let convo = convos[indexPath.row]
         convosObserver.loadConvos(endingAtTimestamp: convo.timestamp, proxyKey: proxy.key) { [weak self] convos in
             self?.convos += convos
         }

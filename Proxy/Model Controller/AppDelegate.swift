@@ -1,6 +1,7 @@
 import AVKit
 import Firebase
 import FBSDKCoreKit
+import SwiftMessages
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -8,10 +9,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private let authObserver = AuthObserver()
     private var isLoggedIn = false
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        setAudioSession()
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        if #available(iOS 10.0, *) {
+            try? AVAudioSession.sharedInstance().setCategory(
+                AVAudioSessionCategoryAmbient,
+                mode: AVAudioSessionModeDefault
+            )
+            try? AVAudioSession.sharedInstance().setActive(true)
+        }
+
         FirebaseApp.configure()
+
 //        Database.database().isPersistenceEnabled = true
+
         authObserver.observe { [weak self] user in
             if let user = user {
                 var displayName = user.displayName
@@ -24,33 +35,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 self?.isLoggedIn = true
                 self?.window?.rootViewController = TabBarController(uid: user.uid, displayName: displayName)
             } else {
-                guard
-                    let isLoggedIn = self?.isLoggedIn, isLoggedIn,
-                    let loginController = LoginViewController.make() else {
-                        return
+                guard let isLoggedIn = self?.isLoggedIn, isLoggedIn,
+                    let mainLoginController = Shared.storyboard.instantiateViewController(
+                        withIdentifier: String(describing: MainLoginViewController.self)
+                        ) as? MainLoginViewController else {
+                            return
                 }
                 self?.isLoggedIn = false
-                self?.window?.rootViewController = loginController
+                self?.window?.rootViewController = mainLoginController
             }
         }
-        return FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
-    }
 
-    private func setAudioSession(_ session: AVAudioSession = AVAudioSession.sharedInstance(),
-                                 category: String = AVAudioSessionCategoryAmbient,
-                                 mode: String = AVAudioSessionModeDefault) {
-        do {
-            if #available(iOS 10.0, *) {
-                try session.setCategory(category, mode: mode)
-                try session.setActive(true)
-            }
-        } catch {
-            print("Failed to set the audio session category and mode: \(error.localizedDescription)")
-        }
+        SwiftMessages.defaultConfig.presentationContext = .window(windowLevel: UIWindowLevelStatusBar)
+        SwiftMessages.defaultConfig.duration = .seconds(seconds: 4)
+
+        return FBSDKApplicationDelegate.sharedInstance().application(
+            application,
+            didFinishLaunchingWithOptions: launchOptions
+        )
     }
 
     func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
-        return FBSDKApplicationDelegate.sharedInstance().application(application, open: url, sourceApplication: sourceApplication, annotation: annotation)
+        return FBSDKApplicationDelegate.sharedInstance().application(
+            application,
+            open: url,
+            sourceApplication: sourceApplication,
+            annotation: annotation
+        )
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {

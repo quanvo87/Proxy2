@@ -1,5 +1,4 @@
 import FirebaseDatabase
-import FirebaseHelper
 import WQNetworkActivityIndicator
 
 protocol ProxiesObserving: ReferenceObserving {
@@ -14,14 +13,14 @@ class ProxiesObserver: ProxiesObserving {
     func observe(proxiesOwnerId: String, completion: @escaping ([Proxy]) -> Void) {
         stopObserving()
         firstCallback = true
-        ref = try? FirebaseHelper.main.makeReference(Child.proxies, proxiesOwnerId)
+        ref = try? Shared.firebaseHelper.makeReference(Child.proxies, proxiesOwnerId)
         WQNetworkActivityIndicator.shared.show()
         handle = ref?.queryOrdered(byChild: Child.timestamp).observe(.value) { [weak self] data in
             if let firstCallback = self?.firstCallback, firstCallback {
                 self?.firstCallback = false
                 WQNetworkActivityIndicator.shared.hide()
             }
-            completion(data.toProxiesArray.reversed())
+            completion(data.asProxiesArray.reversed())
         }
     }
 

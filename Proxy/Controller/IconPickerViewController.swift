@@ -23,13 +23,17 @@ class IconPickerViewController: UIViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
-        collectionView.register(UINib(nibName: Identifier.iconPickerCollectionViewCell, bundle: nil),
-                                forCellWithReuseIdentifier: Identifier.iconPickerCollectionViewCell)
+        collectionView.register(
+            UINib(nibName: String(describing: IconPickerCollectionViewCell.self), bundle: nil),
+            forCellWithReuseIdentifier: String(describing: IconPickerCollectionViewCell.self)
+        )
         collectionView.reloadData()
 
-        navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self,
-                                                                 action: #selector(close),
-                                                                 imageName: ButtonName.cancel)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            target: self,
+            action: #selector(close),
+            image: Image.cancel
+        )
         navigationItem.title = "Select An Icon"
 
         view.addSubview(collectionView)
@@ -48,13 +52,16 @@ private extension IconPickerViewController {
 
 // MARK: - UICollectionViewDataSource
 extension IconPickerViewController: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifier.iconPickerCollectionViewCell, for: indexPath) as? IconPickerCollectionViewCell,
-            let iconName = iconNames[safe: indexPath.row] else {
-                return collectionView.dequeueReusableCell(withReuseIdentifier: Identifier.iconPickerCollectionViewCell, for: indexPath)
+    func collectionView(_ collectionView: UICollectionView,
+                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: String(describing: IconPickerCollectionViewCell.self),
+            for: indexPath
+            ) as? IconPickerCollectionViewCell else {
+                assertionFailure()
+                return IconPickerCollectionViewCell()
         }
-        cell.load(iconName)
+        cell.load(iconNames[indexPath.row])
         return cell
     }
 
@@ -66,10 +73,8 @@ extension IconPickerViewController: UICollectionViewDataSource {
 // MARK: - UICollectionViewDelegate
 extension IconPickerViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let iconName = iconNames[safe: indexPath.row] else {
-            return
-        }
-        collectionView.cellForItem(at: indexPath)?.backgroundColor = UIColor.blue
+        collectionView.cellForItem(at: indexPath)?.backgroundColor = Color.blue
+        let iconName = iconNames[indexPath.row]
         database.setIcon(to: iconName, for: proxy) { _ in }
         dismiss(animated: true)
     }

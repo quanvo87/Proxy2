@@ -1,7 +1,6 @@
 enum ProxyError: Error {
     case blankMessage
     case inputTooLong
-    case invalidData
     case missingCredentials
     case receiverDeletedProxy
     case receiverMissing
@@ -10,32 +9,26 @@ enum ProxyError: Error {
     case tooManyProxies
     case unknown
 
-    var alertFields: (title: String, description: String) {
+    var description: String {
         switch self {
         case .blankMessage:
-            return ("Blank message", "Please enter a message to send.")
+            return "Cannot send blank message"
         case .inputTooLong:
-            return ("Input too long", "Please try something shorter.")
-        case .invalidData:
-            return ("Invalid Data", "Invalid data read in database.")
+            return "Too many characters."
         case .missingCredentials:
-            return ("Missing email/password", "Please make sure to enter an email and password.")
+            return "Invalid email/password."
         case .receiverDeletedProxy:
-            return ("Receiver deleted", "They can no longer be messaged.")
+            return "The receiver no longer exists."
         case .receiverMissing:
-            return ("Missing recipient", "Please select a recipient and try again.")
+            return "Pick a receiver for the message."
         case .receiverNotFound:
-            return ("Receveiver not found", "Unable to find the specified recipient.")
+            return "Receiver not found."
         case .senderMissing:
-            return ("Missing sender", "Please select one of your Proxies to send from.")
+            return "Pick a sender for the message."
         case .tooManyProxies:
-            return ("Too many Proxies", "You have too many Proxies. Please delete some and try again.")
+            return "You have too many proxies."
         case .unknown:
-            return ("😢", "Unknown error occurred.")
+            return "Unknown error occurred."
         }
-    }
-
-    var localizedDescription: String {
-        return alertFields.description
     }
 }

@@ -1,6 +1,6 @@
 import UIKit
 
-class ProxiesViewController: UIViewController, NewConvoManaging {
+class ProxiesViewController: UIViewController, NewMessageMakerDelegate {
     var newConvo: Convo?
     private let database: Database
     private let proxiesObserver: ProxiesObserving
@@ -9,11 +9,31 @@ class ProxiesViewController: UIViewController, NewConvoManaging {
     private var proxies = [Proxy]()
     private var proxiesToDelete = [String: Any]()
     private var proxyCount = 0
-    private lazy var cancelButton = makeCancelButton()
-    private lazy var confirmButton = makeConfirmButton()
-    private lazy var deleteButton = makeDeleteButton()
-    private lazy var makeNewMessageButton = makeMakeNewMessageButton()
-    private lazy var makeNewProxyButton = makeMakeNewProxyButton()
+    private lazy var cancelButton = UIBarButtonItem(
+        target: self,
+        action: #selector(setDefaultButtons),
+        image: Image.cancel
+    )
+    private lazy var confirmButton = UIBarButtonItem(
+        target: self,
+        action: #selector(deleteSelectedItems),
+        image: Image.confirm
+    )
+    private lazy var deleteButton = UIBarButtonItem(
+        target: self,
+        action: #selector(setEditModeButtons),
+        image: Image.delete
+    )
+    private lazy var makeNewMessageButton = UIBarButtonItem(
+        target: self,
+        action: #selector(showNewMessageMakerViewController),
+        image: Image.makeNewMessage
+    )
+    private lazy var makeNewProxyButton = UIBarButtonItem(
+        target: self,
+        action: #selector(makeNewProxy),
+        image: Image.makeNewProxy
+    )
 
     init(database: Database = Firebase(),
          proxiesObserver: ProxiesObserving = ProxiesObserver(),
@@ -52,8 +72,10 @@ class ProxiesViewController: UIViewController, NewConvoManaging {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
-        tableView.register(UINib(nibName: Identifier.proxiesTableViewCell, bundle: nil),
-                           forCellReuseIdentifier: Identifier.proxiesTableViewCell)
+        tableView.register(
+            UINib(nibName: String(describing: ProxiesTableViewCell.self), bundle: nil),
+            forCellReuseIdentifier: String(describing: ProxiesTableViewCell.self)
+        )
         tableView.rowHeight = 60
         tableView.sectionHeaderHeight = 0
 
@@ -102,20 +124,27 @@ private extension ProxiesViewController {
             setDefaultButtons()
             return
         }
-        let alert = UIAlertController(title: "Delete Proxies?",
-                                      message: "The conversations will also be deleted.",
-                                      preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
+        let alert = Alert.makeAlert(
+            title: "Delete Proxies?",
+            message: "Their conversations will also be deleted."
+        )
+        alert.addAction(Alert.makeDestructiveAction(title: "Delete") { [weak self] _ in
             for (_, item) in self?.proxiesToDelete ?? [:] {
                 guard let proxy = item as? Proxy else {
                     continue
                 }
-                self?.database.deleteProxy(proxy) { _ in }
+                self?.database.deleteProxy(proxy) { error in
+                    if let error = error {
+                        StatusNotification.showError(error)
+                    } else {
+                        StatusNotification.showSuccess("\(proxy.name) has been deleted.")
+                    }
+                }
             }
             self?.proxiesToDelete.removeAll()
             self?.setDefaultButtons()
         })
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(Alert.makeCancelAction())
         present(alert, animated: true)
     }
 
@@ -125,7 +154,7 @@ private extension ProxiesViewController {
         database.makeProxy(currentProxyCount: proxies.count, ownerId: uid) { [weak self] result in
             switch result {
             case .failure(let error):
-                self?.showErrorAlert(error)
+                StatusNotification.showError(error)
             case .success:
                 break
             }
@@ -133,41 +162,11 @@ private extension ProxiesViewController {
         }
     }
 
-    @objc func showMakeNewMessageController() {
+    @objc func showNewMessageMakerViewController() {
         makeNewMessageButton.animate()
         makeNewMessageButton.isEnabled = false
-        showMakeNewMessageController(sender: nil, uid: uid)
+        showNewMessageMakerViewController(sender: nil, uid: uid)
         makeNewMessageButton.isEnabled = true
-    }
-
-    func makeCancelButton() -> UIBarButtonItem {
-        return UIBarButtonItem.make(target: self,
-                                    action: #selector(setDefaultButtons),
-                                    imageName: ButtonName.cancel)
-    }
-
-    func makeConfirmButton() -> UIBarButtonItem {
-        return UIBarButtonItem.make(target: self,
-                                    action: #selector(deleteSelectedItems),
-                                    imageName: ButtonName.confirm)
-    }
-
-    func makeDeleteButton() -> UIBarButtonItem {
-        return UIBarButtonItem.make(target: self,
-                                    action: #selector(setEditModeButtons),
-                                    imageName: ButtonName.delete)
-    }
-
-    func makeMakeNewMessageButton() -> UIBarButtonItem {
-        return UIBarButtonItem.make(target: self,
-                                    action: #selector(showMakeNewMessageController),
-                                    imageName: ButtonName.makeNewMessage)
-    }
-
-    func makeMakeNewProxyButton() -> UIBarButtonItem {
-        return UIBarButtonItem.make(target: self,
-                                    action: #selector(makeNewProxy),
-                                    imageName: ButtonName.makeNewProxy)
     }
 
     func scrollToTop() {
@@ -181,12 +180,13 @@ private extension ProxiesViewController {
 // MARK: - UITableViewDataSource
 extension ProxiesViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard
-            let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.proxiesTableViewCell) as? ProxiesTableViewCell,
-            let proxy = proxies[safe: indexPath.row] else {
-                return tableView.dequeueReusableCell(withIdentifier: Identifier.proxiesTableViewCell, for: indexPath)
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: String(describing: ProxiesTableViewCell.self)
+            ) as? ProxiesTableViewCell else {
+                assertionFailure()
+                return ProxiesTableViewCell()
         }
-        cell.load(proxy: proxy, accessoryType: .disclosureIndicator)
+        cell.load(proxy: proxies[indexPath.row], accessoryType: .disclosureIndicator)
         return cell
     }
 
@@ -206,9 +206,7 @@ extension ProxiesViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 extension ProxiesViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let proxy = proxies[safe: indexPath.row] else {
-            return
-        }
+        let proxy = proxies[indexPath.row]
         if tableView.isEditing {
             proxiesToDelete[proxy.key] = proxy
         } else {
@@ -218,12 +216,10 @@ extension ProxiesViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        guard
-            tableView.isEditing,
-            let proxy = proxies[safe: indexPath.row] else {
-                return
+        if tableView.isEditing {
+            let proxy = proxies[indexPath.row]
+            proxiesToDelete.removeValue(forKey: proxy.key)
         }
-        proxiesToDelete.removeValue(forKey: proxy.key)
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

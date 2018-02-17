@@ -37,10 +37,14 @@ class ConvoDetailViewController: UIViewController {
         tableView.delegate = self
         tableView.delaysContentTouches = false
         tableView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
-        tableView.register(UINib(nibName: Identifier.convoDetailReceiverProxyTableViewCell, bundle: nil),
-                           forCellReuseIdentifier: Identifier.convoDetailReceiverProxyTableViewCell)
-        tableView.register(UINib(nibName: Identifier.convoDetailSenderProxyTableViewCell, bundle: nil),
-                           forCellReuseIdentifier: Identifier.convoDetailSenderProxyTableViewCell)
+        tableView.register(
+            UINib(nibName: String(describing: ConvoDetailReceiverProxyTableViewCell.self), bundle: nil),
+            forCellReuseIdentifier: String(describing: ConvoDetailReceiverProxyTableViewCell.self)
+        )
+        tableView.register(
+            UINib(nibName: Identifier.convoDetailSenderProxyTableViewCell, bundle: nil),
+            forCellReuseIdentifier: Identifier.convoDetailSenderProxyTableViewCell
+        )
         tableView.setDelaysContentTouchesForScrollViews()
 
         view.addSubview(tableView)
@@ -77,19 +81,27 @@ extension ConvoDetailViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.section {
         case 0:
-            guard
-                let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.convoDetailReceiverProxyTableViewCell) as? ConvoDetailReceiverProxyTableViewCell,
-                let convo = convo else {
-                    return tableView.dequeueReusableCell(withIdentifier: Identifier.convoDetailReceiverProxyTableViewCell, for: indexPath)
+            guard let convo = convo else {
+                return ConvoDetailReceiverProxyTableViewCell()
+            }
+            guard let cell = tableView.dequeueReusableCell(
+                withIdentifier: String(describing: ConvoDetailReceiverProxyTableViewCell.self)
+                ) as? ConvoDetailReceiverProxyTableViewCell else {
+                    assertionFailure()
+                    return ConvoDetailReceiverProxyTableViewCell()
             }
             cell.load(convo)
             cell.nicknameButton.addTarget(self, action: #selector(showEditReceiverNicknameAlert), for: .touchUpInside)
             return cell
         case 1:
-            guard
-                let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.convoDetailSenderProxyTableViewCell) as? SenderProxyTableViewCell,
-                let proxy = proxy else {
-                    return tableView.dequeueReusableCell(withIdentifier: Identifier.convoDetailSenderProxyTableViewCell, for: indexPath)
+            guard let proxy = proxy else {
+                return SenderProxyTableViewCell()
+            }
+            guard let cell = tableView.dequeueReusableCell(
+                withIdentifier: Identifier.convoDetailSenderProxyTableViewCell
+                ) as? SenderProxyTableViewCell else {
+                    assertionFailure()
+                    return SenderProxyTableViewCell()
             }
             cell.accessoryType = .disclosureIndicator
             cell.changeIconButton.addTarget(self, action: #selector(_showIconPickerController), for: .touchUpInside)
@@ -130,7 +142,11 @@ extension ConvoDetailViewController: UITableViewDataSource {
         guard let convo = convo else {
             return
         }
-        let alert = UIAlertController(title: "Edit Receiver's Nickname", message: "Only you see this nickname.", preferredStyle: .alert)
+        let alert = UIAlertController(
+            title: "Edit Receiver's Nickname",
+            message: "Only you see this nickname.",
+            preferredStyle: .alert
+        )
         alert.addTextField { textField in
             textField.autocapitalizationType = .sentences
             textField.autocorrectionType = .yes
@@ -146,7 +162,7 @@ extension ConvoDetailViewController: UITableViewDataSource {
             if !(nickname != "" && trimmed == "") {
                 self?.database.setReceiverNickname(to: nickname, for: convo) { error in
                     if let error = error {
-                        self?.showErrorAlert(error)
+                        StatusNotification.showError(error)
                     }
                 }
             }
@@ -183,14 +199,20 @@ extension ConvoDetailViewController: UITableViewDelegate {
         case 2:
             switch indexPath.row {
             case 0:
-                let alert = UIAlertController(title: "Delete Proxy?",
-                                              message: "Your conversations for this proxy will be deleted.",
-                                              preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
-                    self?.database.deleteProxy(proxy) { _ in }
-                    self?.navigationController?.popViewController(animated: true)
+                let alert = Alert.makeAlert(
+                    title: Alert.deleteProxyMessage.title,
+                    message: Alert.deleteProxyMessage.message
+                )
+                alert.addAction(Alert.makeDestructiveAction(title: "Delete") { [weak self] _ in
+                    self?.database.deleteProxy(proxy) { error in
+                        if let error = error {
+                            StatusNotification.showError(error)
+                        } else {
+                            StatusNotification.showSuccess("\(proxy.name) has been deleted.")
+                        }
+                    }
                 })
-                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+                alert.addAction(Alert.makeCancelAction())
                 present(alert, animated: true)
             default:
                 return

@@ -32,8 +32,7 @@ struct Proxy {
 
     init(_ data: DataSnapshot) throws {
         let dictionary = data.value as AnyObject
-        guard
-            let dateCreated = dictionary["dateCreated"] as? Double,
+        guard let dateCreated = dictionary["dateCreated"] as? Double,
             let hasUnreadMessage = dictionary["hasUnreadMessage"] as? Bool,
             let icon = dictionary["icon"] as? String,
             let key = dictionary["key"] as? String,
@@ -42,7 +41,7 @@ struct Proxy {
             let nickname = dictionary["nickname"] as? String,
             let ownerId = dictionary["ownerId"] as? String,
             let timestamp = dictionary["timestamp"] as? Double else {
-                throw ProxyError.invalidData
+                throw ProxyError.unknown
         }
         self.dateCreated = dateCreated
         self.hasUnreadMessage = hasUnreadMessage

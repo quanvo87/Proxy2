@@ -34,9 +34,11 @@ class ConvoViewController: MessagesViewController {
             self?.messagesCollectionView.scrollToBottom()
         }
 
-        navigationItem.rightBarButtonItem = UIBarButtonItem.make(target: self,
-                                                                 action: #selector(showConvoDetailViewController),
-                                                                 imageName: ButtonName.info)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            target: self,
+            action: #selector(showConvoDetailViewController),
+            image: Image.info
+        )
 
         maintainPositionOnKeyboardFrameChanged = true
 
@@ -118,10 +120,10 @@ extension ConvoViewController: MessageInputBarDelegate {
         guard text.count > 0, let convo = convo else {
             return
         }
-        database.sendMessage(convo: convo, text: text) { [weak self] result in
+        database.sendMessage(convo: convo, text: text) { result in
             switch result {
             case .failure(let error):
-                self?.showErrorAlert(error)
+                StatusNotification.showError(error)
             default:
                 break
             }
@@ -135,20 +137,26 @@ extension ConvoViewController: MessagesDataSource {
         if indexPath.section == 0 {
             return makeDisplayName(message)
         }
-        if let previousMessage = messages[safe: indexPath.section - 1],
-            previousMessage.sender != message.sender {
+        let previousMessage = messages[indexPath.section - 1]
+        if previousMessage.sender != message.sender {
             return makeDisplayName(message)
         }
         return nil
     }
 
-    func configureAvatarView(_ avatarView: AvatarView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
+    func configureAvatarView(_ avatarView: AvatarView,
+                             for message: MessageType,
+                             at indexPath: IndexPath,
+                             in messagesCollectionView: MessagesCollectionView) {
         avatarView.backgroundColor = .clear
         avatarView.image = nil
         if indexPath.section == messages.count - 1 {
             avatarView.set(avatar: makeAvatar(message))
-        } else if let nextMessage = messages[safe: indexPath.section + 1], nextMessage.sender != message.sender {
-            avatarView.set(avatar: makeAvatar(message))
+        } else {
+            let nextMessage = messages[indexPath.section + 1]
+            if nextMessage.sender != message.sender {
+                avatarView.set(avatar: makeAvatar(message))
+            }
         }
     }
 
@@ -172,11 +180,15 @@ extension ConvoViewController: MessagesDataSource {
             return Avatar()
         }
         if isFromCurrentSender(message: message) {
-            return Avatar(image: icons[convo.senderProxyKey],
-                          initials: convo.senderDisplayName.getFirstNChars(2).capitalized)
+            return Avatar(
+                image: icons[convo.senderProxyKey],
+                initials: convo.senderDisplayName.getFirstNChars(2).capitalized
+            )
         } else {
-            return Avatar(image: icons[convo.receiverProxyKey],
-                          initials: convo.receiverDisplayName.getFirstNChars(2).capitalized)
+            return Avatar(
+                image: icons[convo.receiverProxyKey],
+                initials: convo.receiverDisplayName.getFirstNChars(2).capitalized
+            )
         }
     }
 
@@ -184,30 +196,40 @@ extension ConvoViewController: MessagesDataSource {
         guard let convo = convo else {
             return NSAttributedString()
         }
-        return NSAttributedString(string: isFromCurrentSender(message: message) ? convo.senderDisplayName : convo.receiverDisplayName,
-                                  attributes: [NSAttributedStringKey.font: UIFont.preferredFont(forTextStyle: .caption1)])
+        return NSAttributedString(
+            string: isFromCurrentSender(message: message) ? convo.senderDisplayName : convo.receiverDisplayName,
+            attributes: [NSAttributedStringKey.font: UIFont.preferredFont(forTextStyle: .caption1)]
+        )
     }
 }
 
 // MARK: - MessagesDisplayDelegate
 extension ConvoViewController: MessagesDisplayDelegate {
-    func backgroundColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
+    func backgroundColor(for message: MessageType,
+                         at indexPath: IndexPath,
+                         in messagesCollectionView: MessagesCollectionView) -> UIColor {
         if isFromCurrentSender(message: message) {
-            return UIColor.blue
+            return Color.blue
         } else {
-            return UIColor(red: 230/255, green: 230/255, blue: 230/255, alpha: 1)
+            return Color.receiverChatBubbleGray
         }
     }
 
-    func detectorAttributes(for detector: DetectorType, and message: MessageType, at indexPath: IndexPath) -> [NSAttributedStringKey: Any] {
+    func detectorAttributes(for detector: DetectorType,
+                            and message: MessageType,
+                            at indexPath: IndexPath) -> [NSAttributedStringKey: Any] {
         return MessageLabel.defaultAttributes
     }
 
-    func enabledDetectors(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> [DetectorType] {
+    func enabledDetectors(for message: MessageType,
+                          at indexPath: IndexPath,
+                          in messagesCollectionView: MessagesCollectionView) -> [DetectorType] {
         return [.address, .date, .phoneNumber, .url]
     }
 
-    func messageStyle(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageStyle {
+    func messageStyle(for message: MessageType,
+                      at indexPath: IndexPath,
+                      in messagesCollectionView: MessagesCollectionView) -> MessageStyle {
         if indexPath.section == messages.count - 1 {
             if isFromCurrentSender(message: message) {
                 return .bubbleTail(.bottomRight, .curved)
@@ -215,7 +237,8 @@ extension ConvoViewController: MessagesDisplayDelegate {
                 return .bubbleTail(.bottomLeft, .curved)
             }
         }
-        if let nextMessage = messages[safe: indexPath.section + 1], nextMessage.sender != message.sender {
+        let nextMessage = messages[indexPath.section + 1]
+        if nextMessage.sender != message.sender {
             if isFromCurrentSender(message: message) {
                 return .bubbleTail(.bottomRight, .curved)
             } else {
@@ -228,34 +251,28 @@ extension ConvoViewController: MessagesDisplayDelegate {
 
 // MARK: - MessagesLayoutDelegate
 extension ConvoViewController: MessagesLayoutDelegate {
-    func heightForLocation(message: MessageType, at indexPath: IndexPath, with maxWidth: CGFloat, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
+    func heightForLocation(message: MessageType,
+                           at indexPath: IndexPath,
+                           with maxWidth: CGFloat,
+                           in messagesCollectionView: MessagesCollectionView) -> CGFloat {
         return 200
     }
 }
 
 // MARK: - UICollectionViewDelegate
 extension ConvoViewController {
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        guard
-            indexPath.section == 0,
-            let message = messages[safe: indexPath.section] else {
-                return
+    func collectionView(_ collectionView: UICollectionView,
+                        willDisplay cell: UICollectionViewCell,
+                        forItemAt indexPath: IndexPath) {
+        guard indexPath.section == 0 else {
+            return
         }
+        let message = messages[indexPath.section]
         messagesObserver.loadMessages(endingAtMessageId: message.messageId) { [weak self] olderMessages in
             if let messages = self?.messages {
                 self?.messages = olderMessages + messages
                 self?.messagesCollectionView.reloadDataAndKeepOffset()
             }
         }
-    }
-}
-
-// MARK: - Util
-private extension String {
-    func getFirstNChars(_ n: Int) -> String {
-        guard count >= n else {
-            return ""
-        }
-        return String(self[..<index(startIndex, offsetBy: n)])
     }
 }

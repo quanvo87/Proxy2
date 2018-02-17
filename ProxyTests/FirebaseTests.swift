@@ -1,5 +1,4 @@
 import FirebaseDatabase
-import FirebaseHelper
 import GroupWork
 import XCTest
 @testable import Proxy
@@ -142,10 +141,10 @@ class FirebaseTests: FirebaseTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        var settings = [String: Any]()
-        settings[DatabaseOptions.generator.name] = GeneratorMock()
-        settings[DatabaseOptions.makeProxyRetries.name] = 0
-        firebase = Firebase(settings)
+        var options = [String: Any]()
+        options[DatabaseOption.generator.name] = GeneratorMock()
+        options[DatabaseOption.makeProxyRetries.name] = 0
+        firebase = Firebase(options)
 
         firebase.makeProxy(currentProxyCount: 0, ownerId: FirebaseTest.uid) { [weak self] result in
             switch result {
@@ -358,7 +357,7 @@ extension GroupWork {
     func checkConvoCreated(_ convo: Convo, asSender: Bool) {
         let (uid, _) = GroupWork.getOwnerIdAndProxyKey(convo: convo, asSender: asSender)
         start()
-        FirebaseHelper.main.get(Child.convos, uid, convo.key) { result in
+        Shared.firebaseHelper.get(Child.convos, uid, convo.key) { result in
             switch result {
             case .failure(let error):
                 XCTFail(String(describing: error))
@@ -371,7 +370,7 @@ extension GroupWork {
 
     func checkMessageCreated(_ message: Message) {
         start()
-        FirebaseHelper.main.get(Child.messages, message.parentConvoKey, message.messageId) { result in
+        Shared.firebaseHelper.get(Child.messages, message.parentConvoKey, message.messageId) { result in
             switch result {
             case .failure(let error):
                 XCTFail(String(describing: error))
@@ -384,7 +383,7 @@ extension GroupWork {
 
     func checkProxyCreated(_ proxy: Proxy) {
         start()
-        FirebaseHelper.main.get(Child.proxies, FirebaseTest.uid, proxy.key) { result in
+        Shared.firebaseHelper.get(Child.proxies, FirebaseTest.uid, proxy.key) { result in
             switch result {
             case .failure(let error):
                 XCTFail(String(describing: error))
@@ -397,7 +396,7 @@ extension GroupWork {
 
     func checkProxyNameCreated(forProxy proxy: Proxy) {
         start()
-        FirebaseHelper.main.get(Child.proxyNames, proxy.key) { result in
+        Shared.firebaseHelper.get(Child.proxyNames, proxy.key) { result in
             let testProxy = Proxy(icon: proxy.icon, name: proxy.name, ownerId: proxy.ownerId)
             switch result {
             case .failure(let error):
@@ -411,7 +410,12 @@ extension GroupWork {
 
     func checkUnreadMessageCreated(_ message: Message) {
         start()
-        FirebaseHelper.main.get(Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId) { result in
+        Shared.firebaseHelper.get(
+            Child.userInfo,
+            message.receiverId,
+            Child.unreadMessages,
+            message.messageId
+        ) { result in
             switch result {
             case .failure(let error):
                 XCTFail(String(describing: error))

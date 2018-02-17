@@ -25,8 +25,10 @@ class SettingsViewController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
-        tableView.register(UINib(nibName: Identifier.settingsTableViewCell, bundle: nil),
-                           forCellReuseIdentifier: Identifier.settingsTableViewCell)
+        tableView.register(
+            UINib(nibName: String(describing: SettingsTableViewCell.self), bundle: nil),
+            forCellReuseIdentifier: String(describing: SettingsTableViewCell.self)
+        )
         tableView.rowHeight = 44
 
         userStatsObserver.observe(uid: uid) { [weak self] update in
@@ -56,25 +58,34 @@ extension SettingsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.settingsTableViewCell) as? SettingsTableViewCell else {
-            return tableView.dequeueReusableCell(withIdentifier: Identifier.settingsTableViewCell, for: indexPath)
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: String(describing: SettingsTableViewCell.self)
+            ) as? SettingsTableViewCell else {
+                assertionFailure()
+                return SettingsTableViewCell()
         }
         switch indexPath.section {
         case 0:
             cell.selectionStyle = .none
             switch indexPath.row {
             case 0:
-                cell.load(icon: "messagesReceived",
-                          title: "Messages Received",
-                          subtitle: messagesReceivedCount)
+                cell.load(
+                    icon: "messagesReceived",
+                    title: "Messages Received",
+                    subtitle: messagesReceivedCount
+                )
             case 1:
-                cell.load(icon: "messagesSent",
-                          title: "Messages Sent",
-                          subtitle: messagesSentCount)
+                cell.load(
+                    icon: "messagesSent",
+                    title: "Messages Sent",
+                    subtitle: messagesSentCount
+                )
             case 2:
-                cell.load(icon: "proxiesInteractedWith",
-                          title: "Proxies Interacted With",
-                          subtitle: proxiesInteractedWithCount)
+                cell.load(
+                    icon: "proxiesInteractedWith",
+                    title: "Proxies Interacted With",
+                    subtitle: proxiesInteractedWithCount
+                )
             default:
                 break
             }
@@ -114,22 +125,25 @@ extension SettingsViewController: UITableViewDelegate {
         case 1:
             switch indexPath.row {
             case 0:
-                let alert = UIAlertController(title: "Proxy 0.1.0",
-                                              message: "Send bugs, suggestions, etc., to:\nqvo1987@gmail.com",
-                                              preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "OK", style: .cancel) { _ in })
+                let alert = Alert.makeAlert(
+                    title: "Proxy 0.1.0",
+                    message: "Send bugs, suggestions, etc., to:\nqvo1987@gmail.com"
+                )
+                alert.addAction(Alert.makeOkAction())
                 present(alert, animated: true)
             case 1:
-                let alert = UIAlertController(title: "Log Out",
-                                              message: "Are you sure you want to log out?", preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "Log Out", style: .destructive) { [weak self] _ in
+                let alert = Alert.makeAlert(
+                    title: "Log Out",
+                    message: "Are you sure you want to log out?"
+                )
+                alert.addAction(Alert.makeDestructiveAction(title: "Log Out") { [weak self] _ in
                     do {
                         try self?.auth.signOut()
                     } catch {
-                        self?.showErrorAlert(error)
+                        StatusNotification.showError(error)
                     }
                 })
-                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+                alert.addAction(Alert.makeCancelAction())
                 present(alert, animated: true)
             default:
                 return

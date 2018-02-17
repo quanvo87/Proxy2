@@ -1,20 +1,12 @@
 import FirebaseDatabase
-import FirebaseHelper
 import GroupWork
 import MessageKit
+import WQNetworkActivityIndicator
 
 enum IncrementableUserProperty: String {
     case messagesReceived
     case messagesSent
     case proxiesInteractedWith
-}
-
-struct DatabaseOptions {
-    static let generator = (name: "generator", value: ProxyPropertyGenerator())
-    static let makeProxyRetries = (name: "makeProxyRetries", value: 50)
-    static let maxMessageSize = (name: "maxMessageSize", value: 20000)
-    static let maxNameSize = (name: "maxNameSize", value: 50)
-    static let maxProxyCount = (name: "maxProxyCount", value: 30)
 }
 
 protocol Database {
@@ -45,11 +37,12 @@ class Firebase: Database {
     private var isMakingProxy = false
 
     required init(_ options: [String: Any] = [:]) {
-        generator = options[DatabaseOptions.generator.name] as? ProxyPropertyGenerating ?? DatabaseOptions.generator.value
-        makeProxyRetries = options[DatabaseOptions.makeProxyRetries.name] as? Int ?? DatabaseOptions.makeProxyRetries.value
-        maxMessageSize = options[DatabaseOptions.maxMessageSize.name] as? Int ?? DatabaseOptions.maxMessageSize.value
-        maxNameSize = options[DatabaseOptions.maxNameSize.name] as? Int ?? DatabaseOptions.maxNameSize.value
-        maxProxyCount = options[DatabaseOptions.maxProxyCount.name] as? Int ?? DatabaseOptions.maxProxyCount.value
+        generator = options[DatabaseOption.generator.name] as? ProxyPropertyGenerating ?? DatabaseOption.generator.value
+        makeProxyRetries =
+            options[DatabaseOption.makeProxyRetries.name] as? Int ?? DatabaseOption.makeProxyRetries.value
+        maxMessageSize = options[DatabaseOption.maxMessageSize.name] as? Int ?? DatabaseOption.maxMessageSize.value
+        maxNameSize = options[DatabaseOption.maxNameSize.name] as? Int ?? DatabaseOption.maxNameSize.value
+        maxProxyCount = options[DatabaseOption.maxProxyCount.name] as? Int ?? DatabaseOption.maxProxyCount.value
     }
 
     func deleteProxy(_ proxy: Proxy, completion: @escaping ErrorCallback) {
@@ -72,7 +65,7 @@ class Firebase: Database {
     }
 
     func getConvo(convoKey: String, ownerId: String, completion: @escaping ConvoCallback) {
-        FirebaseHelper.main.get(Child.convos, ownerId, convoKey) { result in
+        Shared.firebaseHelper.get(Child.convos, ownerId, convoKey) { result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))
@@ -87,7 +80,7 @@ class Firebase: Database {
     }
 
     func getProxy(proxyKey: String, completion: @escaping ProxyCallback) {
-        FirebaseHelper.main.get(Child.proxyNames, proxyKey.lowercased().noWhiteSpaces) { [weak self] result in
+        Shared.firebaseHelper.get(Child.proxyNames, proxyKey.lowercased().noWhiteSpaces) { [weak self] result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))
@@ -103,7 +96,7 @@ class Firebase: Database {
     }
 
     func getProxy(proxyKey: String, ownerId: String, completion: @escaping ProxyCallback) {
-        FirebaseHelper.main.get(Child.proxies, ownerId, proxyKey) { result in
+        Shared.firebaseHelper.get(Child.proxies, ownerId, proxyKey) { result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))
@@ -126,13 +119,9 @@ class Firebase: Database {
             return
         }
         isMakingProxy = true
-        DispatchQueue.main.async {
-            UIApplication.shared.isNetworkActivityIndicatorVisible = true
-        }
+        WQNetworkActivityIndicator.shared.show()
         makeProxy(ownerId: ownerId, attempt: 0) { [weak self] result in
-            DispatchQueue.main.async {
-                UIApplication.shared.isNetworkActivityIndicatorVisible = false
-            }
+            WQNetworkActivityIndicator.shared.hide()
             self?.isMakingProxy = false
             completion(result)
         }
@@ -140,17 +129,17 @@ class Firebase: Database {
 
     private func makeProxy(ownerId: String, attempt: Int, completion: @escaping ProxyCallback) {
         do {
-            let ref = try FirebaseHelper.main.makeReference(Child.proxyNames)
+            let ref = try Shared.firebaseHelper.makeReference(Child.proxyNames)
             let name = generator.randomProxyName
             let proxy = Proxy(icon: generator.randomIconName, name: name, ownerId: ownerId)
             let testKey = ref.childByAutoId().key
-            FirebaseHelper.main.set(proxy.toDictionary(), at: Child.proxyNames, testKey) { [weak self] error in
+            Shared.firebaseHelper.set(proxy.toDictionary(), at: Child.proxyNames, testKey) { [weak self] error in
                 if let error = error {
                     completion(.failure(error))
                     return
                 }
                 self?.getProxyNameCount(ref: ref, name: name) { count in
-                    FirebaseHelper.main.delete(Child.proxyNames, testKey) { _ in }
+                    Shared.firebaseHelper.delete(Child.proxyNames, testKey) { _ in }
                     guard let _self = self else {
                         return
                     }
@@ -224,24 +213,28 @@ class Firebase: Database {
     }
 
     private func makeConvo(convoKey: String, sender: Proxy, receiver: Proxy, completion: @escaping ConvoCallback) {
-        let senderConvo = Convo(key: convoKey,
-                                receiverIcon: receiver.icon,
-                                receiverId: receiver.ownerId,
-                                receiverProxyKey: receiver.key,
-                                receiverProxyName: receiver.name,
-                                senderIcon: sender.icon,
-                                senderId: sender.ownerId,
-                                senderProxyKey: sender.key,
-                                senderProxyName: sender.name)
-        let receiverConvo = Convo(key: convoKey,
-                                  receiverIcon: sender.icon,
-                                  receiverId: sender.ownerId,
-                                  receiverProxyKey: sender.key,
-                                  receiverProxyName: sender.name,
-                                  senderIcon: receiver.icon,
-                                  senderId: receiver.ownerId,
-                                  senderProxyKey: receiver.key,
-                                  senderProxyName: receiver.name)
+        let senderConvo = Convo(
+            key: convoKey,
+            receiverIcon: receiver.icon,
+            receiverId: receiver.ownerId,
+            receiverProxyKey: receiver.key,
+            receiverProxyName: receiver.name,
+            senderIcon: sender.icon,
+            senderId: sender.ownerId,
+            senderProxyKey: sender.key,
+            senderProxyName: sender.name
+        )
+        let receiverConvo = Convo(
+            key: convoKey,
+            receiverIcon: sender.icon,
+            receiverId: sender.ownerId,
+            receiverProxyKey: sender.key,
+            receiverProxyName: sender.name,
+            senderIcon: receiver.icon,
+            senderId: receiver.ownerId,
+            senderProxyKey: receiver.key,
+            senderProxyName: receiver.name
+        )
         let work = GroupWork()
         work.increment(1, property: .proxiesInteractedWith, uid: receiver.ownerId)
         work.increment(1, property: .proxiesInteractedWith, uid: sender.ownerId)
@@ -253,6 +246,14 @@ class Firebase: Database {
     }
 
     func sendMessage(convo: Convo, text: String, completion: @escaping MessageCallback) {
+        WQNetworkActivityIndicator.shared.show()
+        _sendMessage(convo: convo, text: text) { result in
+            WQNetworkActivityIndicator.shared.hide()
+            completion(result)
+        }
+    }
+
+    private func _sendMessage(convo: Convo, text: String, completion: @escaping MessageCallback) {
         guard !convo.receiverDeletedProxy else {
             completion(.failure(ProxyError.receiverDeletedProxy))
             return
@@ -263,7 +264,7 @@ class Firebase: Database {
             return
         }
         do {
-            let ref = try FirebaseHelper.main.makeReference(Child.messages, convo.key)
+            let ref = try Shared.firebaseHelper.makeReference(Child.messages, convo.key)
             let message = Message(sender: Sender(id: convo.senderId,
                                                  displayName: convo.senderProxyName),
                                   messageId: ref.childByAutoId().key,
@@ -276,9 +277,11 @@ class Firebase: Database {
             let work = GroupWork()
             work.set(message.toDictionary(), at: Child.messages, message.parentConvoKey, message.messageId)
             let currentTime = Date().timeIntervalSince1970
+
             // Receiver updates
             work.increment(1, property: .messagesReceived, uid: convo.receiverId)
             work.setReceiverMessageValues(convo: convo, currentTime: currentTime, message: message)
+
             // Sender updates
             work.increment(1, property: .messagesSent, uid: convo.senderId)
             work.set(.timestamp(currentTime), for: convo, asSender: true)
@@ -290,6 +293,7 @@ class Firebase: Database {
             default:
                 break
             }
+
             work.allDone {
                 if work.result {
                     completion(.success((convo, message)))
@@ -347,20 +351,16 @@ class Firebase: Database {
         }
     }
 
-    private func getConvosForProxy(key: String, ownerId: String, completion: @escaping (Result<[Convo], Error>) -> Void) {
-        FirebaseHelper.main.get(Child.convos, ownerId) { result in
+    private func getConvosForProxy(key: String,
+                                   ownerId: String,
+                                   completion: @escaping (Result<[Convo], Error>) -> Void) {
+        Shared.firebaseHelper.get(Child.convos, ownerId) { result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))
             case .success(let data):
-                completion(.success(data.toConvosArray(proxyKey: key)))
+                completion(.success(data.asConvosArray(proxyKey: key)))
             }
         }
-    }
-}
-
-private extension String {
-    var noWhiteSpaces: String {
-        return components(separatedBy: .whitespacesAndNewlines).joined()
     }
 }

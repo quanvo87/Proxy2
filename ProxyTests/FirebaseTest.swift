@@ -1,5 +1,4 @@
 import Firebase
-import FirebaseHelper
 import GroupWork
 import XCTest
 @testable import Proxy
@@ -11,7 +10,7 @@ class FirebaseTest: XCTestCase {
     static let uid = "37Xoavv6znT6DrJjnx1I6hTQVr23"
     private static let email = "test@test.com"
     private static let password = "test123"
-    private let auth = Auth.auth(app: FirebaseApp.app!)
+    private let auth = Auth.auth(app: Shared.firebaseApp!)
     private var handle: AuthStateDidChangeListenerHandle?
 
     override func setUp() {
@@ -64,7 +63,8 @@ class FirebaseTest: XCTestCase {
         }
     }
 
-    static func sendMessage(completion: @escaping (_ message: Message, _ convo: Convo, _ sender: Proxy, _ receiver: Proxy) -> Void) {
+    static func sendMessage(
+        completion: @escaping (_ message: Message, _ convo: Convo, _ sender: Proxy, _ receiver: Proxy) -> Void) {
         makeProxy { sender in
             makeProxy (ownerId: testUserId) { receiver in
                 database.sendMessage(sender: sender, receiver: receiver, text: text) { result in
@@ -94,14 +94,22 @@ class FirebaseTest: XCTestCase {
 }
 
 extension GroupWork {
-    func check(_ property: SettableConvoProperty, for convo: Convo, asSender: Bool, function: String = #function, line: Int = #line) {
+    func check(_ property: SettableConvoProperty,
+               for convo: Convo,
+               asSender: Bool,
+               function: String = #function,
+               line: Int = #line) {
         let (uid, _) = GroupWork.getOwnerIdAndProxyKey(convo: convo, asSender: asSender)
         check(property, uid: uid, convoKey: convo.key, function: function, line: line)
     }
 
-    func check(_ property: SettableConvoProperty, uid: String, convoKey: String, function: String = #function, line: Int = #line) {
+    func check(_ property: SettableConvoProperty,
+               uid: String,
+               convoKey: String,
+               function: String = #function,
+               line: Int = #line) {
         start()
-        FirebaseHelper.main.get(Child.convos, uid, convoKey, property.properties.name) { result in
+        Shared.firebaseHelper.get(Child.convos, uid, convoKey, property.properties.name) { result in
             switch result {
             case .failure(let error):
                 XCTFail(String(describing: error))
@@ -112,9 +120,17 @@ extension GroupWork {
         }
     }
 
-    func check(_ property: SettableMessageProperty, for message: Message, function: String = #function, line: Int = #line) {
+    func check(_ property: SettableMessageProperty,
+               for message: Message,
+               function: String = #function,
+               line: Int = #line) {
         start()
-        FirebaseHelper.main.get(Child.messages, message.parentConvoKey, message.messageId, property.properties.name) { result in
+        Shared.firebaseHelper.get(
+            Child.messages,
+            message.parentConvoKey,
+            message.messageId,
+            property.properties.name
+        ) { result in
             switch result {
             case .failure(let error):
                 XCTFail(String(describing: error))
@@ -132,14 +148,22 @@ extension GroupWork {
         check(property, uid: proxy.ownerId, proxyKey: proxy.key, function: function, line: line)
     }
 
-    func check(_ property: SettableProxyProperty, forProxyIn convo: Convo, asSender: Bool, function: String = #function, line: Int = #line) {
+    func check(_ property: SettableProxyProperty,
+               forProxyIn convo: Convo,
+               asSender: Bool,
+               function: String = #function,
+               line: Int = #line) {
         let (uid, proxyKey) = GroupWork.getOwnerIdAndProxyKey(convo: convo, asSender: asSender)
         check(property, uid: uid, proxyKey: proxyKey, function: function, line: line)
     }
 
-    func check(_ property: SettableProxyProperty, uid: String, proxyKey: String, function: String = #function, line: Int = #line) {
+    func check(_ property: SettableProxyProperty,
+               uid: String,
+               proxyKey: String,
+               function: String = #function,
+               line: Int = #line) {
         start()
-        FirebaseHelper.main.get(Child.proxies, uid, proxyKey, property.properties.name) { result in
+        Shared.firebaseHelper.get(Child.proxies, uid, proxyKey, property.properties.name) { result in
             switch result {
             case .failure(let error):
                 XCTFail(String(describing: error))
@@ -150,9 +174,13 @@ extension GroupWork {
         }
     }
 
-    func check(_ property: IncrementableUserProperty, equals value: Int, uid: String, function: String = #function, line: Int = #line) {
+    func check(_ property: IncrementableUserProperty,
+               equals value: Int,
+               uid: String,
+               function: String = #function,
+               line: Int = #line) {
         start()
-        FirebaseHelper.main.get(Child.userInfo, uid, property.rawValue) { result in
+        Shared.firebaseHelper.get(Child.userInfo, uid, property.rawValue) { result in
             switch result {
             case .failure(let error):
                 XCTFail(String(describing: error))
@@ -181,7 +209,7 @@ extension GroupWork {
 
     func checkDeleted(_ first: String, _ rest: String..., function: String = #function, line: Int = #line) {
         start()
-        FirebaseHelper.main.get(first, rest) { result in
+        Shared.firebaseHelper.get(first, rest) { result in
             switch result {
             case .failure(let error):
                 XCTFail(String(describing: error))

@@ -10,37 +10,71 @@ protocol LoginManaging {
     func facebookLogin(completion: @escaping Callback)
 }
 
-struct LoginManager: LoginManaging {
-    let facebookLoginManager = FacebookLogin.LoginManager()
+class LoginManager: LoginManaging {
+    private lazy var facebookLoginManager = FacebookLogin.LoginManager()
+    private weak var facebookButton: Button?
+    private weak var loginButton: Button?
+    private weak var signUpButton: Button?
+    private weak var viewController: UIViewController?
+
+    init(facebookButton: Button? = nil,
+         loginButton: Button? = nil,
+         signUpButton: Button? = nil,
+         viewController: UIViewController? = nil) {
+        self.facebookButton = facebookButton
+        self.loginButton = loginButton
+        self.signUpButton = signUpButton
+        self.viewController = viewController
+    }
 
     func emailLogin(email: String, password: String, completion: @escaping Callback) {
+        loginButton?.showActivityIndicator()
         WQNetworkActivityIndicator.shared.show()
-        Auth.auth.signIn(withEmail: email, password: password) { _, error in
+        Shared.auth.signIn(withEmail: email, password: password) { [weak self] _, error in
+            self?.loginButton?.hideActivityIndicator()
             WQNetworkActivityIndicator.shared.hide()
-            completion(error)
+            if let error = error {
+                StatusNotification.showError(error)
+            } else {
+                StatusNotification.showSuccess("Login successful! 😊🎉")
+            }
         }
     }
 
     func emailSignUp(email: String, password: String, completion: @escaping Callback) {
+        signUpButton?.showActivityIndicator()
         WQNetworkActivityIndicator.shared.show()
-        Auth.auth.createUser(withEmail: email, password: password) { _, error in
+        Shared.auth.createUser(withEmail: email, password: password) { [weak self] _, error in
+            self?.signUpButton?.hideActivityIndicator()
             WQNetworkActivityIndicator.shared.hide()
-            completion(error)
+            if let error = error {
+                StatusNotification.showError(error)
+            } else {
+                StatusNotification.showSuccess("Sign up successful! 😊🎉")
+            }
         }
     }
 
     func facebookLogin(completion: @escaping Callback) {
+        facebookButton?.showActivityIndicator()
         WQNetworkActivityIndicator.shared.show()
-        facebookLoginManager.logIn(readPermissions: [.publicProfile]) { result in
+        facebookLoginManager.logIn(readPermissions: [.publicProfile]) { [weak self] result in
+            self?.facebookButton?.hideActivityIndicator()
             WQNetworkActivityIndicator.shared.hide()
             switch result {
             case .success:
-                let credential = FacebookAuthProvider.credential(withAccessToken: FBSDKAccessToken.current().tokenString)
-                Auth.auth.signIn(with: credential) { _, error in
-                    completion(error)
+                let credential = FacebookAuthProvider.credential(
+                    withAccessToken: FBSDKAccessToken.current().tokenString
+                )
+                Shared.auth.signIn(with: credential) { _, error in
+                    if let error = error {
+                        StatusNotification.showError(error)
+                    } else {
+                        StatusNotification.showSuccess("Log in successful! 🤩🎉")
+                    }
                 }
             case .failed(let error):
-                completion(error)
+                StatusNotification.showError(error)
             case .cancelled:
                 return
             }

@@ -5,9 +5,7 @@ protocol ProxyPropertyGenerating {
 }
 
 struct ProxyPropertyGenerator: ProxyPropertyGenerating {
-    let iconNames: [String] = {
-        return ProxyPropertyGenerator.loadIconNames()
-    }()
+    let iconNames = ProxyPropertyGenerator.loadIconNames()
 
     var randomIconName: String {
         return iconNames[iconNames.count.random]
@@ -20,8 +18,8 @@ struct ProxyPropertyGenerator: ProxyPropertyGenerating {
         return adjective + noun + String(number)
     }
 
-    private let words: (adjectives: [String], nouns: [String]) = {
-        return (adjectives: ProxyPropertyGenerator.loadAdjectives(),
-                nouns: ProxyPropertyGenerator.loadNouns())
-    }()
+    private let words = (
+        adjectives: ProxyPropertyGenerator.loadAdjectives(),
+        nouns: ProxyPropertyGenerator.loadNouns()
+    )
 }

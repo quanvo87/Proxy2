@@ -6,17 +6,21 @@ class SenderPickerViewController: UIViewController {
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
     private var proxies = [Proxy]()
-    private weak var senderManager: SenderManaging?
-    private lazy var makeNewProxyButton = makeMakeNewProxyButton()
+    private weak var senderPickerDelegate: SenderPickerDelegate?
+    private lazy var makeNewProxyButton = UIBarButtonItem(
+        target: self,
+        action: #selector(makeNewProxy),
+        image: Image.makeNewProxy
+    )
 
     init(database: Database = Firebase(),
          proxiesObserver: ProxiesObserving = ProxiesObserver(),
          uid: String,
-         senderManager: SenderManaging?) {
+         senderPickerDelegate: SenderPickerDelegate?) {
         self.database = database
         self.proxiesObserver = proxiesObserver
         self.uid = uid
-        self.senderManager = senderManager
+        self.senderPickerDelegate = senderPickerDelegate
 
         super.init(nibName: nil, bundle: nil)
 
@@ -39,8 +43,10 @@ class SenderPickerViewController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
-        tableView.register(UINib(nibName: Identifier.proxiesTableViewCell, bundle: nil),
-                           forCellReuseIdentifier: Identifier.proxiesTableViewCell)
+        tableView.register(
+            UINib(nibName: String(describing: ProxiesTableViewCell.self), bundle: nil),
+            forCellReuseIdentifier: String(describing: ProxiesTableViewCell.self)
+        )
         tableView.rowHeight = 60
         tableView.sectionHeaderHeight = 0
 
@@ -59,30 +65,25 @@ private extension SenderPickerViewController {
         database.makeProxy(currentProxyCount: proxies.count, ownerId: uid) { [weak self] result in
             switch result {
             case .failure(let error):
-                self?.showErrorAlert(error)
+                StatusNotification.showError(error)
             default:
                 break
             }
             self?.makeNewProxyButton.isEnabled = true
         }
     }
-
-    func makeMakeNewProxyButton() -> UIBarButtonItem {
-        return UIBarButtonItem.make(target: self,
-                                    action: #selector(makeNewProxy),
-                                    imageName: ButtonName.makeNewProxy)
-    }
 }
 
 // MARK: - UITableViewDataSource
 extension SenderPickerViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard
-            let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.proxiesTableViewCell) as? ProxiesTableViewCell,
-            let proxy = proxies[safe: indexPath.row] else {
-                return tableView.dequeueReusableCell(withIdentifier: Identifier.proxiesTableViewCell, for: indexPath)
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: String(describing: ProxiesTableViewCell.self)
+            ) as? ProxiesTableViewCell else {
+                assertionFailure()
+                return ProxiesTableViewCell()
         }
-        cell.load(proxy: proxy, accessoryType: .none)
+        cell.load(proxy: proxies[indexPath.row], accessoryType: .none)
         return cell
     }
 
@@ -102,10 +103,8 @@ extension SenderPickerViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 extension SenderPickerViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let proxy = proxies[safe: indexPath.row] else {
-            return
-        }
-        senderManager?.sender = proxy
+        let proxy = proxies[indexPath.row]
+        senderPickerDelegate?.sender = proxy
         navigationController?.popViewController(animated: true)
     }
 

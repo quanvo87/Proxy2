@@ -1,28 +1,85 @@
-import UIKit
+import CFAlertViewController
+import Firebase
+import FirebaseHelper
+import NotificationBannerSwift
+import SwiftMessages
 
-struct ButtonName {
-    static let cancel = "cancel"
-    static let confirm = "confirm"
-    static let delete = "delete"
-    static let info = "info"
-    static let makeNewMessage = "makeNewMessage"
-    static let makeNewProxy = "makeNewProxy"
+enum Alert {
+    static let deleteProxyMessage = (
+        title: "Delete Proxy?",
+        message: "Your conversations for this proxy will also be deleted."
+    )
+
+    static func makeAlert(
+        title: String? = nil,
+        titleColor: UIColor? = nil,
+        message: String? = nil,
+        messageColor: UIColor? = nil,
+        textAlignment: NSTextAlignment = .left,
+        preferredStyle: CFAlertViewController.CFAlertControllerStyle = .alert,
+        headerView: UIView? = nil,
+        footerView: UIView? = nil,
+        handler: CFAlertViewController.CFAlertViewControllerDismissBlock? = nil) -> CFAlertViewController {
+        return CFAlertViewController(
+            title: title,
+            titleColor: titleColor,
+            message: message,
+            messageColor: messageColor,
+            textAlignment: textAlignment,
+            preferredStyle: preferredStyle,
+            headerView: headerView,
+            footerView: footerView,
+            didDismissAlertHandler: handler
+        )
+    }
+
+    static func makeOkAction(title: String? = "OK",
+                             alignment: CFAlertAction.CFAlertActionAlignment = .justified,
+                             backgroundColor: UIColor? = Color.alertButtonGreen,
+                             textColor: UIColor? = .white,
+                             handler: CFAlertAction.CFAlertActionHandlerBlock? = nil) -> CFAlertAction {
+        return CFAlertAction(
+            title: title,
+            style: .Default,
+            alignment: alignment,
+            backgroundColor: backgroundColor,
+            textColor: textColor,
+            handler: handler
+        )
+    }
+
+    static func makeCancelAction(title: String? = "Cancel",
+                                 alignment: CFAlertAction.CFAlertActionAlignment = .justified,
+                                 backgroundColor: UIColor? = nil,
+                                 textColor: UIColor? = nil,
+                                 handler: CFAlertAction.CFAlertActionHandlerBlock? = nil) -> CFAlertAction {
+        return CFAlertAction(
+            title: title,
+            style: .Cancel,
+            alignment: alignment,
+            backgroundColor: backgroundColor,
+            textColor: textColor,
+            handler: handler
+        )
+    }
+
+    static func makeDestructiveAction(title: String?,
+                                      alignment: CFAlertAction.CFAlertActionAlignment = .justified,
+                                      backgroundColor: UIColor? = Color.alertButtonRed,
+                                      textColor: UIColor? = .white,
+                                      handler: CFAlertAction.CFAlertActionHandlerBlock?) -> CFAlertAction {
+        return CFAlertAction(
+            title: title,
+            style: .Destructive,
+            alignment: alignment,
+            backgroundColor: backgroundColor,
+            textColor: textColor,
+            handler: handler
+        )
+    }
 }
 
-struct Identifier {
-    static let convoDetailReceiverProxyTableViewCell = "ConvoDetailReceiverProxyTableViewCell"
-    static let convoDetailSenderProxyTableViewCell = "ConvoDetailSenderProxyTableViewCell"
-    static let convosTableViewCell = "ConvosTableViewCell"
-    static let iconPickerCollectionViewCell = "IconPickerCollectionViewCell"
-    static let makeNewMessageSenderTableViewCell = "MakeNewMessageSenderTableViewCell"
-    static let makeNewMessageReceiverTableViewCell = "MakeNewMessageReceiverTableViewCell"
-    static let loginViewController = "LoginViewController"
-    static let proxiesTableViewCell = "ProxiesTableViewCell"
-    static let senderProxyTableViewCell = "SenderProxyTableViewCell"
-    static let settingsTableViewCell = "SettingsTableViewCell"
-}
-
-struct Child {
+enum Child {
     static let convos = "convos"
     static let hasUnreadMessage = "hasUnreadMessage"
     static let icon = "icon"
@@ -40,8 +97,99 @@ struct Child {
     static let userInfo = "userInfo"
 }
 
-struct Setting {
-    static let navBarButtonCGDouble = 30.0
-    static let navBarButtonCGRect = CGRect(x: 0, y: 0, width: Setting.navBarButtonCGDouble, height: Setting.navBarButtonCGDouble)
+enum Color {
+    static let alertButtonGreen = UIColor(red: 41/255, green: 191/255, blue: 60/255, alpha: 1)
+    static let alertButtonRed = UIColor(red: 252/255, green: 49/255, blue: 59/255, alpha: 1)
+    static let blue = UIColor(red: 0, green: 122/255, blue: 1, alpha: 1)
+    static let facebookBlue = UIColor(red: 59/255, green: 89/255, blue: 152/255, alpha: 1)
+    static let facebookDarkBlue = UIColor(red: 39/255, green: 69/255, blue: 132/255, alpha: 1)
+    static let loginButtonBlue = UIColor(red: 53/255, green: 152/255, blue: 217/255, alpha: 1)
+    static let receiverChatBubbleGray = UIColor(red: 230/255, green: 230/255, blue: 230/255, alpha: 1)
+}
+
+enum DatabaseOption {
+    static let generator = (name: "generator", value: ProxyPropertyGenerator())
+    static let makeProxyRetries = (name: "makeProxyRetries", value: 50)
+    static let maxMessageSize = (name: "maxMessageSize", value: 20000)
+    static let maxNameSize = (name: "maxNameSize", value: 50)
+    static let maxProxyCount = (name: "maxProxyCount", value: 30)
     static let querySize: UInt = 30
+}
+
+enum Identifier {
+    static let convoDetailSenderProxyTableViewCell = "ConvoDetailSenderProxyTableViewCell"
+}
+
+enum Image {
+    static let cancel = UIImage(named: "cancel")
+    static let confirm = UIImage(named: "confirm")
+    static let delete = UIImage(named: "delete")
+    static let info = UIImage(named: "info")
+    static let makeNewMessage = UIImage(named: "makeNewMessage")
+    static let makeNewProxy = UIImage(named: "makeNewProxy")
+
+    static func makeCircle(diameter: CGFloat, color: UIColor = Color.blue) -> UIImage? {
+        UIGraphicsBeginImageContextWithOptions(CGSize(width: diameter, height: diameter), false, 0)
+        let context = UIGraphicsGetCurrentContext()
+        context?.saveGState()
+        let rect = CGRect(x: 0, y: 0, width: diameter, height: diameter)
+        context?.setFillColor(color.cgColor)
+        context?.fillEllipse(in: rect)
+        context?.restoreGState()
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return image
+    }
+}
+
+enum Label {
+    static let checkIcon: UILabel = {
+        let checkIcon = UILabel()
+        checkIcon.font = UIFont.fontAwesome(ofSize: 35)
+        checkIcon.text = String.fontAwesomeIcon(name: .checkCircle)
+        checkIcon.textColor = .white
+        return checkIcon
+    }()
+
+    static let warningIcon: UILabel = {
+        let warningIcon = UILabel()
+        warningIcon.font = UIFont.fontAwesome(ofSize: 35)
+        warningIcon.text = String.fontAwesomeIcon(name: .exclamationTriangle)
+        warningIcon.textColor = .white
+        return warningIcon
+    }()
+}
+
+enum Shared {
+    static let auth = Auth.auth()
+    static let firebaseApp = FirebaseApp.app()
+    static let firebaseHelper = FirebaseHelper(FirebaseDatabase.Database.database().reference())
+    static let storyboard = UIStoryboard(name: "Main", bundle: nil)
+    static let decimalNumberFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        return formatter
+    }()
+}
+
+enum StatusNotification {
+    static func showError(_ error: Error) {
+        let view = MessageView.viewFromNib(layout: .statusLine)
+        view.configureTheme(.error)
+        view.configureContent(body: "⚠️ " + error.description)
+        NotificationBannerQueue.default.removeAll()
+        SwiftMessages.hideAll()
+        SwiftMessages.show(view: view)
+    }
+
+    static func showSuccess(_ title: String) {
+        let banner = StatusBarNotificationBanner(
+            attributedTitle: NSAttributedString(string: title),
+            style: .success
+        )
+        NotificationBannerQueue.default.removeAll()
+        SwiftMessages.hideAll()
+        banner.haptic = .none
+        banner.show()
+    }
 }

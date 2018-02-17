@@ -1,6 +1,6 @@
 import UIKit
 
-class ConvosViewController: UIViewController, NewConvoManaging {
+class ConvosViewController: UIViewController, NewMessageMakerDelegate {
     var newConvo: Convo?
     private let database: Database
     private let convosObserver: ConvosObsering
@@ -11,8 +11,16 @@ class ConvosViewController: UIViewController, NewConvoManaging {
     private var convos = [Convo]()
     private var currentProxyCount = 0
     private var unreadMessageCount = 0
-    private lazy var makeNewMessageButton = makeMakeNewMessageButton()
-    private lazy var makeNewProxyButton = makeMakeNewProxyButton()
+    private lazy var makeNewMessageButton = UIBarButtonItem(
+        target: self,
+        action: #selector(showNewMessageMakerViewController),
+        image: Image.makeNewMessage
+    )
+    private lazy var makeNewProxyButton = UIBarButtonItem(
+        target: self,
+        action: #selector(makeNewProxy),
+        image: Image.makeNewProxy
+    )
 
     init(database: Database = Firebase(),
          convosObserver: ConvosObsering = ConvosObserver(),
@@ -50,8 +58,10 @@ class ConvosViewController: UIViewController, NewConvoManaging {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
-        tableView.register(UINib(nibName: Identifier.convosTableViewCell, bundle: nil),
-                           forCellReuseIdentifier: Identifier.convosTableViewCell)
+        tableView.register(
+            UINib(nibName: String(describing: ConvosTableViewCell.self), bundle: nil),
+            forCellReuseIdentifier: String(describing: ConvosTableViewCell.self)
+        )
         tableView.rowHeight = 80
         tableView.sectionHeaderHeight = 0
 
@@ -96,7 +106,7 @@ private extension ConvosViewController {
         database.makeProxy(currentProxyCount: currentProxyCount, ownerId: uid) { [weak self] result in
             switch result {
             case .failure(let error):
-                self?.showErrorAlert(error)
+                StatusNotification.showError(error)
             case .success:
                 break
             }
@@ -104,35 +114,24 @@ private extension ConvosViewController {
         }
     }
 
-    @objc func showMakeNewMessageController() {
+    @objc func showNewMessageMakerViewController() {
         makeNewMessageButton.animate()
         makeNewMessageButton.isEnabled = false
-        showMakeNewMessageController(sender: nil, uid: uid)
+        showNewMessageMakerViewController(sender: nil, uid: uid)
         makeNewMessageButton.isEnabled = true
-    }
-
-    func makeMakeNewMessageButton() -> UIBarButtonItem {
-        return UIBarButtonItem.make(target: self,
-                                    action: #selector(showMakeNewMessageController),
-                                    imageName: ButtonName.makeNewMessage)
-    }
-
-    func makeMakeNewProxyButton() -> UIBarButtonItem {
-        return UIBarButtonItem.make(target: self,
-                                    action: #selector(makeNewProxy),
-                                    imageName: ButtonName.makeNewProxy)
     }
 }
 
 // MARK: - UITableViewDataSource
 extension ConvosViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard
-            let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.convosTableViewCell) as? ConvosTableViewCell,
-            let convo = convos[safe: indexPath.row] else {
-                return tableView.dequeueReusableCell(withIdentifier: Identifier.convosTableViewCell, for: indexPath)
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: String(describing: ConvosTableViewCell.self)
+            ) as? ConvosTableViewCell else {
+                assertionFailure()
+                return ConvosTableViewCell()
         }
-        cell.load(convo)
+        cell.load(convos[indexPath.row])
         return cell
     }
 
@@ -152,10 +151,8 @@ extension ConvosViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 extension ConvosViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let convo = convos[safe: indexPath.row] else {
-            return
-        }
         tableView.deselectRow(at: indexPath, animated: true)
+        let convo = convos[indexPath.row]
         showConvoController(convo)
     }
 
@@ -164,20 +161,12 @@ extension ConvosViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        guard
-            indexPath.row == convos.count - 1,
-            let convo = convos[safe: indexPath.row] else {
-                return
+        guard indexPath.row == convos.count - 1 else {
+            return
         }
+        let convo = convos[indexPath.row]
         convosObserver.loadConvos(endingAtTimestamp: convo.timestamp, proxyKey: nil) { [weak self] convos in
             self?.convos += convos
         }
-    }
-}
-
-// MARK: - Util
-private extension Int {
-    var asBadgeValue: String? {
-        return self == 0 ? nil : String(self)
     }
 }

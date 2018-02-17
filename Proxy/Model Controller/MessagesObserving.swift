@@ -1,5 +1,4 @@
 import FirebaseDatabase
-import FirebaseHelper
 import MessageKit
 import WQNetworkActivityIndicator
 
@@ -16,14 +15,14 @@ class MessagesObserver: MessagesObserving {
     private var firstCallback = true
     private var loading = true
 
-    required init(querySize: UInt = Setting.querySize) {
+    required init(querySize: UInt = DatabaseOption.querySize) {
         self.querySize = querySize
     }
 
     func observe(convoKey: String, completion: @escaping ([Message]) -> Void) {
         stopObserving()
         firstCallback = true
-        ref = try? FirebaseHelper.main.makeReference(Child.messages, convoKey)
+        ref = try? Shared.firebaseHelper.makeReference(Child.messages, convoKey)
         WQNetworkActivityIndicator.shared.show()
         handle = ref?
             .queryLimited(toLast: querySize)
@@ -34,7 +33,7 @@ class MessagesObserver: MessagesObserving {
                     WQNetworkActivityIndicator.shared.hide()
                 }
                 self?.loading = true
-                completion(data.toMessagesArray)
+                completion(data.asMessagesArray)
                 self?.loading = false
         }
     }
@@ -50,7 +49,7 @@ class MessagesObserver: MessagesObserving {
             .queryOrderedByKey()
             .observeSingleEvent(of: .value) { [weak self] data in
                 WQNetworkActivityIndicator.shared.hide()
-                var messages = data.toMessagesArray
+                var messages = data.asMessagesArray
                 guard messages.count > 1 else {
                     return
                 }

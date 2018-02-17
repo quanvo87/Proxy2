@@ -5,6 +5,7 @@ PODS:
   - Bolts/AppLinks (1.8.4):
     - Bolts/Tasks
   - Bolts/Tasks (1.8.4)
+  - CFAlertViewController (3.0)
   - Device (3.0.3)
   - FacebookCore (0.3.0):
     - Bolts (~> 1.8)
@@ -45,6 +46,7 @@ PODS:
     - Firebase/Database (~> 4.1)
   - FirebaseInstanceID (2.0.8):
     - FirebaseCore (~> 4.0)
+  - FontAwesome.swift (1.3.2)
   - GoogleToolboxForMac/DebugUtils (2.1.3):
     - GoogleToolboxForMac/Defines (= 2.1.3)
   - GoogleToolboxForMac/Defines (2.1.3)
@@ -58,19 +60,29 @@ PODS:
   - GroupWork (0.0.6)
   - GTMSessionFetcher/Core (1.1.12)
   - leveldb-library (1.20)
+  - MarqueeLabel/Swift (3.1.4)
   - MessageKit (0.13.1)
   - nanopb (0.3.8):
     - nanopb/decode (= 0.3.8)
     - nanopb/encode (= 0.3.8)
   - nanopb/decode (0.3.8)
   - nanopb/encode (0.3.8)
+  - NotificationBannerSwift (1.6.1):
+    - MarqueeLabel/Swift
+    - SnapKit (~> 4.0)
+  - PureLayout (3.0.2)
   - SearchTextField (1.2.0)
+  - Segmentio (3.0)
+  - SkyFloatingLabelTextField (3.4.0)
+  - SnapKit (4.0.0)
   - Spring (1.0.5)
   - SwiftLint (0.24.2)
-  - SwiftVideoBackground (2.0.0)
+  - SwiftMessages (4.1.0)
+  - SwiftyButton (0.8.0)
   - WQNetworkActivityIndicator (0.1.2)
 
 DEPENDENCIES:
+  - CFAlertViewController (~> 3.0)
   - Device (~> 3.0)
   - FacebookCore (~> 0.3)
   - FacebookLogin (~> 0.3)
@@ -78,16 +90,23 @@ DEPENDENCIES:
   - FirebaseAuth (~> 4.4)
   - FirebaseDatabase (~> 4.1)
   - FirebaseHelper (~> 1.0)
+  - FontAwesome.swift (~> 1.3)
   - GroupWork (~> 0.0)
   - MessageKit (~> 0.13)
+  - NotificationBannerSwift (~> 1.6)
+  - PureLayout (~> 3.0)
   - SearchTextField (~> 1.2)
+  - Segmentio (~> 3.0)
+  - SkyFloatingLabelTextField (~> 3.4)
   - Spring (~> 1.0)
   - SwiftLint (~> 0.24)
-  - SwiftVideoBackground (~> 2.0)
+  - SwiftMessages (~> 4.1)
+  - SwiftyButton (~> 0.8)
   - WQNetworkActivityIndicator (~> 0.1)
 
 SPEC CHECKSUMS:
   Bolts: 8a7995239dbe724f9cba2248b766d48b7ebdd322
+  CFAlertViewController: 460bb12b42b500bb0838e5595ca144a18344765f
   Device: 9a5264ee4e0f392e7153d2c46b10c8df46b7aad2
   FacebookCore: 3ffa190a3f1f96cec0e44d3fc221bc322c595ffa
   FacebookLogin: 0af839ea858faef99550d16596b87b4a8e8906e6
@@ -100,18 +119,26 @@ SPEC CHECKSUMS:
   FirebaseDatabase: 7088bfc4af2cc00231bb36e1404fc2d7509eb4dc
   FirebaseHelper: 1f6bfbaf696118d049688a8586dd3b84b251d0ff
   FirebaseInstanceID: 81df5805a08001e69138664bdd02c6719a9ac80f
+  FontAwesome.swift: b4e4c8ccbbecb12f9b592bc533ff237af3706667
   GoogleToolboxForMac: 2501e2ad72a52eb3dfe7bd9aee7dad11b858bd20
   GroupWork: b6184ee1e14e573ae4d9eeea1d4a6172d6d608bc
   GTMSessionFetcher: ebaa1f79a5366922c1735f1566901f50beba23b7
   leveldb-library: 08cba283675b7ed2d99629a4bc5fd052cd2bb6a5
+  MarqueeLabel: bf768455fe88d427f71476ebb23f9092b660f40b
   MessageKit: fc74d71d9b05385138d47b3a4b7beef5c687daf1
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
+  NotificationBannerSwift: 1fc2955381e6eb26d958ba32160fc41721b9b689
+  PureLayout: 4d550abe49a94f24c2808b9b95db9131685fe4cd
   SearchTextField: a5bb7e4c33affadb115afdbe8100d84ef10a8024
+  Segmentio: 1607fba3b42230f5f91e997d1a3f337f1176674c
+  SkyFloatingLabelTextField: 703aa1420b697392b1e7dba25571180dde018477
+  SnapKit: a42d492c16e80209130a3379f73596c3454b7694
   Spring: 17901566c8ecf3a1327902b940406c64512f9bb1
   SwiftLint: 2aa21b96c8d13396a051bc1cb659d2ce1e0075b0
-  SwiftVideoBackground: 41d030c232284482973e46959de6398a116c6b58
+  SwiftMessages: 1bacc783c8f10bdfdc57c14860cae8a1f1fa6591
+  SwiftyButton: 093e3fe2becf3ae31c0f6c1c6987b79a93fb3ecb
   WQNetworkActivityIndicator: 6a893f95b5500de408b3712f66f4cc4265b49f8d
 
-PODFILE CHECKSUM: 4622fbab572b63d86f0f9b5d77abea91d9a13ce2
+PODFILE CHECKSUM: 9552de03bb1a32eae0254cfa5eec2d5bf3d75a65
 
 COCOAPODS: 1.4.0

@@ -1,5 +1,4 @@
 import FirebaseDatabase
-import FirebaseHelper
 import WQNetworkActivityIndicator
 
 protocol ConvosObsering: ReferenceObserving {
@@ -17,14 +16,14 @@ class ConvosObserver: ConvosObsering {
     private var firstCallback = true
     private var loading = true
 
-    required init(querySize: UInt = Setting.querySize) {
+    required init(querySize: UInt = DatabaseOption.querySize) {
         self.querySize = querySize
     }
 
     func observe(convosOwnerId: String, proxyKey: String?, completion: @escaping ([Convo]) -> Void) {
         stopObserving()
         firstCallback = true
-        ref = try? FirebaseHelper.main.makeReference(Child.convos, convosOwnerId)
+        ref = try? Shared.firebaseHelper.makeReference(Child.convos, convosOwnerId)
         WQNetworkActivityIndicator.shared.show()
         handle = ref?
             .queryLimited(toLast: querySize)
@@ -35,7 +34,7 @@ class ConvosObserver: ConvosObsering {
                     WQNetworkActivityIndicator.shared.hide()
                 }
                 self?.loading = true
-                completion(data.toConvosArray(proxyKey: proxyKey).reversed())
+                completion(data.asConvosArray(proxyKey: proxyKey).reversed())
                 self?.loading = false
         }
     }
@@ -53,7 +52,7 @@ class ConvosObserver: ConvosObsering {
             .queryOrdered(byChild: Child.timestamp)
             .observeSingleEvent(of: .value) { [weak self] data in
                 WQNetworkActivityIndicator.shared.hide()
-                var convos = data.toConvosArray(proxyKey: proxyKey)
+                var convos = data.asConvosArray(proxyKey: proxyKey)
                 guard convos.count > 1 else {
                     return
                 }
