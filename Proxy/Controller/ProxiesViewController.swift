@@ -206,9 +206,7 @@ extension ProxiesViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 extension ProxiesViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let proxy = proxies[safe: indexPath.row] else {
-            return
-        }
+        let proxy = proxies[indexPath.row]
         if tableView.isEditing {
             proxiesToDelete[proxy.key] = proxy
         } else {
@@ -218,12 +216,10 @@ extension ProxiesViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        guard
-            tableView.isEditing,
-            let proxy = proxies[safe: indexPath.row] else {
-                return
+        if tableView.isEditing {
+            let proxy = proxies[indexPath.row]
+            proxiesToDelete.removeValue(forKey: proxy.key)
         }
-        proxiesToDelete.removeValue(forKey: proxy.key)
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

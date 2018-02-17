@@ -255,9 +255,7 @@ extension NewMessageMakerViewController: UITableViewDataSource {
                     return MakeNewMessageReceiverTableViewCell()
             }
             cell.receiverTextField.itemSelectionHandler = { [weak self] items, index in
-                guard let item = items[safe: index] else {
-                    return
-                }
+                let item = items[index]
                 cell.iconImageView.image = item.image
                 cell.receiverTextField.text = item.title
                 self?.messageInputBar.inputTextView.becomeFirstResponder()

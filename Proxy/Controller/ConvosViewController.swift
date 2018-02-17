@@ -151,10 +151,8 @@ extension ConvosViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 extension ConvosViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let convo = convos[safe: indexPath.row] else {
-            return
-        }
         tableView.deselectRow(at: indexPath, animated: true)
+        let convo = convos[indexPath.row]
         showConvoController(convo)
     }
 
@@ -163,13 +161,11 @@ extension ConvosViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        guard
-            indexPath.row == convos.count - 1,
-            let convo = convos[safe: indexPath.row] else {
-                return
-        }
-        convosObserver.loadConvos(endingAtTimestamp: convo.timestamp, proxyKey: nil) { [weak self] convos in
-            self?.convos += convos
+        if indexPath.row == convos.count - 1 {
+            let convo = convos[indexPath.row]
+            convosObserver.loadConvos(endingAtTimestamp: convo.timestamp, proxyKey: nil) { [weak self] convos in
+                self?.convos += convos
+            }
         }
     }
 }

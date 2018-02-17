@@ -103,9 +103,7 @@ extension SenderPickerViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 extension SenderPickerViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let proxy = proxies[safe: indexPath.row] else {
-            return
-        }
+        let proxy = proxies[indexPath.row]
         senderPickerDelegate?.sender = proxy
         navigationController?.popViewController(animated: true)
     }

@@ -208,14 +208,12 @@ extension ProxyViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 extension ProxyViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard
-            indexPath.section == 1,
-            let row = tableView.indexPathForSelectedRow?.row,
-            let convo = convos[safe: row] else {
-                return
-        }
         tableView.deselectRow(at: indexPath, animated: true)
-        showConvoController(convo)
+        if indexPath.section == 1,
+            let row = tableView.indexPathForSelectedRow?.row {
+            let convo = convos[row]
+            showConvoController(convo)
+        }
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -241,15 +239,15 @@ extension ProxyViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        guard
-            indexPath.section == 1,
-            indexPath.row == convos.count - 1,
-            let convo = convos[safe: indexPath.row],
-            let proxy = proxy else {
-                return
+        guard let proxy = proxy else {
+            return
         }
-        convosObserver.loadConvos(endingAtTimestamp: convo.timestamp, proxyKey: proxy.key) { [weak self] convos in
-            self?.convos += convos
+        if indexPath.section == 1,
+            indexPath.row == convos.count - 1 {
+            let convo = convos[indexPath.row]
+            convosObserver.loadConvos(endingAtTimestamp: convo.timestamp, proxyKey: proxy.key) { [weak self] convos in
+                self?.convos += convos
+            }
         }
     }
 }
