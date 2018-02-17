@@ -93,6 +93,16 @@ extension DataSnapshot {
     }
 }
 
+extension Error {
+    var description: String {
+        if let error = self as? ProxyError {
+            return error.description
+        } else {
+            return localizedDescription
+        }
+    }
+}
+
 extension Int {
     var asBadgeValue: String? {
         return self == 0 ? nil : String(self)

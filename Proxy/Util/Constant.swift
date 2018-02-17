@@ -174,15 +174,9 @@ enum Shared {
 
 enum StatusNotification {
     static func showError(_ error: Error) {
-        var body: String
-        if let error = error as? ProxyError {
-            body = error.description
-        } else {
-            body = "⚠️ " + error.localizedDescription
-        }
         let view = MessageView.viewFromNib(layout: .statusLine)
         view.configureTheme(.error)
-        view.configureContent(body: body)
+        view.configureContent(body: "⚠️ " + error.description)
         NotificationBannerQueue.default.removeAll()
         SwiftMessages.hideAll()
         SwiftMessages.show(view: view)
@@ -195,6 +189,7 @@ enum StatusNotification {
         )
         NotificationBannerQueue.default.removeAll()
         SwiftMessages.hideAll()
+        banner.haptic = .none
         banner.show()
     }
 }

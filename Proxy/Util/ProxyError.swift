@@ -10,27 +10,25 @@ enum ProxyError: Error {
     case unknown
 
     var description: String {
-        var _description: String
         switch self {
         case .blankMessage:
-            _description = "Cannot send blank message"
+            return "Cannot send blank message"
         case .inputTooLong:
-            _description = "Too many characters."
+            return "Too many characters."
         case .missingCredentials:
-            _description = "Invalid email/password."
+            return "Invalid email/password."
         case .receiverDeletedProxy:
-            _description = "This receiver no longer exists."
+            return "The receiver no longer exists."
         case .receiverMissing:
-            _description = "Pick a receiver for the message."
+            return "Pick a receiver for the message."
         case .receiverNotFound:
-            _description = "Receiver not found."
+            return "Receiver not found."
         case .senderMissing:
-            _description = "Pick a sender for the message."
+            return "Pick a sender for the message."
         case .tooManyProxies:
-            _description = "You have too many proxies."
+            return "You have too many proxies."
         case .unknown:
-            _description = "Unknown error occurred."
+            return "Unknown error occurred."
         }
-        return "⚠️ " + _description
     }
 }
