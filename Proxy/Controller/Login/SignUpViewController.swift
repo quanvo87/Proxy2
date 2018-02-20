@@ -15,6 +15,8 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        view.backgroundColor = .clear
+
         let closeKeyboardNavigationBar = UINavigationBar(
             target: self,
             action: #selector(closeKeyboard),
@@ -83,7 +85,7 @@ private extension SignUpViewController {
     func signUp() {
         guard let email = emailTextField.text, email != "",
             let password = passwordTextField.text, password != "" else {
-                StatusNotification.showError(ProxyError.missingCredentials)
+                StatusBar.showError(ProxyError.missingCredentials)
                 return
         }
         loginManager.emailSignUp(email: email.lowercased(), password: password) { _ in }

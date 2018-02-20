@@ -142,7 +142,7 @@ private extension NewMessageMakerViewController {
         database.makeProxy(currentProxyCount: proxies.count, ownerId: uid) { [weak self] result in
             switch result {
             case .failure(let error):
-                StatusNotification.showError(error)
+                StatusBar.showError(error)
             case .success(let newProxy):
                 self?.sender = newProxy
             }
@@ -189,7 +189,7 @@ extension NewMessageMakerViewController: MessageInputBarDelegate {
         sendMessage(text) { [weak self] result in
             switch result {
             case .failure(let error):
-                StatusNotification.showError(error)
+                StatusBar.showError(error)
                 self?.messageInputBar.inputTextView.text = text
                 self?.isSending = false
                 self?.setButtons(true)

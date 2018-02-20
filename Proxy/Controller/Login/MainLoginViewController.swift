@@ -1,4 +1,5 @@
 import Segmentio
+import SwiftVideoBackground
 
 class MainLoginViewController: UIViewController {
     @IBOutlet weak var contentView: UIView!
@@ -10,6 +11,10 @@ class MainLoginViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        contentView.backgroundColor = .clear
+
+        try? VideoBackground.shared.play(view: view, name: "login", type: "mp4")
 
         let segmentioOptions = SegmentioOptions(
             backgroundColor: .clear,

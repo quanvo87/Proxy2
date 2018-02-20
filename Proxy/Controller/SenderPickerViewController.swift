@@ -65,7 +65,7 @@ private extension SenderPickerViewController {
         database.makeProxy(currentProxyCount: proxies.count, ownerId: uid) { [weak self] result in
             switch result {
             case .failure(let error):
-                StatusNotification.showError(error)
+                StatusBar.showError(error)
             default:
                 break
             }

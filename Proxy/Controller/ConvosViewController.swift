@@ -106,7 +106,7 @@ private extension ConvosViewController {
         database.makeProxy(currentProxyCount: currentProxyCount, ownerId: uid) { [weak self] result in
             switch result {
             case .failure(let error):
-                StatusNotification.showError(error)
+                StatusBar.showError(error)
             case .success:
                 break
             }

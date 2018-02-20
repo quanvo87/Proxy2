@@ -21,6 +21,7 @@ def pods
   pod 'Spring', '~> 1.0'
   pod 'SwiftLint', '~> 0.24'
   pod 'SwiftMessages', '~> 4.1'
+  pod 'SwiftVideoBackground', '~> 2.1'
   pod 'SwiftyButton', '~> 0.8'
   pod 'FontAwesome.swift', '~> 1.3'
   pod 'WQNetworkActivityIndicator', '~> 0.1'
