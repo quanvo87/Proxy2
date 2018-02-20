@@ -142,24 +142,6 @@ enum Image {
     }
 }
 
-enum Label {
-    static let checkIcon: UILabel = {
-        let checkIcon = UILabel()
-        checkIcon.font = UIFont.fontAwesome(ofSize: 35)
-        checkIcon.text = String.fontAwesomeIcon(name: .checkCircle)
-        checkIcon.textColor = .white
-        return checkIcon
-    }()
-
-    static let warningIcon: UILabel = {
-        let warningIcon = UILabel()
-        warningIcon.font = UIFont.fontAwesome(ofSize: 35)
-        warningIcon.text = String.fontAwesomeIcon(name: .exclamationTriangle)
-        warningIcon.textColor = .white
-        return warningIcon
-    }()
-}
-
 enum Shared {
     static let auth = Auth.auth()
     static let firebaseApp = FirebaseApp.app()
@@ -172,11 +154,11 @@ enum Shared {
     }()
 }
 
-enum StatusNotification {
+enum StatusBar {
     static func showError(_ error: Error) {
         let view = MessageView.viewFromNib(layout: .statusLine)
         view.configureTheme(.error)
-        view.configureContent(body: "⚠️ " + error.description)
+        view.configureContent(body: "⚠️ " + error.localizedDescription)
         NotificationBannerQueue.default.removeAll()
         SwiftMessages.hideAll()
         SwiftMessages.show(view: view)

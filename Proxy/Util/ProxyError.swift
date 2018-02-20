@@ -1,4 +1,6 @@
-enum ProxyError: Error {
+import Foundation
+// todo: localizedError
+enum ProxyError: LocalizedError {
     case blankMessage
     case inputTooLong
     case missingCredentials
@@ -9,7 +11,7 @@ enum ProxyError: Error {
     case tooManyProxies
     case unknown
 
-    var description: String {
+    var errorDescription: String? {
         switch self {
         case .blankMessage:
             return "Cannot send blank message"

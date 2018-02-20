@@ -78,6 +78,7 @@ PODS:
   - Spring (1.0.5)
   - SwiftLint (0.24.2)
   - SwiftMessages (4.1.0)
+  - SwiftVideoBackground (2.1.0)
   - SwiftyButton (0.8.0)
   - WQNetworkActivityIndicator (0.1.2)
 
@@ -101,6 +102,7 @@ DEPENDENCIES:
   - Spring (~> 1.0)
   - SwiftLint (~> 0.24)
   - SwiftMessages (~> 4.1)
+  - SwiftVideoBackground (~> 2.1)
   - SwiftyButton (~> 0.8)
   - WQNetworkActivityIndicator (~> 0.1)
 
@@ -136,9 +138,10 @@ SPEC CHECKSUMS:
   Spring: 17901566c8ecf3a1327902b940406c64512f9bb1
   SwiftLint: 2aa21b96c8d13396a051bc1cb659d2ce1e0075b0
   SwiftMessages: 1bacc783c8f10bdfdc57c14860cae8a1f1fa6591
+  SwiftVideoBackground: ffdb2feb803a522c4566bf689fa2c7fb2b3abad1
   SwiftyButton: 093e3fe2becf3ae31c0f6c1c6987b79a93fb3ecb
   WQNetworkActivityIndicator: 6a893f95b5500de408b3712f66f4cc4265b49f8d
 
-PODFILE CHECKSUM: 9552de03bb1a32eae0254cfa5eec2d5bf3d75a65
+PODFILE CHECKSUM: 4b23016cab21264c45c01084061ff14aaca6ca1e
 
 COCOAPODS: 1.4.0

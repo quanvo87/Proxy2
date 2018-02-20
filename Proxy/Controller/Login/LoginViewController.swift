@@ -16,6 +16,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        view.backgroundColor = .clear
+
         let closeKeyboardNavigationBar = UINavigationBar(
             target: self,
             action: #selector(closeKeyboard),
@@ -84,7 +86,7 @@ private extension LoginViewController {
     func login() {
         guard let email = emailTextField.text, email != "",
             let password = passwordTextField.text, password != "" else {
-                StatusNotification.showError(ProxyError.missingCredentials)
+                StatusBar.showError(ProxyError.missingCredentials)
                 return
         }
         loginManager.emailLogin(email: email.lowercased(), password: password) { _ in }
