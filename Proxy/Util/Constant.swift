@@ -1,6 +1,7 @@
 import CFAlertViewController
 import Firebase
 import FirebaseHelper
+import FontAwesome_swift
 import NotificationBannerSwift
 import SwiftMessages
 
@@ -128,7 +129,11 @@ enum Image {
     static let makeNewMessage = UIImage(named: "makeNewMessage")
     static let makeNewProxy = UIImage(named: "makeNewProxy")
 
-    static func makeCircle(diameter: CGFloat, color: UIColor = Color.blue) -> UIImage? {
+    static func make(_ fontAwesome: FontAwesome) -> UIImage {
+        return UIImage.fontAwesomeIcon(name: fontAwesome, textColor: .white, size: CGSize(width: 100, height: 100))
+    }
+
+    static func makeCircle(diameter: CGFloat, color: UIColor = Color.blue) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(CGSize(width: diameter, height: diameter), false, 0)
         let context = UIGraphicsGetCurrentContext()
         context?.saveGState()
@@ -138,7 +143,11 @@ enum Image {
         context?.restoreGState()
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        return image
+        if let image = image {
+            return image
+        } else {
+            return UIImage()
+        }
     }
 }
 

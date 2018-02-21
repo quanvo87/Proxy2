@@ -14,6 +14,7 @@
 		590823C31F9EED6A00A3B6A9 /* IconPickerCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 590823C21F9EED6A00A3B6A9 /* IconPickerCollectionViewCell.xib */; };
 		590823C51F9EF6DA00A3B6A9 /* ProxyPropertyGenerating.swift in Sources */ = {isa = PBXBuildFile; fileRef = 590823C41F9EF6DA00A3B6A9 /* ProxyPropertyGenerating.swift */; };
 		591E305E1FF9729C00094EB3 /* FirebaseUtilTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 591E305D1FF9729C00094EB3 /* FirebaseUtilTests.swift */; };
+		5926CBBB203D4DE000B18B4D /* login.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 5926CBBA203D4DE000B18B4D /* login.mp4 */; };
 		5932BA18200963AC0041BD7B /* ConvoObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5932BA17200963AC0041BD7B /* ConvoObserving.swift */; };
 		5932BA1A20096FD60041BD7B /* ConvosObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5932BA1920096FD60041BD7B /* ConvosObserving.swift */; };
 		5932BA1E2009837D0041BD7B /* MessagesObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5932BA1D2009837D0041BD7B /* MessagesObserving.swift */; };
@@ -58,7 +59,6 @@
 		59B432E51F60648400622DEA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 59B432E31F60648400622DEA /* Main.storyboard */; };
 		59B432E71F60648400622DEA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 59B432E61F60648400622DEA /* Assets.xcassets */; };
 		59B432EA1F60648400622DEA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 59B432E81F60648400622DEA /* LaunchScreen.storyboard */; };
-		59B8BDBB203C0A2900E4E7C8 /* login.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 59B8BDBA203C0A2900E4E7C8 /* login.mp4 */; };
 		59B90C211FF3411E00449569 /* UnreadMessagesObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59B90C201FF3411E00449569 /* UnreadMessagesObserving.swift */; };
 		59BDAE512003849C002A5A6C /* ProxyNamesLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BDAE502003849C002A5A6C /* ProxyNamesLoading.swift */; };
 		59BE6ABB2016C74B00CCD27E /* GroupWork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BE6ABA2016C74B00CCD27E /* GroupWork.swift */; };
@@ -100,6 +100,7 @@
 		590823C21F9EED6A00A3B6A9 /* IconPickerCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IconPickerCollectionViewCell.xib; sourceTree = "<group>"; };
 		590823C41F9EF6DA00A3B6A9 /* ProxyPropertyGenerating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyPropertyGenerating.swift; sourceTree = "<group>"; };
 		591E305D1FF9729C00094EB3 /* FirebaseUtilTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseUtilTests.swift; sourceTree = "<group>"; };
+		5926CBBA203D4DE000B18B4D /* login.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = login.mp4; sourceTree = "<group>"; };
 		5932BA17200963AC0041BD7B /* ConvoObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoObserving.swift; sourceTree = "<group>"; };
 		5932BA1920096FD60041BD7B /* ConvosObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvosObserving.swift; sourceTree = "<group>"; };
 		5932BA1D2009837D0041BD7B /* MessagesObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesObserving.swift; sourceTree = "<group>"; };
@@ -150,7 +151,6 @@
 		59B432F61F60648400622DEA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		59B432FB1F60648400622DEA /* ProxyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ProxyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		59B433011F60648400622DEA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		59B8BDBA203C0A2900E4E7C8 /* login.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = login.mp4; sourceTree = "<group>"; };
 		59B90C201FF3411E00449569 /* UnreadMessagesObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnreadMessagesObserving.swift; sourceTree = "<group>"; };
 		59BDAE502003849C002A5A6C /* ProxyNamesLoading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyNamesLoading.swift; sourceTree = "<group>"; };
 		59BE6ABA2016C74B00CCD27E /* GroupWork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupWork.swift; sourceTree = "<group>"; };
@@ -375,7 +375,7 @@
 			isa = PBXGroup;
 			children = (
 				59B432E61F60648400622DEA /* Assets.xcassets */,
-				59B8BDBA203C0A2900E4E7C8 /* login.mp4 */,
+				5926CBBA203D4DE000B18B4D /* login.mp4 */,
 				59B432EB1F60648400622DEA /* Info.plist */,
 			);
 			path = Other;
@@ -514,7 +514,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				59B8BDBB203C0A2900E4E7C8 /* login.mp4 in Resources */,
+				5926CBBB203D4DE000B18B4D /* login.mp4 in Resources */,
 				590823C31F9EED6A00A3B6A9 /* IconPickerCollectionViewCell.xib in Resources */,
 				5988E8341F9A5EF9002C8C95 /* SettingsTableViewCell.xib in Resources */,
 				59B432EA1F60648400622DEA /* LaunchScreen.storyboard in Resources */,
@@ -648,7 +648,6 @@
 				"${BUILT_PRODUCTS_DIR}/NotificationBannerSwift/NotificationBannerSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/PureLayout/PureLayout.framework",
 				"${BUILT_PRODUCTS_DIR}/SearchTextField/SearchTextField.framework",
-				"${BUILT_PRODUCTS_DIR}/Segmentio/Segmentio.framework",
 				"${BUILT_PRODUCTS_DIR}/SkyFloatingLabelTextField/SkyFloatingLabelTextField.framework",
 				"${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework",
 				"${BUILT_PRODUCTS_DIR}/Spring/Spring.framework",
@@ -658,6 +657,7 @@
 				"${BUILT_PRODUCTS_DIR}/WQNetworkActivityIndicator/WQNetworkActivityIndicator.framework",
 				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
+				"${BUILT_PRODUCTS_DIR}/paper-onboarding/paper_onboarding.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -677,7 +677,6 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NotificationBannerSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PureLayout.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SearchTextField.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Segmentio.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SkyFloatingLabelTextField.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SnapKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Spring.framework",
@@ -687,6 +686,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WQNetworkActivityIndicator.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/paper_onboarding.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -749,7 +749,6 @@
 				"${BUILT_PRODUCTS_DIR}/NotificationBannerSwift/NotificationBannerSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/PureLayout/PureLayout.framework",
 				"${BUILT_PRODUCTS_DIR}/SearchTextField/SearchTextField.framework",
-				"${BUILT_PRODUCTS_DIR}/Segmentio/Segmentio.framework",
 				"${BUILT_PRODUCTS_DIR}/SkyFloatingLabelTextField/SkyFloatingLabelTextField.framework",
 				"${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework",
 				"${BUILT_PRODUCTS_DIR}/Spring/Spring.framework",
@@ -759,6 +758,7 @@
 				"${BUILT_PRODUCTS_DIR}/WQNetworkActivityIndicator/WQNetworkActivityIndicator.framework",
 				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
+				"${BUILT_PRODUCTS_DIR}/paper-onboarding/paper_onboarding.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -778,7 +778,6 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NotificationBannerSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PureLayout.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SearchTextField.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Segmentio.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SkyFloatingLabelTextField.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SnapKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Spring.framework",
@@ -788,6 +787,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WQNetworkActivityIndicator.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/paper_onboarding.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

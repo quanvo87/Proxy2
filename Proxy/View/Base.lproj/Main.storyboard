@@ -22,42 +22,31 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="K1D-g8-4AH" customClass="Segmentio" customModule="Segmentio">
-                                <rect key="frame" x="10" y="95" width="355" height="45"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="45" id="TDm-yv-h7I"/>
-                                </constraints>
-                            </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Yc3-R9-7Ep">
-                                <rect key="frame" x="10" y="145" width="355" height="522"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Yc3-R9-7Ep" userLabel="onboarding" customClass="PaperOnboarding" customModule="paper_onboarding">
+                                <rect key="frame" x="0.0" y="152" width="375" height="415"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="pokemon" translatesAutoresizingMaskIntoConstraints="NO" id="Ad1-UK-AeM">
-                                <rect key="frame" x="92" y="25" width="190" height="70"/>
+                                <rect key="frame" x="62" y="60" width="250" height="92"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="Ad1-UK-AeM" secondAttribute="height" multiplier="125:46" id="Nez-w5-vut"/>
-                                    <constraint firstAttribute="width" constant="190" id="bR4-zg-Le4"/>
+                                    <constraint firstAttribute="width" constant="250" id="bR4-zg-Le4"/>
                                 </constraints>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="Yc3-R9-7Ep" firstAttribute="leading" secondItem="a7O-1B-Est" secondAttribute="leading" constant="10" id="9fJ-h3-RRq"/>
-                            <constraint firstItem="a7O-1B-Est" firstAttribute="bottom" secondItem="Yc3-R9-7Ep" secondAttribute="bottom" id="Np2-SZ-KsQ"/>
+                            <constraint firstItem="Yc3-R9-7Ep" firstAttribute="leading" secondItem="a7O-1B-Est" secondAttribute="leading" id="9fJ-h3-RRq"/>
+                            <constraint firstItem="a7O-1B-Est" firstAttribute="bottom" secondItem="Yc3-R9-7Ep" secondAttribute="bottom" constant="100" id="Np2-SZ-KsQ"/>
                             <constraint firstItem="Ad1-UK-AeM" firstAttribute="centerX" secondItem="a7O-1B-Est" secondAttribute="centerX" id="ThY-A4-7cJ"/>
-                            <constraint firstItem="Ad1-UK-AeM" firstAttribute="top" secondItem="a7O-1B-Est" secondAttribute="top" constant="5" id="bTv-qg-OnU"/>
-                            <constraint firstItem="K1D-g8-4AH" firstAttribute="leading" secondItem="a7O-1B-Est" secondAttribute="leading" constant="10" id="fzF-xg-8lP"/>
-                            <constraint firstItem="a7O-1B-Est" firstAttribute="trailing" secondItem="K1D-g8-4AH" secondAttribute="trailing" constant="10" id="mH5-fD-vPq"/>
-                            <constraint firstItem="a7O-1B-Est" firstAttribute="trailing" secondItem="Yc3-R9-7Ep" secondAttribute="trailing" constant="10" id="qcL-vR-0NC"/>
-                            <constraint firstItem="K1D-g8-4AH" firstAttribute="top" secondItem="Ad1-UK-AeM" secondAttribute="bottom" id="usR-DP-aTp"/>
-                            <constraint firstItem="Yc3-R9-7Ep" firstAttribute="top" secondItem="K1D-g8-4AH" secondAttribute="bottom" constant="5" id="wgG-j6-Wh7"/>
+                            <constraint firstItem="Ad1-UK-AeM" firstAttribute="top" secondItem="a7O-1B-Est" secondAttribute="top" constant="40" id="bTv-qg-OnU"/>
+                            <constraint firstItem="a7O-1B-Est" firstAttribute="trailing" secondItem="Yc3-R9-7Ep" secondAttribute="trailing" id="qcL-vR-0NC"/>
+                            <constraint firstItem="Yc3-R9-7Ep" firstAttribute="top" secondItem="Ad1-UK-AeM" secondAttribute="bottom" id="vYT-cq-vXk"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="a7O-1B-Est"/>
                     </view>
                     <connections>
-                        <outlet property="contentView" destination="Yc3-R9-7Ep" id="8aS-jo-5DG"/>
-                        <outlet property="segmentedControl" destination="K1D-g8-4AH" id="Ox1-u2-Sk6"/>
+                        <outlet property="onboarding" destination="Yc3-R9-7Ep" id="aYx-hg-kdB"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cl9-LD-2Cy" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -79,13 +68,13 @@
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="2FU-iX-iJ7" customClass="SkyFloatingLabelTextFieldWithIcon" customModule="SkyFloatingLabelTextField">
-                                <rect key="frame" x="0.0" y="69" width="375" height="39"/>
+                                <rect key="frame" x="0.0" y="69" width="375" height="39.5"/>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kzC-ki-r2K" customClass="Button" customModule="Proxy" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="128" width="375" height="45"/>
+                                <rect key="frame" x="0.0" y="128.5" width="375" height="45"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="45" id="rm2-Wg-p79"/>
                                 </constraints>
@@ -94,7 +83,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cAO-sq-nwf" customClass="Button" customModule="Proxy" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="178" width="375" height="45"/>
+                                <rect key="frame" x="0.0" y="178.5" width="375" height="45"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="45" id="cbq-bA-rfR"/>
                                 </constraints>
@@ -146,13 +135,13 @@
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="eCe-0F-9Ql" customClass="SkyFloatingLabelTextFieldWithIcon" customModule="SkyFloatingLabelTextField">
-                                <rect key="frame" x="0.0" y="69" width="295" height="39"/>
+                                <rect key="frame" x="0.0" y="69" width="295" height="39.5"/>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="N7P-1O-d6e" customClass="Button" customModule="Proxy" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="177.5" width="375" height="45"/>
+                                <rect key="frame" x="0.0" y="178" width="375" height="45"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="45" id="ytd-pQ-vJ1"/>
                                 </constraints>
@@ -161,7 +150,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rm5-s0-YxA" customClass="Button" customModule="Proxy" customModuleProvider="target">
-                                <rect key="frame" x="300" y="64" width="75" height="43.5"/>
+                                <rect key="frame" x="300" y="64" width="75" height="44"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="75" id="lXw-Dw-elW"/>
                                 </constraints>
@@ -170,7 +159,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jLc-kQ-f2M" customClass="Button" customModule="Proxy" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="127.5" width="375" height="45"/>
+                                <rect key="frame" x="0.0" y="128" width="375" height="45"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="45" id="9sn-Y4-XcX"/>
                                 </constraints>
