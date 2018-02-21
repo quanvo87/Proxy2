@@ -1,4 +1,5 @@
 import FirebaseDatabase
+import paper_onboarding
 import SkyFloatingLabelTextField
 import Spring
 
@@ -118,6 +119,21 @@ extension NSAttributedString {
         )
         receiver.append(sender)
         self.init(attributedString: receiver)
+    }
+}
+
+extension OnboardingItemInfo {
+    init(title: String, description: String, pageIcon: UIImage) {
+        self.init(
+            informationImage: UIImage(),
+            title: title,
+            description: description,
+            pageIcon: pageIcon,
+            color: .clear,
+            titleColor: .white,
+            descriptionColor: .white,
+            titleFont: UIFont.systemFont(ofSize: 20),
+            descriptionFont: UIFont.systemFont(ofSize: 14))
     }
 }
 

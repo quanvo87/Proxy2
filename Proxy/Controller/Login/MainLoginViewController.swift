@@ -1,87 +1,55 @@
-import Segmentio
+import paper_onboarding
 import SwiftVideoBackground
 
 class MainLoginViewController: UIViewController {
-    @IBOutlet weak var contentView: UIView!
-    @IBOutlet weak var segmentedControl: Segmentio! // todo: mem leak at badgeviewpresenter
+    @IBOutlet weak var onboarding: PaperOnboarding!
 
-    private let loginViewController = LoginViewController.make()
-    private let signUpViewController = SignUpViewController.make()
-    private var currentViewController: UIViewController?
+    // swiftlint:disable line_length
+    private let onboardingItems = [
+        OnboardingItemInfo(
+            title: "Welcome to Proxy",
+            description: "Sign in to talk to anyone in the world without revealing your identity.",
+            pageIcon: Image.make(.heart)
+        ),
+        OnboardingItemInfo(
+            title: "Fast. Easy.",
+            description: "Create a new identify with just one tap. Throw it away when you’re done. Have up to 30 at a time!",
+            pageIcon: Image.make(.users)
+        ),
+        OnboardingItemInfo(
+            title: "NEVER Share Your Contact Info",
+            description: "Perfect for when you need to communicate with a stranger briefly, but never want them to contact you again. 👋",
+            pageIcon: Image.make(.userSecret)
+        ),
+        OnboardingItemInfo(
+            title: "Talk To Anyone",
+            description: "Anyone in the world can message you--without knowing your personal info.",
+            pageIcon: Image.make(.globe)
+        ),
+        OnboardingItemInfo(
+            title: "Absolutely free. Forever.",
+            description: "Tap below to begin.",
+            pageIcon: Image.make(.comments)
+        )
+    ]
+    // swiftlint:enable line_length
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        contentView.backgroundColor = .clear
-
         try? VideoBackground.shared.play(view: view, name: "login", type: "mp4")
 
-        let segmentioOptions = SegmentioOptions(
-            backgroundColor: .clear,
-            indicatorOptions: SegmentioIndicatorOptions(
-                color: Color.loginButtonBlue
-            ),
-            horizontalSeparatorOptions: SegmentioHorizontalSeparatorOptions(
-                type: .bottom,
-                color: .lightGray
-            ),
-            verticalSeparatorOptions: SegmentioVerticalSeparatorOptions(
-                color: .clear
-            ),
-            segmentStates: SegmentioStates(
-                defaultState: segmentioState,
-                selectedState: SegmentioState(
-                    backgroundColor: .clear,
-                    titleFont: UIFont.systemFont(ofSize: UIFont.systemFontSize),
-                    titleTextColor: Color.loginButtonBlue
-                ),
-                highlightedState: segmentioState
-            )
-        )
-
-        segmentedControl.setup(
-            content: [
-                SegmentioItem(title: "Sign Up", image: nil),
-                SegmentioItem(title: "Log In", image: nil)
-            ],
-            style: .onlyLabel,
-            options: segmentioOptions
-        )
-
-        segmentedControl.valueDidChange = { [weak self] _, index in
-            guard let _self = self else {
-                return
-            }
-            _self.currentViewController?.view.removeFromSuperview()
-            _self.currentViewController?.removeFromParentViewController()
-            switch index {
-            case 0:
-                _self.showViewController(_self.signUpViewController)
-            case 1:
-                _self.showViewController(_self.loginViewController)
-            default:
-                break
-            }
-        }
-
-        segmentedControl.selectedSegmentioIndex = 0
+        onboarding.backgroundColor = .clear
+        onboarding.dataSource = self
     }
 }
 
-private extension MainLoginViewController {
-    var segmentioState: SegmentioState {
-        return SegmentioState(
-            backgroundColor: .clear,
-            titleFont: UIFont.systemFont(ofSize: UIFont.systemFontSize),
-            titleTextColor: .lightGray
-        )
+extension MainLoginViewController: PaperOnboardingDataSource {
+    func onboardingItemsCount() -> Int {
+        return onboardingItems.count
     }
 
-    func showViewController(_ viewController: UIViewController) {
-        addChildViewController(viewController)
-        viewController.didMove(toParentViewController: self)
-        viewController.view.frame = contentView.bounds
-        contentView.addSubview(viewController.view)
-        currentViewController = viewController
+    func onboardingItem(at index: Int) -> OnboardingItemInfo {
+        return onboardingItems[index]
     }
 }

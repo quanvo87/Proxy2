@@ -1,5 +1,5 @@
 import Foundation
-// todo: localizedError
+
 enum ProxyError: LocalizedError {
     case blankMessage
     case inputTooLong
