@@ -7,14 +7,14 @@ class Button: CustomPressableButton {
     private var leftLabel: UILabel?
     private var centerLabel: UILabel?
 
-    func setup(centerLabelText: String,
-               centerLabelFont: UIFont? = nil,
-               centerLabelTextColor: UIColor = .white,
-               asFacebookButton: Bool = false,
-               colors: ColorSet? = nil,
-               disabledColors: ColorSet? = nil,
-               cornerRadius: CGFloat = 5,
-               shadowHeight: CGFloat = 5) {
+    func configure(centerLabelText: String,
+                   centerLabelFont: UIFont? = nil,
+                   centerLabelTextColor: UIColor = .white,
+                   asFacebookButton: Bool = false,
+                   colors: ColorSet? = nil,
+                   disabledColors: ColorSet? = nil,
+                   cornerRadius: CGFloat = 5,
+                   shadowHeight: CGFloat = 5) {
         self.leftLabel?.removeFromSuperview()
         self.centerLabel?.removeFromSuperview()
 
@@ -60,7 +60,7 @@ class Button: CustomPressableButton {
 
         self.leftLabel = leftLabel
 
-        colors = .init(button: Color.facebookBlue, shadow: Color.facebookDarkBlue)
+        colors = .init(button: Color.facebookBlue, shadow: Color.facebookBlueShadow)
         disabledColors = .init(button: Color.facebookBlue, shadow: .gray)
     }
 

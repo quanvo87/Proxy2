@@ -1,7 +1,7 @@
 import SkyFloatingLabelTextField
 
 // todo: change login to log in
-class LoginViewController: UIViewController, UITextFieldDelegate {
+class LoginViewController: UIViewController {
     @IBOutlet weak var emailTextField: SkyFloatingLabelTextFieldWithIcon!
     @IBOutlet weak var passwordTextField: SkyFloatingLabelTextFieldWithIcon!
     @IBOutlet weak var loginButton: Button!
@@ -34,9 +34,9 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         passwordTextField.setupAsPasswordTextField()
         passwordTextField.tag = 1
 
-        loginButton.setup(centerLabelText: "Log in")
+        loginButton.configure(centerLabelText: "Log in")
 
-        facebookButton.setup(
+        facebookButton.configure(
             centerLabelText: "Log in with Facebook",
             asFacebookButton: true
         )
@@ -53,18 +53,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             loginViewController.loginManager = loginManager
         }
         return loginViewController
-    }
-
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        switch textField.tag {
-        case 0:
-            passwordTextField.becomeFirstResponder()
-        case 1:
-            login()
-        default:
-            break
-        }
-        return true
     }
 }
 
@@ -94,5 +82,19 @@ private extension LoginViewController {
                 return
         }
         loginManager.emailLogin(email: email.lowercased(), password: password) { _ in }
+    }
+}
+
+extension LoginViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        switch textField.tag {
+        case 0:
+            passwordTextField.becomeFirstResponder()
+        case 1:
+            login()
+        default:
+            break
+        }
+        return true
     }
 }

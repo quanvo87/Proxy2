@@ -104,8 +104,10 @@ enum Color {
     static let alertButtonRed = UIColor(red: 252/255, green: 49/255, blue: 59/255, alpha: 1)
     static let blue = UIColor(red: 0, green: 122/255, blue: 1, alpha: 1)
     static let facebookBlue = UIColor(red: 59/255, green: 89/255, blue: 152/255, alpha: 1)
-    static let facebookDarkBlue = UIColor(red: 39/255, green: 69/255, blue: 132/255, alpha: 1)
+    static let facebookBlueShadow = UIColor(red: 39/255, green: 69/255, blue: 132/255, alpha: 1)
     static let loginButtonBlue = UIColor(red: 53/255, green: 152/255, blue: 217/255, alpha: 1)
+    static let loginButtonRed = UIColor(red: 231/255, green: 76/255, blue: 60/255, alpha: 1)
+    static let loginButtonRedShadow = UIColor(red: 211/255, green: 56/255, blue: 40/255, alpha: 1)
     static let receiverChatBubbleGray = UIColor(red: 230/255, green: 230/255, blue: 230/255, alpha: 1)
 }
 
@@ -179,6 +181,7 @@ enum Shared {
 
 enum StatusBar {
     // todo: improve
+    // todo: add banner alerts too
     static func showError(_ error: Error) {
         let view = MessageView.viewFromNib(layout: .statusLine)
         view.configureTheme(.error)
