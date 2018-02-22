@@ -2,7 +2,7 @@ import paper_onboarding
 import SwiftVideoBackground
 import SwiftyButton
 
-class MainLoginViewController: UIViewController {
+class WelcomeViewController: UIViewController {
     @IBOutlet weak var onboarding: PaperOnboarding!
     @IBOutlet weak var createAccountButton: Button!
     @IBOutlet weak var logInButton: Button!
@@ -12,7 +12,7 @@ class MainLoginViewController: UIViewController {
         OnboardingItemInfo(
             title: "Welcome to Proxy",
             description: "Sign in to talk to anyone in the world without revealing your identity.",
-            pageIcon: Image.make(.heart)
+            pageIcon: Image.make(.comments)
         ),
         OnboardingItemInfo(
             title: "Fast. Easy.",
@@ -32,7 +32,7 @@ class MainLoginViewController: UIViewController {
         OnboardingItemInfo(
             title: "Absolutely free. Forever.",
             description: "Tap below to begin!",
-            pageIcon: Image.make(.comments)
+            pageIcon: Image.make(.heart)
         )
     ]
     // swiftlint:enable line_length
@@ -47,18 +47,11 @@ class MainLoginViewController: UIViewController {
         onboarding.backgroundColor = .clear
         onboarding.dataSource = self
 
-        createAccountButton.setup(
-            centerLabelText: "CREATE ACCOUNT",
-            centerLabelTextColor: .gray,
-            asFacebookButton: false,
-            colors: PressableButton.ColorSet(button: .white, shadow: .gray)
-        )
+        createAccountButton.configure(centerLabelText: "CREATE ACCOUNT")
 
-        logInButton.setup(
+        logInButton.configure(
             centerLabelText: "LOG IN",
-            centerLabelTextColor: .gray,
-            asFacebookButton: false,
-            colors: PressableButton.ColorSet(button: .white, shadow: .gray)
+            colors: PressableButton.ColorSet(button: Color.loginButtonRed, shadow: Color.loginButtonRedShadow)
         )
     }
 
@@ -71,7 +64,9 @@ class MainLoginViewController: UIViewController {
         super.viewWillDisappear(animated)
         navigationController?.isNavigationBarHidden = false
     }
+}
 
+private extension WelcomeViewController {
     @IBAction func tappedCreateAccountButton(_ sender: Any) {
         let signUpViewController = SignUpViewController.make()
         navigationController?.pushViewController(signUpViewController, animated: true)
@@ -83,7 +78,7 @@ class MainLoginViewController: UIViewController {
     }
 }
 
-extension MainLoginViewController: PaperOnboardingDataSource {
+extension WelcomeViewController: PaperOnboardingDataSource {
     func onboardingItemsCount() -> Int {
         return onboardingItems.count
     }

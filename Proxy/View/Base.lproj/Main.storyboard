@@ -10,10 +10,10 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Main Login View Controller-->
+        <!--Welcome View Controller-->
         <scene sceneID="jNT-LK-tgD">
             <objects>
-                <viewController storyboardIdentifier="MainLoginViewController" id="mti-JT-f0N" customClass="MainLoginViewController" customModule="Proxy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="WelcomeViewController" id="mti-JT-f0N" customClass="WelcomeViewController" customModule="Proxy" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="9Lu-0E-rOH"/>
                         <viewControllerLayoutGuide type="bottom" id="Ibs-yw-gQo"/>
@@ -27,7 +27,7 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="pokemon" translatesAutoresizingMaskIntoConstraints="NO" id="Ad1-UK-AeM">
-                                <rect key="frame" x="62" y="134" width="250" height="92"/>
+                                <rect key="frame" x="62.5" y="134" width="250" height="92"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="Ad1-UK-AeM" secondAttribute="height" multiplier="125:46" id="Nez-w5-vut"/>
                                     <constraint firstAttribute="width" constant="250" id="bR4-zg-Le4"/>
@@ -134,7 +134,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="By signing up, you agree to Proxy's" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1fp-wR-bgC">
-                                <rect key="frame" x="89" y="274.5" width="198.5" height="14.5"/>
+                                <rect key="frame" x="88.5" y="274.5" width="198.5" height="14.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
@@ -146,7 +146,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="W6I-Gw-4TN">
-                                <rect key="frame" x="106" y="294" width="162" height="20"/>
+                                <rect key="frame" x="106.5" y="294" width="162" height="20"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="20" id="teB-tz-XxP"/>
                                 </constraints>

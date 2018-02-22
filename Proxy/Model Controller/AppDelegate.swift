@@ -38,8 +38,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             } else {
                 guard let isLoggedIn = self?.isLoggedIn, isLoggedIn,
                     let mainLoginController = Shared.storyboard.instantiateViewController(
-                        withIdentifier: String(describing: MainLoginViewController.self)
-                        ) as? MainLoginViewController else {
+                        withIdentifier: String(describing: WelcomeViewController.self)
+                        ) as? WelcomeViewController else {
                             return
                 }
                 self?.isLoggedIn = false

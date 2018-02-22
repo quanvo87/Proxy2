@@ -154,6 +154,10 @@ private extension NewMessageMakerViewController {
         setFirstResponder()
     }
 
+    func disableSendButton() {
+        messageInputBar.sendButton.isEnabled = false
+    }
+
     func setButtons(_ isEnabled: Bool) {
         makeNewProxyButton.isEnabled = isEnabled
         setSendButton()
@@ -171,11 +175,11 @@ private extension NewMessageMakerViewController {
     }
 
     func setSendButton() {
-        if isSending {
-            messageInputBar.sendButton.isEnabled = false
-        } else {
-            messageInputBar.sendButton.isEnabled = messageInputBar.inputTextView.text != ""
-        }
+        messageInputBar.sendButton.isEnabled =
+            !isSending &&
+            sender != nil &&
+            receiverCell?.receiverTextField.text?.withoutWhiteSpacesAndNewLines.count ?? 0 > 1 &&
+            messageInputBar.inputTextView.text.withoutWhiteSpacesAndNewLines.count > 0
     }
 }
 
@@ -263,6 +267,7 @@ extension NewMessageMakerViewController: UITableViewDataSource {
                 cell.iconImageView.image = item.image
                 cell.receiverTextField.text = item.title
                 self?.messageInputBar.inputTextView.becomeFirstResponder()
+                self?.setSendButton()
             }
             cell.receiverTextField.userStoppedTypingHandler = { [weak self] in
                 guard let _self = self, let query = cell.receiverTextField.text, query.count > 0 else {
@@ -320,6 +325,18 @@ extension NewMessageMakerViewController: UITableViewDelegate {
 extension NewMessageMakerViewController: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
         firstResponder = .receiverTextField
+    }
+
+    func textFieldShouldClear(_ textField: UITextField) -> Bool {
+        disableSendButton()
+        return true
+    }
+
+    func textField(_ textField: UITextField,
+                   shouldChangeCharactersIn range: NSRange,
+                   replacementString string: String) -> Bool {
+        setSendButton()
+        return true
     }
 }
 

@@ -27,7 +27,7 @@
 		5973C84A1F608A2200647492 /* ConvosTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8161F608A1A00647492 /* ConvosTableViewCell.swift */; };
 		5973C8511F608A2200647492 /* ProxyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C81D1F608A1B00647492 /* ProxyError.swift */; };
 		5973C8531F608A2200647492 /* ConvoDetailReceiverProxyTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C81F1F608A1B00647492 /* ConvoDetailReceiverProxyTableViewCell.swift */; };
-		5973C8561F608A2200647492 /* MainLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8221F608A1B00647492 /* MainLoginViewController.swift */; };
+		5973C8561F608A2200647492 /* WelcomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8221F608A1B00647492 /* WelcomeViewController.swift */; };
 		5973C8571F608A2200647492 /* NewMessageMakerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8231F608A1C00647492 /* NewMessageMakerViewController.swift */; };
 		5973C85A1F608A2200647492 /* ProxiesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8261F608A1C00647492 /* ProxiesTableViewCell.swift */; };
 		5973C85D1F608A2200647492 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8291F608A1C00647492 /* Common.swift */; };
@@ -113,7 +113,7 @@
 		5973C8161F608A1A00647492 /* ConvosTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvosTableViewCell.swift; sourceTree = "<group>"; };
 		5973C81D1F608A1B00647492 /* ProxyError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyError.swift; sourceTree = "<group>"; };
 		5973C81F1F608A1B00647492 /* ConvoDetailReceiverProxyTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvoDetailReceiverProxyTableViewCell.swift; sourceTree = "<group>"; };
-		5973C8221F608A1B00647492 /* MainLoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainLoginViewController.swift; sourceTree = "<group>"; };
+		5973C8221F608A1B00647492 /* WelcomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WelcomeViewController.swift; sourceTree = "<group>"; };
 		5973C8231F608A1C00647492 /* NewMessageMakerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewMessageMakerViewController.swift; sourceTree = "<group>"; };
 		5973C8261F608A1C00647492 /* ProxiesTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxiesTableViewCell.swift; sourceTree = "<group>"; };
 		5973C8291F608A1C00647492 /* Common.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
@@ -212,7 +212,7 @@
 		59038A36202FA476006C1B73 /* Login */ = {
 			isa = PBXGroup;
 			children = (
-				5973C8221F608A1B00647492 /* MainLoginViewController.swift */,
+				5973C8221F608A1B00647492 /* WelcomeViewController.swift */,
 				59038A34202FA43B006C1B73 /* SignUpViewController.swift */,
 				5959CA322030C20600083FC8 /* LoginViewController.swift */,
 			);
@@ -870,7 +870,7 @@
 				59BE6ABB2016C74B00CCD27E /* GroupWork.swift in Sources */,
 				5973C85D1F608A2200647492 /* Common.swift in Sources */,
 				5973C84A1F608A2200647492 /* ConvosTableViewCell.swift in Sources */,
-				5973C8561F608A2200647492 /* MainLoginViewController.swift in Sources */,
+				5973C8561F608A2200647492 /* WelcomeViewController.swift in Sources */,
 				5973C8681F608A2200647492 /* ProxyViewController.swift in Sources */,
 				593D7D441F851F7D00D3FBD5 /* UserStatsObserving.swift in Sources */,
 				5973C85E1F608A2200647492 /* SenderProxyTableViewCell.swift in Sources */,

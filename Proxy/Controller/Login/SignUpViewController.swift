@@ -1,6 +1,7 @@
 import SkyFloatingLabelTextField
 
-class SignUpViewController: UIViewController, UITextFieldDelegate {
+// todo: terms and priv pol
+class SignUpViewController: UIViewController {
     @IBOutlet weak var emailTextField: SkyFloatingLabelTextFieldWithIcon!
     @IBOutlet weak var passwordTextField: SkyFloatingLabelTextFieldWithIcon!
     @IBOutlet weak var signUpButton: Button!
@@ -33,9 +34,9 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
         passwordTextField.setupAsPasswordTextField()
         passwordTextField.tag = 1
 
-        signUpButton.setup(centerLabelText: "Sign up")
+        signUpButton.configure(centerLabelText: "Sign up")
 
-        facebookButton.setup(
+        facebookButton.configure(
             centerLabelText: "Sign up with Facebook",
             asFacebookButton: true
         )
@@ -52,18 +53,6 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
             signUpViewController.loginManager = loginManager
         }
         return signUpViewController
-    }
-
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        switch textField.tag {
-        case 0:
-            passwordTextField.becomeFirstResponder()
-        case 1:
-            signUp()
-        default:
-            break
-        }
-        return true
     }
 }
 
@@ -89,5 +78,19 @@ private extension SignUpViewController {
                 return
         }
         loginManager.emailSignUp(email: email.lowercased(), password: password) { _ in }
+    }
+}
+
+extension SignUpViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        switch textField.tag {
+        case 0:
+            passwordTextField.becomeFirstResponder()
+        case 1:
+            signUp()
+        default:
+            break
+        }
+        return true
     }
 }
