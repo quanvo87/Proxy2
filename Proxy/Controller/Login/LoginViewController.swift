@@ -1,9 +1,9 @@
 import SkyFloatingLabelTextField
 
+// todo: change login to log in
 class LoginViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var emailTextField: SkyFloatingLabelTextFieldWithIcon!
     @IBOutlet weak var passwordTextField: SkyFloatingLabelTextFieldWithIcon!
-    @IBOutlet weak var forgotPasswordButton: Button!
     @IBOutlet weak var loginButton: Button!
     @IBOutlet weak var facebookButton: Button!
 
@@ -16,7 +16,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .clear
+        navigationItem.title = "Log in"
 
         let closeKeyboardNavigationBar = UINavigationBar(
             target: self,
@@ -34,24 +34,10 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         passwordTextField.setupAsPasswordTextField()
         passwordTextField.tag = 1
 
-        let red = UIColor(red: 231/255, green: 76/255, blue: 60/255, alpha: 1)
-        forgotPasswordButton.setup(
-            centerLabelText: "Forgot?",
-            centerLabelFont: UIFont.systemFont(ofSize: 14),
-            colors: .init(
-                button: red,
-                shadow: UIColor(red: 211/255, green: 56/255, blue: 40/255, alpha: 1)
-            ),
-            disabledColors: .init(
-                button: red,
-                shadow: .gray
-            )
-        )
-
         loginButton.setup(centerLabelText: "Log in")
 
         facebookButton.setup(
-            centerLabelText: "Continue with Facebook",
+            centerLabelText: "Log in with Facebook",
             asFacebookButton: true
         )
     }
@@ -83,13 +69,16 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
 }
 
 private extension LoginViewController {
-    func login() {
-        guard let email = emailTextField.text, email != "",
-            let password = passwordTextField.text, password != "" else {
-                StatusBar.showError(ProxyError.missingCredentials)
-                return
-        }
-        loginManager.emailLogin(email: email.lowercased(), password: password) { _ in }
+    @IBAction func tappedFacebookButton(_ sender: Any) {
+        loginManager.facebookLogin { _ in }
+    }
+
+    @IBAction func tappedLoginButton(_ sender: Any) {
+        login()
+    }
+
+    // todo
+    @IBAction func tappedForgotPasswordButton(_ sender: Any) {
     }
 
     @objc func closeKeyboard() {
@@ -98,15 +87,12 @@ private extension LoginViewController {
         }
     }
 
-    // todo
-    @IBAction func tapForgotPasswordButton(_ sender: Any) {
-    }
-
-    @IBAction func tapLoginButton(_ sender: Any) {
-        login()
-    }
-
-    @IBAction func tapFacebookButton(_ sender: Any) {
-        loginManager.facebookLogin { _ in }
+    func login() {
+        guard let email = emailTextField.text, email != "",
+            let password = passwordTextField.text, password != "" else {
+                StatusBar.showError(ProxyError.missingCredentials)
+                return
+        }
+        loginManager.emailLogin(email: email.lowercased(), password: password) { _ in }
     }
 }

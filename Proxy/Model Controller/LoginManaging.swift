@@ -36,7 +36,7 @@ class LoginManager: LoginManaging {
             if let error = error {
                 StatusBar.showError(error)
             } else {
-                StatusBar.showSuccess("Login successful! 😊🎉")
+                StatusBar.showSuccess("Log in successful. Welcome! 🎉")
             }
         }
     }
@@ -50,7 +50,7 @@ class LoginManager: LoginManaging {
             if let error = error {
                 StatusBar.showError(error)
             } else {
-                StatusBar.showSuccess("Sign up successful! 😊🎉")
+                StatusBar.showSuccess("Sign up successful. Welcome! 🎉")
             }
         }
     }
@@ -70,7 +70,7 @@ class LoginManager: LoginManaging {
                     if let error = error {
                         StatusBar.showError(error)
                     } else {
-                        StatusBar.showSuccess("Log in successful! 🤩🎉")
+                        StatusBar.showSuccess("Log in successful. Welcome! 🎉")
                     }
                 }
             case .failed(let error):

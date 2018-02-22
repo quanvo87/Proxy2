@@ -1,4 +1,3 @@
-import Device
 import MessageKit
 
 private enum FirstResponder {
@@ -276,14 +275,14 @@ extension NewMessageMakerViewController: UITableViewDataSource {
                     cell.receiverTextField.stopLoadingIndicator()
                 }
             }
-            let fontSize: CGFloat = isSmallDevice ? 14 : 17
+            let fontSize: CGFloat = Shared.isSmallDevice ? 14 : 17
             cell.receiverTextField.highlightAttributes =
                 [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: fontSize)]
             cell.receiverTextField.theme.font = .systemFont(ofSize: fontSize)
             cell.receiverTextField.comparisonOptions = [.caseInsensitive]
             cell.receiverTextField.delegate = self
             cell.receiverTextField.maxResultsListHeight =
-                isSmallDevice ? Int(view.frame.height / 4) : Int(view.frame.height / 3)
+                Shared.isSmallDevice ? Int(view.frame.height / 4) : Int(view.frame.height / 3)
             cell.receiverTextField.theme.cellHeight = 50
             cell.receiverTextField.theme.separatorColor = UIColor.lightGray.withAlphaComponent(0.5)
             return cell
@@ -297,17 +296,6 @@ extension NewMessageMakerViewController: UITableViewDataSource {
             return "Tap the bouncing button to make a new Proxy 🎉."
         } else {
             return nil
-        }
-    }
-
-    private var isSmallDevice: Bool {
-        switch Device.size() {
-        case .screen3_5Inch:
-            return true
-        case .screen4Inch:
-            return true
-        default:
-            return false
         }
     }
 }

@@ -1,8 +1,11 @@
 import paper_onboarding
 import SwiftVideoBackground
+import SwiftyButton
 
 class MainLoginViewController: UIViewController {
     @IBOutlet weak var onboarding: PaperOnboarding!
+    @IBOutlet weak var createAccountButton: Button!
+    @IBOutlet weak var logInButton: Button!
 
     // swiftlint:disable line_length
     private let onboardingItems = [
@@ -28,7 +31,7 @@ class MainLoginViewController: UIViewController {
         ),
         OnboardingItemInfo(
             title: "Absolutely free. Forever.",
-            description: "Tap below to begin.",
+            description: "Tap below to begin!",
             pageIcon: Image.make(.comments)
         )
     ]
@@ -37,10 +40,46 @@ class MainLoginViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        try? VideoBackground.shared.play(view: view, name: "login", type: "mp4")
+        navigationItem.title = ""
+
+        try? VideoBackground.shared.play(view: view, name: "login", type: "mp4", alpha: 0.25)
 
         onboarding.backgroundColor = .clear
         onboarding.dataSource = self
+
+        createAccountButton.setup(
+            centerLabelText: "CREATE ACCOUNT",
+            centerLabelTextColor: .gray,
+            asFacebookButton: false,
+            colors: PressableButton.ColorSet(button: .white, shadow: .gray)
+        )
+
+        logInButton.setup(
+            centerLabelText: "LOG IN",
+            centerLabelTextColor: .gray,
+            asFacebookButton: false,
+            colors: PressableButton.ColorSet(button: .white, shadow: .gray)
+        )
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.isNavigationBarHidden = true
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.isNavigationBarHidden = false
+    }
+
+    @IBAction func tappedCreateAccountButton(_ sender: Any) {
+        let signUpViewController = SignUpViewController.make()
+        navigationController?.pushViewController(signUpViewController, animated: true)
+    }
+
+    @IBAction func tappedLogInButton(_ sender: Any) {
+        let logInViewController = LoginViewController.make()
+        navigationController?.pushViewController(logInViewController, animated: true)
     }
 }
 

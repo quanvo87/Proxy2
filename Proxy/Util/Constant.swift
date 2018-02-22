@@ -1,4 +1,5 @@
 import CFAlertViewController
+import Device
 import Firebase
 import FirebaseHelper
 import FontAwesome_swift
@@ -122,6 +123,7 @@ enum Identifier {
 }
 
 enum Image {
+    // todo: enum
     static let cancel = UIImage(named: "cancel")
     static let confirm = UIImage(named: "confirm")
     static let delete = UIImage(named: "delete")
@@ -156,6 +158,18 @@ enum Shared {
     static let firebaseApp = FirebaseApp.app()
     static let firebaseHelper = FirebaseHelper(FirebaseDatabase.Database.database().reference())
     static let storyboard = UIStoryboard(name: "Main", bundle: nil)
+
+    static let isSmallDevice: Bool = {
+        switch Device.size() {
+        case .screen3_5Inch:
+            return true
+        case .screen4Inch:
+            return true
+        default:
+            return false
+        }
+    }()
+
     static let decimalNumberFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
@@ -164,6 +178,7 @@ enum Shared {
 }
 
 enum StatusBar {
+    // todo: improve
     static func showError(_ error: Error) {
         let view = MessageView.viewFromNib(layout: .statusLine)
         view.configureTheme(.error)
@@ -180,6 +195,7 @@ enum StatusBar {
         )
         NotificationBannerQueue.default.removeAll()
         SwiftMessages.hideAll()
+        banner.duration = 3
         banner.haptic = .none
         banner.show()
     }
