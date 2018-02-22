@@ -139,29 +139,30 @@ extension OnboardingItemInfo {
 
 extension SkyFloatingLabelTextFieldWithIcon {
     func setupAsEmailTextField() {
-        clearButtonMode = .whileEditing
+        setup()
         iconFont = UIFont.fontAwesome(ofSize: 15)
         iconText = String.fontAwesomeIcon(name: .envelope)
         keyboardType = .emailAddress
         placeholder = "Email"
         returnKeyType = .next
-        selectedIconColor = Color.loginButtonBlue
-        selectedLineColor = Color.loginButtonBlue
-        selectedTitleColor = Color.loginButtonBlue
         textContentType = .emailAddress
     }
 
     func setupAsPasswordTextField() {
-        clearButtonMode = .whileEditing
+        setup()
         iconFont = UIFont.fontAwesome(ofSize: 20)
         iconText = String.fontAwesomeIcon(name: .lock)
         isSecureTextEntry = true
         placeholder = "Password"
         returnKeyType = .go
+        textContentType = .password
+    }
+
+    func setup() {
+        clearButtonMode = .whileEditing
         selectedIconColor = Color.loginButtonBlue
         selectedLineColor = Color.loginButtonBlue
         selectedTitleColor = Color.loginButtonBlue
-        textContentType = .password
     }
 }
 
@@ -176,8 +177,12 @@ extension SpringButton {
 }
 
 extension String {
-    var noWhiteSpaces: String {
+    var withoutWhiteSpacesAndNewLines: String {
         return components(separatedBy: .whitespacesAndNewlines).joined()
+    }
+
+    var trimmed: String {
+        return trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     func getFirstNChars(_ n: Int) -> String {
@@ -185,10 +190,6 @@ extension String {
             return ""
         }
         return String(self[..<index(startIndex, offsetBy: n)])
-    }
-
-    var trimmed: String {
-        return trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
 

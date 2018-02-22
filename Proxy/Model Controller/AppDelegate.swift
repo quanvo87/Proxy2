@@ -3,6 +3,7 @@ import Firebase
 import FBSDKCoreKit
 import SwiftMessages
 
+// todo: do not omit param name for single param funcs?
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow? = UIWindow(frame: UIScreen.main.bounds)
@@ -42,7 +43,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                             return
                 }
                 self?.isLoggedIn = false
-                self?.window?.rootViewController = mainLoginController
+                let navigationController = UINavigationController(rootViewController: mainLoginController)
+                self?.window?.rootViewController = navigationController
             }
         }
 

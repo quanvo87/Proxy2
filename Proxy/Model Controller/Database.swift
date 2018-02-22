@@ -80,7 +80,10 @@ class Firebase: Database {
     }
 
     func getProxy(proxyKey: String, completion: @escaping ProxyCallback) {
-        Shared.firebaseHelper.get(Child.proxyNames, proxyKey.lowercased().noWhiteSpaces) { [weak self] result in
+        Shared.firebaseHelper.get(
+            Child.proxyNames,
+            proxyKey.lowercased().withoutWhiteSpacesAndNewLines
+        ) { [weak self] result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))

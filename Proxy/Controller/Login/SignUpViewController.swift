@@ -15,7 +15,7 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .clear
+        navigationItem.title = "Sign up"
 
         let closeKeyboardNavigationBar = UINavigationBar(
             target: self,
@@ -36,7 +36,7 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
         signUpButton.setup(centerLabelText: "Sign up")
 
         facebookButton.setup(
-            centerLabelText: "Continue with Facebook",
+            centerLabelText: "Sign up with Facebook",
             asFacebookButton: true
         )
     }
@@ -68,11 +68,11 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
 }
 
 private extension SignUpViewController {
-    @IBAction func tapSignUpButton(_ sender: Any) {
+    @IBAction func tappedSignUpButton(_ sender: Any) {
         signUp()
     }
 
-    @IBAction func tapFacebookButton(_ sender: Any) {
+    @IBAction func tappedFacebookButton(_ sender: Any) {
         loginManager.facebookLogin { _ in }
     }
 

@@ -14,7 +14,6 @@
 		590823C31F9EED6A00A3B6A9 /* IconPickerCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 590823C21F9EED6A00A3B6A9 /* IconPickerCollectionViewCell.xib */; };
 		590823C51F9EF6DA00A3B6A9 /* ProxyPropertyGenerating.swift in Sources */ = {isa = PBXBuildFile; fileRef = 590823C41F9EF6DA00A3B6A9 /* ProxyPropertyGenerating.swift */; };
 		591E305E1FF9729C00094EB3 /* FirebaseUtilTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 591E305D1FF9729C00094EB3 /* FirebaseUtilTests.swift */; };
-		5926CBBB203D4DE000B18B4D /* login.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 5926CBBA203D4DE000B18B4D /* login.mp4 */; };
 		5932BA18200963AC0041BD7B /* ConvoObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5932BA17200963AC0041BD7B /* ConvoObserving.swift */; };
 		5932BA1A20096FD60041BD7B /* ConvosObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5932BA1920096FD60041BD7B /* ConvosObserving.swift */; };
 		5932BA1E2009837D0041BD7B /* MessagesObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5932BA1D2009837D0041BD7B /* MessagesObserving.swift */; };
@@ -64,6 +63,7 @@
 		59BE6ABB2016C74B00CCD27E /* GroupWork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BE6ABA2016C74B00CCD27E /* GroupWork.swift */; };
 		59CDE808201BDEA40048C7E3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59CDE807201BDEA40048C7E3 /* AppDelegate.swift */; };
 		59D3AE501FA1A4FF009F18A5 /* ConvoDetailReceiverProxyTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 59D3AE4F1FA1A4FF009F18A5 /* ConvoDetailReceiverProxyTableViewCell.xib */; };
+		59D76C85203E3F5900ED7926 /* login.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 59D76C84203E3F5900ED7926 /* login.mp4 */; };
 		59DECF5F1FEA56AD009ABB36 /* ConvoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59DECF5E1FEA56AD009ABB36 /* ConvoViewController.swift */; };
 		59E75B2E1F846F550033A407 /* ProxiesObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E75B2D1F846F550033A407 /* ProxiesObserving.swift */; };
 		59E75B301F846F6B0033A407 /* ProxyObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E75B2F1F846F6B0033A407 /* ProxyObserving.swift */; };
@@ -100,7 +100,6 @@
 		590823C21F9EED6A00A3B6A9 /* IconPickerCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IconPickerCollectionViewCell.xib; sourceTree = "<group>"; };
 		590823C41F9EF6DA00A3B6A9 /* ProxyPropertyGenerating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyPropertyGenerating.swift; sourceTree = "<group>"; };
 		591E305D1FF9729C00094EB3 /* FirebaseUtilTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseUtilTests.swift; sourceTree = "<group>"; };
-		5926CBBA203D4DE000B18B4D /* login.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = login.mp4; sourceTree = "<group>"; };
 		5932BA17200963AC0041BD7B /* ConvoObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoObserving.swift; sourceTree = "<group>"; };
 		5932BA1920096FD60041BD7B /* ConvosObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvosObserving.swift; sourceTree = "<group>"; };
 		5932BA1D2009837D0041BD7B /* MessagesObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesObserving.swift; sourceTree = "<group>"; };
@@ -156,6 +155,7 @@
 		59BE6ABA2016C74B00CCD27E /* GroupWork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupWork.swift; sourceTree = "<group>"; };
 		59CDE807201BDEA40048C7E3 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		59D3AE4F1FA1A4FF009F18A5 /* ConvoDetailReceiverProxyTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConvoDetailReceiverProxyTableViewCell.xib; sourceTree = "<group>"; };
+		59D76C84203E3F5900ED7926 /* login.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = login.mp4; sourceTree = "<group>"; };
 		59DECF5E1FEA56AD009ABB36 /* ConvoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoViewController.swift; sourceTree = "<group>"; };
 		59E75B2D1F846F550033A407 /* ProxiesObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxiesObserving.swift; sourceTree = "<group>"; };
 		59E75B2F1F846F6B0033A407 /* ProxyObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyObserving.swift; sourceTree = "<group>"; };
@@ -375,7 +375,7 @@
 			isa = PBXGroup;
 			children = (
 				59B432E61F60648400622DEA /* Assets.xcassets */,
-				5926CBBA203D4DE000B18B4D /* login.mp4 */,
+				59D76C84203E3F5900ED7926 /* login.mp4 */,
 				59B432EB1F60648400622DEA /* Info.plist */,
 			);
 			path = Other;
@@ -514,7 +514,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5926CBBB203D4DE000B18B4D /* login.mp4 in Resources */,
+				59D76C85203E3F5900ED7926 /* login.mp4 in Resources */,
 				590823C31F9EED6A00A3B6A9 /* IconPickerCollectionViewCell.xib in Resources */,
 				5988E8341F9A5EF9002C8C95 /* SettingsTableViewCell.xib in Resources */,
 				59B432EA1F60648400622DEA /* LaunchScreen.storyboard in Resources */,
