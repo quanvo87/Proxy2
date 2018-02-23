@@ -7,31 +7,31 @@ protocol LoginManaging {
     typealias Callback = (Error?) -> Void
     func emailLogin(email: String, password: String, completion: @escaping Callback)
     func emailSignUp(email: String, password: String, completion: @escaping Callback)
-    func facebookLogin(completion: @escaping Callback)
+    func facebookLogIn(completion: @escaping Callback)
 }
 
 class LoginManager: LoginManaging {
     private lazy var facebookLoginManager = FacebookLogin.LoginManager()
     private weak var facebookButton: Button?
-    private weak var loginButton: Button?
+    private weak var logInButton: Button?
     private weak var signUpButton: Button?
     private weak var viewController: UIViewController?
 
     init(facebookButton: Button? = nil,
-         loginButton: Button? = nil,
+         logInButton: Button? = nil,
          signUpButton: Button? = nil,
          viewController: UIViewController? = nil) {
         self.facebookButton = facebookButton
-        self.loginButton = loginButton
+        self.logInButton = logInButton
         self.signUpButton = signUpButton
         self.viewController = viewController
     }
 
     func emailLogin(email: String, password: String, completion: @escaping Callback) {
-        loginButton?.showActivityIndicator()
+        logInButton?.showActivityIndicator()
         WQNetworkActivityIndicator.shared.show()
         Shared.auth.signIn(withEmail: email, password: password) { [weak self] _, error in
-            self?.loginButton?.hideActivityIndicator()
+            self?.logInButton?.hideActivityIndicator()
             WQNetworkActivityIndicator.shared.hide()
             if let error = error {
                 StatusBar.showError(error)
@@ -55,7 +55,7 @@ class LoginManager: LoginManaging {
         }
     }
 
-    func facebookLogin(completion: @escaping Callback) {
+    func facebookLogIn(completion: @escaping Callback) {
         facebookButton?.showActivityIndicator()
         WQNetworkActivityIndicator.shared.show()
         facebookLoginManager.logIn(readPermissions: [.publicProfile]) { [weak self] result in

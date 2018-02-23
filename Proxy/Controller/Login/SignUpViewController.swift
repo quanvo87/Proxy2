@@ -62,7 +62,7 @@ private extension SignUpViewController {
     }
 
     @IBAction func tappedFacebookButton(_ sender: Any) {
-        loginManager.facebookLogin { _ in }
+        loginManager.facebookLogIn { _ in }
     }
 
     @objc func closeKeyboard() {

@@ -1,15 +1,14 @@
 import SkyFloatingLabelTextField
 
-// todo: change login to log in
-class LoginViewController: UIViewController {
+class LogInViewController: UIViewController {
     @IBOutlet weak var emailTextField: SkyFloatingLabelTextFieldWithIcon!
     @IBOutlet weak var passwordTextField: SkyFloatingLabelTextFieldWithIcon!
-    @IBOutlet weak var loginButton: Button!
+    @IBOutlet weak var logInButton: Button!
     @IBOutlet weak var facebookButton: Button!
 
     private lazy var loginManager: LoginManaging = LoginManager(
         facebookButton: facebookButton,
-        loginButton: loginButton,
+        logInButton: logInButton,
         viewController: self
     )
 
@@ -34,7 +33,7 @@ class LoginViewController: UIViewController {
         passwordTextField.setupAsPasswordTextField()
         passwordTextField.tag = 1
 
-        loginButton.configure(centerLabelText: "Log in")
+        logInButton.configure(centerLabelText: "Log in")
 
         facebookButton.configure(
             centerLabelText: "Log in with Facebook",
@@ -42,27 +41,27 @@ class LoginViewController: UIViewController {
         )
     }
 
-    static func make(loginManager: LoginManaging? = nil) -> LoginViewController {
-        guard let loginViewController = Shared.storyboard.instantiateViewController(
-            withIdentifier: String(describing: LoginViewController.self)
-            ) as? LoginViewController else {
+    static func make(loginManager: LoginManaging? = nil) -> LogInViewController {
+        guard let logInViewController = Shared.storyboard.instantiateViewController(
+            withIdentifier: String(describing: LogInViewController.self)
+            ) as? LogInViewController else {
                 assertionFailure()
-                return LoginViewController()
+                return LogInViewController()
         }
         if let loginManager = loginManager {
-            loginViewController.loginManager = loginManager
+            logInViewController.loginManager = loginManager
         }
-        return loginViewController
+        return logInViewController
     }
 }
 
-private extension LoginViewController {
+private extension LogInViewController {
     @IBAction func tappedFacebookButton(_ sender: Any) {
-        loginManager.facebookLogin { _ in }
+        loginManager.facebookLogIn { _ in }
     }
 
     @IBAction func tappedLoginButton(_ sender: Any) {
-        login()
+        logIn()
     }
 
     // todo
@@ -75,7 +74,7 @@ private extension LoginViewController {
         }
     }
 
-    func login() {
+    func logIn() {
         guard let email = emailTextField.text, email != "",
             let password = passwordTextField.text, password != "" else {
                 StatusBar.showError(ProxyError.missingCredentials)
@@ -85,13 +84,13 @@ private extension LoginViewController {
     }
 }
 
-extension LoginViewController: UITextFieldDelegate {
+extension LogInViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         switch textField.tag {
         case 0:
             passwordTextField.becomeFirstResponder()
         case 1:
-            login()
+            logIn()
         default:
             break
         }
