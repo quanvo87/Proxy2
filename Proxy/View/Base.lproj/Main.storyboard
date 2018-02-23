@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="bo9-4I-6dQ">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
@@ -19,22 +16,22 @@
                         <viewControllerLayoutGuide type="bottom" id="Ibs-yw-gQo"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="fyE-nn-SUx">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Yc3-R9-7Ep" userLabel="onboarding" customClass="PaperOnboarding" customModule="paper_onboarding">
-                                <rect key="frame" x="0.0" y="64" width="375" height="428.5"/>
+                                <rect key="frame" x="0.0" y="64" width="600" height="361.5"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="pokemon" translatesAutoresizingMaskIntoConstraints="NO" id="Ad1-UK-AeM">
-                                <rect key="frame" x="62.5" y="134" width="250" height="92"/>
+                                <rect key="frame" x="175" y="134" width="250" height="92"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="Ad1-UK-AeM" secondAttribute="height" multiplier="125:46" id="Nez-w5-vut"/>
                                     <constraint firstAttribute="width" constant="250" id="bR4-zg-Le4"/>
                                 </constraints>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LeG-Vs-54S" customClass="Button" customModule="Proxy" customModuleProvider="target">
-                                <rect key="frame" x="40" y="572" width="295" height="45"/>
+                                <rect key="frame" x="40" y="505" width="520" height="45"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="45" id="ryv-lY-Jcf"/>
                                 </constraints>
@@ -43,13 +40,13 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GEd-N2-qRL" customClass="Button" customModule="Proxy" customModuleProvider="target">
-                                <rect key="frame" x="40" y="497.5" width="295" height="45"/>
+                                <rect key="frame" x="40" y="430.5" width="520" height="45"/>
                                 <connections>
                                     <action selector="tappedCreateAccountButton:" destination="mti-JT-f0N" eventType="touchUpInside" id="LYw-dE-MMy"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Already a user?" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X5d-Ux-umB">
-                                <rect key="frame" x="144" y="552.5" width="87.5" height="14.5"/>
+                                <rect key="frame" x="256.5" y="485.5" width="87.5" height="14.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
@@ -91,11 +88,11 @@
             <objects>
                 <viewController storyboardIdentifier="SignUpViewController" id="oIl-XN-QEb" customClass="SignUpViewController" customModule="Proxy" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="TnL-II-qL9">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="ZTw-y5-JWT" customClass="SkyFloatingLabelTextFieldWithIcon" customModule="SkyFloatingLabelTextField">
-                                <rect key="frame" x="20" y="109.5" width="335" height="45"/>
+                                <rect key="frame" x="20" y="109.5" width="560" height="45"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="45" id="eJT-Ic-yBy"/>
                                 </constraints>
@@ -104,13 +101,13 @@
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="2FU-iX-iJ7" customClass="SkyFloatingLabelTextFieldWithIcon" customModule="SkyFloatingLabelTextField">
-                                <rect key="frame" x="20" y="164.5" width="335" height="45"/>
+                                <rect key="frame" x="20" y="164.5" width="560" height="45"/>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kzC-ki-r2K" customClass="Button" customModule="Proxy" customModuleProvider="target">
-                                <rect key="frame" x="40" y="219.5" width="295" height="45"/>
+                                <rect key="frame" x="40" y="219.5" width="520" height="45"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="45" id="rm2-Wg-p79"/>
                                 </constraints>
@@ -119,7 +116,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cAO-sq-nwf" customClass="Button" customModule="Proxy" customModuleProvider="target">
-                                <rect key="frame" x="40" y="30" width="295" height="45"/>
+                                <rect key="frame" x="40" y="30" width="520" height="45"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="45" id="cbq-bA-rfR"/>
                                 </constraints>
@@ -128,13 +125,13 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="or with e-mail" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PUN-49-aGc">
-                                <rect key="frame" x="148.5" y="85" width="78" height="14.5"/>
+                                <rect key="frame" x="261" y="85" width="78" height="14.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="By signing up, you agree to Proxy's" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1fp-wR-bgC">
-                                <rect key="frame" x="88.5" y="274.5" width="198.5" height="14.5"/>
+                                <rect key="frame" x="201" y="274.5" width="198.5" height="14.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
@@ -146,7 +143,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="W6I-Gw-4TN">
-                                <rect key="frame" x="106.5" y="294" width="162" height="20"/>
+                                <rect key="frame" x="219" y="294" width="162" height="20"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="20" id="teB-tz-XxP"/>
                                 </constraints>
@@ -154,7 +151,7 @@
                                 <state key="normal" title="Terms and conditions of Use"/>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pwO-OJ-xZR">
-                                <rect key="frame" x="148" y="314" width="79" height="20"/>
+                                <rect key="frame" x="148" y="314" width="304" height="20"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="20" id="J8B-7X-Xac"/>
                                 </constraints>
@@ -203,16 +200,16 @@
             </objects>
             <point key="canvasLocation" x="-1655.2" y="2184.5577211394307"/>
         </scene>
-        <!--Login View Controller-->
+        <!--Log In View Controller-->
         <scene sceneID="fLK-TQ-tbK">
             <objects>
-                <viewController storyboardIdentifier="LoginViewController" id="liB-IW-Sma" customClass="LoginViewController" customModule="Proxy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LogInViewController" id="liB-IW-Sma" customClass="LogInViewController" customModule="Proxy" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="wfq-vG-APp">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="eUC-u3-v4B" customClass="SkyFloatingLabelTextFieldWithIcon" customModule="SkyFloatingLabelTextField">
-                                <rect key="frame" x="20" y="110" width="335" height="45"/>
+                                <rect key="frame" x="20" y="110" width="560" height="45"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="45" id="59r-mp-Tgk"/>
                                 </constraints>
@@ -221,7 +218,7 @@
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="N7P-1O-d6e" customClass="Button" customModule="Proxy" customModuleProvider="target">
-                                <rect key="frame" x="40" y="30" width="295" height="45"/>
+                                <rect key="frame" x="40" y="30" width="520" height="45"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="45" id="ytd-pQ-vJ1"/>
                                 </constraints>
@@ -230,7 +227,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jLc-kQ-f2M" customClass="Button" customModule="Proxy" customModuleProvider="target">
-                                <rect key="frame" x="40" y="220.5" width="295" height="45"/>
+                                <rect key="frame" x="40" y="220.5" width="520" height="45"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="45" id="9sn-Y4-XcX"/>
                                 </constraints>
@@ -239,18 +236,18 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Or" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kWq-M2-Cot">
-                                <rect key="frame" x="180.5" y="85" width="14" height="14.5"/>
+                                <rect key="frame" x="293" y="85" width="14" height="14.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZwB-oi-aVF">
-                                <rect key="frame" x="122.5" y="275.5" width="130" height="27"/>
+                                <rect key="frame" x="235" y="275.5" width="130" height="27"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <state key="normal" title="Forgot your password?"/>
                             </button>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="eCe-0F-9Ql" customClass="SkyFloatingLabelTextFieldWithIcon" customModule="SkyFloatingLabelTextField">
-                                <rect key="frame" x="20" y="165" width="335" height="45.5"/>
+                                <rect key="frame" x="20" y="165" width="560" height="45.5"/>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
@@ -282,7 +279,7 @@
                     <connections>
                         <outlet property="emailTextField" destination="eUC-u3-v4B" id="eHw-kz-boI"/>
                         <outlet property="facebookButton" destination="N7P-1O-d6e" id="0f4-wg-OiJ"/>
-                        <outlet property="loginButton" destination="jLc-kQ-f2M" id="M3Z-NN-WWN"/>
+                        <outlet property="logInButton" destination="jLc-kQ-f2M" id="M3Z-NN-WWN"/>
                         <outlet property="passwordTextField" destination="eCe-0F-9Ql" id="1fs-Fq-MTg"/>
                     </connections>
                 </viewController>

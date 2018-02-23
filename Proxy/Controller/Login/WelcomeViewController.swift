@@ -51,7 +51,7 @@ class WelcomeViewController: UIViewController {
 
         logInButton.configure(
             centerLabelText: "LOG IN",
-            colors: PressableButton.ColorSet(button: Color.loginButtonRed, shadow: Color.loginButtonRedShadow)
+            colors: PressableButton.ColorSet(button: Color.logInButtonRed, shadow: Color.logInButtonRedShadow)
         )
     }
 
@@ -73,7 +73,7 @@ private extension WelcomeViewController {
     }
 
     @IBAction func tappedLogInButton(_ sender: Any) {
-        let logInViewController = LoginViewController.make()
+        let logInViewController = LogInViewController.make()
         navigationController?.pushViewController(logInViewController, animated: true)
     }
 }

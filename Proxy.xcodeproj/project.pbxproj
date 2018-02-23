@@ -23,7 +23,7 @@
 		59539B73203112140054873C /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59539B72203112140054873C /* Button.swift */; };
 		5954AE181F9A4E95004A351F /* ProxiesTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5954AE171F9A4E95004A351F /* ProxiesTableViewCell.xib */; };
 		5958E34A1F9D5E8D00CC0560 /* SenderProxyTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5958E3491F9D5E8D00CC0560 /* SenderProxyTableViewCell.xib */; };
-		5959CA332030C20600083FC8 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5959CA322030C20600083FC8 /* LoginViewController.swift */; };
+		5959CA332030C20600083FC8 /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5959CA322030C20600083FC8 /* LogInViewController.swift */; };
 		5973C84A1F608A2200647492 /* ConvosTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8161F608A1A00647492 /* ConvosTableViewCell.swift */; };
 		5973C8511F608A2200647492 /* ProxyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C81D1F608A1B00647492 /* ProxyError.swift */; };
 		5973C8531F608A2200647492 /* ConvoDetailReceiverProxyTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C81F1F608A1B00647492 /* ConvoDetailReceiverProxyTableViewCell.swift */; };
@@ -109,7 +109,7 @@
 		59539B72203112140054873C /* Button.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
 		5954AE171F9A4E95004A351F /* ProxiesTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = ProxiesTableViewCell.xib; path = Proxy/View/ProxiesTableViewCell.xib; sourceTree = SOURCE_ROOT; };
 		5958E3491F9D5E8D00CC0560 /* SenderProxyTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SenderProxyTableViewCell.xib; sourceTree = "<group>"; };
-		5959CA322030C20600083FC8 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		5959CA322030C20600083FC8 /* LogInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
 		5973C8161F608A1A00647492 /* ConvosTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvosTableViewCell.swift; sourceTree = "<group>"; };
 		5973C81D1F608A1B00647492 /* ProxyError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyError.swift; sourceTree = "<group>"; };
 		5973C81F1F608A1B00647492 /* ConvoDetailReceiverProxyTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvoDetailReceiverProxyTableViewCell.swift; sourceTree = "<group>"; };
@@ -212,9 +212,9 @@
 		59038A36202FA476006C1B73 /* Login */ = {
 			isa = PBXGroup;
 			children = (
-				5973C8221F608A1B00647492 /* WelcomeViewController.swift */,
+				5959CA322030C20600083FC8 /* LogInViewController.swift */,
 				59038A34202FA43B006C1B73 /* SignUpViewController.swift */,
-				5959CA322030C20600083FC8 /* LoginViewController.swift */,
+				5973C8221F608A1B00647492 /* WelcomeViewController.swift */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -222,10 +222,9 @@
 		5966076A1F977C1500874741 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				59038A36202FA476006C1B73 /* Login */,
 				598F89FD1FEB401200CCF024 /* ConvoDetailViewController.swift */,
-				59DECF5E1FEA56AD009ABB36 /* ConvoViewController.swift */,
 				590441EA1F98351E0015CE16 /* ConvosViewController.swift */,
+				59DECF5E1FEA56AD009ABB36 /* ConvoViewController.swift */,
 				5973C82C1F608A1D00647492 /* IconPickerViewController.swift */,
 				5973C8231F608A1C00647492 /* NewMessageMakerViewController.swift */,
 				5973C8311F608A1D00647492 /* ProxiesViewController.swift */,
@@ -233,6 +232,7 @@
 				5973C8441F608A2100647492 /* SenderPickerViewController.swift */,
 				5973C8431F608A2100647492 /* SettingsViewController.swift */,
 				59FF37411F97A6AA00FA1AF0 /* TabBarController.swift */,
+				59038A36202FA476006C1B73 /* Login */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -296,9 +296,9 @@
 				5966076A1F977C1500874741 /* Controller */,
 				5966076B1F977C3100874741 /* Model */,
 				5966076C1F977CA300874741 /* Model Controller */,
-				59D896A71F977EC7008B3A05 /* View */,
-				59D896A81F977EEA008B3A05 /* Util */,
 				59D8D2B31F977F3500909572 /* Other */,
+				59D896A81F977EEA008B3A05 /* Util */,
+				59D896A71F977EC7008B3A05 /* View */,
 			);
 			path = Proxy;
 			sourceTree = "<group>";
@@ -325,8 +325,8 @@
 		59C6138E1F9F7EFE0014F414 /* ProxyPropertyGenerator */ = {
 			isa = PBXGroup;
 			children = (
-				5973C8421F608A2100647492 /* loadIconNames.swift */,
 				5973C8461F608A2100647492 /* loadAdjectives.swift */,
+				5973C8421F608A2100647492 /* loadIconNames.swift */,
 				5973C8361F608A1F00647492 /* loadNouns.swift */,
 			);
 			path = ProxyPropertyGenerator;
@@ -335,26 +335,26 @@
 		59D896A71F977EC7008B3A05 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				59B432E31F60648400622DEA /* Main.storyboard */,
-				59B432E81F60648400622DEA /* LaunchScreen.storyboard */,
-				59D3AE4F1FA1A4FF009F18A5 /* ConvoDetailReceiverProxyTableViewCell.xib */,
-				598F8A591FEB501400CCF024 /* ConvoDetailSenderProxyTableViewCell.xib */,
-				590823C21F9EED6A00A3B6A9 /* IconPickerCollectionViewCell.xib */,
-				5988E8311F9A5A7E002C8C95 /* ConvosTableViewCell.xib */,
-				5939F05D200D13BA00AECD35 /* MakeNewMessageReceiverTableViewCell.xib */,
-				5904054920087C90005F4638 /* MakeNewMessageSenderTableViewCell.xib */,
-				5954AE171F9A4E95004A351F /* ProxiesTableViewCell.xib */,
-				5958E3491F9D5E8D00CC0560 /* SenderProxyTableViewCell.xib */,
-				5988E8331F9A5EF9002C8C95 /* SettingsTableViewCell.xib */,
 				59539B72203112140054873C /* Button.swift */,
 				5973C81F1F608A1B00647492 /* ConvoDetailReceiverProxyTableViewCell.swift */,
-				5973C8341F608A1E00647492 /* IconPickerCollectionViewCell.swift */,
 				5973C8161F608A1A00647492 /* ConvosTableViewCell.swift */,
+				5973C8341F608A1E00647492 /* IconPickerCollectionViewCell.swift */,
 				5939F05F200D174300AECD35 /* MakeNewMessageReceiverTableViewCell.swift */,
 				5904054B2008DDE3005F4638 /* MakeNewMessageSenderTableViewCell.swift */,
 				5973C8261F608A1C00647492 /* ProxiesTableViewCell.swift */,
 				5973C82B1F608A1D00647492 /* SenderProxyTableViewCell.swift */,
 				5973C82D1F608A1D00647492 /* SettingsTableViewCell.swift */,
+				59D3AE4F1FA1A4FF009F18A5 /* ConvoDetailReceiverProxyTableViewCell.xib */,
+				598F8A591FEB501400CCF024 /* ConvoDetailSenderProxyTableViewCell.xib */,
+				5988E8311F9A5A7E002C8C95 /* ConvosTableViewCell.xib */,
+				590823C21F9EED6A00A3B6A9 /* IconPickerCollectionViewCell.xib */,
+				5939F05D200D13BA00AECD35 /* MakeNewMessageReceiverTableViewCell.xib */,
+				5904054920087C90005F4638 /* MakeNewMessageSenderTableViewCell.xib */,
+				5954AE171F9A4E95004A351F /* ProxiesTableViewCell.xib */,
+				5958E3491F9D5E8D00CC0560 /* SenderProxyTableViewCell.xib */,
+				5988E8331F9A5EF9002C8C95 /* SettingsTableViewCell.xib */,
+				59B432E81F60648400622DEA /* LaunchScreen.storyboard */,
+				59B432E31F60648400622DEA /* Main.storyboard */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -374,9 +374,9 @@
 		59D8D2B31F977F3500909572 /* Other */ = {
 			isa = PBXGroup;
 			children = (
-				59B432E61F60648400622DEA /* Assets.xcassets */,
 				59D76C84203E3F5900ED7926 /* login.mp4 */,
 				59B432EB1F60648400622DEA /* Info.plist */,
+				59B432E61F60648400622DEA /* Assets.xcassets */,
 			);
 			path = Other;
 			sourceTree = "<group>";
@@ -850,7 +850,7 @@
 				5973C8671F608A2200647492 /* IconPickerCollectionViewCell.swift in Sources */,
 				598F8A661FEB9B2300CCF024 /* Protocol.swift in Sources */,
 				59DECF5F1FEA56AD009ABB36 /* ConvoViewController.swift in Sources */,
-				5959CA332030C20600083FC8 /* LoginViewController.swift in Sources */,
+				5959CA332030C20600083FC8 /* LogInViewController.swift in Sources */,
 				5973C8721F608A2200647492 /* Constant.swift in Sources */,
 				5973C8791F608A2200647492 /* loadAdjectives.swift in Sources */,
 				5973C85A1F608A2200647492 /* ProxiesTableViewCell.swift in Sources */,
