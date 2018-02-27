@@ -123,7 +123,7 @@ extension ConvoViewController: MessageInputBarDelegate {
         database.sendMessage(convo: convo, text: text) { result in
             switch result {
             case .failure(let error):
-                StatusBar.showError(error)
+                StatusBar.showErrorStatusBarBanner(error)
             default:
                 break
             }

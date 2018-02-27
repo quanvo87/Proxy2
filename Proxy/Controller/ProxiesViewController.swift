@@ -124,7 +124,7 @@ private extension ProxiesViewController {
             setDefaultButtons()
             return
         }
-        let alert = Alert.makeAlert(
+        let alert = Alert.make(
             title: "Delete Proxies?",
             message: "Their conversations will also be deleted."
         )
@@ -135,9 +135,9 @@ private extension ProxiesViewController {
                 }
                 self?.database.deleteProxy(proxy) { error in
                     if let error = error {
-                        StatusBar.showError(error)
+                        StatusBar.showErrorStatusBarBanner(error)
                     } else {
-                        StatusBar.showSuccess("\(proxy.name) has been deleted.")
+                        StatusBar.showSuccessStatusBarBanner("\(proxy.name) has been deleted.")
                     }
                 }
             }
@@ -154,7 +154,7 @@ private extension ProxiesViewController {
         database.makeProxy(currentProxyCount: proxies.count, ownerId: uid) { [weak self] result in
             switch result {
             case .failure(let error):
-                StatusBar.showError(error)
+                StatusBar.showErrorStatusBarBanner(error)
             case .success:
                 break
             }

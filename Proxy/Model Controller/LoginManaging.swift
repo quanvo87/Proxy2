@@ -8,6 +8,7 @@ protocol LoginManaging {
     func emailLogin(email: String, password: String, completion: @escaping Callback)
     func emailSignUp(email: String, password: String, completion: @escaping Callback)
     func facebookLogIn(completion: @escaping Callback)
+    func sendPasswordReset(_ email: String, completion: @escaping Callback)
 }
 
 class LoginManager: LoginManaging {
@@ -34,9 +35,9 @@ class LoginManager: LoginManaging {
             self?.logInButton?.hideActivityIndicator()
             WQNetworkActivityIndicator.shared.hide()
             if let error = error {
-                StatusBar.showError(error)
+                StatusBar.showErrorBanner(subtitle: error.localizedDescription)
             } else {
-                StatusBar.showSuccess("Log in successful. Welcome! 🎉")
+                StatusBar.showSuccessStatusBarBanner("Log in successful. Welcome! 🎉")
             }
         }
     }
@@ -48,9 +49,9 @@ class LoginManager: LoginManaging {
             self?.signUpButton?.hideActivityIndicator()
             WQNetworkActivityIndicator.shared.hide()
             if let error = error {
-                StatusBar.showError(error)
+                StatusBar.showErrorBanner(subtitle: error.localizedDescription)
             } else {
-                StatusBar.showSuccess("Sign up successful. Welcome! 🎉")
+                StatusBar.showSuccessStatusBarBanner("Sign up successful. Welcome! 🎉")
             }
         }
     }
@@ -68,15 +69,30 @@ class LoginManager: LoginManaging {
                 )
                 Shared.auth.signIn(with: credential) { _, error in
                     if let error = error {
-                        StatusBar.showError(error)
+                        StatusBar.showErrorBanner(subtitle: error.localizedDescription)
                     } else {
-                        StatusBar.showSuccess("Log in successful. Welcome! 🎉")
+                        StatusBar.showSuccessStatusBarBanner("Log in successful. Welcome! 🎉")
                     }
                 }
             case .failed(let error):
-                StatusBar.showError(error)
+                StatusBar.showErrorBanner(subtitle: error.localizedDescription)
             case .cancelled:
                 return
+            }
+        }
+    }
+
+    func sendPasswordReset(_ email: String, completion: @escaping Callback) {
+        WQNetworkActivityIndicator.shared.show()
+        Shared.auth.sendPasswordReset(withEmail: email) { (error) in
+            WQNetworkActivityIndicator.shared.hide()
+            if let error = error {
+                StatusBar.showErrorBanner(subtitle: error.localizedDescription)
+            } else {
+                StatusBar.showSuccessBanner(
+                    title: "Password reset email sent!",
+                    subtitle: "Check your email to reset your password 📧."
+                )
             }
         }
     }

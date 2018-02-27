@@ -125,14 +125,16 @@ extension SettingsViewController: UITableViewDelegate {
         case 1:
             switch indexPath.row {
             case 0:
-                let alert = Alert.makeAlert(
+                let alert = Alert.make(
                     title: "Proxy 0.1.0",
-                    message: "Send bugs, suggestions, etc., to:\nqvo1987@gmail.com"
+                    // swiftlint:disable line_length
+                    message: "Send bugs, suggestions, etc., to:\n\nqvo1987@gmail.com\n\nIcons from https://icons8.com/\n\nLogin videos from http://coverr.co/"
+                    // swiftlint:enable line_length
                 )
                 alert.addAction(Alert.makeOkAction())
                 present(alert, animated: true)
             case 1:
-                let alert = Alert.makeAlert(
+                let alert = Alert.make(
                     title: "Log Out",
                     message: "Are you sure you want to log out?"
                 )
@@ -140,7 +142,7 @@ extension SettingsViewController: UITableViewDelegate {
                     do {
                         try self?.auth.signOut()
                     } catch {
-                        StatusBar.showError(error)
+                        StatusBar.showErrorStatusBarBanner(error)
                     }
                 })
                 alert.addAction(Alert.makeCancelAction())

@@ -1,5 +1,5 @@
 # Proxy - iOS
-Create unlimited, anonymous user names (Proxy's) with just one tap. Chat with any other Proxy. Delete your Proxy when you're done. Never share your phone number or email with strangers again.
+Create unlimited, anonymous user names (Proxy's) with just one tap. Chat with any other Proxy. Delete your Proxy when you're done. Never share your real contact info with strangers again.
 
 #### Software Development Best Practices Applied:
 
@@ -11,12 +11,14 @@ Create unlimited, anonymous user names (Proxy's) with just one tap. Chat with an
   - Careful usage of singletons
 
 - UI:
+  - Co authored [SwiftVideoBackground](https://github.com/dingwilson/SwiftVideoBackground) to manage background video on login screen
   - Make elements using storyboard, xibs, and programmatically
   - Set constraints with auto layout and [Pure Layout](https://github.com/PureLayout/PureLayout)
   - Responsive and expressive UI:
+    - Wrote [WQNetworkActivityIndicator](https://github.com/quanvo87/WQNetworkActivityIndicator) to manage network activity indicator
     - Animate button taps with [Spring](https://cocoapods.org/pods/Spring)
-    - Wrote the CocoaPod [WQNetworkActivityIndicator](https://github.com/quanvo87/WQNetworkActivityIndicator) to manage network activity indicator
-    - Show success/error state with [NotificationBannerSwift](https://github.com/Daltron/NotificationBanner) and [SwiftMessages](https://github.com/SwiftKickMobile/SwiftMessages)
+    - Show loading indicators in buttons
+    - Show success/error state notifications [NotificationBannerSwift](https://github.com/Daltron/NotificationBanner) and [SwiftMessages](https://github.com/SwiftKickMobile/SwiftMessages)
   - Detect device size with [Device](https://github.com/Ekhoo/Device) and adjust UI accordingly
   - Other UI libraries used:
     - [CFAlertViewController](https://github.com/Codigami/CFAlertViewController)
@@ -28,12 +30,12 @@ Create unlimited, anonymous user names (Proxy's) with just one tap. Chat with an
 
 - Database
   - [Firebase](https://firebase.google.com/)
-  - Wrote the CocoaPod [FirebaseHelper](https://github.com/quanvo87/FirebaseHelper), for safe and easy wrappers around common database functions
+  - Wrote [FirebaseHelper](https://github.com/quanvo87/FirebaseHelper), for safe and easy wrappers around common database functions
   - Flat data structure for more performant queries
   - Dealt with race conditions by checking if an invalid write occurred after the fact, then correcting the error
   - All data that is no longer needed is cleaned up when appropriate
   - Data is indexed on server for performance
-  - Load partial data in controller, load more when scroll up, for performance
+  - Pagination load: load some initial data, load more when user scrolls up
   - Email and Facebook authentication
 
 - Memory management:
@@ -41,7 +43,7 @@ Create unlimited, anonymous user names (Proxy's) with just one tap. Chat with an
   - Use Instruments for memory profiling
 
 - Concurrency:
-  - Wrote the CocoaPod [GroupWork](https://github.com/quanvo87/GroupWork) to help with calling and waiting on multiple asynchronous tasks in a clean and easily debuggable way
+  - Wrote [GroupWork](https://github.com/quanvo87/GroupWork) to help with calling and waiting on multiple asynchronous tasks in a clean and easily debuggable way
 
 - Testing
   - Tests against development database using XCTest
@@ -54,4 +56,5 @@ Create unlimited, anonymous user names (Proxy's) with just one tap. Chat with an
 
 #### Acknowledgements:
 
-Icons from [Icons8](https://icons8.com/).
+- Icons from [Icons8](https://icons8.com/)
+- Login screen videos from [Coverr](http://coverr.co/)

@@ -42,7 +42,7 @@ class WelcomeViewController: UIViewController {
 
         navigationItem.title = ""
 
-        try? VideoBackground.shared.play(view: view, name: "login", type: "mp4", alpha: 0.25)
+        try? VideoBackground.shared.play(view: view, videoName: "login", videoType: "mp4", darkness: 0.25)
 
         onboarding.backgroundColor = .clear
         onboarding.dataSource = self
