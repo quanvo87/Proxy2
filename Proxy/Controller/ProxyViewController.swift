@@ -87,7 +87,7 @@ class ProxyViewController: UIViewController, NewMessageMakerDelegate {
 
 private extension ProxyViewController {
     @objc func deleteProxy() {
-        let alert = Alert.makeAlert(
+        let alert = Alert.make(
             title: Alert.deleteProxyMessage.title,
             message: Alert.deleteProxyMessage.message
         )
@@ -97,9 +97,9 @@ private extension ProxyViewController {
             }
             self?.database.deleteProxy(proxy) { error in
                 if let error = error {
-                    StatusBar.showError(error)
+                    StatusBar.showErrorStatusBarBanner(error)
                 } else {
-                    StatusBar.showSuccess("\(proxy.name) has been deleted.")
+                    StatusBar.showSuccessStatusBarBanner("\(proxy.name) has been deleted.")
                 }
             }
             self?.navigationController?.popViewController(animated: true)

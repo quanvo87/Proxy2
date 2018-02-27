@@ -12,7 +12,7 @@ enum Alert {
         message: "Your conversations for this proxy will also be deleted."
     )
 
-    static func makeAlert(
+    static func make(
         title: String? = nil,
         titleColor: UIColor? = nil,
         message: String? = nil,
@@ -125,7 +125,6 @@ enum Identifier {
 }
 
 enum Image {
-    // todo: enum
     static let cancel = UIImage(named: "cancel")
     static let confirm = UIImage(named: "confirm")
     static let delete = UIImage(named: "delete")
@@ -155,6 +154,24 @@ enum Image {
     }
 }
 
+enum Label {
+    static let check: UILabel = {
+        let check = UILabel()
+        check.font = UIFont.fontAwesome(ofSize: 45)
+        check.text = String.fontAwesomeIcon(name: .checkCircle)
+        check.textColor = .white
+        return check
+    }()
+
+    static let exclamation: UILabel = {
+        let exclamation = UILabel()
+        exclamation.font = UIFont.fontAwesome(ofSize: 45)
+        exclamation.text = String.fontAwesomeIcon(name: .exclamationTriangle)
+        exclamation.textColor = .white
+        return exclamation
+    }()
+}
+
 enum Shared {
     static let auth = Auth.auth()
     static let firebaseApp = FirebaseApp.app()
@@ -180,26 +197,40 @@ enum Shared {
 }
 
 enum StatusBar {
-    // todo: improve
-    // todo: add banner alerts too
-    static func showError(_ error: Error) {
+    // todo: use custom queue
+    static func showErrorBanner(title: String = "Error 😵", subtitle: String) {
+        NotificationBannerQueue.default.removeAll()
+        NotificationBanner(
+            title: title,
+            subtitle: subtitle,
+            leftView: Label.exclamation,
+            style: .danger
+            ).show()
+    }
+
+    static func showErrorStatusBarBanner(_ error: Error) {
         let view = MessageView.viewFromNib(layout: .statusLine)
         view.configureTheme(.error)
         view.configureContent(body: "⚠️ " + error.localizedDescription)
-        NotificationBannerQueue.default.removeAll()
         SwiftMessages.hideAll()
         SwiftMessages.show(view: view)
     }
 
-    static func showSuccess(_ title: String) {
-        let banner = StatusBarNotificationBanner(
-            attributedTitle: NSAttributedString(string: title),
-            style: .success
-        )
+    static func showSuccessBanner(title: String, subtitle: String) {
         NotificationBannerQueue.default.removeAll()
-        SwiftMessages.hideAll()
-        banner.duration = 3
-        banner.haptic = .none
-        banner.show()
+        NotificationBanner(
+            title: title,
+            subtitle: subtitle,
+            leftView: Label.check,
+            style: .success
+            ).show()
+    }
+
+    static func showSuccessStatusBarBanner(_ title: String) {
+        NotificationBannerQueue.default.removeAll()
+        StatusBarNotificationBanner(
+            title: title,
+            style: .success
+            ).show()
     }
 }

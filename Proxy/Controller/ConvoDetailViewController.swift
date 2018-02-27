@@ -162,7 +162,7 @@ extension ConvoDetailViewController: UITableViewDataSource {
             if !(nickname != "" && trimmed == "") {
                 self?.database.setReceiverNickname(to: nickname, for: convo) { error in
                     if let error = error {
-                        StatusBar.showError(error)
+                        StatusBar.showErrorStatusBarBanner(error)
                     }
                 }
             }
@@ -199,16 +199,16 @@ extension ConvoDetailViewController: UITableViewDelegate {
         case 2:
             switch indexPath.row {
             case 0:
-                let alert = Alert.makeAlert(
+                let alert = Alert.make(
                     title: Alert.deleteProxyMessage.title,
                     message: Alert.deleteProxyMessage.message
                 )
                 alert.addAction(Alert.makeDestructiveAction(title: "Delete") { [weak self] _ in
                     self?.database.deleteProxy(proxy) { error in
                         if let error = error {
-                            StatusBar.showError(error)
+                            StatusBar.showErrorStatusBarBanner(error)
                         } else {
-                            StatusBar.showSuccess("\(proxy.name) has been deleted.")
+                            StatusBar.showSuccessStatusBarBanner("\(proxy.name) has been deleted.")
                         }
                     }
                 })

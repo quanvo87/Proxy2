@@ -300,7 +300,7 @@ extension UIViewController {
             if !(nickname != "" && trimmed == "") {
                 database.setNickname(to: nickname, for: proxy) { error in
                     if let error = error {
-                        StatusBar.showError(error)
+                        StatusBar.showErrorStatusBarBanner(error)
                     }
                 }
             }

@@ -64,8 +64,24 @@ private extension LogInViewController {
         logIn()
     }
 
-    // todo
     @IBAction func tappedForgotPasswordButton(_ sender: Any) {
+        let alert = UIAlertController(title: "Reset Password",
+                                      message: "Enter your email to receive a password reset email.",
+                                      preferredStyle: .alert)
+        alert.addTextField { textField in
+            textField.clearButtonMode = .whileEditing
+            textField.keyboardType = .emailAddress
+            textField.placeholder = "Email"
+            textField.textContentType = .emailAddress
+        }
+        alert.addAction(UIAlertAction(title: "OK", style: .default) { [weak self, weak alert] _ in
+            guard let email = alert?.textFields?[0].text?.trimmed else {
+                return
+            }
+            self?.loginManager.sendPasswordReset(email) { _ in }
+        })
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(alert, animated: true)
     }
 
     @objc func closeKeyboard() {
@@ -77,7 +93,7 @@ private extension LogInViewController {
     func logIn() {
         guard let email = emailTextField.text, email != "",
             let password = passwordTextField.text, password != "" else {
-                StatusBar.showError(ProxyError.missingCredentials)
+                StatusBar.showErrorBanner(subtitle: ProxyError.missingCredentials.localizedDescription)
                 return
         }
         loginManager.emailLogin(email: email.lowercased(), password: password) { _ in }
