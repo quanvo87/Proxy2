@@ -1,6 +1,5 @@
 import SkyFloatingLabelTextField
 
-// todo: terms and priv pol
 class SignUpViewController: UIViewController {
     @IBOutlet weak var emailTextField: SkyFloatingLabelTextFieldWithIcon!
     @IBOutlet weak var passwordTextField: SkyFloatingLabelTextFieldWithIcon!

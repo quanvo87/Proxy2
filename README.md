@@ -1,7 +1,11 @@
 # Proxy - iOS
-Create unlimited, anonymous user names (Proxy's) with just one tap. Chat with any other Proxy. Delete your Proxy when you're done. Never share your real contact info with strangers again.
 
-#### Software Development Best Practices Applied:
+- [x] Create unlimited, anonymous identities (Proxy's) with just one tap
+- [x] Use your Proxy to chat with any other Proxy
+- [x] Delete your Proxy when you're done
+- [x] Never share your real contact info with strangers again
+
+#### Development:
 
 - Architecture
   - Dependency injection:
@@ -18,7 +22,7 @@ Create unlimited, anonymous user names (Proxy's) with just one tap. Chat with an
     - Wrote [WQNetworkActivityIndicator](https://github.com/quanvo87/WQNetworkActivityIndicator) to manage network activity indicator
     - Animate button taps with [Spring](https://cocoapods.org/pods/Spring)
     - Show loading indicators in buttons
-    - Show success/error state notifications [NotificationBannerSwift](https://github.com/Daltron/NotificationBanner) and [SwiftMessages](https://github.com/SwiftKickMobile/SwiftMessages)
+    - Show success/error state notifications with [NotificationBannerSwift](https://github.com/Daltron/NotificationBanner) and [SwiftMessages](https://github.com/SwiftKickMobile/SwiftMessages)
   - Detect device size with [Device](https://github.com/Ekhoo/Device) and adjust UI accordingly
   - Other UI libraries used:
     - [CFAlertViewController](https://github.com/Codigami/CFAlertViewController)
@@ -29,7 +33,7 @@ Create unlimited, anonymous user names (Proxy's) with just one tap. Chat with an
     - [FontAwesome.swift](https://github.com/thii/FontAwesome.swift)
 
 - Database
-  - [Firebase](https://firebase.google.com/)
+  - Built chat backend from scratch with [Firebase](https://firebase.google.com/)
   - Wrote [FirebaseHelper](https://github.com/quanvo87/FirebaseHelper), for safe and easy wrappers around common database functions
   - Flat data structure for more performant queries
   - Dealt with race conditions by checking if an invalid write occurred after the fact, then correcting the error
@@ -43,7 +47,7 @@ Create unlimited, anonymous user names (Proxy's) with just one tap. Chat with an
   - Use Instruments for memory profiling
 
 - Concurrency:
-  - Wrote [GroupWork](https://github.com/quanvo87/GroupWork) to help with calling and waiting on multiple asynchronous tasks in a clean and easily debuggable way
+  - Wrote [GroupWork](https://github.com/quanvo87/GroupWork) to manage asynchronous tasks in a clean and easily debuggable way
 
 - Testing
   - Tests against development database using XCTest
