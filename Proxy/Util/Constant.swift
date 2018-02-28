@@ -197,40 +197,37 @@ enum Shared {
 }
 
 enum StatusBar {
-    // todo: use custom queue
+    private static let queue = ProxyNotificationBannerQueue()
+
     static func showErrorBanner(title: String = "Error 😵", subtitle: String) {
-        NotificationBannerQueue.default.removeAll()
-        NotificationBanner(
+        queue.currentBanner = NotificationBanner(
             title: title,
             subtitle: subtitle,
             leftView: Label.exclamation,
             style: .danger
-            ).show()
+        )
     }
 
     static func showErrorStatusBarBanner(_ error: Error) {
         let view = MessageView.viewFromNib(layout: .statusLine)
         view.configureTheme(.error)
         view.configureContent(body: "⚠️ " + error.localizedDescription)
-        SwiftMessages.hideAll()
         SwiftMessages.show(view: view)
     }
 
     static func showSuccessBanner(title: String, subtitle: String) {
-        NotificationBannerQueue.default.removeAll()
-        NotificationBanner(
+        queue.currentBanner = NotificationBanner(
             title: title,
             subtitle: subtitle,
             leftView: Label.check,
             style: .success
-            ).show()
+        )
     }
 
     static func showSuccessStatusBarBanner(_ title: String) {
-        NotificationBannerQueue.default.removeAll()
-        StatusBarNotificationBanner(
+        queue.currentBanner = StatusBarNotificationBanner(
             title: title,
             style: .success
-            ).show()
+        )
     }
 }
