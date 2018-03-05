@@ -94,6 +94,7 @@ enum Child {
     static let proxyNames = "proxyNames"
     static let receiverDeletedProxy = "receiverDeletedProxy"
     static let receiverProxyKey = "receiverProxyKey"
+    static let registrationTokens = "registrationTokens"
     static let timestamp = "timestamp"
     static let unreadMessages = "unreadMessages"
     static let userInfo = "userInfo"

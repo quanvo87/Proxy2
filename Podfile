@@ -11,6 +11,7 @@ def pods
   pod 'FirebaseAuth', '~> 4.4'
   pod 'FirebaseDatabase', '~> 4.1'
   pod 'FirebaseHelper', '~> 1.0'
+  pod 'FirebaseMessaging', '~> 2.1'
   pod 'GroupWork', '~> 0.0'
   pod 'MessageKit', '~> 0.13'
   pod 'NotificationBannerSwift', '~> 1.6'

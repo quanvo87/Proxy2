@@ -33,6 +33,24 @@ class FirebaseTests: FirebaseTest {
         }
     }
 
+    func testDeleteRegistrationToken() {
+        let expectation = self.expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
+
+        let registrationToken = "registrationToken"
+        FirebaseTest.database.setRegistrationToken(registrationToken, for: FirebaseTest.uid) { error in
+            XCTAssertNil(error)
+            FirebaseTest.database.deleteRegistrationToken(registrationToken, for: FirebaseTest.uid) { error in
+                XCTAssertNil(error)
+                let work = GroupWork()
+                work.checkDeleted(Child.userInfo, FirebaseTest.uid, Child.registrationTokens, registrationToken)
+                work.allDone {
+                    expectation.fulfill()
+                }
+            }
+        }
+    }
+
     func testGetConvo() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
@@ -347,6 +365,33 @@ class FirebaseTests: FirebaseTest {
                 work.check(.receiverNickname(testNickname), for: convo, asSender: true)
                 work.allDone {
                     expectation.fulfill()
+                }
+            }
+        }
+    }
+
+    func testSetRegistrationToken() {
+        let expectation = self.expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
+
+        let registrationToken1 = "registrationToken1"
+        let registrationToken2 = "registrationToken2"
+        FirebaseTest.database.setRegistrationToken(registrationToken1, for: FirebaseTest.uid) { error in
+            XCTAssertNil(error)
+            FirebaseTest.database.setRegistrationToken(registrationToken2, for: FirebaseTest.uid) { error in
+                XCTAssertNil(error)
+                Shared.firebaseHelper.get(Child.userInfo, FirebaseTest.uid, Child.registrationTokens) { result in
+                    switch result {
+                    case .failure(let error):
+                        XCTFail(String(describing: error))
+                        expectation.fulfill()
+                    case .success(let data):
+                        XCTAssertEqual(
+                            (data.value as? [String: Int])!,
+                            [registrationToken1: 1, registrationToken2: 1]
+                        )
+                        expectation.fulfill()
+                    }
                 }
             }
         }

@@ -5,7 +5,7 @@ import XCTest
 
 class FirebaseTest: XCTestCase {
     static let database = Firebase()
-    static let testUserId = "testUserId"
+    static let testUid = "testUserId"
     static let text = "🤤"
     static let uid = "37Xoavv6znT6DrJjnx1I6hTQVr23"
     private static let email = "test@test.com"
@@ -66,7 +66,7 @@ class FirebaseTest: XCTestCase {
     static func sendMessage(
         completion: @escaping (_ message: Message, _ convo: Convo, _ sender: Proxy, _ receiver: Proxy) -> Void) {
         makeProxy { sender in
-            makeProxy (ownerId: testUserId) { receiver in
+            makeProxy (ownerId: testUid) { receiver in
                 database.sendMessage(sender: sender, receiver: receiver, text: text) { result in
                     switch result {
                     case .failure:

@@ -11,7 +11,9 @@
   - Dependency injection:
     - All dependencies are protocols, so that everything is mockable and easily testable
     - Dependencies have default values in function definitions, so call sites in production are short and simple
-  - All properties and functions declared private except when required for protocol conformance
+  - Encapsulation:
+    - All properties and functions declared private except when required for protocol conformance
+    - Third party dependencies like my [database](https://firebase.google.com/) abstracted behind protocols
   - Careful usage of singletons
 
 - UI:
@@ -33,7 +35,7 @@
     - [FontAwesome.swift](https://github.com/thii/FontAwesome.swift)
 
 - Database
-  - Built chat backend from scratch with [Firebase](https://firebase.google.com/)
+  - Built chat backend from scratch on top of [Firebase](https://firebase.google.com/)
   - Wrote [FirebaseHelper](https://github.com/quanvo87/FirebaseHelper), for safe and easy wrappers around common database functions
   - Flat data structure for more performant queries
   - Dealt with race conditions by checking if an invalid write occurred after the fact, then correcting the error

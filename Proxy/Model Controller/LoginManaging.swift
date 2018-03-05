@@ -5,10 +5,11 @@ import WQNetworkActivityIndicator
 
 protocol LoginManaging {
     typealias Callback = (Error?) -> Void
-    func emailLogin(email: String, password: String, completion: @escaping Callback)
+    func emailLogIn(email: String, password: String, completion: @escaping Callback)
     func emailSignUp(email: String, password: String, completion: @escaping Callback)
     func facebookLogIn(completion: @escaping Callback)
     func sendPasswordReset(_ email: String, completion: @escaping Callback)
+    func logOut() throws
 }
 
 class LoginManager: LoginManaging {
@@ -16,19 +17,16 @@ class LoginManager: LoginManaging {
     private weak var facebookButton: Button?
     private weak var logInButton: Button?
     private weak var signUpButton: Button?
-    private weak var viewController: UIViewController?
 
     init(facebookButton: Button? = nil,
          logInButton: Button? = nil,
-         signUpButton: Button? = nil,
-         viewController: UIViewController? = nil) {
+         signUpButton: Button? = nil) {
         self.facebookButton = facebookButton
         self.logInButton = logInButton
         self.signUpButton = signUpButton
-        self.viewController = viewController
     }
 
-    func emailLogin(email: String, password: String, completion: @escaping Callback) {
+    func emailLogIn(email: String, password: String, completion: @escaping Callback) {
         logInButton?.showActivityIndicator()
         WQNetworkActivityIndicator.shared.show()
         Shared.auth.signIn(withEmail: email, password: password) { [weak self] _, error in
@@ -95,5 +93,11 @@ class LoginManager: LoginManaging {
                 )
             }
         }
+    }
+
+    func logOut() throws {
+        WQNetworkActivityIndicator.shared.show()
+        try Shared.auth.signOut()
+        WQNetworkActivityIndicator.shared.hide()
     }
 }

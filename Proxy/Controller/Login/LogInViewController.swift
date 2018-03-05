@@ -8,8 +8,7 @@ class LogInViewController: UIViewController {
 
     private lazy var loginManager: LoginManaging = LoginManager(
         facebookButton: facebookButton,
-        logInButton: logInButton,
-        viewController: self
+        logInButton: logInButton
     )
 
     override func viewDidLoad() {
@@ -96,7 +95,7 @@ private extension LogInViewController {
                 StatusBar.showErrorBanner(subtitle: ProxyError.missingCredentials.localizedDescription)
                 return
         }
-        loginManager.emailLogin(email: email.lowercased(), password: password) { _ in }
+        loginManager.emailLogIn(email: email.lowercased(), password: password) { _ in }
     }
 }
 

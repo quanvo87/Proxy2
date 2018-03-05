@@ -1,8 +1,7 @@
-import FirebaseAuth
 import UIKit
 
 class SettingsViewController: UIViewController {
-    private let auth: Auth
+    private let loginManager: LoginManaging
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
     private let userStatsObserver: UserStatsObserving
@@ -10,11 +9,11 @@ class SettingsViewController: UIViewController {
     private var messagesSentCount = "-"
     private var proxiesInteractedWithCount = "-"
 
-    init(auth: Auth = Auth.auth(),
+    init(loginManager: LoginManaging = LoginManager(),
          uid: String,
          userStatsObserver: UserStatsObserving = UserStatsObserver(),
          displayName: String?) {
-        self.auth = auth
+        self.loginManager = loginManager
         self.uid = uid
         self.userStatsObserver = userStatsObserver
 
@@ -127,9 +126,15 @@ extension SettingsViewController: UITableViewDelegate {
             case 0:
                 let alert = Alert.make(
                     title: "Proxy 0.1.0",
-                    // swiftlint:disable line_length
-                    message: "Send bugs, suggestions, etc., to:\n\nqvo1987@gmail.com\n\nIcons from https://icons8.com/\n\nLogin videos from http://coverr.co/"
-                    // swiftlint:enable line_length
+                    message: """
+                        Send bugs, suggestions, etc., to:
+
+                        qvo1987@gmail.com
+
+                        Icons from https://icons8.com/
+
+                        Login videos from http://coverr.co/
+                        """
                 )
                 alert.addAction(Alert.makeOkAction())
                 present(alert, animated: true)
@@ -140,9 +145,9 @@ extension SettingsViewController: UITableViewDelegate {
                 )
                 alert.addAction(Alert.makeDestructiveAction(title: "Log Out") { [weak self] _ in
                     do {
-                        try self?.auth.signOut()
+                        try self?.loginManager.logOut()
                     } catch {
-                        StatusBar.showErrorStatusBarBanner(error)
+                        StatusBar.showErrorBanner(subtitle: error.localizedDescription)
                     }
                 })
                 alert.addAction(Alert.makeCancelAction())
