@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "default": "proxy-dev-3e83e",
+    "prod": "proxy-prod"
+  }
+}

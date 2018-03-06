@@ -1,5 +1,37 @@
 import FirebaseDatabase
 
+enum SettableConvoProperty {
+    case hasUnreadMessage(Bool)
+    case lastMessage(String)
+    case receiverDeletedProxy(Bool)
+    case receiverIcon(String)
+    case receiverNickname(String)
+    case senderIcon(String)
+    case senderNickname(String)
+    case timestamp(Double)
+
+    var properties: (name: String, value: Any) {
+        switch self {
+        case .hasUnreadMessage(let value):
+            return ("hasUnreadMessage", value)
+        case .lastMessage(let value):
+            return ("lastMessage", value)
+        case .receiverDeletedProxy(let value):
+            return ("receiverDeletedProxy", value)
+        case .receiverIcon(let value):
+            return ("receiverIcon", value)
+        case .receiverNickname(let value):
+            return ("receiverNickname", value)
+        case .senderIcon(let value):
+            return ("senderIcon", value)
+        case .senderNickname(let value):
+            return ("senderNickname", value)
+        case .timestamp(let value):
+            return ("timestamp", value)
+        }
+    }
+}
+
 struct Convo {
     let hasUnreadMessage: Bool
     let key: String
@@ -131,37 +163,5 @@ extension Convo: Equatable {
             lhs.senderProxyKey == rhs.senderProxyKey &&
             lhs.senderProxyName == rhs.senderProxyName &&
             lhs.timestamp.isWithinRangeOf(rhs.timestamp)
-    }
-}
-
-enum SettableConvoProperty {
-    case hasUnreadMessage(Bool)
-    case lastMessage(String)
-    case receiverDeletedProxy(Bool)
-    case receiverIcon(String)
-    case receiverNickname(String)
-    case senderIcon(String)
-    case senderNickname(String)
-    case timestamp(Double)
-
-    var properties: (name: String, value: Any) {
-        switch self {
-        case .hasUnreadMessage(let value):
-            return ("hasUnreadMessage", value)
-        case .lastMessage(let value):
-            return ("lastMessage", value)
-        case .receiverDeletedProxy(let value):
-            return ("receiverDeletedProxy", value)
-        case .receiverIcon(let value):
-            return ("receiverIcon", value)
-        case .receiverNickname(let value):
-            return ("receiverNickname", value)
-        case .senderIcon(let value):
-            return ("senderIcon", value)
-        case .senderNickname(let value):
-            return ("senderNickname", value)
-        case .timestamp(let value):
-            return ("timestamp", value)
-        }
     }
 }

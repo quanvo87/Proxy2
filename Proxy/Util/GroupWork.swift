@@ -30,7 +30,7 @@ extension GroupWork {
                 self?.finish(withResult: false)
             case .success(let messages):
                 messages.forEach {
-                    self?.delete(Child.userInfo, $0.receiverId, Child.unreadMessages, $0.messageId)
+                    self?.delete(Child.users, $0.receiverId, Child.unreadMessages, $0.messageId)
                 }
                 self?.finish(withResult: true)
             }
@@ -45,7 +45,7 @@ extension GroupWork {
                                           key: String,
                                           completion: @escaping (Result<[Message], Error>) -> Void) {
         do {
-            try Shared.firebaseHelper.makeReference(Child.userInfo, uid, Child.unreadMessages)
+            try Shared.firebaseHelper.makeReference(Child.users, uid, Child.unreadMessages)
                 .queryEqual(toValue: key)
                 .queryOrdered(byChild: Child.receiverProxyKey)
                 .observeSingleEvent(of: .value) { data in
@@ -64,7 +64,7 @@ extension GroupWork {
     }
 
     func increment(_ amount: Int, property: IncrementableUserProperty, uid: String) {
-        increment(amount, at: Child.userInfo, uid, property.rawValue)
+        increment(amount, at: Child.users, uid, property.rawValue)
     }
 
     func set(_ value: Any, at first: String, _ rest: String...) {
@@ -190,7 +190,7 @@ extension GroupWork {
             start()
             Shared.firebaseHelper.set(
                 message.toDictionary(),
-                at: Child.userInfo,
+                at: Child.users,
                 message.receiverId,
                 Child.unreadMessages,
                 message.messageId
@@ -199,7 +199,7 @@ extension GroupWork {
                     switch result {
                     case .failure:
                         Shared.firebaseHelper.delete(
-                            Child.userInfo,
+                            Child.users,
                             message.receiverId,
                             Child.unreadMessages,
                             message.messageId
@@ -244,7 +244,7 @@ extension GroupWork {
                         switch result {
                         case .failure:
                             Shared.firebaseHelper.delete(
-                                Child.userInfo,
+                                Child.users,
                                 message.receiverId,
                                 Child.unreadMessages,
                                 message.messageId

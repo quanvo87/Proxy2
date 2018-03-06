@@ -208,12 +208,11 @@ extension ProxyViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 extension ProxyViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        if indexPath.section == 1,
-            let row = tableView.indexPathForSelectedRow?.row {
+        if indexPath.section == 1, let row = tableView.indexPathForSelectedRow?.row {
             let convo = convos[row]
             showConvoController(convo)
         }
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

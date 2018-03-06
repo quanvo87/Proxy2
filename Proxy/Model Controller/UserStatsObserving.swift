@@ -22,7 +22,7 @@ class UserStatsObserver: UserStatsObserving {
     func observe(uid: String, completion: @escaping (UserStatsUpdate) -> Void) {
         stopObservering()
         messagesReceivedRef = try? Shared.firebaseHelper.makeReference(
-            Child.userInfo,
+            Child.users,
             uid,
             IncrementableUserProperty.messagesReceived.rawValue
         )
@@ -30,7 +30,7 @@ class UserStatsObserver: UserStatsObserving {
             completion(.messagesReceived(data.asNumberLabel))
         }
         messagesSentRef = try? Shared.firebaseHelper.makeReference(
-            Child.userInfo,
+            Child.users,
             uid,
             IncrementableUserProperty.messagesSent.rawValue
         )
@@ -38,7 +38,7 @@ class UserStatsObserver: UserStatsObserving {
             completion(.messagesSent(data.asNumberLabel))
         }
         proxiesInteractedWithRef = try? Shared.firebaseHelper.makeReference(
-            Child.userInfo,
+            Child.users,
             uid,
             IncrementableUserProperty.proxiesInteractedWith.rawValue
         )

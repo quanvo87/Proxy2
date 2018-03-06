@@ -11,18 +11,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private let database = Firebase()
     private let gcmMessageIDKey = "gcm.message_id"
     private var isLoggedIn = false
-    private var registrationToken: String? {
-        willSet {
-            deleteRegistrationToken()
-        }
-        didSet {
-            setRegistrationToken()
-        }
-    }
     private var uid: String? {
-        willSet {
-            deleteRegistrationToken()
-        }
         didSet {
             setRegistrationToken()
         }
@@ -66,10 +55,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                             return
                 }
                 self?.isLoggedIn = false
-                self?.registrationToken = nil
                 self?.uid = nil
-                let navigationController = UINavigationController(rootViewController: mainLoginController)
-                self?.window?.rootViewController = navigationController
+                self?.window?.rootViewController = UINavigationController(rootViewController: mainLoginController)
             }
         }
 
@@ -109,20 +96,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         FBSDKAppEvents.activateApp()
     }
 
-    // todo: show error notification
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        print("Unable to register for remote notifications: \(error.localizedDescription)")
+        StatusBar.showErrorStatusBarBanner(error)
     }
 }
 
 private extension AppDelegate {
-    func deleteRegistrationToken() {
-        guard let registrationToken = registrationToken, let uid = uid else {
-            return
-        }
-        database.deleteRegistrationToken(registrationToken, for: uid) { _ in }
-    }
-
     func setRegistrationToken() {
         guard let registrationToken = registrationToken, let uid = uid else {
             return
@@ -136,10 +115,9 @@ private extension AppDelegate {
 }
 
 extension AppDelegate: MessagingDelegate {
-    // todo: save in userInfo in database
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
-        print("✅ \(fcmToken)")
         registrationToken = fcmToken
+        setRegistrationToken()
     }
 
     func messaging(_ messaging: Messaging, didReceive remoteMessage: MessagingRemoteMessage) {

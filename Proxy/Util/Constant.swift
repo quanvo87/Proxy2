@@ -6,6 +6,8 @@ import FontAwesome_swift
 import NotificationBannerSwift
 import SwiftMessages
 
+var registrationToken: String?
+
 enum Alert {
     static let deleteProxyMessage = (
         title: "Delete Proxy?",
@@ -97,7 +99,7 @@ enum Child {
     static let registrationTokens = "registrationTokens"
     static let timestamp = "timestamp"
     static let unreadMessages = "unreadMessages"
-    static let userInfo = "userInfo"
+    static let users = "users"
 }
 
 enum Color {
@@ -225,6 +227,7 @@ enum StatusBar {
         )
     }
 
+    // todo: sometimes showing behind status bar
     static func showSuccessStatusBarBanner(_ title: String) {
         queue.currentBanner = StatusBarNotificationBanner(
             title: title,

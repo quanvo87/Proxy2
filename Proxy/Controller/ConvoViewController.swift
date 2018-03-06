@@ -9,7 +9,7 @@ class ConvoViewController: MessagesViewController {
     private var icons = [String: UIImage]()
     private var isPresent = false
     private var messages = [Message]()
-    private var messagesToRead = [String: Message]()
+    private var messagesToRead = Set<Message>()
 
     init(convo: Convo,
          convoObserver: ConvoObserving = ConvoObserver(),
@@ -58,12 +58,12 @@ class ConvoViewController: MessagesViewController {
                     if _self.isPresent {
                         _self.database.read(message, at: Date()) { _ in }
                     } else {
-                        _self.messagesToRead[message.messageId] = message
+                        _self.messagesToRead.insert(message)
                     }
                 }
             case .removed(let message):
                 if message.parentConvoKey == _self.convo?.key {
-                    _self.messagesToRead.removeValue(forKey: message.messageId)
+                    _self.messagesToRead.remove(message)
                 }
             }
         }
@@ -75,7 +75,7 @@ class ConvoViewController: MessagesViewController {
             _ = navigationController?.popViewController(animated: false)
             return
         }
-        messagesToRead.values.forEach { [weak self] message in
+        messagesToRead.forEach { [weak self] message in
             self?.database.read(message, at: Date()) { _ in }
         }
         isPresent = true

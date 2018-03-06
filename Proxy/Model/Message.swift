@@ -1,6 +1,17 @@
 import FirebaseDatabase
 import MessageKit
 
+enum SettableMessageProperty {
+    case dateRead(Date)
+
+    var properties: (name: String, value: Any) {
+        switch self {
+        case .dateRead(let value):
+            return ("dateRead", value)
+        }
+    }
+}
+
 struct Message: MessageType {
     let sender: Sender
     let messageId: String
@@ -11,6 +22,7 @@ struct Message: MessageType {
     let parentConvoKey: String
     let receiverId: String
     let receiverProxyKey: String
+    let senderIcon: String
     let senderProxyKey: String
 
     init(sender: Sender,
@@ -20,6 +32,7 @@ struct Message: MessageType {
          parentConvoKey: String,
          receiverId: String,
          receiverProxyKey: String,
+         senderIcon: String,
          senderProxyKey: String) {
         self.sender = sender
         self.messageId = messageId
@@ -29,6 +42,7 @@ struct Message: MessageType {
         self.parentConvoKey = parentConvoKey
         self.receiverId = receiverId
         self.receiverProxyKey = receiverProxyKey
+        self.senderIcon = senderIcon
         self.senderProxyKey = senderProxyKey
     }
 
@@ -43,6 +57,7 @@ struct Message: MessageType {
             let parentConvoKey = dictionary["parentConvoKey"] as? String,
             let receiverId = dictionary["receiverId"] as? String,
             let receiverProxyKey = dictionary["receiverProxyKey"] as? String,
+            let senderIcon = dictionary["senderIcon"] as? String,
             let senderProxyKey = dictionary["senderProxyKey"] as? String else {
                 throw ProxyError.unknown
         }
@@ -54,6 +69,7 @@ struct Message: MessageType {
         self.parentConvoKey = parentConvoKey
         self.receiverId = receiverId
         self.receiverProxyKey = receiverProxyKey
+        self.senderIcon = senderIcon
         self.senderProxyKey = senderProxyKey
     }
 
@@ -75,6 +91,7 @@ struct Message: MessageType {
             "parentConvoKey": parentConvoKey,
             "receiverId": receiverId,
             "receiverProxyKey": receiverProxyKey,
+            "senderIcon": senderIcon,
             "senderProxyKey": senderProxyKey
         ]
     }
@@ -90,7 +107,14 @@ extension Message: Equatable {
             lhs.parentConvoKey == rhs.parentConvoKey &&
             lhs.receiverId == rhs.receiverId &&
             lhs.receiverProxyKey == rhs.receiverProxyKey &&
+            lhs.senderIcon == rhs.senderIcon &&
             lhs.senderProxyKey == rhs.senderProxyKey
+    }
+}
+
+extension Message: Hashable {
+    var hashValue: Int {
+        return Int(messageId) ?? UUID().hashValue
     }
 }
 
@@ -101,17 +125,6 @@ extension MessageData: Equatable {
             return l == r
         default:
             return false
-        }
-    }
-}
-
-enum SettableMessageProperty {
-    case dateRead(Date)
-
-    var properties: (name: String, value: Any) {
-        switch self {
-        case .dateRead(let value):
-            return ("dateRead", value)
         }
     }
 }

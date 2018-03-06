@@ -1,6 +1,7 @@
 import UIKit
 
 class SettingsViewController: UIViewController {
+    private let database: Database
     private let loginManager: LoginManaging
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
@@ -9,10 +10,12 @@ class SettingsViewController: UIViewController {
     private var messagesSentCount = "-"
     private var proxiesInteractedWithCount = "-"
 
-    init(loginManager: LoginManaging = LoginManager(),
+    init(database: Database = Firebase(),
+         loginManager: LoginManaging = LoginManager(),
          uid: String,
          userStatsObserver: UserStatsObserving = UserStatsObserver(),
          displayName: String?) {
+        self.database = database
         self.loginManager = loginManager
         self.uid = uid
         self.userStatsObserver = userStatsObserver
@@ -144,6 +147,9 @@ extension SettingsViewController: UITableViewDelegate {
                     message: "Are you sure you want to log out?"
                 )
                 alert.addAction(Alert.makeDestructiveAction(title: "Log Out") { [weak self] _ in
+                    if let registrationToken = registrationToken, let uid = self?.uid {
+                        self?.database.deleteRegistrationToken(registrationToken, for: uid) { _ in }
+                    }
                     do {
                         try self?.loginManager.logOut()
                     } catch {

@@ -24,7 +24,7 @@ class FirebaseTests: FirebaseTest {
                 work.checkDeleted(Child.proxies, receiver.ownerId, receiver.key)
                 work.checkDeleted(Child.proxyNames, receiver.key)
                 work.checkDeleted(Child.convos, receiver.ownerId, convo.key)
-                work.checkDeleted(Child.userInfo, receiver.ownerId, Child.unreadMessages, message.messageId)
+                work.checkDeleted(Child.users, receiver.ownerId, Child.unreadMessages, message.messageId)
                 work.check(.receiverDeletedProxy(true), for: convo, asSender: true)
                 work.allDone {
                     expectation.fulfill()
@@ -43,7 +43,7 @@ class FirebaseTests: FirebaseTest {
             FirebaseTest.database.deleteRegistrationToken(registrationToken, for: FirebaseTest.uid) { error in
                 XCTAssertNil(error)
                 let work = GroupWork()
-                work.checkDeleted(Child.userInfo, FirebaseTest.uid, Child.registrationTokens, registrationToken)
+                work.checkDeleted(Child.users, FirebaseTest.uid, Child.registrationTokens, registrationToken)
                 work.allDone {
                     expectation.fulfill()
                 }
@@ -192,7 +192,7 @@ class FirebaseTests: FirebaseTest {
             FirebaseTest.database.read(message, at: date) { error in
                 XCTAssertNil(error, String(describing: error))
                 let work = GroupWork()
-                work.checkDeleted(Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
+                work.checkDeleted(Child.users, message.receiverId, Child.unreadMessages, message.messageId)
                 work.check(.dateRead(date), for: message)
                 work.check(.hasUnreadMessage(false), uid: message.receiverId, convoKey: message.parentConvoKey)
                 work.check(.hasUnreadMessage(false), for: receiver)
@@ -380,7 +380,7 @@ class FirebaseTests: FirebaseTest {
             XCTAssertNil(error)
             FirebaseTest.database.setRegistrationToken(registrationToken2, for: FirebaseTest.uid) { error in
                 XCTAssertNil(error)
-                Shared.firebaseHelper.get(Child.userInfo, FirebaseTest.uid, Child.registrationTokens) { result in
+                Shared.firebaseHelper.get(Child.users, FirebaseTest.uid, Child.registrationTokens) { result in
                     switch result {
                     case .failure(let error):
                         XCTFail(String(describing: error))
@@ -456,7 +456,7 @@ extension GroupWork {
     func checkUnreadMessageCreated(_ message: Message) {
         start()
         Shared.firebaseHelper.get(
-            Child.userInfo,
+            Child.users,
             message.receiverId,
             Child.unreadMessages,
             message.messageId

@@ -68,7 +68,7 @@ class Firebase: Database {
     }
 
     func deleteRegistrationToken(_ registrationToken: String, for uid: String, completion: @escaping ErrorCallback) {
-        Shared.firebaseHelper.delete(Child.userInfo, uid, Child.registrationTokens, registrationToken) { error in
+        Shared.firebaseHelper.delete(Child.users, uid, Child.registrationTokens, registrationToken) { error in
             completion(error)
         }
     }
@@ -185,7 +185,7 @@ class Firebase: Database {
 
     func read(_ message: Message, at date: Date, completion: @escaping ErrorCallback) {
         let work = GroupWork()
-        work.delete(Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
+        work.delete(Child.users, message.receiverId, Child.unreadMessages, message.messageId)
         work.set(.dateRead(date), for: message)
         work.set(.hasUnreadMessage(false), uid: message.receiverId, convoKey: message.parentConvoKey)
         work.allDone {
@@ -286,6 +286,7 @@ class Firebase: Database {
                 parentConvoKey: convo.key,
                 receiverId: convo.receiverId,
                 receiverProxyKey: convo.receiverProxyKey,
+                senderIcon: convo.senderIcon,
                 senderProxyKey: convo.senderProxyKey
             )
             let work = GroupWork()
@@ -381,7 +382,7 @@ class Firebase: Database {
     func setRegistrationToken(_ registrationToken: String, for uid: String, completion: @escaping ErrorCallback) {
         Shared.firebaseHelper.set(
             true,
-            at: Child.userInfo, uid, Child.registrationTokens, registrationToken) { error in
+            at: Child.users, uid, Child.registrationTokens, registrationToken) { error in
                 completion(error)
         }
     }
