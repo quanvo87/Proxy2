@@ -88,7 +88,7 @@ class ProxiesViewController: UIViewController, NewMessageMakerDelegate {
             makeNewProxyButton.animate(loop: true)
         }
         if let newConvo = newConvo {
-            showConvoController(newConvo)
+            showConvoViewController(newConvo)
             self.newConvo = nil
         }
     }
@@ -211,7 +211,7 @@ extension ProxiesViewController: UITableViewDelegate {
             proxiesToDelete[proxy.key] = proxy
         } else {
             tableView.deselectRow(at: indexPath, animated: true)
-            showProxyController(proxy)
+            showProxyViewController(proxy)
         }
     }
 

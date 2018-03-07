@@ -1,6 +1,10 @@
 import FirebaseDatabase
 import UIKit
 
+protocol ConvoShowing: class {
+    func showConvo(_ convoKey: String)
+}
+
 protocol NewMessageMakerDelegate: class {
     var newConvo: Convo? { get set }
 }

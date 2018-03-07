@@ -286,7 +286,6 @@ class Firebase: Database {
                 parentConvoKey: convo.key,
                 receiverId: convo.receiverId,
                 receiverProxyKey: convo.receiverProxyKey,
-                senderIcon: convo.senderIcon,
                 senderProxyKey: convo.senderProxyKey
             )
             let work = GroupWork()

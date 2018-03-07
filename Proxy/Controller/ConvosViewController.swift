@@ -88,7 +88,7 @@ class ConvosViewController: UIViewController, NewMessageMakerDelegate {
             makeNewMessageButton.animate(loop: true)
         }
         if let newConvo = newConvo {
-            showConvoController(newConvo)
+            showConvoViewController(newConvo)
             self.newConvo = nil
         }
     }
@@ -153,7 +153,7 @@ extension ConvosViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let convo = convos[indexPath.row]
-        showConvoController(convo)
+        showConvoViewController(convo)
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

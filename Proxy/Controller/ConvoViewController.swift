@@ -71,20 +71,22 @@ class ConvoViewController: MessagesViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        guard convo != nil else {
+        guard let convo = convo else {
             _ = navigationController?.popViewController(animated: false)
             return
         }
+        isPresent = true
         messagesToRead.forEach { [weak self] message in
             self?.database.read(message, at: Date()) { _ in }
         }
-        isPresent = true
+        NotificationCenter.default.post(name: .didShowConvo, object: nil, userInfo: ["convoKey": convo.key])
         tabBarController?.tabBar.isHidden = true
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         isPresent = false
+        NotificationCenter.default.post(name: .didHideConvo, object: nil)
         tabBarController?.tabBar.isHidden = false
     }
 

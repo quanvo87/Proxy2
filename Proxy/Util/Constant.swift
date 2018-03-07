@@ -6,8 +6,6 @@ import FontAwesome_swift
 import NotificationBannerSwift
 import SwiftMessages
 
-var registrationToken: String?
-
 enum Alert {
     static let deleteProxyMessage = (
         title: "Delete Proxy?",

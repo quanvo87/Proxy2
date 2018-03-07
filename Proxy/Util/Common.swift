@@ -123,6 +123,11 @@ extension NSAttributedString {
     }
 }
 
+extension Notification.Name {
+    static let didHideConvo = Notification.Name("didHideConvo")
+    static let didShowConvo = Notification.Name("didShowConvo")
+}
+
 extension OnboardingItemInfo {
     init(title: String, description: String, pageIcon: UIImage) {
         self.init(
@@ -277,7 +282,7 @@ extension UIView {
 }
 
 extension UIViewController {
-    func showConvoController(_ convo: Convo) {
+    func showConvoViewController(_ convo: Convo) {
         let convoViewController = ConvoViewController(convo: convo)
         navigationController?.pushViewController(convoViewController, animated: true)
     }
@@ -310,13 +315,13 @@ extension UIViewController {
         present(alert, animated: true)
     }
 
-    func showIconPickerController(_ proxy: Proxy) {
+    func showIconPickerViewController(_ proxy: Proxy) {
         let iconPickerViewController = IconPickerViewController(proxy: proxy)
         let navigationController = UINavigationController(rootViewController: iconPickerViewController)
         present(navigationController, animated: true)
     }
 
-    func showProxyController(_ proxy: Proxy) {
+    func showProxyViewController(_ proxy: Proxy) {
         let proxyViewController = ProxyViewController(proxy: proxy)
         navigationController?.pushViewController(proxyViewController, animated: true)
     }

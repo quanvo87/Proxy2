@@ -12,14 +12,14 @@ exports.sendNewMessageNotification = functions.database.ref('/users/{uid}/unread
         if (!snapshot.exists()) {
             return console.log('There are no notification tokens to send to.')
         }
+        const tokens = Object.keys(snapshot.val())
         const payload = {
             notification: {
-                title: message.senderDisplayName,
-                body: message.text,
-                icon: message.senderIcon,
-            },
+                body: message.senderDisplayName + ': ' + message.text,
+                parentConvoKey: message.parentConvoKey,
+                receiverId: uid
+            }
         }
-        const tokens = Object.keys(snapshot.val())
         return admin.messaging().sendToDevice(tokens, payload).then((response) => {
             const removeTokenPromises = []
             response.results.forEach((result, index) => {
@@ -28,9 +28,9 @@ exports.sendNewMessageNotification = functions.database.ref('/users/{uid}/unread
                 if (error) {
                     if (error.code === 'messaging/invalid-registration-token' || error.code === 'messaging/registration-token-not-registered') {
                         removeTokenPromises.push(snapshot.ref.child(token).remove())
-                        console.log('Removing invalid token: ', token)
+                        console.log('Removing invalid registration token: ', token)
                     } else {
-                        console.error('Failure sending notification to', token, error)
+                        console.error('Failure sending notification to registration token: ', token, error)
                     }
                 } else {
                     console.log('Sent new message notification to registration token: ', token)

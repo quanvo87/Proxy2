@@ -182,7 +182,7 @@ extension ConvoDetailViewController: UITableViewDataSource {
         guard let proxy = proxy else {
             return
         }
-        showIconPickerController(proxy)
+        showIconPickerViewController(proxy)
     }
 }
 
@@ -195,7 +195,7 @@ extension ConvoDetailViewController: UITableViewDelegate {
         }
         switch indexPath.section {
         case 1:
-            showProxyController(proxy)
+            showProxyViewController(proxy)
         case 2:
             switch indexPath.row {
             case 0:

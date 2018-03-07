@@ -75,7 +75,7 @@ class ProxyViewController: UIViewController, NewMessageMakerDelegate {
             makeNewMessageButton.animate(loop: true)
         }
         if let newConvo = newConvo {
-            showConvoController(newConvo)
+            showConvoViewController(newConvo)
             self.newConvo = nil
         }
     }
@@ -201,7 +201,7 @@ extension ProxyViewController: UITableViewDataSource {
         guard let proxy = proxy else {
             return
         }
-        showIconPickerController(proxy)
+        showIconPickerViewController(proxy)
     }
 }
 
@@ -210,7 +210,7 @@ extension ProxyViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 1, let row = tableView.indexPathForSelectedRow?.row {
             let convo = convos[row]
-            showConvoController(convo)
+            showConvoViewController(convo)
         }
         tableView.deselectRow(at: indexPath, animated: true)
     }

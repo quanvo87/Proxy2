@@ -9,18 +9,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow? = UIWindow(frame: UIScreen.main.bounds)
     private let authObserver = AuthObserver()
     private let database = Firebase()
-    private let gcmMessageIDKey = "gcm.message_id"
     private var isLoggedIn = false
     private var uid: String? {
         didSet {
             setRegistrationToken()
         }
     }
+    private weak var convoShower: ConvoShowing?
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
 
+        // todo: badge
+        // todo: add option in settings
         if #available(iOS 10.0, *) {
             UNUserNotificationCenter.current().delegate = self
             let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
@@ -44,19 +46,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     changeRequest.displayName = email
                     changeRequest.commitChanges()
                 }
+                let tabBarController = TabBarController(uid: user.uid, displayName: displayName)
+                self?.convoShower = tabBarController
+                self?.window?.rootViewController = tabBarController
                 self?.isLoggedIn = true
                 self?.uid = user.uid
-                self?.window?.rootViewController = TabBarController(uid: user.uid, displayName: displayName)
             } else {
                 guard let isLoggedIn = self?.isLoggedIn, isLoggedIn,
-                    let mainLoginController = Shared.storyboard.instantiateViewController(
+                    let welcomeViewController = Shared.storyboard.instantiateViewController(
                         withIdentifier: String(describing: WelcomeViewController.self)
                         ) as? WelcomeViewController else {
                             return
                 }
+                let navigationController = UINavigationController(rootViewController: welcomeViewController)
+                self?.window?.rootViewController = navigationController
                 self?.isLoggedIn = false
                 self?.uid = nil
-                self?.window?.rootViewController = UINavigationController(rootViewController: mainLoginController)
             }
         }
 
@@ -73,13 +78,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         )
     }
 
-    // < iOS 10
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any],
                      fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        if let messageID = userInfo[gcmMessageIDKey] {
-            print("😎 Message ID: \(messageID)")
-        }
-        print("🐻 \(userInfo)")
         completionHandler(.newData)
     }
 
@@ -103,7 +103,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 private extension AppDelegate {
     func setRegistrationToken() {
-        guard let registrationToken = registrationToken, let uid = uid else {
+        guard let registrationToken = Messaging.messaging().fcmToken, let uid = uid else {
             return
         }
         database.setRegistrationToken(registrationToken, for: uid) { error in
@@ -116,10 +116,10 @@ private extension AppDelegate {
 
 extension AppDelegate: MessagingDelegate {
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
-        registrationToken = fcmToken
         setRegistrationToken()
     }
 
+    // todo: investigate what this is
     func messaging(_ messaging: Messaging, didReceive remoteMessage: MessagingRemoteMessage) {
         print("📧 \(remoteMessage.appData)")
     }
@@ -127,29 +127,27 @@ extension AppDelegate: MessagingDelegate {
 
 @available(iOS 10, *)
 extension AppDelegate: UNUserNotificationCenterDelegate {
-    // foreground
+    // todo: show banner if not already in convo
     // swiftlint:disable line_length
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 willPresent notification: UNNotification,
                                 withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        let userInfo = notification.request.content.userInfo
-        if let messageID = userInfo[gcmMessageIDKey] {
-            print("🐸 Message ID: \(messageID)")
-        }
-        print("🏈 \(userInfo)")
+//        let userInfo = notification.request.content.userInfo
+//        let newMessageNotification = try? NewMessageNotification(userInfo)
+//        print(newMessageNotification?.parentConvoKey)
+//        print(newMessageNotification?.text)
         completionHandler([])
     }
     // swiftlint:enable line_length
 
-    // when user taps notification
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 didReceive response: UNNotificationResponse,
                                 withCompletionHandler completionHandler: @escaping () -> Void) {
-        let userInfo = response.notification.request.content.userInfo
-        if let messageID = userInfo[gcmMessageIDKey] {
-            print("🎱 Message ID: \(messageID)")
-        }
-        print("🎾 \(userInfo)")
+        do {
+            let userInfo = response.notification.request.content.userInfo
+            let newMessageNotification = try NewMessageNotification(userInfo)
+            convoShower?.showConvo(newMessageNotification.parentConvoKey)
+        } catch {}
         completionHandler()
     }
 }
