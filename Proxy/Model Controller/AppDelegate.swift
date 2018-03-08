@@ -8,19 +8,22 @@ import UserNotifications
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow? = UIWindow(frame: UIScreen.main.bounds)
     private let authObserver = AuthObserver()
-    private var currentConvoKey: String?
     private let database = Firebase()
+    private var currentConvoKey: String?
     private var didHideConvoObserver: NSObjectProtocol?
     private var didShowConvoObserver: NSObjectProtocol?
     private var isLoggedIn = false
-    private var uid: String?
+    private var uid: String? {
+        didSet {
+            isLoggedIn = uid != nil
+        }
+    }
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
 
         // todo: add option in settings
-        // todo: badge - serverless - get unreadMessages count, send as badge in notification payload
         if #available(iOS 10.0, *) {
             UNUserNotificationCenter.current().delegate = self
             let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
@@ -45,7 +48,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }
                 let tabBarController = TabBarController(uid: user.uid, displayName: displayName)
                 self?.window?.rootViewController = tabBarController
-                self?.isLoggedIn = true
                 self?.uid = user.uid
                 self?.setRegistrationToken()
             } else {
@@ -57,7 +59,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }
                 let navigationController = UINavigationController(rootViewController: welcomeViewController)
                 self?.window?.rootViewController = navigationController
-                self?.isLoggedIn = false
                 self?.uid = nil
             }
         }
@@ -91,6 +92,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         )
     }
 
+    // todo: what is this
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any],
                      fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         completionHandler(.newData)
