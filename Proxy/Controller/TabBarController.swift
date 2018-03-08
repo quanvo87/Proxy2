@@ -29,19 +29,12 @@ class TabBarController: UITabBarController {
             forName: .shouldShowConvo,
             object: nil,
             queue: .main) { [weak self] notification in
-                guard let convoKey = notification.userInfo?["convoKey"] as? String, let uid = self?.uid else {
+                guard let convo = notification.userInfo?["convo"] as? Convo else {
                     return
                 }
-                self?.database.getConvo(convoKey: convoKey, ownerId: uid) { [weak self] result in
-                    switch result {
-                    case .failure(let error):
-                        StatusBar.showErrorBanner(subtitle: error.localizedDescription)
-                    case .success(let convo):
-                        self?.selectedIndex = 0
-                        self?.convosViewController.navigationController?.popToRootViewController(animated: false)
-                        self?.convosViewController.showConvoViewController(convo)
-                    }
-                }
+                self?.selectedIndex = 0
+                self?.convosViewController.navigationController?.popToRootViewController(animated: false)
+                self?.convosViewController.showConvoViewController(convo)
         }
     }
 

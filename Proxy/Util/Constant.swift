@@ -155,6 +155,15 @@ enum Image {
     }
 }
 
+enum ImageView {
+    static func make(_ iconName: String, frame: CGRect = CGRect(x: 0, y: 0, width: 30, height: 30)) -> UIImageView {
+        let imageView = UIImageView(frame: frame)
+        let image = UIImage(named: iconName)
+        imageView.image = image
+        return imageView
+    }
+}
+
 enum Label {
     static let check: UILabel = {
         let check = UILabel()
@@ -197,8 +206,6 @@ enum Shared {
     }()
 }
 
-// todo: add info banner that displays new message notifications
-// with an onTap handler that sends shouldShowConvo notification
 enum StatusBar {
     private static let queue = ProxyNotificationBannerQueue()
 
@@ -216,6 +223,19 @@ enum StatusBar {
         view.configureTheme(.error)
         view.configureContent(body: "⚠️ " + error.localizedDescription)
         SwiftMessages.show(view: view)
+    }
+
+    static func showNewMessageBanner(_ newMessageNotification: NewMessageNotification, convo: Convo) {
+        let notificationBanner = NotificationBanner(
+            title: newMessageNotification.senderDisplayName,
+            subtitle: newMessageNotification.messageText,
+            leftView: ImageView.make(convo.receiverIcon),
+            style: .info
+        )
+        notificationBanner.onTap = {
+            NotificationCenter.default.post(name: .shouldShowConvo, object: nil, userInfo: ["convo": convo])
+        }
+        queue.currentBanner = notificationBanner
     }
 
     static func showSuccessBanner(title: String, subtitle: String) {

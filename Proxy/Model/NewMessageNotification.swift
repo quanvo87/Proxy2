@@ -1,14 +1,17 @@
 struct NewMessageNotification {
+    let messageText: String
     let parentConvoKey: String
-    let text: String
+    let senderDisplayName: String
 
+    // todo: won't be needed once i make notification send whole convo
     init(_ userInfo: [AnyHashable: Any]) throws {
-        guard let parentConvoKey = userInfo["gcm.notification.parentConvoKey"] as? String,
-            let aps = userInfo["aps"] as? [AnyHashable: String],
-            let text = aps["alert"] else {
+        guard let messageText = userInfo["gcm.notification.messageText"] as? String,
+            let parentConvoKey = userInfo["gcm.notification.parentConvoKey"] as? String,
+            let senderDisplayName = userInfo["gcm.notification.senderDisplayName"] as? String else {
                 throw ProxyError.unknown
         }
+        self.messageText = messageText
         self.parentConvoKey = parentConvoKey
-        self.text = text
+        self.senderDisplayName = senderDisplayName
     }
 }

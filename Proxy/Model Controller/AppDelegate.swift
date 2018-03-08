@@ -156,8 +156,16 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         do {
             let userInfo = notification.request.content.userInfo
             let newMessageNotification = try NewMessageNotification(userInfo)
-            if newMessageNotification.parentConvoKey != currentConvoKey {
-                // todo: show new message alert
+            let parentConvoKey = newMessageNotification.parentConvoKey
+            if parentConvoKey != currentConvoKey, let uid = uid {
+                database.getConvo(convoKey: parentConvoKey, ownerId: uid) { result in
+                    switch result {
+                    case .failure(let error):
+                        StatusBar.showErrorStatusBarBanner(error)
+                    case .success(let convo):
+                        StatusBar.showNewMessageBanner(newMessageNotification, convo: convo)
+                    }
+                }
             }
         } catch {}
         completionHandler([])
@@ -171,12 +179,19 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             let userInfo = response.notification.request.content.userInfo
             let newMessageNotification = try NewMessageNotification(userInfo)
             let parentConvoKey = newMessageNotification.parentConvoKey
-            if parentConvoKey != currentConvoKey {
-                NotificationCenter.default.post(
-                    name: .shouldShowConvo,
-                    object: nil,
-                    userInfo: ["convoKey": parentConvoKey]
-                )
+            if parentConvoKey != currentConvoKey, let uid = uid {
+                database.getConvo(convoKey: parentConvoKey, ownerId: uid) { result in
+                    switch result {
+                    case .failure(let error):
+                        StatusBar.showErrorStatusBarBanner(error)
+                    case .success(let convo):
+                        NotificationCenter.default.post(
+                            name: .shouldShowConvo,
+                            object: nil,
+                            userInfo: ["convo": convo]
+                        )
+                    }
+                }
             }
         } catch {}
         completionHandler()
