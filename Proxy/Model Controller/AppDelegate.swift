@@ -8,26 +8,23 @@ import UserNotifications
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow? = UIWindow(frame: UIScreen.main.bounds)
     private let authObserver = AuthObserver()
+    private var currentConvoKey: String?
     private let database = Firebase()
+    private var didHideConvoObserver: NSObjectProtocol?
+    private var didShowConvoObserver: NSObjectProtocol?
     private var isLoggedIn = false
-    private var uid: String? {
-        didSet {
-            setRegistrationToken()
-        }
-    }
-    private weak var convoShower: ConvoShowing?
+    private var uid: String?
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
 
-        // todo: badge
         // todo: add option in settings
+        // todo: badge - serverless - get unreadMessages count, send as badge in notification payload
         if #available(iOS 10.0, *) {
             UNUserNotificationCenter.current().delegate = self
             let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
-            UNUserNotificationCenter.current().requestAuthorization(options: authOptions, completionHandler: {_, _ in }
-            )
+            UNUserNotificationCenter.current().requestAuthorization(options: authOptions, completionHandler: {_, _ in })
         } else {
             let settings: UIUserNotificationSettings = UIUserNotificationSettings(
                 types: [.alert, .badge, .sound],
@@ -47,10 +44,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     changeRequest.commitChanges()
                 }
                 let tabBarController = TabBarController(uid: user.uid, displayName: displayName)
-                self?.convoShower = tabBarController
                 self?.window?.rootViewController = tabBarController
                 self?.isLoggedIn = true
                 self?.uid = user.uid
+                self?.setRegistrationToken()
             } else {
                 guard let isLoggedIn = self?.isLoggedIn, isLoggedIn,
                     let welcomeViewController = Shared.storyboard.instantiateViewController(
@@ -66,6 +63,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
 //        Database.database().isPersistenceEnabled = true
+
+        didHideConvoObserver = NotificationCenter.default.addObserver(
+            forName: .didHideConvo,
+            object: nil,
+            queue: .main) { [weak self] _ in
+                self?.currentConvoKey = nil
+        }
+
+        didShowConvoObserver = NotificationCenter.default.addObserver(
+            forName: .didShowConvo,
+            object: nil,
+            queue: .main) { [weak self] notification in
+                if let convoKey = notification.userInfo?["convoKey"] as? String {
+                    self?.currentConvoKey = convoKey
+                }
+        }
 
         Messaging.messaging().delegate = self
 
@@ -99,6 +112,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         StatusBar.showErrorStatusBarBanner(error)
     }
+
+    deinit {
+        if let didHideConvoObserver = didHideConvoObserver {
+            NotificationCenter.default.removeObserver(didHideConvoObserver)
+        }
+        if let currentConvoKeyObserver = didShowConvoObserver {
+            NotificationCenter.default.removeObserver(currentConvoKeyObserver)
+        }
+    }
 }
 
 private extension AppDelegate {
@@ -127,15 +149,17 @@ extension AppDelegate: MessagingDelegate {
 
 @available(iOS 10, *)
 extension AppDelegate: UNUserNotificationCenterDelegate {
-    // todo: show banner if not already in convo
     // swiftlint:disable line_length
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 willPresent notification: UNNotification,
                                 withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-//        let userInfo = notification.request.content.userInfo
-//        let newMessageNotification = try? NewMessageNotification(userInfo)
-//        print(newMessageNotification?.parentConvoKey)
-//        print(newMessageNotification?.text)
+        do {
+            let userInfo = notification.request.content.userInfo
+            let newMessageNotification = try NewMessageNotification(userInfo)
+            if newMessageNotification.parentConvoKey != currentConvoKey {
+                // todo: show new message alert
+            }
+        } catch {}
         completionHandler([])
     }
     // swiftlint:enable line_length
@@ -146,7 +170,14 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         do {
             let userInfo = response.notification.request.content.userInfo
             let newMessageNotification = try NewMessageNotification(userInfo)
-            convoShower?.showConvo(newMessageNotification.parentConvoKey)
+            let parentConvoKey = newMessageNotification.parentConvoKey
+            if parentConvoKey != currentConvoKey {
+                NotificationCenter.default.post(
+                    name: .shouldShowConvo,
+                    object: nil,
+                    userInfo: ["convoKey": parentConvoKey]
+                )
+            }
         } catch {}
         completionHandler()
     }

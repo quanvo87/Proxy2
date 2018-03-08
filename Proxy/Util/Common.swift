@@ -126,6 +126,7 @@ extension NSAttributedString {
 extension Notification.Name {
     static let didHideConvo = Notification.Name("didHideConvo")
     static let didShowConvo = Notification.Name("didShowConvo")
+    static let shouldShowConvo = Notification.Name("shouldShowConvo")
 }
 
 extension OnboardingItemInfo {

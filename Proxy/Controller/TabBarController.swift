@@ -4,9 +4,7 @@ class TabBarController: UITabBarController {
     private let convosViewController: ConvosViewController
     private let database: Database
     private let uid: String
-    private var didHideConvoObserver: NSObjectProtocol?
-    private var didShowConvoObserver: NSObjectProtocol?
-    private var currentConvoKey: String?
+    private var shouldShowConvoObserver: NSObjectProtocol?
 
     init(database: Database = Firebase(), uid: String, displayName: String?) {
         self.database = database
@@ -27,52 +25,33 @@ class TabBarController: UITabBarController {
             UINavigationController(rootViewController: $0)
         }
 
-        didHideConvoObserver = NotificationCenter.default.addObserver(
-            forName: .didHideConvo,
-            object: nil,
-            queue: .main) { [weak self] _ in
-                self?.currentConvoKey = nil
-        }
-
-        didShowConvoObserver = NotificationCenter.default.addObserver(
-            forName: .didShowConvo,
+        shouldShowConvoObserver = NotificationCenter.default.addObserver(
+            forName: .shouldShowConvo,
             object: nil,
             queue: .main) { [weak self] notification in
-                if let convoKey = notification.userInfo?["convoKey"] as? String {
-                    self?.currentConvoKey = convoKey
+                guard let convoKey = notification.userInfo?["convoKey"] as? String, let uid = self?.uid else {
+                    return
+                }
+                self?.database.getConvo(convoKey: convoKey, ownerId: uid) { [weak self] result in
+                    switch result {
+                    case .failure(let error):
+                        StatusBar.showErrorBanner(subtitle: error.localizedDescription)
+                    case .success(let convo):
+                        self?.selectedIndex = 0
+                        self?.convosViewController.navigationController?.popToRootViewController(animated: false)
+                        self?.convosViewController.showConvoViewController(convo)
+                    }
                 }
         }
     }
 
     deinit {
-        if let didHideConvoObserver = didHideConvoObserver {
-            NotificationCenter.default.removeObserver(didHideConvoObserver)
-        }
-        if let currentConvoKeyObserver = didShowConvoObserver {
-            NotificationCenter.default.removeObserver(currentConvoKeyObserver)
+        if let shouldShowConvoObserver = shouldShowConvoObserver {
+            NotificationCenter.default.removeObserver(shouldShowConvoObserver)
         }
     }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-}
-
-extension TabBarController: ConvoShowing {
-    func showConvo(_ convoKey: String) {
-        guard convoKey != currentConvoKey else {
-            return
-        }
-        // todo: move convo retrieval to serverless function
-        database.getConvo(convoKey: convoKey, ownerId: uid) { [weak self] result in
-            switch result {
-            case .failure(let error):
-                StatusBar.showErrorBanner(subtitle: error.localizedDescription)
-            case .success(let convo):
-                self?.selectedIndex = 0
-                self?.convosViewController.navigationController?.popToRootViewController(animated: false)
-                self?.convosViewController.showConvoViewController(convo)
-            }
-        }
     }
 }

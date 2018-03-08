@@ -10,7 +10,11 @@ class ConvosViewController: UIViewController, NewMessageMakerDelegate {
     private let unreadMessagesObserver: UnreadMessagesObserving
     private var convos = [Convo]()
     private var currentProxyCount = 0
-    private var unreadMessageCount = 0
+    private var unreadMessageCount = 0 {
+        didSet {
+            UIApplication.shared.applicationIconBadgeNumber = unreadMessageCount
+        }
+    }
     private lazy var makeNewMessageButton = UIBarButtonItem(
         target: self,
         action: #selector(showNewMessageMakerViewController),

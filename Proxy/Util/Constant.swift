@@ -197,6 +197,8 @@ enum Shared {
     }()
 }
 
+// todo: add info banner that displays new message notifications
+// with an onTap handler that sends shouldShowConvo notification
 enum StatusBar {
     private static let queue = ProxyNotificationBannerQueue()
 
