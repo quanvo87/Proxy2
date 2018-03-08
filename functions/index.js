@@ -16,9 +16,7 @@ exports.sendNewMessageNotification = functions.database.ref('/users/{uid}/unread
         const payload = {
             notification: {
                 body: message.senderDisplayName + ': ' + message.text,
-                messageText: message.text,
-                parentConvoKey: message.parentConvoKey,
-                senderDisplayName: message.senderDisplayName
+                parentConvoKey: message.parentConvoKey
             }
         }
         return admin.messaging().sendToDevice(tokens, payload).then((response) => {

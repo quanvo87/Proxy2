@@ -16,6 +16,12 @@ extension CALayer {
     }
 }
 
+extension Dictionary where Key == AnyHashable, Value == Any {
+    var parentConvoKey: String? {
+        return self["gcm.notification.parentConvoKey"] as? String ?? nil
+    }
+}
+
 extension Double {
     var asTimeAgo: String {
         let calendar = NSCalendar.current
@@ -112,10 +118,10 @@ extension Int {
 extension NSAttributedString {
     convenience init(_ convo: Convo) {
         let receiver = NSMutableAttributedString(
-            string: (convo.receiverNickname == "" ? convo.receiverProxyName : convo.receiverNickname) + ", "
+            string: convo.receiverDisplayName
         )
         let sender = NSMutableAttributedString(
-            string: convo.senderNickname == "" ? convo.senderProxyName : convo.senderNickname,
+            string: ", " + convo.senderDisplayName,
             attributes: [NSAttributedStringKey.foregroundColor: UIColor.gray]
         )
         receiver.append(sender)

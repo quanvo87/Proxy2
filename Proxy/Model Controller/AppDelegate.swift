@@ -153,47 +153,49 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 willPresent notification: UNNotification,
                                 withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        do {
-            let userInfo = notification.request.content.userInfo
-            let newMessageNotification = try NewMessageNotification(userInfo)
-            let parentConvoKey = newMessageNotification.parentConvoKey
-            if parentConvoKey != currentConvoKey, let uid = uid {
-                database.getConvo(convoKey: parentConvoKey, ownerId: uid) { result in
-                    switch result {
-                    case .failure(let error):
-                        StatusBar.showErrorStatusBarBanner(error)
-                    case .success(let convo):
-                        StatusBar.showNewMessageBanner(newMessageNotification, convo: convo)
-                    }
-                }
+        defer {
+            completionHandler([])
+        }
+        let userInfo = notification.request.content.userInfo
+        guard let convoKey = userInfo.parentConvoKey,
+            convoKey != currentConvoKey,
+            let uid = uid else {
+                return
+        }
+        database.getConvo(convoKey: convoKey, ownerId: uid) { result in
+            switch result {
+            case .failure(let error):
+                StatusBar.showErrorStatusBarBanner(error)
+            case .success(let convo):
+                StatusBar.showNewMessageBanner(convo)
             }
-        } catch {}
-        completionHandler([])
+        }
     }
     // swiftlint:enable line_length
 
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 didReceive response: UNNotificationResponse,
                                 withCompletionHandler completionHandler: @escaping () -> Void) {
-        do {
-            let userInfo = response.notification.request.content.userInfo
-            let newMessageNotification = try NewMessageNotification(userInfo)
-            let parentConvoKey = newMessageNotification.parentConvoKey
-            if parentConvoKey != currentConvoKey, let uid = uid {
-                database.getConvo(convoKey: parentConvoKey, ownerId: uid) { result in
-                    switch result {
-                    case .failure(let error):
-                        StatusBar.showErrorStatusBarBanner(error)
-                    case .success(let convo):
-                        NotificationCenter.default.post(
-                            name: .shouldShowConvo,
-                            object: nil,
-                            userInfo: ["convo": convo]
-                        )
-                    }
-                }
+        defer {
+            completionHandler()
+        }
+        let userInfo = response.notification.request.content.userInfo
+        guard let convoKey = userInfo.parentConvoKey,
+            convoKey != currentConvoKey,
+            let uid = uid else {
+                return
+        }
+        database.getConvo(convoKey: convoKey, ownerId: uid) { result in
+            switch result {
+            case .failure(let error):
+                StatusBar.showErrorStatusBarBanner(error)
+            case .success(let convo):
+                NotificationCenter.default.post(
+                    name: .shouldShowConvo,
+                    object: nil,
+                    userInfo: ["convo": convo]
+                )
             }
-        } catch {}
-        completionHandler()
+        }
     }
 }
