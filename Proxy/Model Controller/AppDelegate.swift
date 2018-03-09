@@ -4,6 +4,7 @@ import FBSDKCoreKit
 import SwiftMessages
 import UserNotifications
 
+// todo: di?
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow? = UIWindow(frame: UIScreen.main.bounds)
@@ -23,7 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
 
-        // todo: add option in settings
+        // todo: implement on prod as well
         if #available(iOS 10.0, *) {
             UNUserNotificationCenter.current().delegate = self
             let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
@@ -92,10 +93,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         )
     }
 
-    // todo: what is this
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any],
                      fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        completionHandler(.newData)
+        switch application.applicationState {
+        case .active:
+            showNewMessageBanner(userInfo) {
+                completionHandler(.newData)
+            }
+        case .background:
+            completionHandler(.noData)
+        case .inactive:
+            sendShouldShowConvoNotification(userInfo) {
+                completionHandler(.newData)
+            }
+        }
     }
 
     func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
@@ -126,66 +137,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 }
 
 private extension AppDelegate {
-    func setRegistrationToken() {
-        guard let registrationToken = Messaging.messaging().fcmToken, let uid = uid else {
+    func sendShouldShowConvoNotification(_ userInfo: [AnyHashable: Any], completion: @escaping () -> Void) {
+        guard let convoKey = userInfo.parentConvoKey, convoKey != currentConvoKey, let uid = uid else {
+            completion()
             return
-        }
-        database.setRegistrationToken(registrationToken, for: uid) { error in
-            if let error = error {
-                StatusBar.showErrorStatusBarBanner(error)
-            }
-        }
-    }
-}
-
-extension AppDelegate: MessagingDelegate {
-    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
-        setRegistrationToken()
-    }
-
-    // todo: investigate what this is
-    func messaging(_ messaging: Messaging, didReceive remoteMessage: MessagingRemoteMessage) {
-        print("📧 \(remoteMessage.appData)")
-    }
-}
-
-@available(iOS 10, *)
-extension AppDelegate: UNUserNotificationCenterDelegate {
-    // swiftlint:disable line_length
-    func userNotificationCenter(_ center: UNUserNotificationCenter,
-                                willPresent notification: UNNotification,
-                                withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        defer {
-            completionHandler([])
-        }
-        let userInfo = notification.request.content.userInfo
-        guard let convoKey = userInfo.parentConvoKey,
-            convoKey != currentConvoKey,
-            let uid = uid else {
-                return
-        }
-        database.getConvo(convoKey: convoKey, ownerId: uid) { result in
-            switch result {
-            case .failure(let error):
-                StatusBar.showErrorStatusBarBanner(error)
-            case .success(let convo):
-                StatusBar.showNewMessageBanner(convo)
-            }
-        }
-    }
-    // swiftlint:enable line_length
-
-    func userNotificationCenter(_ center: UNUserNotificationCenter,
-                                didReceive response: UNNotificationResponse,
-                                withCompletionHandler completionHandler: @escaping () -> Void) {
-        defer {
-            completionHandler()
-        }
-        let userInfo = response.notification.request.content.userInfo
-        guard let convoKey = userInfo.parentConvoKey,
-            convoKey != currentConvoKey,
-            let uid = uid else {
-                return
         }
         database.getConvo(convoKey: convoKey, ownerId: uid) { result in
             switch result {
@@ -198,6 +153,61 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                     userInfo: ["convo": convo]
                 )
             }
+            completion()
         }
+    }
+
+    func setRegistrationToken() {
+        guard let registrationToken = Messaging.messaging().fcmToken, let uid = uid else {
+            return
+        }
+        database.setRegistrationToken(registrationToken, for: uid) { error in
+            if let error = error {
+                StatusBar.showErrorStatusBarBanner(error)
+            }
+        }
+    }
+
+    func showNewMessageBanner(_ userInfo: [AnyHashable: Any], completion: @escaping () -> Void) {
+        guard let convoKey = userInfo.parentConvoKey, convoKey != currentConvoKey, let uid = uid else {
+            completion()
+            return
+        }
+        database.getConvo(convoKey: convoKey, ownerId: uid) { result in
+            switch result {
+            case .failure(let error):
+                StatusBar.showErrorStatusBarBanner(error)
+            case .success(let convo):
+                StatusBar.showNewMessageBanner(convo)
+            }
+            completion()
+        }
+    }
+}
+
+extension AppDelegate: MessagingDelegate {
+    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
+        setRegistrationToken()
+    }
+}
+
+@available(iOS 10, *)
+extension AppDelegate: UNUserNotificationCenterDelegate {
+    // swiftlint:disable line_length
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                willPresent notification: UNNotification,
+                                withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        let userInfo = notification.request.content.userInfo
+        showNewMessageBanner(userInfo) {
+            completionHandler([])
+        }
+    }
+    // swiftlint:enable line_length
+
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                didReceive response: UNNotificationResponse,
+                                withCompletionHandler completionHandler: @escaping () -> Void) {
+        let userInfo = response.notification.request.content.userInfo
+        sendShouldShowConvoNotification(userInfo, completion: completionHandler)
     }
 }

@@ -1,5 +1,6 @@
 import UIKit
 
+// todo: refresh every ~10 secs?
 class ConvosViewController: UIViewController, NewMessageMakerDelegate {
     var newConvo: Convo?
     private let database: Database
