@@ -5,16 +5,14 @@ import SwiftMessages
 import UserNotifications
 
 // todo: di?
-// todo: test:
-// - login account A, logout, login account B, simulator send message to account A, does device still get notification?
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow? = UIWindow(frame: UIScreen.main.bounds)
     private let authObserver = AuthObserver()
     private let database = Firebase()
     private var currentConvoKey: String?
-    private var didHideConvoObserver: NSObjectProtocol?
-    private var didShowConvoObserver: NSObjectProtocol?
+    private var didEnterConvoObserver: NSObjectProtocol?
+    private var didLeaveConvoObserver: NSObjectProtocol?
     private var isLoggedIn = false
     private var uid: String? {
         didSet {
@@ -67,20 +65,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 //        Database.database().isPersistenceEnabled = true
 
-        didHideConvoObserver = NotificationCenter.default.addObserver(
-            forName: .didHideConvo,
-            object: nil,
-            queue: .main) { [weak self] _ in
-                self?.currentConvoKey = nil
-        }
-
-        didShowConvoObserver = NotificationCenter.default.addObserver(
-            forName: .didShowConvo,
+        // todo: move to protocol
+        didEnterConvoObserver = NotificationCenter.default.addObserver(
+            forName: .didEnterConvo,
             object: nil,
             queue: .main) { [weak self] notification in
                 if let convoKey = notification.userInfo?["convoKey"] as? String {
                     self?.currentConvoKey = convoKey
                 }
+        }
+
+        didLeaveConvoObserver = NotificationCenter.default.addObserver(
+            forName: .didLeaveConvo,
+            object: nil,
+            queue: .main) { [weak self] _ in
+                self?.currentConvoKey = nil
         }
 
         Messaging.messaging().delegate = self
@@ -128,10 +127,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     deinit {
-        if let didHideConvoObserver = didHideConvoObserver {
+        if let didHideConvoObserver = didLeaveConvoObserver {
             NotificationCenter.default.removeObserver(didHideConvoObserver)
         }
-        if let currentConvoKeyObserver = didShowConvoObserver {
+        if let currentConvoKeyObserver = didEnterConvoObserver {
             NotificationCenter.default.removeObserver(currentConvoKeyObserver)
         }
     }

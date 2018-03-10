@@ -3,6 +3,7 @@ import UIKit
 class TabBarController: UITabBarController {
     private let convosViewController: ConvosViewController
     private let database: Database
+    private let proxiesViewController: ProxiesViewController
     private let uid: String
     private var shouldShowConvoObserver: NSObjectProtocol?
 
@@ -10,12 +11,12 @@ class TabBarController: UITabBarController {
         self.database = database
         self.uid = uid
         convosViewController = ConvosViewController(uid: uid)
+        proxiesViewController = ProxiesViewController(uid: uid)
 
         super.init(nibName: nil, bundle: nil)
 
         convosViewController.tabBarItem = UITabBarItem(title: "Messages", image: UIImage(named: "messages"), tag: 0)
 
-        let proxiesViewController = ProxiesViewController(uid: uid)
         proxiesViewController.tabBarItem = UITabBarItem(title: "My Proxies", image: UIImage(named: "proxies"), tag: 1)
 
         let settingsViewController = SettingsViewController(uid: uid, displayName: displayName)
@@ -35,6 +36,7 @@ class TabBarController: UITabBarController {
                 self?.selectedIndex = 0
                 self?.convosViewController.navigationController?.popToRootViewController(animated: false)
                 self?.convosViewController.showConvoViewController(convo)
+                self?.proxiesViewController.navigationController?.popToRootViewController(animated: false)
         }
     }
 

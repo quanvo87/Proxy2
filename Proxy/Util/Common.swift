@@ -130,9 +130,8 @@ extension NSAttributedString {
 }
 
 extension Notification.Name {
-    // todo: rename
-    static let didHideConvo = Notification.Name("didHideConvo")
-    static let didShowConvo = Notification.Name("didShowConvo")
+    static let didEnterConvo = Notification.Name("didEnterConvo")
+    static let didLeaveConvo = Notification.Name("didLeaveConvo")
     static let shouldShowConvo = Notification.Name("shouldShowConvo")
 }
 

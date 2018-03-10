@@ -58,7 +58,7 @@ class ConvoViewController: MessagesViewController {
                     if _self.isPresent {
                         _self.database.read(message, at: Date()) { _ in }
                     } else {
-                        _self.messagesToRead.update(with: message)  // todo: test
+                        _self.messagesToRead.update(with: message)
                     }
                 }
             case .removed(let message):
@@ -79,14 +79,14 @@ class ConvoViewController: MessagesViewController {
         messagesToRead.forEach { [weak self] message in
             self?.database.read(message, at: Date()) { _ in }
         }
-        NotificationCenter.default.post(name: .didShowConvo, object: nil, userInfo: ["convoKey": convo.key])
+        NotificationCenter.default.post(name: .didEnterConvo, object: nil, userInfo: ["convoKey": convo.key])
         tabBarController?.tabBar.isHidden = true
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         isPresent = false
-        NotificationCenter.default.post(name: .didHideConvo, object: nil)
+        NotificationCenter.default.post(name: .didLeaveConvo, object: nil)
         tabBarController?.tabBar.isHidden = false
     }
 
