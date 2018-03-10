@@ -1,6 +1,6 @@
 import Foundation
 
-protocol ConvoPresenceObserving {
+protocol ConvoPresenceObserving: class {
     var currentConvoKey: String? { get }
 }
 

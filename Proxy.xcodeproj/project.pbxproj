@@ -21,6 +21,7 @@
 		5939F060200D174300AECD35 /* MakeNewMessageReceiverTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5939F05F200D174300AECD35 /* MakeNewMessageReceiverTableViewCell.swift */; };
 		593C9385205361CB00931F2B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 593C938320535DA100931F2B /* GoogleService-Info.plist */; };
 		593C9387205393E200931F2B /* ConvoPresenceObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 593C9386205393E200931F2B /* ConvoPresenceObserving.swift */; };
+		593C938B205458FF00931F2B /* NotificationHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 593C938A205458FF00931F2B /* NotificationHandling.swift */; };
 		593D7D441F851F7D00D3FBD5 /* UserStatsObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 593D7D431F851F7D00D3FBD5 /* UserStatsObserving.swift */; };
 		59539B73203112140054873C /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59539B72203112140054873C /* Button.swift */; };
 		5954AE181F9A4E95004A351F /* ProxiesTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5954AE171F9A4E95004A351F /* ProxiesTableViewCell.xib */; };
@@ -111,6 +112,7 @@
 		5939F05F200D174300AECD35 /* MakeNewMessageReceiverTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MakeNewMessageReceiverTableViewCell.swift; sourceTree = "<group>"; };
 		593C938320535DA100931F2B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		593C9386205393E200931F2B /* ConvoPresenceObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoPresenceObserving.swift; sourceTree = "<group>"; };
+		593C938A205458FF00931F2B /* NotificationHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationHandling.swift; sourceTree = "<group>"; };
 		593D7D431F851F7D00D3FBD5 /* UserStatsObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserStatsObserving.swift; sourceTree = "<group>"; };
 		59539B72203112140054873C /* Button.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
 		5954AE171F9A4E95004A351F /* ProxiesTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = ProxiesTableViewCell.xib; path = Proxy/View/ProxiesTableViewCell.xib; sourceTree = SOURCE_ROOT; };
@@ -265,6 +267,7 @@
 				5996F19A2016233100CF36FD /* Database.swift */,
 				5973C8391F608A1F00647492 /* LoginManaging.swift */,
 				5932BA1D2009837D0041BD7B /* MessagesObserving.swift */,
+				593C938A205458FF00931F2B /* NotificationHandling.swift */,
 				598F8A651FEB9B2300CCF024 /* Protocol.swift */,
 				59E75B2D1F846F550033A407 /* ProxiesObserving.swift */,
 				59BDAE502003849C002A5A6C /* ProxyNamesLoading.swift */,
@@ -862,6 +865,7 @@
 				59DECF5F1FEA56AD009ABB36 /* ConvoViewController.swift in Sources */,
 				5959CA332030C20600083FC8 /* LogInViewController.swift in Sources */,
 				5973C8721F608A2200647492 /* Constant.swift in Sources */,
+				593C938B205458FF00931F2B /* NotificationHandling.swift in Sources */,
 				5973C8791F608A2200647492 /* loadAdjectives.swift in Sources */,
 				5973C85A1F608A2200647492 /* ProxiesTableViewCell.swift in Sources */,
 				5973C8771F608A2200647492 /* SenderPickerViewController.swift in Sources */,
