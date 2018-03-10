@@ -5,7 +5,7 @@
 - [x] Delete your Proxy when you're done
 - [x] Never share your real contact info with strangers again
 
-#### Development:
+#### Development
 
 - Architecture
   - Dependencies are protocols, so everything is mockable and easily testable
@@ -14,7 +14,7 @@
     - Third party dependencies like the [database](https://firebase.google.com/) abstracted behind protocols
   - Careful usage of singletons
 
-- UI:
+- UI
   - Co authored [SwiftVideoBackground](https://github.com/dingwilson/SwiftVideoBackground) to manage background video on login screen
   - Make elements using storyboard, xibs, and programmatically
   - Set constraints with auto layout and [Pure Layout](https://github.com/PureLayout/PureLayout)
@@ -47,7 +47,7 @@
   - Open conversation when tap new message notification, update badge count, etc.
   - Serverless [Cloud Function](https://firebase.google.com/docs/functions/) in Javascript triggers on certain database events, processes, and sends the notification
 
-- Memory management:
+- Memory management
   - Weak references in closure capture lists
   - Use Instruments for memory profiling
 
@@ -57,13 +57,13 @@
 - Testing
   - Tests against development database using XCTest
 
-- Consistent style:
+- Consistent style
   - Function and property naming
   - Function and property ordering
   - Spacing
   - [SwiftLint](https://github.com/realm/SwiftLint)
 
-#### Acknowledgements:
+#### Acknowledgements
 
 - Icons from [Icons8](https://icons8.com/)
 - Login screen videos from [Coverr](http://coverr.co/)
