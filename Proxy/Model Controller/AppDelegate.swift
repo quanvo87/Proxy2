@@ -11,12 +11,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private let authObserver = AuthObserver()
     private let convoPresenceObserver = ConvoPresenceObserver()
     private let database = Firebase()
-    private var isLoggedIn = false
-    private var uid: String? {
-        didSet {
-            isLoggedIn = uid != nil
-        }
-    }
+    private var uid: String?
     private lazy var notificationHandler = NotificationHandler(convoPresenceObserver: convoPresenceObserver)
 
     func application(_ application: UIApplication,
@@ -50,11 +45,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 self?.uid = user.uid
                 self?.setRegistrationToken()
             } else {
-                guard let isLoggedIn = self?.isLoggedIn, isLoggedIn,
-                    let welcomeViewController = Shared.storyboard.instantiateViewController(
-                        withIdentifier: String(describing: WelcomeViewController.self)
-                        ) as? WelcomeViewController else {
-                            return
+                guard self?.uid != nil, let welcomeViewController = Shared.storyboard.instantiateViewController(
+                    withIdentifier: String(describing: WelcomeViewController.self)
+                    ) as? WelcomeViewController else {
+                        return
                 }
                 let navigationController = UINavigationController(rootViewController: welcomeViewController)
                 self?.window?.rootViewController = navigationController
