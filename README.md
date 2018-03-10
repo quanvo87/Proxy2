@@ -8,12 +8,10 @@
 #### Development:
 
 - Architecture
-  - Dependency injection:
-    - All dependencies are protocols, so that everything is mockable and easily testable
-    - Dependencies have default values in function definitions, so call sites in production are short and simple
+  - Dependencies are protocols, so everything is mockable and easily testable
   - Encapsulation:
-    - All properties and functions declared private except when required for protocol conformance
-    - Third party dependencies like my [database](https://firebase.google.com/) abstracted behind protocols
+    - All properties and functions declared private except where required for protocol conformance
+    - Third party dependencies like the [database](https://firebase.google.com/) abstracted behind protocols
   - Careful usage of singletons
 
 - UI:
@@ -37,12 +35,17 @@
 - Database
   - Built chat backend from scratch on top of [Firebase](https://firebase.google.com/)
   - Wrote [FirebaseHelper](https://github.com/quanvo87/FirebaseHelper), for safe and easy wrappers around common database functions
-  - Flat data structure for more performant queries
+  - Flat data structure for performant queries
   - Dealt with race conditions by checking if an invalid write occurred after the fact, then correcting the error
   - All data that is no longer needed is cleaned up when appropriate
   - Data is indexed on server for performance
   - Pagination load: load some initial data, load more when user scrolls up
   - Email and Facebook authentication
+
+- Notifications
+  - Apple Push Notifications using [Cloud Messaging](https://firebase.google.com/docs/cloud-messaging/)
+  - Open conversation when tap new message notification, update badge count, etc.
+  - Serverless [Cloud Function](https://firebase.google.com/docs/functions/) in Javascript triggers on certain database events, processes, and sends the notification
 
 - Memory management:
   - Weak references in closure capture lists
@@ -64,3 +67,4 @@
 
 - Icons from [Icons8](https://icons8.com/)
 - Login screen videos from [Coverr](http://coverr.co/)
+- Special thanks to [John Sundell](https://www.swiftbysundell.com/) for knowledge 🙌
