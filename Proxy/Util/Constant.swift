@@ -125,7 +125,6 @@ enum Identifier {
     static let convoDetailSenderProxyTableViewCell = "ConvoDetailSenderProxyTableViewCell"
 }
 
-// todo: prefer convenience inits over factory methods where relevant
 enum Image {
     static let cancel = UIImage(named: "cancel")
     static let confirm = UIImage(named: "confirm")
@@ -153,15 +152,6 @@ enum Image {
         } else {
             return UIImage()
         }
-    }
-}
-
-enum ImageView {
-    static func make(_ iconName: String, frame: CGRect = CGRect(x: 0, y: 0, width: 30, height: 30)) -> UIImageView {
-        let imageView = UIImageView(frame: frame)
-        let image = UIImage(named: iconName)
-        imageView.image = image
-        return imageView
     }
 }
 
@@ -235,8 +225,8 @@ enum StatusBar {
         let notificationBanner = NotificationBanner(
             title: convo.receiverDisplayName + " -> " + convo.senderDisplayName,
             subtitle: convo.lastMessage,
-            leftView: ImageView.make(convo.receiverIcon),
-            rightView: ImageView.make(convo.senderIcon),
+            leftView: UIImageView(convo.receiverIcon),
+            rightView: UIImageView(convo.senderIcon),
             style: .info
         )
         notificationBanner.onTap = {
