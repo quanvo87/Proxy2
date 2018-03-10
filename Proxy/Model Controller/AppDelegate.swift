@@ -9,10 +9,8 @@ import UserNotifications
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow? = UIWindow(frame: UIScreen.main.bounds)
     private let authObserver = AuthObserver()
+    private let convoPresenceObserver = ConvoPresenceObserver()
     private let database = Firebase()
-    private var currentConvoKey: String?
-    private var didEnterConvoObserver: NSObjectProtocol?
-    private var didLeaveConvoObserver: NSObjectProtocol?
     private var isLoggedIn = false
     private var uid: String? {
         didSet {
@@ -65,23 +63,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 //        Database.database().isPersistenceEnabled = true
 
-        // todo: move to protocol
-        didEnterConvoObserver = NotificationCenter.default.addObserver(
-            forName: .didEnterConvo,
-            object: nil,
-            queue: .main) { [weak self] notification in
-                if let convoKey = notification.userInfo?["convoKey"] as? String {
-                    self?.currentConvoKey = convoKey
-                }
-        }
-
-        didLeaveConvoObserver = NotificationCenter.default.addObserver(
-            forName: .didLeaveConvo,
-            object: nil,
-            queue: .main) { [weak self] _ in
-                self?.currentConvoKey = nil
-        }
-
         Messaging.messaging().delegate = self
 
         SwiftMessages.defaultConfig.presentationContext = .window(windowLevel: UIWindowLevelStatusBar)
@@ -125,23 +106,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         StatusBar.showErrorStatusBarBanner(error)
     }
-
-    deinit {
-        if let didHideConvoObserver = didLeaveConvoObserver {
-            NotificationCenter.default.removeObserver(didHideConvoObserver)
-        }
-        if let currentConvoKeyObserver = didEnterConvoObserver {
-            NotificationCenter.default.removeObserver(currentConvoKeyObserver)
-        }
-    }
 }
 
 // todo: move to protocol
 private extension AppDelegate {
     func sendShouldShowConvoNotification(_ userInfo: [AnyHashable: Any], completion: @escaping () -> Void) {
-        guard let convoKey = userInfo.parentConvoKey, convoKey != currentConvoKey, let uid = uid else {
-            completion()
-            return
+        guard let convoKey = userInfo.parentConvoKey,
+            convoKey != convoPresenceObserver.currentConvoKey,
+            let uid = uid else {
+                completion()
+                return
         }
         database.getConvo(convoKey: convoKey, ownerId: uid) { result in
             switch result {
@@ -170,9 +144,11 @@ private extension AppDelegate {
     }
 
     func showNewMessageBanner(_ userInfo: [AnyHashable: Any], completion: @escaping () -> Void) {
-        guard let convoKey = userInfo.parentConvoKey, convoKey != currentConvoKey, let uid = uid else {
-            completion()
-            return
+        guard let convoKey = userInfo.parentConvoKey,
+            convoKey != convoPresenceObserver.currentConvoKey,
+            let uid = uid else {
+                completion()
+                return
         }
         database.getConvo(convoKey: convoKey, ownerId: uid) { result in
             switch result {
