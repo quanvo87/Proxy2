@@ -7,9 +7,9 @@ class FirebaseTest: XCTestCase {
     static let database = Firebase()
     static let testUid = "testUserId"
     static let text = "🤤"
-    static let uid = "37Xoavv6znT6DrJjnx1I6hTQVr23"
-    private static let email = "test@test.com"
-    private static let password = "test123"
+    static let uid = "B2L3X0AOzgUhnJBqUVcLSMZUz2B2"
+    private static let email = "test@proxy.io"
+    private static let password = "quanquan"
     private let auth = Auth.auth(app: Shared.firebaseApp!)
     private var handle: AuthStateDidChangeListenerHandle?
 
@@ -46,7 +46,7 @@ class FirebaseTest: XCTestCase {
     }
 
     private static func clearDB(completion: @escaping () -> Void) {
-        Database.database().reference().removeValue { error, _ in
+        Shared.testDatabaseReference.removeValue { error, _ in
             XCTAssertNil(error)
             completion()
         }

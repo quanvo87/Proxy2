@@ -186,7 +186,12 @@ enum Label {
 enum Shared {
     static let auth = Auth.auth()
     static let firebaseApp = FirebaseApp.app()
-    static let firebaseHelper = FirebaseHelper(FirebaseDatabase.Database.database().reference())
+    static let firebaseHelper = Shared.isRunningTests ?
+        FirebaseHelper(Shared.testDatabaseReference) :
+        FirebaseHelper(FirebaseDatabase.Database.database().reference())
+    static let isRunningTests = UserDefaults.standard.bool(forKey: "isRunningTests")
+    static let testDatabaseReference = FirebaseDatabase.Database.database(url: Shared.testDatabaseURL).reference()
+    static let testDatabaseURL = "https://proxy-test-f90c4-9c8ea.firebaseio.com/"
     static let storyboard = UIStoryboard(name: "Main", bundle: nil)
 
     static let isSmallDevice: Bool = {

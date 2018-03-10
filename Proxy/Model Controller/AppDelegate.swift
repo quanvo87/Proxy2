@@ -5,6 +5,8 @@ import SwiftMessages
 import UserNotifications
 
 // todo: di?
+// todo: test:
+// - login account A, logout, login account B, simulator send message to account A, does device still get notification?
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow? = UIWindow(frame: UIScreen.main.bounds)
@@ -135,6 +137,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 }
 
+// todo: move to protocol
 private extension AppDelegate {
     func sendShouldShowConvoNotification(_ userInfo: [AnyHashable: Any], completion: @escaping () -> Void) {
         guard let convoKey = userInfo.parentConvoKey, convoKey != currentConvoKey, let uid = uid else {

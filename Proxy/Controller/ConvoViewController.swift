@@ -58,7 +58,7 @@ class ConvoViewController: MessagesViewController {
                     if _self.isPresent {
                         _self.database.read(message, at: Date()) { _ in }
                     } else {
-                        _self.messagesToRead.insert(message)
+                        _self.messagesToRead.update(with: message)  // todo: test
                     }
                 }
             case .removed(let message):

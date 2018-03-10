@@ -1,6 +1,7 @@
 import FirebaseMessaging
 import UIKit
 
+// todo: add haptic settings
 class SettingsViewController: UIViewController {
     private let database: Database
     private let loginManager: LoginManaging
@@ -149,15 +150,12 @@ extension SettingsViewController: UITableViewDelegate {
                 )
                 alert.addAction(Alert.makeDestructiveAction(title: "Log Out") { [weak self] _ in
                     if let registrationToken = Messaging.messaging().fcmToken, let uid = self?.uid {
-                        self?.database.deleteRegistrationToken(registrationToken, for: uid) { error in
-                            if let error = error {
-                                StatusBar.showErrorBanner(subtitle: error.localizedDescription)
-                            } else {
-                                self?.logOut()
-                            }
-                        }
-                    } else {
-                        self?.logOut()
+                        self?.database.deleteRegistrationToken(registrationToken, for: uid) { _ in }
+                    }
+                    do {
+                        try self?.loginManager.logOut()
+                    } catch {
+                        StatusBar.showErrorBanner(subtitle: error.localizedDescription)
                     }
                 })
                 alert.addAction(Alert.makeCancelAction())
@@ -167,14 +165,6 @@ extension SettingsViewController: UITableViewDelegate {
             }
         default:
             return
-        }
-    }
-
-    private func logOut() {
-        do {
-            try loginManager.logOut()
-        } catch {
-            StatusBar.showErrorBanner(subtitle: error.localizedDescription)
         }
     }
 }

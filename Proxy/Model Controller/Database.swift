@@ -91,19 +91,18 @@ class Firebase: Database {
     func getProxy(proxyKey: String, completion: @escaping ProxyCallback) {
         Shared.firebaseHelper.get(
             Child.proxyNames,
-            proxyKey.lowercased().withoutWhiteSpacesAndNewLines
-        ) { [weak self] result in
-            switch result {
-            case .failure(let error):
-                completion(.failure(error))
-            case .success(let data):
-                do {
-                    let proxy = try Proxy(data)
-                    self?.getProxy(proxyKey: proxy.key, ownerId: proxy.ownerId, completion: completion)
-                } catch {
+            proxyKey.lowercased().withoutWhiteSpacesAndNewLines) { [weak self] result in
+                switch result {
+                case .failure(let error):
                     completion(.failure(error))
+                case .success(let data):
+                    do {
+                        let proxy = try Proxy(data)
+                        self?.getProxy(proxyKey: proxy.key, ownerId: proxy.ownerId, completion: completion)
+                    } catch {
+                        completion(.failure(error))
+                    }
                 }
-            }
         }
     }
 
