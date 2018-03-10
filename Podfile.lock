@@ -46,10 +46,18 @@ PODS:
     - Firebase/Database (~> 4.1)
   - FirebaseInstanceID (2.0.8):
     - FirebaseCore (~> 4.0)
+  - FirebaseMessaging (2.1.0):
+    - FirebaseAnalytics (~> 4.0)
+    - FirebaseCore (~> 4.0)
+    - FirebaseInstanceID (~> 2.0)
+    - GoogleToolboxForMac/Logger (~> 2.1)
+    - Protobuf (~> 3.1)
   - FontAwesome.swift (1.3.2)
   - GoogleToolboxForMac/DebugUtils (2.1.3):
     - GoogleToolboxForMac/Defines (= 2.1.3)
   - GoogleToolboxForMac/Defines (2.1.3)
+  - GoogleToolboxForMac/Logger (2.1.3):
+    - GoogleToolboxForMac/Defines (= 2.1.3)
   - GoogleToolboxForMac/NSData+zlib (2.1.3):
     - GoogleToolboxForMac/Defines (= 2.1.3)
   - GoogleToolboxForMac/NSDictionary+URLArguments (2.1.3):
@@ -71,6 +79,7 @@ PODS:
     - MarqueeLabel/Swift
     - SnapKit (~> 4.0)
   - paper-onboarding (4.0.0)
+  - Protobuf (3.5.0)
   - PureLayout (3.0.2)
   - SearchTextField (1.2.0)
   - SkyFloatingLabelTextField (3.4.0)
@@ -91,6 +100,7 @@ DEPENDENCIES:
   - FirebaseAuth (~> 4.4)
   - FirebaseDatabase (~> 4.1)
   - FirebaseHelper (~> 1.0)
+  - FirebaseMessaging (~> 2.1)
   - FontAwesome.swift (~> 1.3)
   - GroupWork (~> 0.0)
   - MessageKit (~> 0.13)
@@ -121,6 +131,7 @@ SPEC CHECKSUMS:
   FirebaseDatabase: 7088bfc4af2cc00231bb36e1404fc2d7509eb4dc
   FirebaseHelper: 1f6bfbaf696118d049688a8586dd3b84b251d0ff
   FirebaseInstanceID: 81df5805a08001e69138664bdd02c6719a9ac80f
+  FirebaseMessaging: 2bafab2d0f3ab3dfd753101c2c32995c2051b5da
   FontAwesome.swift: b4e4c8ccbbecb12f9b592bc533ff237af3706667
   GoogleToolboxForMac: 2501e2ad72a52eb3dfe7bd9aee7dad11b858bd20
   GroupWork: b6184ee1e14e573ae4d9eeea1d4a6172d6d608bc
@@ -131,6 +142,7 @@ SPEC CHECKSUMS:
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
   NotificationBannerSwift: 1fc2955381e6eb26d958ba32160fc41721b9b689
   paper-onboarding: f920d5dc86b439dea5fbe5e59cc5ec9cc1a904a4
+  Protobuf: 8a9838fba8dae3389230e1b7f8c104aa32389c03
   PureLayout: 4d550abe49a94f24c2808b9b95db9131685fe4cd
   SearchTextField: a5bb7e4c33affadb115afdbe8100d84ef10a8024
   SkyFloatingLabelTextField: 703aa1420b697392b1e7dba25571180dde018477
@@ -142,6 +154,6 @@ SPEC CHECKSUMS:
   SwiftyButton: 093e3fe2becf3ae31c0f6c1c6987b79a93fb3ecb
   WQNetworkActivityIndicator: 6a893f95b5500de408b3712f66f4cc4265b49f8d
 
-PODFILE CHECKSUM: 2851e3b2185b4a8bb0cc9c5f4887dbb0b201cee7
+PODFILE CHECKSUM: cee50fafb1b15390a193511432ae14888d3b960a
 
 COCOAPODS: 1.4.0

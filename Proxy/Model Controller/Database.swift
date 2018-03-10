@@ -16,6 +16,7 @@ protocol Database {
     typealias ProxyCallback = (Result<Proxy, Error>) -> Void
     init(_ options: [String: Any])
     func deleteProxy(_ proxy: Proxy, completion: @escaping ErrorCallback)
+    func deleteRegistrationToken(_ registrationToken: String, for uid: String, completion: @escaping ErrorCallback)
     func getConvo(convoKey: String, ownerId: String, completion: @escaping ConvoCallback)
     func getProxy(proxyKey: String, completion: @escaping ProxyCallback)
     func getProxy(proxyKey: String, ownerId: String, completion: @escaping ProxyCallback)
@@ -26,6 +27,7 @@ protocol Database {
     func setIcon(to icon: String, for proxy: Proxy, completion: @escaping ErrorCallback)
     func setNickname(to nickname: String, for proxy: Proxy, completion: @escaping ErrorCallback)
     func setReceiverNickname(to nickname: String, for convo: Convo, completion: @escaping ErrorCallback)
+    func setRegistrationToken(_ registrationToken: String, for uid: String, completion: @escaping ErrorCallback)
 }
 
 class Firebase: Database {
@@ -36,14 +38,15 @@ class Firebase: Database {
     private let maxProxyCount: Int
     private var isMakingProxy = false
 
+    // swiftlint:disable line_length
     required init(_ options: [String: Any] = [:]) {
         generator = options[DatabaseOption.generator.name] as? ProxyPropertyGenerating ?? DatabaseOption.generator.value
-        makeProxyRetries =
-            options[DatabaseOption.makeProxyRetries.name] as? Int ?? DatabaseOption.makeProxyRetries.value
+        makeProxyRetries = options[DatabaseOption.makeProxyRetries.name] as? Int ?? DatabaseOption.makeProxyRetries.value
         maxMessageSize = options[DatabaseOption.maxMessageSize.name] as? Int ?? DatabaseOption.maxMessageSize.value
         maxNameSize = options[DatabaseOption.maxNameSize.name] as? Int ?? DatabaseOption.maxNameSize.value
         maxProxyCount = options[DatabaseOption.maxProxyCount.name] as? Int ?? DatabaseOption.maxProxyCount.value
     }
+    // swiftlint:enable line_length
 
     func deleteProxy(_ proxy: Proxy, completion: @escaping ErrorCallback) {
         getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { result in
@@ -61,6 +64,12 @@ class Firebase: Database {
                     completion(work.result ? nil : ProxyError.unknown)
                 }
             }
+        }
+    }
+
+    func deleteRegistrationToken(_ registrationToken: String, for uid: String, completion: @escaping ErrorCallback) {
+        Shared.firebaseHelper.delete(Child.users, uid, Child.registrationTokens, registrationToken) { error in
+            completion(error)
         }
     }
 
@@ -82,19 +91,18 @@ class Firebase: Database {
     func getProxy(proxyKey: String, completion: @escaping ProxyCallback) {
         Shared.firebaseHelper.get(
             Child.proxyNames,
-            proxyKey.lowercased().withoutWhiteSpacesAndNewLines
-        ) { [weak self] result in
-            switch result {
-            case .failure(let error):
-                completion(.failure(error))
-            case .success(let data):
-                do {
-                    let proxy = try Proxy(data)
-                    self?.getProxy(proxyKey: proxy.key, ownerId: proxy.ownerId, completion: completion)
-                } catch {
+            proxyKey.lowercased().withoutWhiteSpacesAndNewLines) { [weak self] result in
+                switch result {
+                case .failure(let error):
                     completion(.failure(error))
+                case .success(let data):
+                    do {
+                        let proxy = try Proxy(data)
+                        self?.getProxy(proxyKey: proxy.key, ownerId: proxy.ownerId, completion: completion)
+                    } catch {
+                        completion(.failure(error))
+                    }
                 }
-            }
         }
     }
 
@@ -113,6 +121,7 @@ class Firebase: Database {
         }
     }
 
+    // todo: can probably utilize rules to ensure unique ids
     func makeProxy(currentProxyCount: Int, ownerId: String, completion: @escaping ProxyCallback) {
         guard !isMakingProxy else {
             return
@@ -175,7 +184,7 @@ class Firebase: Database {
 
     func read(_ message: Message, at date: Date, completion: @escaping ErrorCallback) {
         let work = GroupWork()
-        work.delete(Child.userInfo, message.receiverId, Child.unreadMessages, message.messageId)
+        work.delete(Child.users, message.receiverId, Child.unreadMessages, message.messageId)
         work.set(.dateRead(date), for: message)
         work.set(.hasUnreadMessage(false), uid: message.receiverId, convoKey: message.parentConvoKey)
         work.allDone {
@@ -268,15 +277,16 @@ class Firebase: Database {
         }
         do {
             let ref = try Shared.firebaseHelper.makeReference(Child.messages, convo.key)
-            let message = Message(sender: Sender(id: convo.senderId,
-                                                 displayName: convo.senderProxyName),
-                                  messageId: ref.childByAutoId().key,
-                                  data: .text(trimmedText),
-                                  dateRead: Date.distantPast,
-                                  parentConvoKey: convo.key,
-                                  receiverId: convo.receiverId,
-                                  receiverProxyKey: convo.receiverProxyKey,
-                                  senderProxyKey: convo.senderProxyKey)
+            let message = Message(
+                sender: Sender(id: convo.senderId, displayName: convo.senderProxyName),
+                messageId: ref.childByAutoId().key,
+                data: .text(trimmedText),
+                dateRead: Date.distantPast,
+                parentConvoKey: convo.key,
+                receiverId: convo.receiverId,
+                receiverProxyKey: convo.receiverProxyKey,
+                senderProxyKey: convo.senderProxyKey
+            )
             let work = GroupWork()
             work.set(message.toDictionary(), at: Child.messages, message.parentConvoKey, message.messageId)
             let currentTime = Date().timeIntervalSince1970
@@ -364,6 +374,14 @@ class Firebase: Database {
             case .success(let data):
                 completion(.success(data.asConvosArray(proxyKey: key)))
             }
+        }
+    }
+
+    func setRegistrationToken(_ registrationToken: String, for uid: String, completion: @escaping ErrorCallback) {
+        Shared.firebaseHelper.set(
+            true,
+            at: Child.users, uid, Child.registrationTokens, registrationToken) { error in
+                completion(error)
         }
     }
 }

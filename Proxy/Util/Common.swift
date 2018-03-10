@@ -8,10 +8,17 @@ enum Result<T, Error> {
     case failure(Error)
 }
 
+// todo: reanimate buttons when app comes back to foreground
 extension CALayer {
     func stopAnimating() {
         removeAllAnimations()
         shadowColor = UIColor.clear.cgColor
+    }
+}
+
+extension Dictionary where Key == AnyHashable, Value == Any {
+    var parentConvoKey: String? {
+        return self["gcm.notification.parentConvoKey"] as? String ?? nil
     }
 }
 
@@ -111,15 +118,21 @@ extension Int {
 extension NSAttributedString {
     convenience init(_ convo: Convo) {
         let receiver = NSMutableAttributedString(
-            string: (convo.receiverNickname == "" ? convo.receiverProxyName : convo.receiverNickname) + ", "
+            string: convo.receiverDisplayName
         )
         let sender = NSMutableAttributedString(
-            string: convo.senderNickname == "" ? convo.senderProxyName : convo.senderNickname,
+            string: ", " + convo.senderDisplayName,
             attributes: [NSAttributedStringKey.foregroundColor: UIColor.gray]
         )
         receiver.append(sender)
         self.init(attributedString: receiver)
     }
+}
+
+extension Notification.Name {
+    static let didEnterConvo = Notification.Name("didEnterConvo")
+    static let didLeaveConvo = Notification.Name("didLeaveConvo")
+    static let shouldShowConvo = Notification.Name("shouldShowConvo")
 }
 
 extension OnboardingItemInfo {
@@ -276,7 +289,7 @@ extension UIView {
 }
 
 extension UIViewController {
-    func showConvoController(_ convo: Convo) {
+    func showConvoViewController(_ convo: Convo) {
         let convoViewController = ConvoViewController(convo: convo)
         navigationController?.pushViewController(convoViewController, animated: true)
     }
@@ -309,13 +322,13 @@ extension UIViewController {
         present(alert, animated: true)
     }
 
-    func showIconPickerController(_ proxy: Proxy) {
+    func showIconPickerViewController(_ proxy: Proxy) {
         let iconPickerViewController = IconPickerViewController(proxy: proxy)
         let navigationController = UINavigationController(rootViewController: iconPickerViewController)
         present(navigationController, animated: true)
     }
 
-    func showProxyController(_ proxy: Proxy) {
+    func showProxyViewController(_ proxy: Proxy) {
         let proxyViewController = ProxyViewController(proxy: proxy)
         navigationController?.pushViewController(proxyViewController, animated: true)
     }

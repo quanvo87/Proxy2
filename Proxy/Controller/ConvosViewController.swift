@@ -1,5 +1,6 @@
 import UIKit
 
+// todo: refresh every ~10 secs?
 class ConvosViewController: UIViewController, NewMessageMakerDelegate {
     var newConvo: Convo?
     private let database: Database
@@ -10,7 +11,11 @@ class ConvosViewController: UIViewController, NewMessageMakerDelegate {
     private let unreadMessagesObserver: UnreadMessagesObserving
     private var convos = [Convo]()
     private var currentProxyCount = 0
-    private var unreadMessageCount = 0
+    private var unreadMessageCount = 0 {
+        didSet {
+            UIApplication.shared.applicationIconBadgeNumber = unreadMessageCount
+        }
+    }
     private lazy var makeNewMessageButton = UIBarButtonItem(
         target: self,
         action: #selector(showNewMessageMakerViewController),
@@ -88,7 +93,7 @@ class ConvosViewController: UIViewController, NewMessageMakerDelegate {
             makeNewMessageButton.animate(loop: true)
         }
         if let newConvo = newConvo {
-            showConvoController(newConvo)
+            showConvoViewController(newConvo)
             self.newConvo = nil
         }
     }
@@ -153,7 +158,7 @@ extension ConvosViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let convo = convos[indexPath.row]
-        showConvoController(convo)
+        showConvoViewController(convo)
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

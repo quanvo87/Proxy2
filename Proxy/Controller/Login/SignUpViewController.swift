@@ -8,8 +8,7 @@ class SignUpViewController: UIViewController {
 
     private lazy var loginManager: LoginManaging = LoginManager(
         facebookButton: facebookButton,
-        signUpButton: signUpButton,
-        viewController: self
+        signUpButton: signUpButton
     )
 
     override func viewDidLoad() {

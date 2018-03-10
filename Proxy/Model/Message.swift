@@ -1,6 +1,17 @@
 import FirebaseDatabase
 import MessageKit
 
+enum SettableMessageProperty {
+    case dateRead(Date)
+
+    var properties: (name: String, value: Any) {
+        switch self {
+        case .dateRead(let value):
+            return ("dateRead", value)
+        }
+    }
+}
+
 struct Message: MessageType {
     let sender: Sender
     let messageId: String
@@ -94,6 +105,12 @@ extension Message: Equatable {
     }
 }
 
+extension Message: Hashable {
+    var hashValue: Int {
+        return Int(messageId) ?? UUID().hashValue
+    }
+}
+
 extension MessageData: Equatable {
     public static func == (_ lhs: MessageData, _ rhs: MessageData) -> Bool {
         switch (lhs, rhs) {
@@ -101,17 +118,6 @@ extension MessageData: Equatable {
             return l == r
         default:
             return false
-        }
-    }
-}
-
-enum SettableMessageProperty {
-    case dateRead(Date)
-
-    var properties: (name: String, value: Any) {
-        switch self {
-        case .dateRead(let value):
-            return ("dateRead", value)
         }
     }
 }

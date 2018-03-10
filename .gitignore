@@ -1,5 +1,7 @@
-Firebase
 .DS_Store
+Firebase
+GoogleService-Info.plist
+node_modules
 
 # Xcode
 #

@@ -5,11 +5,11 @@ import XCTest
 
 class FirebaseTest: XCTestCase {
     static let database = Firebase()
-    static let testUserId = "testUserId"
+    static let testUid = "testUserId"
     static let text = "🤤"
-    static let uid = "37Xoavv6znT6DrJjnx1I6hTQVr23"
-    private static let email = "test@test.com"
-    private static let password = "test123"
+    static let uid = "B2L3X0AOzgUhnJBqUVcLSMZUz2B2"
+    private static let email = "test@proxy.io"
+    private static let password = "quanquan"
     private let auth = Auth.auth(app: Shared.firebaseApp!)
     private var handle: AuthStateDidChangeListenerHandle?
 
@@ -46,7 +46,7 @@ class FirebaseTest: XCTestCase {
     }
 
     private static func clearDB(completion: @escaping () -> Void) {
-        Database.database().reference().removeValue { error, _ in
+        Shared.testDatabaseReference.removeValue { error, _ in
             XCTAssertNil(error)
             completion()
         }
@@ -66,7 +66,7 @@ class FirebaseTest: XCTestCase {
     static func sendMessage(
         completion: @escaping (_ message: Message, _ convo: Convo, _ sender: Proxy, _ receiver: Proxy) -> Void) {
         makeProxy { sender in
-            makeProxy (ownerId: testUserId) { receiver in
+            makeProxy (ownerId: testUid) { receiver in
                 database.sendMessage(sender: sender, receiver: receiver, text: text) { result in
                     switch result {
                     case .failure:
@@ -180,7 +180,7 @@ extension GroupWork {
                function: String = #function,
                line: Int = #line) {
         start()
-        Shared.firebaseHelper.get(Child.userInfo, uid, property.rawValue) { result in
+        Shared.firebaseHelper.get(Child.users, uid, property.rawValue) { result in
             switch result {
             case .failure(let error):
                 XCTFail(String(describing: error))

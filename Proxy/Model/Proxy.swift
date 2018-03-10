@@ -1,5 +1,28 @@
 import FirebaseDatabase
 
+enum SettableProxyProperty {
+    case hasUnreadMessage(Bool)
+    case icon(String)
+    case lastMessage(String)
+    case nickname(String)
+    case timestamp(Double)
+
+    var properties: (name: String, value: Any) {
+        switch self {
+        case .hasUnreadMessage(let value):
+            return ("hasUnreadMessage", value)
+        case .icon(let value):
+            return ("icon", value)
+        case .lastMessage(let value):
+            return ("lastMessage", value)
+        case .nickname(let value):
+            return ("nickname", value)
+        case .timestamp(let value):
+            return ("timestamp", value)
+        }
+    }
+}
+
 struct Proxy {
     let dateCreated: Double
     let hasUnreadMessage: Bool
@@ -80,28 +103,5 @@ extension Proxy: Equatable {
             lhs.nickname == rhs.nickname &&
             lhs.ownerId == rhs.ownerId &&
             lhs.timestamp.isWithinRangeOf(rhs.timestamp)
-    }
-}
-
-enum SettableProxyProperty {
-    case hasUnreadMessage(Bool)
-    case icon(String)
-    case lastMessage(String)
-    case nickname(String)
-    case timestamp(Double)
-
-    var properties: (name: String, value: Any) {
-        switch self {
-        case .hasUnreadMessage(let value):
-            return ("hasUnreadMessage", value)
-        case .icon(let value):
-            return ("icon", value)
-        case .lastMessage(let value):
-            return ("lastMessage", value)
-        case .nickname(let value):
-            return ("nickname", value)
-        case .timestamp(let value):
-            return ("timestamp", value)
-        }
     }
 }
