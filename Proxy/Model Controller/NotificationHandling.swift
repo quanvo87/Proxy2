@@ -1,5 +1,6 @@
 import Foundation
 
+// todo: make uid optional
 protocol NotificationHandling {
     func sendShouldShowConvoNotification(uid: String, userInfo: [AnyHashable: Any], completion: @escaping () -> Void)
     func showNewMessageBanner(uid: String, userInfo: [AnyHashable: Any], completion: @escaping () -> Void)

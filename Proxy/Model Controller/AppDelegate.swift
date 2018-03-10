@@ -4,7 +4,6 @@ import FBSDKCoreKit
 import SwiftMessages
 import UserNotifications
 
-// todo: di?
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow? = UIWindow(frame: UIScreen.main.bounds)
