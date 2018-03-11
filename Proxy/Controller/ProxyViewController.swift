@@ -7,6 +7,7 @@ class ProxyViewController: UIViewController, NewMessageMakerDelegate {
     private let database: Database
     private let proxyObserver: ProxyObsering
     private let tableView = UITableView(frame: .zero, style: .grouped)
+    private let tableViewRefresher: TableViewRefreshing
     private var convos = [Convo]()
     private var proxy: Proxy? { didSet { didSetProxy() } }
     private lazy var deleteProxyButton = UIBarButtonItem(
@@ -24,11 +25,13 @@ class ProxyViewController: UIViewController, NewMessageMakerDelegate {
          convosObserver: ConvosObsering = ConvosObserver(),
          database: Database = Firebase(),
          proxyObserver: ProxyObsering = ProxyObserver(),
+         tableViewRefresher: TableViewRefreshing = TableViewRefresher(timeInterval: Shared.tableViewRefreshRate),
          proxy: Proxy) {
         self.buttonAnimator = buttonAnimator
         self.convosObserver = convosObserver
         self.database = database
         self.proxyObserver = proxyObserver
+        self.tableViewRefresher = tableViewRefresher
         self.proxy = proxy
 
         super.init(nibName: nil, bundle: nil)
@@ -66,6 +69,8 @@ class ProxyViewController: UIViewController, NewMessageMakerDelegate {
         tableView.sectionHeaderHeight = 0
         tableView.separatorStyle = .none
         tableView.setDelaysContentTouchesForScrollViews()
+
+        tableViewRefresher.refresh(tableView)
 
         view.addSubview(tableView)
     }
