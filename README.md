@@ -21,7 +21,6 @@
   - Responsive and expressive UI:
     - Wrote [WQNetworkActivityIndicator](https://github.com/quanvo87/WQNetworkActivityIndicator) to manage network activity indicator
     - Animate button taps with [Spring](https://cocoapods.org/pods/Spring)
-    - Show loading indicators in buttons
     - Show success/error state notifications with [NotificationBannerSwift](https://github.com/Daltron/NotificationBanner) and [SwiftMessages](https://github.com/SwiftKickMobile/SwiftMessages)
   - Detect device size with [Device](https://github.com/Ekhoo/Device) and adjust UI accordingly
   - Other UI libraries used:

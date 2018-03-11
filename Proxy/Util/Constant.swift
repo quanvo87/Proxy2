@@ -244,11 +244,11 @@ enum StatusBar {
         )
     }
 
-    // todo: sometimes shows behind status bar text
     static func showSuccessStatusBarBanner(_ title: String) {
-        queue.currentBanner = StatusBarNotificationBanner(
+        NotificationBannerQueue.default.removeAll()
+        StatusBarNotificationBanner(
             title: title,
             style: .success
-        )
+        ).show()
     }
 }

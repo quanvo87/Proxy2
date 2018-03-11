@@ -1,7 +1,6 @@
 import FirebaseMessaging
 import UIKit
 
-// todo: add haptic settings
 class SettingsViewController: UIViewController {
     private let database: Database
     private let loginManager: LoginManaging
