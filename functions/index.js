@@ -3,26 +3,19 @@
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 admin.initializeApp(functions.config().firebase)
-
 exports.sendNewMessageNotification = functions.database.ref('/users/{uid}/unreadMessages/{messageKey}').onCreate((event) => {
     const uid = event.params.uid
     const message = event.data.val()
     console.log('New message: ', message)
-
     const getRegistrationTokensPromise = admin.database().ref(`/users/${uid}/registrationTokens`).once('value')
     const getUnreadMessageCountPromise = admin.database().ref(`/users/${uid}/unreadMessages`).once('value')
-
     return Promise.all([getRegistrationTokensPromise, getUnreadMessageCountPromise]).then((results) => {
         const registrationTokensSnapshot = results[0]
         if (!registrationTokensSnapshot.exists()) {
             return console.log('There are no notification tokens to send to.')
         }
-
-        const tokens = Object.keys(registrationTokensSnapshot.val())
-
         const unreadMessageCountSnapshot = results[1]
         const unreadMessageCount = unreadMessageCountSnapshot.numChildren()
-
         const payload = {
             notification: {
                 body: message.senderDisplayName + ': ' + message.text,
@@ -30,7 +23,7 @@ exports.sendNewMessageNotification = functions.database.ref('/users/{uid}/unread
                 badge: unreadMessageCount.toString()
             }
         }
-
+        const tokens = Object.keys(registrationTokensSnapshot.val())
         return admin.messaging().sendToDevice(tokens, payload).then((response) => {
             const removeTokenPromises = []
             response.results.forEach((result, index) => {

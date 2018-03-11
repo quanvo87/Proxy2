@@ -1,4 +1,3 @@
-import FirebaseDatabase
 import GroupWork
 import MessageKit
 import WQNetworkActivityIndicator
@@ -121,7 +120,6 @@ class Firebase: Database {
         }
     }
 
-    // todo: can probably utilize rules to ensure unique ids
     func makeProxy(currentProxyCount: Int, ownerId: String, completion: @escaping ProxyCallback) {
         guard !isMakingProxy else {
             return
@@ -140,45 +138,24 @@ class Firebase: Database {
     }
 
     private func makeProxy(ownerId: String, attempt: Int, completion: @escaping ProxyCallback) {
-        do {
-            let ref = try Shared.firebaseHelper.makeReference(Child.proxyNames)
-            let name = generator.randomProxyName
-            let proxy = Proxy(icon: generator.randomIconName, name: name, ownerId: ownerId)
-            let testKey = ref.childByAutoId().key
-            Shared.firebaseHelper.set(proxy.toDictionary(), at: Child.proxyNames, testKey) { [weak self] error in
-                if let error = error {
+        let name = generator.randomProxyName
+        let proxy = Proxy(icon: generator.randomIconName, name: name, ownerId: ownerId)
+        Shared.firebaseHelper.set(proxy.toDictionary(), at: Child.proxyNames, proxy.key) { [weak self] error in
+            if let error = error {
+                if let makeProxyRetries = self?.makeProxyRetries, attempt < makeProxyRetries {
+                    self?.makeProxy(ownerId: ownerId, attempt: attempt + 1, completion: completion)
+                } else {
                     completion(.failure(error))
-                    return
                 }
-                self?.getProxyNameCount(ref: ref, name: name) { count in
-                    Shared.firebaseHelper.delete(Child.proxyNames, testKey) { _ in }
-                    guard let _self = self else {
-                        return
-                    }
-                    if count == 1 {
-                        let work = GroupWork()
-                        work.set(proxy.toDictionary(), at: Child.proxies, proxy.ownerId, proxy.key)
-                        work.set(proxy.toDictionary(), at: Child.proxyNames, proxy.key)
-                        work.allDone {
-                            completion(work.result ? .success(proxy) : .failure(ProxyError.unknown))
-                        }
+            } else {
+                Shared.firebaseHelper.set(proxy.toDictionary(), at: Child.proxies, proxy.ownerId, proxy.key) { error in
+                    if let error = error {
+                        completion(.failure(error))
                     } else {
-                        if attempt < _self.makeProxyRetries {
-                            self?.makeProxy(ownerId: ownerId, attempt: attempt + 1, completion: completion)
-                        } else {
-                            completion(.failure(ProxyError.unknown))
-                        }
+                        completion(.success(proxy))
                     }
                 }
             }
-        } catch {
-            completion(.failure(error))
-        }
-    }
-
-    private func getProxyNameCount(ref: DatabaseReference, name: String, completion: @escaping (UInt?) -> Void) {
-        ref.queryEqual(toValue: name).queryOrdered(byChild: Child.name).observeSingleEvent(of: .value) { data in
-            completion(data.childrenCount)
         }
     }
 

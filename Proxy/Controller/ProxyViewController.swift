@@ -2,10 +2,12 @@ import UIKit
 
 class ProxyViewController: UIViewController, NewMessageMakerDelegate {
     var newConvo: Convo?
+    private let buttonAnimator: ButtonAnimating
     private let convosObserver: ConvosObsering
     private let database: Database
     private let proxyObserver: ProxyObsering
     private let tableView = UITableView(frame: .zero, style: .grouped)
+    private let tableViewRefresher: TableViewRefreshing
     private var convos = [Convo]()
     private var proxy: Proxy? { didSet { didSetProxy() } }
     private lazy var deleteProxyButton = UIBarButtonItem(
@@ -19,22 +21,28 @@ class ProxyViewController: UIViewController, NewMessageMakerDelegate {
         image: Image.makeNewMessage
     )
 
-    init(proxy: Proxy,
+    init(buttonAnimator: ButtonAnimating = ButtonAnimator(),
          convosObserver: ConvosObsering = ConvosObserver(),
          database: Database = Firebase(),
-         proxyObserver: ProxyObsering = ProxyObserver()) {
-        self.proxy = proxy
+         proxyObserver: ProxyObsering = ProxyObserver(),
+         tableViewRefresher: TableViewRefreshing = TableViewRefresher(timeInterval: Shared.tableViewRefreshRate),
+         proxy: Proxy) {
+        self.buttonAnimator = buttonAnimator
         self.convosObserver = convosObserver
         self.database = database
         self.proxyObserver = proxyObserver
+        self.tableViewRefresher = tableViewRefresher
+        self.proxy = proxy
 
         super.init(nibName: nil, bundle: nil)
 
+        buttonAnimator.add(makeNewMessageButton)
+
         convosObserver.observe(convosOwnerId: proxy.ownerId, proxyKey: proxy.key) { [weak self] convos in
             if convos.isEmpty {
-                self?.makeNewMessageButton.animate(loop: true)
+                self?.buttonAnimator.animate()
             } else {
-                self?.makeNewMessageButton.stopAnimating()
+                self?.buttonAnimator.stopAnimating()
             }
             self?.convos = convos
             self?.tableView.reloadData()
@@ -62,6 +70,8 @@ class ProxyViewController: UIViewController, NewMessageMakerDelegate {
         tableView.separatorStyle = .none
         tableView.setDelaysContentTouchesForScrollViews()
 
+        tableViewRefresher.refresh(tableView)
+
         view.addSubview(tableView)
     }
 
@@ -72,7 +82,7 @@ class ProxyViewController: UIViewController, NewMessageMakerDelegate {
             return
         }
         if convos.isEmpty {
-            makeNewMessageButton.animate(loop: true)
+            buttonAnimator.animate()
         }
         if let newConvo = newConvo {
             showConvoViewController(newConvo)

@@ -90,6 +90,21 @@ class ConvoViewController: MessagesViewController {
         tabBarController?.tabBar.isHidden = false
     }
 
+    func collectionView(_ collectionView: UICollectionView,
+                        willDisplay cell: UICollectionViewCell,
+                        forItemAt indexPath: IndexPath) {
+        guard indexPath.section == 0 else {
+            return
+        }
+        let message = messages[indexPath.section]
+        messagesObserver.loadMessages(endingAtMessageId: message.messageId) { [weak self] olderMessages in
+            if let messages = self?.messages {
+                self?.messages = olderMessages + messages
+                self?.messagesCollectionView.reloadDataAndKeepOffset()
+            }
+        }
+    }
+
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -258,23 +273,5 @@ extension ConvoViewController: MessagesLayoutDelegate {
                            with maxWidth: CGFloat,
                            in messagesCollectionView: MessagesCollectionView) -> CGFloat {
         return 200
-    }
-}
-
-// MARK: - UICollectionViewDelegate
-extension ConvoViewController {
-    func collectionView(_ collectionView: UICollectionView,
-                        willDisplay cell: UICollectionViewCell,
-                        forItemAt indexPath: IndexPath) {
-        guard indexPath.section == 0 else {
-            return
-        }
-        let message = messages[indexPath.section]
-        messagesObserver.loadMessages(endingAtMessageId: message.messageId) { [weak self] olderMessages in
-            if let messages = self?.messages {
-                self?.messages = olderMessages + messages
-                self?.messagesCollectionView.reloadDataAndKeepOffset()
-            }
-        }
     }
 }

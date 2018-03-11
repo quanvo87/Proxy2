@@ -8,7 +8,6 @@ enum Result<T, Error> {
     case failure(Error)
 }
 
-// todo: reanimate buttons when app comes back to foreground
 extension CALayer {
     func stopAnimating() {
         removeAllAnimations()
@@ -229,6 +228,13 @@ extension UIBarButtonItem {
 
     func stopAnimating() {
         customView?.layer.stopAnimating()
+    }
+}
+
+extension UIImageView {
+    convenience init(_ iconName: String, frame: CGRect = CGRect(x: 0, y: 0, width: 30, height: 30)) {
+        self.init(frame: frame)
+        image = UIImage(named: iconName)
     }
 }
 

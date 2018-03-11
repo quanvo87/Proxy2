@@ -125,7 +125,6 @@ enum Identifier {
     static let convoDetailSenderProxyTableViewCell = "ConvoDetailSenderProxyTableViewCell"
 }
 
-// todo: prefer convenience inits over factory methods where relevant
 enum Image {
     static let cancel = UIImage(named: "cancel")
     static let confirm = UIImage(named: "confirm")
@@ -156,15 +155,6 @@ enum Image {
     }
 }
 
-enum ImageView {
-    static func make(_ iconName: String, frame: CGRect = CGRect(x: 0, y: 0, width: 30, height: 30)) -> UIImageView {
-        let imageView = UIImageView(frame: frame)
-        let image = UIImage(named: iconName)
-        imageView.image = image
-        return imageView
-    }
-}
-
 enum Label {
     static let check: UILabel = {
         let check = UILabel()
@@ -190,6 +180,7 @@ enum Shared {
         FirebaseHelper(Shared.testDatabaseReference) :
         FirebaseHelper(FirebaseDatabase.Database.database().reference())
     static let isRunningTests = UserDefaults.standard.bool(forKey: "isRunningTests")
+    static let tableViewRefreshRate: TimeInterval = 10
     static let testDatabaseReference = FirebaseDatabase.Database.database(url: Shared.testDatabaseURL).reference()
     static let testDatabaseURL = "https://proxy-test-f90c4-9c8ea.firebaseio.com/"
     static let storyboard = UIStoryboard(name: "Main", bundle: nil)
@@ -235,8 +226,8 @@ enum StatusBar {
         let notificationBanner = NotificationBanner(
             title: convo.receiverDisplayName + " -> " + convo.senderDisplayName,
             subtitle: convo.lastMessage,
-            leftView: ImageView.make(convo.receiverIcon),
-            rightView: ImageView.make(convo.senderIcon),
+            leftView: UIImageView(convo.receiverIcon),
+            rightView: UIImageView(convo.senderIcon),
             style: .info
         )
         notificationBanner.onTap = {
@@ -254,11 +245,11 @@ enum StatusBar {
         )
     }
 
-    // todo: sometimes showing behind status bar
     static func showSuccessStatusBarBanner(_ title: String) {
-        queue.currentBanner = StatusBarNotificationBanner(
+        NotificationBannerQueue.default.removeAll()
+        StatusBarNotificationBanner(
             title: title,
             style: .success
-        )
+        ).show()
     }
 }

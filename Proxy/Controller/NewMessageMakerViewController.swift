@@ -8,6 +8,7 @@ private enum FirstResponder {
 class NewMessageMakerViewController: UIViewController, SenderPickerDelegate {
     var sender: Proxy? { didSet { didSetSender() } }
     override var inputAccessoryView: UIView? { return messageInputBar }
+    private let buttonAnimator: ButtonAnimating
     private let database: Database
     private let messageInputBar = MessageInputBar()
     private let proxiesObserver: ProxiesObserving
@@ -16,6 +17,7 @@ class NewMessageMakerViewController: UIViewController, SenderPickerDelegate {
     private let uid: String
     private var firstResponder = FirstResponder.receiverTextField
     private var isSending = false
+    private var keyboardWillHideObserver: NSObjectProtocol?
     private var lockKeyboard = true
     private var proxies = [Proxy]()
     private weak var newMessageMakerDelegate: NewMessageMakerDelegate?
@@ -29,23 +31,16 @@ class NewMessageMakerViewController: UIViewController, SenderPickerDelegate {
         action: #selector(makeNewProxy),
         image: Image.makeNewProxy
     )
-    private lazy var keyboardWillHideObserver = NotificationCenter.default.addObserver(
-        forName: .UIKeyboardWillHide,
-        object: nil,
-        queue: .main
-    ) { [weak self] _ in
-        if let lockKeyboard = self?.lockKeyboard, lockKeyboard {
-            self?.setFirstResponder()
-        }
-    }
 
     init(sender: Proxy?,
+         buttonAnimator: ButtonAnimating = ButtonAnimator(),
          database: Database = Firebase(),
          proxiesObserver: ProxiesObserving = ProxiesObserver(),
          proxyNamesLoader: ProxyNamesLoading = ProxyNamesLoader(),
          uid: String,
          newMessageMakerDelegate: NewMessageMakerDelegate) {
         self.sender = sender
+        self.buttonAnimator = buttonAnimator
         self.database = database
         self.proxiesObserver = proxiesObserver
         self.proxyNamesLoader = proxyNamesLoader
@@ -54,7 +49,16 @@ class NewMessageMakerViewController: UIViewController, SenderPickerDelegate {
 
         super.init(nibName: nil, bundle: nil)
 
-        _ = keyboardWillHideObserver
+        buttonAnimator.add(makeNewProxyButton)
+
+        keyboardWillHideObserver = NotificationCenter.default.addObserver(
+            forName: .UIKeyboardWillHide,
+            object: nil,
+            queue: .main ) { [weak self] _ in
+                if let lockKeyboard = self?.lockKeyboard, lockKeyboard {
+                    self?.setFirstResponder()
+                }
+        }
 
         makeNewProxyButton.isEnabled = false
 
@@ -66,9 +70,9 @@ class NewMessageMakerViewController: UIViewController, SenderPickerDelegate {
 
         proxiesObserver.observe(proxiesOwnerId: uid) { [weak self] proxies in
             if proxies.isEmpty {
-                self?.makeNewProxyButton.animate(loop: true)
+                self?.buttonAnimator.animate()
             } else {
-                self?.makeNewProxyButton.stopAnimating()
+                self?.buttonAnimator.stopAnimating()
             }
             self?.makeNewProxyButton.isEnabled = true
             self?.proxies = proxies
@@ -96,7 +100,7 @@ class NewMessageMakerViewController: UIViewController, SenderPickerDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if proxies.isEmpty {
-            makeNewProxyButton.animate(loop: true)
+            buttonAnimator.animate()
         }
         lockKeyboard = true
         setFirstResponder()
@@ -111,7 +115,9 @@ class NewMessageMakerViewController: UIViewController, SenderPickerDelegate {
     }
 
     deinit {
-        NotificationCenter.default.removeObserver(keyboardWillHideObserver)
+        if let keyboardWillHideObserver = keyboardWillHideObserver {
+            NotificationCenter.default.removeObserver(keyboardWillHideObserver)
+        }
     }
 
     required init?(coder aDecoder: NSCoder) {
