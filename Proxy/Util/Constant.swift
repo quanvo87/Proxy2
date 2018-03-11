@@ -4,6 +4,7 @@ import Firebase
 import FirebaseHelper
 import FontAwesome_swift
 import NotificationBannerSwift
+import Piano
 import SwiftMessages
 
 enum Alert {
@@ -121,6 +122,63 @@ enum DatabaseOption {
     static let querySize: UInt = 30
 }
 
+enum DeviceUtilities {
+    enum FeedbackType {
+        case haptic
+        case taptic
+        case none
+    }
+
+    static let feedbackType: FeedbackType = {
+        switch Device.version() {
+        case .iPhoneX, .iPhone8Plus, .iPhone8, .iPhone7Plus, .iPhone7:
+            return .haptic
+        case .iPhone6SPlus, .iPhone6S:
+            return .taptic
+        default:
+            return .none
+        }
+    }()
+
+    static let isSmallDevice: Bool = {
+        switch Device.size() {
+        case .screen3_5Inch:
+            return true
+        case .screen4Inch:
+            return true
+        default:
+            return false
+        }
+    }()
+}
+
+enum Feedback {
+    static func generateError() {
+        switch DeviceUtilities.feedbackType {
+        case .haptic:
+            Piano.play([.hapticFeedback(.notification(.failure))])
+        case .taptic:
+            Piano.play([.tapticEngine(.failed)])
+        default:
+            break
+        }
+    }
+
+    static func generateSuccess(_ impact: Piano.HapticFeedback.Impact? = .light) {
+        switch DeviceUtilities.feedbackType {
+        case .haptic:
+            guard let impact = impact else {
+                return
+            }
+            Piano.play([.hapticFeedback(.impact(impact))])
+        case .taptic:
+            Piano.play([.tapticEngine(.peek)])
+        default:
+            break
+        }
+    }
+}
+
 enum Identifier {
     static let convoDetailSenderProxyTableViewCell = "ConvoDetailSenderProxyTableViewCell"
 }
@@ -173,8 +231,18 @@ enum Label {
     }()
 }
 
+enum Result<T, Error> {
+    case success(T)
+    case failure(Error)
+}
+
 enum Shared {
     static let auth = Auth.auth()
+    static let decimalNumberFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        return formatter
+    }()
     static let firebaseApp = FirebaseApp.app()
     static let firebaseHelper = Shared.isRunningTests ?
         FirebaseHelper(Shared.testDatabaseReference) :
@@ -184,29 +252,13 @@ enum Shared {
     static let testDatabaseReference = FirebaseDatabase.Database.database(url: Shared.testDatabaseURL).reference()
     static let testDatabaseURL = "https://proxy-test-f90c4-9c8ea.firebaseio.com/"
     static let storyboard = UIStoryboard(name: "Main", bundle: nil)
-
-    static let isSmallDevice: Bool = {
-        switch Device.size() {
-        case .screen3_5Inch:
-            return true
-        case .screen4Inch:
-            return true
-        default:
-            return false
-        }
-    }()
-
-    static let decimalNumberFormatter: NumberFormatter = {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        return formatter
-    }()
 }
 
 enum StatusBar {
     private static let queue = ProxyNotificationBannerQueue()
 
     static func showErrorBanner(title: String = "Error 😵", subtitle: String) {
+        Feedback.generateError()
         queue.currentBanner = NotificationBanner(
             title: title,
             subtitle: subtitle,
@@ -216,6 +268,7 @@ enum StatusBar {
     }
 
     static func showErrorStatusBarBanner(_ error: Error) {
+        Feedback.generateError()
         let view = MessageView.viewFromNib(layout: .statusLine)
         view.configureTheme(.error)
         view.configureContent(body: "⚠️ " + error.localizedDescription)
@@ -237,6 +290,7 @@ enum StatusBar {
     }
 
     static func showSuccessBanner(title: String, subtitle: String) {
+        Feedback.generateSuccess()
         queue.currentBanner = NotificationBanner(
             title: title,
             subtitle: subtitle,
@@ -246,10 +300,13 @@ enum StatusBar {
     }
 
     static func showSuccessStatusBarBanner(_ title: String) {
+        Feedback.generateSuccess()
         NotificationBannerQueue.default.removeAll()
-        StatusBarNotificationBanner(
+        let statusBarNotificationBanner = StatusBarNotificationBanner(
             title: title,
             style: .success
-        ).show()
+        )
+        statusBarNotificationBanner.haptic = .none
+        statusBarNotificationBanner.show()
     }
 }

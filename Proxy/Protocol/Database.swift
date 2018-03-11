@@ -121,6 +121,7 @@ class Firebase: Database {
     }
 
     func makeProxy(currentProxyCount: Int, ownerId: String, completion: @escaping ProxyCallback) {
+        Feedback.generateSuccess()
         guard !isMakingProxy else {
             return
         }

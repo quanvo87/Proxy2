@@ -3,11 +3,6 @@ import paper_onboarding
 import SkyFloatingLabelTextField
 import Spring
 
-enum Result<T, Error> {
-    case success(T)
-    case failure(Error)
-}
-
 extension CALayer {
     func stopAnimating() {
         removeAllAnimations()
