@@ -1,5 +1,4 @@
 import FirebaseDatabase
-import FontAwesome_swift
 import paper_onboarding
 import SkyFloatingLabelTextField
 import Spring

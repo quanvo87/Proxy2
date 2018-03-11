@@ -142,7 +142,7 @@ class Firebase: Database {
         let proxy = Proxy(icon: generator.randomIconName, name: name, ownerId: ownerId)
         Shared.firebaseHelper.set(proxy.toDictionary(), at: Child.proxyNames, proxy.key) { [weak self] error in
             if let error = error {
-                if attempt < self?.makeProxyRetries ?? Int.min {
+                if let makeProxyRetries = self?.makeProxyRetries, attempt < makeProxyRetries {
                     self?.makeProxy(ownerId: ownerId, attempt: attempt + 1, completion: completion)
                 } else {
                     completion(.failure(error))
