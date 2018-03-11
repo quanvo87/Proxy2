@@ -251,7 +251,7 @@ extension UInt {
     var asStringWithCommas: String {
         var num = Double(self)
         num = fabs(num)
-        guard let string = Shared.decimalNumberFormatter.string(from: NSNumber(integerLiteral: Int(num))) else {
+        guard let string = Constant.decimalNumberFormatter.string(from: NSNumber(integerLiteral: Int(num))) else {
             return "-"
         }
         return string

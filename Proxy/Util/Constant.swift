@@ -113,6 +113,24 @@ enum Color {
     static let receiverChatBubbleGray = UIColor(red: 230/255, green: 230/255, blue: 230/255, alpha: 1)
 }
 
+enum Constant {
+    static let auth = Auth.auth()
+    static let decimalNumberFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        return formatter
+    }()
+    static let firebaseApp = FirebaseApp.app()
+    static let firebaseHelper = Constant.isRunningTests ?
+        FirebaseHelper(Constant.testDatabaseReference) :
+        FirebaseHelper(FirebaseDatabase.Database.database().reference())
+    static let isRunningTests = UserDefaults.standard.bool(forKey: "isRunningTests")
+    static let tableViewRefreshRate: TimeInterval = 10
+    static let testDatabaseReference = FirebaseDatabase.Database.database(url: Constant.testDatabaseURL).reference()
+    static let testDatabaseURL = "https://proxy-test-f90c4-9c8ea.firebaseio.com/"
+    static let storyboard = UIStoryboard(name: "Main", bundle: nil)
+}
+
 enum DatabaseOption {
     static let generator = (name: "generator", value: ProxyPropertyGenerator())
     static let makeProxyRetries = (name: "makeProxyRetries", value: 50)
@@ -234,24 +252,6 @@ enum Label {
 enum Result<T, Error> {
     case success(T)
     case failure(Error)
-}
-
-enum Shared {
-    static let auth = Auth.auth()
-    static let decimalNumberFormatter: NumberFormatter = {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        return formatter
-    }()
-    static let firebaseApp = FirebaseApp.app()
-    static let firebaseHelper = Shared.isRunningTests ?
-        FirebaseHelper(Shared.testDatabaseReference) :
-        FirebaseHelper(FirebaseDatabase.Database.database().reference())
-    static let isRunningTests = UserDefaults.standard.bool(forKey: "isRunningTests")
-    static let tableViewRefreshRate: TimeInterval = 10
-    static let testDatabaseReference = FirebaseDatabase.Database.database(url: Shared.testDatabaseURL).reference()
-    static let testDatabaseURL = "https://proxy-test-f90c4-9c8ea.firebaseio.com/"
-    static let storyboard = UIStoryboard(name: "Main", bundle: nil)
 }
 
 enum StatusBar {

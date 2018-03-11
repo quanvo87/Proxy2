@@ -380,7 +380,7 @@ class FirebaseTests: FirebaseTest {
             XCTAssertNil(error)
             FirebaseTest.database.setRegistrationToken(registrationToken2, for: FirebaseTest.uid) { error in
                 XCTAssertNil(error)
-                Shared.firebaseHelper.get(Child.users, FirebaseTest.uid, Child.registrationTokens) { result in
+                Constant.firebaseHelper.get(Child.users, FirebaseTest.uid, Child.registrationTokens) { result in
                     switch result {
                     case .failure(let error):
                         XCTFail(String(describing: error))
@@ -402,7 +402,7 @@ extension GroupWork {
     func checkConvoCreated(_ convo: Convo, asSender: Bool) {
         let (uid, _) = GroupWork.getOwnerIdAndProxyKey(convo: convo, asSender: asSender)
         start()
-        Shared.firebaseHelper.get(Child.convos, uid, convo.key) { result in
+        Constant.firebaseHelper.get(Child.convos, uid, convo.key) { result in
             switch result {
             case .failure(let error):
                 XCTFail(String(describing: error))
@@ -415,7 +415,7 @@ extension GroupWork {
 
     func checkMessageCreated(_ message: Message) {
         start()
-        Shared.firebaseHelper.get(Child.messages, message.parentConvoKey, message.messageId) { result in
+        Constant.firebaseHelper.get(Child.messages, message.parentConvoKey, message.messageId) { result in
             switch result {
             case .failure(let error):
                 XCTFail(String(describing: error))
@@ -428,7 +428,7 @@ extension GroupWork {
 
     func checkProxyCreated(_ proxy: Proxy) {
         start()
-        Shared.firebaseHelper.get(Child.proxies, FirebaseTest.uid, proxy.key) { result in
+        Constant.firebaseHelper.get(Child.proxies, FirebaseTest.uid, proxy.key) { result in
             switch result {
             case .failure(let error):
                 XCTFail(String(describing: error))
@@ -441,7 +441,7 @@ extension GroupWork {
 
     func checkProxyNameCreated(forProxy proxy: Proxy) {
         start()
-        Shared.firebaseHelper.get(Child.proxyNames, proxy.key) { result in
+        Constant.firebaseHelper.get(Child.proxyNames, proxy.key) { result in
             let testProxy = Proxy(icon: proxy.icon, name: proxy.name, ownerId: proxy.ownerId)
             switch result {
             case .failure(let error):
@@ -455,7 +455,7 @@ extension GroupWork {
 
     func checkUnreadMessageCreated(_ message: Message) {
         start()
-        Shared.firebaseHelper.get(
+        Constant.firebaseHelper.get(
             Child.users,
             message.receiverId,
             Child.unreadMessages,

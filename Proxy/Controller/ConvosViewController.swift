@@ -32,7 +32,7 @@ class ConvosViewController: UIViewController, NewMessageMakerDelegate {
          convosObserver: ConvosObsering = ConvosObserver(),
          database: Database = Firebase(),
          proxiesObserver: ProxiesObserving = ProxiesObserver(),
-         tableViewRefresher: TableViewRefreshing = TableViewRefresher(timeInterval: Shared.tableViewRefreshRate),
+         tableViewRefresher: TableViewRefreshing = TableViewRefresher(timeInterval: Constant.tableViewRefreshRate),
          uid: String,
          unreadMessagesObserver: UnreadMessagesObserving = UnreadMessagesObserver()) {
         self.buttonAnimator = buttonAnimator
