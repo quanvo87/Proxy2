@@ -9,7 +9,6 @@ enum Result<T, Error> {
     case failure(Error)
 }
 
-// todo: reanimate buttons when app comes back to foreground
 extension CALayer {
     func stopAnimating() {
         removeAllAnimations()

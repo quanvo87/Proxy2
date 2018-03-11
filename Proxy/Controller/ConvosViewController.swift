@@ -3,8 +3,9 @@ import UIKit
 // todo: refresh every ~10 secs?
 class ConvosViewController: UIViewController, NewMessageMakerDelegate {
     var newConvo: Convo?
-    private let database: Database
+    private let buttonAnimator: ButtonAnimating
     private let convosObserver: ConvosObsering
+    private let database: Database
     private let proxiesObserver: ProxiesObserving
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
@@ -27,24 +28,28 @@ class ConvosViewController: UIViewController, NewMessageMakerDelegate {
         image: Image.makeNewProxy
     )
 
-    init(database: Database = Firebase(),
+    init(buttonAnimator: ButtonAnimating = ButtonAnimator(),
          convosObserver: ConvosObsering = ConvosObserver(),
+         database: Database = Firebase(),
          proxiesObserver: ProxiesObserving = ProxiesObserver(),
          uid: String,
          unreadMessagesObserver: UnreadMessagesObserving = UnreadMessagesObserver()) {
-        self.database = database
+        self.buttonAnimator = buttonAnimator
         self.convosObserver = convosObserver
+        self.database = database
         self.proxiesObserver = proxiesObserver
         self.uid = uid
         self.unreadMessagesObserver = unreadMessagesObserver
 
         super.init(nibName: nil, bundle: nil)
 
+        buttonAnimator.add(makeNewMessageButton)
+
         convosObserver.observe(convosOwnerId: uid, proxyKey: nil) { [weak self] convos in
             if convos.isEmpty {
-                self?.makeNewMessageButton.animate(loop: true)
+                self?.buttonAnimator.animate()
             } else {
-                self?.makeNewMessageButton.stopAnimating()
+                self?.buttonAnimator.stopAnimating()
             }
             self?.convos = convos
             self?.tableView.reloadData()
@@ -90,7 +95,7 @@ class ConvosViewController: UIViewController, NewMessageMakerDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if convos.isEmpty {
-            makeNewMessageButton.animate(loop: true)
+            buttonAnimator.animate()
         }
         if let newConvo = newConvo {
             showConvoViewController(newConvo)

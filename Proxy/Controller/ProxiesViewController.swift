@@ -2,6 +2,7 @@ import UIKit
 
 class ProxiesViewController: UIViewController, NewMessageMakerDelegate {
     var newConvo: Convo?
+    private let buttonAnimator: ButtonAnimating
     private let database: Database
     private let proxiesObserver: ProxiesObserving
     private let tableView = UITableView(frame: .zero, style: .grouped)
@@ -35,14 +36,18 @@ class ProxiesViewController: UIViewController, NewMessageMakerDelegate {
         image: Image.makeNewProxy
     )
 
-    init(database: Database = Firebase(),
+    init(buttonAnimator: ButtonAnimating = ButtonAnimator(),
+         database: Database = Firebase(),
          proxiesObserver: ProxiesObserving = ProxiesObserver(),
          uid: String) {
+        self.buttonAnimator = buttonAnimator
         self.database = database
         self.proxiesObserver = proxiesObserver
         self.uid = uid
 
         super.init(nibName: nil, bundle: nil)
+
+        buttonAnimator.add(makeNewProxyButton)
 
         makeNewProxyButton.isEnabled = false
 
@@ -50,9 +55,9 @@ class ProxiesViewController: UIViewController, NewMessageMakerDelegate {
 
         proxiesObserver.observe(proxiesOwnerId: uid) { [weak self] proxies in
             if proxies.isEmpty {
-                self?.makeNewProxyButton.animate(loop: true)
+                self?.buttonAnimator.animate()
             } else {
-                self?.makeNewProxyButton.stopAnimating()
+                self?.buttonAnimator.stopAnimating()
             }
             let title = "My Proxies\(proxies.count.asStringWithParens)"
             self?.navigationController?.tabBarController?.tabBar.items?[1].title = title
@@ -85,7 +90,7 @@ class ProxiesViewController: UIViewController, NewMessageMakerDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if proxies.isEmpty {
-            makeNewProxyButton.animate(loop: true)
+            buttonAnimator.animate()
         }
         if let newConvo = newConvo {
             showConvoViewController(newConvo)
@@ -101,7 +106,7 @@ class ProxiesViewController: UIViewController, NewMessageMakerDelegate {
 private extension ProxiesViewController {
     @objc func setDefaultButtons() {
         if proxies.isEmpty {
-            makeNewProxyButton.animate(loop: true)
+            buttonAnimator.animate()
         }
         proxiesToDelete.removeAll()
         makeNewProxyButton.customView?.isHidden = false

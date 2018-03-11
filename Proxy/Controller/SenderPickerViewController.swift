@@ -1,6 +1,7 @@
 import UIKit
 
 class SenderPickerViewController: UIViewController {
+    private let buttonAnimator: ButtonAnimating
     private let database: Database
     private let proxiesObserver: ProxiesObserving
     private let tableView = UITableView(frame: .zero, style: .grouped)
@@ -13,10 +14,12 @@ class SenderPickerViewController: UIViewController {
         image: Image.makeNewProxy
     )
 
-    init(database: Database = Firebase(),
+    init(buttonAnimator: ButtonAnimating = ButtonAnimator(),
+         database: Database = Firebase(),
          proxiesObserver: ProxiesObserving = ProxiesObserver(),
          uid: String,
          senderPickerDelegate: SenderPickerDelegate?) {
+        self.buttonAnimator = buttonAnimator
         self.database = database
         self.proxiesObserver = proxiesObserver
         self.uid = uid
@@ -24,11 +27,13 @@ class SenderPickerViewController: UIViewController {
 
         super.init(nibName: nil, bundle: nil)
 
+        buttonAnimator.add(makeNewProxyButton)
+
         proxiesObserver.observe(proxiesOwnerId: uid) { [weak self] proxies in
             if proxies.isEmpty {
-                self?.makeNewProxyButton.animate(loop: true)
+                self?.buttonAnimator.animate()
             } else {
-                self?.makeNewProxyButton.stopAnimating()
+                self?.buttonAnimator.stopAnimating()
             }
             self?.makeNewProxyButton.isEnabled = true
             self?.proxies = proxies
