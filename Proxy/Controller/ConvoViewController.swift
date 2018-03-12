@@ -1,6 +1,7 @@
 import MessageKit
 
 class ConvoViewController: MessagesViewController {
+    private let audioPlayer: AudioPlaying
     private let convoObserver: ConvoObserving
     private let database: Database
     private let messagesObserver: MessagesObserving
@@ -11,16 +12,18 @@ class ConvoViewController: MessagesViewController {
     private var messages = [Message]()
     private var messagesToRead = Set<Message>()
 
-    init(convo: Convo,
+    init(audioPlayer: AudioPlaying = AudioPlayer(),
          convoObserver: ConvoObserving = ConvoObserver(),
          database: Database = Firebase(),
          messagesObserver: MessagesObserving = MessagesObserver(),
-         unreadMessagesObserver: UnreadMessagesObserving = UnreadMessagesObserver()) {
-        self.convo = convo
+         unreadMessagesObserver: UnreadMessagesObserving = UnreadMessagesObserver(),
+         convo: Convo) {
+        self.audioPlayer = audioPlayer
         self.convoObserver = convoObserver
         self.database = database
         self.messagesObserver = messagesObserver
         self.unreadMessagesObserver = unreadMessagesObserver
+        self.convo = convo
 
         super.init(nibName: nil, bundle: nil)
 
@@ -29,6 +32,12 @@ class ConvoViewController: MessagesViewController {
         }
 
         messagesObserver.observe(convoKey: convo.key) { [weak self] messages in
+            if let currentLastMessage = self?.messages.last,
+                let newLastMessage = messages.last,
+                currentLastMessage.messageId != newLastMessage.messageId &&
+                    newLastMessage.sender.id != self?.convo?.senderId {
+                try? audioPlayer.playSound(name: "textIn", fileType: "wav")
+            }
             self?.messages = messages
             self?.messagesCollectionView.reloadData()
             self?.messagesCollectionView.scrollToBottom()
@@ -137,12 +146,12 @@ extension ConvoViewController: MessageInputBarDelegate {
         guard text.count > 0, let convo = convo else {
             return
         }
-        database.sendMessage(convo: convo, text: text) { result in
+        database.sendMessage(convo: convo, text: text) { [weak self] result in
             switch result {
             case .failure(let error):
                 StatusBar.showErrorStatusBarBanner(error)
-            default:
-                break
+            case .success:
+                try? self?.audioPlayer.playSound(name: "textOut", fileType: "wav")
             }
         }
     }

@@ -8,6 +8,7 @@ class ProxyNotificationBannerQueue: NotificationBannerQueue {
         }
         didSet {
             if let currentBanner = currentBanner {
+                currentBanner.haptic = .none
                 currentBanner.show(queue: self)
             }
         }

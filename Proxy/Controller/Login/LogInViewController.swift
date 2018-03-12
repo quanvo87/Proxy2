@@ -41,7 +41,7 @@ class LogInViewController: UIViewController {
     }
 
     static func make(loginManager: LoginManaging? = nil) -> LogInViewController {
-        guard let logInViewController = Shared.storyboard.instantiateViewController(
+        guard let logInViewController = Constant.storyboard.instantiateViewController(
             withIdentifier: String(describing: LogInViewController.self)
             ) as? LogInViewController else {
                 assertionFailure()

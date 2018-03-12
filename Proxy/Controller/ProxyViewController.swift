@@ -25,7 +25,7 @@ class ProxyViewController: UIViewController, NewMessageMakerDelegate {
          convosObserver: ConvosObsering = ConvosObserver(),
          database: Database = Firebase(),
          proxyObserver: ProxyObsering = ProxyObserver(),
-         tableViewRefresher: TableViewRefreshing = TableViewRefresher(timeInterval: Shared.tableViewRefreshRate),
+         tableViewRefresher: TableViewRefreshing = TableViewRefresher(timeInterval: Constant.tableViewRefreshRate),
          proxy: Proxy) {
         self.buttonAnimator = buttonAnimator
         self.convosObserver = convosObserver

@@ -16,6 +16,7 @@ def pods
   pod 'MessageKit', '~> 0.13'
   pod 'NotificationBannerSwift', '~> 1.6'
   pod 'paper-onboarding', '~> 4.0'
+  pod 'Piano', '~> 1.5'
   pod 'PureLayout', '~> 3.0'
   pod 'SearchTextField', '~> 1.2'
   pod 'SkyFloatingLabelTextField', '~> 3.4'

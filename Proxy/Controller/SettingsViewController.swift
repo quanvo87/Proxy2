@@ -135,7 +135,7 @@ extension SettingsViewController: UITableViewDelegate {
 
                         qvo1987@gmail.com
 
-                        Icons from https://icons8.com/
+                        Icons and sounds from https://icons8.com/
 
                         Login videos from http://coverr.co/
                         """

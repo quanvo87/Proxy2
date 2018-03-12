@@ -13,7 +13,7 @@ class ProxiesObserver: ProxiesObserving {
     func observe(proxiesOwnerId: String, completion: @escaping ([Proxy]) -> Void) {
         stopObserving()
         firstCallback = true
-        ref = try? Shared.firebaseHelper.makeReference(Child.proxies, proxiesOwnerId)
+        ref = try? Constant.firebaseHelper.makeReference(Child.proxies, proxiesOwnerId)
         WQNetworkActivityIndicator.shared.show()
         handle = ref?.queryOrdered(byChild: Child.timestamp).observe(.value) { [weak self] data in
             if let firstCallback = self?.firstCallback, firstCallback {

@@ -23,7 +23,7 @@ class ConvosObserver: ConvosObsering {
     func observe(convosOwnerId: String, proxyKey: String?, completion: @escaping ([Convo]) -> Void) {
         stopObserving()
         firstCallback = true
-        ref = try? Shared.firebaseHelper.makeReference(Child.convos, convosOwnerId)
+        ref = try? Constant.firebaseHelper.makeReference(Child.convos, convosOwnerId)
         WQNetworkActivityIndicator.shared.show()
         handle = ref?
             .queryLimited(toLast: querySize)

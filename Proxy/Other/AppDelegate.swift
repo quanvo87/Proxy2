@@ -44,7 +44,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 self?.uid = user.uid
                 self?.setRegistrationToken()
             } else {
-                guard self?.uid != nil, let welcomeViewController = Shared.storyboard.instantiateViewController(
+                guard self?.uid != nil, let welcomeViewController = Constant.storyboard.instantiateViewController(
                     withIdentifier: String(describing: WelcomeViewController.self)
                     ) as? WelcomeViewController else {
                         return

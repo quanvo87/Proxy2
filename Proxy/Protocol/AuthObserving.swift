@@ -9,14 +9,14 @@ class AuthObserver: AuthObserving {
 
     func observe(completion: @escaping (User?) -> Void) {
         stopObserving()
-        handle = Shared.auth.addStateDidChangeListener { (_, user) in
+        handle = Constant.auth.addStateDidChangeListener { (_, user) in
             completion(user)
         }
     }
 
     private func stopObserving() {
         if let handle = handle {
-            Shared.auth.removeStateDidChangeListener(handle)
+            Constant.auth.removeStateDidChangeListener(handle)
         }
     }
 
