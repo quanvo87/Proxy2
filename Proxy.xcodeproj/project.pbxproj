@@ -54,6 +54,8 @@
 		5973C88A1F608A4E00647492 /* FirebaseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8811F608A4E00647492 /* FirebaseTest.swift */; };
 		5973C88C1F608A4E00647492 /* FirebaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8831F608A4E00647492 /* FirebaseTests.swift */; };
 		598420511FEA598300855647 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598420501FEA598300855647 /* Message.swift */; };
+		598603D920560E30000B6341 /* textIn.wav in Resources */ = {isa = PBXBuildFile; fileRef = 598603D820560E2F000B6341 /* textIn.wav */; };
+		598603DB20561638000B6341 /* AudioPlaying.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598603DA20561638000B6341 /* AudioPlaying.swift */; };
 		5988E8321F9A5A7E002C8C95 /* ConvosTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5988E8311F9A5A7E002C8C95 /* ConvosTableViewCell.xib */; };
 		5988E8341F9A5EF9002C8C95 /* SettingsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5988E8331F9A5EF9002C8C95 /* SettingsTableViewCell.xib */; };
 		598F89FE1FEB401200CCF024 /* ConvoDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598F89FD1FEB401200CCF024 /* ConvoDetailViewController.swift */; };
@@ -147,6 +149,8 @@
 		5973C8811F608A4E00647492 /* FirebaseTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseTest.swift; sourceTree = "<group>"; };
 		5973C8831F608A4E00647492 /* FirebaseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseTests.swift; sourceTree = "<group>"; };
 		598420501FEA598300855647 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		598603D820560E2F000B6341 /* textIn.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = textIn.wav; sourceTree = "<group>"; };
+		598603DA20561638000B6341 /* AudioPlaying.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlaying.swift; sourceTree = "<group>"; };
 		5988E8311F9A5A7E002C8C95 /* ConvosTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConvosTableViewCell.xib; sourceTree = "<group>"; };
 		5988E8331F9A5EF9002C8C95 /* SettingsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SettingsTableViewCell.xib; sourceTree = "<group>"; };
 		598F89FD1FEB401200CCF024 /* ConvoDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoDetailViewController.swift; sourceTree = "<group>"; };
@@ -263,6 +267,7 @@
 		5966076C1F977CA300874741 /* Protocol */ = {
 			isa = PBXGroup;
 			children = (
+				598603DA20561638000B6341 /* AudioPlaying.swift */,
 				59FF373C1F97984200FA1AF0 /* AuthObserving.swift */,
 				593C938C205494D600931F2B /* ButtonAnimating.swift */,
 				5932BA17200963AC0041BD7B /* ConvoObserving.swift */,
@@ -396,6 +401,7 @@
 				593C938320535DA100931F2B /* GoogleService-Info.plist */,
 				59B432EB1F60648400622DEA /* Info.plist */,
 				59CDE807201BDEA40048C7E3 /* AppDelegate.swift */,
+				598603D820560E2F000B6341 /* textIn.wav */,
 				59B432E61F60648400622DEA /* Assets.xcassets */,
 			);
 			path = Other;
@@ -543,6 +549,7 @@
 			files = (
 				59D76C85203E3F5900ED7926 /* login.mp4 in Resources */,
 				590823C31F9EED6A00A3B6A9 /* IconPickerCollectionViewCell.xib in Resources */,
+				598603D920560E30000B6341 /* textIn.wav in Resources */,
 				5988E8341F9A5EF9002C8C95 /* SettingsTableViewCell.xib in Resources */,
 				59B432EA1F60648400622DEA /* LaunchScreen.storyboard in Resources */,
 				598F8A5A1FEB501400CCF024 /* ConvoDetailSenderProxyTableViewCell.xib in Resources */,
@@ -876,6 +883,7 @@
 				59DECF5F1FEA56AD009ABB36 /* ConvoViewController.swift in Sources */,
 				5959CA332030C20600083FC8 /* LogInViewController.swift in Sources */,
 				5973C8721F608A2200647492 /* Constant.swift in Sources */,
+				598603DB20561638000B6341 /* AudioPlaying.swift in Sources */,
 				593C938B205458FF00931F2B /* NotificationHandling.swift in Sources */,
 				5973C8791F608A2200647492 /* loadAdjectives.swift in Sources */,
 				5973C85A1F608A2200647492 /* ProxiesTableViewCell.swift in Sources */,

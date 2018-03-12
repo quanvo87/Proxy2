@@ -18,9 +18,10 @@ exports.sendNewMessageNotification = functions.database.ref('/users/{uid}/unread
         const unreadMessageCount = unreadMessageCountSnapshot.numChildren()
         const payload = {
             notification: {
+                badge: unreadMessageCount.toString(),
                 body: message.senderDisplayName + ': ' + message.text,
                 parentConvoKey: message.parentConvoKey,
-                badge: unreadMessageCount.toString()
+                sound: 'textIn.wav'
             }
         }
         const tokens = Object.keys(registrationTokensSnapshot.val())
