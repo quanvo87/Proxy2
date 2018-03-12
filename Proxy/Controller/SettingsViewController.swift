@@ -10,6 +10,10 @@ class SettingsViewController: UIViewController {
     private var messagesReceivedCount = "-"
     private var messagesSentCount = "-"
     private var proxiesInteractedWithCount = "-"
+    private lazy var activityIndicatorView: UIActivityIndicatorView? = UIActivityIndicatorView(
+        view: view,
+        subview: tableView
+    )
 
     init(database: Database = Firebase(),
          loginManager: LoginManaging = LoginManager(),
@@ -22,6 +26,8 @@ class SettingsViewController: UIViewController {
         self.userStatsObserver = userStatsObserver
 
         super.init(nibName: nil, bundle: nil)
+
+        activityIndicatorView?.startAnimating()
 
         navigationItem.title = displayName
 
@@ -43,6 +49,8 @@ class SettingsViewController: UIViewController {
             case .proxiesInteractedWith(let val):
                 self?.proxiesInteractedWithCount = val
             }
+            self?.activityIndicatorView?.stopAnimatingAndRemoveFromSuperview()
+            self?.activityIndicatorView = nil
             self?.tableView.reloadData()
         }
 

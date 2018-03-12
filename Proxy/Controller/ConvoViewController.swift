@@ -11,6 +11,10 @@ class ConvoViewController: MessagesViewController {
     private var isPresent = false
     private var messages = [Message]()
     private var messagesToRead = Set<Message>()
+    private lazy var activityIndicatorView: UIActivityIndicatorView? = UIActivityIndicatorView(
+        view: view,
+        subview: messagesCollectionView
+    )
 
     init(audioPlayer: AudioPlaying = AudioPlayer(),
          convoObserver: ConvoObserving = ConvoObserver(),
@@ -27,6 +31,8 @@ class ConvoViewController: MessagesViewController {
 
         super.init(nibName: nil, bundle: nil)
 
+        activityIndicatorView?.startAnimating()
+
         convoObserver.observe(convoKey: convo.key, convoSenderId: convo.senderId) { [weak self] convo in
             self?.convo = convo
         }
@@ -38,6 +44,7 @@ class ConvoViewController: MessagesViewController {
                     newLastMessage.sender.id != self?.convo?.senderId {
                 try? audioPlayer.playSound(name: "textIn", fileType: "wav")
             }
+            self?.activityIndicatorView?.stopAnimating()
             self?.messages = messages
             self?.messagesCollectionView.reloadData()
             self?.messagesCollectionView.scrollToBottom()
@@ -105,11 +112,18 @@ class ConvoViewController: MessagesViewController {
         guard indexPath.section == 0 else {
             return
         }
+        activityIndicatorView?.startAnimating()
         let message = messages[indexPath.section]
         messagesObserver.loadMessages(endingAtMessageId: message.messageId) { [weak self] olderMessages in
-            if let messages = self?.messages {
-                self?.messages = olderMessages + messages
-                self?.messagesCollectionView.reloadDataAndKeepOffset()
+            if olderMessages.isEmpty {
+                self?.activityIndicatorView?.stopAnimatingAndRemoveFromSuperview()
+                self?.activityIndicatorView = nil
+            } else {
+                if let messages = self?.messages {
+                    self?.messages = olderMessages + messages
+                    self?.messagesCollectionView.reloadDataAndKeepOffset()
+                }
+                self?.activityIndicatorView?.stopAnimating()
             }
         }
     }

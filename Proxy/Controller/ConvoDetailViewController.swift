@@ -8,6 +8,10 @@ class ConvoDetailViewController: UIViewController {
     private var convo: Convo? { didSet { didSetConvo() } }
     private var proxy: Proxy?
     private var shouldClose = false
+    private lazy var activityIndicatorView: UIActivityIndicatorView? = UIActivityIndicatorView(
+        view: view,
+        subview: tableView
+    )
 
     init(convo: Convo,
          convoObserver: ConvoObserving = ConvoObserver(),
@@ -20,11 +24,15 @@ class ConvoDetailViewController: UIViewController {
 
         super.init(nibName: nil, bundle: nil)
 
+        activityIndicatorView?.startAnimating()
+
         convoObserver.observe(convoKey: convo.key, convoSenderId: convo.senderId) { [weak self] convo in
             self?.convo = convo
         }
 
         proxyObserver.observe(proxyKey: convo.senderProxyKey, proxyOwnerId: convo.senderId) { [weak self] proxy in
+            self?.activityIndicatorView?.stopAnimatingAndRemoveFromSuperview()
+            self?.activityIndicatorView = nil
             self?.proxy = proxy
             if proxy == nil {
                 self?.shouldClose = true

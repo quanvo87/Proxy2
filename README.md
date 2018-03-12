@@ -8,29 +8,31 @@
 #### Development
 
 - Architecture
-  - Dependencies are protocols, so everything is mockable and easily testable
+  - Dependency injection
   - Encapsulation:
     - All properties and functions declared private except where required for protocol conformance
-    - Third party dependencies like the [database](https://firebase.google.com/) abstracted behind protocols
+    - Third party dependencies abstracted behind protocols
   - Careful usage of singletons
 
 - UI
   - Co authored [SwiftVideoBackground](https://github.com/dingwilson/SwiftVideoBackground) to manage background video on login screen
-  - Make elements using storyboard, xibs, and programmatically
-  - Set constraints with auto layout and [Pure Layout](https://github.com/PureLayout/PureLayout)
-  - Responsive and expressive UI:
+  - Onboarding with [paper-onboarding](https://github.com/Ramotion/paper-onboarding)
+  - Chat UI built on [MessageKit](https://cocoapods.org/pods/MessageKit)
+  - Implemented an efficient [SearchTextField](https://github.com/apasccon/SearchTextField) that makes it fast, easy, and intuitive to pick the recipient of your message
+  - Expressive and responsive UI:
     - Wrote [WQNetworkActivityIndicator](https://github.com/quanvo87/WQNetworkActivityIndicator) to manage network activity indicator
     - Animate button taps with [Spring](https://cocoapods.org/pods/Spring)
-    - Show success/error state notifications with [NotificationBannerSwift](https://github.com/Daltron/NotificationBanner) and [SwiftMessages](https://github.com/SwiftKickMobile/SwiftMessages)
-    - Sound and haptics, some help from [Piano](https://github.com/saoudrizwan/Piano)
+    - Success/error notifications with [NotificationBannerSwift](https://github.com/Daltron/NotificationBanner) and [SwiftMessages](https://github.com/SwiftKickMobile/SwiftMessages)
+    - Sound and haptics
+  - Make elements using storyboard, xibs, and programmatically
+  - Set constraints with auto layout and [Pure Layout](https://github.com/PureLayout/PureLayout)
   - Detect device size with [Device](https://github.com/Ekhoo/Device) and adjust UI accordingly
-  - Chat UI built on [MessageKit](https://cocoapods.org/pods/MessageKit)
-  - Implemented an efficient [SearchTextField](https://github.com/apasccon/SearchTextField) that makes it fast, easy, and intuitive to pick and choose the recipient of your message
   - Other UI libraries used:
     - [CFAlertViewController](https://github.com/Codigami/CFAlertViewController)
+    - [FontAwesome.swift](https://github.com/thii/FontAwesome.swift)
+    - [Piano](https://github.com/saoudrizwan/Piano)
     - [SkyFloatingLabelTextField](https://github.com/Skyscanner/SkyFloatingLabelTextField)
     - [SwiftyButton](https://github.com/TakeScoop/SwiftyButton)
-    - [FontAwesome.swift](https://github.com/thii/FontAwesome.swift)
 
 - Database
   - Built chat backend from scratch on top of [Firebase](https://firebase.google.com/)
@@ -67,4 +69,4 @@
 
 - Icons and sounds from [Icons8](https://icons8.com/)
 - Login screen videos from [Coverr](http://coverr.co/)
-- Special thanks to [John Sundell](https://www.swiftbysundell.com/) for knowledge 🙌
+- [swiftbysundell.com](https://www.swiftbysundell.com/)
