@@ -51,6 +51,7 @@ class MessagesObserver: MessagesObserving {
                 WQNetworkActivityIndicator.shared.hide()
                 var messages = data.asMessagesArray
                 guard messages.count > 1 else {
+                    completion([])
                     return
                 }
                 messages.removeLast(1)

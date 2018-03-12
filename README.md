@@ -20,6 +20,7 @@
   - Set constraints with auto layout and [Pure Layout](https://github.com/PureLayout/PureLayout)
   - Responsive and expressive UI:
     - Wrote [WQNetworkActivityIndicator](https://github.com/quanvo87/WQNetworkActivityIndicator) to manage network activity indicator
+    - Views show activity indicator during network requests
     - Animate button taps with [Spring](https://cocoapods.org/pods/Spring)
     - Show success/error state notifications with [NotificationBannerSwift](https://github.com/Daltron/NotificationBanner) and [SwiftMessages](https://github.com/SwiftKickMobile/SwiftMessages)
     - Sound and haptics, some help from [Piano](https://github.com/saoudrizwan/Piano)

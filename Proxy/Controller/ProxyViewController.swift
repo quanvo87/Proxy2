@@ -10,6 +10,10 @@ class ProxyViewController: UIViewController, NewMessageMakerDelegate {
     private let tableViewRefresher: TableViewRefreshing
     private var convos = [Convo]()
     private var proxy: Proxy? { didSet { didSetProxy() } }
+    private lazy var activityIndicatorView: UIActivityIndicatorView? = UIActivityIndicatorView(
+        view: view,
+        subview: tableView
+    )
     private lazy var deleteProxyButton = UIBarButtonItem(
         target: self,
         action: #selector(deleteProxy),
@@ -36,6 +40,8 @@ class ProxyViewController: UIViewController, NewMessageMakerDelegate {
 
         super.init(nibName: nil, bundle: nil)
 
+        activityIndicatorView?.startAnimating()
+
         buttonAnimator.add(makeNewMessageButton)
 
         convosObserver.observe(convosOwnerId: proxy.ownerId, proxyKey: proxy.key) { [weak self] convos in
@@ -44,6 +50,8 @@ class ProxyViewController: UIViewController, NewMessageMakerDelegate {
             } else {
                 self?.buttonAnimator.stopAnimating()
             }
+            self?.activityIndicatorView?.stopAnimatingAndRemoveFromSuperview()
+            self?.activityIndicatorView = nil
             self?.convos = convos
             self?.tableView.reloadData()
         }

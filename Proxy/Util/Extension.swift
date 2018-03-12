@@ -200,6 +200,24 @@ extension String {
     }
 }
 
+extension UIActivityIndicatorView {
+    convenience init(view: UIView, subview: UIView? = nil, style: UIActivityIndicatorViewStyle = .gray) {
+        self.init(activityIndicatorStyle: style)
+        center = view.center
+        hidesWhenStopped = true
+        if let subview = subview {
+            subview.addSubview(self)
+        } else {
+            view.addSubview(self)
+        }
+    }
+
+    func stopAnimatingAndRemoveFromSuperview() {
+        stopAnimating()
+        removeFromSuperview()
+    }
+}
+
 extension UIBarButtonItem {
     convenience init(target: Any?,
                      action: Selector,

@@ -17,6 +17,10 @@ class ConvosViewController: UIViewController, NewMessageMakerDelegate {
             UIApplication.shared.applicationIconBadgeNumber = unreadMessageCount
         }
     }
+    private lazy var activityIndicatorView: UIActivityIndicatorView? = UIActivityIndicatorView(
+        view: view,
+        subview: tableView
+    )
     private lazy var makeNewMessageButton = UIBarButtonItem(
         target: self,
         action: #selector(showNewMessageMakerViewController),
@@ -45,6 +49,8 @@ class ConvosViewController: UIViewController, NewMessageMakerDelegate {
 
         super.init(nibName: nil, bundle: nil)
 
+        activityIndicatorView?.startAnimating()
+
         buttonAnimator.add(makeNewMessageButton)
 
         convosObserver.observe(convosOwnerId: uid, proxyKey: nil) { [weak self] convos in
@@ -53,6 +59,8 @@ class ConvosViewController: UIViewController, NewMessageMakerDelegate {
             } else {
                 self?.buttonAnimator.stopAnimating()
             }
+            self?.activityIndicatorView?.stopAnimatingAndRemoveFromSuperview()
+            self?.activityIndicatorView = nil
             self?.convos = convos
             self?.tableView.reloadData()
         }
