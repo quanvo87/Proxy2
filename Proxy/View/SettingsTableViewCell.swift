@@ -5,9 +5,9 @@ class SettingsTableViewCell: UITableViewCell {
     @IBOutlet weak var subtitleLabel: UILabel!
     @IBOutlet weak var titleLabel: UILabel!
 
-    func load(icon: String, title: String?, subtitle: String?) {
+    func load(icon: String, title: String, subtitle: String? = nil) {
         iconImageView.image = UIImage(named: icon)
-        subtitleLabel.text = subtitle
         titleLabel.text = title
+        subtitleLabel.text = subtitle
     }
 }

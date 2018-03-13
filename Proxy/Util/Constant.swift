@@ -101,6 +101,7 @@ enum Child {
     static let users = "users"
 }
 
+// todo: use color lib
 enum Color {
     static let alertButtonGreen = UIColor(red: 41/255, green: 191/255, blue: 60/255, alpha: 1)
     static let alertButtonRed = UIColor(red: 252/255, green: 49/255, blue: 59/255, alpha: 1)
@@ -116,8 +117,17 @@ enum Color {
 enum Constant {
     // swiftlint:disable line_length
     enum URL {
-        static let privacyPolicy = "https://app.termly.io/document/privacy-policy-for-mobile-app/a18afe5f-a9a2-4a6d-b090-900905e2ef65"
-        static let testDatabaseURL = "https://proxy-test-f90c4-9c8ea.firebaseio.com/"
+        static let coverr = Foundation.URL(string: "http://coverr.co/")!
+        static let icons8 = Foundation.URL(string: "https://icons8.com/")!
+        static let privacyPolicy = (
+            name: "Privacy Policy",
+            url: Foundation.URL(string: "https://app.termly.io/document/privacy-policy-for-mobile-app/a18afe5f-a9a2-4a6d-b090-900905e2ef65")!
+        )
+        static let termsAndConditions = (
+            name: "Terms and Conditions",
+            url: Foundation.URL(string: "https://www.websitepolicies.com/policies/view/VxVOCd")!
+        )
+        static let testDatabase = "https://proxy-test-f90c4-9c8ea.firebaseio.com/"
     }
     // swiftlint:enable line_length
     static let auth = Auth.auth()
@@ -132,7 +142,7 @@ enum Constant {
         FirebaseHelper(FirebaseDatabase.Database.database().reference())
     static let isRunningTests = UserDefaults.standard.bool(forKey: "isRunningTests")
     static let tableViewRefreshRate: TimeInterval = 10
-    static let testDatabaseReference = FirebaseDatabase.Database.database(url: Constant.URL.testDatabaseURL).reference()
+    static let testDatabaseReference = FirebaseDatabase.Database.database(url: Constant.URL.testDatabase).reference()
     static let storyboard = UIStoryboard(name: "Main", bundle: nil)
 }
 

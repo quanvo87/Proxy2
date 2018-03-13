@@ -54,12 +54,20 @@ class SignUpViewController: UIViewController {
 }
 
 private extension SignUpViewController {
-    @IBAction func tappedSignUpButton(_ sender: Any) {
+    @IBAction func didTapSignUpButton(_ sender: Any) {
         signUp()
     }
 
-    @IBAction func tappedFacebookButton(_ sender: Any) {
+    @IBAction func didTapFacebookButton(_ sender: Any) {
         loginManager.facebookLogIn { _ in }
+    }
+
+    @IBAction func didTapTermsAndConditionsButton(_ sender: Any) {
+        showWebViewController(title: Constant.URL.termsAndConditions.name, url: Constant.URL.termsAndConditions.url)
+    }
+
+    @IBAction func didTapPrivacyPolicyButton(_ sender: Any) {
+        showWebViewController(title: Constant.URL.privacyPolicy.name, url: Constant.URL.privacyPolicy.url)
     }
 
     @objc func closeKeyboard() {

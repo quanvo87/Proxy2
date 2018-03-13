@@ -54,15 +54,15 @@ class LogInViewController: UIViewController {
 }
 
 private extension LogInViewController {
-    @IBAction func tappedFacebookButton(_ sender: Any) {
+    @IBAction func didTapFacebookButton(_ sender: Any) {
         loginManager.facebookLogIn { _ in }
     }
 
-    @IBAction func tappedLoginButton(_ sender: Any) {
+    @IBAction func didTapLoginButton(_ sender: Any) {
         logIn()
     }
 
-    @IBAction func tappedForgotPasswordButton(_ sender: Any) {
+    @IBAction func didTapForgotPasswordButton(_ sender: Any) {
         let alert = UIAlertController(title: "Reset Password",
                                       message: "Enter your email to receive a password reset email.",
                                       preferredStyle: .alert)
