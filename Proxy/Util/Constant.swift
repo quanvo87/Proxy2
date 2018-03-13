@@ -114,6 +114,9 @@ enum Color {
 }
 
 enum Constant {
+    enum URL {
+        static let privacyPolicy = "https://app.termly.io/document/privacy-policy-for-mobile-app/a18afe5f-a9a2-4a6d-b090-900905e2ef65"
+    }
     static let auth = Auth.auth()
     static let decimalNumberFormatter: NumberFormatter = {
         let formatter = NumberFormatter()

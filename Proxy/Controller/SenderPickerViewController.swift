@@ -8,10 +8,6 @@ class SenderPickerViewController: UIViewController {
     private let uid: String
     private var proxies = [Proxy]()
     private weak var senderPickerDelegate: SenderPickerDelegate?
-    private lazy var activityIndicatorView: UIActivityIndicatorView? = UIActivityIndicatorView(
-        view: view,
-        subview: tableView
-    )
     private lazy var makeNewProxyButton = UIBarButtonItem(
         target: self,
         action: #selector(makeNewProxy),
@@ -31,18 +27,17 @@ class SenderPickerViewController: UIViewController {
 
         super.init(nibName: nil, bundle: nil)
 
-        activityIndicatorView?.startAnimating()
+        let activityIndicatorView = UIActivityIndicatorView(view)
 
         buttonAnimator.add(makeNewProxyButton)
 
         proxiesObserver.observe(proxiesOwnerId: uid) { [weak self] proxies in
+            activityIndicatorView.removeFromSuperview()
             if proxies.isEmpty {
                 self?.buttonAnimator.animate()
             } else {
                 self?.buttonAnimator.stopAnimating()
             }
-            self?.activityIndicatorView?.stopAnimatingAndRemoveFromSuperview()
-            self?.activityIndicatorView = nil
             self?.makeNewProxyButton.isEnabled = true
             self?.proxies = proxies
             self?.tableView.reloadData()
@@ -64,6 +59,8 @@ class SenderPickerViewController: UIViewController {
         tableView.sectionHeaderHeight = 0
 
         view.addSubview(tableView)
+
+        activityIndicatorView.startAnimatingAndBringToFront()
     }
 
     required init?(coder aDecoder: NSCoder) {

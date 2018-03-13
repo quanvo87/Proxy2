@@ -40,6 +40,7 @@ class MessagesObserver: MessagesObserving {
 
     func loadMessages(endingAtMessageId id: String, completion: @escaping ([Message]) -> Void) {
         guard !loading else {
+            completion([])
             return
         }
         loading = true

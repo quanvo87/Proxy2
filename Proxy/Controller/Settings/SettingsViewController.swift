@@ -10,10 +10,6 @@ class SettingsViewController: UIViewController {
     private var messagesReceivedCount = "-"
     private var messagesSentCount = "-"
     private var proxiesInteractedWithCount = "-"
-    private lazy var activityIndicatorView: UIActivityIndicatorView? = UIActivityIndicatorView(
-        view: view,
-        subview: tableView
-    )
 
     init(database: Database = Firebase(),
          loginManager: LoginManaging = LoginManager(),
@@ -27,7 +23,7 @@ class SettingsViewController: UIViewController {
 
         super.init(nibName: nil, bundle: nil)
 
-        activityIndicatorView?.startAnimating()
+        let activityIndicatorView = UIActivityIndicatorView(view)
 
         navigationItem.title = displayName
 
@@ -41,6 +37,7 @@ class SettingsViewController: UIViewController {
         tableView.rowHeight = 44
 
         userStatsObserver.observe(uid: uid) { [weak self] update in
+            activityIndicatorView.removeFromSuperview()
             switch update {
             case .messagesReceived(let val):
                 self?.messagesReceivedCount = val
@@ -49,12 +46,12 @@ class SettingsViewController: UIViewController {
             case .proxiesInteractedWith(let val):
                 self?.proxiesInteractedWithCount = val
             }
-            self?.activityIndicatorView?.stopAnimatingAndRemoveFromSuperview()
-            self?.activityIndicatorView = nil
             self?.tableView.reloadData()
         }
 
         view.addSubview(tableView)
+
+        activityIndicatorView.startAnimatingAndBringToFront()
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -65,14 +62,14 @@ class SettingsViewController: UIViewController {
 // MARK: - UITableViewDataSource
 extension SettingsViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return 3
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(
             withIdentifier: String(describing: SettingsTableViewCell.self)
             ) as? SettingsTableViewCell else {
-                assertionFailure()
+                assertionFailure()  // todo: ?
                 return SettingsTableViewCell()
         }
         switch indexPath.section {
@@ -101,15 +98,11 @@ extension SettingsViewController: UITableViewDataSource {
                 break
             }
         case 1:
-            cell.subtitleLabel.text = ""
-            switch indexPath.row {
-            case 0:
-                cell.load(icon: "info", title: "About", subtitle: "")
-            case 1:
-                cell.load(icon: "logout", title: "Log Out", subtitle: "")
-            default:
-                break
-            }
+            cell.accessoryType = .disclosureIndicator
+            cell.load(icon: "info", title: "About", subtitle: "")
+
+        case 2:
+            cell.load(icon: "logout", title: "Log Out", subtitle: "")
         default:
             break
         }
@@ -121,7 +114,9 @@ extension SettingsViewController: UITableViewDataSource {
         case 0:
             return 3
         case 1:
-            return 2
+            return 1
+        case 2:
+            return 1
         default:
             return 0
         }
@@ -134,44 +129,32 @@ extension SettingsViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         switch indexPath.section {
         case 1:
-            switch indexPath.row {
-            case 0:
-                let alert = Alert.make(
-                    title: "Proxy 0.1.0",
-                    message: """
-                        Send bugs, suggestions, etc., to:
-
-                        qvo1987@gmail.com
-
-                        Icons and sounds from https://icons8.com/
-
-                        Login videos from http://coverr.co/
-                        """
-                )
-                alert.addAction(Alert.makeOkAction())
-                present(alert, animated: true)
-            case 1:
-                let alert = Alert.make(
-                    title: "Log Out",
-                    message: "Are you sure you want to log out?"
-                )
-                alert.addAction(Alert.makeDestructiveAction(title: "Log Out") { [weak self] _ in
-                    if let registrationToken = Messaging.messaging().fcmToken, let uid = self?.uid {
-                        self?.database.deleteRegistrationToken(registrationToken, for: uid) { _ in }
-                    }
-                    do {
-                        try self?.loginManager.logOut()
-                    } catch {
-                        StatusBar.showErrorBanner(subtitle: error.localizedDescription)
-                    }
-                })
-                alert.addAction(Alert.makeCancelAction())
-                present(alert, animated: true)
-            default:
-                return
+            guard let aboutViewController = Constant.storyboard.instantiateViewController(
+                withIdentifier: String(describing: AboutViewController.self)
+                ) as? AboutViewController else {
+                    return
             }
+            navigationController?.pushViewController(aboutViewController, animated: true)
+        case 2:
+            let alert = Alert.make(
+                title: "Log Out",
+                message: "Are you sure you want to log out?"
+            )
+            alert.addAction(Alert.makeDestructiveAction(title: "Log Out") { [weak self] _ in
+                if let registrationToken = Messaging.messaging().fcmToken, let uid = self?.uid {
+                    self?.database.deleteRegistrationToken(registrationToken, for: uid) { _ in }
+                }
+                do {
+                    try self?.loginManager.logOut()
+                } catch {
+                    StatusBar.showErrorBanner(subtitle: error.localizedDescription)
+                }
+            })
+            alert.addAction(Alert.makeCancelAction())
+            present(alert, animated: true)
         default:
-            return
+            break
         }
+        return
     }
 }

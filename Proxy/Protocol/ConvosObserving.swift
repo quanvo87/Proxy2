@@ -43,6 +43,7 @@ class ConvosObserver: ConvosObsering {
                     proxyKey: String?,
                     completion: @escaping ([Convo]) -> Void) {
         guard !loading else {
+            completion([])
             return
         }
         loading = true
@@ -54,6 +55,7 @@ class ConvosObserver: ConvosObsering {
                 WQNetworkActivityIndicator.shared.hide()
                 var convos = data.asConvosArray(proxyKey: proxyKey)
                 guard convos.count > 1 else {
+                    completion([])
                     return
                 }
                 convos.removeLast(1)

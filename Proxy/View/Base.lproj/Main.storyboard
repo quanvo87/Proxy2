@@ -293,6 +293,94 @@
             </objects>
             <point key="canvasLocation" x="-1002" y="2185"/>
         </scene>
+        <!--About View Controller-->
+        <scene sceneID="TIu-gM-ntO">
+            <objects>
+                <viewController storyboardIdentifier="AboutViewController" id="2n7-5Y-xNp" customClass="AboutViewController" customModule="Proxy" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="30h-O7-zVs">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Version 0.1.0" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OoH-hp-pTm">
+                                <rect key="frame" x="151.5" y="40" width="72" height="15"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Y0B-s6-f57">
+                                <rect key="frame" x="116.5" y="74.5" width="142" height="30"/>
+                                <state key="normal" title="Third-party software"/>
+                                <connections>
+                                    <action selector="didTapThirdPartySoftwareButton:" destination="2n7-5Y-xNp" eventType="touchUpInside" id="vAt-Ab-Gq6"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8oR-S7-7U1">
+                                <rect key="frame" x="120" y="124.5" width="135" height="30"/>
+                                <state key="normal" title="Terms &amp; Conditions"/>
+                                <connections>
+                                    <action selector="didTapTermsAndConditionsButton:" destination="2n7-5Y-xNp" eventType="touchUpInside" id="Emk-Xe-Cae"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VoB-bl-1Q3">
+                                <rect key="frame" x="140" y="174.5" width="95" height="30"/>
+                                <state key="normal" title="Privacy Policy"/>
+                                <connections>
+                                    <action selector="didTapPrivacyPolicyButton:" destination="2n7-5Y-xNp" eventType="touchUpInside" id="QSR-dt-IbS"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tI9-L9-nqv">
+                                <rect key="frame" x="148" y="239" width="79" height="30"/>
+                                <state key="normal" title="icons8.com"/>
+                                <connections>
+                                    <action selector="didTapIcons8Button:" destination="2n7-5Y-xNp" eventType="touchUpInside" id="R4c-cD-m5N"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Icons and sounds from:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YwX-EJ-u87">
+                                <rect key="frame" x="122" y="224.5" width="132.5" height="14.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Login videos from:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="twf-yM-TjF">
+                                <rect key="frame" x="135" y="289" width="105" height="15"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gGV-Jj-2Cl">
+                                <rect key="frame" x="155.5" y="303.5" width="64" height="30"/>
+                                <state key="normal" title="coverr.co"/>
+                                <connections>
+                                    <action selector="didTapCoverrButton:" destination="2n7-5Y-xNp" eventType="touchUpInside" id="PY0-ua-wWk"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="OoH-hp-pTm" firstAttribute="centerX" secondItem="xr3-FV-tcF" secondAttribute="centerX" id="4q0-uB-fEo"/>
+                            <constraint firstItem="VoB-bl-1Q3" firstAttribute="top" secondItem="8oR-S7-7U1" secondAttribute="bottom" constant="20" id="5DH-sR-9JJ"/>
+                            <constraint firstItem="gGV-Jj-2Cl" firstAttribute="centerX" secondItem="xr3-FV-tcF" secondAttribute="centerX" id="7YV-uZ-Ti9"/>
+                            <constraint firstItem="YwX-EJ-u87" firstAttribute="top" secondItem="VoB-bl-1Q3" secondAttribute="bottom" constant="20" id="DzI-YY-gH1"/>
+                            <constraint firstItem="8oR-S7-7U1" firstAttribute="top" secondItem="Y0B-s6-f57" secondAttribute="bottom" constant="20" id="FQr-VK-UCc"/>
+                            <constraint firstItem="tI9-L9-nqv" firstAttribute="top" secondItem="YwX-EJ-u87" secondAttribute="bottom" id="H2A-pq-fEJ"/>
+                            <constraint firstItem="twf-yM-TjF" firstAttribute="top" secondItem="tI9-L9-nqv" secondAttribute="bottom" constant="20" id="J3u-Po-Glv"/>
+                            <constraint firstItem="tI9-L9-nqv" firstAttribute="centerX" secondItem="xr3-FV-tcF" secondAttribute="centerX" id="NWt-JK-1EK"/>
+                            <constraint firstItem="OoH-hp-pTm" firstAttribute="top" secondItem="xr3-FV-tcF" secondAttribute="top" constant="20" id="RNd-mk-J5B"/>
+                            <constraint firstItem="VoB-bl-1Q3" firstAttribute="centerX" secondItem="xr3-FV-tcF" secondAttribute="centerX" id="WxR-p2-1DS"/>
+                            <constraint firstItem="YwX-EJ-u87" firstAttribute="centerX" secondItem="xr3-FV-tcF" secondAttribute="centerX" id="YGg-5w-zLA"/>
+                            <constraint firstItem="gGV-Jj-2Cl" firstAttribute="top" secondItem="twf-yM-TjF" secondAttribute="bottom" id="kRg-L0-ThE"/>
+                            <constraint firstItem="twf-yM-TjF" firstAttribute="centerX" secondItem="xr3-FV-tcF" secondAttribute="centerX" id="pmS-JD-dwg"/>
+                            <constraint firstItem="Y0B-s6-f57" firstAttribute="centerX" secondItem="xr3-FV-tcF" secondAttribute="centerX" id="tPA-yD-5kr"/>
+                            <constraint firstItem="8oR-S7-7U1" firstAttribute="centerX" secondItem="xr3-FV-tcF" secondAttribute="centerX" id="vAr-fM-3Ck"/>
+                            <constraint firstItem="Y0B-s6-f57" firstAttribute="top" secondItem="OoH-hp-pTm" secondAttribute="bottom" constant="20" id="yDI-fS-Thi"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="xr3-FV-tcF"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="J2N-pz-Jq4" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-343" y="2185"/>
+        </scene>
         <!--Navigation Controller-->
         <scene sceneID="u5B-CL-ZTC">
             <objects>

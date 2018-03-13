@@ -11,10 +11,6 @@ class ConvoViewController: MessagesViewController {
     private var isPresent = false
     private var messages = [Message]()
     private var messagesToRead = Set<Message>()
-    private lazy var activityIndicatorView: UIActivityIndicatorView? = UIActivityIndicatorView(
-        view: view,
-        subview: messagesCollectionView
-    )
 
     init(audioPlayer: AudioPlaying = AudioPlayer(),
          convoObserver: ConvoObserving = ConvoObserver(),
@@ -31,20 +27,21 @@ class ConvoViewController: MessagesViewController {
 
         super.init(nibName: nil, bundle: nil)
 
-        activityIndicatorView?.startAnimating()
+        let activityIndicatorView = UIActivityIndicatorView(view)
+        activityIndicatorView.startAnimatingAndBringToFront()
 
         convoObserver.observe(convoKey: convo.key, convoSenderId: convo.senderId) { [weak self] convo in
             self?.convo = convo
         }
 
         messagesObserver.observe(convoKey: convo.key) { [weak self] messages in
+            activityIndicatorView.removeFromSuperview()
             if let currentLastMessage = self?.messages.last,
                 let newLastMessage = messages.last,
                 currentLastMessage.messageId != newLastMessage.messageId &&
                     newLastMessage.sender.id != self?.convo?.senderId {
                 try? audioPlayer.playSound(name: "textIn", fileType: "wav")
             }
-            self?.activityIndicatorView?.stopAnimating()
             self?.messages = messages
             self?.messagesCollectionView.reloadData()
             self?.messagesCollectionView.scrollToBottom()
@@ -112,18 +109,14 @@ class ConvoViewController: MessagesViewController {
         guard indexPath.section == 0 else {
             return
         }
-        activityIndicatorView?.startAnimating()
+        let activityIndicatorView = UIActivityIndicatorView(view)
+        activityIndicatorView.startAnimatingAndBringToFront()
         let message = messages[indexPath.section]
         messagesObserver.loadMessages(endingAtMessageId: message.messageId) { [weak self] olderMessages in
-            if olderMessages.isEmpty {
-                self?.activityIndicatorView?.stopAnimatingAndRemoveFromSuperview()
-                self?.activityIndicatorView = nil
-            } else {
-                if let messages = self?.messages {
-                    self?.messages = olderMessages + messages
-                    self?.messagesCollectionView.reloadDataAndKeepOffset()
-                }
-                self?.activityIndicatorView?.stopAnimating()
+            activityIndicatorView.removeFromSuperview()
+            if !olderMessages.isEmpty, let messages = self?.messages {
+                self?.messages = olderMessages + messages
+                self?.messagesCollectionView.reloadDataAndKeepOffset()
             }
         }
     }

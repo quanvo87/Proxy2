@@ -10,10 +10,6 @@ class ProxiesViewController: UIViewController, NewMessageMakerDelegate {
     private var proxies = [Proxy]()
     private var proxiesToDelete = [String: Any]()
     private var proxyCount = 0
-    private lazy var activityIndicatorView: UIActivityIndicatorView? = UIActivityIndicatorView(
-        view: view,
-        subview: tableView
-    )
     private lazy var cancelButton = UIBarButtonItem(
         target: self,
         action: #selector(setDefaultButtons),
@@ -51,7 +47,7 @@ class ProxiesViewController: UIViewController, NewMessageMakerDelegate {
 
         super.init(nibName: nil, bundle: nil)
 
-        activityIndicatorView?.startAnimating()
+        let activityIndicatorView = UIActivityIndicatorView(view)
 
         buttonAnimator.add(makeNewProxyButton)
 
@@ -60,6 +56,7 @@ class ProxiesViewController: UIViewController, NewMessageMakerDelegate {
         navigationItem.title = "My Proxies"
 
         proxiesObserver.observe(proxiesOwnerId: uid) { [weak self] proxies in
+            activityIndicatorView.removeFromSuperview()
             if proxies.isEmpty {
                 self?.buttonAnimator.animate()
             } else {
@@ -68,8 +65,6 @@ class ProxiesViewController: UIViewController, NewMessageMakerDelegate {
             let title = "My Proxies\(proxies.count.asStringWithParens)"
             self?.navigationController?.tabBarController?.tabBar.items?[1].title = title
             self?.navigationItem.title = title
-            self?.activityIndicatorView?.stopAnimatingAndRemoveFromSuperview()
-            self?.activityIndicatorView = nil
             self?.makeNewProxyButton.isEnabled = true
             self?.proxies = proxies
             self?.tableView.reloadData()
@@ -93,6 +88,8 @@ class ProxiesViewController: UIViewController, NewMessageMakerDelegate {
         tableView.sectionHeaderHeight = 0
 
         view.addSubview(tableView)
+
+        activityIndicatorView.startAnimatingAndBringToFront()
     }
 
     override func viewWillAppear(_ animated: Bool) {

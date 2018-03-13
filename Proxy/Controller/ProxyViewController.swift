@@ -10,10 +10,6 @@ class ProxyViewController: UIViewController, NewMessageMakerDelegate {
     private let tableViewRefresher: TableViewRefreshing
     private var convos = [Convo]()
     private var proxy: Proxy? { didSet { didSetProxy() } }
-    private lazy var activityIndicatorView: UIActivityIndicatorView? = UIActivityIndicatorView(
-        view: view,
-        subview: tableView
-    )
     private lazy var deleteProxyButton = UIBarButtonItem(
         target: self,
         action: #selector(deleteProxy),
@@ -40,18 +36,17 @@ class ProxyViewController: UIViewController, NewMessageMakerDelegate {
 
         super.init(nibName: nil, bundle: nil)
 
-        activityIndicatorView?.startAnimating()
+        let activityIndicatorView = UIActivityIndicatorView(view)
 
         buttonAnimator.add(makeNewMessageButton)
 
         convosObserver.observe(convosOwnerId: proxy.ownerId, proxyKey: proxy.key) { [weak self] convos in
+            activityIndicatorView.removeFromSuperview()
             if convos.isEmpty {
                 self?.buttonAnimator.animate()
             } else {
                 self?.buttonAnimator.stopAnimating()
             }
-            self?.activityIndicatorView?.stopAnimatingAndRemoveFromSuperview()
-            self?.activityIndicatorView = nil
             self?.convos = convos
             self?.tableView.reloadData()
         }
@@ -81,6 +76,8 @@ class ProxyViewController: UIViewController, NewMessageMakerDelegate {
         tableViewRefresher.refresh(tableView)
 
         view.addSubview(tableView)
+
+        activityIndicatorView.startAnimatingAndBringToFront()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -259,8 +256,14 @@ extension ProxyViewController: UITableViewDelegate {
         guard let proxy = proxy, indexPath.section == 1, indexPath.row == convos.count - 1 else {
             return
         }
+        let activityIndicatorView = UIActivityIndicatorView(view)
+        activityIndicatorView.startAnimatingAndBringToFront()
         let convo = convos[indexPath.row]
         convosObserver.loadConvos(endingAtTimestamp: convo.timestamp, proxyKey: proxy.key) { [weak self] convos in
+            activityIndicatorView.removeFromSuperview()
+            guard !convos.isEmpty else {
+                return
+            }
             self?.convos += convos
         }
     }

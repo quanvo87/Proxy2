@@ -201,20 +201,15 @@ extension String {
 }
 
 extension UIActivityIndicatorView {
-    convenience init(view: UIView, subview: UIView? = nil, style: UIActivityIndicatorViewStyle = .gray) {
+    convenience init(_ view: UIView, style: UIActivityIndicatorViewStyle = .gray) {
         self.init(activityIndicatorStyle: style)
         center = view.center
-        hidesWhenStopped = true
-        if let subview = subview {
-            subview.addSubview(self)
-        } else {
-            view.addSubview(self)
-        }
+        view.addSubview(self)
     }
 
-    func stopAnimatingAndRemoveFromSuperview() {
-        stopAnimating()
-        removeFromSuperview()
+    func startAnimatingAndBringToFront() {
+        startAnimating()
+        superview?.bringSubview(toFront: self)
     }
 }
 
@@ -266,6 +261,7 @@ extension UINavigationBar {
 }
 
 extension UInt {
+    // todo: test
     var asStringWithCommas: String {
         var num = Double(self)
         num = fabs(num)
@@ -350,5 +346,11 @@ extension UIViewController {
     func showProxyViewController(_ proxy: Proxy) {
         let proxyViewController = ProxyViewController(proxy: proxy)
         navigationController?.pushViewController(proxyViewController, animated: true)
+    }
+
+    func showWebViewController(title: String, urlString: String) {
+        let webViewController = WebViewController(title: title, urlString: urlString)
+        let navigationController = UINavigationController(rootViewController: webViewController)
+        present(navigationController, animated: true)
     }
 }

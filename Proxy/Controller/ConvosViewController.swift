@@ -17,10 +17,6 @@ class ConvosViewController: UIViewController, NewMessageMakerDelegate {
             UIApplication.shared.applicationIconBadgeNumber = unreadMessageCount
         }
     }
-    private lazy var activityIndicatorView: UIActivityIndicatorView? = UIActivityIndicatorView(
-        view: view,
-        subview: tableView
-    )
     private lazy var makeNewMessageButton = UIBarButtonItem(
         target: self,
         action: #selector(showNewMessageMakerViewController),
@@ -49,18 +45,17 @@ class ConvosViewController: UIViewController, NewMessageMakerDelegate {
 
         super.init(nibName: nil, bundle: nil)
 
-        activityIndicatorView?.startAnimating()
+        let activityIndicatorView = UIActivityIndicatorView(view)
 
         buttonAnimator.add(makeNewMessageButton)
 
         convosObserver.observe(convosOwnerId: uid, proxyKey: nil) { [weak self] convos in
+            activityIndicatorView.removeFromSuperview()
             if convos.isEmpty {
                 self?.buttonAnimator.animate()
             } else {
                 self?.buttonAnimator.stopAnimating()
             }
-            self?.activityIndicatorView?.stopAnimatingAndRemoveFromSuperview()
-            self?.activityIndicatorView = nil
             self?.convos = convos
             self?.tableView.reloadData()
         }
@@ -102,6 +97,8 @@ class ConvosViewController: UIViewController, NewMessageMakerDelegate {
         }
 
         view.addSubview(tableView)
+
+        activityIndicatorView.startAnimatingAndBringToFront()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -182,13 +179,21 @@ extension ConvosViewController: UITableViewDelegate {
         return CGFloat.leastNormalMagnitude
     }
 
+    // todo: test
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         guard indexPath.row == convos.count - 1 else {
             return
         }
+        let activityIndicatorView = UIActivityIndicatorView(view)
+        activityIndicatorView.startAnimatingAndBringToFront()
         let convo = convos[indexPath.row]
         convosObserver.loadConvos(endingAtTimestamp: convo.timestamp, proxyKey: nil) { [weak self] convos in
+            activityIndicatorView.removeFromSuperview()
+            guard !convos.isEmpty else {
+                return
+            }
             self?.convos += convos
+            // todo: reload?
         }
     }
 }
