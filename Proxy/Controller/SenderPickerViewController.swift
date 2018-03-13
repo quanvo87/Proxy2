@@ -90,7 +90,6 @@ extension SenderPickerViewController: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(
             withIdentifier: String(describing: ProxiesTableViewCell.self)
             ) as? ProxiesTableViewCell else {
-                assertionFailure()
                 return ProxiesTableViewCell()
         }
         cell.load(proxy: proxies[indexPath.row], accessoryType: .none)

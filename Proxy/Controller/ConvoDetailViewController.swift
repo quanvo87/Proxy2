@@ -92,7 +92,6 @@ extension ConvoDetailViewController: UITableViewDataSource {
             guard let cell = tableView.dequeueReusableCell(
                 withIdentifier: String(describing: ConvoDetailReceiverProxyTableViewCell.self)
                 ) as? ConvoDetailReceiverProxyTableViewCell else {
-                    assertionFailure()
                     return ConvoDetailReceiverProxyTableViewCell()
             }
             cell.load(convo)
@@ -105,7 +104,6 @@ extension ConvoDetailViewController: UITableViewDataSource {
             guard let cell = tableView.dequeueReusableCell(
                 withIdentifier: Identifier.convoDetailSenderProxyTableViewCell
                 ) as? SenderProxyTableViewCell else {
-                    assertionFailure()
                     return SenderProxyTableViewCell()
             }
             cell.accessoryType = .disclosureIndicator

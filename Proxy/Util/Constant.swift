@@ -114,9 +114,12 @@ enum Color {
 }
 
 enum Constant {
+    // swiftlint:disable line_length
     enum URL {
         static let privacyPolicy = "https://app.termly.io/document/privacy-policy-for-mobile-app/a18afe5f-a9a2-4a6d-b090-900905e2ef65"
+        static let testDatabaseURL = "https://proxy-test-f90c4-9c8ea.firebaseio.com/"
     }
+    // swiftlint:enable line_length
     static let auth = Auth.auth()
     static let decimalNumberFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
@@ -129,8 +132,7 @@ enum Constant {
         FirebaseHelper(FirebaseDatabase.Database.database().reference())
     static let isRunningTests = UserDefaults.standard.bool(forKey: "isRunningTests")
     static let tableViewRefreshRate: TimeInterval = 10
-    static let testDatabaseReference = FirebaseDatabase.Database.database(url: Constant.testDatabaseURL).reference()
-    static let testDatabaseURL = "https://proxy-test-f90c4-9c8ea.firebaseio.com/"
+    static let testDatabaseReference = FirebaseDatabase.Database.database(url: Constant.URL.testDatabaseURL).reference()
     static let storyboard = UIStoryboard(name: "Main", bundle: nil)
 }
 

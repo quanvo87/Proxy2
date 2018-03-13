@@ -44,7 +44,6 @@ class SignUpViewController: UIViewController {
         guard let signUpViewController = Constant.storyboard.instantiateViewController(
             withIdentifier: String(describing: SignUpViewController.self)
             ) as? SignUpViewController else {
-                assertionFailure()
                 return SignUpViewController()
         }
         if let loginManager = loginManager {

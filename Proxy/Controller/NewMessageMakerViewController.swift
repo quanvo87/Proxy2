@@ -256,7 +256,6 @@ extension NewMessageMakerViewController: UITableViewDataSource {
             guard let cell = tableView.dequeueReusableCell(
                 withIdentifier: String(describing: MakeNewMessageSenderTableViewCell.self)
                 ) as? MakeNewMessageSenderTableViewCell else {
-                    assertionFailure()
                     return MakeNewMessageSenderTableViewCell()
             }
             cell.load(sender)
@@ -265,7 +264,6 @@ extension NewMessageMakerViewController: UITableViewDataSource {
             guard let cell = tableView.dequeueReusableCell(
                 withIdentifier: String(describing: MakeNewMessageReceiverTableViewCell.self)
                 ) as? MakeNewMessageReceiverTableViewCell else {
-                    assertionFailure()
                     return MakeNewMessageReceiverTableViewCell()
             }
             cell.receiverTextField.itemSelectionHandler = { [weak self] items, index in

@@ -147,7 +147,6 @@ extension ConvosViewController: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(
             withIdentifier: String(describing: ConvosTableViewCell.self)
             ) as? ConvosTableViewCell else {
-                assertionFailure()
                 return ConvosTableViewCell()
         }
         cell.load(convos[indexPath.row])
@@ -193,7 +192,7 @@ extension ConvosViewController: UITableViewDelegate {
                 return
             }
             self?.convos += convos
-            // todo: reload?
+            self?.tableView.reloadData()
         }
     }
 }

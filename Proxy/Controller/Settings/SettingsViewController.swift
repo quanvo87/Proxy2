@@ -69,7 +69,6 @@ extension SettingsViewController: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(
             withIdentifier: String(describing: SettingsTableViewCell.self)
             ) as? SettingsTableViewCell else {
-                assertionFailure()  // todo: ?
                 return SettingsTableViewCell()
         }
         switch indexPath.section {

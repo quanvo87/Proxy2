@@ -44,7 +44,6 @@ class LogInViewController: UIViewController {
         guard let logInViewController = Constant.storyboard.instantiateViewController(
             withIdentifier: String(describing: LogInViewController.self)
             ) as? LogInViewController else {
-                assertionFailure()
                 return LogInViewController()
         }
         if let loginManager = loginManager {
