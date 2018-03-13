@@ -1,7 +1,12 @@
 import UIKit
 
-class AboutViewController: UIViewController {
+class AboutViewController: UIViewController {}
+
+private extension AboutViewController {
     @IBAction func didTapThirdPartySoftwareButton(_ sender: Any) {
+        let thirdPartySoftwareViewController = ThirdPartySoftwareViewController()
+        let navigationController = UINavigationController(rootViewController: thirdPartySoftwareViewController)
+        present(navigationController, animated: true)
     }
 
     @IBAction func didTapTermsAndConditionsButton(_ sender: Any) {
