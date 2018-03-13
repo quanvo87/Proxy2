@@ -155,7 +155,6 @@ extension ProxyViewController: UITableViewDataSource {
             guard let cell = tableView.dequeueReusableCell(
                 withIdentifier: String(describing: SenderProxyTableViewCell.self)
                 ) as? SenderProxyTableViewCell else {
-                    assertionFailure()
                     return SenderProxyTableViewCell()
             }
             cell.changeIconButton.addTarget(self, action: #selector(_showIconPickerController), for: .touchUpInside)
@@ -167,7 +166,6 @@ extension ProxyViewController: UITableViewDataSource {
             guard let cell = tableView.dequeueReusableCell(
                 withIdentifier: String(describing: ConvosTableViewCell.self)
                 ) as? ConvosTableViewCell else {
-                    assertionFailure()
                     return UITableViewCell()
             }
             cell.load(convos[indexPath.row])
@@ -265,6 +263,7 @@ extension ProxyViewController: UITableViewDelegate {
                 return
             }
             self?.convos += convos
+            self?.tableView.reloadData()
         }
     }
 }

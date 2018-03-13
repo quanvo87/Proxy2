@@ -39,13 +39,13 @@
                                     <constraint firstAttribute="height" constant="45" id="ryv-lY-Jcf"/>
                                 </constraints>
                                 <connections>
-                                    <action selector="tappedLogInButton:" destination="mti-JT-f0N" eventType="touchUpInside" id="fbl-R3-9YQ"/>
+                                    <action selector="didTapLogInButton:" destination="mti-JT-f0N" eventType="touchUpInside" id="fbl-R3-9YQ"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GEd-N2-qRL" customClass="Button" customModule="Proxy" customModuleProvider="target">
                                 <rect key="frame" x="40" y="497.5" width="295" height="45"/>
                                 <connections>
-                                    <action selector="tappedCreateAccountButton:" destination="mti-JT-f0N" eventType="touchUpInside" id="LYw-dE-MMy"/>
+                                    <action selector="didTapCreateAccountButton:" destination="mti-JT-f0N" eventType="touchUpInside" id="LYw-dE-MMy"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Already a user?" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X5d-Ux-umB">
@@ -115,7 +115,7 @@
                                     <constraint firstAttribute="height" constant="45" id="rm2-Wg-p79"/>
                                 </constraints>
                                 <connections>
-                                    <action selector="tappedSignUpButton:" destination="oIl-XN-QEb" eventType="touchUpInside" id="2uw-ff-5su"/>
+                                    <action selector="didTapSignUpButton:" destination="oIl-XN-QEb" eventType="touchUpInside" id="2uw-ff-5su"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cAO-sq-nwf" customClass="Button" customModule="Proxy" customModuleProvider="target">
@@ -124,7 +124,7 @@
                                     <constraint firstAttribute="height" constant="45" id="cbq-bA-rfR"/>
                                 </constraints>
                                 <connections>
-                                    <action selector="tappedFacebookButton:" destination="oIl-XN-QEb" eventType="touchUpInside" id="rYx-ew-q98"/>
+                                    <action selector="didTapFacebookButton:" destination="oIl-XN-QEb" eventType="touchUpInside" id="rYx-ew-q98"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="or with e-mail" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PUN-49-aGc">
@@ -152,6 +152,9 @@
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <state key="normal" title="Terms and conditions of Use"/>
+                                <connections>
+                                    <action selector="didTapTermsAndConditionsButton:" destination="oIl-XN-QEb" eventType="touchUpInside" id="meP-Se-R2M"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pwO-OJ-xZR">
                                 <rect key="frame" x="148" y="314" width="79" height="20"/>
@@ -160,6 +163,9 @@
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <state key="normal" title="Privacy Policy"/>
+                                <connections>
+                                    <action selector="didTapPrivacyPolicyButton:" destination="oIl-XN-QEb" eventType="touchUpInside" id="zPf-TT-gvS"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -226,7 +232,7 @@
                                     <constraint firstAttribute="height" constant="45" id="ytd-pQ-vJ1"/>
                                 </constraints>
                                 <connections>
-                                    <action selector="tappedFacebookButton:" destination="liB-IW-Sma" eventType="touchUpInside" id="Pgf-cO-SBV"/>
+                                    <action selector="didTapFacebookButton:" destination="liB-IW-Sma" eventType="touchUpInside" id="Pgf-cO-SBV"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jLc-kQ-f2M" customClass="Button" customModule="Proxy" customModuleProvider="target">
@@ -235,7 +241,7 @@
                                     <constraint firstAttribute="height" constant="45" id="9sn-Y4-XcX"/>
                                 </constraints>
                                 <connections>
-                                    <action selector="tappedLoginButton:" destination="liB-IW-Sma" eventType="touchUpInside" id="t5X-B1-m0j"/>
+                                    <action selector="didTapLoginButton:" destination="liB-IW-Sma" eventType="touchUpInside" id="t5X-B1-m0j"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Or" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kWq-M2-Cot">
@@ -249,7 +255,7 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <state key="normal" title="Forgot your password?"/>
                                 <connections>
-                                    <action selector="tappedForgotPasswordButton:" destination="liB-IW-Sma" eventType="touchUpInside" id="o8h-Vs-vOq"/>
+                                    <action selector="didTapForgotPasswordButton:" destination="liB-IW-Sma" eventType="touchUpInside" id="o8h-Vs-vOq"/>
                                 </connections>
                             </button>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="eCe-0F-9Ql" customClass="SkyFloatingLabelTextFieldWithIcon" customModule="SkyFloatingLabelTextField">

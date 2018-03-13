@@ -69,7 +69,6 @@ extension SettingsViewController: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(
             withIdentifier: String(describing: SettingsTableViewCell.self)
             ) as? SettingsTableViewCell else {
-                assertionFailure()  // todo: ?
                 return SettingsTableViewCell()
         }
         switch indexPath.section {
@@ -99,10 +98,10 @@ extension SettingsViewController: UITableViewDataSource {
             }
         case 1:
             cell.accessoryType = .disclosureIndicator
-            cell.load(icon: "info", title: "About", subtitle: "")
+            cell.load(icon: "info", title: "About")
 
         case 2:
-            cell.load(icon: "logout", title: "Log Out", subtitle: "")
+            cell.load(icon: "logout", title: "Log Out")
         default:
             break
         }

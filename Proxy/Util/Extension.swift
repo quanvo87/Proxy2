@@ -348,8 +348,8 @@ extension UIViewController {
         navigationController?.pushViewController(proxyViewController, animated: true)
     }
 
-    func showWebViewController(title: String, urlString: String) {
-        let webViewController = WebViewController(title: title, urlString: urlString)
+    func showWebViewController(title: String, url: URL) {
+        let webViewController = WebViewController(title: title, url: url)
         let navigationController = UINavigationController(rootViewController: webViewController)
         present(navigationController, animated: true)
     }

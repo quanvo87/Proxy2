@@ -58,7 +58,6 @@ extension IconPickerViewController: UICollectionViewDataSource {
             withReuseIdentifier: String(describing: IconPickerCollectionViewCell.self),
             for: indexPath
             ) as? IconPickerCollectionViewCell else {
-                assertionFailure()
                 return IconPickerCollectionViewCell()
         }
         cell.load(iconNames[indexPath.row])

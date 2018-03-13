@@ -1,10 +1,9 @@
-import UIKit
 import WQNetworkActivityIndicator
 
 class WebViewController: UIViewController {
     private lazy var activityIndicatorView: UIActivityIndicatorView? = UIActivityIndicatorView(view)
 
-    init(title: String, urlString: String) {
+    init(title: String, url: URL) {
         super.init(nibName: nil, bundle: nil)
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(
@@ -13,10 +12,6 @@ class WebViewController: UIViewController {
             image: Image.cancel
         )
         navigationItem.title = title
-
-        guard let url = URL(string: urlString) else {
-            return
-        }
 
         let webView = UIWebView(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: view.bounds.height))
         let urlRequest = URLRequest(url: url)

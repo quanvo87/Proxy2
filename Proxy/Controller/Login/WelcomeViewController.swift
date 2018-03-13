@@ -67,12 +67,12 @@ class WelcomeViewController: UIViewController {
 }
 
 private extension WelcomeViewController {
-    @IBAction func tappedCreateAccountButton(_ sender: Any) {
+    @IBAction func didTapCreateAccountButton(_ sender: Any) {
         let signUpViewController = SignUpViewController.make()
         navigationController?.pushViewController(signUpViewController, animated: true)
     }
 
-    @IBAction func tappedLogInButton(_ sender: Any) {
+    @IBAction func didTapLogInButton(_ sender: Any) {
         let logInViewController = LogInViewController.make()
         navigationController?.pushViewController(logInViewController, animated: true)
     }
