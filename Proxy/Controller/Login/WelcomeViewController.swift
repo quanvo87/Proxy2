@@ -1,4 +1,5 @@
 import paper_onboarding
+import RevealingSplashView
 import SwiftVideoBackground
 import SwiftyButton
 
@@ -6,6 +7,10 @@ class WelcomeViewController: UIViewController {
     @IBOutlet weak var onboarding: PaperOnboarding!
     @IBOutlet weak var createAccountButton: Button!
     @IBOutlet weak var logInButton: Button!
+
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
 
     // swiftlint:disable line_length
     private let onboardingItems = [
@@ -39,6 +44,16 @@ class WelcomeViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        let revealingSplashView = RevealingSplashView(
+            iconImage: UIImage(named: "icon white")!,
+            iconInitialSize: CGSize(width: 96, height: 96),
+            backgroundColor: Color.teal
+        )
+        view.addSubview(revealingSplashView)
+        revealingSplashView.startAnimation {
+            revealingSplashView.removeFromSuperview()
+        }
 
         navigationItem.title = ""
 

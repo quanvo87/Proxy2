@@ -97,10 +97,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidBecomeActive(_ application: UIApplication) {
         FBSDKAppEvents.activateApp()
     }
-
-    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        StatusBar.showErrorStatusBarBanner(error)
-    }
 }
 
 private extension AppDelegate {

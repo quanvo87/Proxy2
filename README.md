@@ -16,6 +16,7 @@
 
 - UI
   - Co authored [SwiftVideoBackground](https://github.com/dingwilson/SwiftVideoBackground) to manage background video on login screen
+  - Twitter-like animated launch screen with [RevealingSplashView](https://github.com/PiXeL16/RevealingSplashView)
   - Onboarding with [paper-onboarding](https://github.com/Ramotion/paper-onboarding)
   - Chat UI built on [MessageKit](https://cocoapods.org/pods/MessageKit)
   - Implemented an efficient [SearchTextField](https://github.com/apasccon/SearchTextField) that makes it fast, easy, and intuitive to pick the recipient of your message
