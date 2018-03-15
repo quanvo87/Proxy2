@@ -31,6 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         application.registerForRemoteNotifications()
 
         authObserver.observe { [weak self] user in
+            UIApplication.shared.applicationIconBadgeNumber = 0
             if let user = user {
                 var displayName = user.displayName
                 if (user.displayName == nil || user.displayName == ""), let email = user.email, email != "" {

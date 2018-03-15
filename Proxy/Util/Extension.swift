@@ -167,9 +167,9 @@ extension SkyFloatingLabelTextFieldWithIcon {
 
     func setup() {
         clearButtonMode = .whileEditing
-        selectedIconColor = Color.logInButtonBlue
-        selectedLineColor = Color.logInButtonBlue
-        selectedTitleColor = Color.logInButtonBlue
+        selectedIconColor = Color.teal
+        selectedLineColor = Color.teal
+        selectedTitleColor = Color.teal
     }
 }
 

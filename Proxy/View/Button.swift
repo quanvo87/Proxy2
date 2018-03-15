@@ -3,20 +3,40 @@ import PureLayout
 import SwiftyButton
 
 class Button: CustomPressableButton {
+    enum ColorScheme {
+        case normal
+        case complement
+        case facebook
+        case custom(colors: ColorSet, disabledColors: ColorSet)
+    }
+
     private let activityIndicator = UIActivityIndicatorView()
     private var leftLabel: UILabel?
     private var centerLabel: UILabel?
 
-    func configure(centerLabelText: String,
+    func configure(colorScheme: ColorScheme = .normal,
+                   centerLabelText: String,
                    centerLabelFont: UIFont? = nil,
                    centerLabelTextColor: UIColor = .white,
-                   asFacebookButton: Bool = false,
-                   colors: ColorSet? = nil,
-                   disabledColors: ColorSet? = nil,
                    cornerRadius: CGFloat = 5,
                    shadowHeight: CGFloat = 5) {
         self.leftLabel?.removeFromSuperview()
         self.centerLabel?.removeFromSuperview()
+
+        switch colorScheme {
+        case .normal:
+            self.colors = .init(button: Color.teal, shadow: Color.teal.shaded())
+            self.disabledColors = .init(button: Color.teal.tinted(), shadow: Color.teal.tinted().shaded())
+        case .complement:
+            self.colors = .init(button: Color.orange, shadow: Color.orange.shaded())
+            self.disabledColors = .init(button: Color.orange.tinted(), shadow: Color.orange.tinted().shaded()
+            )
+        case .facebook:
+            setupAsFacebookButton()
+        case .custom(let colors, let disabledColors):
+            self.colors = colors
+            self.disabledColors = disabledColors
+        }
 
         let centerLabel = UILabel(
             text: centerLabelText,
@@ -26,18 +46,6 @@ class Button: CustomPressableButton {
         contentView.addSubview(centerLabel)
         centerLabel.autoCenterInSuperview()
         self.centerLabel = centerLabel
-
-        if asFacebookButton {
-            setupAsFacebookButton()
-        }
-
-        if let colors = colors {
-            self.colors = colors
-        }
-
-        if let disabledColors = disabledColors {
-            self.disabledColors = disabledColors
-        }
 
         self.cornerRadius = cornerRadius
         self.shadowHeight = shadowHeight
@@ -60,8 +68,8 @@ class Button: CustomPressableButton {
 
         self.leftLabel = leftLabel
 
-        colors = .init(button: Color.facebookBlue, shadow: Color.facebookBlueShadow)
-        disabledColors = .init(button: Color.facebookBlue, shadow: .gray)
+        colors = .init(button: Color.facebookBlue, shadow: Color.facebookBlue.shaded())
+        disabledColors = .init(button: Color.facebookBlue.tinted(), shadow: Color.facebookBlue.tinted().shaded())
     }
 
     func showActivityIndicator() {

@@ -49,10 +49,7 @@ class WelcomeViewController: UIViewController {
 
         createAccountButton.configure(centerLabelText: "CREATE ACCOUNT")
 
-        logInButton.configure(
-            centerLabelText: "LOG IN",
-            colors: PressableButton.ColorSet(button: Color.logInButtonRed, shadow: Color.logInButtonRedShadow)
-        )
+        logInButton.configure(colorScheme: .complement, centerLabelText: "LOG IN")
     }
 
     override func viewWillAppear(_ animated: Bool) {

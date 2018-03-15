@@ -5,6 +5,7 @@ inhibit_all_warnings!
 def pods
     pod 'CFAlertViewController', '~> 3.0'
     pod 'Device', '~> 3.0'
+    pod 'DynamicColor', '~> 4.0'
     pod 'ESOpenSourceLicensesKit', '~> 2.0'
     pod 'FacebookCore', '~> 0.3'
     pod 'FacebookLogin', '~> 0.3'

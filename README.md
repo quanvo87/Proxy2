@@ -1,4 +1,4 @@
-# Proxy - iOS
+![logo](/logo.png)
 
 - [x] Create unlimited, anonymous identities (Proxy's) with just one tap
 - [x] Use your Proxy to chat with any other Proxy
@@ -27,6 +27,7 @@
   - Make elements using storyboard, xibs, and programmatically
   - Set constraints with auto layout and [Pure Layout](https://github.com/PureLayout/PureLayout)
   - Detect device size with [Device](https://github.com/Ekhoo/Device) and adjust UI accordingly
+  - Created logo with [Sketch](https://www.sketchapp.com/)
   - Other UI libraries used:
     - [CFAlertViewController](https://github.com/Codigami/CFAlertViewController)
     - [FontAwesome.swift](https://github.com/thii/FontAwesome.swift)

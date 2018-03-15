@@ -245,7 +245,7 @@ extension ConvoViewController: MessagesDisplayDelegate {
         if isFromCurrentSender(message: message) {
             return Color.blue
         } else {
-            return Color.receiverChatBubbleGray
+            return Color.chatBubbleGray
         }
     }
 
