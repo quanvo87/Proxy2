@@ -5,7 +5,6 @@
     </device>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
-        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -47,29 +46,26 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="Uwg-QK-fkd">
-                                <rect key="frame" x="74" y="164" width="226.5" height="89"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" secondItem="Uwg-QK-fkd" secondAttribute="height" multiplier="453:178" id="3Ka-ii-hRA"/>
-                                </constraints>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="j4M-Cy-hle">
+                                <rect key="frame" x="68.5" y="184" width="238" height="72"/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="X5d-Ux-umB" firstAttribute="top" secondItem="GEd-N2-qRL" secondAttribute="bottom" constant="10" id="2IB-jT-kUv"/>
+                            <constraint firstItem="j4M-Cy-hle" firstAttribute="top" secondItem="a7O-1B-Est" secondAttribute="top" constant="120" id="3UM-k3-bBJ"/>
                             <constraint firstItem="LeG-Vs-54S" firstAttribute="leading" secondItem="a7O-1B-Est" secondAttribute="leading" constant="40" id="4gG-yw-msk"/>
                             <constraint firstItem="X5d-Ux-umB" firstAttribute="centerX" secondItem="a7O-1B-Est" secondAttribute="centerX" id="8WC-p9-WDg"/>
                             <constraint firstItem="Yc3-R9-7Ep" firstAttribute="leading" secondItem="a7O-1B-Est" secondAttribute="leading" id="9fJ-h3-RRq"/>
                             <constraint firstItem="a7O-1B-Est" firstAttribute="bottom" secondItem="LeG-Vs-54S" secondAttribute="bottom" constant="50" id="CVQ-BH-KCm"/>
+                            <constraint firstItem="j4M-Cy-hle" firstAttribute="centerX" secondItem="a7O-1B-Est" secondAttribute="centerX" id="Cja-RO-eDg"/>
                             <constraint firstItem="LeG-Vs-54S" firstAttribute="top" secondItem="X5d-Ux-umB" secondAttribute="bottom" constant="5" id="KVO-4D-xk6"/>
                             <constraint firstItem="GEd-N2-qRL" firstAttribute="width" secondItem="LeG-Vs-54S" secondAttribute="width" id="N04-sv-rkS"/>
-                            <constraint firstItem="Uwg-QK-fkd" firstAttribute="centerX" secondItem="a7O-1B-Est" secondAttribute="centerX" id="X70-OI-aNV"/>
                             <constraint firstItem="Yc3-R9-7Ep" firstAttribute="top" secondItem="a7O-1B-Est" secondAttribute="top" id="e5H-eB-Mq5"/>
                             <constraint firstItem="GEd-N2-qRL" firstAttribute="height" secondItem="LeG-Vs-54S" secondAttribute="height" id="kJj-9h-WH2"/>
                             <constraint firstItem="GEd-N2-qRL" firstAttribute="centerX" secondItem="a7O-1B-Est" secondAttribute="centerX" id="mFJ-Kr-DBx"/>
                             <constraint firstItem="a7O-1B-Est" firstAttribute="trailing" secondItem="Yc3-R9-7Ep" secondAttribute="trailing" id="qcL-vR-0NC"/>
                             <constraint firstItem="a7O-1B-Est" firstAttribute="trailing" secondItem="LeG-Vs-54S" secondAttribute="trailing" constant="40" id="tB0-Hk-bpE"/>
-                            <constraint firstItem="Uwg-QK-fkd" firstAttribute="top" secondItem="a7O-1B-Est" secondAttribute="top" constant="100" id="vC5-P0-WhA"/>
                             <constraint firstItem="GEd-N2-qRL" firstAttribute="top" secondItem="Yc3-R9-7Ep" secondAttribute="bottom" constant="5" id="waP-VM-Mym"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="a7O-1B-Est"/>
@@ -406,6 +402,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="logo" width="221" height="89"/>
+        <image name="logo" width="238" height="72"/>
     </resources>
 </document>
