@@ -23,16 +23,9 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Yc3-R9-7Ep" userLabel="onboarding" customClass="PaperOnboarding" customModule="paper_onboarding">
-                                <rect key="frame" x="0.0" y="64" width="375" height="428.5"/>
+                                <rect key="frame" x="0.0" y="64" width="375" height="429"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="pokemon" translatesAutoresizingMaskIntoConstraints="NO" id="Ad1-UK-AeM">
-                                <rect key="frame" x="62.5" y="134" width="250" height="92"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" secondItem="Ad1-UK-AeM" secondAttribute="height" multiplier="125:46" id="Nez-w5-vut"/>
-                                    <constraint firstAttribute="width" constant="250" id="bR4-zg-Le4"/>
-                                </constraints>
-                            </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LeG-Vs-54S" customClass="Button" customModule="Proxy" customModuleProvider="target">
                                 <rect key="frame" x="40" y="572" width="295" height="45"/>
                                 <constraints>
@@ -54,6 +47,12 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="Uwg-QK-fkd">
+                                <rect key="frame" x="74" y="164" width="226.5" height="89"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="Uwg-QK-fkd" secondAttribute="height" multiplier="453:178" id="3Ka-ii-hRA"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -64,13 +63,13 @@
                             <constraint firstItem="a7O-1B-Est" firstAttribute="bottom" secondItem="LeG-Vs-54S" secondAttribute="bottom" constant="50" id="CVQ-BH-KCm"/>
                             <constraint firstItem="LeG-Vs-54S" firstAttribute="top" secondItem="X5d-Ux-umB" secondAttribute="bottom" constant="5" id="KVO-4D-xk6"/>
                             <constraint firstItem="GEd-N2-qRL" firstAttribute="width" secondItem="LeG-Vs-54S" secondAttribute="width" id="N04-sv-rkS"/>
-                            <constraint firstItem="Ad1-UK-AeM" firstAttribute="centerX" secondItem="a7O-1B-Est" secondAttribute="centerX" id="ThY-A4-7cJ"/>
-                            <constraint firstItem="Ad1-UK-AeM" firstAttribute="top" secondItem="a7O-1B-Est" secondAttribute="top" constant="70" id="bTv-qg-OnU"/>
+                            <constraint firstItem="Uwg-QK-fkd" firstAttribute="centerX" secondItem="a7O-1B-Est" secondAttribute="centerX" id="X70-OI-aNV"/>
                             <constraint firstItem="Yc3-R9-7Ep" firstAttribute="top" secondItem="a7O-1B-Est" secondAttribute="top" id="e5H-eB-Mq5"/>
                             <constraint firstItem="GEd-N2-qRL" firstAttribute="height" secondItem="LeG-Vs-54S" secondAttribute="height" id="kJj-9h-WH2"/>
                             <constraint firstItem="GEd-N2-qRL" firstAttribute="centerX" secondItem="a7O-1B-Est" secondAttribute="centerX" id="mFJ-Kr-DBx"/>
                             <constraint firstItem="a7O-1B-Est" firstAttribute="trailing" secondItem="Yc3-R9-7Ep" secondAttribute="trailing" id="qcL-vR-0NC"/>
                             <constraint firstItem="a7O-1B-Est" firstAttribute="trailing" secondItem="LeG-Vs-54S" secondAttribute="trailing" constant="40" id="tB0-Hk-bpE"/>
+                            <constraint firstItem="Uwg-QK-fkd" firstAttribute="top" secondItem="a7O-1B-Est" secondAttribute="top" constant="100" id="vC5-P0-WhA"/>
                             <constraint firstItem="GEd-N2-qRL" firstAttribute="top" secondItem="Yc3-R9-7Ep" secondAttribute="bottom" constant="5" id="waP-VM-Mym"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="a7O-1B-Est"/>
@@ -146,12 +145,12 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="W6I-Gw-4TN">
-                                <rect key="frame" x="106.5" y="294" width="162" height="20"/>
+                                <rect key="frame" x="132" y="294" width="111" height="20"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="20" id="teB-tz-XxP"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                <state key="normal" title="Terms and conditions of Use"/>
+                                <state key="normal" title="Terms &amp; Conditions"/>
                                 <connections>
                                     <action selector="didTapTermsAndConditionsButton:" destination="oIl-XN-QEb" eventType="touchUpInside" id="meP-Se-R2M"/>
                                 </connections>
@@ -407,6 +406,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="pokemon" width="1000" height="368"/>
+        <image name="logo" width="221" height="89"/>
     </resources>
 </document>

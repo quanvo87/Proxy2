@@ -10,7 +10,7 @@ class WelcomeViewController: UIViewController {
     // swiftlint:disable line_length
     private let onboardingItems = [
         OnboardingItemInfo(
-            title: "Welcome to Proxy",
+            title: "Welcome",
             description: "Sign in to talk to anyone in the world without revealing your identity.",
             pageIcon: Image.make(.comments)
         ),
@@ -30,8 +30,8 @@ class WelcomeViewController: UIViewController {
             pageIcon: Image.make(.globe)
         ),
         OnboardingItemInfo(
-            title: "Absolutely free. Forever.",
-            description: "Tap below to begin!",
+            title: "Free!",
+            description: "Tap below to begin.",
             pageIcon: Image.make(.heart)
         )
     ]

@@ -124,7 +124,7 @@ enum Constant {
             url: Foundation.URL(string: "https://app.termly.io/document/privacy-policy-for-mobile-app/a18afe5f-a9a2-4a6d-b090-900905e2ef65")!
         )
         static let termsAndConditions = (
-            name: "Terms and Conditions",
+            name: "Terms & Conditions",
             url: Foundation.URL(string: "https://www.websitepolicies.com/policies/view/VxVOCd")!
         )
         static let testDatabase = "https://proxy-test-f90c4-9c8ea.firebaseio.com/"

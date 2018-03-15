@@ -34,6 +34,7 @@ class ConvoViewController: MessagesViewController {
             self?.convo = convo
         }
 
+        // todo: don't play sound if opening convo from notification
         messagesObserver.observe(convoKey: convo.key) { [weak self] messages in
             activityIndicatorView.removeFromSuperview()
             if let currentLastMessage = self?.messages.last,
