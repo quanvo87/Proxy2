@@ -1,4 +1,5 @@
 import FirebaseDatabase
+import UIKit
 
 enum SettableProxyProperty {
     case hasUnreadMessage(Bool)
@@ -33,6 +34,18 @@ struct Proxy {
     let nickname: String
     let ownerId: String
     let timestamp: Double
+
+    var label: NSAttributedString {
+        let attributedName = NSMutableAttributedString(string: name)
+        if nickname != "" {
+            let attributedNickname = NSMutableAttributedString(
+                string: " (\(nickname))",
+                attributes: [NSAttributedStringKey.font: UIFont.italicSystemFont(ofSize: UIFont.systemFontSize)]
+            )
+            attributedName.append(attributedNickname)
+        }
+        return attributedName
+    }
 
     init(dateCreated: Double = Date().timeIntervalSince1970,
          hasUnreadMessage: Bool = false,

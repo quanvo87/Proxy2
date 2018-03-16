@@ -1,4 +1,5 @@
 import FirebaseDatabase
+import UIKit
 
 enum SettableConvoProperty {
     case hasUnreadMessage(Bool)
@@ -48,6 +49,16 @@ struct Convo {
     let senderProxyKey: String
     let senderProxyName: String
     let timestamp: Double
+
+    var label: NSAttributedString {
+        let receiver = NSMutableAttributedString(string: receiverDisplayName)
+        let sender = NSMutableAttributedString(
+            string: ", \(senderDisplayName)",
+            attributes: [NSAttributedStringKey.foregroundColor: UIColor.gray]
+        )
+        receiver.append(sender)
+        return receiver
+    }
 
     var senderDisplayName: String {
         return senderNickname != "" ? senderNickname : senderProxyName

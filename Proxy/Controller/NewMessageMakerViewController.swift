@@ -250,7 +250,6 @@ extension NewMessageMakerViewController: UITableViewDataSource {
         return 2
     }
 
-    // todo: show nickname next to selected sender
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.row {
         case 0:

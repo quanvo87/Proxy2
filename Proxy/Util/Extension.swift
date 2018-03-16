@@ -109,20 +109,6 @@ extension Int {
     }
 }
 
-extension NSAttributedString {
-    convenience init(_ convo: Convo) {
-        let receiver = NSMutableAttributedString(
-            string: convo.receiverDisplayName
-        )
-        let sender = NSMutableAttributedString(
-            string: ", " + convo.senderDisplayName,
-            attributes: [NSAttributedStringKey.foregroundColor: UIColor.gray]
-        )
-        receiver.append(sender)
-        self.init(attributedString: receiver)
-    }
-}
-
 extension Notification.Name {
     static let didEnterConvo = Notification.Name("didEnterConvo")
     static let didLeaveConvo = Notification.Name("didLeaveConvo")
