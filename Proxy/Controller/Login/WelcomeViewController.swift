@@ -53,6 +53,7 @@ class WelcomeViewController: UIViewController {
         view.addSubview(revealingSplashView)
         revealingSplashView.startAnimation {
             revealingSplashView.removeFromSuperview()
+            NotificationCenter.default.post(Notification(name: .launchScreenFinished))
         }
 
         navigationItem.title = ""

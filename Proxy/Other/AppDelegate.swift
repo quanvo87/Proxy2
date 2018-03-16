@@ -4,31 +4,20 @@ import FBSDKCoreKit
 import SwiftMessages
 import UserNotifications
 
+// todo: ipad support
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow? = UIWindow(frame: UIScreen.main.bounds)
     private let authObserver = AuthObserver()
     private let convoPresenceObserver = ConvoPresenceObserver()
     private let database = Firebase()
+    private var launchScreenFinishedObserver: NSObjectProtocol?
     private var uid: String?
     private lazy var notificationHandler = NotificationHandler(convoPresenceObserver: convoPresenceObserver)
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
-
-        if #available(iOS 10.0, *) {
-            UNUserNotificationCenter.current().delegate = self
-            let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
-            UNUserNotificationCenter.current().requestAuthorization(options: authOptions) { _, _ in }
-        } else {
-            let settings: UIUserNotificationSettings = UIUserNotificationSettings(
-                types: [.alert, .badge, .sound],
-                categories: nil
-            )
-            application.registerUserNotificationSettings(settings)
-        }
-        application.registerForRemoteNotifications()
 
         authObserver.observe { [weak self] user in
             UIApplication.shared.applicationIconBadgeNumber = 0
@@ -57,6 +46,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
 //        Database.database().isPersistenceEnabled = true
+
+        launchScreenFinishedObserver = NotificationCenter.default.addObserver(
+            forName: .launchScreenFinished,
+            object: nil,
+            queue: .main) { [weak self] _ in
+                guard let launchScreenFinishedObserver = self?.launchScreenFinishedObserver else {
+                    return
+                }
+                if #available(iOS 10.0, *) {
+                    UNUserNotificationCenter.current().delegate = self
+                    let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
+                    UNUserNotificationCenter.current().requestAuthorization(options: authOptions) { _, _ in }
+                } else {
+                    let settings: UIUserNotificationSettings = UIUserNotificationSettings(
+                        types: [.alert, .badge, .sound],
+                        categories: nil
+                    )
+                    application.registerUserNotificationSettings(settings)
+                }
+                application.registerForRemoteNotifications()
+                NotificationCenter.default.removeObserver(launchScreenFinishedObserver)
+                self?.launchScreenFinishedObserver = nil
+        }
 
         Messaging.messaging().delegate = self
 
@@ -96,6 +108,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         FBSDKAppEvents.activateApp()
+    }
+
+    deinit {
+        if let launchScreenFinishedObserver = launchScreenFinishedObserver {
+            NotificationCenter.default.removeObserver(launchScreenFinishedObserver)
+        }
     }
 }
 
