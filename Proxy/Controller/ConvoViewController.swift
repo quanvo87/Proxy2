@@ -243,7 +243,7 @@ extension ConvoViewController: MessagesDisplayDelegate {
                          at indexPath: IndexPath,
                          in messagesCollectionView: MessagesCollectionView) -> UIColor {
         if isFromCurrentSender(message: message) {
-            return Color.blue
+            return Color.iOSBlue
         } else {
             return Color.chatBubbleGray
         }

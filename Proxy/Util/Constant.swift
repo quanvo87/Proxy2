@@ -103,13 +103,14 @@ enum Child {
 }
 
 enum Color {
+    static let darkBlue = UIColor(hex: 0x2c3e50)
+    static let blue = UIColor(red: 53/255, green: 152/255, blue: 217/255, alpha: 1)
+    static let red = UIColor(red: 231/255, green: 76/255, blue: 60/255, alpha: 1)
+    static let facebookBlue = UIColor(red: 59/255, green: 89/255, blue: 152/255, alpha: 1)
+    static let iOSBlue = UIColor(red: 0, green: 122/255, blue: 1, alpha: 1)
     static let alertButtonGreen = UIColor(red: 41/255, green: 191/255, blue: 60/255, alpha: 1)
     static let alertButtonRed = UIColor(red: 252/255, green: 49/255, blue: 59/255, alpha: 1)
-    static let blue = UIColor(red: 0, green: 122/255, blue: 1, alpha: 1)
     static let chatBubbleGray = UIColor(red: 230/255, green: 230/255, blue: 230/255, alpha: 1)
-    static let facebookBlue = UIColor(red: 59/255, green: 89/255, blue: 152/255, alpha: 1)
-    static let orange = DynamicColor(hex: 0xff6c00)
-    static let teal = DynamicColor(hex: 0x0097a7)
 }
 
 enum Constant {
@@ -226,7 +227,7 @@ enum Image {
         return UIImage.fontAwesomeIcon(name: fontAwesome, textColor: .white, size: CGSize(width: 100, height: 100))
     }
 
-    static func makeCircle(diameter: CGFloat, color: UIColor = Color.blue) -> UIImage {
+    static func makeCircle(diameter: CGFloat, color: UIColor = Color.iOSBlue) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(CGSize(width: diameter, height: diameter), false, 0)
         let context = UIGraphicsGetCurrentContext()
         context?.saveGState()

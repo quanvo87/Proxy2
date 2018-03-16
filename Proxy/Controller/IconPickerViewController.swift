@@ -72,7 +72,7 @@ extension IconPickerViewController: UICollectionViewDataSource {
 // MARK: - UICollectionViewDelegate
 extension IconPickerViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        collectionView.cellForItem(at: indexPath)?.backgroundColor = Color.blue
+        collectionView.cellForItem(at: indexPath)?.backgroundColor = Color.iOSBlue
         let iconName = iconNames[indexPath.row]
         database.setIcon(to: iconName, for: proxy) { _ in }
         dismiss(animated: true)

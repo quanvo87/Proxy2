@@ -25,12 +25,11 @@ class Button: CustomPressableButton {
 
         switch colorScheme {
         case .normal:
-            self.colors = .init(button: Color.teal, shadow: Color.teal.shaded())
-            self.disabledColors = .init(button: Color.teal.tinted(), shadow: Color.teal.tinted().shaded())
+            self.colors = .init(button: Color.blue, shadow: Color.blue.darkened())
+            self.disabledColors = .init(button: Color.blue.tinted(), shadow: Color.blue.tinted().darkened())
         case .complement:
-            self.colors = .init(button: Color.orange, shadow: Color.orange.shaded())
-            self.disabledColors = .init(button: Color.orange.tinted(), shadow: Color.orange.tinted().shaded()
-            )
+            self.colors = .init(button: Color.red, shadow: Color.red.darkened())
+            self.disabledColors = .init(button: Color.red.tinted(), shadow: Color.red.tinted().darkened())
         case .facebook:
             setupAsFacebookButton()
         case .custom(let colors, let disabledColors):
@@ -68,8 +67,8 @@ class Button: CustomPressableButton {
 
         self.leftLabel = leftLabel
 
-        colors = .init(button: Color.facebookBlue, shadow: Color.facebookBlue.shaded())
-        disabledColors = .init(button: Color.facebookBlue.tinted(), shadow: Color.facebookBlue.tinted().shaded())
+        colors = .init(button: Color.facebookBlue, shadow: Color.facebookBlue.darkened())
+        disabledColors = .init(button: Color.facebookBlue.tinted(), shadow: Color.facebookBlue.tinted().darkened())
     }
 
     func showActivityIndicator() {

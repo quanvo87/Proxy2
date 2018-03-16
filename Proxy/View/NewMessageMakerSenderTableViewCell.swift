@@ -11,6 +11,6 @@ class NewMessageMakerSenderTableViewCell: UITableViewCell {
         } else {
             nameLabel.text = "Pick Your Sender"
         }
-        nameLabel.textColor = Color.blue
+        nameLabel.textColor = Color.iOSBlue
     }
 }

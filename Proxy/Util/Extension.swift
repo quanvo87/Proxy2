@@ -167,9 +167,9 @@ extension SkyFloatingLabelTextFieldWithIcon {
 
     func setup() {
         clearButtonMode = .whileEditing
-        selectedIconColor = Color.teal
-        selectedLineColor = Color.teal
-        selectedTitleColor = Color.teal
+        selectedIconColor = Color.blue
+        selectedLineColor = Color.blue
+        selectedTitleColor = Color.blue
     }
 }
 
@@ -252,7 +252,7 @@ extension UINavigationBar {
         let item = UINavigationItem()
         let image = UIImage.fontAwesomeIcon(
             name: .angleDown,
-            textColor: Color.blue,
+            textColor: Color.iOSBlue,
             size: CGSize(width: 30, height: 30)
         )
         item.rightBarButtonItem = UIBarButtonItem(target: target, action: action, image: image)
@@ -294,7 +294,7 @@ extension UITableView {
 }
 
 extension UIView {
-    func addGlow(color: CGColor = Color.blue.cgColor) {
+    func addGlow(color: CGColor = Color.iOSBlue.cgColor) {
         layer.shadowColor = color
         layer.shadowRadius = 4
         layer.shadowOpacity = 0.9
