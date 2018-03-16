@@ -34,10 +34,7 @@ class SignUpViewController: UIViewController {
 
         signUpButton.configure(centerLabelText: "Sign up")
 
-        facebookButton.configure(
-            centerLabelText: "Sign up with Facebook",
-            asFacebookButton: true
-        )
+        facebookButton.configure(colorScheme: .facebook, centerLabelText: "Sign up with Facebook")
     }
 
     static func make(loginManager: LoginManaging? = nil) -> SignUpViewController {

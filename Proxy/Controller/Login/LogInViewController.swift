@@ -34,10 +34,7 @@ class LogInViewController: UIViewController {
 
         logInButton.configure(centerLabelText: "Log in")
 
-        facebookButton.configure(
-            centerLabelText: "Log in with Facebook",
-            asFacebookButton: true
-        )
+        facebookButton.configure(colorScheme: .facebook, centerLabelText: "Log in with Facebook")
     }
 
     static func make(loginManager: LoginManaging? = nil) -> LogInViewController {

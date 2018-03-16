@@ -34,6 +34,7 @@ class ConvoViewController: MessagesViewController {
             self?.convo = convo
         }
 
+        // todo: don't play sound if opening convo from notification
         messagesObserver.observe(convoKey: convo.key) { [weak self] messages in
             activityIndicatorView.removeFromSuperview()
             if let currentLastMessage = self?.messages.last,
@@ -242,9 +243,9 @@ extension ConvoViewController: MessagesDisplayDelegate {
                          at indexPath: IndexPath,
                          in messagesCollectionView: MessagesCollectionView) -> UIColor {
         if isFromCurrentSender(message: message) {
-            return Color.blue
+            return Color.iOSBlue
         } else {
-            return Color.receiverChatBubbleGray
+            return Color.chatBubbleGray
         }
     }
 

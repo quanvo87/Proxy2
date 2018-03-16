@@ -83,12 +83,12 @@ class NewMessageMakerViewController: UIViewController, SenderPickerDelegate {
         tableView.delegate = self
         tableView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
         tableView.register(
-            UINib(nibName: String(describing: MakeNewMessageReceiverTableViewCell.self), bundle: nil),
-            forCellReuseIdentifier: String(describing: MakeNewMessageReceiverTableViewCell.self)
+            UINib(nibName: String(describing: NewMessageMakerReceiverTableViewCell.self), bundle: nil),
+            forCellReuseIdentifier: String(describing: NewMessageMakerReceiverTableViewCell.self)
         )
         tableView.register(
-            UINib(nibName: String(describing: MakeNewMessageSenderTableViewCell.self), bundle: nil),
-            forCellReuseIdentifier: String(describing: MakeNewMessageSenderTableViewCell.self)
+            UINib(nibName: String(describing: NewMessageMakerSenderTableViewCell.self), bundle: nil),
+            forCellReuseIdentifier: String(describing: NewMessageMakerSenderTableViewCell.self)
         )
         tableView.rowHeight = 44
         tableView.sectionHeaderHeight = 0
@@ -126,10 +126,10 @@ class NewMessageMakerViewController: UIViewController, SenderPickerDelegate {
 }
 
 private extension NewMessageMakerViewController {
-    var receiverCell: MakeNewMessageReceiverTableViewCell? {
+    var receiverCell: NewMessageMakerReceiverTableViewCell? {
         if let receiverCell = tableView.cellForRow(
             at: IndexPath(row: 1, section: 0)
-            ) as? MakeNewMessageReceiverTableViewCell {
+            ) as? NewMessageMakerReceiverTableViewCell {
             return receiverCell
         } else {
             return nil
@@ -250,21 +250,22 @@ extension NewMessageMakerViewController: UITableViewDataSource {
         return 2
     }
 
+    // todo: show nickname next to selected sender
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.row {
         case 0:
             guard let cell = tableView.dequeueReusableCell(
-                withIdentifier: String(describing: MakeNewMessageSenderTableViewCell.self)
-                ) as? MakeNewMessageSenderTableViewCell else {
-                    return MakeNewMessageSenderTableViewCell()
+                withIdentifier: String(describing: NewMessageMakerSenderTableViewCell.self)
+                ) as? NewMessageMakerSenderTableViewCell else {
+                    return NewMessageMakerSenderTableViewCell()
             }
             cell.load(sender)
             return cell
         case 1:
             guard let cell = tableView.dequeueReusableCell(
-                withIdentifier: String(describing: MakeNewMessageReceiverTableViewCell.self)
-                ) as? MakeNewMessageReceiverTableViewCell else {
-                    return MakeNewMessageReceiverTableViewCell()
+                withIdentifier: String(describing: NewMessageMakerReceiverTableViewCell.self)
+                ) as? NewMessageMakerReceiverTableViewCell else {
+                    return NewMessageMakerReceiverTableViewCell()
             }
             cell.receiverTextField.itemSelectionHandler = { [weak self] items, index in
                 let item = items[index]

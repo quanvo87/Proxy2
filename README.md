@@ -1,4 +1,4 @@
-# Proxy - iOS
+![logo](/logo.png)
 
 - [x] Create unlimited, anonymous identities (Proxy's) with just one tap
 - [x] Use your Proxy to chat with any other Proxy
@@ -16,6 +16,7 @@
 
 - UI
   - Co authored [SwiftVideoBackground](https://github.com/dingwilson/SwiftVideoBackground) to manage background video on login screen
+  - Twitter-like animated launch screen with [RevealingSplashView](https://github.com/PiXeL16/RevealingSplashView)
   - Onboarding with [paper-onboarding](https://github.com/Ramotion/paper-onboarding)
   - Chat UI built on [MessageKit](https://cocoapods.org/pods/MessageKit)
   - Implemented an efficient [SearchTextField](https://github.com/apasccon/SearchTextField) that makes it fast, easy, and intuitive to pick the recipient of your message
@@ -27,6 +28,7 @@
   - Make elements using storyboard, xibs, and programmatically
   - Set constraints with auto layout and [Pure Layout](https://github.com/PureLayout/PureLayout)
   - Detect device size with [Device](https://github.com/Ekhoo/Device) and adjust UI accordingly
+  - Created logo with [Sketch](https://www.sketchapp.com/)
   - Other UI libraries used:
     - [CFAlertViewController](https://github.com/Codigami/CFAlertViewController)
     - [FontAwesome.swift](https://github.com/thii/FontAwesome.swift)

@@ -1,6 +1,11 @@
 import UIKit
 
-class AboutViewController: UIViewController {}
+class AboutViewController: UIViewController {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        navigationItem.title = "About"
+    }
+}
 
 private extension AboutViewController {
     @IBAction func didTapThirdPartySoftwareButton(_ sender: Any) {

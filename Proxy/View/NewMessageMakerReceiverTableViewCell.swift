@@ -1,6 +1,6 @@
 import SearchTextField
 
-class MakeNewMessageReceiverTableViewCell: UITableViewCell {
+class NewMessageMakerReceiverTableViewCell: UITableViewCell {
     @IBOutlet weak var iconImageView: UIImageView!
     @IBOutlet weak var receiverTextField: SearchTextField!
 }

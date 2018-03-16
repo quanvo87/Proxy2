@@ -5,7 +5,6 @@
     </device>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
-        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -23,16 +22,9 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Yc3-R9-7Ep" userLabel="onboarding" customClass="PaperOnboarding" customModule="paper_onboarding">
-                                <rect key="frame" x="0.0" y="64" width="375" height="428.5"/>
+                                <rect key="frame" x="0.0" y="64" width="375" height="429"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="pokemon" translatesAutoresizingMaskIntoConstraints="NO" id="Ad1-UK-AeM">
-                                <rect key="frame" x="62.5" y="134" width="250" height="92"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" secondItem="Ad1-UK-AeM" secondAttribute="height" multiplier="125:46" id="Nez-w5-vut"/>
-                                    <constraint firstAttribute="width" constant="250" id="bR4-zg-Le4"/>
-                                </constraints>
-                            </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LeG-Vs-54S" customClass="Button" customModule="Proxy" customModuleProvider="target">
                                 <rect key="frame" x="40" y="572" width="295" height="45"/>
                                 <constraints>
@@ -54,18 +46,21 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="j4M-Cy-hle">
+                                <rect key="frame" x="68.5" y="184" width="238" height="72"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="X5d-Ux-umB" firstAttribute="top" secondItem="GEd-N2-qRL" secondAttribute="bottom" constant="10" id="2IB-jT-kUv"/>
+                            <constraint firstItem="j4M-Cy-hle" firstAttribute="top" secondItem="a7O-1B-Est" secondAttribute="top" constant="120" id="3UM-k3-bBJ"/>
                             <constraint firstItem="LeG-Vs-54S" firstAttribute="leading" secondItem="a7O-1B-Est" secondAttribute="leading" constant="40" id="4gG-yw-msk"/>
                             <constraint firstItem="X5d-Ux-umB" firstAttribute="centerX" secondItem="a7O-1B-Est" secondAttribute="centerX" id="8WC-p9-WDg"/>
                             <constraint firstItem="Yc3-R9-7Ep" firstAttribute="leading" secondItem="a7O-1B-Est" secondAttribute="leading" id="9fJ-h3-RRq"/>
                             <constraint firstItem="a7O-1B-Est" firstAttribute="bottom" secondItem="LeG-Vs-54S" secondAttribute="bottom" constant="50" id="CVQ-BH-KCm"/>
+                            <constraint firstItem="j4M-Cy-hle" firstAttribute="centerX" secondItem="a7O-1B-Est" secondAttribute="centerX" id="Cja-RO-eDg"/>
                             <constraint firstItem="LeG-Vs-54S" firstAttribute="top" secondItem="X5d-Ux-umB" secondAttribute="bottom" constant="5" id="KVO-4D-xk6"/>
                             <constraint firstItem="GEd-N2-qRL" firstAttribute="width" secondItem="LeG-Vs-54S" secondAttribute="width" id="N04-sv-rkS"/>
-                            <constraint firstItem="Ad1-UK-AeM" firstAttribute="centerX" secondItem="a7O-1B-Est" secondAttribute="centerX" id="ThY-A4-7cJ"/>
-                            <constraint firstItem="Ad1-UK-AeM" firstAttribute="top" secondItem="a7O-1B-Est" secondAttribute="top" constant="70" id="bTv-qg-OnU"/>
                             <constraint firstItem="Yc3-R9-7Ep" firstAttribute="top" secondItem="a7O-1B-Est" secondAttribute="top" id="e5H-eB-Mq5"/>
                             <constraint firstItem="GEd-N2-qRL" firstAttribute="height" secondItem="LeG-Vs-54S" secondAttribute="height" id="kJj-9h-WH2"/>
                             <constraint firstItem="GEd-N2-qRL" firstAttribute="centerX" secondItem="a7O-1B-Est" secondAttribute="centerX" id="mFJ-Kr-DBx"/>
@@ -146,12 +141,12 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="W6I-Gw-4TN">
-                                <rect key="frame" x="106.5" y="294" width="162" height="20"/>
+                                <rect key="frame" x="132" y="294" width="111" height="20"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="20" id="teB-tz-XxP"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                <state key="normal" title="Terms and conditions of Use"/>
+                                <state key="normal" title="Terms &amp; Conditions"/>
                                 <connections>
                                     <action selector="didTapTermsAndConditionsButton:" destination="oIl-XN-QEb" eventType="touchUpInside" id="meP-Se-R2M"/>
                                 </connections>
@@ -307,8 +302,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Version 0.1.0" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OoH-hp-pTm">
-                                <rect key="frame" x="151.5" y="40" width="72" height="15"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Proxy v0.1.0" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OoH-hp-pTm">
+                                <rect key="frame" x="153.5" y="40" width="68" height="15"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -407,6 +402,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="pokemon" width="1000" height="368"/>
+        <image name="logo" width="238" height="72"/>
     </resources>
 </document>

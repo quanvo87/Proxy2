@@ -1,4 +1,5 @@
 import paper_onboarding
+import RevealingSplashView
 import SwiftVideoBackground
 import SwiftyButton
 
@@ -7,10 +8,14 @@ class WelcomeViewController: UIViewController {
     @IBOutlet weak var createAccountButton: Button!
     @IBOutlet weak var logInButton: Button!
 
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
+
     // swiftlint:disable line_length
     private let onboardingItems = [
         OnboardingItemInfo(
-            title: "Welcome to Proxy",
+            title: "Welcome",
             description: "Sign in to talk to anyone in the world without revealing your identity.",
             pageIcon: Image.make(.comments)
         ),
@@ -30,8 +35,8 @@ class WelcomeViewController: UIViewController {
             pageIcon: Image.make(.globe)
         ),
         OnboardingItemInfo(
-            title: "Absolutely free. Forever.",
-            description: "Tap below to begin!",
+            title: "Free!",
+            description: "Tap below to begin.",
             pageIcon: Image.make(.heart)
         )
     ]
@@ -39,6 +44,16 @@ class WelcomeViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        let revealingSplashView = RevealingSplashView(
+            iconImage: UIImage(named: "icon white")!,
+            iconInitialSize: CGSize(width: 96, height: 96),
+            backgroundColor: Color.darkBlue
+        )
+        view.addSubview(revealingSplashView)
+        revealingSplashView.startAnimation {
+            revealingSplashView.removeFromSuperview()
+        }
 
         navigationItem.title = ""
 
@@ -49,10 +64,7 @@ class WelcomeViewController: UIViewController {
 
         createAccountButton.configure(centerLabelText: "CREATE ACCOUNT")
 
-        logInButton.configure(
-            centerLabelText: "LOG IN",
-            colors: PressableButton.ColorSet(button: Color.logInButtonRed, shadow: Color.logInButtonRedShadow)
-        )
+        logInButton.configure(colorScheme: .complement, centerLabelText: "LOG IN")
     }
 
     override func viewWillAppear(_ animated: Bool) {

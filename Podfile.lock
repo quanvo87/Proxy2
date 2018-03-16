@@ -7,6 +7,7 @@ PODS:
   - Bolts/Tasks (1.8.4)
   - CFAlertViewController (3.0)
   - Device (3.0.3)
+  - DynamicColor (4.0.2)
   - ESOpenSourceLicensesKit (2.0)
   - FacebookCore (0.3.0):
     - Bolts (~> 1.8)
@@ -83,6 +84,7 @@ PODS:
   - Piano (1.5)
   - Protobuf (3.5.0)
   - PureLayout (3.0.2)
+  - RevealingSplashView (0.5.0)
   - SearchTextField (1.2.0)
   - SkyFloatingLabelTextField (3.4.0)
   - SnapKit (4.0.0)
@@ -96,6 +98,7 @@ PODS:
 DEPENDENCIES:
   - CFAlertViewController (~> 3.0)
   - Device (~> 3.0)
+  - DynamicColor (~> 4.0)
   - ESOpenSourceLicensesKit (~> 2.0)
   - FacebookCore (~> 0.3)
   - FacebookLogin (~> 0.3)
@@ -111,6 +114,7 @@ DEPENDENCIES:
   - paper-onboarding (~> 4.0)
   - Piano (~> 1.5)
   - PureLayout (~> 3.0)
+  - RevealingSplashView (~> 0.5)
   - SearchTextField (~> 1.2)
   - SkyFloatingLabelTextField (~> 3.4)
   - Spring (~> 1.0)
@@ -124,6 +128,7 @@ SPEC CHECKSUMS:
   Bolts: 8a7995239dbe724f9cba2248b766d48b7ebdd322
   CFAlertViewController: 460bb12b42b500bb0838e5595ca144a18344765f
   Device: 9a5264ee4e0f392e7153d2c46b10c8df46b7aad2
+  DynamicColor: c7adcfe871781a2b39877a5774e452ba51b79eb3
   ESOpenSourceLicensesKit: 6fde2f56b9a7a52cc298b594786d369ac1602ce0
   FacebookCore: 3ffa190a3f1f96cec0e44d3fc221bc322c595ffa
   FacebookLogin: 0af839ea858faef99550d16596b87b4a8e8906e6
@@ -150,6 +155,7 @@ SPEC CHECKSUMS:
   Piano: 28ceb6c24336d6b3710460aad8acb4d1998581b0
   Protobuf: 8a9838fba8dae3389230e1b7f8c104aa32389c03
   PureLayout: 4d550abe49a94f24c2808b9b95db9131685fe4cd
+  RevealingSplashView: 0794eecad3a8983ac11a1fe474e9a9b51b926780
   SearchTextField: a5bb7e4c33affadb115afdbe8100d84ef10a8024
   SkyFloatingLabelTextField: 703aa1420b697392b1e7dba25571180dde018477
   SnapKit: a42d492c16e80209130a3379f73596c3454b7694
@@ -160,6 +166,6 @@ SPEC CHECKSUMS:
   SwiftyButton: 093e3fe2becf3ae31c0f6c1c6987b79a93fb3ecb
   WQNetworkActivityIndicator: 6a893f95b5500de408b3712f66f4cc4265b49f8d
 
-PODFILE CHECKSUM: baba0ed23db9cf19acb7108d6987fc740e2ab244
+PODFILE CHECKSUM: c34452cd7f6ea39e2d9cca7481c1e57fd32e38b7
 
 COCOAPODS: 1.4.0

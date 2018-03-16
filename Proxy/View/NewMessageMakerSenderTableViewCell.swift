@@ -1,6 +1,6 @@
 import UIKit
 
-class MakeNewMessageSenderTableViewCell: UITableViewCell {
+class NewMessageMakerSenderTableViewCell: UITableViewCell {
     @IBOutlet weak var iconImageView: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
 
@@ -11,6 +11,6 @@ class MakeNewMessageSenderTableViewCell: UITableViewCell {
         } else {
             nameLabel.text = "Pick Your Sender"
         }
-        nameLabel.textColor = Color.blue
+        nameLabel.textColor = Color.iOSBlue
     }
 }

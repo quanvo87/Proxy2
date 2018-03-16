@@ -5,6 +5,7 @@ inhibit_all_warnings!
 def pods
     pod 'CFAlertViewController', '~> 3.0'
     pod 'Device', '~> 3.0'
+    pod 'DynamicColor', '~> 4.0'
     pod 'ESOpenSourceLicensesKit', '~> 2.0'
     pod 'FacebookCore', '~> 0.3'
     pod 'FacebookLogin', '~> 0.3'
@@ -19,6 +20,7 @@ def pods
     pod 'paper-onboarding', '~> 4.0'
     pod 'Piano', '~> 1.5'
     pod 'PureLayout', '~> 3.0'
+    pod 'RevealingSplashView', '~> 0.5'
     pod 'SearchTextField', '~> 1.2'
     pod 'SkyFloatingLabelTextField', '~> 3.4'
     pod 'Spring', '~> 1.0'
