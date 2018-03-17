@@ -47,6 +47,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 //        Database.database().isPersistenceEnabled = true
 
+        // todo: make delegate
         launchScreenFinishedObserver = NotificationCenter.default.addObserver(
             forName: .launchScreenFinished,
             object: nil,

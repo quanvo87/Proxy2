@@ -34,13 +34,13 @@ class ConvoViewController: MessagesViewController {
             self?.convo = convo
         }
 
-        // todo: don't play sound if opening convo from notification
+        // todo: profile on device
+        // tood: figure out what behavior i want first
         messagesObserver.observe(convoKey: convo.key) { [weak self] messages in
             activityIndicatorView.removeFromSuperview()
-            if let currentLastMessage = self?.messages.last,
-                let newLastMessage = messages.last,
-                currentLastMessage.messageId != newLastMessage.messageId &&
-                    newLastMessage.sender.id != self?.convo?.senderId {
+            if let newMessage = messages.last,
+                newMessage.sender.id != self?.convo?.senderId,
+                !newMessage.hasBeenRead {
                 try? audioPlayer.playSound(name: "textIn", fileType: "wav")
             }
             self?.messages = messages
