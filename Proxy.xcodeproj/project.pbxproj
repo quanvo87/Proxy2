@@ -72,6 +72,7 @@
 		59BE6ABB2016C74B00CCD27E /* GroupWork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BE6ABA2016C74B00CCD27E /* GroupWork.swift */; };
 		59CDE808201BDEA40048C7E3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59CDE807201BDEA40048C7E3 /* AppDelegate.swift */; };
 		59D3AE501FA1A4FF009F18A5 /* ConvoDetailReceiverProxyTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 59D3AE4F1FA1A4FF009F18A5 /* ConvoDetailReceiverProxyTableViewCell.xib */; };
+		59D5419C205D98B400754E8A /* ProxyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D5419B205D98B400754E8A /* ProxyTests.swift */; };
 		59D76C85203E3F5900ED7926 /* login.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 59D76C84203E3F5900ED7926 /* login.mp4 */; };
 		59DE14CC2046155D0029B14F /* ProxyNotificationBannerQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59DE14CB2046155D0029B14F /* ProxyNotificationBannerQueue.swift */; };
 		59DECF5F1FEA56AD009ABB36 /* ConvoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59DECF5E1FEA56AD009ABB36 /* ConvoViewController.swift */; };
@@ -176,6 +177,7 @@
 		59BE6ABA2016C74B00CCD27E /* GroupWork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupWork.swift; sourceTree = "<group>"; };
 		59CDE807201BDEA40048C7E3 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		59D3AE4F1FA1A4FF009F18A5 /* ConvoDetailReceiverProxyTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConvoDetailReceiverProxyTableViewCell.xib; sourceTree = "<group>"; };
+		59D5419B205D98B400754E8A /* ProxyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyTests.swift; sourceTree = "<group>"; };
 		59D76C84203E3F5900ED7926 /* login.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = login.mp4; sourceTree = "<group>"; };
 		59DE14CB2046155D0029B14F /* ProxyNotificationBannerQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyNotificationBannerQueue.swift; sourceTree = "<group>"; };
 		59DECF5E1FEA56AD009ABB36 /* ConvoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoViewController.swift; sourceTree = "<group>"; };
@@ -347,6 +349,7 @@
 				5973C8811F608A4E00647492 /* FirebaseTest.swift */,
 				5973C8831F608A4E00647492 /* FirebaseTests.swift */,
 				591E305D1FF9729C00094EB3 /* FirebaseUtilTests.swift */,
+				59D5419B205D98B400754E8A /* ProxyTests.swift */,
 				59B432F61F60648400622DEA /* Info.plist */,
 			);
 			path = ProxyTests;
@@ -951,6 +954,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				59D5419C205D98B400754E8A /* ProxyTests.swift in Sources */,
 				591E305E1FF9729C00094EB3 /* FirebaseUtilTests.swift in Sources */,
 				5973C88A1F608A4E00647492 /* FirebaseTest.swift in Sources */,
 				5973C88C1F608A4E00647492 /* FirebaseTests.swift in Sources */,
