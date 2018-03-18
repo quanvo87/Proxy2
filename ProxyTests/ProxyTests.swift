@@ -28,4 +28,12 @@ class ProxyTests: XCTestCase {
         num = 1111111111111111111
         XCTAssertEqual(num.asAbbreviatedString, "1.1Q")
     }
+
+    func testIcons() {
+        let iconNames = ProxyPropertyGenerator().iconNames
+        XCTAssertEqual(iconNames.count, 145)
+        iconNames.forEach {
+            XCTAssertNotNil(UIImage(named: $0))
+        }
+    }
 }

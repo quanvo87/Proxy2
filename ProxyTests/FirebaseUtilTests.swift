@@ -65,10 +65,4 @@ class FirebaseUtilTests: FirebaseTest {
             }
         }
     }
-
-    func testIcons() {
-        for icon in ProxyPropertyGenerator().iconNames {
-            XCTAssertNotNil(UIImage(named: icon))
-        }
-    }
 }

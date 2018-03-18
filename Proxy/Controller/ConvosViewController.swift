@@ -178,7 +178,6 @@ extension ConvosViewController: UITableViewDelegate {
         return CGFloat.leastNormalMagnitude
     }
 
-    // todo: test
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         guard indexPath.row == convos.count - 1 else {
             return
