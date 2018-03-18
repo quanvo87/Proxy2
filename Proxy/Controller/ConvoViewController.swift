@@ -35,7 +35,7 @@ class ConvoViewController: MessagesViewController {
         }
 
         // todo: profile on device
-        // tood: figure out what behavior i want first
+        // todo: figure out what behavior i want first
         messagesObserver.observe(convoKey: convo.key) { [weak self] messages in
             activityIndicatorView.removeFromSuperview()
             if let newMessage = messages.last,
