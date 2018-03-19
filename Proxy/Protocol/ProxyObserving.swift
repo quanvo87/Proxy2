@@ -1,5 +1,4 @@
 import FirebaseDatabase
-import WQNetworkActivityIndicator
 
 protocol ProxyObsering: ReferenceObserving {
     func observe(proxyKey: String, proxyOwnerId: String, completion: @escaping (Proxy?) -> Void)
@@ -9,18 +8,11 @@ class ProxyObserver: ProxyObsering {
     private (set) var handle: DatabaseHandle?
     private (set) var ref: DatabaseReference?
     private let database = Firebase()
-    private var firstCallback = true
 
     func observe(proxyKey: String, proxyOwnerId: String, completion: @escaping (Proxy?) -> Void) {
         stopObserving()
-        firstCallback = true
         ref = try? Constant.firebaseHelper.makeReference(Child.proxies, proxyOwnerId, proxyKey)
-        WQNetworkActivityIndicator.shared.show()
         handle = ref?.observe(.value) { [weak self] data in
-            if let firstCallback = self?.firstCallback, firstCallback {
-                self?.firstCallback = false
-                WQNetworkActivityIndicator.shared.hide()
-            }
             do {
                 completion(try Proxy(data))
             } catch {

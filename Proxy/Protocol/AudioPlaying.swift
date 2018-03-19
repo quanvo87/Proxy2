@@ -5,6 +5,7 @@ protocol AudioPlaying {
     func playWithCooldown()
 }
 
+// todo: change to play every 5 seconds once cool sounds are in
 class AudioPlayer: AudioPlaying {
     private let player: AVAudioPlayer
     private var cooldownResetItem: DispatchWorkItem?

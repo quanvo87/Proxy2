@@ -40,7 +40,6 @@ class ConvoViewController: MessagesViewController {
         // todo: profile on device
         messagesObserver.observe(convoKey: convo.key) { [weak self] messages in
             activityIndicatorView.removeFromSuperview()
-            messagesObserver.stopObserving()
             self?.messages = messages
             self?.messagesCollectionView.reloadData()
             self?.messagesCollectionView.scrollToBottom()

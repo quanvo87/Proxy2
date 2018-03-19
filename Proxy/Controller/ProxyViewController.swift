@@ -70,7 +70,6 @@ class ProxyViewController: UIViewController, NewMessageMakerDelegate {
             forCellReuseIdentifier: String(describing: SenderProxyTableViewCell.self)
         )
         tableView.sectionHeaderHeight = 0
-        tableView.separatorStyle = .none
         tableView.setDelaysContentTouchesForScrollViews()
 
         tableViewRefresher.refresh(tableView)
