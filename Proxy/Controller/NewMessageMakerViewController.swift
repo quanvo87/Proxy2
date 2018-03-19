@@ -63,7 +63,9 @@ class NewMessageMakerViewController: UIViewController, SenderPickerDelegate {
         makeNewProxyButton.isEnabled = false
 
         messageInputBar.delegate = self
+        messageInputBar.inputTextView.autocorrectionType = .default
         messageInputBar.inputTextView.delegate = self
+        messageInputBar.inputTextView.placeholder = "Aa"
 
         navigationItem.rightBarButtonItems = [cancelButton, makeNewProxyButton]
         navigationItem.title = "New Message"

@@ -1,21 +1,40 @@
 import AVKit
 
 protocol AudioPlaying {
-    func playSound(name: String, fileType: String?) throws
+    func play()
 }
 
 class AudioPlayer: AudioPlaying {
-    private lazy var player = AVAudioPlayer()
+    private let player: AVAudioPlayer
+    private var cooldownResetItem: DispatchWorkItem?
+    private var onCooldown = false
 
-    func playSound(name: String, fileType: String?) throws {
-        let asset = NSDataAsset(name: name)
-        guard let data = asset?.data else {
-            throw ProxyError.unknown
+    init(soundFileName: String, fileTypeHint: String = "wav") {
+        let dataAsset = NSDataAsset(name: soundFileName)
+        do {
+            guard let data = dataAsset?.data else {
+                throw ProxyError.unknown
+            }
+            player = try AVAudioPlayer(data: data, fileTypeHint: fileTypeHint)
+        } catch {
+            player = AVAudioPlayer()
         }
-        player = try AVAudioPlayer(data: data, fileTypeHint: fileType)
-        if #available(iOS 10.0, *) {
-            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryAmbient)
+    }
+
+    func play() {
+        if !onCooldown {
+            onCooldown = true
+            if #available(iOS 10.0, *) {
+                try? AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryAmbient)
+                try? AVAudioSession.sharedInstance().setActive(true)
+            }
+            player.play()
         }
-        player.play()
+        cooldownResetItem?.cancel()
+        let workItem = DispatchWorkItem { [weak self] in
+            self?.onCooldown = false
+        }
+        cooldownResetItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(60), execute: workItem)
     }
 }

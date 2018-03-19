@@ -179,7 +179,7 @@ extension ConvosViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        guard indexPath.row == convos.count - 1 else {
+        guard indexPath.row == convos.count - 1 else {  // todo: should be 0?
             return
         }
         let activityIndicatorView = UIActivityIndicatorView(view)

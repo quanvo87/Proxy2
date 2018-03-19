@@ -1,6 +1,7 @@
 import FirebaseMessaging
 import UIKit
 
+// todo: toggle sound option
 class SettingsViewController: UIViewController {
     private let database: Database
     private let loginManager: LoginManaging

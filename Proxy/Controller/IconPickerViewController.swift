@@ -1,5 +1,6 @@
 import UIKit
 
+// todo: show full icon name
 class IconPickerViewController: UIViewController {
     private let collectionView: UICollectionView
     private let database: Database

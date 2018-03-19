@@ -1,10 +1,11 @@
 import MessageKit
 
 class ConvoViewController: MessagesViewController {
-    private let audioPlayer: AudioPlaying
+    private let convoAudioPlayer: ConvoAudioPlaying
     private let convoObserver: ConvoObserving
     private let database: Database
     private let messagesObserver: MessagesObserving
+    private let querySize: UInt
     private let unreadMessagesObserver: UnreadMessagesObserving
     private var convo: Convo? { didSet { didSetConvo() } }
     private var icons = [String: UIImage]()
@@ -12,16 +13,18 @@ class ConvoViewController: MessagesViewController {
     private var messages = [Message]()
     private var messagesToRead = Set<Message>()
 
-    init(audioPlayer: AudioPlaying = AudioPlayer(),
+    init(convoAudioPlayer: ConvoAudioPlaying = ConvoAudioPlayer(),
          convoObserver: ConvoObserving = ConvoObserver(),
          database: Database = Firebase(),
          messagesObserver: MessagesObserving = MessagesObserver(),
+         querySize: UInt = DatabaseOption.querySize,
          unreadMessagesObserver: UnreadMessagesObserving = UnreadMessagesObserver(),
          convo: Convo) {
-        self.audioPlayer = audioPlayer
+        self.convoAudioPlayer = convoAudioPlayer
         self.convoObserver = convoObserver
         self.database = database
         self.messagesObserver = messagesObserver
+        self.querySize = querySize
         self.unreadMessagesObserver = unreadMessagesObserver
         self.convo = convo
 
@@ -38,29 +41,38 @@ class ConvoViewController: MessagesViewController {
         // todo: sound: play any time get new message while not in convo. if in convo, only play every min.
         messagesObserver.observe(convoKey: convo.key) { [weak self] messages in
             activityIndicatorView.removeFromSuperview()
-            if let newMessage = messages.last,
-                newMessage.sender.id != self?.convo?.senderId,
-                !newMessage.hasBeenRead {
-                try? audioPlayer.playSound(name: "textIn", fileType: "wav")
-            }
+            messagesObserver.stopObserving()
             self?.messages = messages
             self?.messagesCollectionView.reloadData()
             self?.messagesCollectionView.scrollToBottom()
+            messagesObserver.observe(convoKey: convo.key) { messages in
+                if let isPresent = self?.isPresent, isPresent,
+                    let newMessage = messages.last,
+                    newMessage.sender.id != self?.convo?.senderId,
+                    !newMessage.hasBeenRead {
+                    self?.convoAudioPlayer.playIncomingMessageSound()
+                }
+                self?.messages = messages
+                self?.messagesCollectionView.reloadData()
+                self?.messagesCollectionView.scrollToBottom()
+            }
         }
+
+        maintainPositionOnKeyboardFrameChanged = true
+
+        messageInputBar.delegate = self
+        messageInputBar.inputTextView.autocorrectionType = .default
+        messageInputBar.inputTextView.placeholder = "Aa"
+
+        messagesCollectionView.messagesDataSource = self
+        messagesCollectionView.messagesDisplayDelegate = self
+        messagesCollectionView.messagesLayoutDelegate = self
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             target: self,
             action: #selector(showConvoDetailViewController),
             image: Image.info
         )
-
-        maintainPositionOnKeyboardFrameChanged = true
-
-        messageInputBar.delegate = self
-
-        messagesCollectionView.messagesDataSource = self
-        messagesCollectionView.messagesDisplayDelegate = self
-        messagesCollectionView.messagesLayoutDelegate = self
 
         unreadMessagesObserver.observe(uid: convo.senderId) { [weak self] update in
             guard let _self = self else {
@@ -107,7 +119,7 @@ class ConvoViewController: MessagesViewController {
     func collectionView(_ collectionView: UICollectionView,
                         willDisplay cell: UICollectionViewCell,
                         forItemAt indexPath: IndexPath) {
-        guard indexPath.section == 0 else {
+        guard messages.count >= querySize, indexPath.section == 0 else {
             return
         }
         let activityIndicatorView = UIActivityIndicatorView(view)
@@ -159,7 +171,7 @@ extension ConvoViewController: MessageInputBarDelegate {
             case .failure(let error):
                 StatusBar.showErrorStatusBarBanner(error)
             case .success:
-                try? self?.audioPlayer.playSound(name: "textOut", fileType: "wav")
+                self?.convoAudioPlayer.playOutgoingMessageSound()
             }
         }
     }
