@@ -1,6 +1,5 @@
 import UIKit
 
-// todo: show full icon name
 class IconPickerViewController: UIViewController {
     private let collectionView: UICollectionView
     private let database: Database
@@ -73,7 +72,6 @@ extension IconPickerViewController: UICollectionViewDataSource {
 // MARK: - UICollectionViewDelegate
 extension IconPickerViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        collectionView.cellForItem(at: indexPath)?.backgroundColor = Color.iOSBlue
         let iconName = iconNames[indexPath.row]
         database.setIcon(to: iconName, for: proxy) { _ in }
         dismiss(animated: true)

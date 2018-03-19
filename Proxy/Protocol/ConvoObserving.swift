@@ -9,7 +9,7 @@ class ConvoObserver: ConvoObserving {
     private (set) var handle: DatabaseHandle?
     private (set) var ref: DatabaseReference?
     private let database = Firebase()
-    private var firstCallback = true
+    private var firstCallback = true    // todo: just remove this shit
 
     func observe(convoKey: String, convoSenderId: String, completion: @escaping (Convo?) -> Void) {
         stopObserving()

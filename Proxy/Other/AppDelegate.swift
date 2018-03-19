@@ -4,6 +4,7 @@ import FBSDKCoreKit
 import SwiftMessages
 import UserNotifications
 
+// todo: add todo section in readme (refactor to extract view controller elements and greater decoupling of view and model)
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow? = UIWindow(frame: UIScreen.main.bounds)
