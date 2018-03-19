@@ -121,7 +121,7 @@ class Firebase: Database {
     }
 
     func makeProxy(currentProxyCount: Int, ownerId: String, completion: @escaping ProxyCallback) {
-        Feedback.generateSuccess()
+        Haptic.makeSuccess()
         guard !isMakingProxy else {
             return
         }

@@ -13,7 +13,6 @@
 		590441EB1F98351E0015CE16 /* ConvosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 590441EA1F98351E0015CE16 /* ConvosViewController.swift */; };
 		590823C31F9EED6A00A3B6A9 /* IconPickerCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 590823C21F9EED6A00A3B6A9 /* IconPickerCollectionViewCell.xib */; };
 		590823C51F9EF6DA00A3B6A9 /* ProxyPropertyGenerating.swift in Sources */ = {isa = PBXBuildFile; fileRef = 590823C41F9EF6DA00A3B6A9 /* ProxyPropertyGenerating.swift */; };
-		591E1D5D205F6EF400F4FB99 /* ConvoAudioPlaying.swift in Sources */ = {isa = PBXBuildFile; fileRef = 591E1D5C205F6EF300F4FB99 /* ConvoAudioPlaying.swift */; };
 		591E305E1FF9729C00094EB3 /* FirebaseUtilTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 591E305D1FF9729C00094EB3 /* FirebaseUtilTests.swift */; };
 		5932BA18200963AC0041BD7B /* ConvoObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5932BA17200963AC0041BD7B /* ConvoObserving.swift */; };
 		5932BA1A20096FD60041BD7B /* ConvosObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5932BA1920096FD60041BD7B /* ConvosObserving.swift */; };
@@ -65,6 +64,7 @@
 		598F8A5A1FEB501400CCF024 /* ConvoDetailSenderProxyTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 598F8A591FEB501400CCF024 /* ConvoDetailSenderProxyTableViewCell.xib */; };
 		598F8A661FEB9B2300CCF024 /* Protocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598F8A651FEB9B2300CCF024 /* Protocol.swift */; };
 		5996F19B2016233100CF36FD /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5996F19A2016233100CF36FD /* Database.swift */; };
+		59A6421F205FD960003253AB /* ConvoAudioPlaying.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59A6421E205FD960003253AB /* ConvoAudioPlaying.swift */; };
 		59B432E51F60648400622DEA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 59B432E31F60648400622DEA /* Main.storyboard */; };
 		59B432E71F60648400622DEA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 59B432E61F60648400622DEA /* Assets.xcassets */; };
 		59B432EA1F60648400622DEA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 59B432E81F60648400622DEA /* LaunchScreen.storyboard */; };
@@ -113,7 +113,6 @@
 		590823C21F9EED6A00A3B6A9 /* IconPickerCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IconPickerCollectionViewCell.xib; sourceTree = "<group>"; };
 		590823C41F9EF6DA00A3B6A9 /* ProxyPropertyGenerating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyPropertyGenerating.swift; sourceTree = "<group>"; };
 		59172E492048CCBE002672CA /* Proxy.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Proxy.entitlements; sourceTree = "<group>"; };
-		591E1D5C205F6EF300F4FB99 /* ConvoAudioPlaying.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvoAudioPlaying.swift; sourceTree = "<group>"; };
 		591E305D1FF9729C00094EB3 /* FirebaseUtilTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseUtilTests.swift; sourceTree = "<group>"; };
 		5932BA17200963AC0041BD7B /* ConvoObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoObserving.swift; sourceTree = "<group>"; };
 		5932BA1920096FD60041BD7B /* ConvosObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvosObserving.swift; sourceTree = "<group>"; };
@@ -165,6 +164,7 @@
 		598F8A591FEB501400CCF024 /* ConvoDetailSenderProxyTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConvoDetailSenderProxyTableViewCell.xib; sourceTree = "<group>"; };
 		598F8A651FEB9B2300CCF024 /* Protocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocol.swift; sourceTree = "<group>"; };
 		5996F19A2016233100CF36FD /* Database.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database.swift; sourceTree = "<group>"; };
+		59A6421E205FD960003253AB /* ConvoAudioPlaying.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoAudioPlaying.swift; sourceTree = "<group>"; };
 		59B432DC1F60648400622DEA /* Proxy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Proxy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		59B432E41F60648400622DEA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		59B432E61F60648400622DEA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -280,7 +280,7 @@
 				595CC10E205F6F8A0019589D /* AudioPlaying.swift */,
 				59FF373C1F97984200FA1AF0 /* AuthObserving.swift */,
 				593C938C205494D600931F2B /* ButtonAnimating.swift */,
-				591E1D5C205F6EF300F4FB99 /* ConvoAudioPlaying.swift */,
+				59A6421E205FD960003253AB /* ConvoAudioPlaying.swift */,
 				5932BA17200963AC0041BD7B /* ConvoObserving.swift */,
 				593C9386205393E200931F2B /* ConvoPresenceObserving.swift */,
 				5932BA1920096FD60041BD7B /* ConvosObserving.swift */,
@@ -931,8 +931,8 @@
 				5973C8751F608A2200647492 /* loadIconNames.swift in Sources */,
 				59E75B301F846F6B0033A407 /* ProxyObserving.swift in Sources */,
 				5973C8691F608A2200647492 /* loadNouns.swift in Sources */,
-				591E1D5D205F6EF400F4FB99 /* ConvoAudioPlaying.swift in Sources */,
 				5973C86C1F608A2200647492 /* LoginManaging.swift in Sources */,
+				59A6421F205FD960003253AB /* ConvoAudioPlaying.swift in Sources */,
 				59B90C211FF3411E00449569 /* UnreadMessagesObserving.swift in Sources */,
 				5973C8761F608A2200647492 /* SettingsViewController.swift in Sources */,
 				598F89FE1FEB401200CCF024 /* ConvoDetailViewController.swift in Sources */,

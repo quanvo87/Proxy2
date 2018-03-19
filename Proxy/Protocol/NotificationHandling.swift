@@ -5,12 +5,12 @@ protocol NotificationHandling {
     func showNewMessageBanner(uid: String?, userInfo: [AnyHashable: Any], completion: @escaping () -> Void)
 }
 
-struct NotificationHandler: NotificationHandling {
-    private let database: Database
+class NotificationHandler: NotificationHandling {
+    private let database = Firebase()
+    private let incomingMessageAudioPlayer = AudioPlayer(soundFileName: "textIn")
     private weak var convoPresenceObserver: ConvoPresenceObserving?
 
-    init(database: Database = Firebase(), convoPresenceObserver: ConvoPresenceObserving) {
-        self.database = database
+    init(convoPresenceObserver: ConvoPresenceObserving) {
         self.convoPresenceObserver = convoPresenceObserver
     }
 
@@ -43,11 +43,12 @@ struct NotificationHandler: NotificationHandling {
                 completion()
                 return
         }
-        database.getConvo(convoKey: convoKey, ownerId: uid) { result in
+        database.getConvo(convoKey: convoKey, ownerId: uid) { [weak self] result in
             switch result {
             case .failure(let error):
                 StatusBar.showErrorStatusBarBanner(error)
             case .success(let convo):
+                self?.incomingMessageAudioPlayer.play()
                 StatusBar.showNewMessageBanner(convo)
             }
             completion()

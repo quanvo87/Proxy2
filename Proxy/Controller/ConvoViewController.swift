@@ -38,7 +38,6 @@ class ConvoViewController: MessagesViewController {
         }
 
         // todo: profile on device
-        // todo: sound: play any time get new message while not in convo. if in convo, only play every min.
         messagesObserver.observe(convoKey: convo.key) { [weak self] messages in
             activityIndicatorView.removeFromSuperview()
             messagesObserver.stopObserving()

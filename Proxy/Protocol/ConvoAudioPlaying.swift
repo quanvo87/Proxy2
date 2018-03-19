@@ -1,24 +1,17 @@
-import AVKit
-
 protocol ConvoAudioPlaying {
     func playIncomingMessageSound()
     func playOutgoingMessageSound()
 }
 
-class ConvoAudioPlayer: ConvoAudioPlaying {
-    private let incomingMessageSoundPlayer: AudioPlayer
-    private let outgoingMessageSoundPlayer: AudioPlayer
-
-    init() {
-        incomingMessageSoundPlayer = AudioPlayer(soundFileName: "textIn")
-        outgoingMessageSoundPlayer = AudioPlayer(soundFileName: "textOut")
-    }
+struct ConvoAudioPlayer: ConvoAudioPlaying {
+    private let incomingMessageAudioPlayer = AudioPlayer(soundFileName: "textIn")
+    private let outgoingMessageAudioPlayer = AudioPlayer(soundFileName: "textOut")
 
     func playIncomingMessageSound() {
-        incomingMessageSoundPlayer.play()
+        incomingMessageAudioPlayer.playWithCooldown()
     }
 
     func playOutgoingMessageSound() {
-        outgoingMessageSoundPlayer.play()
+        outgoingMessageAudioPlayer.playWithCooldown()
     }
 }

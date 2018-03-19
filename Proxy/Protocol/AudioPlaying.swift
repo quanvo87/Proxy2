@@ -2,6 +2,7 @@ import AVKit
 
 protocol AudioPlaying {
     func play()
+    func playWithCooldown()
 }
 
 class AudioPlayer: AudioPlaying {
@@ -22,6 +23,10 @@ class AudioPlayer: AudioPlaying {
     }
 
     func play() {
+        player.play()
+    }
+
+    func playWithCooldown() {
         if !onCooldown {
             onCooldown = true
             if #available(iOS 10.0, *) {
@@ -35,6 +40,6 @@ class AudioPlayer: AudioPlaying {
             self?.onCooldown = false
         }
         cooldownResetItem = workItem
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(60), execute: workItem)
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(30), execute: workItem)
     }
 }
