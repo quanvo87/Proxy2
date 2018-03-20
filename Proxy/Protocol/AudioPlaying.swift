@@ -5,10 +5,9 @@ protocol AudioPlaying {
     func playWithCooldown()
 }
 
-// todo: change to play every 5 seconds once cool sounds are in
+// todo: .
 class AudioPlayer: AudioPlaying {
     private let player: AVAudioPlayer
-    private var cooldownResetItem: DispatchWorkItem?
     private var onCooldown = false
 
     init(soundFileName: String, fileTypeHint: String = "wav") {
@@ -29,18 +28,15 @@ class AudioPlayer: AudioPlaying {
 
     func playWithCooldown() {
         if !onCooldown {
-            onCooldown = true
             if #available(iOS 10.0, *) {
                 try? AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryAmbient)
                 try? AVAudioSession.sharedInstance().setActive(true)
             }
             player.play()
+            onCooldown = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5)) { [weak self] in
+                self?.onCooldown = false
+            }
         }
-        cooldownResetItem?.cancel()
-        let workItem = DispatchWorkItem { [weak self] in
-            self?.onCooldown = false
-        }
-        cooldownResetItem = workItem
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(30), execute: workItem)
     }
 }

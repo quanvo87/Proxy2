@@ -37,7 +37,6 @@ class ConvoViewController: MessagesViewController {
             self?.convo = convo
         }
 
-        // todo: profile on device
         messagesObserver.observe(convoKey: convo.key) { [weak self] messages in
             activityIndicatorView.removeFromSuperview()
             self?.messages = messages

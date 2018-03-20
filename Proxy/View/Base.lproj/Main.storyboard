@@ -355,11 +355,19 @@
                                     <action selector="didTapCoverrButton:" destination="2n7-5Y-xNp" eventType="touchUpInside" id="PY0-ua-wWk"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Upcoming features: sending multimedia messages (photo, video, location)!" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sea-Wj-Stk">
+                                <rect key="frame" x="20" y="353.5" width="335" height="29"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="xr3-FV-tcF" firstAttribute="trailing" secondItem="sea-Wj-Stk" secondAttribute="trailing" constant="20" id="0GH-5T-brg"/>
                             <constraint firstItem="OoH-hp-pTm" firstAttribute="centerX" secondItem="xr3-FV-tcF" secondAttribute="centerX" id="4q0-uB-fEo"/>
                             <constraint firstItem="VoB-bl-1Q3" firstAttribute="top" secondItem="8oR-S7-7U1" secondAttribute="bottom" constant="20" id="5DH-sR-9JJ"/>
+                            <constraint firstItem="sea-Wj-Stk" firstAttribute="top" secondItem="gGV-Jj-2Cl" secondAttribute="bottom" constant="20" id="7So-Os-8NP"/>
                             <constraint firstItem="gGV-Jj-2Cl" firstAttribute="centerX" secondItem="xr3-FV-tcF" secondAttribute="centerX" id="7YV-uZ-Ti9"/>
                             <constraint firstItem="YwX-EJ-u87" firstAttribute="top" secondItem="VoB-bl-1Q3" secondAttribute="bottom" constant="20" id="DzI-YY-gH1"/>
                             <constraint firstItem="8oR-S7-7U1" firstAttribute="top" secondItem="Y0B-s6-f57" secondAttribute="bottom" constant="20" id="FQr-VK-UCc"/>
@@ -367,6 +375,7 @@
                             <constraint firstItem="twf-yM-TjF" firstAttribute="top" secondItem="tI9-L9-nqv" secondAttribute="bottom" constant="20" id="J3u-Po-Glv"/>
                             <constraint firstItem="tI9-L9-nqv" firstAttribute="centerX" secondItem="xr3-FV-tcF" secondAttribute="centerX" id="NWt-JK-1EK"/>
                             <constraint firstItem="OoH-hp-pTm" firstAttribute="top" secondItem="xr3-FV-tcF" secondAttribute="top" constant="20" id="RNd-mk-J5B"/>
+                            <constraint firstItem="sea-Wj-Stk" firstAttribute="leading" secondItem="xr3-FV-tcF" secondAttribute="leading" constant="20" id="WZr-YZ-knZ"/>
                             <constraint firstItem="VoB-bl-1Q3" firstAttribute="centerX" secondItem="xr3-FV-tcF" secondAttribute="centerX" id="WxR-p2-1DS"/>
                             <constraint firstItem="YwX-EJ-u87" firstAttribute="centerX" secondItem="xr3-FV-tcF" secondAttribute="centerX" id="YGg-5w-zLA"/>
                             <constraint firstItem="gGV-Jj-2Cl" firstAttribute="top" secondItem="twf-yM-TjF" secondAttribute="bottom" id="kRg-L0-ThE"/>
@@ -380,7 +389,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="J2N-pz-Jq4" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-343" y="2185"/>
+            <point key="canvasLocation" x="-343.19999999999999" y="2184.5577211394307"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="u5B-CL-ZTC">

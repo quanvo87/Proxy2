@@ -1,6 +1,5 @@
 import UIKit
 
-// todo: add features in development section
 class AboutViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
