@@ -154,7 +154,7 @@ enum DatabaseOption {
     static let querySize: UInt = 30
 }
 
-enum DeviceUtilities {
+enum DeviceUtility {
     enum FeedbackType {
         case haptic
         case taptic
@@ -186,7 +186,7 @@ enum DeviceUtilities {
 
 enum Haptic {
     static func makeError() {
-        switch DeviceUtilities.feedbackType {
+        switch DeviceUtility.feedbackType {
         case .haptic:
             Piano.play([.hapticFeedback(.notification(.failure))])
         case .taptic:
@@ -197,7 +197,7 @@ enum Haptic {
     }
 
     static func makeSuccess(_ impact: Piano.HapticFeedback.Impact? = .light) {
-        switch DeviceUtilities.feedbackType {
+        switch DeviceUtility.feedbackType {
         case .haptic:
             guard let impact = impact else {
                 return

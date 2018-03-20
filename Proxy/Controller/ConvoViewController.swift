@@ -37,6 +37,7 @@ class ConvoViewController: MessagesViewController {
             self?.convo = convo
         }
 
+        // todo: still plays when open from app in background, call this on viewWillAppear?
         messagesObserver.observe(convoKey: convo.key) { [weak self] messages in
             activityIndicatorView.removeFromSuperview()
             self?.messages = messages

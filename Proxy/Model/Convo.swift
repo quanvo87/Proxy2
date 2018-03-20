@@ -50,6 +50,7 @@ struct Convo {
     let senderProxyName: String
     let timestamp: Double
 
+    // todo: make nicknames blue
     var label: NSAttributedString {
         let receiver = NSMutableAttributedString(string: receiverDisplayName)
         let sender = NSMutableAttributedString(

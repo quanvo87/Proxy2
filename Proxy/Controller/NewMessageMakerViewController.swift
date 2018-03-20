@@ -286,14 +286,14 @@ extension NewMessageMakerViewController: UITableViewDataSource {
                     cell.receiverTextField.stopLoadingIndicator()
                 }
             }
-            let fontSize: CGFloat = DeviceUtilities.isSmallDevice ? 14 : 17
+            let fontSize: CGFloat = DeviceUtility.isSmallDevice ? 14 : 17
             cell.receiverTextField.highlightAttributes =
                 [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: fontSize)]
             cell.receiverTextField.theme.font = .systemFont(ofSize: fontSize)
             cell.receiverTextField.comparisonOptions = [.caseInsensitive]
             cell.receiverTextField.delegate = self
             cell.receiverTextField.maxResultsListHeight =
-                DeviceUtilities.isSmallDevice ? Int(view.frame.height / 4) : Int(view.frame.height / 3)
+                DeviceUtility.isSmallDevice ? Int(view.frame.height / 4) : Int(view.frame.height / 3)
             cell.receiverTextField.theme.cellHeight = 50
             cell.receiverTextField.theme.separatorColor = UIColor.lightGray.withAlphaComponent(0.5)
             return cell

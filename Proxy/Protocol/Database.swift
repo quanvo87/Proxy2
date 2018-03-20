@@ -1,3 +1,4 @@
+import FirebaseDatabase
 import GroupWork
 import MessageKit
 import WQNetworkActivityIndicator
@@ -8,14 +9,30 @@ enum IncrementableUserProperty: String {
     case proxiesInteractedWith
 }
 
+enum SettableUserProperty {
+    case registrationToken(String)
+    case sound(Bool)
+
+    var properties: (name: String, value: Any) {
+        switch self {
+        case .registrationToken(let value):
+            return ("registrationToken", value)
+        case .sound(let value):
+            return ("sound", value)
+        }
+    }
+}
+
 protocol Database {
     typealias ConvoCallback = (Result<Convo, Error>) -> Void
+    typealias DataCallback = (Result<DataSnapshot, Error>) -> Void
     typealias ErrorCallback = (Error?) -> Void
     typealias MessageCallback = (Result<(convo: Convo, message: Message), Error>) -> Void
     typealias ProxyCallback = (Result<Proxy, Error>) -> Void
     init(_ options: [String: Any])
+    func delete(userProperty: SettableUserProperty, for uid: String, completion: @escaping ErrorCallback)
     func deleteProxy(_ proxy: Proxy, completion: @escaping ErrorCallback)
-    func deleteRegistrationToken(_ registrationToken: String, for uid: String, completion: @escaping ErrorCallback)
+    func get(userProperty: SettableUserProperty, for uid: String, completion: @escaping DataCallback)
     func getConvo(convoKey: String, ownerId: String, completion: @escaping ConvoCallback)
     func getProxy(proxyKey: String, completion: @escaping ProxyCallback)
     func getProxy(proxyKey: String, ownerId: String, completion: @escaping ProxyCallback)
@@ -23,10 +40,10 @@ protocol Database {
     func read(_ message: Message, at date: Date, completion: @escaping ErrorCallback)
     func sendMessage(sender: Proxy, receiver: Proxy, text: String, completion: @escaping MessageCallback)
     func sendMessage(convo: Convo, text: String, completion: @escaping MessageCallback)
+    func set(userProperty: SettableUserProperty, for uid: String, completion: @escaping ErrorCallback)
     func setIcon(to icon: String, for proxy: Proxy, completion: @escaping ErrorCallback)
     func setNickname(to nickname: String, for proxy: Proxy, completion: @escaping ErrorCallback)
     func setReceiverNickname(to nickname: String, for convo: Convo, completion: @escaping ErrorCallback)
-    func setRegistrationToken(_ registrationToken: String, for uid: String, completion: @escaping ErrorCallback)
 }
 
 class Firebase: Database {
@@ -47,6 +64,19 @@ class Firebase: Database {
     }
     // swiftlint:enable line_length
 
+    func delete(userProperty: SettableUserProperty, for uid: String, completion: @escaping ErrorCallback) {
+        switch userProperty {
+        case .registrationToken(let registrationToken):
+            Constant.firebaseHelper.delete(Child.users, uid, Child.registrationTokens, registrationToken) { error in
+                completion(error)
+            }
+        default:
+            Constant.firebaseHelper.delete(Child.users, uid, userProperty.properties.name) { error in
+                completion(error)
+            }
+        }
+    }
+
     func deleteProxy(_ proxy: Proxy, completion: @escaping ErrorCallback) {
         getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { result in
             switch result {
@@ -66,9 +96,14 @@ class Firebase: Database {
         }
     }
 
-    func deleteRegistrationToken(_ registrationToken: String, for uid: String, completion: @escaping ErrorCallback) {
-        Constant.firebaseHelper.delete(Child.users, uid, Child.registrationTokens, registrationToken) { error in
-            completion(error)
+    func get(userProperty: SettableUserProperty, for uid: String, completion: @escaping DataCallback) {
+        Constant.firebaseHelper.get(Child.users, uid, userProperty.properties.name) { result in
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+            case .success(let data):
+                completion(.success(data))
+            }
         }
     }
 
@@ -301,6 +336,25 @@ class Firebase: Database {
         }
     }
 
+    func set(userProperty: SettableUserProperty, for uid: String, completion: @escaping ErrorCallback) {
+        switch userProperty {
+        case .registrationToken(let registrationToken):
+            Constant.firebaseHelper.set(
+                true,
+                at: Child.users, uid, Child.registrationTokens, registrationToken) { error in
+                    completion(error)
+            }
+        default:
+            Constant.firebaseHelper.set(
+                userProperty.properties.value,
+                at: Child.users,
+                uid,
+                userProperty.properties.name) { error in
+                    completion(error)
+            }
+        }
+    }
+
     func setIcon(to icon: String, for proxy: Proxy, completion: @escaping ErrorCallback) {
         getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { result in
             switch result {
@@ -356,14 +410,6 @@ class Firebase: Database {
             case .success(let data):
                 completion(.success(data.asConvosArray(proxyKey: key)))
             }
-        }
-    }
-
-    func setRegistrationToken(_ registrationToken: String, for uid: String, completion: @escaping ErrorCallback) {
-        Constant.firebaseHelper.set(
-            true,
-            at: Child.users, uid, Child.registrationTokens, registrationToken) { error in
-                completion(error)
         }
     }
 }

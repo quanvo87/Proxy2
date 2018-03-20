@@ -121,7 +121,7 @@ private extension AppDelegate {
         guard let registrationToken = Messaging.messaging().fcmToken, let uid = uid else {
             return
         }
-        database.setRegistrationToken(registrationToken, for: uid) { error in
+        database.set(userProperty: .registrationToken(registrationToken), for: uid) { error in
             if let error = error {
                 StatusBar.showErrorStatusBarBanner(error)
             }
