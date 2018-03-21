@@ -11,14 +11,14 @@ enum IncrementableUserProperty: String {
 
 enum SettableUserProperty {
     case registrationToken(String)
-    case sound(Bool)
+    case soundOn(Bool)
 
     var properties: (name: String, value: Any) {
         switch self {
         case .registrationToken(let value):
             return ("registrationToken", value)
-        case .sound(let value):
-            return ("sound", value)
+        case .soundOn(let value):
+            return (Constant.soundOn, value)
         }
     }
 }

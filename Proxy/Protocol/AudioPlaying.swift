@@ -23,10 +23,16 @@ class AudioPlayer: AudioPlaying {
     }
 
     func play() {
+        guard UserSetting.soundOn else {
+            return
+        }
         player.play()
     }
 
     func playWithCooldown() {
+        guard UserSetting.soundOn else {
+            return
+        }
         if !onCooldown {
             if #available(iOS 10.0, *) {
                 try? AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryAmbient)

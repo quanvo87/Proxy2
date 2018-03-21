@@ -143,6 +143,7 @@ enum Constant {
     static let tableViewRefreshRate: TimeInterval = 10
     static let testDatabaseReference = FirebaseDatabase.Database.database(url: Constant.URL.testDatabase).reference()
     static let storyboard = UIStoryboard(name: "Main", bundle: nil)
+    static let soundOn = "soundOn"
 }
 
 enum DatabaseOption {
@@ -154,7 +155,7 @@ enum DatabaseOption {
     static let querySize: UInt = 30
 }
 
-enum DeviceUtility {
+enum DeviceInfo {
     enum FeedbackType {
         case haptic
         case taptic
@@ -186,7 +187,7 @@ enum DeviceUtility {
 
 enum Haptic {
     static func makeError() {
-        switch DeviceUtility.feedbackType {
+        switch DeviceInfo.feedbackType {
         case .haptic:
             Piano.play([.hapticFeedback(.notification(.failure))])
         case .taptic:
@@ -197,7 +198,7 @@ enum Haptic {
     }
 
     static func makeSuccess(_ impact: Piano.HapticFeedback.Impact? = .light) {
-        switch DeviceUtility.feedbackType {
+        switch DeviceInfo.feedbackType {
         case .haptic:
             guard let impact = impact else {
                 return
@@ -322,5 +323,11 @@ enum StatusBar {
         )
         statusBarNotificationBanner.haptic = .none
         statusBarNotificationBanner.show()
+    }
+}
+
+enum UserSetting {
+    static var soundOn: Bool {
+        return UserDefaults.standard.bool(forKey: Constant.soundOn)
     }
 }

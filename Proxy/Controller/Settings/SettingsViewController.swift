@@ -1,22 +1,22 @@
 import FirebaseMessaging
 import UIKit
 
-// todo: toggle sound option
 class SettingsViewController: UIViewController {
     private let database: Database
     private let loginManager: LoginManaging
-    private let soundSwitch = UISwitch(frame: .zero)
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
     private let userStatsObserver: UserStatsObserving
     private var messagesReceivedCount = "-"
     private var messagesSentCount = "-"
     private var proxiesInteractedWithCount = "-"
+    private lazy var soundSwitchManager: SoundSwitchManaging = SoundSwitchManager(uid: uid)
 
     init(database: Database = Firebase(),
          loginManager: LoginManaging = LoginManager(),
          uid: String,
          userStatsObserver: UserStatsObserving = UserStatsObserver(),
+         soundSwitchManager: SoundSwitchManaging? = nil,
          displayName: String?) {
         self.database = database
         self.loginManager = loginManager
@@ -25,13 +25,11 @@ class SettingsViewController: UIViewController {
 
         super.init(nibName: nil, bundle: nil)
 
-        let activityIndicatorView = UIActivityIndicatorView(view)
+        if let soundSwitchManager = soundSwitchManager {
+            self.soundSwitchManager = soundSwitchManager
+        }
 
         navigationItem.title = displayName
-
-        soundSwitch.addTarget(self, action: #selector(toggleSound), for: .valueChanged)
-        // do this in closure of get val from db
-        // get value from database and set
 
         tableView.dataSource = self
         tableView.delegate = self
@@ -42,6 +40,7 @@ class SettingsViewController: UIViewController {
         )
         tableView.rowHeight = 44
 
+        let activityIndicatorView = UIActivityIndicatorView(view)
         userStatsObserver.observe(uid: uid) { [weak self] update in
             activityIndicatorView.removeFromSuperview()
             switch update {
@@ -52,7 +51,7 @@ class SettingsViewController: UIViewController {
             case .proxiesInteractedWith(let val):
                 self?.proxiesInteractedWithCount = val
             }
-            self?.tableView.reloadData()
+            self?.tableView.reloadSections(IndexSet(integer: 0), with: .automatic)
         }
 
         view.addSubview(tableView)
@@ -62,13 +61,6 @@ class SettingsViewController: UIViewController {
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-}
-
-private extension SettingsViewController {
-    @objc func toggleSound() {
-        UserDefaults.standard.set(soundSwitch.isOn, forKey: "sound")
-        // write to database
     }
 }
 
@@ -110,7 +102,7 @@ extension SettingsViewController: UITableViewDataSource {
                 break
             }
         case 1:
-            cell.accessoryView = soundSwitch
+            cell.accessoryView = soundSwitchManager.soundSwitch
             cell.load(icon: "sound", title: "Sound")
             cell.selectionStyle = .none
         case 2:

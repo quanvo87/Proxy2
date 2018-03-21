@@ -53,7 +53,7 @@ class Button: CustomPressableButton {
     private func setupAsFacebookButton() {
         let leftLabel = UILabel(
             text: String.fontAwesomeIcon(name: .facebookSquare),
-            font: UIFont.fontAwesome(ofSize: DeviceUtility.isSmallDevice ? 15 : 25)
+            font: UIFont.fontAwesome(ofSize: DeviceInfo.isSmallDevice ? 15 : 25)
         )
 
         contentView.addSubview(leftLabel)

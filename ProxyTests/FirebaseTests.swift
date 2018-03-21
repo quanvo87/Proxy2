@@ -38,8 +38,8 @@ class FirebaseTests: FirebaseTest {
         defer { waitForExpectations(timeout: 10) }
 
         let registrationToken = "registrationToken"
-
         let userProperty = SettableUserProperty.registrationToken(registrationToken)
+
         FirebaseTest.database.set(userProperty: userProperty, for: FirebaseTest.uid) { error in
             XCTAssertNil(error)
             FirebaseTest.database.delete(userProperty: userProperty, for: FirebaseTest.uid) { error in
@@ -141,9 +141,9 @@ class FirebaseTests: FirebaseTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        FirebaseTest.database.set(userProperty: .sound(true), for: FirebaseTest.uid) { error in
+        FirebaseTest.database.set(userProperty: .soundOn(true), for: FirebaseTest.uid) { error in
             XCTAssertNil(error)
-            FirebaseTest.database.get(userProperty: .sound(Bool()), for: FirebaseTest.uid) { result in
+            FirebaseTest.database.get(userProperty: .soundOn(Bool()), for: FirebaseTest.uid) { result in
                 switch result {
                 case .failure(let error):
                     XCTFail(String(describing: error))
@@ -423,11 +423,11 @@ class FirebaseTests: FirebaseTest {
         }
     }
 
-    func testSetUserPropertySound() {
+    func testSetUserPropertySoundOn() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        FirebaseTest.database.set(userProperty: .sound(true), for: FirebaseTest.uid) { error in
+        FirebaseTest.database.set(userProperty: .soundOn(true), for: FirebaseTest.uid) { error in
             XCTAssertNil(error)
             expectation.fulfill()
         }

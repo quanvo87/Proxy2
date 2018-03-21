@@ -71,6 +71,7 @@
 		59B90C211FF3411E00449569 /* UnreadMessagesObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59B90C201FF3411E00449569 /* UnreadMessagesObserving.swift */; };
 		59BDAE512003849C002A5A6C /* ProxyNamesLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BDAE502003849C002A5A6C /* ProxyNamesLoading.swift */; };
 		59BE6ABB2016C74B00CCD27E /* GroupWork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BE6ABA2016C74B00CCD27E /* GroupWork.swift */; };
+		59C337A42061752500245AD1 /* SoundSwitchManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C337A32061752500245AD1 /* SoundSwitchManaging.swift */; };
 		59CDE808201BDEA40048C7E3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59CDE807201BDEA40048C7E3 /* AppDelegate.swift */; };
 		59D3AE501FA1A4FF009F18A5 /* ConvoDetailReceiverProxyTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 59D3AE4F1FA1A4FF009F18A5 /* ConvoDetailReceiverProxyTableViewCell.xib */; };
 		59D5419C205D98B400754E8A /* ProxyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D5419B205D98B400754E8A /* ProxyTests.swift */; };
@@ -177,6 +178,7 @@
 		59B90C201FF3411E00449569 /* UnreadMessagesObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnreadMessagesObserving.swift; sourceTree = "<group>"; };
 		59BDAE502003849C002A5A6C /* ProxyNamesLoading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyNamesLoading.swift; sourceTree = "<group>"; };
 		59BE6ABA2016C74B00CCD27E /* GroupWork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupWork.swift; sourceTree = "<group>"; };
+		59C337A32061752500245AD1 /* SoundSwitchManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundSwitchManaging.swift; sourceTree = "<group>"; };
 		59CDE807201BDEA40048C7E3 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		59D3AE4F1FA1A4FF009F18A5 /* ConvoDetailReceiverProxyTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConvoDetailReceiverProxyTableViewCell.xib; sourceTree = "<group>"; };
 		59D5419B205D98B400754E8A /* ProxyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyTests.swift; sourceTree = "<group>"; };
@@ -293,6 +295,7 @@
 				59BDAE502003849C002A5A6C /* ProxyNamesLoading.swift */,
 				59E75B2F1F846F6B0033A407 /* ProxyObserving.swift */,
 				590823C41F9EF6DA00A3B6A9 /* ProxyPropertyGenerating.swift */,
+				59C337A32061752500245AD1 /* SoundSwitchManaging.swift */,
 				593C938E2055921A00931F2B /* TableViewRefreshing.swift */,
 				59B90C201FF3411E00449569 /* UnreadMessagesObserving.swift */,
 				593D7D431F851F7D00D3FBD5 /* UserStatsObserving.swift */,
@@ -916,6 +919,7 @@
 				590823C51F9EF6DA00A3B6A9 /* ProxyPropertyGenerating.swift in Sources */,
 				598420511FEA598300855647 /* Message.swift in Sources */,
 				5973C8671F608A2200647492 /* IconPickerCollectionViewCell.swift in Sources */,
+				59C337A42061752500245AD1 /* SoundSwitchManaging.swift in Sources */,
 				5985B3BD20587FD400E12467 /* ThirdPartySoftwareViewController.swift in Sources */,
 				598F8A661FEB9B2300CCF024 /* Protocol.swift in Sources */,
 				59DECF5F1FEA56AD009ABB36 /* ConvoViewController.swift in Sources */,

@@ -1,5 +1,6 @@
 import UIKit
 
+// todo: show indicator when receiver deleted
 class ConvosViewController: UIViewController, NewMessageMakerDelegate {
     var newConvo: Convo?
     private let buttonAnimator: ButtonAnimating
