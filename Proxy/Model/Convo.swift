@@ -1,4 +1,5 @@
 import FirebaseDatabase
+import UIKit
 
 enum SettableConvoProperty {
     case hasUnreadMessage(Bool)
@@ -48,6 +49,38 @@ struct Convo {
     let senderProxyKey: String
     let senderProxyName: String
     let timestamp: Double
+
+    var label: NSAttributedString {
+        let blue = [NSAttributedStringKey.foregroundColor: Color.iOSBlue]
+        let gray = [NSAttributedStringKey.foregroundColor: UIColor.gray]
+        let redAndStrikethrough = [
+            NSAttributedStringKey.foregroundColor: UIColor.red,
+            NSAttributedStringKey.strikethroughStyle: NSUnderlineStyle.styleSingle.rawValue
+            ] as [NSAttributedStringKey: Any]
+
+        let receiver: NSMutableAttributedString
+        if receiverDeletedProxy {
+            receiver = NSMutableAttributedString(string: receiverDisplayName, attributes: redAndStrikethrough)
+        } else if receiverNickname != "" {
+            receiver = NSMutableAttributedString(string: receiverNickname, attributes: blue)
+        } else {
+            receiver = NSMutableAttributedString(string: receiverProxyName)
+        }
+
+        let sender: NSAttributedString
+        if senderNickname != "" {
+            sender = NSAttributedString(string: senderNickname, attributes: blue)
+        } else {
+            sender = NSAttributedString(string: senderProxyName, attributes: gray)
+        }
+
+        let comma = NSAttributedString(string: ", ", attributes: gray)
+
+        receiver.append(comma)
+        receiver.append(sender)
+
+        return receiver
+    }
 
     var senderDisplayName: String {
         return senderNickname != "" ? senderNickname : senderProxyName

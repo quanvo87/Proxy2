@@ -48,11 +48,12 @@ class WelcomeViewController: UIViewController {
         let revealingSplashView = RevealingSplashView(
             iconImage: UIImage(named: "icon white")!,
             iconInitialSize: CGSize(width: 96, height: 96),
-            backgroundColor: Color.darkBlue
+            backgroundColor: Color.mainThemeDarkBlue
         )
         view.addSubview(revealingSplashView)
         revealingSplashView.startAnimation {
             revealingSplashView.removeFromSuperview()
+            NotificationCenter.default.post(Notification(name: .launchScreenFinished))
         }
 
         navigationItem.title = ""

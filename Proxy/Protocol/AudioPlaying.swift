@@ -1,22 +1,34 @@
 import AVKit
 
 protocol AudioPlaying {
-    func playSound(name: String, fileType: String) throws
+    func play()
 }
 
 class AudioPlayer: AudioPlaying {
-    private lazy var player = AVAudioPlayer()
+    private let player: AVAudioPlayer
 
-    func playSound(name: String, fileType: String) throws {
-        let asset = NSDataAsset(name: name)
-        guard let data = asset?.data else {
-            throw ProxyError.unknown
+    init(soundFileName: String, fileTypeHint: String = "wav") {
+        let dataAsset = NSDataAsset(name: soundFileName)
+        do {
+            guard let data = dataAsset?.data else {
+                throw ProxyError.unknown
+            }
+            player = try AVAudioPlayer(data: data, fileTypeHint: fileTypeHint)
+        } catch {
+            player = AVAudioPlayer()
         }
-        player = try AVAudioPlayer(data: data, fileTypeHint: fileType)
+    }
+
+    func play() {
+        guard UserDefaults.standard.bool(forKey: Constant.soundOn) else {
+            return
+        }
         if #available(iOS 10.0, *) {
-            try AVAudioSession.sharedInstance().setCategory(
-                AVAudioSessionCategoryAmbient
+            try? AVAudioSession.sharedInstance().setCategory(
+                AVAudioSessionCategoryAmbient,
+                mode: AVAudioSessionModeDefault
             )
+            try? AVAudioSession.sharedInstance().setActive(true)
         }
         player.play()
     }

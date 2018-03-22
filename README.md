@@ -67,6 +67,12 @@
   - Spacing
   - [SwiftLint](https://github.com/realm/SwiftLint)
 
+#### Todo
+
+- Refactor view controllers:
+  - Extract elements
+  - Decouple view and model
+
 #### Acknowledgements
 
 - Icons and sounds from [Icons8](https://icons8.com/)

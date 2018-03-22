@@ -11,7 +11,7 @@ class ConvoPresenceObserver: ConvoPresenceObserving {
 
     init() {
         didEnterConvoObserver = NotificationCenter.default.addObserver(
-            forName: .didEnterConvo,
+            forName: .willEnterConvo,
             object: nil,
             queue: .main) { [weak self] notification in
                 if let convoKey = notification.userInfo?["convoKey"] as? String {
@@ -20,7 +20,7 @@ class ConvoPresenceObserver: ConvoPresenceObserving {
         }
 
         didLeaveConvoObserver = NotificationCenter.default.addObserver(
-            forName: .didLeaveConvo,
+            forName: .willLeaveConvo,
             object: nil,
             queue: .main) { [weak self] _ in
                 self?.currentConvoKey = nil

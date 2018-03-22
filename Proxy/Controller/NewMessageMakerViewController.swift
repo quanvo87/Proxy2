@@ -34,7 +34,7 @@ class NewMessageMakerViewController: UIViewController, SenderPickerDelegate {
 
     init(sender: Proxy?,
          buttonAnimator: ButtonAnimating = ButtonAnimator(),
-         database: Database = Firebase(),
+         database: Database = Shared.database,
          proxiesObserver: ProxiesObserving = ProxiesObserver(),
          proxyNamesLoader: ProxyNamesLoading = ProxyNamesLoader(),
          uid: String,
@@ -63,7 +63,9 @@ class NewMessageMakerViewController: UIViewController, SenderPickerDelegate {
         makeNewProxyButton.isEnabled = false
 
         messageInputBar.delegate = self
+        messageInputBar.inputTextView.autocorrectionType = .default
         messageInputBar.inputTextView.delegate = self
+        messageInputBar.inputTextView.placeholder = "Aa"
 
         navigationItem.rightBarButtonItems = [cancelButton, makeNewProxyButton]
         navigationItem.title = "New Message"
@@ -250,7 +252,6 @@ extension NewMessageMakerViewController: UITableViewDataSource {
         return 2
     }
 
-    // todo: show nickname next to selected sender
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.row {
         case 0:
@@ -285,14 +286,14 @@ extension NewMessageMakerViewController: UITableViewDataSource {
                     cell.receiverTextField.stopLoadingIndicator()
                 }
             }
-            let fontSize: CGFloat = DeviceUtilities.isSmallDevice ? 14 : 17
+            let fontSize: CGFloat = DeviceInfo.isSmallDevice ? 14 : 17
             cell.receiverTextField.highlightAttributes =
                 [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: fontSize)]
             cell.receiverTextField.theme.font = .systemFont(ofSize: fontSize)
             cell.receiverTextField.comparisonOptions = [.caseInsensitive]
             cell.receiverTextField.delegate = self
             cell.receiverTextField.maxResultsListHeight =
-                DeviceUtilities.isSmallDevice ? Int(view.frame.height / 4) : Int(view.frame.height / 3)
+                DeviceInfo.isSmallDevice ? Int(view.frame.height / 4) : Int(view.frame.height / 3)
             cell.receiverTextField.theme.cellHeight = 50
             cell.receiverTextField.theme.separatorColor = UIColor.lightGray.withAlphaComponent(0.5)
             return cell

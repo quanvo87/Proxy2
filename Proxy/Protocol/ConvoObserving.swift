@@ -1,5 +1,4 @@
 import FirebaseDatabase
-import WQNetworkActivityIndicator
 
 protocol ConvoObserving: ReferenceObserving {
     func observe(convoKey: String, convoSenderId: String, completion: @escaping (Convo?) -> Void)
@@ -8,19 +7,12 @@ protocol ConvoObserving: ReferenceObserving {
 class ConvoObserver: ConvoObserving {
     private (set) var handle: DatabaseHandle?
     private (set) var ref: DatabaseReference?
-    private let database = Firebase()
-    private var firstCallback = true
+    private let database = Shared.database
 
     func observe(convoKey: String, convoSenderId: String, completion: @escaping (Convo?) -> Void) {
         stopObserving()
-        firstCallback = true
-        ref = try? Constant.firebaseHelper.makeReference(Child.convos, convoSenderId, convoKey)
-        WQNetworkActivityIndicator.shared.show()
+        ref = try? Shared.firebaseHelper.makeReference(Child.convos, convoSenderId, convoKey)
         handle = ref?.observe(.value) { [weak self] data in
-            if let firstCallback = self?.firstCallback, firstCallback {
-                self?.firstCallback = false
-                WQNetworkActivityIndicator.shared.hide()
-            }
             do {
                 completion(try Convo(data))
             } catch {

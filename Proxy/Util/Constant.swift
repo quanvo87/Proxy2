@@ -83,6 +83,11 @@ enum Alert {
     }
 }
 
+enum Audio {
+    static let incomingMessageAudioPlayer = AudioPlayer(soundFileName: "incomingMessage")
+    static let outgoingMessageAudioPlayer = AudioPlayer(soundFileName: "outgoingMessage")
+}
+
 enum Child {
     static let convos = "convos"
     static let hasUnreadMessage = "hasUnreadMessage"
@@ -103,14 +108,14 @@ enum Child {
 }
 
 enum Color {
-    static let darkBlue = UIColor(hex: 0x2c3e50)
-    static let blue = UIColor(red: 53/255, green: 152/255, blue: 217/255, alpha: 1)
-    static let red = UIColor(red: 231/255, green: 76/255, blue: 60/255, alpha: 1)
-    static let facebookBlue = UIColor(red: 59/255, green: 89/255, blue: 152/255, alpha: 1)
-    static let iOSBlue = UIColor(red: 0, green: 122/255, blue: 1, alpha: 1)
     static let alertButtonGreen = UIColor(red: 41/255, green: 191/255, blue: 60/255, alpha: 1)
     static let alertButtonRed = UIColor(red: 252/255, green: 49/255, blue: 59/255, alpha: 1)
     static let chatBubbleGray = UIColor(red: 230/255, green: 230/255, blue: 230/255, alpha: 1)
+    static let buttonBlue = UIColor(red: 53/255, green: 152/255, blue: 217/255, alpha: 1)
+    static let buttonRed = UIColor(red: 231/255, green: 76/255, blue: 60/255, alpha: 1)
+    static let facebookBlue = UIColor(red: 59/255, green: 89/255, blue: 152/255, alpha: 1)
+    static let iOSBlue = UIColor(red: 0, green: 122/255, blue: 1, alpha: 1)
+    static let mainThemeDarkBlue = UIColor(hex: 0x2c3e50)
 }
 
 enum Constant {
@@ -129,20 +134,10 @@ enum Constant {
         static let testDatabase = "https://proxy-test-f90c4-9c8ea.firebaseio.com/"
     }
     // swiftlint:enable line_length
-    static let auth = Auth.auth()
-    static let decimalNumberFormatter: NumberFormatter = {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        return formatter
-    }()
-    static let firebaseApp = FirebaseApp.app()
-    static let firebaseHelper = Constant.isRunningTests ?
-        FirebaseHelper(Constant.testDatabaseReference) :
-        FirebaseHelper(FirebaseDatabase.Database.database().reference())
+    static let convoDetailSenderProxyTableViewCell = "ConvoDetailSenderProxyTableViewCell"
     static let isRunningTests = UserDefaults.standard.bool(forKey: "isRunningTests")
     static let tableViewRefreshRate: TimeInterval = 10
-    static let testDatabaseReference = FirebaseDatabase.Database.database(url: Constant.URL.testDatabase).reference()
-    static let storyboard = UIStoryboard(name: "Main", bundle: nil)
+    static let soundOn = "soundOn"
 }
 
 enum DatabaseOption {
@@ -154,7 +149,7 @@ enum DatabaseOption {
     static let querySize: UInt = 30
 }
 
-enum DeviceUtilities {
+enum DeviceInfo {
     enum FeedbackType {
         case haptic
         case taptic
@@ -174,9 +169,7 @@ enum DeviceUtilities {
 
     static let isSmallDevice: Bool = {
         switch Device.size() {
-        case .screen3_5Inch:
-            return true
-        case .screen4Inch:
+        case .screen3_5Inch, .screen4Inch:
             return true
         default:
             return false
@@ -184,9 +177,9 @@ enum DeviceUtilities {
     }()
 }
 
-enum Feedback {
-    static func generateError() {
-        switch DeviceUtilities.feedbackType {
+enum Haptic {
+    static func makeError() {
+        switch DeviceInfo.feedbackType {
         case .haptic:
             Piano.play([.hapticFeedback(.notification(.failure))])
         case .taptic:
@@ -196,23 +189,16 @@ enum Feedback {
         }
     }
 
-    static func generateSuccess(_ impact: Piano.HapticFeedback.Impact? = .light) {
-        switch DeviceUtilities.feedbackType {
+    static func makeSuccess() {
+        switch DeviceInfo.feedbackType {
         case .haptic:
-            guard let impact = impact else {
-                return
-            }
-            Piano.play([.hapticFeedback(.impact(impact))])
+            Piano.play([.hapticFeedback(.impact(.light))])
         case .taptic:
             Piano.play([.tapticEngine(.peek)])
         default:
             break
         }
     }
-}
-
-enum Identifier {
-    static let convoDetailSenderProxyTableViewCell = "ConvoDetailSenderProxyTableViewCell"
 }
 
 enum Image {
@@ -237,11 +223,7 @@ enum Image {
         context?.restoreGState()
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        if let image = image {
-            return image
-        } else {
-            return UIImage()
-        }
+        return image ?? UIImage()
     }
 }
 
@@ -268,11 +250,22 @@ enum Result<T, Error> {
     case failure(Error)
 }
 
+enum Shared {
+    static let auth = Auth.auth()
+    static let database = Firebase()
+    static let firebaseApp = FirebaseApp.app()
+    static let firebaseHelper = Constant.isRunningTests ?
+        FirebaseHelper(Shared.testDatabaseReference) :
+        FirebaseHelper(FirebaseDatabase.Database.database().reference())
+    static let testDatabaseReference = FirebaseDatabase.Database.database(url: Constant.URL.testDatabase).reference()
+    static let storyboard = UIStoryboard(name: "Main", bundle: nil)
+}
+
 enum StatusBar {
     private static let queue = ProxyNotificationBannerQueue()
 
     static func showErrorBanner(title: String = "Error 😵", subtitle: String) {
-        Feedback.generateError()
+        Haptic.makeError()
         queue.currentBanner = NotificationBanner(
             title: title,
             subtitle: subtitle,
@@ -282,7 +275,7 @@ enum StatusBar {
     }
 
     static func showErrorStatusBarBanner(_ error: Error) {
-        Feedback.generateError()
+        Haptic.makeError()
         let view = MessageView.viewFromNib(layout: .statusLine)
         view.configureTheme(.error)
         view.configureContent(body: "⚠️ " + error.localizedDescription)
@@ -304,7 +297,7 @@ enum StatusBar {
     }
 
     static func showSuccessBanner(title: String, subtitle: String) {
-        Feedback.generateSuccess()
+        Haptic.makeSuccess()
         queue.currentBanner = NotificationBanner(
             title: title,
             subtitle: subtitle,
@@ -314,7 +307,7 @@ enum StatusBar {
     }
 
     static func showSuccessStatusBarBanner(_ title: String) {
-        Feedback.generateSuccess()
+        Haptic.makeSuccess()
         NotificationBannerQueue.default.removeAll()
         let statusBarNotificationBanner = StatusBarNotificationBanner(
             title: title,

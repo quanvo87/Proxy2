@@ -12,7 +12,7 @@ class ConvosTableViewCell: UITableViewCell {
         iconImageView.image = UIImage(named: convo.receiverIcon)
         lastMessageLabel.text = convo.lastMessage
         timestampLabel.text = convo.timestamp.asTimeAgo
-        titleLabel.attributedText = NSAttributedString(convo)
+        titleLabel.attributedText = convo.label
         unreadMessagesIndicatorImageView.image = nil
         if convo.hasUnreadMessage {
             unreadMessagesIndicatorImageView.image = Image.makeCircle(

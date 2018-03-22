@@ -4,6 +4,7 @@ import UIKit
 class SettingsViewController: UIViewController {
     private let database: Database
     private let loginManager: LoginManaging
+    private let soundSwitchManager: SoundSwitchManaging
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
     private let userStatsObserver: UserStatsObserving
@@ -11,19 +12,24 @@ class SettingsViewController: UIViewController {
     private var messagesSentCount = "-"
     private var proxiesInteractedWithCount = "-"
 
-    init(database: Database = Firebase(),
+    init(database: Database = Shared.database,
          loginManager: LoginManaging = LoginManager(),
          uid: String,
          userStatsObserver: UserStatsObserving = UserStatsObserver(),
+         soundSwitchManager: SoundSwitchManaging? = nil,
          displayName: String?) {
         self.database = database
         self.loginManager = loginManager
         self.uid = uid
         self.userStatsObserver = userStatsObserver
 
-        super.init(nibName: nil, bundle: nil)
+        if let soundSwitchManager = soundSwitchManager {
+            self.soundSwitchManager = soundSwitchManager
+        } else {
+            self.soundSwitchManager = SoundSwitchManager(uid: uid)
+        }
 
-        let activityIndicatorView = UIActivityIndicatorView(view)
+        super.init(nibName: nil, bundle: nil)
 
         navigationItem.title = displayName
 
@@ -36,6 +42,7 @@ class SettingsViewController: UIViewController {
         )
         tableView.rowHeight = 44
 
+        let activityIndicatorView = UIActivityIndicatorView(view)
         userStatsObserver.observe(uid: uid) { [weak self] update in
             activityIndicatorView.removeFromSuperview()
             switch update {
@@ -46,7 +53,7 @@ class SettingsViewController: UIViewController {
             case .proxiesInteractedWith(let val):
                 self?.proxiesInteractedWithCount = val
             }
-            self?.tableView.reloadData()
+            self?.tableView.reloadSections(IndexSet(integer: 0), with: .automatic)
         }
 
         view.addSubview(tableView)
@@ -62,7 +69,7 @@ class SettingsViewController: UIViewController {
 // MARK: - UITableViewDataSource
 extension SettingsViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 3
+        return 4
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -97,10 +104,13 @@ extension SettingsViewController: UITableViewDataSource {
                 break
             }
         case 1:
+            cell.accessoryView = soundSwitchManager.soundSwitch
+            cell.load(icon: "sound", title: "Sound")
+            cell.selectionStyle = .none
+        case 2:
             cell.accessoryType = .disclosureIndicator
             cell.load(icon: "info", title: "About")
-
-        case 2:
+        case 3:
             cell.load(icon: "logout", title: "Log Out")
         default:
             break
@@ -116,6 +126,8 @@ extension SettingsViewController: UITableViewDataSource {
             return 1
         case 2:
             return 1
+        case 3:
+            return 1
         default:
             return 0
         }
@@ -127,21 +139,21 @@ extension SettingsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         switch indexPath.section {
-        case 1:
-            guard let aboutViewController = Constant.storyboard.instantiateViewController(
+        case 2:
+            guard let aboutViewController = Shared.storyboard.instantiateViewController(
                 withIdentifier: String(describing: AboutViewController.self)
                 ) as? AboutViewController else {
                     return
             }
             navigationController?.pushViewController(aboutViewController, animated: true)
-        case 2:
+        case 3:
             let alert = Alert.make(
                 title: "Log Out",
                 message: "Are you sure you want to log out?"
             )
             alert.addAction(Alert.makeDestructiveAction(title: "Log Out") { [weak self] _ in
                 if let registrationToken = Messaging.messaging().fcmToken, let uid = self?.uid {
-                    self?.database.deleteRegistrationToken(registrationToken, for: uid) { _ in }
+                    self?.database.delete(userProperty: .registrationToken(registrationToken), for: uid) { _ in }
                 }
                 do {
                     try self?.loginManager.logOut()

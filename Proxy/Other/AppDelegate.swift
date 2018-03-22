@@ -8,27 +8,14 @@ import UserNotifications
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow? = UIWindow(frame: UIScreen.main.bounds)
     private let authObserver = AuthObserver()
-    private let convoPresenceObserver = ConvoPresenceObserver()
-    private let database = Firebase()
+    private let database = Shared.database
+    private let notificationHandler = NotificationHandler()
+    private var launchScreenFinishedObserver: NSObjectProtocol?
     private var uid: String?
-    private lazy var notificationHandler = NotificationHandler(convoPresenceObserver: convoPresenceObserver)
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
-
-        if #available(iOS 10.0, *) {
-            UNUserNotificationCenter.current().delegate = self
-            let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
-            UNUserNotificationCenter.current().requestAuthorization(options: authOptions) { _, _ in }
-        } else {
-            let settings: UIUserNotificationSettings = UIUserNotificationSettings(
-                types: [.alert, .badge, .sound],
-                categories: nil
-            )
-            application.registerUserNotificationSettings(settings)
-        }
-        application.registerForRemoteNotifications()
 
         authObserver.observe { [weak self] user in
             UIApplication.shared.applicationIconBadgeNumber = 0
@@ -45,7 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 self?.uid = user.uid
                 self?.setRegistrationToken()
             } else {
-                guard self?.uid != nil, let welcomeViewController = Constant.storyboard.instantiateViewController(
+                guard self?.uid != nil, let welcomeViewController = Shared.storyboard.instantiateViewController(
                     withIdentifier: String(describing: WelcomeViewController.self)
                     ) as? WelcomeViewController else {
                         return
@@ -57,6 +44,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
 //        Database.database().isPersistenceEnabled = true
+
+        launchScreenFinishedObserver = NotificationCenter.default.addObserver(
+            forName: .launchScreenFinished,
+            object: nil,
+            queue: .main) { [weak self] _ in
+                if #available(iOS 10.0, *) {
+                    UNUserNotificationCenter.current().delegate = self
+                    let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
+                    UNUserNotificationCenter.current().requestAuthorization(options: authOptions) { _, _ in }
+                } else {
+                    let settings: UIUserNotificationSettings = UIUserNotificationSettings(
+                        types: [.alert, .badge, .sound],
+                        categories: nil
+                    )
+                    application.registerUserNotificationSettings(settings)
+                }
+                application.registerForRemoteNotifications()
+                if let launchScreenFinishedObserver = self?.launchScreenFinishedObserver {
+                    NotificationCenter.default.removeObserver(launchScreenFinishedObserver)
+                }
+                self?.launchScreenFinishedObserver = nil
+        }
 
         Messaging.messaging().delegate = self
 
@@ -71,6 +80,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any],
                      fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        guard let uid = uid else {
+            completionHandler(.noData)
+            return
+        }
         switch application.applicationState {
         case .active:
             notificationHandler.showNewMessageBanner(uid: uid, userInfo: userInfo) {
@@ -97,6 +110,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidBecomeActive(_ application: UIApplication) {
         FBSDKAppEvents.activateApp()
     }
+
+    deinit {
+        if let launchScreenFinishedObserver = launchScreenFinishedObserver {
+            NotificationCenter.default.removeObserver(launchScreenFinishedObserver)
+        }
+    }
 }
 
 private extension AppDelegate {
@@ -104,7 +123,7 @@ private extension AppDelegate {
         guard let registrationToken = Messaging.messaging().fcmToken, let uid = uid else {
             return
         }
-        database.setRegistrationToken(registrationToken, for: uid) { error in
+        database.set(userProperty: .registrationToken(registrationToken), for: uid) { error in
             if let error = error {
                 StatusBar.showErrorStatusBarBanner(error)
             }
@@ -124,6 +143,10 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 willPresent notification: UNNotification,
                                 withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        guard let uid = uid else {
+            completionHandler([])
+            return
+        }
         let userInfo = notification.request.content.userInfo
         notificationHandler.showNewMessageBanner(uid: uid, userInfo: userInfo) {
             completionHandler([])
@@ -134,6 +157,10 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 didReceive response: UNNotificationResponse,
                                 withCompletionHandler completionHandler: @escaping () -> Void) {
+        guard let uid = uid else {
+            completionHandler()
+            return
+        }
         let userInfo = response.notification.request.content.userInfo
         notificationHandler.sendShouldShowConvoNotification(uid: uid, userInfo: userInfo, completion: completionHandler)
     }

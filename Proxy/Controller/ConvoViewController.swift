@@ -1,66 +1,89 @@
 import MessageKit
 
 class ConvoViewController: MessagesViewController {
-    private let audioPlayer: AudioPlaying
+    private let applicationStateObserver: ApplicationStateObserving
+    private let incomingMessageAudioPlayer: AudioPlaying
+    private let outgoingMessageAudioPlayer: AudioPlaying
     private let convoObserver: ConvoObserving
     private let database: Database
     private let messagesObserver: MessagesObserving
+    private let querySize: UInt
     private let unreadMessagesObserver: UnreadMessagesObserving
     private var convo: Convo? { didSet { didSetConvo() } }
     private var icons = [String: UIImage]()
     private var isPresent = false
     private var messages = [Message]()
     private var messagesToRead = Set<Message>()
+    private var shouldPlaySounds = false
 
-    init(audioPlayer: AudioPlaying = AudioPlayer(),
+    init(applicationStateObserver: ApplicationStateObserving = ApplicationStateObserver(),
+         incomingMessageAudioPlayer: AudioPlaying = Audio.incomingMessageAudioPlayer,
+         outgoingMessageAudioPlayer: AudioPlaying = Audio.outgoingMessageAudioPlayer,
          convoObserver: ConvoObserving = ConvoObserver(),
-         database: Database = Firebase(),
+         database: Database = Shared.database,
          messagesObserver: MessagesObserving = MessagesObserver(),
+         querySize: UInt = DatabaseOption.querySize,
          unreadMessagesObserver: UnreadMessagesObserving = UnreadMessagesObserver(),
          convo: Convo) {
-        self.audioPlayer = audioPlayer
+        self.applicationStateObserver = applicationStateObserver
+        self.incomingMessageAudioPlayer = incomingMessageAudioPlayer
+        self.outgoingMessageAudioPlayer = outgoingMessageAudioPlayer
         self.convoObserver = convoObserver
         self.database = database
         self.messagesObserver = messagesObserver
+        self.querySize = querySize
         self.unreadMessagesObserver = unreadMessagesObserver
         self.convo = convo
 
         super.init(nibName: nil, bundle: nil)
 
-        let activityIndicatorView = UIActivityIndicatorView(view)
-        activityIndicatorView.startAnimatingAndBringToFront()
+        applicationStateObserver.applicationDidBecomeActive { [weak self] in
+            self?.messagesCollectionView.reloadDataAndKeepOffset()
+        }
+
+        applicationStateObserver.applicationDidEnterBackground { [weak self] in
+            self?.shouldPlaySounds = false
+        }
 
         convoObserver.observe(convoKey: convo.key, convoSenderId: convo.senderId) { [weak self] convo in
             self?.convo = convo
         }
 
-        // todo: don't play sound if opening convo from notification
+        maintainPositionOnKeyboardFrameChanged = true
+
+        let activityIndicatorView = UIActivityIndicatorView(view)
+        activityIndicatorView.startAnimatingAndBringToFront()
         messagesObserver.observe(convoKey: convo.key) { [weak self] messages in
             activityIndicatorView.removeFromSuperview()
-            if let currentLastMessage = self?.messages.last,
-                let newLastMessage = messages.last,
-                currentLastMessage.messageId != newLastMessage.messageId &&
-                    newLastMessage.sender.id != self?.convo?.senderId {
-                try? audioPlayer.playSound(name: "textIn", fileType: "wav")
-            }
             self?.messages = messages
             self?.messagesCollectionView.reloadData()
             self?.messagesCollectionView.scrollToBottom()
+            guard let newMessage = messages.last else {
+                return
+            }
+            if let shouldPlaySounds = self?.shouldPlaySounds, shouldPlaySounds,
+                newMessage.sender.id != self?.convo?.senderId,
+                !newMessage.hasBeenRead {
+                self?.incomingMessageAudioPlayer.play()
+            }
+            if newMessage.hasBeenRead {
+                self?.shouldPlaySounds = true
+            }
         }
+
+        messageInputBar.delegate = self
+        messageInputBar.inputTextView.autocorrectionType = .default
+        messageInputBar.inputTextView.placeholder = "Aa"
+
+        messagesCollectionView.messagesDataSource = self
+        messagesCollectionView.messagesDisplayDelegate = self
+        messagesCollectionView.messagesLayoutDelegate = self
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             target: self,
             action: #selector(showConvoDetailViewController),
             image: Image.info
         )
-
-        maintainPositionOnKeyboardFrameChanged = true
-
-        messageInputBar.delegate = self
-
-        messagesCollectionView.messagesDataSource = self
-        messagesCollectionView.messagesDisplayDelegate = self
-        messagesCollectionView.messagesLayoutDelegate = self
 
         unreadMessagesObserver.observe(uid: convo.senderId) { [weak self] update in
             guard let _self = self else {
@@ -93,21 +116,22 @@ class ConvoViewController: MessagesViewController {
         messagesToRead.forEach { [weak self] message in
             self?.database.read(message, at: Date()) { _ in }
         }
-        NotificationCenter.default.post(name: .didEnterConvo, object: nil, userInfo: ["convoKey": convo.key])
+        NotificationCenter.default.post(name: .willEnterConvo, object: nil, userInfo: ["convoKey": convo.key])
         tabBarController?.tabBar.isHidden = true
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         isPresent = false
-        NotificationCenter.default.post(name: .didLeaveConvo, object: nil)
+        NotificationCenter.default.post(name: .willLeaveConvo, object: nil)
+        shouldPlaySounds = false
         tabBarController?.tabBar.isHidden = false
     }
 
     func collectionView(_ collectionView: UICollectionView,
                         willDisplay cell: UICollectionViewCell,
                         forItemAt indexPath: IndexPath) {
-        guard indexPath.section == 0 else {
+        guard messages.count >= querySize, indexPath.section == 0 else {
             return
         }
         let activityIndicatorView = UIActivityIndicatorView(view)
@@ -143,7 +167,11 @@ private extension ConvoViewController {
         icons[convo.receiverProxyKey] = UIImage(named: convo.receiverIcon)
         icons[convo.senderProxyKey] = UIImage(named: convo.senderIcon)
         messagesCollectionView.reloadDataAndKeepOffset()
-        navigationItem.title = convo.receiverDisplayName
+        if convo.receiverNickname != "" {
+            navigationItem.title = "\"\(convo.receiverNickname)\""
+        } else {
+            navigationItem.title = convo.receiverProxyName
+        }
     }
 }
 
@@ -159,7 +187,7 @@ extension ConvoViewController: MessageInputBarDelegate {
             case .failure(let error):
                 StatusBar.showErrorStatusBarBanner(error)
             case .success:
-                try? self?.audioPlayer.playSound(name: "textOut", fileType: "wav")
+                self?.outgoingMessageAudioPlayer.play()
             }
         }
     }

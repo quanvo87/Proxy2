@@ -17,6 +17,15 @@ extension Dictionary where Key == AnyHashable, Value == Any {
 }
 
 extension Double {
+    var asStringWithZeroDecimalRemoved: String {
+        let string = String(self)
+        if string.suffix(2) == ".0" {
+            let endIndex = string.index(string.endIndex, offsetBy: -2)
+            return String(string[..<endIndex])
+        }
+        return string
+    }
+
     var asTimeAgo: String {
         let calendar = NSCalendar.current
         let unitFlags: Set<Calendar.Component> = [.minute, .hour, .day, .weekOfYear, .month, .year, .second]
@@ -53,7 +62,7 @@ extension Double {
 extension DataSnapshot {
     var asNumberLabel: String {
         if let number = self.value as? UInt {
-            return number.asStringWithCommas
+            return number.asAbbreviatedString
         } else {
             return "-"
         }
@@ -109,24 +118,11 @@ extension Int {
     }
 }
 
-extension NSAttributedString {
-    convenience init(_ convo: Convo) {
-        let receiver = NSMutableAttributedString(
-            string: convo.receiverDisplayName
-        )
-        let sender = NSMutableAttributedString(
-            string: ", " + convo.senderDisplayName,
-            attributes: [NSAttributedStringKey.foregroundColor: UIColor.gray]
-        )
-        receiver.append(sender)
-        self.init(attributedString: receiver)
-    }
-}
-
 extension Notification.Name {
-    static let didEnterConvo = Notification.Name("didEnterConvo")
-    static let didLeaveConvo = Notification.Name("didLeaveConvo")
+    static let launchScreenFinished = Notification.Name("launchScreenFinished")
     static let shouldShowConvo = Notification.Name("shouldShowConvo")
+    static let willEnterConvo = Notification.Name("willEnterConvo")
+    static let willLeaveConvo = Notification.Name("willLeaveConvo")
 }
 
 extension OnboardingItemInfo {
@@ -167,9 +163,9 @@ extension SkyFloatingLabelTextFieldWithIcon {
 
     func setup() {
         clearButtonMode = .whileEditing
-        selectedIconColor = Color.blue
-        selectedLineColor = Color.blue
-        selectedTitleColor = Color.blue
+        selectedIconColor = Color.buttonBlue
+        selectedLineColor = Color.buttonBlue
+        selectedTitleColor = Color.buttonBlue
     }
 }
 
@@ -261,14 +257,15 @@ extension UINavigationBar {
 }
 
 extension UInt {
-    // todo: test
-    var asStringWithCommas: String {
-        var num = Double(self)
-        num = fabs(num)
-        guard let string = Constant.decimalNumberFormatter.string(from: NSNumber(integerLiteral: Int(num))) else {
-            return "-"
+    var asAbbreviatedString: String {
+        let num = fabs(Double(self))
+        if num < 1000 {
+            return num.asStringWithZeroDecimalRemoved
         }
-        return string
+        let exp = Int(log10(num) / 3.0)
+        let units = ["K", "M", "B", "t", "q", "Q"]
+        let roundedNum = round(10 * num / pow(1000, Double(exp))) / 10
+        return "\(roundedNum.asStringWithZeroDecimalRemoved)\(units[exp-1])"
     }
 }
 
@@ -309,7 +306,7 @@ extension UIViewController {
         navigationController?.pushViewController(convoViewController, animated: true)
     }
 
-    func showEditProxyNicknameAlert(_ proxy: Proxy, database: Database = Firebase()) {
+    func showEditProxyNicknameAlert(_ proxy: Proxy, database: Database = Shared.database) {
         let alert = UIAlertController(title: "Edit Nickname",
                                       message: "Only you see your nickname.",
                                       preferredStyle: .alert)

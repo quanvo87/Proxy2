@@ -10,7 +10,7 @@ class FirebaseTest: XCTestCase {
     static let uid = "B2L3X0AOzgUhnJBqUVcLSMZUz2B2"
     private static let email = "test@proxy.io"
     private static let password = "quanquan"
-    private let auth = Auth.auth(app: Constant.firebaseApp!)
+    private let auth = Auth.auth(app: Shared.firebaseApp!)
     private var handle: AuthStateDidChangeListenerHandle?
 
     override func setUp() {
@@ -46,7 +46,7 @@ class FirebaseTest: XCTestCase {
     }
 
     private static func clearDB(completion: @escaping () -> Void) {
-        Constant.testDatabaseReference.removeValue { error, _ in
+        Shared.testDatabaseReference.removeValue { error, _ in
             XCTAssertNil(error)
             completion()
         }
@@ -109,7 +109,7 @@ extension GroupWork {
                function: String = #function,
                line: Int = #line) {
         start()
-        Constant.firebaseHelper.get(Child.convos, uid, convoKey, property.properties.name) { result in
+        Shared.firebaseHelper.get(Child.convos, uid, convoKey, property.properties.name) { result in
             switch result {
             case .failure(let error):
                 XCTFail(String(describing: error))
@@ -125,7 +125,7 @@ extension GroupWork {
                function: String = #function,
                line: Int = #line) {
         start()
-        Constant.firebaseHelper.get(
+        Shared.firebaseHelper.get(
             Child.messages,
             message.parentConvoKey,
             message.messageId,
@@ -163,7 +163,7 @@ extension GroupWork {
                function: String = #function,
                line: Int = #line) {
         start()
-        Constant.firebaseHelper.get(Child.proxies, uid, proxyKey, property.properties.name) { result in
+        Shared.firebaseHelper.get(Child.proxies, uid, proxyKey, property.properties.name) { result in
             switch result {
             case .failure(let error):
                 XCTFail(String(describing: error))
@@ -180,7 +180,7 @@ extension GroupWork {
                function: String = #function,
                line: Int = #line) {
         start()
-        Constant.firebaseHelper.get(Child.users, uid, property.rawValue) { result in
+        Shared.firebaseHelper.get(Child.users, uid, property.rawValue) { result in
             switch result {
             case .failure(let error):
                 XCTFail(String(describing: error))
@@ -209,7 +209,7 @@ extension GroupWork {
 
     func checkDeleted(_ first: String, _ rest: String..., function: String = #function, line: Int = #line) {
         start()
-        Constant.firebaseHelper.get(first, rest) { result in
+        Shared.firebaseHelper.get(first, rest) { result in
             switch result {
             case .failure(let error):
                 XCTFail(String(describing: error))

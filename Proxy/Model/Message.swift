@@ -24,6 +24,10 @@ struct Message: MessageType {
     let receiverProxyKey: String
     let senderProxyKey: String
 
+    var hasBeenRead: Bool {
+        return dateRead > Date.distantPast
+    }
+
     init(sender: Sender,
          messageId: String,
          data: MessageData,

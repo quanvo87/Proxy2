@@ -29,6 +29,7 @@
 		5954AE181F9A4E95004A351F /* ProxiesTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5954AE171F9A4E95004A351F /* ProxiesTableViewCell.xib */; };
 		5958E34A1F9D5E8D00CC0560 /* SenderProxyTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5958E3491F9D5E8D00CC0560 /* SenderProxyTableViewCell.xib */; };
 		5959CA332030C20600083FC8 /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5959CA322030C20600083FC8 /* LogInViewController.swift */; };
+		595CC10F205F6F8A0019589D /* AudioPlaying.swift in Sources */ = {isa = PBXBuildFile; fileRef = 595CC10E205F6F8A0019589D /* AudioPlaying.swift */; };
 		5973C84A1F608A2200647492 /* ConvosTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8161F608A1A00647492 /* ConvosTableViewCell.swift */; };
 		5973C8511F608A2200647492 /* ProxyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C81D1F608A1B00647492 /* ProxyError.swift */; };
 		5973C8531F608A2200647492 /* ConvoDetailReceiverProxyTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C81F1F608A1B00647492 /* ConvoDetailReceiverProxyTableViewCell.swift */; };
@@ -46,7 +47,6 @@
 		5973C8691F608A2200647492 /* loadNouns.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8361F608A1F00647492 /* loadNouns.swift */; };
 		5973C86B1F608A2200647492 /* Convo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8381F608A1F00647492 /* Convo.swift */; };
 		5973C86C1F608A2200647492 /* LoginManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8391F608A1F00647492 /* LoginManaging.swift */; };
-		5973C8721F608A2200647492 /* Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C83F1F608A2000647492 /* Constant.swift */; };
 		5973C8751F608A2200647492 /* loadIconNames.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8421F608A2100647492 /* loadIconNames.swift */; };
 		5973C8761F608A2200647492 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8431F608A2100647492 /* SettingsViewController.swift */; };
 		5973C8771F608A2200647492 /* SenderPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973C8441F608A2100647492 /* SenderPickerViewController.swift */; };
@@ -56,22 +56,25 @@
 		598420511FEA598300855647 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598420501FEA598300855647 /* Message.swift */; };
 		5984BB9E20576403001745E9 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5984BB9D20576403001745E9 /* AboutViewController.swift */; };
 		5985B3BD20587FD400E12467 /* ThirdPartySoftwareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5985B3BC20587FD400E12467 /* ThirdPartySoftwareViewController.swift */; };
-		598603D920560E30000B6341 /* textIn.wav in Resources */ = {isa = PBXBuildFile; fileRef = 598603D820560E2F000B6341 /* textIn.wav */; };
-		598603DB20561638000B6341 /* AudioPlaying.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598603DA20561638000B6341 /* AudioPlaying.swift */; };
+		598603D920560E30000B6341 /* newMessage.wav in Resources */ = {isa = PBXBuildFile; fileRef = 598603D820560E2F000B6341 /* newMessage.wav */; };
 		5988E8321F9A5A7E002C8C95 /* ConvosTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5988E8311F9A5A7E002C8C95 /* ConvosTableViewCell.xib */; };
 		5988E8341F9A5EF9002C8C95 /* SettingsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5988E8331F9A5EF9002C8C95 /* SettingsTableViewCell.xib */; };
 		598F89FE1FEB401200CCF024 /* ConvoDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598F89FD1FEB401200CCF024 /* ConvoDetailViewController.swift */; };
 		598F8A5A1FEB501400CCF024 /* ConvoDetailSenderProxyTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 598F8A591FEB501400CCF024 /* ConvoDetailSenderProxyTableViewCell.xib */; };
 		598F8A661FEB9B2300CCF024 /* Protocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598F8A651FEB9B2300CCF024 /* Protocol.swift */; };
 		5996F19B2016233100CF36FD /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5996F19A2016233100CF36FD /* Database.swift */; };
+		599885002063EA0500D2BD50 /* Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599884FF2063EA0500D2BD50 /* Constant.swift */; };
 		59B432E51F60648400622DEA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 59B432E31F60648400622DEA /* Main.storyboard */; };
 		59B432E71F60648400622DEA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 59B432E61F60648400622DEA /* Assets.xcassets */; };
 		59B432EA1F60648400622DEA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 59B432E81F60648400622DEA /* LaunchScreen.storyboard */; };
 		59B90C211FF3411E00449569 /* UnreadMessagesObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59B90C201FF3411E00449569 /* UnreadMessagesObserving.swift */; };
 		59BDAE512003849C002A5A6C /* ProxyNamesLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BDAE502003849C002A5A6C /* ProxyNamesLoading.swift */; };
 		59BE6ABB2016C74B00CCD27E /* GroupWork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BE6ABA2016C74B00CCD27E /* GroupWork.swift */; };
+		59BF62EE20629DBE00DBD722 /* ApplicationStateObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BF62ED20629DBE00DBD722 /* ApplicationStateObserving.swift */; };
+		59C337A42061752500245AD1 /* SoundSwitchManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C337A32061752500245AD1 /* SoundSwitchManaging.swift */; };
 		59CDE808201BDEA40048C7E3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59CDE807201BDEA40048C7E3 /* AppDelegate.swift */; };
 		59D3AE501FA1A4FF009F18A5 /* ConvoDetailReceiverProxyTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 59D3AE4F1FA1A4FF009F18A5 /* ConvoDetailReceiverProxyTableViewCell.xib */; };
+		59D5419C205D98B400754E8A /* ProxyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D5419B205D98B400754E8A /* ProxyTests.swift */; };
 		59D76C85203E3F5900ED7926 /* login.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 59D76C84203E3F5900ED7926 /* login.mp4 */; };
 		59DE14CC2046155D0029B14F /* ProxyNotificationBannerQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59DE14CB2046155D0029B14F /* ProxyNotificationBannerQueue.swift */; };
 		59DECF5F1FEA56AD009ABB36 /* ConvoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59DECF5E1FEA56AD009ABB36 /* ConvoViewController.swift */; };
@@ -127,6 +130,7 @@
 		5954AE171F9A4E95004A351F /* ProxiesTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = ProxiesTableViewCell.xib; path = Proxy/View/ProxiesTableViewCell.xib; sourceTree = SOURCE_ROOT; };
 		5958E3491F9D5E8D00CC0560 /* SenderProxyTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SenderProxyTableViewCell.xib; sourceTree = "<group>"; };
 		5959CA322030C20600083FC8 /* LogInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
+		595CC10E205F6F8A0019589D /* AudioPlaying.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlaying.swift; sourceTree = "<group>"; };
 		5973C8161F608A1A00647492 /* ConvosTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvosTableViewCell.swift; sourceTree = "<group>"; };
 		5973C81D1F608A1B00647492 /* ProxyError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyError.swift; sourceTree = "<group>"; };
 		5973C81F1F608A1B00647492 /* ConvoDetailReceiverProxyTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvoDetailReceiverProxyTableViewCell.swift; sourceTree = "<group>"; };
@@ -144,7 +148,6 @@
 		5973C8361F608A1F00647492 /* loadNouns.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = loadNouns.swift; sourceTree = "<group>"; };
 		5973C8381F608A1F00647492 /* Convo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Convo.swift; sourceTree = "<group>"; };
 		5973C8391F608A1F00647492 /* LoginManaging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginManaging.swift; sourceTree = "<group>"; };
-		5973C83F1F608A2000647492 /* Constant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constant.swift; sourceTree = "<group>"; };
 		5973C8421F608A2100647492 /* loadIconNames.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = loadIconNames.swift; sourceTree = "<group>"; };
 		5973C8431F608A2100647492 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		5973C8441F608A2100647492 /* SenderPickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SenderPickerViewController.swift; sourceTree = "<group>"; };
@@ -154,14 +157,14 @@
 		598420501FEA598300855647 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		5984BB9D20576403001745E9 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		5985B3BC20587FD400E12467 /* ThirdPartySoftwareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThirdPartySoftwareViewController.swift; sourceTree = "<group>"; };
-		598603D820560E2F000B6341 /* textIn.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = textIn.wav; sourceTree = "<group>"; };
-		598603DA20561638000B6341 /* AudioPlaying.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlaying.swift; sourceTree = "<group>"; };
+		598603D820560E2F000B6341 /* newMessage.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = newMessage.wav; sourceTree = "<group>"; };
 		5988E8311F9A5A7E002C8C95 /* ConvosTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConvosTableViewCell.xib; sourceTree = "<group>"; };
 		5988E8331F9A5EF9002C8C95 /* SettingsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SettingsTableViewCell.xib; sourceTree = "<group>"; };
 		598F89FD1FEB401200CCF024 /* ConvoDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoDetailViewController.swift; sourceTree = "<group>"; };
 		598F8A591FEB501400CCF024 /* ConvoDetailSenderProxyTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConvoDetailSenderProxyTableViewCell.xib; sourceTree = "<group>"; };
 		598F8A651FEB9B2300CCF024 /* Protocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocol.swift; sourceTree = "<group>"; };
 		5996F19A2016233100CF36FD /* Database.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database.swift; sourceTree = "<group>"; };
+		599884FF2063EA0500D2BD50 /* Constant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constant.swift; sourceTree = "<group>"; };
 		59B432DC1F60648400622DEA /* Proxy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Proxy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		59B432E41F60648400622DEA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		59B432E61F60648400622DEA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -174,8 +177,11 @@
 		59B90C201FF3411E00449569 /* UnreadMessagesObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnreadMessagesObserving.swift; sourceTree = "<group>"; };
 		59BDAE502003849C002A5A6C /* ProxyNamesLoading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyNamesLoading.swift; sourceTree = "<group>"; };
 		59BE6ABA2016C74B00CCD27E /* GroupWork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupWork.swift; sourceTree = "<group>"; };
+		59BF62ED20629DBE00DBD722 /* ApplicationStateObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationStateObserving.swift; sourceTree = "<group>"; };
+		59C337A32061752500245AD1 /* SoundSwitchManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundSwitchManaging.swift; sourceTree = "<group>"; };
 		59CDE807201BDEA40048C7E3 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		59D3AE4F1FA1A4FF009F18A5 /* ConvoDetailReceiverProxyTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConvoDetailReceiverProxyTableViewCell.xib; sourceTree = "<group>"; };
+		59D5419B205D98B400754E8A /* ProxyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyTests.swift; sourceTree = "<group>"; };
 		59D76C84203E3F5900ED7926 /* login.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = login.mp4; sourceTree = "<group>"; };
 		59DE14CB2046155D0029B14F /* ProxyNotificationBannerQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyNotificationBannerQueue.swift; sourceTree = "<group>"; };
 		59DECF5E1FEA56AD009ABB36 /* ConvoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoViewController.swift; sourceTree = "<group>"; };
@@ -273,7 +279,8 @@
 		5966076C1F977CA300874741 /* Protocol */ = {
 			isa = PBXGroup;
 			children = (
-				598603DA20561638000B6341 /* AudioPlaying.swift */,
+				59BF62ED20629DBE00DBD722 /* ApplicationStateObserving.swift */,
+				595CC10E205F6F8A0019589D /* AudioPlaying.swift */,
 				59FF373C1F97984200FA1AF0 /* AuthObserving.swift */,
 				593C938C205494D600931F2B /* ButtonAnimating.swift */,
 				5932BA17200963AC0041BD7B /* ConvoObserving.swift */,
@@ -288,6 +295,7 @@
 				59BDAE502003849C002A5A6C /* ProxyNamesLoading.swift */,
 				59E75B2F1F846F6B0033A407 /* ProxyObserving.swift */,
 				590823C41F9EF6DA00A3B6A9 /* ProxyPropertyGenerating.swift */,
+				59C337A32061752500245AD1 /* SoundSwitchManaging.swift */,
 				593C938E2055921A00931F2B /* TableViewRefreshing.swift */,
 				59B90C201FF3411E00449569 /* UnreadMessagesObserving.swift */,
 				593D7D431F851F7D00D3FBD5 /* UserStatsObserving.swift */,
@@ -347,6 +355,7 @@
 				5973C8811F608A4E00647492 /* FirebaseTest.swift */,
 				5973C8831F608A4E00647492 /* FirebaseTests.swift */,
 				591E305D1FF9729C00094EB3 /* FirebaseUtilTests.swift */,
+				59D5419B205D98B400754E8A /* ProxyTests.swift */,
 				59B432F61F60648400622DEA /* Info.plist */,
 			);
 			path = ProxyTests;
@@ -400,7 +409,7 @@
 		59D896A81F977EEA008B3A05 /* Util */ = {
 			isa = PBXGroup;
 			children = (
-				5973C83F1F608A2000647492 /* Constant.swift */,
+				599884FF2063EA0500D2BD50 /* Constant.swift */,
 				5973C8291F608A1C00647492 /* Extension.swift */,
 				59BE6ABA2016C74B00CCD27E /* GroupWork.swift */,
 				5973C81D1F608A1B00647492 /* ProxyError.swift */,
@@ -418,7 +427,7 @@
 				593C938320535DA100931F2B /* GoogleService-Info.plist */,
 				59B432EB1F60648400622DEA /* Info.plist */,
 				59CDE807201BDEA40048C7E3 /* AppDelegate.swift */,
-				598603D820560E2F000B6341 /* textIn.wav */,
+				598603D820560E2F000B6341 /* newMessage.wav */,
 				59B432E61F60648400622DEA /* Assets.xcassets */,
 			);
 			path = Other;
@@ -566,7 +575,7 @@
 			files = (
 				59D76C85203E3F5900ED7926 /* login.mp4 in Resources */,
 				590823C31F9EED6A00A3B6A9 /* IconPickerCollectionViewCell.xib in Resources */,
-				598603D920560E30000B6341 /* textIn.wav in Resources */,
+				598603D920560E30000B6341 /* newMessage.wav in Resources */,
 				5988E8341F9A5EF9002C8C95 /* SettingsTableViewCell.xib in Resources */,
 				59B432EA1F60648400622DEA /* LaunchScreen.storyboard in Resources */,
 				598F8A5A1FEB501400CCF024 /* ConvoDetailSenderProxyTableViewCell.xib in Resources */,
@@ -900,6 +909,7 @@
 				5996F19B2016233100CF36FD /* Database.swift in Sources */,
 				59FF373D1F97984200FA1AF0 /* AuthObserving.swift in Sources */,
 				5932BA1E2009837D0041BD7B /* MessagesObserving.swift in Sources */,
+				595CC10F205F6F8A0019589D /* AudioPlaying.swift in Sources */,
 				59E75B2E1F846F550033A407 /* ProxiesObserving.swift in Sources */,
 				59BDAE512003849C002A5A6C /* ProxyNamesLoading.swift in Sources */,
 				5973C8641F608A2200647492 /* ProxiesViewController.swift in Sources */,
@@ -909,12 +919,11 @@
 				590823C51F9EF6DA00A3B6A9 /* ProxyPropertyGenerating.swift in Sources */,
 				598420511FEA598300855647 /* Message.swift in Sources */,
 				5973C8671F608A2200647492 /* IconPickerCollectionViewCell.swift in Sources */,
+				59C337A42061752500245AD1 /* SoundSwitchManaging.swift in Sources */,
 				5985B3BD20587FD400E12467 /* ThirdPartySoftwareViewController.swift in Sources */,
 				598F8A661FEB9B2300CCF024 /* Protocol.swift in Sources */,
 				59DECF5F1FEA56AD009ABB36 /* ConvoViewController.swift in Sources */,
 				5959CA332030C20600083FC8 /* LogInViewController.swift in Sources */,
-				5973C8721F608A2200647492 /* Constant.swift in Sources */,
-				598603DB20561638000B6341 /* AudioPlaying.swift in Sources */,
 				593C938B205458FF00931F2B /* NotificationHandling.swift in Sources */,
 				5973C8791F608A2200647492 /* loadAdjectives.swift in Sources */,
 				5973C85A1F608A2200647492 /* ProxiesTableViewCell.swift in Sources */,
@@ -927,7 +936,9 @@
 				5973C8691F608A2200647492 /* loadNouns.swift in Sources */,
 				5973C86C1F608A2200647492 /* LoginManaging.swift in Sources */,
 				59B90C211FF3411E00449569 /* UnreadMessagesObserving.swift in Sources */,
+				599885002063EA0500D2BD50 /* Constant.swift in Sources */,
 				5973C8761F608A2200647492 /* SettingsViewController.swift in Sources */,
+				59BF62EE20629DBE00DBD722 /* ApplicationStateObserving.swift in Sources */,
 				598F89FE1FEB401200CCF024 /* ConvoDetailViewController.swift in Sources */,
 				5973C8601F608A2200647492 /* SettingsTableViewCell.swift in Sources */,
 				5973C8511F608A2200647492 /* ProxyError.swift in Sources */,
@@ -951,6 +962,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				59D5419C205D98B400754E8A /* ProxyTests.swift in Sources */,
 				591E305E1FF9729C00094EB3 /* FirebaseUtilTests.swift in Sources */,
 				5973C88A1F608A4E00647492 /* FirebaseTest.swift in Sources */,
 				5973C88C1F608A4E00647492 /* FirebaseTests.swift in Sources */,
@@ -1121,7 +1133,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -1139,7 +1151,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.quanvo.proxy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};

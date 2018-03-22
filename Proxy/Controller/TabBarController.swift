@@ -7,7 +7,7 @@ class TabBarController: UITabBarController {
     private let uid: String
     private var shouldShowConvoObserver: NSObjectProtocol?
 
-    init(database: Database = Firebase(), uid: String, displayName: String?) {
+    init(database: Database = Shared.database, uid: String, displayName: String?) {
         self.database = database
         self.uid = uid
         convosViewController = ConvosViewController(uid: uid)
@@ -36,7 +36,6 @@ class TabBarController: UITabBarController {
                 self?.selectedIndex = 0
                 self?.convosViewController.navigationController?.popToRootViewController(animated: false)
                 self?.convosViewController.showConvoViewController(convo)
-                self?.proxiesViewController.navigationController?.popToRootViewController(animated: false)
         }
     }
 

@@ -15,7 +15,7 @@ class SenderPickerViewController: UIViewController {
     )
 
     init(buttonAnimator: ButtonAnimating = ButtonAnimator(),
-         database: Database = Firebase(),
+         database: Database = Shared.database,
          proxiesObserver: ProxiesObserving = ProxiesObserver(),
          uid: String,
          senderPickerDelegate: SenderPickerDelegate?) {
