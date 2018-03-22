@@ -8,11 +8,10 @@ import UserNotifications
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow? = UIWindow(frame: UIScreen.main.bounds)
     private let authObserver = AuthObserver()
-    private let convoPresenceObserver = ConvoPresenceObserver()
     private let database = Firebase()
+    private let notificationHandler = NotificationHandler()
     private var launchScreenFinishedObserver: NSObjectProtocol?
     private var uid: String?
-    private lazy var notificationHandler = NotificationHandler(convoPresenceObserver: convoPresenceObserver)
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {

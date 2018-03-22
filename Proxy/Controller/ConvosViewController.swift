@@ -1,11 +1,14 @@
 import UIKit
 
+// todo: different sound for notification and message in/out
 // todo: show indicator when receiver deleted
 class ConvosViewController: UIViewController, NewMessageMakerDelegate {
     var newConvo: Convo?
+    private let applicationStateObserver: ApplicationStateObserving
     private let buttonAnimator: ButtonAnimating
     private let convosObserver: ConvosObsering
     private let database: Database
+    private let incomingMessageAudioPlayer: AudioPlaying
     private let proxiesObserver: ProxiesObserving
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let tableViewRefresher: TableViewRefreshing
@@ -13,6 +16,8 @@ class ConvosViewController: UIViewController, NewMessageMakerDelegate {
     private let unreadMessagesObserver: UnreadMessagesObserving
     private var convos = [Convo]()
     private var currentProxyCount = 0
+    private var isPresent = false
+    private var shouldPlaySounds = false
     private var unreadMessageCount = 0 {
         didSet {
             UIApplication.shared.applicationIconBadgeNumber = unreadMessageCount
@@ -29,16 +34,20 @@ class ConvosViewController: UIViewController, NewMessageMakerDelegate {
         image: Image.makeNewProxy
     )
 
-    init(buttonAnimator: ButtonAnimating = ButtonAnimator(),
+    init(applicationStateObserver: ApplicationStateObserving = ApplicationStateObserver(),
+         buttonAnimator: ButtonAnimating = ButtonAnimator(),
          convosObserver: ConvosObsering = ConvosObserver(),
          database: Database = Firebase(),
+         incomingMessageAudioPlayer: AudioPlaying = Audio.incomingMessageAudioPlayer,
          proxiesObserver: ProxiesObserving = ProxiesObserver(),
          tableViewRefresher: TableViewRefreshing = TableViewRefresher(timeInterval: Constant.tableViewRefreshRate),
          uid: String,
          unreadMessagesObserver: UnreadMessagesObserving = UnreadMessagesObserver()) {
+        self.applicationStateObserver = applicationStateObserver
         self.buttonAnimator = buttonAnimator
         self.convosObserver = convosObserver
         self.database = database
+        self.incomingMessageAudioPlayer = incomingMessageAudioPlayer
         self.proxiesObserver = proxiesObserver
         self.tableViewRefresher = tableViewRefresher
         self.uid = uid
@@ -46,16 +55,31 @@ class ConvosViewController: UIViewController, NewMessageMakerDelegate {
 
         super.init(nibName: nil, bundle: nil)
 
-        let activityIndicatorView = UIActivityIndicatorView(view)
+        applicationStateObserver.applicationDidBecomeActive { [weak self] in
+            self?.isPresent = true
+        }
+
+        applicationStateObserver.applicationDidEnterBackground { [weak self] in
+            self?.isPresent = false
+        }
 
         buttonAnimator.add(makeNewMessageButton)
 
+        let activityIndicatorView = UIActivityIndicatorView(view)
         convosObserver.observe(convosOwnerId: uid, proxyKey: nil) { [weak self] convos in
             activityIndicatorView.removeFromSuperview()
             if convos.isEmpty {
                 self?.buttonAnimator.animate()
             } else {
                 self?.buttonAnimator.stopAnimating()
+            }
+            if let shouldPlaySounds = self?.shouldPlaySounds, shouldPlaySounds {
+                if let isPresent = self?.isPresent, isPresent,
+                    let mostRecentConvo = convos.first, mostRecentConvo.hasUnreadMessage {
+                    self?.incomingMessageAudioPlayer.play()
+                }
+            } else {
+                self?.shouldPlaySounds = true
             }
             self?.convos = convos
             self?.tableView.reloadData()
@@ -102,6 +126,11 @@ class ConvosViewController: UIViewController, NewMessageMakerDelegate {
         activityIndicatorView.startAnimatingAndBringToFront()
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        isPresent = true
+    }
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if convos.isEmpty {
@@ -111,6 +140,17 @@ class ConvosViewController: UIViewController, NewMessageMakerDelegate {
             showConvoViewController(newConvo)
             self.newConvo = nil
         }
+        NotificationCenter.default.post(
+            name: .willEnterConvo,
+            object: nil,
+            userInfo: ["convoKey": String(describing: ConvosViewController.self)]
+        )
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        isPresent = false
+        NotificationCenter.default.post(name: .willLeaveConvo, object: nil)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -179,15 +219,16 @@ extension ConvosViewController: UITableViewDelegate {
         return CGFloat.leastNormalMagnitude
     }
 
+    // todo: fix
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        guard indexPath.row == convos.count - 1 else {  // todo: should be 0?
+        guard indexPath.row == convos.count - 1 else {
             return
         }
-        let activityIndicatorView = UIActivityIndicatorView(view)
-        activityIndicatorView.startAnimatingAndBringToFront()
+//        let activityIndicatorView = UIActivityIndicatorView(view)
+//        activityIndicatorView.startAnimatingAndBringToFront()
         let convo = convos[indexPath.row]
         convosObserver.loadConvos(endingAtTimestamp: convo.timestamp, proxyKey: nil) { [weak self] convos in
-            activityIndicatorView.removeFromSuperview()
+//            activityIndicatorView.removeFromSuperview()
             guard !convos.isEmpty else {
                 return
             }

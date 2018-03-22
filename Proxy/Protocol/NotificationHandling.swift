@@ -1,22 +1,27 @@
 import Foundation
 
 protocol NotificationHandling {
+    // todo: remove optional from uid
     func sendShouldShowConvoNotification(uid: String?, userInfo: [AnyHashable: Any], completion: @escaping () -> Void)
     func showNewMessageBanner(uid: String?, userInfo: [AnyHashable: Any], completion: @escaping () -> Void)
 }
 
 class NotificationHandler: NotificationHandling {
-    private let database = Firebase()
-    private let incomingMessageAudioPlayer = AudioPlayer(soundFileName: "textIn")
-    private weak var convoPresenceObserver: ConvoPresenceObserving?
+    private let convoPresenceObserver: ConvoPresenceObserving
+    private let database: Database
+    private let incomingMessageAudioPlayer: AudioPlaying
 
-    init(convoPresenceObserver: ConvoPresenceObserving) {
+    init(convoPresenceObserver: ConvoPresenceObserving = ConvoPresenceObserver(),
+         database: Database = Firebase(),
+         incomingMessageAudioPlayer: AudioPlaying = Audio.incomingMessageAudioPlayer) {
         self.convoPresenceObserver = convoPresenceObserver
+        self.database = database
+        self.incomingMessageAudioPlayer = incomingMessageAudioPlayer
     }
 
     func sendShouldShowConvoNotification(uid: String?, userInfo: [AnyHashable: Any], completion: @escaping () -> Void) {
         guard let convoKey = userInfo.parentConvoKey,
-            convoKey != convoPresenceObserver?.currentConvoKey,
+            convoKey != convoPresenceObserver.currentConvoKey,
             let uid = uid else {
                 completion()
                 return
@@ -37,8 +42,12 @@ class NotificationHandler: NotificationHandling {
     }
 
     func showNewMessageBanner(uid: String?, userInfo: [AnyHashable: Any], completion: @escaping () -> Void) {
+        if convoPresenceObserver.currentConvoKey == String(describing: ConvosViewController.self) {
+            completion()
+            return
+        }
         guard let convoKey = userInfo.parentConvoKey,
-            convoKey != convoPresenceObserver?.currentConvoKey,
+            convoKey != convoPresenceObserver.currentConvoKey,
             let uid = uid else {
                 completion()
                 return

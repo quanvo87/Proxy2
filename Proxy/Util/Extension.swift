@@ -119,10 +119,10 @@ extension Int {
 }
 
 extension Notification.Name {
-    static let didEnterConvo = Notification.Name("didEnterConvo")
-    static let didLeaveConvo = Notification.Name("didLeaveConvo")
     static let launchScreenFinished = Notification.Name("launchScreenFinished")
     static let shouldShowConvo = Notification.Name("shouldShowConvo")
+    static let willEnterConvo = Notification.Name("willEnterConvo")
+    static let willLeaveConvo = Notification.Name("willLeaveConvo")
 }
 
 extension OnboardingItemInfo {

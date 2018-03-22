@@ -83,6 +83,11 @@ enum Alert {
     }
 }
 
+enum Audio {
+    static let incomingMessageAudioPlayer = AudioPlayer(soundFileName: "textIn")    // todo: change sound files names
+    static let outgoingMessageAudioPlayer = AudioPlayer(soundFileName: "textOut")
+}
+
 enum Child {
     static let convos = "convos"
     static let hasUnreadMessage = "hasUnreadMessage"
@@ -323,11 +328,5 @@ enum StatusBar {
         )
         statusBarNotificationBanner.haptic = .none
         statusBarNotificationBanner.show()
-    }
-}
-
-enum UserSetting {
-    static var soundOn: Bool {
-        return UserDefaults.standard.bool(forKey: Constant.soundOn)
     }
 }

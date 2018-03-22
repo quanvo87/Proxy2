@@ -4,13 +4,13 @@ import UIKit
 class SettingsViewController: UIViewController {
     private let database: Database
     private let loginManager: LoginManaging
+    private let soundSwitchManager: SoundSwitchManaging
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
     private let userStatsObserver: UserStatsObserving
     private var messagesReceivedCount = "-"
     private var messagesSentCount = "-"
     private var proxiesInteractedWithCount = "-"
-    private lazy var soundSwitchManager: SoundSwitchManaging = SoundSwitchManager(uid: uid)
 
     init(database: Database = Firebase(),
          loginManager: LoginManaging = LoginManager(),
@@ -23,11 +23,13 @@ class SettingsViewController: UIViewController {
         self.uid = uid
         self.userStatsObserver = userStatsObserver
 
-        super.init(nibName: nil, bundle: nil)
-
         if let soundSwitchManager = soundSwitchManager {
             self.soundSwitchManager = soundSwitchManager
+        } else {
+            self.soundSwitchManager = SoundSwitchManager(uid: uid)
         }
+
+        super.init(nibName: nil, bundle: nil)
 
         navigationItem.title = displayName
 

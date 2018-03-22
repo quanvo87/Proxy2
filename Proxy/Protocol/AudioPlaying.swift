@@ -2,13 +2,10 @@ import AVKit
 
 protocol AudioPlaying {
     func play()
-    func playWithCooldown()
 }
 
-// todo: .
 class AudioPlayer: AudioPlaying {
     private let player: AVAudioPlayer
-    private var onCooldown = false
 
     init(soundFileName: String, fileTypeHint: String = "wav") {
         let dataAsset = NSDataAsset(name: soundFileName)
@@ -23,26 +20,16 @@ class AudioPlayer: AudioPlaying {
     }
 
     func play() {
-        guard UserSetting.soundOn else {
+        guard UserDefaults.standard.bool(forKey: Constant.soundOn) else {
             return
+        }
+        if #available(iOS 10.0, *) {
+            try? AVAudioSession.sharedInstance().setCategory(
+                AVAudioSessionCategoryAmbient,
+                mode: AVAudioSessionModeDefault
+            )
+            try? AVAudioSession.sharedInstance().setActive(true)
         }
         player.play()
-    }
-
-    func playWithCooldown() {
-        guard UserSetting.soundOn else {
-            return
-        }
-        if !onCooldown {
-            if #available(iOS 10.0, *) {
-                try? AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryAmbient)
-                try? AVAudioSession.sharedInstance().setActive(true)
-            }
-            player.play()
-            onCooldown = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5)) { [weak self] in
-                self?.onCooldown = false
-            }
-        }
     }
 }

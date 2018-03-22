@@ -36,7 +36,6 @@ class TabBarController: UITabBarController {
                 self?.selectedIndex = 0
                 self?.convosViewController.navigationController?.popToRootViewController(animated: false)
                 self?.convosViewController.showConvoViewController(convo)
-                self?.proxiesViewController.navigationController?.popToRootViewController(animated: false)
         }
     }
 
