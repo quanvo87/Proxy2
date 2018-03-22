@@ -167,7 +167,11 @@ private extension ConvoViewController {
         icons[convo.receiverProxyKey] = UIImage(named: convo.receiverIcon)
         icons[convo.senderProxyKey] = UIImage(named: convo.senderIcon)
         messagesCollectionView.reloadDataAndKeepOffset()
-        navigationItem.title = convo.receiverDisplayName
+        if convo.receiverNickname != "" {
+            navigationItem.title = "\"\(convo.receiverNickname)\""
+        } else {
+            navigationItem.title = convo.receiverProxyName
+        }
     }
 }
 

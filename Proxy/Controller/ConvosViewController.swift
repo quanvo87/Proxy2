@@ -218,16 +218,12 @@ extension ConvosViewController: UITableViewDelegate {
         return CGFloat.leastNormalMagnitude
     }
 
-    // todo: fix
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         guard indexPath.row == convos.count - 1 else {
             return
         }
-//        let activityIndicatorView = UIActivityIndicatorView(view)
-//        activityIndicatorView.startAnimatingAndBringToFront()
         let convo = convos[indexPath.row]
         convosObserver.loadConvos(endingAtTimestamp: convo.timestamp, proxyKey: nil) { [weak self] convos in
-//            activityIndicatorView.removeFromSuperview()
             guard !convos.isEmpty else {
                 return
             }

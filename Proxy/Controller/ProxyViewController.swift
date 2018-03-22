@@ -253,11 +253,8 @@ extension ProxyViewController: UITableViewDelegate {
         guard let proxy = proxy, indexPath.section == 1, indexPath.row == convos.count - 1 else {
             return
         }
-        let activityIndicatorView = UIActivityIndicatorView(view)
-        activityIndicatorView.startAnimatingAndBringToFront()
         let convo = convos[indexPath.row]
         convosObserver.loadConvos(endingAtTimestamp: convo.timestamp, proxyKey: proxy.key) { [weak self] convos in
-            activityIndicatorView.removeFromSuperview()
             guard !convos.isEmpty else {
                 return
             }
