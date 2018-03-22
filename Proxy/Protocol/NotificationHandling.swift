@@ -11,7 +11,7 @@ class NotificationHandler: NotificationHandling {
     private let incomingMessageAudioPlayer: AudioPlaying
 
     init(convoPresenceObserver: ConvoPresenceObserving = ConvoPresenceObserver(),
-         database: Database = Firebase(),
+         database: Database = Constant.database,
          incomingMessageAudioPlayer: AudioPlaying = Audio.incomingMessageAudioPlayer) {
         self.convoPresenceObserver = convoPresenceObserver
         self.database = database

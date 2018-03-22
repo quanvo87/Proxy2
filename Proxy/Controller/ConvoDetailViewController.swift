@@ -11,7 +11,7 @@ class ConvoDetailViewController: UIViewController {
 
     init(convo: Convo,
          convoObserver: ConvoObserving = ConvoObserver(),
-         database: Database = Firebase(),
+         database: Database = Constant.database,
          proxyObserver: ProxyObsering = ProxyObserver()) {
         self.convo = convo
         self.convoObserver = convoObserver

@@ -129,7 +129,7 @@ extension GroupWork {
         }
     }
 
-    func setReceiverConvo(_ convo: Convo, database: Database = Firebase()) {
+    func setReceiverConvo(_ convo: Convo, database: Database = Constant.database) {
         start()
         Constant.firebaseHelper.set(
             convo.toDictionary(),
@@ -149,7 +149,7 @@ extension GroupWork {
         }
     }
 
-    func setReceiverDeletedProxy(for convos: [Convo], database: Database = Firebase()) {
+    func setReceiverDeletedProxy(for convos: [Convo], database: Database = Constant.database) {
         for convo in convos {
             start()
             Constant.firebaseHelper.set(
@@ -181,7 +181,7 @@ extension GroupWork {
     func setReceiverMessageValues(convo: Convo,
                                   currentTime: Double,
                                   message: Message,
-                                  database: Database = Firebase()) {
+                                  database: Database = Constant.database) {
         guard !convo.receiverDeletedProxy else {
             return
         }

@@ -7,7 +7,7 @@ protocol ConvoObserving: ReferenceObserving {
 class ConvoObserver: ConvoObserving {
     private (set) var handle: DatabaseHandle?
     private (set) var ref: DatabaseReference?
-    private let database = Firebase()
+    private let database = Constant.database
 
     func observe(convoKey: String, convoSenderId: String, completion: @escaping (Convo?) -> Void) {
         stopObserving()

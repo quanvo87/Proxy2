@@ -306,7 +306,7 @@ extension UIViewController {
         navigationController?.pushViewController(convoViewController, animated: true)
     }
 
-    func showEditProxyNicknameAlert(_ proxy: Proxy, database: Database = Firebase()) {
+    func showEditProxyNicknameAlert(_ proxy: Proxy, database: Database = Constant.database) {
         let alert = UIAlertController(title: "Edit Nickname",
                                       message: "Only you see your nickname.",
                                       preferredStyle: .alert)

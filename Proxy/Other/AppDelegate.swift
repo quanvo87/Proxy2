@@ -8,7 +8,7 @@ import UserNotifications
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow? = UIWindow(frame: UIScreen.main.bounds)
     private let authObserver = AuthObserver()
-    private let database = Firebase()
+    private let database = Constant.database
     private let notificationHandler = NotificationHandler()
     private var launchScreenFinishedObserver: NSObjectProtocol?
     private var uid: String?
@@ -49,9 +49,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             forName: .launchScreenFinished,
             object: nil,
             queue: .main) { [weak self] _ in
-                guard let launchScreenFinishedObserver = self?.launchScreenFinishedObserver else {
-                    return
-                }
                 if #available(iOS 10.0, *) {
                     UNUserNotificationCenter.current().delegate = self
                     let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
@@ -64,7 +61,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     application.registerUserNotificationSettings(settings)
                 }
                 application.registerForRemoteNotifications()
-                NotificationCenter.default.removeObserver(launchScreenFinishedObserver)
+                if let launchScreenFinishedObserver = self?.launchScreenFinishedObserver {
+                    NotificationCenter.default.removeObserver(launchScreenFinishedObserver)
+                }
                 self?.launchScreenFinishedObserver = nil
         }
 

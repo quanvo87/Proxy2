@@ -20,7 +20,7 @@ class ConvoViewController: MessagesViewController {
          incomingMessageAudioPlayer: AudioPlaying = Audio.incomingMessageAudioPlayer,
          outgoingMessageAudioPlayer: AudioPlaying = Audio.outgoingMessageAudioPlayer,
          convoObserver: ConvoObserving = ConvoObserver(),
-         database: Database = Firebase(),
+         database: Database = Constant.database,
          messagesObserver: MessagesObserving = MessagesObserver(),
          querySize: UInt = DatabaseOption.querySize,
          unreadMessagesObserver: UnreadMessagesObserving = UnreadMessagesObserver(),

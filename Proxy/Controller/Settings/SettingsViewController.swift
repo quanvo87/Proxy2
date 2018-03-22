@@ -12,7 +12,7 @@ class SettingsViewController: UIViewController {
     private var messagesSentCount = "-"
     private var proxiesInteractedWithCount = "-"
 
-    init(database: Database = Firebase(),
+    init(database: Database = Constant.database,
          loginManager: LoginManaging = LoginManager(),
          uid: String,
          userStatsObserver: UserStatsObserving = UserStatsObserver(),

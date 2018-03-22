@@ -6,7 +6,7 @@ class IconPickerViewController: UIViewController {
     private let iconNames: [String]
     private let proxy: Proxy
 
-    init(database: Database = Firebase(),
+    init(database: Database = Constant.database,
          iconNames: [String] = ProxyPropertyGenerator().iconNames,
          proxy: Proxy) {
         self.database = database
@@ -72,6 +72,7 @@ extension IconPickerViewController: UICollectionViewDataSource {
 // MARK: - UICollectionViewDelegate
 extension IconPickerViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.cellForItem(at: indexPath)?.backgroundColor = Color.iOSBlue
         let iconName = iconNames[indexPath.row]
         database.setIcon(to: iconName, for: proxy) { _ in }
         dismiss(animated: true)

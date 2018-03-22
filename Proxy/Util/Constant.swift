@@ -135,6 +135,7 @@ enum Constant {
     }
     // swiftlint:enable line_length
     static let auth = Auth.auth()
+    static let database = Firebase()
     static let decimalNumberFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal

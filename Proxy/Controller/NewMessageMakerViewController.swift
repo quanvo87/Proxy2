@@ -34,7 +34,7 @@ class NewMessageMakerViewController: UIViewController, SenderPickerDelegate {
 
     init(sender: Proxy?,
          buttonAnimator: ButtonAnimating = ButtonAnimator(),
-         database: Database = Firebase(),
+         database: Database = Constant.database,
          proxiesObserver: ProxiesObserving = ProxiesObserver(),
          proxyNamesLoader: ProxyNamesLoading = ProxyNamesLoader(),
          uid: String,
