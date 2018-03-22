@@ -25,11 +25,11 @@ class Button: CustomPressableButton {
 
         switch colorScheme {
         case .normal:
-            self.colors = .init(button: Color.blue, shadow: Color.blue.darkened())
-            self.disabledColors = .init(button: Color.blue.tinted(), shadow: Color.blue.tinted().darkened())
+            self.colors = .init(button: Color.buttonBlue, shadow: Color.buttonBlue.darkened())
+            self.disabledColors = .init(button: Color.buttonBlue.tinted(), shadow: Color.buttonBlue.tinted().darkened())
         case .complement:
-            self.colors = .init(button: Color.red, shadow: Color.red.darkened())
-            self.disabledColors = .init(button: Color.red.tinted(), shadow: Color.red.tinted().darkened())
+            self.colors = .init(button: Color.buttonRed, shadow: Color.buttonRed.darkened())
+            self.disabledColors = .init(button: Color.buttonRed.tinted(), shadow: Color.buttonRed.tinted().darkened())
         case .facebook:
             setupAsFacebookButton()
         case .custom(let colors, let disabledColors):

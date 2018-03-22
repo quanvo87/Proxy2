@@ -7,11 +7,11 @@ protocol ProxyObsering: ReferenceObserving {
 class ProxyObserver: ProxyObsering {
     private (set) var handle: DatabaseHandle?
     private (set) var ref: DatabaseReference?
-    private let database = Constant.database
+    private let database = Shared.database
 
     func observe(proxyKey: String, proxyOwnerId: String, completion: @escaping (Proxy?) -> Void) {
         stopObserving()
-        ref = try? Constant.firebaseHelper.makeReference(Child.proxies, proxyOwnerId, proxyKey)
+        ref = try? Shared.firebaseHelper.makeReference(Child.proxies, proxyOwnerId, proxyKey)
         handle = ref?.observe(.value) { [weak self] data in
             do {
                 completion(try Proxy(data))

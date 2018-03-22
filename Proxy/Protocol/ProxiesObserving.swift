@@ -10,7 +10,7 @@ class ProxiesObserver: ProxiesObserving {
 
     func observe(proxiesOwnerId: String, completion: @escaping ([Proxy]) -> Void) {
         stopObserving()
-        ref = try? Constant.firebaseHelper.makeReference(Child.proxies, proxiesOwnerId)
+        ref = try? Shared.firebaseHelper.makeReference(Child.proxies, proxiesOwnerId)
         handle = ref?.queryOrdered(byChild: Child.timestamp).observe(.value) { data in
             completion(data.asProxiesArray.reversed())
         }

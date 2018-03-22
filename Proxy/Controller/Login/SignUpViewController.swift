@@ -38,7 +38,7 @@ class SignUpViewController: UIViewController {
     }
 
     static func make(loginManager: LoginManaging? = nil) -> SignUpViewController {
-        guard let signUpViewController = Constant.storyboard.instantiateViewController(
+        guard let signUpViewController = Shared.storyboard.instantiateViewController(
             withIdentifier: String(describing: SignUpViewController.self)
             ) as? SignUpViewController else {
                 return SignUpViewController()

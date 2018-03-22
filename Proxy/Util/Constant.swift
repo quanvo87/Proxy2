@@ -108,14 +108,14 @@ enum Child {
 }
 
 enum Color {
-    static let darkBlue = UIColor(hex: 0x2c3e50)
-    static let blue = UIColor(red: 53/255, green: 152/255, blue: 217/255, alpha: 1)
-    static let red = UIColor(red: 231/255, green: 76/255, blue: 60/255, alpha: 1)
-    static let facebookBlue = UIColor(red: 59/255, green: 89/255, blue: 152/255, alpha: 1)
-    static let iOSBlue = UIColor(red: 0, green: 122/255, blue: 1, alpha: 1)
     static let alertButtonGreen = UIColor(red: 41/255, green: 191/255, blue: 60/255, alpha: 1)
     static let alertButtonRed = UIColor(red: 252/255, green: 49/255, blue: 59/255, alpha: 1)
     static let chatBubbleGray = UIColor(red: 230/255, green: 230/255, blue: 230/255, alpha: 1)
+    static let buttonBlue = UIColor(red: 53/255, green: 152/255, blue: 217/255, alpha: 1)
+    static let buttonRed = UIColor(red: 231/255, green: 76/255, blue: 60/255, alpha: 1)
+    static let facebookBlue = UIColor(red: 59/255, green: 89/255, blue: 152/255, alpha: 1)
+    static let iOSBlue = UIColor(red: 0, green: 122/255, blue: 1, alpha: 1)
+    static let mainThemeDarkBlue = UIColor(hex: 0x2c3e50)
 }
 
 enum Constant {
@@ -134,21 +134,9 @@ enum Constant {
         static let testDatabase = "https://proxy-test-f90c4-9c8ea.firebaseio.com/"
     }
     // swiftlint:enable line_length
-    static let auth = Auth.auth()
-    static let database = Firebase()
-    static let decimalNumberFormatter: NumberFormatter = {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        return formatter
-    }()
-    static let firebaseApp = FirebaseApp.app()
-    static let firebaseHelper = Constant.isRunningTests ?
-        FirebaseHelper(Constant.testDatabaseReference) :
-        FirebaseHelper(FirebaseDatabase.Database.database().reference())
+    static let convoDetailSenderProxyTableViewCell = "ConvoDetailSenderProxyTableViewCell"
     static let isRunningTests = UserDefaults.standard.bool(forKey: "isRunningTests")
     static let tableViewRefreshRate: TimeInterval = 10
-    static let testDatabaseReference = FirebaseDatabase.Database.database(url: Constant.URL.testDatabase).reference()
-    static let storyboard = UIStoryboard(name: "Main", bundle: nil)
     static let soundOn = "soundOn"
 }
 
@@ -181,9 +169,7 @@ enum DeviceInfo {
 
     static let isSmallDevice: Bool = {
         switch Device.size() {
-        case .screen3_5Inch:
-            return true
-        case .screen4Inch:
+        case .screen3_5Inch, .screen4Inch:
             return true
         default:
             return false
@@ -203,23 +189,16 @@ enum Haptic {
         }
     }
 
-    static func makeSuccess(_ impact: Piano.HapticFeedback.Impact? = .light) {
+    static func makeSuccess() {
         switch DeviceInfo.feedbackType {
         case .haptic:
-            guard let impact = impact else {
-                return
-            }
-            Piano.play([.hapticFeedback(.impact(impact))])
+            Piano.play([.hapticFeedback(.impact(.light))])
         case .taptic:
             Piano.play([.tapticEngine(.peek)])
         default:
             break
         }
     }
-}
-
-enum Identifier {
-    static let convoDetailSenderProxyTableViewCell = "ConvoDetailSenderProxyTableViewCell"
 }
 
 enum Image {
@@ -244,11 +223,7 @@ enum Image {
         context?.restoreGState()
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        if let image = image {
-            return image
-        } else {
-            return UIImage()
-        }
+        return image ?? UIImage()
     }
 }
 
@@ -273,6 +248,17 @@ enum Label {
 enum Result<T, Error> {
     case success(T)
     case failure(Error)
+}
+
+enum Shared {
+    static let auth = Auth.auth()
+    static let database = Firebase()
+    static let firebaseApp = FirebaseApp.app()
+    static let firebaseHelper = Constant.isRunningTests ?
+        FirebaseHelper(Shared.testDatabaseReference) :
+        FirebaseHelper(FirebaseDatabase.Database.database().reference())
+    static let testDatabaseReference = FirebaseDatabase.Database.database(url: Constant.URL.testDatabase).reference()
+    static let storyboard = UIStoryboard(name: "Main", bundle: nil)
 }
 
 enum StatusBar {

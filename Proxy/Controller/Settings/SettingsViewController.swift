@@ -12,7 +12,7 @@ class SettingsViewController: UIViewController {
     private var messagesSentCount = "-"
     private var proxiesInteractedWithCount = "-"
 
-    init(database: Database = Constant.database,
+    init(database: Database = Shared.database,
          loginManager: LoginManaging = LoginManager(),
          uid: String,
          userStatsObserver: UserStatsObserving = UserStatsObserver(),
@@ -140,7 +140,7 @@ extension SettingsViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         switch indexPath.section {
         case 2:
-            guard let aboutViewController = Constant.storyboard.instantiateViewController(
+            guard let aboutViewController = Shared.storyboard.instantiateViewController(
                 withIdentifier: String(describing: AboutViewController.self)
                 ) as? AboutViewController else {
                     return

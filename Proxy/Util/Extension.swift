@@ -163,9 +163,9 @@ extension SkyFloatingLabelTextFieldWithIcon {
 
     func setup() {
         clearButtonMode = .whileEditing
-        selectedIconColor = Color.blue
-        selectedLineColor = Color.blue
-        selectedTitleColor = Color.blue
+        selectedIconColor = Color.buttonBlue
+        selectedLineColor = Color.buttonBlue
+        selectedTitleColor = Color.buttonBlue
     }
 }
 
@@ -306,7 +306,7 @@ extension UIViewController {
         navigationController?.pushViewController(convoViewController, animated: true)
     }
 
-    func showEditProxyNicknameAlert(_ proxy: Proxy, database: Database = Constant.database) {
+    func showEditProxyNicknameAlert(_ proxy: Proxy, database: Database = Shared.database) {
         let alert = UIAlertController(title: "Edit Nickname",
                                       message: "Only you see your nickname.",
                                       preferredStyle: .alert)

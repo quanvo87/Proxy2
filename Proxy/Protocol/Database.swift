@@ -67,11 +67,11 @@ class Firebase: Database {
     func delete(userProperty: SettableUserProperty, for uid: String, completion: @escaping ErrorCallback) {
         switch userProperty {
         case .registrationToken(let registrationToken):
-            Constant.firebaseHelper.delete(Child.users, uid, Child.registrationTokens, registrationToken) { error in
+            Shared.firebaseHelper.delete(Child.users, uid, Child.registrationTokens, registrationToken) { error in
                 completion(error)
             }
         default:
-            Constant.firebaseHelper.delete(Child.users, uid, userProperty.properties.name) { error in
+            Shared.firebaseHelper.delete(Child.users, uid, userProperty.properties.name) { error in
                 completion(error)
             }
         }
@@ -97,7 +97,7 @@ class Firebase: Database {
     }
 
     func get(userProperty: SettableUserProperty, for uid: String, completion: @escaping DataCallback) {
-        Constant.firebaseHelper.get(Child.users, uid, userProperty.properties.name) { result in
+        Shared.firebaseHelper.get(Child.users, uid, userProperty.properties.name) { result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))
@@ -108,7 +108,7 @@ class Firebase: Database {
     }
 
     func getConvo(convoKey: String, ownerId: String, completion: @escaping ConvoCallback) {
-        Constant.firebaseHelper.get(Child.convos, ownerId, convoKey) { result in
+        Shared.firebaseHelper.get(Child.convos, ownerId, convoKey) { result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))
@@ -123,7 +123,7 @@ class Firebase: Database {
     }
 
     func getProxy(proxyKey: String, completion: @escaping ProxyCallback) {
-        Constant.firebaseHelper.get(
+        Shared.firebaseHelper.get(
             Child.proxyNames,
             proxyKey.lowercased().withoutWhiteSpacesAndNewLines) { [weak self] result in
                 switch result {
@@ -141,7 +141,7 @@ class Firebase: Database {
     }
 
     func getProxy(proxyKey: String, ownerId: String, completion: @escaping ProxyCallback) {
-        Constant.firebaseHelper.get(Child.proxies, ownerId, proxyKey) { result in
+        Shared.firebaseHelper.get(Child.proxies, ownerId, proxyKey) { result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))
@@ -176,7 +176,7 @@ class Firebase: Database {
     private func makeProxy(ownerId: String, attempt: Int, completion: @escaping ProxyCallback) {
         let name = generator.randomProxyName
         let proxy = Proxy(icon: generator.randomIconName, name: name, ownerId: ownerId)
-        Constant.firebaseHelper.set(proxy.toDictionary(), at: Child.proxyNames, proxy.key) { [weak self] error in
+        Shared.firebaseHelper.set(proxy.toDictionary(), at: Child.proxyNames, proxy.key) { [weak self] error in
             if let error = error {
                 if let makeProxyRetries = self?.makeProxyRetries, attempt < makeProxyRetries {
                     self?.makeProxy(ownerId: ownerId, attempt: attempt + 1, completion: completion)
@@ -184,7 +184,7 @@ class Firebase: Database {
                     completion(.failure(error))
                 }
             } else {
-                Constant.firebaseHelper.set(
+                Shared.firebaseHelper.set(
                     proxy.toDictionary(),
                     at: Child.proxies,
                     proxy.ownerId,
@@ -293,7 +293,7 @@ class Firebase: Database {
             return
         }
         do {
-            let ref = try Constant.firebaseHelper.makeReference(Child.messages, convo.key)
+            let ref = try Shared.firebaseHelper.makeReference(Child.messages, convo.key)
             let message = Message(
                 sender: Sender(id: convo.senderId, displayName: convo.senderProxyName),
                 messageId: ref.childByAutoId().key,
@@ -339,13 +339,13 @@ class Firebase: Database {
     func set(userProperty: SettableUserProperty, for uid: String, completion: @escaping ErrorCallback) {
         switch userProperty {
         case .registrationToken(let registrationToken):
-            Constant.firebaseHelper.set(
+            Shared.firebaseHelper.set(
                 true,
                 at: Child.users, uid, Child.registrationTokens, registrationToken) { error in
                     completion(error)
             }
         default:
-            Constant.firebaseHelper.set(
+            Shared.firebaseHelper.set(
                 userProperty.properties.value,
                 at: Child.users,
                 uid,
@@ -403,7 +403,7 @@ class Firebase: Database {
     private func getConvosForProxy(key: String,
                                    ownerId: String,
                                    completion: @escaping (Result<[Convo], Error>) -> Void) {
-        Constant.firebaseHelper.get(Child.convos, ownerId) { result in
+        Shared.firebaseHelper.get(Child.convos, ownerId) { result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))

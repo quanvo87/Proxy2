@@ -8,7 +8,7 @@ import UserNotifications
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow? = UIWindow(frame: UIScreen.main.bounds)
     private let authObserver = AuthObserver()
-    private let database = Constant.database
+    private let database = Shared.database
     private let notificationHandler = NotificationHandler()
     private var launchScreenFinishedObserver: NSObjectProtocol?
     private var uid: String?
@@ -32,7 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 self?.uid = user.uid
                 self?.setRegistrationToken()
             } else {
-                guard self?.uid != nil, let welcomeViewController = Constant.storyboard.instantiateViewController(
+                guard self?.uid != nil, let welcomeViewController = Shared.storyboard.instantiateViewController(
                     withIdentifier: String(describing: WelcomeViewController.self)
                     ) as? WelcomeViewController else {
                         return

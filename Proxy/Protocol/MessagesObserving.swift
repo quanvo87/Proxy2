@@ -19,7 +19,7 @@ class MessagesObserver: MessagesObserving {
 
     func observe(convoKey: String, completion: @escaping ([Message]) -> Void) {
         stopObserving()
-        ref = try? Constant.firebaseHelper.makeReference(Child.messages, convoKey)
+        ref = try? Shared.firebaseHelper.makeReference(Child.messages, convoKey)
         handle = ref?
             .queryLimited(toLast: querySize)
             .queryOrdered(byChild: Child.timestamp)

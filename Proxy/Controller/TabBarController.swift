@@ -7,7 +7,7 @@ class TabBarController: UITabBarController {
     private let uid: String
     private var shouldShowConvoObserver: NSObjectProtocol?
 
-    init(database: Database = Constant.database, uid: String, displayName: String?) {
+    init(database: Database = Shared.database, uid: String, displayName: String?) {
         self.database = database
         self.uid = uid
         convosViewController = ConvosViewController(uid: uid)

@@ -29,7 +29,7 @@ class LoginManager: LoginManaging {
     func emailLogIn(email: String, password: String, completion: @escaping Callback) {
         logInButton?.showActivityIndicator()
         WQNetworkActivityIndicator.shared.show()
-        Constant.auth.signIn(withEmail: email, password: password) { [weak self] _, error in
+        Shared.auth.signIn(withEmail: email, password: password) { [weak self] _, error in
             self?.logInButton?.hideActivityIndicator()
             WQNetworkActivityIndicator.shared.hide()
             if let error = error {
@@ -43,7 +43,7 @@ class LoginManager: LoginManaging {
     func emailSignUp(email: String, password: String, completion: @escaping Callback) {
         signUpButton?.showActivityIndicator()
         WQNetworkActivityIndicator.shared.show()
-        Constant.auth.createUser(withEmail: email, password: password) { [weak self] _, error in
+        Shared.auth.createUser(withEmail: email, password: password) { [weak self] _, error in
             self?.signUpButton?.hideActivityIndicator()
             WQNetworkActivityIndicator.shared.hide()
             if let error = error {
@@ -65,7 +65,7 @@ class LoginManager: LoginManaging {
                 let credential = FacebookAuthProvider.credential(
                     withAccessToken: FBSDKAccessToken.current().tokenString
                 )
-                Constant.auth.signIn(with: credential) { _, error in
+                Shared.auth.signIn(with: credential) { _, error in
                     if let error = error {
                         StatusBar.showErrorBanner(subtitle: error.localizedDescription)
                     } else {
@@ -82,7 +82,7 @@ class LoginManager: LoginManaging {
 
     func sendPasswordReset(_ email: String, completion: @escaping Callback) {
         WQNetworkActivityIndicator.shared.show()
-        Constant.auth.sendPasswordReset(withEmail: email) { (error) in
+        Shared.auth.sendPasswordReset(withEmail: email) { (error) in
             WQNetworkActivityIndicator.shared.hide()
             if let error = error {
                 StatusBar.showErrorBanner(subtitle: error.localizedDescription)
@@ -97,7 +97,7 @@ class LoginManager: LoginManaging {
 
     func logOut() throws {
         WQNetworkActivityIndicator.shared.show()
-        try Constant.auth.signOut()
+        try Shared.auth.signOut()
         WQNetworkActivityIndicator.shared.hide()
     }
 }

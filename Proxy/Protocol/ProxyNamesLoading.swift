@@ -8,7 +8,7 @@ protocol ProxyNamesLoading {
 
 class ProxyNamesLoader: ProxyNamesLoading {
     private let querySize: UInt
-    private let ref = try? Constant.firebaseHelper.makeReference(Child.proxyNames)
+    private let ref = try? Shared.firebaseHelper.makeReference(Child.proxyNames)
     private var pendingWorkItem: DispatchWorkItem?
 
     required init(querySize: UInt = DatabaseOption.querySize) {

@@ -20,7 +20,7 @@ class ConvosObserver: ConvosObsering {
 
     func observe(convosOwnerId: String, proxyKey: String?, completion: @escaping ([Convo]) -> Void) {
         stopObserving()
-        ref = try? Constant.firebaseHelper.makeReference(Child.convos, convosOwnerId)
+        ref = try? Shared.firebaseHelper.makeReference(Child.convos, convosOwnerId)
         handle = ref?
             .queryLimited(toLast: querySize)
             .queryOrdered(byChild: Child.timestamp)

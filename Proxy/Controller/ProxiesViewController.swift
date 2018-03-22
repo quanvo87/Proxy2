@@ -37,7 +37,7 @@ class ProxiesViewController: UIViewController, NewMessageMakerDelegate {
     )
 
     init(buttonAnimator: ButtonAnimating = ButtonAnimator(),
-         database: Database = Constant.database,
+         database: Database = Shared.database,
          proxiesObserver: ProxiesObserving = ProxiesObserver(),
          uid: String) {
         self.buttonAnimator = buttonAnimator

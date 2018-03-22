@@ -20,7 +20,7 @@ class ConvoViewController: MessagesViewController {
          incomingMessageAudioPlayer: AudioPlaying = Audio.incomingMessageAudioPlayer,
          outgoingMessageAudioPlayer: AudioPlaying = Audio.outgoingMessageAudioPlayer,
          convoObserver: ConvoObserving = ConvoObserver(),
-         database: Database = Constant.database,
+         database: Database = Shared.database,
          messagesObserver: MessagesObserving = MessagesObserver(),
          querySize: UInt = DatabaseOption.querySize,
          unreadMessagesObserver: UnreadMessagesObserving = UnreadMessagesObserver(),

@@ -9,7 +9,7 @@ class SoundSwitchManager: SoundSwitchManaging {
     private let database: Database
     private let uid: String
 
-    init(database: Database = Constant.database, uid: String) {
+    init(database: Database = Shared.database, uid: String) {
         self.database = database
         self.uid = uid
 

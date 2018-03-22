@@ -23,7 +23,7 @@ class ProxyViewController: UIViewController, NewMessageMakerDelegate {
 
     init(buttonAnimator: ButtonAnimating = ButtonAnimator(),
          convosObserver: ConvosObsering = ConvosObserver(),
-         database: Database = Constant.database,
+         database: Database = Shared.database,
          proxyObserver: ProxyObsering = ProxyObserver(),
          tableViewRefresher: TableViewRefreshing = TableViewRefresher(timeInterval: Constant.tableViewRefreshRate),
          proxy: Proxy) {

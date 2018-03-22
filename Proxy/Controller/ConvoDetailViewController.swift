@@ -11,7 +11,7 @@ class ConvoDetailViewController: UIViewController {
 
     init(convo: Convo,
          convoObserver: ConvoObserving = ConvoObserver(),
-         database: Database = Constant.database,
+         database: Database = Shared.database,
          proxyObserver: ProxyObsering = ProxyObserver()) {
         self.convo = convo
         self.convoObserver = convoObserver
@@ -45,8 +45,8 @@ class ConvoDetailViewController: UIViewController {
             forCellReuseIdentifier: String(describing: ConvoDetailReceiverProxyTableViewCell.self)
         )
         tableView.register(
-            UINib(nibName: Identifier.convoDetailSenderProxyTableViewCell, bundle: nil),
-            forCellReuseIdentifier: Identifier.convoDetailSenderProxyTableViewCell
+            UINib(nibName: Constant.convoDetailSenderProxyTableViewCell, bundle: nil),
+            forCellReuseIdentifier: Constant.convoDetailSenderProxyTableViewCell
         )
         tableView.setDelaysContentTouchesForScrollViews()
 
@@ -102,7 +102,7 @@ extension ConvoDetailViewController: UITableViewDataSource {
                 return SenderProxyTableViewCell()
             }
             guard let cell = tableView.dequeueReusableCell(
-                withIdentifier: Identifier.convoDetailSenderProxyTableViewCell
+                withIdentifier: Constant.convoDetailSenderProxyTableViewCell
                 ) as? SenderProxyTableViewCell else {
                     return SenderProxyTableViewCell()
             }

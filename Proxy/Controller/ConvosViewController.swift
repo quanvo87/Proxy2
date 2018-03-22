@@ -36,7 +36,7 @@ class ConvosViewController: UIViewController, NewMessageMakerDelegate {
     init(applicationStateObserver: ApplicationStateObserving = ApplicationStateObserver(),
          buttonAnimator: ButtonAnimating = ButtonAnimator(),
          convosObserver: ConvosObsering = ConvosObserver(),
-         database: Database = Constant.database,
+         database: Database = Shared.database,
          incomingMessageAudioPlayer: AudioPlaying = Audio.incomingMessageAudioPlayer,
          proxiesObserver: ProxiesObserving = ProxiesObserver(),
          tableViewRefresher: TableViewRefreshing = TableViewRefresher(timeInterval: Constant.tableViewRefreshRate),

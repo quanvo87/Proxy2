@@ -7,11 +7,11 @@ protocol ConvoObserving: ReferenceObserving {
 class ConvoObserver: ConvoObserving {
     private (set) var handle: DatabaseHandle?
     private (set) var ref: DatabaseReference?
-    private let database = Constant.database
+    private let database = Shared.database
 
     func observe(convoKey: String, convoSenderId: String, completion: @escaping (Convo?) -> Void) {
         stopObserving()
-        ref = try? Constant.firebaseHelper.makeReference(Child.convos, convoSenderId, convoKey)
+        ref = try? Shared.firebaseHelper.makeReference(Child.convos, convoSenderId, convoKey)
         handle = ref?.observe(.value) { [weak self] data in
             do {
                 completion(try Convo(data))

@@ -8,7 +8,7 @@ class FirebaseUtilTests: FirebaseTest {
         defer { waitForExpectations(timeout: 10) }
 
         FirebaseTest.sendMessage { _, convo, _, _ in
-            Constant.firebaseHelper.get(Child.convos, convo.senderId) { result in
+            Shared.firebaseHelper.get(Child.convos, convo.senderId) { result in
                 switch result {
                 case .failure(let error):
                     XCTFail(String(describing: error))
@@ -28,7 +28,7 @@ class FirebaseUtilTests: FirebaseTest {
         defer { waitForExpectations(timeout: 10) }
 
         FirebaseTest.sendMessage { message, _, _, _ in
-            Constant.firebaseHelper.get(Child.messages, message.parentConvoKey) { result in
+            Shared.firebaseHelper.get(Child.messages, message.parentConvoKey) { result in
                 switch result {
                 case .failure(let error):
                     XCTFail(String(describing: error))
@@ -49,7 +49,7 @@ class FirebaseUtilTests: FirebaseTest {
 
         FirebaseTest.makeProxy { proxy1 in
             FirebaseTest.makeProxy { proxy2 in
-                Constant.firebaseHelper.get(Child.proxies, FirebaseTest.uid) { result in
+                Shared.firebaseHelper.get(Child.proxies, FirebaseTest.uid) { result in
                     switch result {
                     case .failure(let error):
                         XCTFail(String(describing: error))
