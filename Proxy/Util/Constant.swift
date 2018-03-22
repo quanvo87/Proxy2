@@ -84,8 +84,8 @@ enum Alert {
 }
 
 enum Audio {
-    static let incomingMessageAudioPlayer = AudioPlayer(soundFileName: "textIn")    // todo: change sound files names
-    static let outgoingMessageAudioPlayer = AudioPlayer(soundFileName: "textOut")
+    static let incomingMessageAudioPlayer = AudioPlayer(soundFileName: "incomingMessage")
+    static let outgoingMessageAudioPlayer = AudioPlayer(soundFileName: "outgoingMessage")
 }
 
 enum Child {

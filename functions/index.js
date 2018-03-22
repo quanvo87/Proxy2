@@ -21,7 +21,7 @@ exports.sendNewMessageNotification = functions.database.ref('/users/{uid}/unread
                 badge: unreadMessageCount.toString(),
                 body: message.senderDisplayName + ': ' + message.text,
                 parentConvoKey: message.parentConvoKey,
-                sound: 'textIn.wav'
+                sound: 'newMessage.wav'
             }
         }
         const tokens = Object.keys(registrationTokensSnapshot.val())

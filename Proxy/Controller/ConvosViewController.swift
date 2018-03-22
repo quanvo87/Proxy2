@@ -1,7 +1,6 @@
 import UIKit
 
 // todo: different sound for notification and message in/out
-// todo: show indicator when receiver deleted
 class ConvosViewController: UIViewController, NewMessageMakerDelegate {
     var newConvo: Convo?
     private let applicationStateObserver: ApplicationStateObserving

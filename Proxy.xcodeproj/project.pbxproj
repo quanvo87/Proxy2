@@ -57,7 +57,7 @@
 		598420511FEA598300855647 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598420501FEA598300855647 /* Message.swift */; };
 		5984BB9E20576403001745E9 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5984BB9D20576403001745E9 /* AboutViewController.swift */; };
 		5985B3BD20587FD400E12467 /* ThirdPartySoftwareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5985B3BC20587FD400E12467 /* ThirdPartySoftwareViewController.swift */; };
-		598603D920560E30000B6341 /* textIn.wav in Resources */ = {isa = PBXBuildFile; fileRef = 598603D820560E2F000B6341 /* textIn.wav */; };
+		598603D920560E30000B6341 /* newMessage.wav in Resources */ = {isa = PBXBuildFile; fileRef = 598603D820560E2F000B6341 /* newMessage.wav */; };
 		5988E8321F9A5A7E002C8C95 /* ConvosTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5988E8311F9A5A7E002C8C95 /* ConvosTableViewCell.xib */; };
 		5988E8341F9A5EF9002C8C95 /* SettingsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5988E8331F9A5EF9002C8C95 /* SettingsTableViewCell.xib */; };
 		598F89FE1FEB401200CCF024 /* ConvoDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598F89FD1FEB401200CCF024 /* ConvoDetailViewController.swift */; };
@@ -158,7 +158,7 @@
 		598420501FEA598300855647 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		5984BB9D20576403001745E9 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		5985B3BC20587FD400E12467 /* ThirdPartySoftwareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThirdPartySoftwareViewController.swift; sourceTree = "<group>"; };
-		598603D820560E2F000B6341 /* textIn.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = textIn.wav; sourceTree = "<group>"; };
+		598603D820560E2F000B6341 /* newMessage.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = newMessage.wav; sourceTree = "<group>"; };
 		5988E8311F9A5A7E002C8C95 /* ConvosTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConvosTableViewCell.xib; sourceTree = "<group>"; };
 		5988E8331F9A5EF9002C8C95 /* SettingsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SettingsTableViewCell.xib; sourceTree = "<group>"; };
 		598F89FD1FEB401200CCF024 /* ConvoDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoDetailViewController.swift; sourceTree = "<group>"; };
@@ -427,7 +427,7 @@
 				593C938320535DA100931F2B /* GoogleService-Info.plist */,
 				59B432EB1F60648400622DEA /* Info.plist */,
 				59CDE807201BDEA40048C7E3 /* AppDelegate.swift */,
-				598603D820560E2F000B6341 /* textIn.wav */,
+				598603D820560E2F000B6341 /* newMessage.wav */,
 				59B432E61F60648400622DEA /* Assets.xcassets */,
 			);
 			path = Other;
@@ -575,7 +575,7 @@
 			files = (
 				59D76C85203E3F5900ED7926 /* login.mp4 in Resources */,
 				590823C31F9EED6A00A3B6A9 /* IconPickerCollectionViewCell.xib in Resources */,
-				598603D920560E30000B6341 /* textIn.wav in Resources */,
+				598603D920560E30000B6341 /* newMessage.wav in Resources */,
 				5988E8341F9A5EF9002C8C95 /* SettingsTableViewCell.xib in Resources */,
 				59B432EA1F60648400622DEA /* LaunchScreen.storyboard in Resources */,
 				598F8A5A1FEB501400CCF024 /* ConvoDetailSenderProxyTableViewCell.xib in Resources */,

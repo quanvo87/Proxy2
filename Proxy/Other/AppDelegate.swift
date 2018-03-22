@@ -81,6 +81,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any],
                      fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        guard let uid = uid else {
+            completionHandler(.noData)
+            return
+        }
         switch application.applicationState {
         case .active:
             notificationHandler.showNewMessageBanner(uid: uid, userInfo: userInfo) {
@@ -140,6 +144,10 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 willPresent notification: UNNotification,
                                 withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        guard let uid = uid else {
+            completionHandler([])
+            return
+        }
         let userInfo = notification.request.content.userInfo
         notificationHandler.showNewMessageBanner(uid: uid, userInfo: userInfo) {
             completionHandler([])
@@ -150,6 +158,10 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 didReceive response: UNNotificationResponse,
                                 withCompletionHandler completionHandler: @escaping () -> Void) {
+        guard let uid = uid else {
+            completionHandler()
+            return
+        }
         let userInfo = response.notification.request.content.userInfo
         notificationHandler.sendShouldShowConvoNotification(uid: uid, userInfo: userInfo, completion: completionHandler)
     }

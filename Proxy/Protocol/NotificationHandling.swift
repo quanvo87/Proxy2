@@ -1,9 +1,8 @@
 import Foundation
 
 protocol NotificationHandling {
-    // todo: remove optional from uid
-    func sendShouldShowConvoNotification(uid: String?, userInfo: [AnyHashable: Any], completion: @escaping () -> Void)
-    func showNewMessageBanner(uid: String?, userInfo: [AnyHashable: Any], completion: @escaping () -> Void)
+    func sendShouldShowConvoNotification(uid: String, userInfo: [AnyHashable: Any], completion: @escaping () -> Void)
+    func showNewMessageBanner(uid: String, userInfo: [AnyHashable: Any], completion: @escaping () -> Void)
 }
 
 class NotificationHandler: NotificationHandling {
@@ -19,12 +18,10 @@ class NotificationHandler: NotificationHandling {
         self.incomingMessageAudioPlayer = incomingMessageAudioPlayer
     }
 
-    func sendShouldShowConvoNotification(uid: String?, userInfo: [AnyHashable: Any], completion: @escaping () -> Void) {
-        guard let convoKey = userInfo.parentConvoKey,
-            convoKey != convoPresenceObserver.currentConvoKey,
-            let uid = uid else {
-                completion()
-                return
+    func sendShouldShowConvoNotification(uid: String, userInfo: [AnyHashable: Any], completion: @escaping () -> Void) {
+        guard let convoKey = userInfo.parentConvoKey, convoKey != convoPresenceObserver.currentConvoKey else {
+            completion()
+            return
         }
         database.getConvo(convoKey: convoKey, ownerId: uid) { result in
             switch result {
@@ -41,16 +38,14 @@ class NotificationHandler: NotificationHandling {
         }
     }
 
-    func showNewMessageBanner(uid: String?, userInfo: [AnyHashable: Any], completion: @escaping () -> Void) {
+    func showNewMessageBanner(uid: String, userInfo: [AnyHashable: Any], completion: @escaping () -> Void) {
         if convoPresenceObserver.currentConvoKey == String(describing: ConvosViewController.self) {
             completion()
             return
         }
-        guard let convoKey = userInfo.parentConvoKey,
-            convoKey != convoPresenceObserver.currentConvoKey,
-            let uid = uid else {
-                completion()
-                return
+        guard let convoKey = userInfo.parentConvoKey, convoKey != convoPresenceObserver.currentConvoKey else {
+            completion()
+            return
         }
         database.getConvo(convoKey: convoKey, ownerId: uid) { [weak self] result in
             switch result {
