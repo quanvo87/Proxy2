@@ -217,8 +217,7 @@ extension GroupWork {
                                 Child.users,
                                 message.receiverId,
                                 Child.unreadMessages,
-                                message.messageId
-                            ) { _ in }
+                                message.messageId) { _ in }
                             let work = GroupWork()
                             work.set(.receiverDeletedProxy(true), for: convo, asSender: true)
                             work.allDone {}
