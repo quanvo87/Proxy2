@@ -13,7 +13,7 @@ class SoundSwitchManager: SoundSwitchManaging {
         self.database = database
         self.uid = uid
 
-        database.get(userProperty: .soundOn(Bool()), for: uid) { [weak self] result in
+        database.get(.soundOn(Bool()), for: uid) { [weak self] result in
             guard let _self = self else {
                 return
             }
@@ -22,7 +22,7 @@ class SoundSwitchManager: SoundSwitchManaging {
             if case let .success(data) = result, let soundOnFromDatabase = data.value as? Bool {
                 soundOn = soundOnFromDatabase
             } else {
-                _self.database.set(userProperty: .soundOn(true), for: uid) { _ in }
+                _self.database.set(.soundOn(true), for: uid) { _ in }
             }
             _self.soundSwitch.setOn(soundOn, animated: false)
             UserDefaults.standard.set(soundOn, forKey: Constant.soundOn)
@@ -31,7 +31,7 @@ class SoundSwitchManager: SoundSwitchManaging {
 
     @objc private func toggleSound() {
         let soundOn = soundSwitch.isOn
-        database.set(userProperty: .soundOn(soundOn), for: uid) { _ in }
+        database.set(.soundOn(soundOn), for: uid) { _ in }
         UserDefaults.standard.set(soundOn, forKey: Constant.soundOn)
     }
 }

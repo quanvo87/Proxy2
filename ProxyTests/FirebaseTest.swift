@@ -4,7 +4,6 @@ import XCTest
 @testable import Proxy
 
 class FirebaseTest: XCTestCase {
-    static let database = Firebase()
     static let testUid = "testUserId"
     static let text = "🤤"
     static let uid = "B2L3X0AOzgUhnJBqUVcLSMZUz2B2"
@@ -53,7 +52,7 @@ class FirebaseTest: XCTestCase {
     }
 
     static func makeProxy(ownerId: String = FirebaseTest.uid, completion: @escaping (Proxy) -> Void) {
-        database.makeProxy(currentProxyCount: 0, ownerId: ownerId) { result in
+        Shared.database.makeProxy(currentProxyCount: 0, ownerId: ownerId) { result in
             switch result {
             case .failure:
                 XCTFail()
@@ -63,16 +62,16 @@ class FirebaseTest: XCTestCase {
         }
     }
 
-    static func sendMessage(
-        completion: @escaping (_ message: Message, _ convo: Convo, _ sender: Proxy, _ receiver: Proxy) -> Void) {
+    // swiftlint:disable line_length
+    static func sendMessage(completion: @escaping (_ message: Message, _ convo: Convo, _ sender: Proxy, _ receiver: Proxy) -> Void) {
         makeProxy { sender in
             makeProxy (ownerId: testUid) { receiver in
-                database.sendMessage(sender: sender, receiver: receiver, text: text) { result in
+                Shared.database.sendMessage(sender: sender, receiver: receiver, text: text) { result in
                     switch result {
-                    case .failure:
-                        XCTFail()
+                    case .failure(let error):
+                        XCTFail(String(describing: error))
                     case .success(let tuple):
-                        database.getConvo(convoKey: tuple.convo.key, ownerId: tuple.convo.senderId) { result in
+                        Shared.database.getConvo(convoKey: tuple.convo.key, ownerId: tuple.convo.senderId) { result in
                             switch result {
                             case .failure(let error):
                                 XCTFail(String(describing: error))
@@ -85,6 +84,7 @@ class FirebaseTest: XCTestCase {
             }
         }
     }
+    // swiftlint:enable line_length
 
     deinit {
         if let handle = handle {
@@ -191,6 +191,26 @@ extension GroupWork {
         }
     }
 
+    func check(_ userProperty: SettableUserProperty, for uid: String, function: String = #function, line: Int = #line) {
+        start()
+        var value: Any
+        switch userProperty {
+        case .contact, .registrationToken:
+            value = true
+        default:
+            value = userProperty.properties.value
+        }
+        Shared.database.get(userProperty, for: uid) { result in
+            switch result {
+            case .failure(let error):
+                XCTFail(String(describing: error))
+            case .success(let data):
+                GroupWork.checkEquals(data, value, function: function, line: line)
+            }
+            self.finish(withResult: true)
+        }
+    }
+
     static func checkEquals(_ data: DataSnapshot?, _ any: Any, function: String, line: Int) {
         let errorMessage = GroupWork.makeErrorMessage(function: function, line: line)
         switch any {
@@ -210,6 +230,22 @@ extension GroupWork {
     func checkDeleted(_ first: String, _ rest: String..., function: String = #function, line: Int = #line) {
         start()
         Shared.firebaseHelper.get(first, rest) { result in
+            switch result {
+            case .failure(let error):
+                XCTFail(String(describing: error))
+            case .success(let data):
+                XCTAssertFalse(data.exists(), GroupWork.makeErrorMessage(function: function, line: line))
+            }
+            self.finish(withResult: true)
+        }
+    }
+
+    func checkDeleted(_ userProperty: SettableUserProperty,
+                      for uid: String,
+                      function: String = #function,
+                      line: Int = #line) {
+        start()
+        Shared.database.get(userProperty, for: uid) { result in
             switch result {
             case .failure(let error):
                 XCTFail(String(describing: error))

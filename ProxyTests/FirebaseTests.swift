@@ -18,9 +18,11 @@ class FirebaseTests: FirebaseTest {
         defer { waitForExpectations(timeout: 10) }
 
         FirebaseTest.sendMessage { message, convo, _, receiver in
-            FirebaseTest.database.deleteProxy(receiver) { error in
+            Shared.database.deleteProxy(receiver) { error in
                 XCTAssertNil(error, String(describing: error))
                 let work = GroupWork()
+                work.checkDeleted(.contact(convo.receiverId), for: convo.senderId)
+                work.checkDeleted(.contact(convo.senderId), for: convo.receiverId)
                 work.checkDeleted(Child.proxies, receiver.ownerId, receiver.key)
                 work.checkDeleted(Child.proxyNames, receiver.key)
                 work.checkDeleted(Child.convos, receiver.ownerId, convo.key)
@@ -40,9 +42,9 @@ class FirebaseTests: FirebaseTest {
         let registrationToken = "registrationToken"
         let userProperty = SettableUserProperty.registrationToken(registrationToken)
 
-        FirebaseTest.database.set(userProperty: userProperty, for: FirebaseTest.uid) { error in
+        Shared.database.set(userProperty, for: FirebaseTest.uid) { error in
             XCTAssertNil(error)
-            FirebaseTest.database.delete(userProperty: userProperty, for: FirebaseTest.uid) { error in
+            Shared.database.delete(userProperty, for: FirebaseTest.uid) { error in
                 XCTAssertNil(error)
                 let work = GroupWork()
                 work.checkDeleted(Child.users, FirebaseTest.uid, Child.registrationTokens, registrationToken)
@@ -58,7 +60,7 @@ class FirebaseTests: FirebaseTest {
         defer { waitForExpectations(timeout: 10) }
 
         FirebaseTest.sendMessage { _, convo, _, _ in
-            FirebaseTest.database.getConvo(convoKey: convo.key, ownerId: convo.senderId) { result in
+            Shared.database.getConvo(convoKey: convo.key, ownerId: convo.senderId) { result in
                 switch result {
                 case .failure(let error):
                     XCTFail(String(describing: error))
@@ -76,7 +78,7 @@ class FirebaseTests: FirebaseTest {
         defer { waitForExpectations(timeout: 10) }
 
         FirebaseTest.makeProxy { proxy in
-            FirebaseTest.database.getProxy(proxyKey: proxy.key) { result in
+            Shared.database.getProxy(proxyKey: proxy.key) { result in
                 switch result {
                 case .failure(let error):
                     XCTFail(String(describing: error))
@@ -93,7 +95,7 @@ class FirebaseTests: FirebaseTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        FirebaseTest.database.getProxy(proxyKey: "invalid key") { result in
+        Shared.database.getProxy(proxyKey: "invalid key") { result in
             switch result {
             case .failure:
                 expectation.fulfill()
@@ -109,7 +111,7 @@ class FirebaseTests: FirebaseTest {
         defer { waitForExpectations(timeout: 10) }
 
         FirebaseTest.makeProxy { proxy in
-            FirebaseTest.database.getProxy(proxyKey: proxy.key, ownerId: proxy.ownerId) { result in
+            Shared.database.getProxy(proxyKey: proxy.key, ownerId: proxy.ownerId) { result in
                 switch result {
                 case .failure(let error):
                     XCTFail(String(describing: error))
@@ -126,7 +128,7 @@ class FirebaseTests: FirebaseTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        FirebaseTest.database.getProxy(proxyKey: "invalid key", ownerId: FirebaseTest.uid) { result in
+        Shared.database.getProxy(proxyKey: "invalid key", ownerId: FirebaseTest.uid) { result in
             switch result {
             case .failure:
                 expectation.fulfill()
@@ -141,9 +143,9 @@ class FirebaseTests: FirebaseTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        FirebaseTest.database.set(userProperty: .soundOn(true), for: FirebaseTest.uid) { error in
+        Shared.database.set(.soundOn(true), for: FirebaseTest.uid) { error in
             XCTAssertNil(error)
-            FirebaseTest.database.get(userProperty: .soundOn(Bool()), for: FirebaseTest.uid) { result in
+            Shared.database.get(.soundOn(Bool()), for: FirebaseTest.uid) { result in
                 switch result {
                 case .failure(let error):
                     XCTFail(String(describing: error))
@@ -160,7 +162,7 @@ class FirebaseTests: FirebaseTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        FirebaseTest.database.makeProxy(currentProxyCount: 0, ownerId: FirebaseTest.uid) { result in
+        Shared.database.makeProxy(currentProxyCount: 0, ownerId: FirebaseTest.uid) { result in
             switch result {
             case .failure(let error):
                 XCTFail(String(describing: error))
@@ -210,7 +212,7 @@ class FirebaseTests: FirebaseTest {
 
         FirebaseTest.sendMessage { message, _, _, receiver in
             let date = Date()
-            FirebaseTest.database.read(message, at: date) { error in
+            Shared.database.read(message, at: date) { error in
                 XCTAssertNil(error, String(describing: error))
                 let work = GroupWork()
                 work.checkDeleted(Child.users, message.receiverId, Child.unreadMessages, message.messageId)
@@ -228,14 +230,20 @@ class FirebaseTests: FirebaseTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        FirebaseTest.sendMessage { message, _, _, _ in
-            FirebaseTest.sendMessage { _, _, _, receiver in
-                FirebaseTest.database.read(message, at: Date()) { error in
-                    XCTAssertNil(error, String(describing: error))
-                    let work = GroupWork()
-                    work.check(.hasUnreadMessage(true), for: receiver)
-                    work.allDone {
-                        expectation.fulfill()
+        FirebaseTest.sendMessage { (message, convo, _, receiver) in
+            Shared.database.sendMessage(convo: convo, text: FirebaseTest.text) { result in
+                switch result {
+                case .failure(let error):
+                    XCTFail(String(describing: error))
+                    expectation.fulfill()
+                case .success(let result):
+                    Shared.database.read(result.message, at: Date()) { error in
+                        XCTAssertNil(error, String(describing: error))
+                        let work = GroupWork()
+                        work.check(.hasUnreadMessage(true), for: receiver)
+                        work.allDone {
+                            expectation.fulfill()
+                        }
                     }
                 }
             }
@@ -259,6 +267,7 @@ class FirebaseTests: FirebaseTest {
             work.checkMessageCreated(message)
 
             // Check receiver updates
+            work.check(.contact(sender.ownerId), for: receiver.ownerId)
             work.check(.messagesReceived, equals: 1, uid: convo.receiverId)
             work.checkUnreadMessageCreated(message)
             work.check(.hasUnreadMessage(true), for: convo, asSender: false)
@@ -269,6 +278,7 @@ class FirebaseTests: FirebaseTest {
             work.check(.lastMessage(FirebaseTest.text), for: receiver)
 
             // Check sender updates
+            work.check(.contact(receiver.ownerId), for: sender.ownerId)
             work.check(.messagesSent, equals: 1, uid: sender.ownerId)
             work.check(.timestamp(convo.timestamp), for: convo, asSender: true)
             work.check(.timestamp(convo.timestamp), for: sender)
@@ -286,15 +296,15 @@ class FirebaseTests: FirebaseTest {
         defer { waitForExpectations(timeout: 10) }
 
         FirebaseTest.sendMessage { _, senderConvo, _, receiverProxy in
-            FirebaseTest.database.deleteProxy(receiverProxy) { error in
+            Shared.database.deleteProxy(receiverProxy) { error in
                 XCTAssertNil(error, String(describing: error))
-                FirebaseTest.database.getConvo(convoKey: senderConvo.key, ownerId: senderConvo.senderId) { result in
+                Shared.database.getConvo(convoKey: senderConvo.key, ownerId: senderConvo.senderId) { result in
                     switch result {
                     case .failure(let error):
                         XCTFail(String(describing: error))
                         expectation.fulfill()
                     case .success(let convo):
-                        FirebaseTest.database.sendMessage(convo: convo, text: FirebaseTest.text) { result in
+                        Shared.database.sendMessage(convo: convo, text: FirebaseTest.text) { result in
                             switch result {
                             case .failure(let error as ProxyError):
                                 switch error {
@@ -320,12 +330,53 @@ class FirebaseTests: FirebaseTest {
         }
     }
 
+    func testSendMessageWhileAlreadyChattingWithUser() {
+        let expectation = self.expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
+
+        FirebaseTest.sendMessage { (_, convo, _, _) in
+            Shared.database.sendMessage(convo: convo, text: FirebaseTest.text) { result in
+                switch result {
+                case .failure(let error):
+                    XCTFail(String(describing: error))
+                    expectation.fulfill()
+                case .success:
+                    expectation.fulfill()
+                }
+            }
+        }
+    }
+
+    func testSendMessageWhileAlreadyChattingWithUserThroughDifferentProxy() {
+        let expectation = self.expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
+
+        FirebaseTest.sendMessage { (_, _, _, receiver) in
+            FirebaseTest.makeProxy { sender2 in
+                Shared.database.sendMessage(sender: sender2, receiver: receiver, text: FirebaseTest.text) { result in
+                    switch result {
+                    case .failure(let error):
+                        if case ProxyError.alreadyChattingWithUser = error {
+                            expectation.fulfill()
+                        } else {
+                            XCTFail(String(describing: error))
+                            expectation.fulfill()
+                        }
+                    case .success:
+                        XCTFail()
+                        expectation.fulfill()
+                    }
+                }
+            }
+        }
+    }
+
     func testSendMessageWithSenderConvo() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
         FirebaseTest.sendMessage { _, convo, _, _ in
-            FirebaseTest.database.sendMessage(convo: convo, text: FirebaseTest.text) { result in
+            Shared.database.sendMessage(convo: convo, text: FirebaseTest.text) { result in
                 switch result {
                 case .failure(let error):
                     XCTFail(String(describing: error))
@@ -343,7 +394,7 @@ class FirebaseTests: FirebaseTest {
 
         FirebaseTest.sendMessage { _, convo, proxy, _ in
             let newIcon = "new icon"
-            FirebaseTest.database.setIcon(to: newIcon, for: proxy) { error in
+            Shared.database.setIcon(to: newIcon, for: proxy) { error in
                 XCTAssertNil(error, String(describing: error))
                 let work = GroupWork()
                 work.check(.icon(newIcon), for: proxy)
@@ -362,7 +413,7 @@ class FirebaseTests: FirebaseTest {
 
         FirebaseTest.sendMessage { _, convo, proxy, _ in
             let newNickname = "new nickname"
-            FirebaseTest.database.setNickname(to: newNickname, for: proxy) { error in
+            Shared.database.setNickname(to: newNickname, for: proxy) { error in
                 XCTAssertNil(error, String(describing: error))
                 let work = GroupWork()
                 work.check(.nickname(newNickname), for: proxy)
@@ -380,7 +431,7 @@ class FirebaseTests: FirebaseTest {
 
         FirebaseTest.sendMessage { _, convo, _, _ in
             let testNickname = "test nickname"
-            FirebaseTest.database.setReceiverNickname(to: testNickname, for: convo) { error in
+            Shared.database.setReceiverNickname(to: testNickname, for: convo) { error in
                 XCTAssertNil(error, String(describing: error))
                 let work = GroupWork()
                 work.check(.receiverNickname(testNickname), for: convo, asSender: true)
@@ -398,28 +449,24 @@ class FirebaseTests: FirebaseTest {
         let registrationToken1 = "registrationToken1"
         let registrationToken2 = "registrationToken2"
 
-        FirebaseTest.database.set(
-            userProperty: .registrationToken(registrationToken1),
-            for: FirebaseTest.uid) { error in
+        Shared.database.set(.registrationToken(registrationToken1), for: FirebaseTest.uid) { error in
+            XCTAssertNil(error)
+            Shared.database.set(.registrationToken(registrationToken2), for: FirebaseTest.uid) { error in
                 XCTAssertNil(error)
-                FirebaseTest.database.set(
-                    userProperty: .registrationToken(registrationToken2),
-                    for: FirebaseTest.uid) { error in
-                        XCTAssertNil(error)
-                        Shared.firebaseHelper.get(Child.users, FirebaseTest.uid, Child.registrationTokens) { result in
-                            switch result {
-                            case .failure(let error):
-                                XCTFail(String(describing: error))
-                                expectation.fulfill()
-                            case .success(let data):
-                                XCTAssertEqual(
-                                    data.value as? [String: Int] ?? [:],
-                                    [registrationToken1: 1, registrationToken2: 1]
-                                )
-                                expectation.fulfill()
-                            }
-                        }
+                Shared.firebaseHelper.get(Child.users, FirebaseTest.uid, Child.registrationTokens) { result in
+                    switch result {
+                    case .failure(let error):
+                        XCTFail(String(describing: error))
+                        expectation.fulfill()
+                    case .success(let data):
+                        XCTAssertEqual(
+                            data.value as? [String: Int] ?? [:],
+                            [registrationToken1: 1, registrationToken2: 1]
+                        )
+                        expectation.fulfill()
+                    }
                 }
+            }
         }
     }
 
@@ -427,7 +474,7 @@ class FirebaseTests: FirebaseTest {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        FirebaseTest.database.set(userProperty: .soundOn(true), for: FirebaseTest.uid) { error in
+        Shared.database.set(.soundOn(true), for: FirebaseTest.uid) { error in
             XCTAssertNil(error)
             expectation.fulfill()
         }

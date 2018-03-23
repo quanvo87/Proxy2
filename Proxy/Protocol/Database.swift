@@ -10,11 +10,14 @@ enum IncrementableUserProperty: String {
 }
 
 enum SettableUserProperty {
+    case contact(String)
     case registrationToken(String)
     case soundOn(Bool)
 
     var properties: (name: String, value: Any) {
         switch self {
+        case .contact(let value):
+            return ("contact", value)
         case .registrationToken(let value):
             return ("registrationToken", value)
         case .soundOn(let value):
@@ -30,9 +33,9 @@ protocol Database {
     typealias MessageCallback = (Result<(convo: Convo, message: Message), Error>) -> Void
     typealias ProxyCallback = (Result<Proxy, Error>) -> Void
     init(_ options: [String: Any])
-    func delete(userProperty: SettableUserProperty, for uid: String, completion: @escaping ErrorCallback)
+    func delete(_ userProperty: SettableUserProperty, for uid: String, completion: @escaping ErrorCallback)
     func deleteProxy(_ proxy: Proxy, completion: @escaping ErrorCallback)
-    func get(userProperty: SettableUserProperty, for uid: String, completion: @escaping DataCallback)
+    func get(_ userProperty: SettableUserProperty, for uid: String, completion: @escaping DataCallback)
     func getConvo(convoKey: String, ownerId: String, completion: @escaping ConvoCallback)
     func getProxy(proxyKey: String, completion: @escaping ProxyCallback)
     func getProxy(proxyKey: String, ownerId: String, completion: @escaping ProxyCallback)
@@ -40,7 +43,7 @@ protocol Database {
     func read(_ message: Message, at date: Date, completion: @escaping ErrorCallback)
     func sendMessage(sender: Proxy, receiver: Proxy, text: String, completion: @escaping MessageCallback)
     func sendMessage(convo: Convo, text: String, completion: @escaping MessageCallback)
-    func set(userProperty: SettableUserProperty, for uid: String, completion: @escaping ErrorCallback)
+    func set(_ userProperty: SettableUserProperty, for uid: String, completion: @escaping ErrorCallback)
     func setIcon(to icon: String, for proxy: Proxy, completion: @escaping ErrorCallback)
     func setNickname(to nickname: String, for proxy: Proxy, completion: @escaping ErrorCallback)
     func setReceiverNickname(to nickname: String, for convo: Convo, completion: @escaping ErrorCallback)
@@ -64,16 +67,10 @@ class Firebase: Database {
     }
     // swiftlint:enable line_length
 
-    func delete(userProperty: SettableUserProperty, for uid: String, completion: @escaping ErrorCallback) {
-        switch userProperty {
-        case .registrationToken(let registrationToken):
-            Shared.firebaseHelper.delete(Child.users, uid, Child.registrationTokens, registrationToken) { error in
-                completion(error)
-            }
-        default:
-            Shared.firebaseHelper.delete(Child.users, uid, userProperty.properties.name) { error in
-                completion(error)
-            }
+    func delete(_ userProperty: SettableUserProperty, for uid: String, completion: @escaping ErrorCallback) {
+        let path = getPath(uid: uid, userProperty: userProperty)
+        Shared.firebaseHelper.delete(Child.users, path) { error in
+            completion(error)
         }
     }
 
@@ -96,8 +93,9 @@ class Firebase: Database {
         }
     }
 
-    func get(userProperty: SettableUserProperty, for uid: String, completion: @escaping DataCallback) {
-        Shared.firebaseHelper.get(Child.users, uid, userProperty.properties.name) { result in
+    func get(_ userProperty: SettableUserProperty, for uid: String, completion: @escaping DataCallback) {
+        let rest = getPath(uid: uid, userProperty: userProperty)
+        Shared.firebaseHelper.get(Child.users, rest) { result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))
@@ -242,35 +240,49 @@ class Firebase: Database {
     }
 
     private func makeConvo(convoKey: String, sender: Proxy, receiver: Proxy, completion: @escaping ConvoCallback) {
-        let senderConvo = Convo(
-            key: convoKey,
-            receiverIcon: receiver.icon,
-            receiverId: receiver.ownerId,
-            receiverProxyKey: receiver.key,
-            receiverProxyName: receiver.name,
-            senderIcon: sender.icon,
-            senderId: sender.ownerId,
-            senderProxyKey: sender.key,
-            senderProxyName: sender.name
-        )
-        let receiverConvo = Convo(
-            key: convoKey,
-            receiverIcon: sender.icon,
-            receiverId: sender.ownerId,
-            receiverProxyKey: sender.key,
-            receiverProxyName: sender.name,
-            senderIcon: receiver.icon,
-            senderId: receiver.ownerId,
-            senderProxyKey: receiver.key,
-            senderProxyName: receiver.name
-        )
-        let work = GroupWork()
-        work.increment(1, property: .proxiesInteractedWith, uid: receiver.ownerId)
-        work.increment(1, property: .proxiesInteractedWith, uid: sender.ownerId)
-        work.set(senderConvo, asSender: true)
-        work.setReceiverConvo(receiverConvo)
-        work.allDone {
-            completion(work.result ? .success(senderConvo) : .failure(ProxyError.unknown))
+        get(.contact(receiver.ownerId), for: sender.ownerId) { result in
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+                return
+            case .success(let data):
+                guard !data.exists() else {
+                    completion(.failure(ProxyError.alreadyChattingWithUser))
+                    return
+                }
+                let senderConvo = Convo(
+                    key: convoKey,
+                    receiverIcon: receiver.icon,
+                    receiverId: receiver.ownerId,
+                    receiverProxyKey: receiver.key,
+                    receiverProxyName: receiver.name,
+                    senderIcon: sender.icon,
+                    senderId: sender.ownerId,
+                    senderProxyKey: sender.key,
+                    senderProxyName: sender.name
+                )
+                let receiverConvo = Convo(
+                    key: convoKey,
+                    receiverIcon: sender.icon,
+                    receiverId: sender.ownerId,
+                    receiverProxyKey: sender.key,
+                    receiverProxyName: sender.name,
+                    senderIcon: receiver.icon,
+                    senderId: receiver.ownerId,
+                    senderProxyKey: receiver.key,
+                    senderProxyName: receiver.name
+                )
+                let work = GroupWork()
+                work.increment(1, property: .proxiesInteractedWith, uid: receiver.ownerId)
+                work.increment(1, property: .proxiesInteractedWith, uid: sender.ownerId)
+                work.set(.contact(receiver.ownerId), for: sender.ownerId)
+                work.set(.contact(sender.ownerId), for: receiver.ownerId)
+                work.set(senderConvo, asSender: true)
+                work.setReceiverConvo(receiverConvo)
+                work.allDone {
+                    completion(work.result ? .success(senderConvo) : .failure(ProxyError.unknown))
+                }
+            }
         }
     }
 
@@ -336,22 +348,17 @@ class Firebase: Database {
         }
     }
 
-    func set(userProperty: SettableUserProperty, for uid: String, completion: @escaping ErrorCallback) {
+    func set(_ userProperty: SettableUserProperty, for uid: String, completion: @escaping ErrorCallback) {
+        var value: Any
         switch userProperty {
-        case .registrationToken(let registrationToken):
-            Shared.firebaseHelper.set(
-                true,
-                at: Child.users, uid, Child.registrationTokens, registrationToken) { error in
-                    completion(error)
-            }
+        case .contact, .registrationToken:
+            value = true
         default:
-            Shared.firebaseHelper.set(
-                userProperty.properties.value,
-                at: Child.users,
-                uid,
-                userProperty.properties.name) { error in
-                    completion(error)
-            }
+            value = userProperty.properties.value
+        }
+        let rest = getPath(uid: uid, userProperty: userProperty)
+        Shared.firebaseHelper.set(value, at: Child.users, rest) { error in
+            completion(error)
         }
     }
 
@@ -411,5 +418,18 @@ class Firebase: Database {
                 completion(.success(data.asConvosArray(proxyKey: key)))
             }
         }
+    }
+
+    private func getPath(uid: String, userProperty: SettableUserProperty) -> [String] {
+        var path = [uid]
+        switch userProperty {
+        case .contact(let contactUid):
+            path += [Child.contacts, contactUid]
+        case .registrationToken(let registrationToken):
+            path += [Child.registrationTokens, registrationToken]
+        default:
+            path += [userProperty.properties.name]
+        }
+        return path
     }
 }
