@@ -200,7 +200,11 @@ extension NewMessageMakerViewController: MessageInputBarDelegate {
         sendMessage(text) { [weak self] result in
             switch result {
             case .failure(let error):
-                StatusBar.showErrorStatusBarBanner(error)
+                if case ProxyError.alreadyChattingWithUser = error {
+                    StatusBar.showErrorBanner(subtitle: error.localizedDescription)
+                } else {
+                    StatusBar.showErrorStatusBarBanner(error)
+                }
                 self?.messageInputBar.inputTextView.text = text
                 self?.isSending = false
                 self?.setButtons(true)
@@ -306,7 +310,7 @@ extension NewMessageMakerViewController: UITableViewDataSource {
         if section == 0 && proxies.isEmpty {
             return "Tap the bouncing button to make a new Proxy 🎉."
         } else {
-            return nil
+            return "You cannot message the same user through multiple Proxies."
         }
     }
 }

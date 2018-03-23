@@ -240,6 +240,22 @@ extension GroupWork {
         }
     }
 
+    func checkDeleted(_ userProperty: SettableUserProperty,
+                      for uid: String,
+                      function: String = #function,
+                      line: Int = #line) {
+        start()
+        Shared.database.get(userProperty, for: uid) { result in
+            switch result {
+            case .failure(let error):
+                XCTFail(String(describing: error))
+            case .success(let data):
+                XCTAssertFalse(data.exists(), GroupWork.makeErrorMessage(function: function, line: line))
+            }
+            self.finish(withResult: true)
+        }
+    }
+
     static func makeErrorMessage(function: String, line: Int) -> String {
         return "Function: \(function), Line: \(line)."
     }

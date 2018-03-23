@@ -16,9 +16,18 @@ extension GroupWork {
     func delete(_ convos: [Convo]) {
         for convo in convos {
             delete(Child.convos, convo.senderId, convo.key)
+            delete(.contact(convo.receiverId), for: convo.senderId)
+            delete(.contact(convo.senderId), for: convo.receiverId)
             if convo.receiverDeletedProxy {
                 delete(Child.messages, convo.key)
             }
+        }
+    }
+
+    func delete(_ userProperty: SettableUserProperty, for uid: String) {
+        start()
+        Shared.database.delete(userProperty, for: uid) { error in
+            self.finish(withResult: error == nil)
         }
     }
 

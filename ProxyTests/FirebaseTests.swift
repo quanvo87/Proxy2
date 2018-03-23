@@ -21,6 +21,8 @@ class FirebaseTests: FirebaseTest {
             Shared.database.deleteProxy(receiver) { error in
                 XCTAssertNil(error, String(describing: error))
                 let work = GroupWork()
+                work.checkDeleted(.contact(convo.receiverId), for: convo.senderId)
+                work.checkDeleted(.contact(convo.senderId), for: convo.receiverId)
                 work.checkDeleted(Child.proxies, receiver.ownerId, receiver.key)
                 work.checkDeleted(Child.proxyNames, receiver.key)
                 work.checkDeleted(Child.convos, receiver.ownerId, convo.key)
