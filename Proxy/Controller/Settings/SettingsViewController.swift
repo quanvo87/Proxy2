@@ -153,7 +153,7 @@ extension SettingsViewController: UITableViewDelegate {
             )
             alert.addAction(Alert.makeDestructiveAction(title: "Log Out") { [weak self] _ in
                 if let registrationToken = Messaging.messaging().fcmToken, let uid = self?.uid {
-                    self?.database.delete(userProperty: .registrationToken(registrationToken), for: uid) { _ in }
+                    self?.database.delete(.registrationToken(registrationToken), for: uid) { _ in }
                 }
                 do {
                     try self?.loginManager.logOut()

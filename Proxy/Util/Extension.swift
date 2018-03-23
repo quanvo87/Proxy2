@@ -54,7 +54,7 @@ extension Double {
         }
     }
 
-    func isWithinRangeOf(_ rhs: Double, range: Double = 1) -> Bool {
+    func isWithinRangeOf(_ rhs: Double, range: Double = 5) -> Bool {
         return (self - range)...(self + range) ~= rhs
     }
 }

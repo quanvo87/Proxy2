@@ -1,6 +1,7 @@
 import Foundation
 
 enum ProxyError: LocalizedError {
+    case alreadyChattingWithUser
     case blankMessage
     case inputTooLong
     case missingCredentials
@@ -13,8 +14,10 @@ enum ProxyError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
+        case .alreadyChattingWithUser:
+            return "You are already chatting with this user with another Proxy."
         case .blankMessage:
-            return "Cannot send blank message"
+            return "Cannot send blank message."
         case .inputTooLong:
             return "Too many characters."
         case .missingCredentials:
