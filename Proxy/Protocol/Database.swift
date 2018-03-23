@@ -217,32 +217,20 @@ class Firebase: Database {
             return
         }
         let convoKey = makeConvoKey(sender: sender, receiver: receiver)
-        get(.contact(receiver.ownerId), for: sender.ownerId) { [weak self] result in
+        getConvo(convoKey: convoKey, ownerId: sender.ownerId) { [weak self] result in
             switch result {
-            case .failure(let error):
-                completion(.failure(error))
-                return
-            case .success(let data):
-                guard !data.exists() else {
-                    completion(.failure(ProxyError.alreadyChattingWithUser))
-                    return
-                }
-                self?.getConvo(convoKey: convoKey, ownerId: sender.ownerId) { result in
+            case .failure:
+                self?.makeConvo(convoKey: convoKey, sender: sender, receiver: receiver) { result in
                     switch result {
-                    case .failure:
-                        self?.makeConvo(convoKey: convoKey, sender: sender, receiver: receiver) { result in
-                            switch result {
-                            case .failure(let error):
-                                completion(.failure(error))
-                                return
-                            case .success(let convo):
-                                self?.sendMessage(convo: convo, text: trimmedText, completion: completion)
-                            }
-                        }
+                    case .failure(let error):
+                        completion(.failure(error))
+                        return
                     case .success(let convo):
                         self?.sendMessage(convo: convo, text: trimmedText, completion: completion)
                     }
                 }
+            case .success(let convo):
+                self?.sendMessage(convo: convo, text: trimmedText, completion: completion)
             }
         }
     }
@@ -252,37 +240,49 @@ class Firebase: Database {
     }
 
     private func makeConvo(convoKey: String, sender: Proxy, receiver: Proxy, completion: @escaping ConvoCallback) {
-        let senderConvo = Convo(
-            key: convoKey,
-            receiverIcon: receiver.icon,
-            receiverId: receiver.ownerId,
-            receiverProxyKey: receiver.key,
-            receiverProxyName: receiver.name,
-            senderIcon: sender.icon,
-            senderId: sender.ownerId,
-            senderProxyKey: sender.key,
-            senderProxyName: sender.name
-        )
-        let receiverConvo = Convo(
-            key: convoKey,
-            receiverIcon: sender.icon,
-            receiverId: sender.ownerId,
-            receiverProxyKey: sender.key,
-            receiverProxyName: sender.name,
-            senderIcon: receiver.icon,
-            senderId: receiver.ownerId,
-            senderProxyKey: receiver.key,
-            senderProxyName: receiver.name
-        )
-        let work = GroupWork()
-        work.increment(1, property: .proxiesInteractedWith, uid: receiver.ownerId)
-        work.increment(1, property: .proxiesInteractedWith, uid: sender.ownerId)
-        work.set(.contact(receiver.ownerId), for: sender.ownerId)
-        work.set(.contact(sender.ownerId), for: receiver.ownerId)
-        work.set(senderConvo, asSender: true)
-        work.setReceiverConvo(receiverConvo)
-        work.allDone {
-            completion(work.result ? .success(senderConvo) : .failure(ProxyError.unknown))
+        get(.contact(receiver.ownerId), for: sender.ownerId) { result in
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+                return
+            case .success(let data):
+                guard !data.exists() else {
+                    completion(.failure(ProxyError.alreadyChattingWithUser))
+                    return
+                }
+                let senderConvo = Convo(
+                    key: convoKey,
+                    receiverIcon: receiver.icon,
+                    receiverId: receiver.ownerId,
+                    receiverProxyKey: receiver.key,
+                    receiverProxyName: receiver.name,
+                    senderIcon: sender.icon,
+                    senderId: sender.ownerId,
+                    senderProxyKey: sender.key,
+                    senderProxyName: sender.name
+                )
+                let receiverConvo = Convo(
+                    key: convoKey,
+                    receiverIcon: sender.icon,
+                    receiverId: sender.ownerId,
+                    receiverProxyKey: sender.key,
+                    receiverProxyName: sender.name,
+                    senderIcon: receiver.icon,
+                    senderId: receiver.ownerId,
+                    senderProxyKey: receiver.key,
+                    senderProxyName: receiver.name
+                )
+                let work = GroupWork()
+                work.increment(1, property: .proxiesInteractedWith, uid: receiver.ownerId)
+                work.increment(1, property: .proxiesInteractedWith, uid: sender.ownerId)
+                work.set(.contact(receiver.ownerId), for: sender.ownerId)
+                work.set(.contact(sender.ownerId), for: receiver.ownerId)
+                work.set(senderConvo, asSender: true)
+                work.setReceiverConvo(receiverConvo)
+                work.allDone {
+                    completion(work.result ? .success(senderConvo) : .failure(ProxyError.unknown))
+                }
+            }
         }
     }
 

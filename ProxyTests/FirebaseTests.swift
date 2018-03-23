@@ -330,6 +330,47 @@ class FirebaseTests: FirebaseTest {
         }
     }
 
+    func testSendMessageWhileAlreadyChattingWithUser() {
+        let expectation = self.expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
+
+        FirebaseTest.sendMessage { (_, convo, _, _) in
+            Shared.database.sendMessage(convo: convo, text: FirebaseTest.text) { result in
+                switch result {
+                case .failure(let error):
+                    XCTFail(String(describing: error))
+                    expectation.fulfill()
+                case .success:
+                    expectation.fulfill()
+                }
+            }
+        }
+    }
+
+    func testSendMessageWhileAlreadyChattingWithUserThroughDifferentProxy() {
+        let expectation = self.expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
+
+        FirebaseTest.sendMessage { (_, _, _, receiver) in
+            FirebaseTest.makeProxy { sender2 in
+                Shared.database.sendMessage(sender: sender2, receiver: receiver, text: FirebaseTest.text) { result in
+                    switch result {
+                    case .failure(let error):
+                        if case ProxyError.alreadyChattingWithUser = error {
+                            expectation.fulfill()
+                        } else {
+                            XCTFail(String(describing: error))
+                            expectation.fulfill()
+                        }
+                    case .success:
+                        XCTFail()
+                        expectation.fulfill()
+                    }
+                }
+            }
+        }
+    }
+
     func testSendMessageWithSenderConvo() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
