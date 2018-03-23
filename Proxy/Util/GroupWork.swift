@@ -1,11 +1,12 @@
 import GroupWork
 
 extension GroupWork {
-    func delete(_ first: String, _ rest: String...) {
-        start()
-        Shared.firebaseHelper.delete(first, rest) { [weak self] error in
-            self?.finish(withResult: error == nil)
-        }
+    static func getOwnerIdAndProxyKey(convo: Convo, asSender: Bool) -> (ownerId: String, proxyKey: String) {
+        return asSender ? (convo.senderId, convo.senderProxyKey) : (convo.receiverId, convo.receiverProxyKey)
+    }
+
+    func deleteAllMessagesForConvo(convoKey: String) {
+        delete(Child.messages, convoKey)
     }
 
     func delete(_ convo: Convo, asSender: Bool) {
@@ -15,11 +16,38 @@ extension GroupWork {
 
     func delete(_ convos: [Convo]) {
         for convo in convos {
-            delete(Child.convos, convo.senderId, convo.key)
+            delete(convo, asSender: true)
             delete(.contact(convo.receiverId), for: convo.senderId)
             delete(.contact(convo.senderId), for: convo.receiverId)
             if convo.receiverDeletedProxy {
-                delete(Child.messages, convo.key)
+                deleteAllMessagesForConvo(convoKey: convo.key)
+            }
+        }
+    }
+
+    func delete(_ proxy: Proxy) {
+        delete(Child.proxies, proxy.ownerId, proxy.key)
+    }
+
+    func deleteProxyName(proxyKey: String) {
+        delete(Child.proxyNames, proxyKey)
+    }
+
+    func deleteUnreadMessage(_ message: Message) {
+        delete(Child.users, message.receiverId, Child.unreadMessages, message.messageId)
+    }
+
+    func deleteUnreadMessages(for proxy: Proxy) {
+        start()
+        getUnreadMessagesForProxy(uid: proxy.ownerId, key: proxy.key) { [weak self] result in
+            switch result {
+            case .failure:
+                self?.finish(withResult: false)
+            case .success(let messages):
+                messages.forEach {
+                    self?.deleteUnreadMessage($0)
+                }
+                self?.finish(withResult: true)
             }
         }
     }
@@ -31,56 +59,8 @@ extension GroupWork {
         }
     }
 
-    func deleteUnreadMessages(for proxy: Proxy) {
-        start()
-        GroupWork.getUnreadMessagesForProxy(uid: proxy.ownerId, key: proxy.key) { [weak self] result in
-            switch result {
-            case .failure:
-                self?.finish(withResult: false)
-            case .success(let messages):
-                messages.forEach {
-                    self?.delete(Child.users, $0.receiverId, Child.unreadMessages, $0.messageId)
-                }
-                self?.finish(withResult: true)
-            }
-        }
-    }
-
-    static func getOwnerIdAndProxyKey(convo: Convo, asSender: Bool) -> (ownerId: String, proxyKey: String) {
-        return asSender ? (convo.senderId, convo.senderProxyKey) : (convo.receiverId, convo.receiverProxyKey)
-    }
-
-    static func getUnreadMessagesForProxy(uid: String,
-                                          key: String,
-                                          completion: @escaping (Result<[Message], Error>) -> Void) {
-        do {
-            try Shared.firebaseHelper.makeReference(Child.users, uid, Child.unreadMessages)
-                .queryEqual(toValue: key)
-                .queryOrdered(byChild: Child.receiverProxyKey)
-                .observeSingleEvent(of: .value) { data in
-                    completion(.success(data.asMessagesArray))
-            }
-        } catch {
-            completion(.failure(error))
-        }
-    }
-
-    func increment(_ amount: Int, at first: String, _ rest: String...) {
-        start()
-        Shared.firebaseHelper.increment(by: amount, at: first, rest) { [weak self] error in
-            self?.finish(withResult: error == nil)
-        }
-    }
-
-    func increment(_ amount: Int, property: IncrementableUserProperty, uid: String) {
-        increment(amount, at: Child.users, uid, property.rawValue)
-    }
-
-    func set(_ value: Any, at first: String, _ rest: String...) {
-        start()
-        Shared.firebaseHelper.set(value, at: first, rest) { [weak self] error in
-            self?.finish(withResult: error == nil)
-        }
+    func increment(_ property: IncrementableUserProperty, uid: String) {
+        increment(property.properties.value, at: Child.users, uid, property.properties.name)
     }
 
     func set(_ convo: Convo, asSender: Bool) {
@@ -88,9 +68,27 @@ extension GroupWork {
         set(convo.toDictionary(), at: Child.convos, ownerId, convo.key)
     }
 
+    func set(_ message: Message) {
+        set(message.toDictionary(), at: Child.messages, message.parentConvoKey, message.messageId)
+    }
+
+    func set(_ proxy: Proxy) {
+        set(proxy.toDictionary(), at: Child.proxies, proxy.ownerId, proxy.key)
+    }
+
+    func setProxyName(_ proxy: Proxy) {
+        set(proxy.toDictionary(), at: Child.proxyNames, proxy.key)
+    }
+
     func set(_ property: SettableConvoProperty, for convo: Convo, asSender: Bool) {
         let (ownerId, _) = GroupWork.getOwnerIdAndProxyKey(convo: convo, asSender: asSender)
-        set(property.properties.value, at: Child.convos, ownerId, convo.key, property.properties.name)
+        set(property, uid: ownerId, convoKey: convo.key)
+    }
+
+    func set(_ property: SettableConvoProperty, for convos: [Convo], asSender: Bool) {
+        convos.forEach { [weak self] in
+            self?.set(property, for: $0, asSender: asSender)
+        }
     }
 
     func set(_ property: SettableConvoProperty, uid: String, convoKey: String) {
@@ -132,7 +130,7 @@ extension GroupWork {
 
     func setHasUnreadMessageForProxy(uid: String, key: String) {
         start()
-        GroupWork.getUnreadMessagesForProxy(uid: uid, key: key) { [weak self] result in
+        getUnreadMessagesForProxy(uid: uid, key: key) { [weak self] result in
             switch result {
             case .failure:
                 self?.finish(withResult: false)
@@ -145,14 +143,14 @@ extension GroupWork {
         }
     }
 
+    // todo: move clean up to serverless
     func setReceiverConvo(_ convo: Convo, database: Database = Shared.database) {
         start()
         Shared.firebaseHelper.set(
             convo.toDictionary(),
             at: Child.convos,
             convo.senderId,
-            convo.key
-        ) { [weak self] error in
+            convo.key) { [weak self] error in
             database.getProxy(proxyKey: convo.senderProxyKey, ownerId: convo.senderId) { result in
                 switch result {
                 case .failure:
@@ -165,35 +163,33 @@ extension GroupWork {
         }
     }
 
+    // todo: move the clean up to serverless
+    // todo: then use set property for convos function
     func setReceiverDeletedProxy(for convos: [Convo], database: Database = Shared.database) {
         for convo in convos {
             start()
+//            set(.receiverDeletedProxy(true), for: convo, asSender: false)
             Shared.firebaseHelper.set(
                 true,
                 at: Child.convos,
                 convo.receiverId,
                 convo.key,
-                Child.receiverDeletedProxy
-            ) { [weak self] error in
-                database.getConvo(convoKey: convo.key, ownerId: convo.receiverId) { result in
-                    switch result {
-                    case .failure:
-                        Shared.firebaseHelper.delete(Child.convos, convo.receiverId, convo.key) { _ in }
-                    default:
-                        break
+                Child.receiverDeletedProxy) { [weak self] error in
+                    database.getConvo(convoKey: convo.key, ownerId: convo.receiverId) { result in
+                        switch result {
+                        case .failure:
+                            Shared.firebaseHelper.delete(Child.convos, convo.receiverId, convo.key) { _ in }
+                        default:
+                            break
+                        }
+                        self?.finish(withResult: error == nil)
                     }
-                    self?.finish(withResult: error == nil)
-                }
             }
         }
     }
 
-    func setReceiverIcon(to icon: String, for convos: [Convo]) {
-        for convo in convos {
-            set(.receiverIcon(icon), for: convo, asSender: false)
-        }
-    }
-
+    // todo: move clean up to serverless
+    // todo: break up the 3 parts
     func setReceiverMessageValues(convo: Convo,
                                   currentTime: Double,
                                   message: Message,
@@ -274,16 +270,44 @@ extension GroupWork {
             break
         }
     }
+}
 
-    func setSenderIcon(to icon: String, for convos: [Convo]) {
-        for convo in convos {
-            set(.senderIcon(icon), for: convo, asSender: true)
+private extension GroupWork {
+    func delete(_ first: String, _ rest: String...) {
+        start()
+        Shared.firebaseHelper.delete(first, rest) { [weak self] error in
+            self?.finish(withResult: error == nil)
         }
     }
 
-    func setSenderNickname(to nickname: String, for convos: [Convo]) {
-        for convo in convos {
-            set(.senderNickname(nickname), for: convo, asSender: true)
+    func increment(_ amount: Int, at first: String, _ rest: String...) {
+        start()
+        Shared.firebaseHelper.increment(by: amount, at: first, rest) { [weak self] error in
+            self?.finish(withResult: error == nil)
+        }
+    }
+
+    func set(_ value: Any, at first: String, _ rest: String...) {
+        start()
+        Shared.firebaseHelper.set(value, at: first, rest) { [weak self] error in
+            self?.finish(withResult: error == nil)
+        }
+    }
+}
+
+private extension GroupWork {
+    func getUnreadMessagesForProxy(uid: String,
+                                   key: String,
+                                   completion: @escaping (Result<[Message], Error>) -> Void) {
+        do {
+            try Shared.firebaseHelper.makeReference(Child.users, uid, Child.unreadMessages)
+                .queryEqual(toValue: key)
+                .queryOrdered(byChild: Child.receiverProxyKey)
+                .observeSingleEvent(of: .value) { data in
+                    completion(.success(data.asMessagesArray))
+            }
+        } catch {
+            completion(.failure(error))
         }
     }
 }

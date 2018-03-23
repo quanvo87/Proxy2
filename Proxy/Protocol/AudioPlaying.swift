@@ -20,7 +20,7 @@ class AudioPlayer: AudioPlaying {
     }
 
     func play() {
-        guard UserDefaults.standard.bool(forKey: Constant.soundOn) else {
+        guard UserDefaults.standard.bool(forKey: SettableUserProperty.Name.soundOn.rawValue) else {
             return
         }
         if #available(iOS 10.0, *) {

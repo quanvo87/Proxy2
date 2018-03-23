@@ -258,8 +258,8 @@ class FirebaseTests: FirebaseTest {
             let work = GroupWork()
 
             // Check convo made
-            work.check(.proxiesInteractedWith, equals: 1, uid: receiver.ownerId)
-            work.check(.proxiesInteractedWith, equals: 1, uid: sender.ownerId)
+            work.check(.proxiesInteractedWith(1), equals: 1, uid: receiver.ownerId)
+            work.check(.proxiesInteractedWith(1), equals: 1, uid: sender.ownerId)
             work.checkConvoCreated(convo, asSender: true)
             work.checkConvoCreated(convo, asSender: false)
 
@@ -268,7 +268,7 @@ class FirebaseTests: FirebaseTest {
 
             // Check receiver updates
             work.check(.contact(sender.ownerId), for: receiver.ownerId)
-            work.check(.messagesReceived, equals: 1, uid: convo.receiverId)
+            work.check(.messagesReceived(1), equals: 1, uid: convo.receiverId)
             work.checkUnreadMessageCreated(message)
             work.check(.hasUnreadMessage(true), for: convo, asSender: false)
             work.check(.hasUnreadMessage(true), for: receiver)
@@ -279,7 +279,7 @@ class FirebaseTests: FirebaseTest {
 
             // Check sender updates
             work.check(.contact(receiver.ownerId), for: sender.ownerId)
-            work.check(.messagesSent, equals: 1, uid: sender.ownerId)
+            work.check(.messagesSent(1), equals: 1, uid: sender.ownerId)
             work.check(.timestamp(convo.timestamp), for: convo, asSender: true)
             work.check(.timestamp(convo.timestamp), for: sender)
             work.check(.lastMessage(FirebaseTests.senderText), for: convo, asSender: true)

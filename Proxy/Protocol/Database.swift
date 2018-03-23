@@ -3,10 +3,27 @@ import GroupWork
 import MessageKit
 import WQNetworkActivityIndicator
 
-enum IncrementableUserProperty: String {
-    case messagesReceived
-    case messagesSent
-    case proxiesInteractedWith
+enum IncrementableUserProperty {
+    case messagesReceived(Int)
+    case messagesSent(Int)
+    case proxiesInteractedWith(Int)
+
+    enum Name: String {
+        case messagesReceived
+        case messagesSent
+        case proxiesInteractedWith
+    }
+
+    var properties: (name: String, value: Int) {
+        switch self {
+        case .messagesReceived(let value):
+            return (Name.messagesReceived.rawValue, value)
+        case .messagesSent(let value):
+            return (Name.messagesSent.rawValue, value)
+        case .proxiesInteractedWith(let value):
+            return (Name.proxiesInteractedWith.rawValue, value)
+        }
+    }
 }
 
 enum SettableUserProperty {
@@ -14,18 +31,26 @@ enum SettableUserProperty {
     case registrationToken(String)
     case soundOn(Bool)
 
+    enum Name: String {
+        case contact
+        case registrationToken
+        case soundOn
+    }
+
     var properties: (name: String, value: Any) {
         switch self {
         case .contact(let value):
-            return ("contact", value)
+            return (Name.contact.rawValue, value)
         case .registrationToken(let value):
-            return ("registrationToken", value)
+            return (Name.registrationToken.rawValue, value)
         case .soundOn(let value):
-            return (Constant.soundOn, value)
+            return (Name.soundOn.rawValue, value)
         }
     }
 }
 
+// todo: remove for loops
+// todo: internal param names for these apis
 protocol Database {
     typealias ConvoCallback = (Result<Convo, Error>) -> Void
     typealias DataCallback = (Result<DataSnapshot, Error>) -> Void
@@ -81,9 +106,9 @@ class Firebase: Database {
                 completion(error)
             case .success(let convos):
                 let work = GroupWork()
-                work.delete(Child.proxies, proxy.ownerId, proxy.key)
-                work.delete(Child.proxyNames, proxy.key)
                 work.delete(convos)
+                work.delete(proxy)
+                work.deleteProxyName(proxyKey: proxy.key)
                 work.deleteUnreadMessages(for: proxy)
                 work.setReceiverDeletedProxy(for: convos)
                 work.allDone {
@@ -154,7 +179,7 @@ class Firebase: Database {
     }
 
     func makeProxy(currentProxyCount: Int, ownerId: String, completion: @escaping ProxyCallback) {
-        Haptic.makeSuccess()
+        Haptic.playSuccess()
         guard !isMakingProxy else {
             return
         }
@@ -171,35 +196,9 @@ class Firebase: Database {
         }
     }
 
-    private func makeProxy(ownerId: String, attempt: Int, completion: @escaping ProxyCallback) {
-        let name = generator.randomProxyName
-        let proxy = Proxy(icon: generator.randomIconName, name: name, ownerId: ownerId)
-        Shared.firebaseHelper.set(proxy.toDictionary(), at: Child.proxyNames, proxy.key) { [weak self] error in
-            if let error = error {
-                if let makeProxyRetries = self?.makeProxyRetries, attempt < makeProxyRetries {
-                    self?.makeProxy(ownerId: ownerId, attempt: attempt + 1, completion: completion)
-                } else {
-                    completion(.failure(error))
-                }
-            } else {
-                Shared.firebaseHelper.set(
-                    proxy.toDictionary(),
-                    at: Child.proxies,
-                    proxy.ownerId,
-                    proxy.key) { error in
-                        if let error = error {
-                            completion(.failure(error))
-                        } else {
-                            completion(.success(proxy))
-                        }
-                }
-            }
-        }
-    }
-
     func read(_ message: Message, at date: Date, completion: @escaping ErrorCallback) {
         let work = GroupWork()
-        work.delete(Child.users, message.receiverId, Child.unreadMessages, message.messageId)
+        work.deleteUnreadMessage(message)
         work.set(.dateRead(date), for: message)
         work.set(.hasUnreadMessage(false), uid: message.receiverId, convoKey: message.parentConvoKey)
         work.allDone {
@@ -235,11 +234,102 @@ class Firebase: Database {
         }
     }
 
-    private func makeConvoKey(sender: Proxy, receiver: Proxy) -> String {
-        return [sender.key, sender.ownerId, receiver.key, receiver.ownerId].sorted().joined()
+    func sendMessage(convo: Convo, text: String, completion: @escaping MessageCallback) {
+        WQNetworkActivityIndicator.shared.show()
+        _sendMessage(convo: convo, text: text) { result in
+            WQNetworkActivityIndicator.shared.hide()
+            completion(result)
+        }
     }
 
-    private func makeConvo(convoKey: String, sender: Proxy, receiver: Proxy, completion: @escaping ConvoCallback) {
+    func set(_ userProperty: SettableUserProperty, for uid: String, completion: @escaping ErrorCallback) {
+        var value: Any
+        switch userProperty {
+        case .contact, .registrationToken:
+            value = true
+        default:
+            value = userProperty.properties.value
+        }
+        let rest = getPath(uid: uid, userProperty: userProperty)
+        Shared.firebaseHelper.set(value, at: Child.users, rest) { error in
+            completion(error)
+        }
+    }
+
+    func setIcon(to icon: String, for proxy: Proxy, completion: @escaping ErrorCallback) {
+        getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { result in
+            switch result {
+            case .failure(let error):
+                completion(error)
+            case .success(let convos):
+                let work = GroupWork()
+                work.set(.icon(icon), for: proxy)
+                work.set(.receiverIcon(icon), for: convos, asSender: false)
+                work.set(.senderIcon(icon), for: convos, asSender: true)
+                work.allDone {
+                    completion(work.result ? nil : ProxyError.unknown)
+                }
+            }
+        }
+    }
+
+    func setNickname(to nickname: String, for proxy: Proxy, completion: @escaping ErrorCallback) {
+        getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { result in
+            switch result {
+            case .failure(let error):
+                completion(error)
+            case .success(let convos):
+                let work = GroupWork()
+                work.set(.nickname(nickname), for: proxy)
+                work.set(.senderNickname(nickname), for: convos, asSender: true)
+                work.allDone {
+                    completion(work.result ? nil : ProxyError.unknown)
+                }
+            }
+        }
+    }
+
+    func setReceiverNickname(to nickname: String, for convo: Convo, completion: @escaping ErrorCallback) {
+        guard nickname.count < maxNameSize else {
+            completion(ProxyError.inputTooLong)
+            return
+        }
+        let work = GroupWork()
+        work.set(.receiverNickname(nickname), for: convo, asSender: true)
+        work.allDone {
+            completion(work.result ? nil : ProxyError.unknown)
+        }
+    }
+}
+
+private extension Firebase {
+    func getConvosForProxy(key: String,
+                           ownerId: String,
+                           completion: @escaping (Result<[Convo], Error>) -> Void) {
+        Shared.firebaseHelper.get(Child.convos, ownerId) { result in
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+            case .success(let data):
+                completion(.success(data.asConvosArray(proxyKey: key)))
+            }
+        }
+    }
+
+    func getPath(uid: String, userProperty: SettableUserProperty) -> [String] {
+        var path = [uid]
+        switch userProperty {
+        case .contact(let contactUid):
+            path += [Child.contacts, contactUid]
+        case .registrationToken(let registrationToken):
+            path += [Child.registrationTokens, registrationToken]
+        default:
+            path += [userProperty.properties.name]
+        }
+        return path
+    }
+
+    func makeConvo(convoKey: String, sender: Proxy, receiver: Proxy, completion: @escaping ConvoCallback) {
         get(.contact(receiver.ownerId), for: sender.ownerId) { result in
             switch result {
             case .failure(let error):
@@ -273,8 +363,8 @@ class Firebase: Database {
                     senderProxyName: receiver.name
                 )
                 let work = GroupWork()
-                work.increment(1, property: .proxiesInteractedWith, uid: receiver.ownerId)
-                work.increment(1, property: .proxiesInteractedWith, uid: sender.ownerId)
+                work.increment(.proxiesInteractedWith(1), uid: receiver.ownerId)
+                work.increment(.proxiesInteractedWith(1), uid: sender.ownerId)
                 work.set(.contact(receiver.ownerId), for: sender.ownerId)
                 work.set(.contact(sender.ownerId), for: receiver.ownerId)
                 work.set(senderConvo, asSender: true)
@@ -286,15 +376,36 @@ class Firebase: Database {
         }
     }
 
-    func sendMessage(convo: Convo, text: String, completion: @escaping MessageCallback) {
-        WQNetworkActivityIndicator.shared.show()
-        _sendMessage(convo: convo, text: text) { result in
-            WQNetworkActivityIndicator.shared.hide()
-            completion(result)
+    func makeConvoKey(sender: Proxy, receiver: Proxy) -> String {
+        return [sender.key, sender.ownerId, receiver.key, receiver.ownerId].sorted().joined()
+    }
+
+    func makeProxy(ownerId: String, attempt: Int, completion: @escaping ProxyCallback) {
+        let name = generator.randomProxyName
+        let proxy = Proxy(icon: generator.randomIconName, name: name, ownerId: ownerId)
+        let work = GroupWork()
+        work.setProxyName(proxy)
+        work.allDone { [weak self] in
+            if work.result {
+                work.set(proxy)
+                work.allDone {
+                    if work.result {
+                        completion(.success(proxy))
+                    } else {
+                        completion(.failure(ProxyError.unknown))
+                    }
+                }
+            } else {
+                if let makeProxyRetries = self?.makeProxyRetries, attempt < makeProxyRetries {
+                    self?.makeProxy(ownerId: ownerId, attempt: attempt + 1, completion: completion)
+                } else {
+                    completion(.failure(ProxyError.unknown))
+                }
+            }
         }
     }
 
-    private func _sendMessage(convo: Convo, text: String, completion: @escaping MessageCallback) {
+    func _sendMessage(convo: Convo, text: String, completion: @escaping MessageCallback) {
         guard !convo.receiverDeletedProxy else {
             completion(.failure(ProxyError.receiverDeletedProxy))
             return
@@ -317,25 +428,22 @@ class Firebase: Database {
                 senderProxyKey: convo.senderProxyKey
             )
             let work = GroupWork()
-            work.set(message.toDictionary(), at: Child.messages, message.parentConvoKey, message.messageId)
+            work.set(message)
             let currentTime = Date().timeIntervalSince1970
-
             // Receiver updates
-            work.increment(1, property: .messagesReceived, uid: convo.receiverId)
+            work.increment(.messagesReceived(1), uid: convo.receiverId)
             work.setReceiverMessageValues(convo: convo, currentTime: currentTime, message: message)
-
             // Sender updates
-            work.increment(1, property: .messagesSent, uid: convo.senderId)
+            work.increment(.messagesSent(1), uid: convo.senderId)
             work.set(.timestamp(currentTime), for: convo, asSender: true)
             work.set(.timestamp(currentTime), forProxyIn: convo, asSender: true)
             switch message.data {
-            case .text(let s):
-                work.set(.lastMessage("You: \(s)"), for: convo, asSender: true)
-                work.set(.lastMessage("You: \(s)"), forProxyIn: convo, asSender: true)
+            case .text(let text):
+                work.set(.lastMessage("You: \(text)"), for: convo, asSender: true)
+                work.set(.lastMessage("You: \(text)"), forProxyIn: convo, asSender: true)
             default:
                 break
             }
-
             work.allDone {
                 if work.result {
                     completion(.success((convo, message)))
@@ -346,90 +454,5 @@ class Firebase: Database {
         } catch {
             completion(.failure(error))
         }
-    }
-
-    func set(_ userProperty: SettableUserProperty, for uid: String, completion: @escaping ErrorCallback) {
-        var value: Any
-        switch userProperty {
-        case .contact, .registrationToken:
-            value = true
-        default:
-            value = userProperty.properties.value
-        }
-        let rest = getPath(uid: uid, userProperty: userProperty)
-        Shared.firebaseHelper.set(value, at: Child.users, rest) { error in
-            completion(error)
-        }
-    }
-
-    func setIcon(to icon: String, for proxy: Proxy, completion: @escaping ErrorCallback) {
-        getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { result in
-            switch result {
-            case .failure(let error):
-                completion(error)
-            case .success(let convos):
-                let work = GroupWork()
-                work.set(.icon(icon), for: proxy)
-                work.setReceiverIcon(to: icon, for: convos)
-                work.setSenderIcon(to: icon, for: convos)
-                work.allDone {
-                    completion(work.result ? nil : ProxyError.unknown)
-                }
-            }
-        }
-    }
-
-    func setNickname(to nickname: String, for proxy: Proxy, completion: @escaping ErrorCallback) {
-        getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { result in
-            switch result {
-            case .failure(let error):
-                completion(error)
-            case .success(let convos):
-                let work = GroupWork()
-                work.set(.nickname(nickname), for: proxy)
-                work.setSenderNickname(to: nickname, for: convos)
-                work.allDone {
-                    completion(work.result ? nil : ProxyError.unknown)
-                }
-            }
-        }
-    }
-
-    func setReceiverNickname(to nickname: String, for convo: Convo, completion: @escaping ErrorCallback) {
-        guard nickname.count < maxNameSize else {
-            completion(ProxyError.inputTooLong)
-            return
-        }
-        let work = GroupWork()
-        work.set(.receiverNickname(nickname), for: convo, asSender: true)
-        work.allDone {
-            completion(work.result ? nil : ProxyError.unknown)
-        }
-    }
-
-    private func getConvosForProxy(key: String,
-                                   ownerId: String,
-                                   completion: @escaping (Result<[Convo], Error>) -> Void) {
-        Shared.firebaseHelper.get(Child.convos, ownerId) { result in
-            switch result {
-            case .failure(let error):
-                completion(.failure(error))
-            case .success(let data):
-                completion(.success(data.asConvosArray(proxyKey: key)))
-            }
-        }
-    }
-
-    private func getPath(uid: String, userProperty: SettableUserProperty) -> [String] {
-        var path = [uid]
-        switch userProperty {
-        case .contact(let contactUid):
-            path += [Child.contacts, contactUid]
-        case .registrationToken(let registrationToken):
-            path += [Child.registrationTokens, registrationToken]
-        default:
-            path += [userProperty.properties.name]
-        }
-        return path
     }
 }

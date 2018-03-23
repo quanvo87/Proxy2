@@ -25,13 +25,13 @@ class SoundSwitchManager: SoundSwitchManaging {
                 _self.database.set(.soundOn(true), for: uid) { _ in }
             }
             _self.soundSwitch.setOn(soundOn, animated: false)
-            UserDefaults.standard.set(soundOn, forKey: Constant.soundOn)
+            UserDefaults.standard.set(soundOn, forKey: SettableUserProperty.Name.soundOn.rawValue)
         }
     }
 
     @objc private func toggleSound() {
         let soundOn = soundSwitch.isOn
         database.set(.soundOn(soundOn), for: uid) { _ in }
-        UserDefaults.standard.set(soundOn, forKey: Constant.soundOn)
+        UserDefaults.standard.set(soundOn, forKey: SettableUserProperty.Name.soundOn.rawValue)
     }
 }

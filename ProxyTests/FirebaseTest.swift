@@ -180,7 +180,7 @@ extension GroupWork {
                function: String = #function,
                line: Int = #line) {
         start()
-        Shared.firebaseHelper.get(Child.users, uid, property.rawValue) { result in
+        Shared.firebaseHelper.get(Child.users, uid, property.properties.name) { result in
             switch result {
             case .failure(let error):
                 XCTFail(String(describing: error))
