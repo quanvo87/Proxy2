@@ -49,7 +49,6 @@ enum SettableUserProperty {
     }
 }
 
-// todo: remove for loops
 protocol Database {
     typealias ConvoCallback = (Result<Convo, Error>) -> Void
     typealias DataCallback = (Result<DataSnapshot, Error>) -> Void
@@ -100,7 +99,7 @@ class Firebase: Database {
                 let work = GroupWork()
                 work.delete(convos)
                 work.delete(proxy)
-                work.deleteProxyName(proxyKey: proxy.key)
+                work.deleteProxyKey(proxyKey: proxy.key)
                 work.deleteUnreadMessages(for: proxy)
                 work.setReceiverDeletedProxy(for: convos)
                 work.allDone {
@@ -146,7 +145,7 @@ class Firebase: Database {
 
     func getProxy(proxyKey: String, completion: @escaping ProxyCallback) {
         Shared.firebaseHelper.get(
-            Child.proxyNames,
+            Child.proxyKeys,
             proxyKey.lowercased().withoutWhiteSpacesAndNewLines) { [weak self] result in
                 switch result {
                 case .failure(let error):
@@ -189,8 +188,8 @@ class Firebase: Database {
         isMakingProxy = true
         WQNetworkActivityIndicator.shared.show()
         makeProxy(ownerId: ownerId, attempt: 0) { [weak self] result in
-            WQNetworkActivityIndicator.shared.hide()
             self?.isMakingProxy = false
+            WQNetworkActivityIndicator.shared.hide()
             completion(result)
         }
     }
@@ -383,7 +382,7 @@ private extension Firebase {
         let name = generator.randomProxyName
         let proxy = Proxy(icon: generator.randomIconName, name: name, ownerId: ownerId)
         let work = GroupWork()
-        work.setProxyName(proxy)
+        work.setProxyKey(proxy)
         work.allDone { [weak self] in
             if work.result {
                 work.set(proxy)

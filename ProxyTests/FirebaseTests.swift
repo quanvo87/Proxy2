@@ -11,7 +11,6 @@ class GeneratorMock: ProxyPropertyGenerating {
 
 class FirebaseTests: FirebaseTest {
     private static let senderText = "You: \(text)"
-    private var firebase: Firebase!
 
     func testDeleteProxy() {
         let expectation = self.expectation(description: #function)
@@ -24,7 +23,7 @@ class FirebaseTests: FirebaseTest {
                 work.checkDeleted(.contact(convo.receiverId), for: convo.senderId)
                 work.checkDeleted(.contact(convo.senderId), for: convo.receiverId)
                 work.checkDeleted(Child.proxies, receiver.ownerId, receiver.key)
-                work.checkDeleted(Child.proxyNames, receiver.key)
+                work.checkDeleted(Child.proxyKeys, receiver.key)
                 work.checkDeleted(Child.convos, receiver.ownerId, convo.key)
                 work.checkDeleted(Child.users, receiver.ownerId, Child.unreadMessages, message.messageId)
                 work.check(.receiverDeletedProxy(true), for: convo, asSender: true)
@@ -170,7 +169,7 @@ class FirebaseTests: FirebaseTest {
             case .success(let proxy):
                 let work = GroupWork()
                 work.checkProxyCreated(proxy)
-                work.checkProxyNameCreated(forProxy: proxy)
+                work.checkProxyKeyCreated(forProxy: proxy)
                 work.allDone {
                     expectation.fulfill()
                 }
@@ -185,15 +184,15 @@ class FirebaseTests: FirebaseTest {
         var options = [String: Any]()
         options[DatabaseOption.generator.name] = GeneratorMock()
         options[DatabaseOption.makeProxyRetries.name] = 0
-        firebase = Firebase(options)
+        let firebase = Firebase(options)
 
-        firebase.makeProxy(currentProxyCount: 0, ownerId: FirebaseTest.uid) { [weak self] result in
+        firebase.makeProxy(currentProxyCount: 0, ownerId: FirebaseTest.uid) { result in
             switch result {
             case .failure(let error):
                 XCTFail(String(describing: error))
                 expectation.fulfill()
             case .success:
-                self?.firebase.makeProxy(currentProxyCount: 1, ownerId: FirebaseTest.uid) { result in
+                firebase.makeProxy(currentProxyCount: 1, ownerId: FirebaseTest.uid) { result in
                     switch result {
                     case .failure:
                         expectation.fulfill()
@@ -522,9 +521,9 @@ extension GroupWork {
         }
     }
 
-    func checkProxyNameCreated(forProxy proxy: Proxy) {
+    func checkProxyKeyCreated(forProxy proxy: Proxy) {
         start()
-        Shared.firebaseHelper.get(Child.proxyNames, proxy.key) { result in
+        Shared.firebaseHelper.get(Child.proxyKeys, proxy.key) { result in
             let testProxy = Proxy(icon: proxy.icon, name: proxy.name, ownerId: proxy.ownerId)
             switch result {
             case .failure(let error):
@@ -542,15 +541,14 @@ extension GroupWork {
             Child.users,
             message.receiverId,
             Child.unreadMessages,
-            message.messageId
-        ) { result in
-            switch result {
-            case .failure(let error):
-                XCTFail(String(describing: error))
-            case .success(let data):
-                XCTAssertEqual(try? Message(data), message)
-            }
-            self.finish(withResult: true)
+            message.messageId) { result in
+                switch result {
+                case .failure(let error):
+                    XCTFail(String(describing: error))
+                case .success(let data):
+                    XCTAssertEqual(try? Message(data), message)
+                }
+                self.finish(withResult: true)
         }
     }
 }

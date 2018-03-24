@@ -99,7 +99,7 @@ enum Child {
     static let name = "name"
     static let parentConvoKey = "parentConvoKey"
     static let proxies = "proxies"
-    static let proxyNames = "proxyNames"
+    static let proxyKeys = "proxyKeys"
     static let receiverDeletedProxy = "receiverDeletedProxy"
     static let receiverProxyKey = "receiverProxyKey"
     static let registrationTokens = "registrationTokens"

@@ -29,8 +29,8 @@ extension GroupWork {
         delete(Child.proxies, proxy.ownerId, proxy.key)
     }
 
-    func deleteProxyName(proxyKey: String) {
-        delete(Child.proxyNames, proxyKey)
+    func deleteProxyKey(proxyKey: String) {
+        delete(Child.proxyKeys, proxyKey)
     }
 
     func deleteUnreadMessage(_ message: Message) {
@@ -76,8 +76,8 @@ extension GroupWork {
         set(proxy.toDictionary(), at: Child.proxies, proxy.ownerId, proxy.key)
     }
 
-    func setProxyName(_ proxy: Proxy) {
-        set(proxy.toDictionary(), at: Child.proxyNames, proxy.key)
+    func setProxyKey(_ proxy: Proxy) {
+        set(proxy.toDictionary(), at: Child.proxyKeys, proxy.key)
     }
 
     func set(_ property: SettableConvoProperty, for convo: Convo, asSender: Bool) {
