@@ -109,7 +109,7 @@ private extension ProxyViewController {
             guard let proxy = self?.proxy else {
                 return
             }
-            self?.database.deleteProxy(proxy) { error in
+            self?.database.delete(proxy) { error in
                 if let error = error {
                     StatusBar.showErrorStatusBarBanner(error)
                 } else {

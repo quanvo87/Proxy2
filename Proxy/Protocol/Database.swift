@@ -50,7 +50,6 @@ enum SettableUserProperty {
 }
 
 // todo: remove for loops
-// todo: internal param names for these apis
 protocol Database {
     typealias ConvoCallback = (Result<Convo, Error>) -> Void
     typealias DataCallback = (Result<DataSnapshot, Error>) -> Void
@@ -58,8 +57,8 @@ protocol Database {
     typealias MessageCallback = (Result<(convo: Convo, message: Message), Error>) -> Void
     typealias ProxyCallback = (Result<Proxy, Error>) -> Void
     init(_ options: [String: Any])
+    func delete(_ proxy: Proxy, completion: @escaping ErrorCallback)
     func delete(_ userProperty: SettableUserProperty, for uid: String, completion: @escaping ErrorCallback)
-    func deleteProxy(_ proxy: Proxy, completion: @escaping ErrorCallback)
     func get(_ userProperty: SettableUserProperty, for uid: String, completion: @escaping DataCallback)
     func getConvo(convoKey: String, ownerId: String, completion: @escaping ConvoCallback)
     func getProxy(proxyKey: String, completion: @escaping ProxyCallback)
@@ -92,14 +91,7 @@ class Firebase: Database {
     }
     // swiftlint:enable line_length
 
-    func delete(_ userProperty: SettableUserProperty, for uid: String, completion: @escaping ErrorCallback) {
-        let path = getPath(uid: uid, userProperty: userProperty)
-        Shared.firebaseHelper.delete(Child.users, path) { error in
-            completion(error)
-        }
-    }
-
-    func deleteProxy(_ proxy: Proxy, completion: @escaping ErrorCallback) {
+    func delete(_ proxy: Proxy, completion: @escaping ErrorCallback) {
         getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { result in
             switch result {
             case .failure(let error):
@@ -115,6 +107,13 @@ class Firebase: Database {
                     completion(work.result ? nil : ProxyError.unknown)
                 }
             }
+        }
+    }
+
+    func delete(_ userProperty: SettableUserProperty, for uid: String, completion: @escaping ErrorCallback) {
+        let path = getPath(uid: uid, userProperty: userProperty)
+        Shared.firebaseHelper.delete(Child.users, path) { error in
+            completion(error)
         }
     }
 

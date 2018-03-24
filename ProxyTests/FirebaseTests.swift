@@ -18,7 +18,7 @@ class FirebaseTests: FirebaseTest {
         defer { waitForExpectations(timeout: 10) }
 
         FirebaseTest.sendMessage { message, convo, _, receiver in
-            Shared.database.deleteProxy(receiver) { error in
+            Shared.database.delete(receiver) { error in
                 XCTAssertNil(error, String(describing: error))
                 let work = GroupWork()
                 work.checkDeleted(.contact(convo.receiverId), for: convo.senderId)
@@ -296,7 +296,7 @@ class FirebaseTests: FirebaseTest {
         defer { waitForExpectations(timeout: 10) }
 
         FirebaseTest.sendMessage { _, senderConvo, _, receiverProxy in
-            Shared.database.deleteProxy(receiverProxy) { error in
+            Shared.database.delete(receiverProxy) { error in
                 XCTAssertNil(error, String(describing: error))
                 Shared.database.getConvo(convoKey: senderConvo.key, ownerId: senderConvo.senderId) { result in
                     switch result {

@@ -139,11 +139,11 @@ private extension ProxiesViewController {
             message: "Their conversations will also be deleted."
         )
         alert.addAction(Alert.makeDestructiveAction(title: "Delete") { [weak self] _ in
-            for (_, item) in self?.proxiesToDelete ?? [:] {
-                guard let proxy = item as? Proxy else {
-                    continue
+            self?.proxiesToDelete.forEach {
+                guard let proxy = $0.value as? Proxy else {
+                    return
                 }
-                self?.database.deleteProxy(proxy) { error in
+                self?.database.delete(proxy) { error in
                     if let error = error {
                         StatusBar.showErrorStatusBarBanner(error)
                     } else {

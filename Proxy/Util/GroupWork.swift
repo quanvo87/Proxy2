@@ -15,12 +15,12 @@ extension GroupWork {
     }
 
     func delete(_ convos: [Convo]) {
-        for convo in convos {
-            delete(convo, asSender: true)
-            delete(.contact(convo.receiverId), for: convo.senderId)
-            delete(.contact(convo.senderId), for: convo.receiverId)
-            if convo.receiverDeletedProxy {
-                deleteAllMessagesForConvo(convoKey: convo.key)
+        convos.forEach {
+            delete($0, asSender: true)
+            delete(.contact($0.receiverId), for: $0.senderId)
+            delete(.contact($0.senderId), for: $0.receiverId)
+            if $0.receiverDeletedProxy {
+                deleteAllMessagesForConvo(convoKey: $0.key)
             }
         }
     }
