@@ -22,9 +22,9 @@ class FirebaseTests: FirebaseTest {
                 let work = GroupWork()
                 work.checkDeleted(.contact(convo.receiverId), for: convo.senderId)
                 work.checkDeleted(.contact(convo.senderId), for: convo.receiverId)
+                work.checkDeleted(Child.convos, receiver.ownerId, convo.key)
                 work.checkDeleted(Child.proxies, receiver.ownerId, receiver.key)
                 work.checkDeleted(Child.proxyKeys, receiver.key)
-                work.checkDeleted(Child.convos, receiver.ownerId, convo.key)
                 work.checkDeleted(Child.users, receiver.ownerId, Child.unreadMessages, message.messageId)
                 work.check(.receiverDeletedProxy(true), for: convo, asSender: true)
                 work.allDone {
@@ -46,7 +46,7 @@ class FirebaseTests: FirebaseTest {
             Shared.database.delete(userProperty, for: FirebaseTest.uid) { error in
                 XCTAssertNil(error)
                 let work = GroupWork()
-                work.checkDeleted(Child.users, FirebaseTest.uid, Child.registrationTokens, registrationToken)
+                work.checkDeleted(.registrationToken(registrationToken), for: FirebaseTest.uid)
                 work.allDone {
                     expectation.fulfill()
                 }
@@ -256,7 +256,7 @@ class FirebaseTests: FirebaseTest {
         FirebaseTest.sendMessage { message, convo, sender, receiver in
             let work = GroupWork()
 
-            // Check convo made
+            // Check convo updates
             work.check(.proxiesInteractedWith(1), equals: 1, uid: receiver.ownerId)
             work.check(.proxiesInteractedWith(1), equals: 1, uid: sender.ownerId)
             work.checkConvoCreated(convo, asSender: true)
