@@ -55,21 +55,20 @@ protocol Database {
     typealias ErrorCallback = (Error?) -> Void
     typealias MessageCallback = (Result<(convo: Convo, message: Message), Error>) -> Void
     typealias ProxyCallback = (Result<Proxy, Error>) -> Void
-    init(_ options: [String: Any])
     func delete(_ proxy: Proxy, completion: @escaping ErrorCallback)
     func delete(_ userProperty: SettableUserProperty, for uid: String, completion: @escaping ErrorCallback)
-    func get(_ userProperty: SettableUserProperty, for uid: String, completion: @escaping DataCallback)
     func getConvo(convoKey: String, ownerId: String, completion: @escaping ConvoCallback)
     func getProxy(proxyKey: String, completion: @escaping ProxyCallback)
     func getProxy(proxyKey: String, ownerId: String, completion: @escaping ProxyCallback)
+    func get(_ userProperty: SettableUserProperty, for uid: String, completion: @escaping DataCallback)
     func makeProxy(currentProxyCount: Int, ownerId: String, completion: @escaping ProxyCallback)
     func read(_ message: Message, at date: Date, completion: @escaping ErrorCallback)
     func sendMessage(sender: Proxy, receiver: Proxy, text: String, completion: @escaping MessageCallback)
     func sendMessage(convo: Convo, text: String, completion: @escaping MessageCallback)
-    func set(_ userProperty: SettableUserProperty, for uid: String, completion: @escaping ErrorCallback)
     func setIcon(to icon: String, for proxy: Proxy, completion: @escaping ErrorCallback)
     func setNickname(to nickname: String, for proxy: Proxy, completion: @escaping ErrorCallback)
     func setReceiverNickname(to nickname: String, for convo: Convo, completion: @escaping ErrorCallback)
+    func set(_ userProperty: SettableUserProperty, for uid: String, completion: @escaping ErrorCallback)
 }
 
 class Firebase: Database {
@@ -81,7 +80,7 @@ class Firebase: Database {
     private var isMakingProxy = false
 
     // swiftlint:disable line_length
-    required init(_ options: [String: Any] = [:]) {
+    init(_ options: [String: Any] = [:]) {
         generator = options[DatabaseOption.generator.name] as? ProxyPropertyGenerating ?? DatabaseOption.generator.value
         makeProxyRetries = options[DatabaseOption.makeProxyRetries.name] as? Int ?? DatabaseOption.makeProxyRetries.value
         maxMessageSize = options[DatabaseOption.maxMessageSize.name] as? Int ?? DatabaseOption.maxMessageSize.value
@@ -89,6 +88,19 @@ class Firebase: Database {
         maxProxyCount = options[DatabaseOption.maxProxyCount.name] as? Int ?? DatabaseOption.maxProxyCount.value
     }
     // swiftlint:enable line_length
+
+    static func getPath(uid: String, userProperty: SettableUserProperty) -> [String] {
+        var path = [uid]
+        switch userProperty {
+        case .contact(let contactUid):
+            path += [Child.contacts, contactUid]
+        case .registrationToken(let registrationToken):
+            path += [Child.registrationTokens, registrationToken]
+        default:
+            path += [userProperty.properties.name]
+        }
+        return path
+    }
 
     func delete(_ proxy: Proxy, completion: @escaping ErrorCallback) {
         getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { result in
@@ -103,28 +115,17 @@ class Firebase: Database {
                 work.deleteUnreadMessages(for: proxy)
                 work.setReceiverDeletedProxy(for: convos)
                 work.allDone {
-                    completion(work.result ? nil : ProxyError.unknown)
+                    completion(Firebase.getError(work.result))
                 }
             }
         }
     }
 
     func delete(_ userProperty: SettableUserProperty, for uid: String, completion: @escaping ErrorCallback) {
-        let path = getPath(uid: uid, userProperty: userProperty)
-        Shared.firebaseHelper.delete(Child.users, path) { error in
-            completion(error)
-        }
-    }
-
-    func get(_ userProperty: SettableUserProperty, for uid: String, completion: @escaping DataCallback) {
-        let rest = getPath(uid: uid, userProperty: userProperty)
-        Shared.firebaseHelper.get(Child.users, rest) { result in
-            switch result {
-            case .failure(let error):
-                completion(.failure(error))
-            case .success(let data):
-                completion(.success(data))
-            }
+        let work = GroupWork()
+        work.delete(userProperty, for: uid)
+        work.allDone {
+            completion(Firebase.getError(work.result))
         }
     }
 
@@ -176,6 +177,18 @@ class Firebase: Database {
         }
     }
 
+    func get(_ userProperty: SettableUserProperty, for uid: String, completion: @escaping DataCallback) {
+        let rest = Firebase.getPath(uid: uid, userProperty: userProperty)
+        Shared.firebaseHelper.get(Child.users, rest) { result in
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+            case .success(let data):
+                completion(.success(data))
+            }
+        }
+    }
+
     func makeProxy(currentProxyCount: Int, ownerId: String, completion: @escaping ProxyCallback) {
         Haptic.playSuccess()
         guard !isMakingProxy else {
@@ -202,7 +215,7 @@ class Firebase: Database {
         work.allDone {
             work.setHasUnreadMessageForProxy(uid: message.receiverId, key: message.receiverProxyKey)
             work.allDone {
-                completion(work.result ? nil : ProxyError.unknown)
+                completion(Firebase.getError(work.result))
             }
         }
     }
@@ -240,20 +253,6 @@ class Firebase: Database {
         }
     }
 
-    func set(_ userProperty: SettableUserProperty, for uid: String, completion: @escaping ErrorCallback) {
-        var value: Any
-        switch userProperty {
-        case .contact, .registrationToken:
-            value = true
-        default:
-            value = userProperty.properties.value
-        }
-        let rest = getPath(uid: uid, userProperty: userProperty)
-        Shared.firebaseHelper.set(value, at: Child.users, rest) { error in
-            completion(error)
-        }
-    }
-
     func setIcon(to icon: String, for proxy: Proxy, completion: @escaping ErrorCallback) {
         getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { result in
             switch result {
@@ -265,7 +264,7 @@ class Firebase: Database {
                 work.set(.receiverIcon(icon), for: convos, asSender: false)
                 work.set(.senderIcon(icon), for: convos, asSender: true)
                 work.allDone {
-                    completion(work.result ? nil : ProxyError.unknown)
+                    completion(Firebase.getError(work.result))
                 }
             }
         }
@@ -281,7 +280,7 @@ class Firebase: Database {
                 work.set(.nickname(nickname), for: proxy)
                 work.set(.senderNickname(nickname), for: convos, asSender: true)
                 work.allDone {
-                    completion(work.result ? nil : ProxyError.unknown)
+                    completion(Firebase.getError(work.result))
                 }
             }
         }
@@ -295,7 +294,15 @@ class Firebase: Database {
         let work = GroupWork()
         work.set(.receiverNickname(nickname), for: convo, asSender: true)
         work.allDone {
-            completion(work.result ? nil : ProxyError.unknown)
+            completion(Firebase.getError(work.result))
+        }
+    }
+
+    func set(_ property: SettableUserProperty, for uid: String, completion: @escaping ErrorCallback) {
+        let work = GroupWork()
+        work.set(property, for: uid)
+        work.allDone {
+            completion(Firebase.getError(work.result))
         }
     }
 }
@@ -314,17 +321,8 @@ private extension Firebase {
         }
     }
 
-    func getPath(uid: String, userProperty: SettableUserProperty) -> [String] {
-        var path = [uid]
-        switch userProperty {
-        case .contact(let contactUid):
-            path += [Child.contacts, contactUid]
-        case .registrationToken(let registrationToken):
-            path += [Child.registrationTokens, registrationToken]
-        default:
-            path += [userProperty.properties.name]
-        }
-        return path
+    static func getError(_ workResult: Bool) -> Error? {
+        return workResult ? nil : ProxyError.unknown
     }
 
     func makeConvo(convoKey: String, sender: Proxy, receiver: Proxy, completion: @escaping ConvoCallback) {
@@ -428,11 +426,9 @@ private extension Firebase {
             let work = GroupWork()
             work.set(message)
             let currentTime = Date().timeIntervalSince1970
-            // Receiver updates
             work.increment(.messagesReceived(1), uid: convo.receiverId)
-            work.setReceiverMessageValues(convo: convo, currentTime: currentTime, message: message)
-            // Sender updates
             work.increment(.messagesSent(1), uid: convo.senderId)
+            work.setReceiverMessageValues(convo: convo, currentTime: currentTime, message: message)
             work.set(.timestamp(currentTime), for: convo, asSender: true)
             work.set(.timestamp(currentTime), forProxyIn: convo, asSender: true)
             switch message.data {

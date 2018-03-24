@@ -1,5 +1,6 @@
 import GroupWork
 
+// todo: make functions static
 extension GroupWork {
     static func getOwnerIdAndProxyKey(convo: Convo, asSender: Bool) -> (ownerId: String, proxyKey: String) {
         return asSender ? (convo.senderId, convo.senderProxyKey) : (convo.receiverId, convo.receiverProxyKey)
@@ -53,10 +54,8 @@ extension GroupWork {
     }
 
     func delete(_ userProperty: SettableUserProperty, for uid: String) {
-        start()
-        Shared.database.delete(userProperty, for: uid) { error in
-            self.finish(withResult: error == nil)
-        }
+        let path = Firebase.getPath(uid: uid, userProperty: userProperty)
+        delete(Child.users, path)
     }
 
     func increment(_ property: IncrementableUserProperty, uid: String) {
@@ -96,16 +95,12 @@ extension GroupWork {
     }
 
     func set(_ property: SettableMessageProperty, for message: Message) {
+        var value: Any
         switch property {
         case .dateRead(let date):
-            set(
-                date.timeIntervalSince1970,
-                at: Child.messages,
-                message.parentConvoKey,
-                message.messageId,
-                property.properties.name
-            )
+            value = date.timeIntervalSince1970
         }
+        set(value, at: Child.messages, message.parentConvoKey, message.messageId, property.properties.name)
     }
 
     func set(_ property: SettableProxyProperty, for proxy: Proxy) {
@@ -121,11 +116,16 @@ extension GroupWork {
         set(property.properties.value, at: Child.proxies, uid, proxyKey, property.properties.name)
     }
 
-    func set(_ userProperty: SettableUserProperty, for uid: String) {
-        start()
-        Shared.database.set(userProperty, for: uid) { error in
-            self.finish(withResult: error == nil)
+    func set(_ property: SettableUserProperty, for uid: String) {
+        var value: Any
+        switch property {
+        case .contact, .registrationToken:
+            value = true
+        default:
+            value = property.properties.value
         }
+        let rest = Firebase.getPath(uid: uid, userProperty: property)
+        set(value, at: Child.users, rest)
     }
 
     func setHasUnreadMessageForProxy(uid: String, key: String) {
@@ -274,6 +274,10 @@ extension GroupWork {
 
 private extension GroupWork {
     func delete(_ first: String, _ rest: String...) {
+        delete(first, rest)
+    }
+
+    func delete(_ first: String, _ rest: [String]) {
         start()
         Shared.firebaseHelper.delete(first, rest) { [weak self] error in
             self?.finish(withResult: error == nil)
@@ -288,6 +292,10 @@ private extension GroupWork {
     }
 
     func set(_ value: Any, at first: String, _ rest: String...) {
+        set(value, at: first, rest)
+    }
+
+    func set(_ value: Any, at first: String, _ rest: [String]) {
         start()
         Shared.firebaseHelper.set(value, at: first, rest) { [weak self] error in
             self?.finish(withResult: error == nil)
