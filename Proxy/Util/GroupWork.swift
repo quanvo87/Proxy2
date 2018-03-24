@@ -1,6 +1,5 @@
 import GroupWork
 
-// todo: make functions static
 extension GroupWork {
     static func getOwnerIdAndProxyKey(convo: Convo, asSender: Bool) -> (ownerId: String, proxyKey: String) {
         return asSender ? (convo.senderId, convo.senderProxyKey) : (convo.receiverId, convo.receiverProxyKey)
@@ -40,7 +39,7 @@ extension GroupWork {
 
     func deleteUnreadMessages(for proxy: Proxy) {
         start()
-        getUnreadMessagesForProxy(uid: proxy.ownerId, key: proxy.key) { [weak self] result in
+        GroupWork.getUnreadMessagesForProxy(uid: proxy.ownerId, key: proxy.key) { [weak self] result in
             switch result {
             case .failure:
                 self?.finish(withResult: false)
@@ -130,7 +129,7 @@ extension GroupWork {
 
     func setHasUnreadMessageForProxy(uid: String, key: String) {
         start()
-        getUnreadMessagesForProxy(uid: uid, key: key) { [weak self] result in
+        GroupWork.getUnreadMessagesForProxy(uid: uid, key: key) { [weak self] result in
             switch result {
             case .failure:
                 self?.finish(withResult: false)
@@ -273,6 +272,21 @@ extension GroupWork {
 }
 
 private extension GroupWork {
+    static func getUnreadMessagesForProxy(uid: String,
+                                          key: String,
+                                          completion: @escaping (Result<[Message], Error>) -> Void) {
+        do {
+            try Shared.firebaseHelper.makeReference(Child.users, uid, Child.unreadMessages)
+                .queryEqual(toValue: key)
+                .queryOrdered(byChild: Child.receiverProxyKey)
+                .observeSingleEvent(of: .value) { data in
+                    completion(.success(data.asMessagesArray))
+            }
+        } catch {
+            completion(.failure(error))
+        }
+    }
+
     func delete(_ first: String, _ rest: String...) {
         delete(first, rest)
     }
@@ -299,23 +313,6 @@ private extension GroupWork {
         start()
         Shared.firebaseHelper.set(value, at: first, rest) { [weak self] error in
             self?.finish(withResult: error == nil)
-        }
-    }
-}
-
-private extension GroupWork {
-    func getUnreadMessagesForProxy(uid: String,
-                                   key: String,
-                                   completion: @escaping (Result<[Message], Error>) -> Void) {
-        do {
-            try Shared.firebaseHelper.makeReference(Child.users, uid, Child.unreadMessages)
-                .queryEqual(toValue: key)
-                .queryOrdered(byChild: Child.receiverProxyKey)
-                .observeSingleEvent(of: .value) { data in
-                    completion(.success(data.asMessagesArray))
-            }
-        } catch {
-            completion(.failure(error))
         }
     }
 }

@@ -129,18 +129,17 @@ extension GroupWork {
             Child.messages,
             message.parentConvoKey,
             message.messageId,
-            property.properties.name
-        ) { result in
-            switch result {
-            case .failure(let error):
-                XCTFail(String(describing: error))
-            case .success(let data):
-                switch property {
-                case .dateRead(let date):
-                    GroupWork.checkEquals(data, date.timeIntervalSince1970, function: function, line: line)
+            property.properties.name) { result in
+                switch result {
+                case .failure(let error):
+                    XCTFail(String(describing: error))
+                case .success(let data):
+                    switch property {
+                    case .dateRead(let date):
+                        GroupWork.checkEquals(data, date.timeIntervalSince1970, function: function, line: line)
+                    }
                 }
-            }
-            self.finish(withResult: true)
+                self.finish(withResult: true)
         }
     }
 

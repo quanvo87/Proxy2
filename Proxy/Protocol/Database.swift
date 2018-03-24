@@ -103,7 +103,7 @@ class Firebase: Database {
     }
 
     func delete(_ proxy: Proxy, completion: @escaping ErrorCallback) {
-        getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { result in
+        Firebase.getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { result in
             switch result {
             case .failure(let error):
                 completion(error)
@@ -226,7 +226,7 @@ class Firebase: Database {
             completion(.failure(ProxyError.inputTooLong))
             return
         }
-        let convoKey = makeConvoKey(sender: sender, receiver: receiver)
+        let convoKey = Firebase.makeConvoKey(sender: sender, receiver: receiver)
         getConvo(convoKey: convoKey, ownerId: sender.ownerId) { [weak self] result in
             switch result {
             case .failure:
@@ -254,7 +254,7 @@ class Firebase: Database {
     }
 
     func setIcon(to icon: String, for proxy: Proxy, completion: @escaping ErrorCallback) {
-        getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { result in
+        Firebase.getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { result in
             switch result {
             case .failure(let error):
                 completion(error)
@@ -271,7 +271,7 @@ class Firebase: Database {
     }
 
     func setNickname(to nickname: String, for proxy: Proxy, completion: @escaping ErrorCallback) {
-        getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { result in
+        Firebase.getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { result in
             switch result {
             case .failure(let error):
                 completion(error)
@@ -308,9 +308,9 @@ class Firebase: Database {
 }
 
 private extension Firebase {
-    func getConvosForProxy(key: String,
-                           ownerId: String,
-                           completion: @escaping (Result<[Convo], Error>) -> Void) {
+    static func getConvosForProxy(key: String,
+                                  ownerId: String,
+                                  completion: @escaping (Result<[Convo], Error>) -> Void) {
         Shared.firebaseHelper.get(Child.convos, ownerId) { result in
             switch result {
             case .failure(let error):
@@ -323,6 +323,10 @@ private extension Firebase {
 
     static func getError(_ workResult: Bool) -> Error? {
         return workResult ? nil : ProxyError.unknown
+    }
+
+    static func makeConvoKey(sender: Proxy, receiver: Proxy) -> String {
+        return [sender.key, sender.ownerId, receiver.key, receiver.ownerId].sorted().joined()
     }
 
     func makeConvo(convoKey: String, sender: Proxy, receiver: Proxy, completion: @escaping ConvoCallback) {
@@ -370,10 +374,6 @@ private extension Firebase {
                 }
             }
         }
-    }
-
-    func makeConvoKey(sender: Proxy, receiver: Proxy) -> String {
-        return [sender.key, sender.ownerId, receiver.key, receiver.ownerId].sorted().joined()
     }
 
     func makeProxy(ownerId: String, attempt: Int, completion: @escaping ProxyCallback) {
