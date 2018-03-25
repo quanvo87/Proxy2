@@ -253,7 +253,6 @@ enum Result<T, Error> {
 enum Shared {
     static let auth = Auth.auth()
     static let database = Firebase()
-    static let firebaseApp = FirebaseApp.app()
     static let firebaseHelper = Constant.isRunningTests ?
         FirebaseHelper(Shared.testDatabaseReference) :
         FirebaseHelper(FirebaseDatabase.Database.database().reference())

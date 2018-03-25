@@ -17,6 +17,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
 
+        if Constant.isRunningTests {
+            return true
+        }
+
         authObserver.observe { [weak self] user in
             UIApplication.shared.applicationIconBadgeNumber = 0
             if let user = user {
