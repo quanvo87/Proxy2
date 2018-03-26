@@ -20,9 +20,7 @@ class UnreadMessagesObserver: UnreadMessagesObserving {
         addedHandle = ref?.observe(.childAdded) { data in
             do {
                 completion(.added(try Message(data)))
-            } catch {
-                Shared.firebaseHelper.delete(Child.users, uid, Child.unreadMessages, data.key) { _ in }
-            }
+            } catch {}
         }
         removedHandle = ref?.observe(.childRemoved) { data in
             do {

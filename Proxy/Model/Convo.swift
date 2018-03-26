@@ -50,6 +50,26 @@ struct Convo {
     let senderProxyName: String
     let timestamp: Double
 
+    var asDictionary: Any {
+        return [
+            "hasUnreadMessage": hasUnreadMessage,
+            "key": key,
+            "lastMessage": lastMessage,
+            "receiverDeletedProxy": receiverDeletedProxy,
+            "receiverIcon": receiverIcon,
+            "receiverId": receiverId,
+            "receiverNickname": receiverNickname,
+            "receiverProxyKey": receiverProxyKey,
+            "receiverProxyName": receiverProxyName,
+            "senderIcon": senderIcon,
+            "senderId": senderId,
+            "senderNickname": senderNickname,
+            "senderProxyKey": senderProxyKey,
+            "senderProxyName": senderProxyName,
+            "timestamp": timestamp
+        ]
+    }
+
     var label: NSAttributedString {
         let blue = [NSAttributedStringKey.foregroundColor: Color.iOSBlue]
         let gray = [NSAttributedStringKey.foregroundColor: UIColor.gray]
@@ -156,26 +176,6 @@ struct Convo {
         self.senderProxyKey = senderProxyKey
         self.senderProxyName = senderProxyName
         self.timestamp = timestamp
-    }
-
-    func toDictionary() -> Any {
-        return [
-            "hasUnreadMessage": hasUnreadMessage,
-            "key": key,
-            "lastMessage": lastMessage,
-            "receiverDeletedProxy": receiverDeletedProxy,
-            "receiverIcon": receiverIcon,
-            "receiverId": receiverId,
-            "receiverNickname": receiverNickname,
-            "receiverProxyKey": receiverProxyKey,
-            "receiverProxyName": receiverProxyName,
-            "senderIcon": senderIcon,
-            "senderId": senderId,
-            "senderNickname": senderNickname,
-            "senderProxyKey": senderProxyKey,
-            "senderProxyName": senderProxyName,
-            "timestamp": timestamp
-        ]
     }
 }
 

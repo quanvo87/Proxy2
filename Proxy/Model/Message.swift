@@ -24,6 +24,28 @@ struct Message: MessageType {
     let receiverProxyKey: String
     let senderProxyKey: String
 
+    var asDictionary: Any {
+        var text: String
+        switch data {
+        case .text(let _text):
+            text = _text
+        default:
+            text = ""
+        }
+        return [
+            "senderId": sender.id,
+            "senderDisplayName": sender.displayName,
+            "messageId": messageId,
+            "sentDate": sentDate.timeIntervalSince1970,
+            "text": text,
+            "dateRead": dateRead.timeIntervalSince1970,
+            "parentConvoKey": parentConvoKey,
+            "receiverId": receiverId,
+            "receiverProxyKey": receiverProxyKey,
+            "senderProxyKey": senderProxyKey
+        ]
+    }
+
     var hasBeenRead: Bool {
         return dateRead > Date.distantPast
     }
@@ -70,28 +92,6 @@ struct Message: MessageType {
         self.receiverId = receiverId
         self.receiverProxyKey = receiverProxyKey
         self.senderProxyKey = senderProxyKey
-    }
-
-    func toDictionary() -> Any {
-        var text: String
-        switch data {
-        case .text(let t):
-            text = t
-        default:
-            text = ""
-        }
-        return [
-            "senderId": sender.id,
-            "senderDisplayName": sender.displayName,
-            "messageId": messageId,
-            "sentDate": sentDate.timeIntervalSince1970,
-            "text": text,
-            "dateRead": dateRead.timeIntervalSince1970,
-            "parentConvoKey": parentConvoKey,
-            "receiverId": receiverId,
-            "receiverProxyKey": receiverProxyKey,
-            "senderProxyKey": senderProxyKey
-        ]
     }
 }
 

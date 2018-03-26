@@ -3,6 +3,7 @@ import GroupWork
 import MessageKit
 import WQNetworkActivityIndicator
 
+// todo: move to stats
 enum IncrementableUserProperty {
     case messagesReceived(Int)
     case messagesSent(Int)
@@ -26,6 +27,7 @@ enum IncrementableUserProperty {
     }
 }
 
+// todo: move soundOn to settings
 enum SettableUserProperty {
     case contact(String)
     case registrationToken(String)
@@ -113,7 +115,7 @@ class Firebase: Database {
                 work.delete(proxy)
                 work.deleteProxyKey(proxyKey: proxy.key)
                 work.deleteUnreadMessages(for: proxy)
-                work.setReceiverDeletedProxy(for: convos)
+                work.set(.receiverDeletedProxy(true), for: convos, asSender: false)
                 work.allDone {
                     completion(Firebase.getError(work.result))
                 }
@@ -363,12 +365,12 @@ private extension Firebase {
                     senderProxyName: receiver.name
                 )
                 let work = GroupWork()
-                work.increment(.proxiesInteractedWith(1), uid: receiver.ownerId)
-                work.increment(.proxiesInteractedWith(1), uid: sender.ownerId)
+                work.increment(.proxiesInteractedWith(1), for: receiver.ownerId)
+                work.increment(.proxiesInteractedWith(1), for: sender.ownerId)
                 work.set(.contact(receiver.ownerId), for: sender.ownerId)
                 work.set(.contact(sender.ownerId), for: receiver.ownerId)
                 work.set(senderConvo, asSender: true)
-                work.setReceiverConvo(receiverConvo)
+                work.set(receiverConvo, asSender: true)
                 work.allDone {
                     completion(work.result ? .success(senderConvo) : .failure(ProxyError.unknown))
                 }
@@ -423,14 +425,14 @@ private extension Firebase {
                 receiverProxyKey: convo.receiverProxyKey,
                 senderProxyKey: convo.senderProxyKey
             )
+            let currentTime = Date().timeIntervalSince1970
             let work = GroupWork()
             work.set(message)
-            let currentTime = Date().timeIntervalSince1970
-            work.increment(.messagesReceived(1), uid: convo.receiverId)
-            work.increment(.messagesSent(1), uid: convo.senderId)
-            work.setReceiverMessageValues(convo: convo, currentTime: currentTime, message: message)
+            work.increment(.messagesReceived(1), for: convo.receiverId)
+            work.increment(.messagesSent(1), for: convo.senderId)
             work.set(.timestamp(currentTime), for: convo, asSender: true)
             work.set(.timestamp(currentTime), forProxyIn: convo, asSender: true)
+            work.updateReceiverForMessageReceived(convo: convo, currentTime: currentTime, message: message)
             switch message.data {
             case .text(let text):
                 work.set(.lastMessage("You: \(text)"), for: convo, asSender: true)

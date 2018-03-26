@@ -57,25 +57,25 @@ extension GroupWork {
         delete(Child.users, path)
     }
 
-    func increment(_ property: IncrementableUserProperty, uid: String) {
+    func increment(_ property: IncrementableUserProperty, for uid: String) {
         increment(property.properties.value, at: Child.users, uid, property.properties.name)
     }
 
     func set(_ convo: Convo, asSender: Bool) {
         let (ownerId, _) = GroupWork.getOwnerIdAndProxyKey(convo: convo, asSender: asSender)
-        set(convo.toDictionary(), at: Child.convos, ownerId, convo.key)
+        set(convo.asDictionary, at: Child.convos, ownerId, convo.key)
     }
 
     func set(_ message: Message) {
-        set(message.toDictionary(), at: Child.messages, message.parentConvoKey, message.messageId)
+        set(message.asDictionary, at: Child.messages, message.parentConvoKey, message.messageId)
     }
 
     func set(_ proxy: Proxy) {
-        set(proxy.toDictionary(), at: Child.proxies, proxy.ownerId, proxy.key)
+        set(proxy.asDictionary, at: Child.proxies, proxy.ownerId, proxy.key)
     }
 
     func setProxyKey(_ proxy: Proxy) {
-        set(proxy.toDictionary(), at: Child.proxyKeys, proxy.key)
+        set(proxy.asDictionary, at: Child.proxyKeys, proxy.key)
     }
 
     func set(_ property: SettableConvoProperty, for convo: Convo, asSender: Bool) {
@@ -142,129 +142,15 @@ extension GroupWork {
         }
     }
 
-    // todo: move clean up to serverless
-    func setReceiverConvo(_ convo: Convo, database: Database = Shared.database) {
-        start()
-        Shared.firebaseHelper.set(
-            convo.toDictionary(),
-            at: Child.convos,
-            convo.senderId,
-            convo.key) { [weak self] error in
-            database.getProxy(proxyKey: convo.senderProxyKey, ownerId: convo.senderId) { result in
-                switch result {
-                case .failure:
-                    Shared.firebaseHelper.delete(Child.convos, convo.senderId, convo.key) { _ in }
-                default:
-                    break
-                }
-                self?.finish(withResult: error == nil)
-            }
-        }
-    }
-
-    // todo: move the clean up to serverless
-    // todo: then use set property for convos function
-    func setReceiverDeletedProxy(for convos: [Convo], database: Database = Shared.database) {
-        for convo in convos {
-            start()
-//            set(.receiverDeletedProxy(true), for: convo, asSender: false)
-            Shared.firebaseHelper.set(
-                true,
-                at: Child.convos,
-                convo.receiverId,
-                convo.key,
-                Child.receiverDeletedProxy) { [weak self] error in
-                    database.getConvo(convoKey: convo.key, ownerId: convo.receiverId) { result in
-                        switch result {
-                        case .failure:
-                            Shared.firebaseHelper.delete(Child.convos, convo.receiverId, convo.key) { _ in }
-                        default:
-                            break
-                        }
-                        self?.finish(withResult: error == nil)
-                    }
-            }
-        }
-    }
-
-    // todo: move clean up to serverless
-    // todo: break up the 3 parts
-    func setReceiverMessageValues(convo: Convo,
-                                  currentTime: Double,
-                                  message: Message,
-                                  database: Database = Shared.database) {
+    func updateReceiverForMessageReceived(convo: Convo, currentTime: Double, message: Message) {
         guard !convo.receiverDeletedProxy else {
             return
         }
+        setUnreadMessage(message)
         switch message.data {
         case .text(let text):
-            start()
-            Shared.firebaseHelper.set(
-                message.toDictionary(),
-                at: Child.users,
-                message.receiverId,
-                Child.unreadMessages,
-                message.messageId) { [weak self] error in
-                    database.getProxy(proxyKey: message.receiverProxyKey, ownerId: message.receiverId) { result in
-                        switch result {
-                        case .failure:
-                            Shared.firebaseHelper.delete(
-                                Child.users,
-                                message.receiverId,
-                                Child.unreadMessages,
-                                message.messageId) { _ in }
-                            let work = GroupWork()
-                            work.set(.receiverDeletedProxy(true), for: convo, asSender: true)
-                            work.allDone {}
-                        default:
-                            break
-                        }
-                        self?.finish(withResult: error == nil)
-                    }
-            }
-            let convoUpdates: [String: Any] = [
-                Child.hasUnreadMessage: true,
-                Child.lastMessage: text,
-                Child.timestamp: currentTime
-            ]
-            start()
-            try? Shared.firebaseHelper.makeReference(Child.convos, convo.receiverId, convo.key)
-                .updateChildValues(convoUpdates) { [weak self] error, _ in
-                    self?.finish(withResult: error == nil)
-                    database.getConvo(convoKey: convo.key, ownerId: convo.receiverId) { result in
-                        switch result {
-                        case .failure:
-                            Shared.firebaseHelper.delete(Child.convos, convo.receiverId, convo.key) { _ in }
-                        default:
-                            break
-                        }
-                    }
-            }
-            let proxyUpdates: [String: Any] = [
-                Child.hasUnreadMessage: true,
-                Child.lastMessage: text,
-                Child.timestamp: currentTime
-            ]
-            start()
-            try? Shared.firebaseHelper.makeReference(Child.proxies, convo.receiverId, convo.receiverProxyKey)
-                .updateChildValues(proxyUpdates) { [weak self] error, _ in
-                    self?.finish(withResult: error == nil)
-                    database.getProxy(proxyKey: message.receiverProxyKey, ownerId: message.receiverId) { result in
-                        switch result {
-                        case .failure:
-                            Shared.firebaseHelper.delete(
-                                Child.users,
-                                message.receiverId,
-                                Child.unreadMessages,
-                                message.messageId) { _ in }
-                            let work = GroupWork()
-                            work.set(.receiverDeletedProxy(true), for: convo, asSender: true)
-                            work.allDone {}
-                        default:
-                            break
-                        }
-                    }
-            }
+            updateReceiverConvoForMessageReceived(convo: convo, currentTime: currentTime, text: text)
+            updateReceiverProxyForMessageReceived(convo: convo, currentTime: currentTime, text: text)
         default:
             break
         }
@@ -313,6 +199,36 @@ private extension GroupWork {
         start()
         Shared.firebaseHelper.set(value, at: first, rest) { [weak self] error in
             self?.finish(withResult: error == nil)
+        }
+    }
+
+    func setUnreadMessage(_ message: Message) {
+        set(message.asDictionary, at: Child.users, message.receiverId, Child.unreadMessages, message.messageId)
+    }
+
+    func updateReceiverConvoForMessageReceived(convo: Convo, currentTime: Double, text: String) {
+        let convoUpdates: [String: Any] = [
+            Child.hasUnreadMessage: true,
+            Child.lastMessage: text,
+            Child.timestamp: currentTime
+        ]
+        start()
+        try? Shared.firebaseHelper.makeReference(Child.convos, convo.receiverId, convo.key)
+            .updateChildValues(convoUpdates) { [weak self] error, _ in
+                self?.finish(withResult: error == nil)
+        }
+    }
+
+    func updateReceiverProxyForMessageReceived(convo: Convo, currentTime: Double, text: String) {
+        let proxyUpdates: [String: Any] = [
+            Child.hasUnreadMessage: true,
+            Child.lastMessage: text,
+            Child.timestamp: currentTime
+        ]
+        start()
+        try? Shared.firebaseHelper.makeReference(Child.proxies, convo.receiverId, convo.receiverProxyKey)
+            .updateChildValues(proxyUpdates) { [weak self] error, _ in
+                self?.finish(withResult: error == nil)
         }
     }
 }

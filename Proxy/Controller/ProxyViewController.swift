@@ -1,5 +1,6 @@
 import UIKit
 
+// todo: make font smaller for smaller devices
 class ProxyViewController: UIViewController, NewMessageMakerDelegate {
     var newConvo: Convo?
     private let buttonAnimator: ButtonAnimating

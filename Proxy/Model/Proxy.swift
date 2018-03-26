@@ -35,6 +35,20 @@ struct Proxy {
     let ownerId: String
     let timestamp: Double
 
+    var asDictionary: Any {
+        return [
+            "dateCreated": dateCreated,
+            "hasUnreadMessage": hasUnreadMessage,
+            "icon": icon,
+            "key": key,
+            "lastMessage": lastMessage,
+            "name": name,
+            "nickname": nickname,
+            "ownerId": ownerId,
+            "timestamp": timestamp
+        ]
+    }
+
     var label: NSAttributedString {
         let attributedName = NSMutableAttributedString(string: name)
         if nickname != "" {
@@ -88,20 +102,6 @@ struct Proxy {
         self.nickname = nickname
         self.ownerId = ownerId
         self.timestamp = timestamp
-    }
-
-    func toDictionary() -> Any {
-        return [
-            "dateCreated": dateCreated,
-            "hasUnreadMessage": hasUnreadMessage,
-            "icon": icon,
-            "key": key,
-            "lastMessage": lastMessage,
-            "name": name,
-            "nickname": nickname,
-            "ownerId": ownerId,
-            "timestamp": timestamp
-        ]
     }
 }
 
