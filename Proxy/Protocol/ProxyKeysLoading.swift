@@ -1,17 +1,16 @@
 import FirebaseDatabase
 import SearchTextField
 
-protocol ProxyNamesLoading {
-    init(querySize: UInt)
+protocol ProxyKeysLoading {
     func load(query: String, senderId: String, completion: @escaping ([SearchTextFieldItem]) -> Void)
 }
 
-class ProxyNamesLoader: ProxyNamesLoading {
+class ProxyKeysLoader: ProxyKeysLoading {
     private let querySize: UInt
-    private let ref = try? Shared.firebaseHelper.makeReference(Child.proxyNames)
+    private let ref = try? Shared.firebaseHelper.makeReference(Child.proxyKeys)
     private var pendingWorkItem: DispatchWorkItem?
 
-    required init(querySize: UInt = DatabaseOption.querySize) {
+    init(querySize: UInt = DatabaseOption.querySize) {
         self.querySize = querySize
     }
 

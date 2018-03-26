@@ -99,7 +99,7 @@ enum Child {
     static let name = "name"
     static let parentConvoKey = "parentConvoKey"
     static let proxies = "proxies"
-    static let proxyNames = "proxyNames"
+    static let proxyKeys = "proxyKeys"
     static let receiverDeletedProxy = "receiverDeletedProxy"
     static let receiverProxyKey = "receiverProxyKey"
     static let registrationTokens = "registrationTokens"
@@ -138,7 +138,6 @@ enum Constant {
     static let convoDetailSenderProxyTableViewCell = "ConvoDetailSenderProxyTableViewCell"
     static let isRunningTests = UserDefaults.standard.bool(forKey: "isRunningTests")
     static let tableViewRefreshRate: TimeInterval = 10
-    static let soundOn = "soundOn"
 }
 
 enum DatabaseOption {
@@ -179,7 +178,7 @@ enum DeviceInfo {
 }
 
 enum Haptic {
-    static func makeError() {
+    static func playError() {
         switch DeviceInfo.feedbackType {
         case .haptic:
             Piano.play([.hapticFeedback(.notification(.failure))])
@@ -190,7 +189,7 @@ enum Haptic {
         }
     }
 
-    static func makeSuccess() {
+    static func playSuccess() {
         switch DeviceInfo.feedbackType {
         case .haptic:
             Piano.play([.hapticFeedback(.impact(.light))])
@@ -254,7 +253,6 @@ enum Result<T, Error> {
 enum Shared {
     static let auth = Auth.auth()
     static let database = Firebase()
-    static let firebaseApp = FirebaseApp.app()
     static let firebaseHelper = Constant.isRunningTests ?
         FirebaseHelper(Shared.testDatabaseReference) :
         FirebaseHelper(FirebaseDatabase.Database.database().reference())
@@ -266,7 +264,7 @@ enum StatusBar {
     private static let queue = ProxyNotificationBannerQueue()
 
     static func showErrorBanner(title: String = "Error 😵", subtitle: String) {
-        Haptic.makeError()
+        Haptic.playError()
         queue.currentBanner = NotificationBanner(
             title: title,
             subtitle: subtitle,
@@ -276,7 +274,7 @@ enum StatusBar {
     }
 
     static func showErrorStatusBarBanner(_ error: Error) {
-        Haptic.makeError()
+        Haptic.playError()
         let view = MessageView.viewFromNib(layout: .statusLine)
         view.configureTheme(.error)
         view.configureContent(body: "⚠️ " + error.localizedDescription)
@@ -298,7 +296,7 @@ enum StatusBar {
     }
 
     static func showSuccessBanner(title: String, subtitle: String) {
-        Haptic.makeSuccess()
+        Haptic.playSuccess()
         queue.currentBanner = NotificationBanner(
             title: title,
             subtitle: subtitle,
@@ -308,7 +306,7 @@ enum StatusBar {
     }
 
     static func showSuccessStatusBarBanner(_ title: String) {
-        Haptic.makeSuccess()
+        Haptic.playSuccess()
         NotificationBannerQueue.default.removeAll()
         let statusBarNotificationBanner = StatusBarNotificationBanner(
             title: title,

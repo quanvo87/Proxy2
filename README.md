@@ -40,7 +40,7 @@
   - Built chat backend from scratch on top of [Firebase](https://firebase.google.com/)
   - Wrote [FirebaseHelper](https://github.com/quanvo87/FirebaseHelper), for safe and easy wrappers around common database functions
   - Flat data structure for performant queries
-  - Dealt with race conditions by checking if an invalid write occurred after the fact, then correcting the error
+  - [Cloud Functions](https://firebase.google.com/docs/functions/) watch for "zombie" data as a result of race conditions and clean them up
   - All data that is no longer needed is cleaned up when appropriate
   - Data is indexed on server for performance
   - Pagination load: load some initial data, load more when user scrolls up

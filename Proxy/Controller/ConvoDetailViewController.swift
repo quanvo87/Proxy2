@@ -207,7 +207,7 @@ extension ConvoDetailViewController: UITableViewDelegate {
                     message: Alert.deleteProxyMessage.message
                 )
                 alert.addAction(Alert.makeDestructiveAction(title: "Delete") { [weak self] _ in
-                    self?.database.deleteProxy(proxy) { error in
+                    self?.database.delete(proxy) { error in
                         if let error = error {
                             StatusBar.showErrorStatusBarBanner(error)
                         } else {

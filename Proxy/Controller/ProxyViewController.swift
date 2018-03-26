@@ -1,5 +1,6 @@
 import UIKit
 
+// todo: make font smaller for smaller devices
 class ProxyViewController: UIViewController, NewMessageMakerDelegate {
     var newConvo: Convo?
     private let buttonAnimator: ButtonAnimating
@@ -109,7 +110,7 @@ private extension ProxyViewController {
             guard let proxy = self?.proxy else {
                 return
             }
-            self?.database.deleteProxy(proxy) { error in
+            self?.database.delete(proxy) { error in
                 if let error = error {
                     StatusBar.showErrorStatusBarBanner(error)
                 } else {

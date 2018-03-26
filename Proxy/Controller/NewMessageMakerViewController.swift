@@ -12,7 +12,7 @@ class NewMessageMakerViewController: UIViewController, SenderPickerDelegate {
     private let database: Database
     private let messageInputBar = MessageInputBar()
     private let proxiesObserver: ProxiesObserving
-    private let proxyNamesLoader: ProxyNamesLoading
+    private let proxyKeysLoader: ProxyKeysLoading
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
     private var firstResponder = FirstResponder.receiverTextField
@@ -36,14 +36,14 @@ class NewMessageMakerViewController: UIViewController, SenderPickerDelegate {
          buttonAnimator: ButtonAnimating = ButtonAnimator(),
          database: Database = Shared.database,
          proxiesObserver: ProxiesObserving = ProxiesObserver(),
-         proxyNamesLoader: ProxyNamesLoading = ProxyNamesLoader(),
+         proxyKeysLoader: ProxyKeysLoading = ProxyKeysLoader(),
          uid: String,
          newMessageMakerDelegate: NewMessageMakerDelegate) {
         self.sender = sender
         self.buttonAnimator = buttonAnimator
         self.database = database
         self.proxiesObserver = proxiesObserver
-        self.proxyNamesLoader = proxyNamesLoader
+        self.proxyKeysLoader = proxyKeysLoader
         self.uid = uid
         self.newMessageMakerDelegate = newMessageMakerDelegate
 
@@ -285,7 +285,7 @@ extension NewMessageMakerViewController: UITableViewDataSource {
                 }
                 cell.iconImageView.image = nil
                 cell.receiverTextField.showLoadingIndicator()
-                self?.proxyNamesLoader.load(query: query, senderId: _self.uid) { items in
+                self?.proxyKeysLoader.load(query: query, senderId: _self.uid) { items in
                     cell.receiverTextField.filterItems(items)
                     cell.receiverTextField.stopLoadingIndicator()
                 }
