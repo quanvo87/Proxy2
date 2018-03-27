@@ -37,8 +37,8 @@ class SettingsViewController: UIViewController {
         tableView.delegate = self
         tableView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
         tableView.register(
-            UINib(nibName: String(describing: SettingsTableViewCell.self), bundle: nil),
-            forCellReuseIdentifier: String(describing: SettingsTableViewCell.self)
+            UINib(nibName: String(describing: BasicTableViewCell.self), bundle: nil),
+            forCellReuseIdentifier: String(describing: BasicTableViewCell.self)
         )
         tableView.rowHeight = 44
 
@@ -74,9 +74,9 @@ extension SettingsViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(
-            withIdentifier: String(describing: SettingsTableViewCell.self)
-            ) as? SettingsTableViewCell else {
-                return SettingsTableViewCell()
+            withIdentifier: String(describing: BasicTableViewCell.self)
+            ) as? BasicTableViewCell else {
+                return BasicTableViewCell()
         }
         switch indexPath.section {
         case 0:
@@ -109,7 +109,7 @@ extension SettingsViewController: UITableViewDataSource {
             cell.selectionStyle = .none
         case 2:
             cell.accessoryType = .disclosureIndicator
-            cell.load(icon: "blockedUsers", title: "Blocked Users")
+            cell.load(icon: "blockUser", title: "Blocked Users")
         case 3:
             cell.accessoryType = .disclosureIndicator
             cell.load(icon: "info", title: "About")

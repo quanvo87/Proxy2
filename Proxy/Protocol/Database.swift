@@ -108,17 +108,21 @@ class Firebase: Database {
 
     func block(_ blockedUser: BlockedUser, for uid: String, completion: @escaping ErrorCallback) {
         let work = GroupWork()
+        WQNetworkActivityIndicator.shared.show()
         work.block(blockedUser, for: uid)
         work.allDone {
             completion(Firebase.getError(work.result))
+            WQNetworkActivityIndicator.shared.hide()
         }
     }
 
     func delete(_ proxy: Proxy, completion: @escaping ErrorCallback) {
+        WQNetworkActivityIndicator.shared.show()
         Firebase.getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { result in
             switch result {
             case .failure(let error):
                 completion(error)
+                WQNetworkActivityIndicator.shared.hide()
             case .success(let convos):
                 let work = GroupWork()
                 work.delete(convos)
@@ -128,6 +132,7 @@ class Firebase: Database {
                 work.set(.receiverDeletedProxy(true), for: convos, asSender: false)
                 work.allDone {
                     completion(Firebase.getError(work.result))
+                    WQNetworkActivityIndicator.shared.hide()
                 }
             }
         }
@@ -266,10 +271,12 @@ class Firebase: Database {
     }
 
     func setIcon(to icon: String, for proxy: Proxy, completion: @escaping ErrorCallback) {
+        WQNetworkActivityIndicator.shared.show()
         Firebase.getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { result in
             switch result {
             case .failure(let error):
                 completion(error)
+                WQNetworkActivityIndicator.shared.hide()
             case .success(let convos):
                 let work = GroupWork()
                 work.set(.icon(icon), for: proxy)
@@ -277,22 +284,26 @@ class Firebase: Database {
                 work.set(.senderIcon(icon), for: convos, asSender: true)
                 work.allDone {
                     completion(Firebase.getError(work.result))
+                    WQNetworkActivityIndicator.shared.hide()
                 }
             }
         }
     }
 
     func setNickname(to nickname: String, for proxy: Proxy, completion: @escaping ErrorCallback) {
+        WQNetworkActivityIndicator.shared.show()
         Firebase.getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { result in
             switch result {
             case .failure(let error):
                 completion(error)
+                WQNetworkActivityIndicator.shared.hide()
             case .success(let convos):
                 let work = GroupWork()
                 work.set(.nickname(nickname), for: proxy)
                 work.set(.senderNickname(nickname), for: convos, asSender: true)
                 work.allDone {
                     completion(Firebase.getError(work.result))
+                    WQNetworkActivityIndicator.shared.hide()
                 }
             }
         }
@@ -304,9 +315,11 @@ class Firebase: Database {
             return
         }
         let work = GroupWork()
+        WQNetworkActivityIndicator.shared.show()
         work.set(.receiverNickname(nickname), for: convo, asSender: true)
         work.allDone {
             completion(Firebase.getError(work.result))
+            WQNetworkActivityIndicator.shared.hide()
         }
     }
 
@@ -320,9 +333,11 @@ class Firebase: Database {
 
     func unblock(_ blockedUser: BlockedUser, for uid: String, completion: @escaping ErrorCallback) {
         let work = GroupWork()
+        WQNetworkActivityIndicator.shared.show()
         work.unblock(blockedUser, for: uid)
         work.allDone {
             completion(Firebase.getError(work.result))
+            WQNetworkActivityIndicator.shared.hide()
         }
     }
 }
