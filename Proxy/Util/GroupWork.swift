@@ -5,6 +5,10 @@ extension GroupWork {
         return asSender ? (convo.senderId, convo.senderProxyKey) : (convo.receiverId, convo.receiverProxyKey)
     }
 
+    func block(_ blockedUser: BlockedUser, for uid: String) {
+        set(blockedUser.asDictionary, at: Child.users, uid, Child.blockedUsers, blockedUser.uid)
+    }
+
     func deleteAllMessagesForConvo(convoKey: String) {
         delete(Child.messages, convoKey)
     }
@@ -140,6 +144,10 @@ extension GroupWork {
                 self?.finish(withResult: true)
             }
         }
+    }
+
+    func unblock(_ blockedUser: BlockedUser, for uid: String) {
+        delete(Child.users, uid, Child.blockedUsers, blockedUser.uid)
     }
 
     func updateReceiverForMessageReceived(convo: Convo, currentTime: Double, message: Message) {

@@ -69,7 +69,7 @@ class SettingsViewController: UIViewController {
 // MARK: - UITableViewDataSource
 extension SettingsViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 4
+        return 5
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -109,8 +109,11 @@ extension SettingsViewController: UITableViewDataSource {
             cell.selectionStyle = .none
         case 2:
             cell.accessoryType = .disclosureIndicator
-            cell.load(icon: "info", title: "About")
+            cell.load(icon: "blockedUsers", title: "Blocked Users")
         case 3:
+            cell.accessoryType = .disclosureIndicator
+            cell.load(icon: "info", title: "About")
+        case 4:
             cell.load(icon: "logout", title: "Log Out")
         default:
             break
@@ -122,14 +125,8 @@ extension SettingsViewController: UITableViewDataSource {
         switch section {
         case 0:
             return 3
-        case 1:
-            return 1
-        case 2:
-            return 1
-        case 3:
-            return 1
         default:
-            return 0
+            return 1
         }
     }
 }
@@ -140,13 +137,16 @@ extension SettingsViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         switch indexPath.section {
         case 2:
+            let blockedUsersViewController = BlockedUsersViewController(uid: uid)
+            navigationController?.pushViewController(blockedUsersViewController, animated: true)
+        case 3:
             guard let aboutViewController = Shared.storyboard.instantiateViewController(
                 withIdentifier: String(describing: AboutViewController.self)
                 ) as? AboutViewController else {
                     return
             }
             navigationController?.pushViewController(aboutViewController, animated: true)
-        case 3:
+        case 4:
             let alert = Alert.make(
                 title: "Log Out",
                 message: "Are you sure you want to log out?"

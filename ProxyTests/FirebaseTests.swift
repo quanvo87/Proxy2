@@ -62,7 +62,58 @@ class FirebaseTests: XCTestCase {
 }
 
 extension FirebaseTests {
-    func testDatasnapshotToConvosArray() {
+    func testBlockUser() {
+        let expectation = self.expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
+
+        let blockedUser = BlockedUser(proxyName: "proxyName", uid: FirebaseTests.uid2)
+        Shared.database.block(blockedUser, for: FirebaseTests.uid) { error in
+            XCTAssertNil(error)
+            Shared.firebaseHelper.get(
+                Child.users,
+                FirebaseTests.uid,
+                Child.blockedUsers,
+                FirebaseTests.uid2) { result in
+                    switch result {
+                    case .failure(let error):
+                        XCTFail(String(describing: error))
+                        expectation.fulfill()
+                    case .success(let data):
+                        XCTAssertEqual(try? BlockedUser(data), blockedUser)
+                        expectation.fulfill()
+                    }
+            }
+        }
+    }
+
+    func testDatasnapshotAsBlockedUsersArray() {
+        let expectation = self.expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
+
+        let blockedUser1 = BlockedUser(proxyName: "name1", uid: "uid1")
+        let blockedUser2 = BlockedUser(proxyName: "name2", uid: "uid2")
+        Shared.database.block(blockedUser1, for: FirebaseTests.uid) { error in
+            XCTAssertNil(error)
+            Shared.database.block(blockedUser2, for: FirebaseTests.uid) { error in
+                XCTAssertNil(error)
+                Shared.firebaseHelper.get(Child.users, FirebaseTests.uid, Child.blockedUsers) { result in
+                    switch result {
+                    case .failure(let error):
+                        XCTFail(String(describing: error))
+                        expectation.fulfill()
+                    case .success(let data):
+                        let blockedUsers = data.asBlockedUsersArray
+                        XCTAssertEqual(blockedUsers.count, 2)
+                        XCTAssert(blockedUsers.contains(blockedUser1))
+                        XCTAssert(blockedUsers.contains(blockedUser2))
+                        expectation.fulfill()
+                    }
+                }
+            }
+        }
+    }
+
+    func testDatasnapshotAsConvosArray() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
@@ -82,7 +133,7 @@ extension FirebaseTests {
         }
     }
 
-    func testDatasnapshotToMessagesArray() {
+    func testDatasnapshotAsMessagesArray() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
@@ -102,7 +153,7 @@ extension FirebaseTests {
         }
     }
 
-    func testDatasnapshotToProxiesArray() {
+    func testDatasnapshotAsProxiesArray() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
@@ -588,7 +639,34 @@ extension FirebaseTests {
 
         Shared.database.set(.soundOn(true), for: FirebaseTests.uid) { error in
             XCTAssertNil(error)
-            expectation.fulfill()
+            Shared.database.get(.soundOn(Bool()), for: FirebaseTests.uid) { result in
+                switch result {
+                case .failure(let error):
+                    XCTFail(String(describing: error))
+                    expectation.fulfill()
+                case .success(let data):
+                    GroupWork.checkEquals(data, true, function: #function, line: #line)
+                    expectation.fulfill()
+                }
+            }
+        }
+    }
+
+    func testUnblockUser() {
+        let expectation = self.expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
+
+        let blockedUser = BlockedUser(proxyName: "proxyName", uid: FirebaseTests.uid2)
+        Shared.database.block(blockedUser, for: FirebaseTests.uid) { error in
+            XCTAssertNil(error)
+            Shared.database.unblock(blockedUser, for: FirebaseTests.uid) { error in
+                XCTAssertNil(error)
+                let work = GroupWork()
+                work.checkDeleted(Child.users, FirebaseTests.uid, Child.blockedUsers, blockedUser.uid)
+                work.allDone {
+                    expectation.fulfill()
+                }
+            }
         }
     }
 }

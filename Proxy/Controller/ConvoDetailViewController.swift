@@ -113,15 +113,17 @@ extension ConvoDetailViewController: UITableViewDataSource {
             return cell
         case 2:
             let cell = UITableViewCell()
+            cell.textLabel?.font = .systemFont(ofSize: 17, weight: UIFont.Weight.regular)
+            cell.textLabel?.textColor = .red
             switch indexPath.row {
             case 0:
-                cell.textLabel?.font = .systemFont(ofSize: 17, weight: UIFont.Weight.regular)
+                cell.textLabel?.text = "Block User"
+            case 1:
                 cell.textLabel?.text = "Delete Proxy"
-                cell.textLabel?.textColor = .red
-                return cell
             default:
                 break
             }
+            return cell
         default:
             break
         }
@@ -130,14 +132,10 @@ extension ConvoDetailViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
-        case 0:
-            return 1
-        case 1:
-            return 1
         case 2:
-            return 1
+            return 2
         default:
-            return 0
+            return 1
         }
     }
 
@@ -202,6 +200,29 @@ extension ConvoDetailViewController: UITableViewDelegate {
         case 2:
             switch indexPath.row {
             case 0:
+                let alert = Alert.make(
+                    title: "Block User?",
+                    message: "They will not be able to message you. You can unblock them in the `Settings` tab."
+                )
+                alert.addAction(Alert.makeDestructiveAction(title: "Block") { [weak self] _ in
+                    guard let convo = self?.convo else {
+                        return
+                    }
+                    let blockedUser = BlockedUser(proxyName: convo.receiverProxyName, uid: convo.receiverId)
+                    self?.database.block(blockedUser, for: convo.senderId) { error in
+                        if let error = error {
+                            StatusBar.showErrorStatusBarBanner(error)
+                        } else {
+                            StatusBar.showSuccessBanner(
+                                title: "User Blocked",
+                                subtitle: "The owner for \(convo.receiverProxyName) has been blocked."
+                            )
+                        }
+                    }
+                })
+                alert.addAction(Alert.makeCancelAction())
+                present(alert, animated: true)
+            case 1:
                 let alert = Alert.make(
                     title: Alert.deleteProxyMessage.title,
                     message: Alert.deleteProxyMessage.message

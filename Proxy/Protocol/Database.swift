@@ -57,6 +57,7 @@ protocol Database {
     typealias ErrorCallback = (Error?) -> Void
     typealias MessageCallback = (Result<(convo: Convo, message: Message), Error>) -> Void
     typealias ProxyCallback = (Result<Proxy, Error>) -> Void
+    func block(_ blockedUser: BlockedUser, for uid: String, completion: @escaping ErrorCallback)
     func delete(_ proxy: Proxy, completion: @escaping ErrorCallback)
     func delete(_ userProperty: SettableUserProperty, for uid: String, completion: @escaping ErrorCallback)
     func getConvo(convoKey: String, ownerId: String, completion: @escaping ConvoCallback)
@@ -71,6 +72,7 @@ protocol Database {
     func setNickname(to nickname: String, for proxy: Proxy, completion: @escaping ErrorCallback)
     func setReceiverNickname(to nickname: String, for convo: Convo, completion: @escaping ErrorCallback)
     func set(_ userProperty: SettableUserProperty, for uid: String, completion: @escaping ErrorCallback)
+    func unblock(_ blockedUser: BlockedUser, for uid: String, completion: @escaping ErrorCallback)
 }
 
 class Firebase: Database {
@@ -102,6 +104,14 @@ class Firebase: Database {
             path += [userProperty.properties.name]
         }
         return path
+    }
+
+    func block(_ blockedUser: BlockedUser, for uid: String, completion: @escaping ErrorCallback) {
+        let work = GroupWork()
+        work.block(blockedUser, for: uid)
+        work.allDone {
+            completion(Firebase.getError(work.result))
+        }
     }
 
     func delete(_ proxy: Proxy, completion: @escaping ErrorCallback) {
@@ -303,6 +313,14 @@ class Firebase: Database {
     func set(_ property: SettableUserProperty, for uid: String, completion: @escaping ErrorCallback) {
         let work = GroupWork()
         work.set(property, for: uid)
+        work.allDone {
+            completion(Firebase.getError(work.result))
+        }
+    }
+
+    func unblock(_ blockedUser: BlockedUser, for uid: String, completion: @escaping ErrorCallback) {
+        let work = GroupWork()
+        work.unblock(blockedUser, for: uid)
         work.allDone {
             completion(Firebase.getError(work.result))
         }

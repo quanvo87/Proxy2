@@ -27,10 +27,9 @@ class SenderPickerViewController: UIViewController {
 
         super.init(nibName: nil, bundle: nil)
 
-        let activityIndicatorView = UIActivityIndicatorView(view)
-
         buttonAnimator.add(makeNewProxyButton)
 
+        let activityIndicatorView = UIActivityIndicatorView(view)
         proxiesObserver.observe(proxiesOwnerId: uid) { [weak self] proxies in
             activityIndicatorView.removeFromSuperview()
             if proxies.isEmpty {

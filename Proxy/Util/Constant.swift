@@ -89,8 +89,10 @@ enum Audio {
 }
 
 enum Child {
+    static let blockedUsers = "blockedUsers"
     static let convos = "convos"
     static let contacts = "contacts"
+    static let dateBlocked = "dateBlocked"
     static let hasUnreadMessage = "hasUnreadMessage"
     static let icon = "icon"
     static let key = "key"

@@ -79,6 +79,9 @@
 		59E75B2E1F846F550033A407 /* ProxiesObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E75B2D1F846F550033A407 /* ProxiesObserving.swift */; };
 		59E75B301F846F6B0033A407 /* ProxyObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E75B2F1F846F6B0033A407 /* ProxyObserving.swift */; };
 		59ECAB9B20576F4700B74AD1 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59ECAB9A20576F4700B74AD1 /* WebViewController.swift */; };
+		59FE349A2069D6EB0024BB5D /* BlockedUsersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59FE34992069D6EB0024BB5D /* BlockedUsersViewController.swift */; };
+		59FE349C2069D88A0024BB5D /* BlockedUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59FE349B2069D88A0024BB5D /* BlockedUser.swift */; };
+		59FE349E2069EA0A0024BB5D /* BlockedUsersObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59FE349D2069EA0A0024BB5D /* BlockedUsersObserving.swift */; };
 		59FF373D1F97984200FA1AF0 /* AuthObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59FF373C1F97984200FA1AF0 /* AuthObserving.swift */; };
 		59FF37421F97A6AA00FA1AF0 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59FF37411F97A6AA00FA1AF0 /* TabBarController.swift */; };
 		9F0C2E94B3D2ACDB881894D0 /* Pods_ProxyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 677A1D9397BD6DC3C3277EF9 /* Pods_ProxyTests.framework */; };
@@ -184,6 +187,9 @@
 		59E75B2D1F846F550033A407 /* ProxiesObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxiesObserving.swift; sourceTree = "<group>"; };
 		59E75B2F1F846F6B0033A407 /* ProxyObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyObserving.swift; sourceTree = "<group>"; };
 		59ECAB9A20576F4700B74AD1 /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
+		59FE34992069D6EB0024BB5D /* BlockedUsersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedUsersViewController.swift; sourceTree = "<group>"; };
+		59FE349B2069D88A0024BB5D /* BlockedUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedUser.swift; sourceTree = "<group>"; };
+		59FE349D2069EA0A0024BB5D /* BlockedUsersObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedUsersObserving.swift; sourceTree = "<group>"; };
 		59FF373C1F97984200FA1AF0 /* AuthObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthObserving.swift; sourceTree = "<group>"; };
 		59FF37411F97A6AA00FA1AF0 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		677A1D9397BD6DC3C3277EF9 /* Pods_ProxyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ProxyTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -265,6 +271,7 @@
 		5966076B1F977C3100874741 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				59FE349B2069D88A0024BB5D /* BlockedUser.swift */,
 				5973C8381F608A1F00647492 /* Convo.swift */,
 				598420501FEA598300855647 /* Message.swift */,
 				5973C8321F608A1E00647492 /* Proxy.swift */,
@@ -278,6 +285,7 @@
 				59BF62ED20629DBE00DBD722 /* ApplicationStateObserving.swift */,
 				595CC10E205F6F8A0019589D /* AudioPlaying.swift */,
 				59FF373C1F97984200FA1AF0 /* AuthObserving.swift */,
+				59FE349D2069EA0A0024BB5D /* BlockedUsersObserving.swift */,
 				593C938C205494D600931F2B /* ButtonAnimating.swift */,
 				5932BA17200963AC0041BD7B /* ConvoObserving.swift */,
 				593C9386205393E200931F2B /* ConvoPresenceObserving.swift */,
@@ -303,6 +311,7 @@
 			isa = PBXGroup;
 			children = (
 				5984BB9D20576403001745E9 /* AboutViewController.swift */,
+				59FE34992069D6EB0024BB5D /* BlockedUsersViewController.swift */,
 				5973C8431F608A2100647492 /* SettingsViewController.swift */,
 				5985B3BC20587FD400E12467 /* ThirdPartySoftwareViewController.swift */,
 				59ECAB9A20576F4700B74AD1 /* WebViewController.swift */,
@@ -895,6 +904,7 @@
 				593C9387205393E200931F2B /* ConvoPresenceObserving.swift in Sources */,
 				59ECAB9B20576F4700B74AD1 /* WebViewController.swift in Sources */,
 				5973C8571F608A2200647492 /* NewMessageMakerViewController.swift in Sources */,
+				59FE349E2069EA0A0024BB5D /* BlockedUsersObserving.swift in Sources */,
 				59539B73203112140054873C /* Button.swift in Sources */,
 				5932BA18200963AC0041BD7B /* ConvoObserving.swift in Sources */,
 				5973C8531F608A2200647492 /* ConvoDetailReceiverProxyTableViewCell.swift in Sources */,
@@ -933,6 +943,7 @@
 				599885002063EA0500D2BD50 /* Constant.swift in Sources */,
 				5973C8761F608A2200647492 /* SettingsViewController.swift in Sources */,
 				59BF62EE20629DBE00DBD722 /* ApplicationStateObserving.swift in Sources */,
+				59FE349C2069D88A0024BB5D /* BlockedUser.swift in Sources */,
 				598F89FE1FEB401200CCF024 /* ConvoDetailViewController.swift in Sources */,
 				5973C8601F608A2200647492 /* SettingsTableViewCell.swift in Sources */,
 				5973C8511F608A2200647492 /* ProxyError.swift in Sources */,
@@ -942,6 +953,7 @@
 				5973C84A1F608A2200647492 /* ConvosTableViewCell.swift in Sources */,
 				5973C8561F608A2200647492 /* WelcomeViewController.swift in Sources */,
 				5973C8681F608A2200647492 /* ProxyViewController.swift in Sources */,
+				59FE349A2069D6EB0024BB5D /* BlockedUsersViewController.swift in Sources */,
 				593D7D441F851F7D00D3FBD5 /* UserStatsObserving.swift in Sources */,
 				5973C85E1F608A2200647492 /* SenderProxyTableViewCell.swift in Sources */,
 				5984BB9E20576403001745E9 /* AboutViewController.swift in Sources */,
