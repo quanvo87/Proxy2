@@ -684,7 +684,7 @@ extension FirebaseTests {
                     XCTFail(String(describing: error))
                     expectation.fulfill()
                 case .success(let data):
-                    GroupWork.checkEquals(data, true, function: #function, line: #line)
+                    XCTAssertEqual(data.value as? Bool, true)
                     expectation.fulfill()
                 }
             }

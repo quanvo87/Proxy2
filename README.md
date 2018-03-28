@@ -1,8 +1,8 @@
 ![logo](/logo.png)
 
-- [x] Create unlimited, anonymous identities (Proxy's) with just one tap
+- [x] Create unlimited, anonymous identities (Proxies) with just one tap
 - [x] Use your Proxies to chat with any other Proxy
-- [x] Delete a Proxy when you're done with it. People can no longer contact that Proxy!
+- [x] Delete a Proxy when you're done with it. It can no longer be contacted!
 - [x] Never share your real contact info with strangers again
 
 #### Development
