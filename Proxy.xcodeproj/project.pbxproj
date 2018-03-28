@@ -17,6 +17,7 @@
 		5932BA1A20096FD60041BD7B /* ConvosObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5932BA1920096FD60041BD7B /* ConvosObserving.swift */; };
 		5932BA1E2009837D0041BD7B /* MessagesObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5932BA1D2009837D0041BD7B /* MessagesObserving.swift */; };
 		5932F942206B49E800B096BE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5932F941206B49E800B096BE /* GoogleService-Info.plist */; };
+		5932F944206B525400B096BE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5932F943206B525400B096BE /* GoogleService-Info.plist */; };
 		5939F05E200D13BA00AECD35 /* NewMessageMakerReceiverTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5939F05D200D13BA00AECD35 /* NewMessageMakerReceiverTableViewCell.xib */; };
 		5939F060200D174300AECD35 /* NewMessageMakerReceiverTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5939F05F200D174300AECD35 /* NewMessageMakerReceiverTableViewCell.swift */; };
 		593C9387205393E200931F2B /* ConvoPresenceObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 593C9386205393E200931F2B /* ConvoPresenceObserving.swift */; };
@@ -119,6 +120,7 @@
 		5932BA1920096FD60041BD7B /* ConvosObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvosObserving.swift; sourceTree = "<group>"; };
 		5932BA1D2009837D0041BD7B /* MessagesObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesObserving.swift; sourceTree = "<group>"; };
 		5932F941206B49E800B096BE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		5932F943206B525400B096BE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5939F05D200D13BA00AECD35 /* NewMessageMakerReceiverTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NewMessageMakerReceiverTableViewCell.xib; sourceTree = "<group>"; };
 		5939F05F200D174300AECD35 /* NewMessageMakerReceiverTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewMessageMakerReceiverTableViewCell.swift; sourceTree = "<group>"; };
 		593C9386205393E200931F2B /* ConvoPresenceObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoPresenceObserving.swift; sourceTree = "<group>"; };
@@ -428,6 +430,7 @@
 				59172E492048CCBE002672CA /* Proxy.entitlements */,
 				59D76C84203E3F5900ED7926 /* login.mp4 */,
 				5932F941206B49E800B096BE /* GoogleService-Info.plist */,
+				5932F943206B525400B096BE /* GoogleService-Info.plist */,
 				59B432EB1F60648400622DEA /* Info.plist */,
 				59CDE807201BDEA40048C7E3 /* AppDelegate.swift */,
 				598603D820560E2F000B6341 /* newMessage.wav */,
@@ -585,6 +588,7 @@
 				598F8A5A1FEB501400CCF024 /* ConvoDetailSenderProxyTableViewCell.xib in Resources */,
 				5904054A20087C90005F4638 /* NewMessageMakerSenderTableViewCell.xib in Resources */,
 				5954AE181F9A4E95004A351F /* ProxiesTableViewCell.xib in Resources */,
+				5932F944206B525400B096BE /* GoogleService-Info.plist in Resources */,
 				59B432E71F60648400622DEA /* Assets.xcassets in Resources */,
 				59D3AE501FA1A4FF009F18A5 /* ConvoDetailReceiverProxyTableViewCell.xib in Resources */,
 				59B432E51F60648400622DEA /* Main.storyboard in Resources */,

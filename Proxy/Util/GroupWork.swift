@@ -62,7 +62,7 @@ extension GroupWork {
     }
 
     func increment(_ property: IncrementableUserProperty, for uid: String) {
-        increment(property.properties.value, at: Child.users, uid, property.properties.name)
+        increment(property.properties.value, at: Child.users, uid, Child.stats, property.properties.name)
     }
 
     func set(_ convo: Convo, asSender: Bool) {

@@ -1,6 +1,5 @@
 import UIKit
 
-// todo: different sound for notification and message in/out
 class ConvosViewController: UIViewController, NewMessageMakerDelegate {
     var newConvo: Convo?
     private let applicationStateObserver: ApplicationStateObserving
