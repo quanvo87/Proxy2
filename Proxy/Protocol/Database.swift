@@ -58,9 +58,9 @@ protocol Database {
     func block(_ blockedUser: BlockedUser, completion: @escaping ErrorCallback)
     func delete(_ proxy: Proxy, completion: @escaping ErrorCallback)
     func delete(_ userProperty: SettableUserProperty, for uid: String, completion: @escaping ErrorCallback)
-    func getConvo(convoKey: String, ownerId: String, completion: @escaping ConvoCallback)
+    func getConvo(ownerId: String, convoKey: String, completion: @escaping ConvoCallback)
     func getProxy(proxyKey: String, completion: @escaping ProxyCallback)
-    func getProxy(proxyKey: String, ownerId: String, completion: @escaping ProxyCallback)
+    func getProxy(ownerId: String, proxyKey: String, completion: @escaping ProxyCallback)
     func get(_ userProperty: SettableUserProperty, for uid: String, completion: @escaping DataCallback)
     func makeProxy(currentProxyCount: Int, ownerId: String, completion: @escaping ProxyCallback)
     func read(_ message: Message, at date: Date, completion: @escaping ErrorCallback)
@@ -146,7 +146,7 @@ class Firebase: Database {
         }
     }
 
-    func getConvo(convoKey: String, ownerId: String, completion: @escaping ConvoCallback) {
+    func getConvo(ownerId: String, convoKey: String, completion: @escaping ConvoCallback) {
         Shared.firebaseHelper.get(Child.convos, ownerId, convoKey) { result in
             switch result {
             case .failure(let error):
@@ -171,7 +171,7 @@ class Firebase: Database {
                 case .success(let data):
                     do {
                         let proxy = try Proxy(data)
-                        self?.getProxy(proxyKey: proxy.key, ownerId: proxy.ownerId, completion: completion)
+                        self?.getProxy(ownerId: proxy.ownerId, proxyKey: proxy.key, completion: completion)
                     } catch {
                         completion(.failure(error))
                     }
@@ -179,7 +179,7 @@ class Firebase: Database {
         }
     }
 
-    func getProxy(proxyKey: String, ownerId: String, completion: @escaping ProxyCallback) {
+    func getProxy(ownerId: String, proxyKey: String, completion: @escaping ProxyCallback) {
         Shared.firebaseHelper.get(Child.proxies, ownerId, proxyKey) { result in
             switch result {
             case .failure(let error):
@@ -230,7 +230,7 @@ class Firebase: Database {
         work.set(.dateRead(date), for: message)
         work.set(.hasUnreadMessage(false), uid: message.receiverId, convoKey: message.parentConvoKey)
         work.allDone {
-            work.setHasUnreadMessageForProxy(uid: message.receiverId, key: message.receiverProxyKey)
+            work.setHasUnreadMessageForProxy(ownerId: message.receiverId, proxyKey: message.receiverProxyKey)
             work.allDone {
                 completion(Firebase.getError(work.result))
             }
@@ -244,7 +244,7 @@ class Firebase: Database {
             return
         }
         let convoKey = Firebase.makeConvoKey(sender: sender, receiver: receiver)
-        getConvo(convoKey: convoKey, ownerId: sender.ownerId) { [weak self] result in
+        getConvo(ownerId: sender.ownerId, convoKey: convoKey) { [weak self] result in
             switch result {
             case .failure:
                 self?.makeConvo(convoKey: convoKey, sender: sender, receiver: receiver) { result in
@@ -471,7 +471,7 @@ private extension Firebase {
             work.increment(.messagesSent(1), for: convo.senderId)
             work.set(.timestamp(currentTime), for: convo, asSender: true)
             work.set(.timestamp(currentTime), forProxyIn: convo, asSender: true)
-            work.updateReceiverForMessageReceived(convo: convo, currentTime: currentTime, message: message)
+            work.updateReceiverForMessageReceived(convo: convo, message: message, currentTime: currentTime)
             switch message.data {
             case .text(let text):
                 work.set(.lastMessage("You: \(text)"), for: convo, asSender: true)

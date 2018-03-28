@@ -13,7 +13,7 @@ class NotificationHandler: NotificationHandling {
             completion()
             return
         }
-        Shared.database.getConvo(convoKey: convoKey, ownerId: uid) { result in
+        Shared.database.getConvo(ownerId: uid, convoKey: convoKey) { result in
             switch result {
             case .failure(let error):
                 StatusBar.showErrorStatusBarBanner(error)
@@ -37,7 +37,7 @@ class NotificationHandler: NotificationHandling {
             completion()
             return
         }
-        Shared.database.getConvo(convoKey: convoKey, ownerId: uid) { result in
+        Shared.database.getConvo(ownerId: uid, convoKey: convoKey) { result in
             switch result {
             case .failure(let error):
                 StatusBar.showErrorStatusBarBanner(error)

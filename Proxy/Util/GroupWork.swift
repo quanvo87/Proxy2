@@ -43,7 +43,7 @@ extension GroupWork {
 
     func deleteUnreadMessages(for proxy: Proxy) {
         start()
-        GroupWork.getUnreadMessagesForProxy(uid: proxy.ownerId, key: proxy.key) { [weak self] result in
+        GroupWork.getUnreadMessagesForProxy(ownerId: proxy.ownerId, proxyKey: proxy.key) { [weak self] result in
             switch result {
             case .failure:
                 self?.finish(withResult: false)
@@ -107,16 +107,16 @@ extension GroupWork {
     }
 
     func set(_ property: SettableProxyProperty, for proxy: Proxy) {
-        set(property, uid: proxy.ownerId, proxyKey: proxy.key)
+        set(property, ownerId: proxy.ownerId, proxyKey: proxy.key)
     }
 
     func set(_ property: SettableProxyProperty, forProxyIn convo: Convo, asSender: Bool) {
         let (ownerId, proxyKey) = GroupWork.getOwnerIdAndProxyKey(convo: convo, asSender: asSender)
-        set(property, uid: ownerId, proxyKey: proxyKey)
+        set(property, ownerId: ownerId, proxyKey: proxyKey)
     }
 
-    func set(_ property: SettableProxyProperty, uid: String, proxyKey: String) {
-        set(property.properties.value, at: Child.proxies, uid, proxyKey, property.properties.name)
+    func set(_ property: SettableProxyProperty, ownerId: String, proxyKey: String) {
+        set(property.properties.value, at: Child.proxies, ownerId, proxyKey, property.properties.name)
     }
 
     func set(_ property: SettableUserProperty, for uid: String) {
@@ -131,15 +131,15 @@ extension GroupWork {
         set(value, at: Child.users, rest)
     }
 
-    func setHasUnreadMessageForProxy(uid: String, key: String) {
+    func setHasUnreadMessageForProxy(ownerId: String, proxyKey: String) {
         start()
-        GroupWork.getUnreadMessagesForProxy(uid: uid, key: key) { [weak self] result in
+        GroupWork.getUnreadMessagesForProxy(ownerId: ownerId, proxyKey: proxyKey) { [weak self] result in
             switch result {
             case .failure:
                 self?.finish(withResult: false)
             case .success(let messages):
                 if messages.count < 1 {
-                    self?.set(.hasUnreadMessage(false), uid: uid, proxyKey: key)
+                    self?.set(.hasUnreadMessage(false), ownerId: ownerId, proxyKey: proxyKey)
                 }
                 self?.finish(withResult: true)
             }
@@ -150,15 +150,15 @@ extension GroupWork {
         delete(Child.users, blockedUser.blocker, Child.blockedUsers, blockedUser.blockee)
     }
 
-    func updateReceiverForMessageReceived(convo: Convo, currentTime: Double, message: Message) {
+    func updateReceiverForMessageReceived(convo: Convo, message: Message, currentTime: Double) {
         guard !convo.receiverDeletedProxy else {
             return
         }
         setUnreadMessage(message)
         switch message.data {
         case .text(let text):
-            updateReceiverConvoForMessageReceived(convo: convo, currentTime: currentTime, text: text)
-            updateReceiverProxyForMessageReceived(convo: convo, currentTime: currentTime, text: text)
+            updateReceiverConvoForMessageReceived(convo: convo, text: text, currentTime: currentTime)
+            updateReceiverProxyForMessageReceived(convo: convo, text: text, currentTime: currentTime)
         default:
             break
         }
@@ -166,12 +166,12 @@ extension GroupWork {
 }
 
 private extension GroupWork {
-    static func getUnreadMessagesForProxy(uid: String,
-                                          key: String,
+    static func getUnreadMessagesForProxy(ownerId: String,
+                                          proxyKey: String,
                                           completion: @escaping (Result<[Message], Error>) -> Void) {
         do {
-            try Shared.firebaseHelper.makeReference(Child.users, uid, Child.unreadMessages)
-                .queryEqual(toValue: key)
+            try Shared.firebaseHelper.makeReference(Child.users, ownerId, Child.unreadMessages)
+                .queryEqual(toValue: proxyKey)
                 .queryOrdered(byChild: Child.receiverProxyKey)
                 .observeSingleEvent(of: .value) { data in
                     completion(.success(data.asMessagesArray))
@@ -214,7 +214,7 @@ private extension GroupWork {
         set(message.asDictionary, at: Child.users, message.receiverId, Child.unreadMessages, message.messageId)
     }
 
-    func updateReceiverConvoForMessageReceived(convo: Convo, currentTime: Double, text: String) {
+    func updateReceiverConvoForMessageReceived(convo: Convo, text: String, currentTime: Double) {
         let convoUpdates: [String: Any] = [
             Child.hasUnreadMessage: true,
             Child.lastMessage: text,
@@ -227,7 +227,7 @@ private extension GroupWork {
         }
     }
 
-    func updateReceiverProxyForMessageReceived(convo: Convo, currentTime: Double, text: String) {
+    func updateReceiverProxyForMessageReceived(convo: Convo, text: String, currentTime: Double) {
         let proxyUpdates: [String: Any] = [
             Child.hasUnreadMessage: true,
             Child.lastMessage: text,
