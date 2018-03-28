@@ -38,7 +38,7 @@ class ConvosViewController: UIViewController, NewMessageMakerDelegate {
          database: Database = Shared.database,
          incomingMessageAudioPlayer: AudioPlaying = Audio.incomingMessageAudioPlayer,
          proxiesObserver: ProxiesObserving = ProxiesObserver(),
-         tableViewRefresher: TableViewRefreshing = TableViewRefresher(timeInterval: Constant.tableViewRefreshRate),
+         tableViewRefresher: TableViewRefreshing = TableViewRefresher(),
          uid: String,
          unreadMessagesObserver: UnreadMessagesObserving = UnreadMessagesObserver()) {
         self.applicationStateObserver = applicationStateObserver

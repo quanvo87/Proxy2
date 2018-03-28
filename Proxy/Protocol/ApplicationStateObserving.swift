@@ -1,15 +1,15 @@
 import UIKit
 
 protocol ApplicationStateObserving {
-    func applicationDidBecomeActive(callback: @escaping () -> Void)
-    func applicationDidEnterBackground(callback: @escaping () -> Void)
+    typealias Callback = (() -> Void)
+    func applicationDidBecomeActive(callback: @escaping Callback)
+    func applicationDidEnterBackground(callback: @escaping Callback)
 }
 
 class ApplicationStateObserver: ApplicationStateObserving {
-    typealias Callback = (() -> Void)?
-    private var applicationDidBecomeActiveCallback: Callback
+    private var applicationDidBecomeActiveCallback: Callback?
     private var applicationDidBecomeActiveObserver: NSObjectProtocol?
-    private var applicationDidEnterBackgroundCallback: Callback
+    private var applicationDidEnterBackgroundCallback: Callback?
     private var applicationDidEnterBackgroundObserver: NSObjectProtocol?
 
     init() {
@@ -28,11 +28,11 @@ class ApplicationStateObserver: ApplicationStateObserving {
         }
     }
 
-    func applicationDidBecomeActive(callback: @escaping () -> Void) {
+    func applicationDidBecomeActive(callback: @escaping Callback) {
         applicationDidBecomeActiveCallback = callback
     }
 
-    func applicationDidEnterBackground(callback: @escaping () -> Void) {
+    func applicationDidEnterBackground(callback: @escaping Callback) {
         applicationDidEnterBackgroundCallback = callback
     }
 

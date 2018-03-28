@@ -2,7 +2,6 @@ import FirebaseDatabase
 import MessageKit
 
 protocol MessagesObserving: ReferenceObserving {
-    init(querySize: UInt)
     func observe(convoKey: String, completion: @escaping ([Message]) -> Void)
     func loadMessages(endingAtMessageId id: String, completion: @escaping ([Message]) -> Void)
 }
@@ -10,18 +9,13 @@ protocol MessagesObserving: ReferenceObserving {
 class MessagesObserver: MessagesObserving {
     private (set) var handle: DatabaseHandle?
     private (set) var ref: DatabaseReference?
-    private let querySize: UInt
     private var loading = true
-
-    required init(querySize: UInt = DatabaseOption.querySize) {
-        self.querySize = querySize
-    }
 
     func observe(convoKey: String, completion: @escaping ([Message]) -> Void) {
         stopObserving()
         ref = try? Shared.firebaseHelper.makeReference(Child.messages, convoKey)
         handle = ref?
-            .queryLimited(toLast: querySize)
+            .queryLimited(toLast: DatabaseOption.querySize)
             .queryOrdered(byChild: Child.timestamp)
             .observe(.value) { [weak self] data in
                 self?.loading = true
@@ -37,7 +31,7 @@ class MessagesObserver: MessagesObserving {
         }
         loading = true
         ref?.queryEnding(atValue: id)
-            .queryLimited(toLast: querySize)
+            .queryLimited(toLast: DatabaseOption.querySize)
             .queryOrderedByKey()
             .observeSingleEvent(of: .value) { [weak self] data in
                 var messages = data.asMessagesArray

@@ -25,7 +25,7 @@ class ProxyViewController: UIViewController, NewMessageMakerDelegate {
          convosObserver: ConvosObsering = ConvosObserver(),
          database: Database = Shared.database,
          proxyObserver: ProxyObsering = ProxyObserver(),
-         tableViewRefresher: TableViewRefreshing = TableViewRefresher(timeInterval: Constant.tableViewRefreshRate),
+         tableViewRefresher: TableViewRefreshing = TableViewRefresher(),
          proxy: Proxy) {
         self.buttonAnimator = buttonAnimator
         self.convosObserver = convosObserver
@@ -53,7 +53,7 @@ class ProxyViewController: UIViewController, NewMessageMakerDelegate {
 
         navigationItem.rightBarButtonItems = [makeNewMessageButton, deleteProxyButton]
 
-        proxyObserver.observe(proxyKey: proxy.key, proxyOwnerId: proxy.ownerId) { [weak self] proxy in
+        proxyObserver.observe(proxyOwnerId: proxy.ownerId, proxyKey: proxy.key) { [weak self] proxy in
             self?.proxy = proxy
         }
 

@@ -1,7 +1,6 @@
 import FirebaseDatabase
 
 protocol ConvosObsering: ReferenceObserving {
-    init(querySize: UInt)
     func observe(convosOwnerId: String, proxyKey: String?, completion: @escaping ([Convo]) -> Void)
     func loadConvos(endingAtTimestamp timestamp: Double,
                     proxyKey: String?,
@@ -11,18 +10,13 @@ protocol ConvosObsering: ReferenceObserving {
 class ConvosObserver: ConvosObsering {
     private (set) var handle: DatabaseHandle?
     private (set) var ref: DatabaseReference?
-    private let querySize: UInt
     private var loading = true
-
-    required init(querySize: UInt = DatabaseOption.querySize) {
-        self.querySize = querySize
-    }
 
     func observe(convosOwnerId: String, proxyKey: String?, completion: @escaping ([Convo]) -> Void) {
         stopObserving()
         ref = try? Shared.firebaseHelper.makeReference(Child.convos, convosOwnerId)
         handle = ref?
-            .queryLimited(toLast: querySize)
+            .queryLimited(toLast: DatabaseOption.querySize)
             .queryOrdered(byChild: Child.timestamp)
             .observe(.value) { [weak self] data in
                 self?.loading = true
@@ -40,7 +34,7 @@ class ConvosObserver: ConvosObsering {
         }
         loading = true
         ref?.queryEnding(atValue: timestamp)
-            .queryLimited(toLast: querySize)
+            .queryLimited(toLast: DatabaseOption.querySize)
             .queryOrdered(byChild: Child.timestamp)
             .observeSingleEvent(of: .value) { [weak self] data in
                 var convos = data.asConvosArray(proxyKey: proxyKey)

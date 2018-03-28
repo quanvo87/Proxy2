@@ -6,22 +6,14 @@ protocol ProxyKeysLoading {
 }
 
 class ProxyKeysLoader: ProxyKeysLoading {
-    private let querySize: UInt
     private let ref = try? Shared.firebaseHelper.makeReference(Child.proxyKeys)
     private var pendingWorkItem: DispatchWorkItem?
-
-    init(querySize: UInt = DatabaseOption.querySize) {
-        self.querySize = querySize
-    }
 
     func load(query: String, senderId: String, completion: @escaping ([SearchTextFieldItem]) -> Void) {
         pendingWorkItem?.cancel()
         let workItem = DispatchWorkItem { [weak self] in
-            guard let _self = self else {
-                return
-            }
             self?.ref?
-                .queryLimited(toFirst: _self.querySize)
+                .queryLimited(toFirst: DatabaseOption.querySize)
                 .queryOrderedByKey()
                 .queryStarting(atValue: query)
                 .observeSingleEvent(of: .value) { data in
