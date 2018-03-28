@@ -105,6 +105,8 @@ enum Child {
     static let receiverDeletedProxy = "receiverDeletedProxy"
     static let receiverProxyKey = "receiverProxyKey"
     static let registrationTokens = "registrationTokens"
+    static let settings = "settings"
+    static let stats = "stats"
     static let timestamp = "timestamp"
     static let unreadMessages = "unreadMessages"
     static let users = "users"
@@ -158,6 +160,11 @@ enum DeviceInfo {
         case none
     }
 
+    enum Size {
+        case small
+        case notSmall
+    }
+
     static let feedbackType: FeedbackType = {
         switch Device.version() {
         case .iPhoneX, .iPhone8Plus, .iPhone8, .iPhone7Plus, .iPhone7:
@@ -169,12 +176,12 @@ enum DeviceInfo {
         }
     }()
 
-    static let isSmallDevice: Bool = {
+    static let size: Size = {
         switch Device.size() {
         case .screen3_5Inch, .screen4Inch:
-            return true
+            return .small
         default:
-            return false
+            return .notSmall
         }
     }()
 }

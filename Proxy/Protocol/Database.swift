@@ -3,7 +3,6 @@ import GroupWork
 import MessageKit
 import WQNetworkActivityIndicator
 
-// todo: move to stats
 enum IncrementableUserProperty {
     case messagesReceived(Int)
     case messagesSent(Int)
@@ -27,7 +26,6 @@ enum IncrementableUserProperty {
     }
 }
 
-// todo: move soundOn to settings
 enum SettableUserProperty {
     case contact(String)
     case registrationToken(String)
@@ -100,8 +98,8 @@ class Firebase: Database {
             path += [Child.contacts, contactUid]
         case .registrationToken(let registrationToken):
             path += [Child.registrationTokens, registrationToken]
-        default:
-            path += [userProperty.properties.name]
+        case .soundOn:
+            path += [Child.settings, SettableUserProperty.Name.soundOn.rawValue]
         }
         return path
     }

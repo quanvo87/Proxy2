@@ -1,6 +1,5 @@
 import UIKit
 
-// todo: make font smaller for smaller devices
 class ProxyViewController: UIViewController, NewMessageMakerDelegate {
     var newConvo: Convo?
     private let buttonAnimator: ButtonAnimating
@@ -149,10 +148,7 @@ extension ProxyViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.section {
         case 0:
-            guard let proxy = proxy else {
-                return SenderProxyTableViewCell()
-            }
-            guard let cell = tableView.dequeueReusableCell(
+            guard let proxy = proxy, let cell = tableView.dequeueReusableCell(
                 withIdentifier: String(describing: SenderProxyTableViewCell.self)
                 ) as? SenderProxyTableViewCell else {
                     return SenderProxyTableViewCell()

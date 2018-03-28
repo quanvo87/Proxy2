@@ -24,6 +24,7 @@ class UserStatsObserver: UserStatsObserving {
         messagesReceivedRef = try? Shared.firebaseHelper.makeReference(
             Child.users,
             uid,
+            Child.stats,
             IncrementableUserProperty.Name.messagesReceived.rawValue
         )
         messagesReceivedHandle = messagesReceivedRef?.observe(.value) { data in
@@ -32,6 +33,7 @@ class UserStatsObserver: UserStatsObserving {
         messagesSentRef = try? Shared.firebaseHelper.makeReference(
             Child.users,
             uid,
+            Child.stats,
             IncrementableUserProperty.Name.messagesSent.rawValue
         )
         messagesSentHandle = messagesSentRef?.observe(.value) { data in
@@ -40,6 +42,7 @@ class UserStatsObserver: UserStatsObserving {
         proxiesInteractedWithRef = try? Shared.firebaseHelper.makeReference(
             Child.users,
             uid,
+            Child.stats,
             IncrementableUserProperty.Name.proxiesInteractedWith.rawValue
         )
         proxiesInteractedWithHandle = proxiesInteractedWithRef?.observe(.value) { data in

@@ -10,5 +10,8 @@ class SenderProxyTableViewCell: UITableViewCell {
         iconImageView.image = UIImage(named: proxy.icon)
         nameLabel.text = proxy.name
         nicknameButton.setTitle(proxy.nickname == "" ? "Enter A Nickname" : proxy.nickname, for: .normal)
+        if DeviceInfo.size == .small {
+            nicknameButton.titleLabel?.font = UIFont.systemFont(ofSize: 20)
+        }
     }
 }

@@ -212,7 +212,6 @@ extension FirebaseTests {
 
         let registrationToken = "registrationToken"
         let userProperty = SettableUserProperty.registrationToken(registrationToken)
-
         Shared.database.set(userProperty, for: FirebaseTests.uid) { error in
             XCTAssertNil(error, String(describing: error))
             Shared.database.delete(userProperty, for: FirebaseTests.uid) { error in
@@ -820,7 +819,7 @@ extension GroupWork {
                function: String = #function,
                line: Int = #line) {
         start()
-        Shared.firebaseHelper.get(Child.users, uid, property.properties.name) { result in
+        Shared.firebaseHelper.get(Child.users, uid, Child.stats, property.properties.name) { result in
             switch result {
             case .failure(let error):
                 XCTFail(String(describing: error))
