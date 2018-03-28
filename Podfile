@@ -2,7 +2,8 @@ platform :ios, '11.0'
 
 inhibit_all_warnings!
 
-def pods
+target 'Proxy' do
+    use_frameworks!
     pod 'CFAlertViewController', '~> 3.0'
     pod 'Device', '~> 3.0'
     pod 'DynamicColor', '~> 4.0'
@@ -30,13 +31,8 @@ def pods
     pod 'SwiftyButton', '~> 0.8'
     pod 'FontAwesome.swift', '~> 1.3'
     pod 'WQNetworkActivityIndicator', '~> 0.1'
-end
-target 'Proxy' do
-    use_frameworks!
-    pods
     target 'ProxyTests' do
         inherit! :search_paths
-        pods
     end
     target 'ProxyUITests' do
         inherit! :search_paths
