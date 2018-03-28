@@ -134,7 +134,7 @@ enum Constant {
             name: "Terms & Conditions",
             url: Foundation.URL(string: "https://www.websitepolicies.com/policies/view/VxVOCd")!
         )
-        static let testDatabase = "https://proxy-test-f90c4-9c8ea.firebaseio.com/"
+        static let testDatabase = "https://proxy-fe133-f1159.firebaseio.com/"
     }
     // swiftlint:enable line_length
     static let convoDetailSenderProxyTableViewCell = "ConvoDetailSenderProxyTableViewCell"
