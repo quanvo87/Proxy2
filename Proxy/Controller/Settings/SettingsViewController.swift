@@ -37,8 +37,8 @@ class SettingsViewController: UIViewController {
         tableView.delegate = self
         tableView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
         tableView.register(
-            UINib(nibName: String(describing: SettingsTableViewCell.self), bundle: nil),
-            forCellReuseIdentifier: String(describing: SettingsTableViewCell.self)
+            UINib(nibName: String(describing: BasicTableViewCell.self), bundle: nil),
+            forCellReuseIdentifier: String(describing: BasicTableViewCell.self)
         )
         tableView.rowHeight = 44
 
@@ -69,14 +69,14 @@ class SettingsViewController: UIViewController {
 // MARK: - UITableViewDataSource
 extension SettingsViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 4
+        return 3
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(
-            withIdentifier: String(describing: SettingsTableViewCell.self)
-            ) as? SettingsTableViewCell else {
-                return SettingsTableViewCell()
+            withIdentifier: String(describing: BasicTableViewCell.self)
+            ) as? BasicTableViewCell else {
+                return BasicTableViewCell()
         }
         switch indexPath.section {
         case 0:
@@ -104,13 +104,21 @@ extension SettingsViewController: UITableViewDataSource {
                 break
             }
         case 1:
-            cell.accessoryView = soundSwitchManager.soundSwitch
-            cell.load(icon: "sound", title: "Sound")
-            cell.selectionStyle = .none
+            switch indexPath.row {
+            case 0:
+                cell.accessoryView = soundSwitchManager.soundSwitch
+                cell.load(icon: "sound", title: "Sound")
+                cell.selectionStyle = .none
+            case 1:
+                cell.accessoryType = .disclosureIndicator
+                cell.load(icon: "blockUser", title: "Blocked Users")
+            case 2:
+                cell.accessoryType = .disclosureIndicator
+                cell.load(icon: "info", title: "About")
+            default:
+                break
+            }
         case 2:
-            cell.accessoryType = .disclosureIndicator
-            cell.load(icon: "info", title: "About")
-        case 3:
             cell.load(icon: "logout", title: "Log Out")
         default:
             break
@@ -123,10 +131,8 @@ extension SettingsViewController: UITableViewDataSource {
         case 0:
             return 3
         case 1:
-            return 1
+            return 3
         case 2:
-            return 1
-        case 3:
             return 1
         default:
             return 0
@@ -139,14 +145,22 @@ extension SettingsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         switch indexPath.section {
-        case 2:
-            guard let aboutViewController = Shared.storyboard.instantiateViewController(
-                withIdentifier: String(describing: AboutViewController.self)
-                ) as? AboutViewController else {
-                    return
+        case 1:
+            switch indexPath.row {
+            case 1:
+                let blockedUsersViewController = BlockedUsersViewController(uid: uid)
+                navigationController?.pushViewController(blockedUsersViewController, animated: true)
+            case 2:
+                guard let aboutViewController = Shared.storyboard.instantiateViewController(
+                    withIdentifier: String(describing: AboutViewController.self)
+                    ) as? AboutViewController else {
+                        return
+                }
+                navigationController?.pushViewController(aboutViewController, animated: true)
+            default:
+                return
             }
-            navigationController?.pushViewController(aboutViewController, animated: true)
-        case 3:
+        case 2:
             let alert = Alert.make(
                 title: "Log Out",
                 message: "Are you sure you want to log out?"
@@ -164,8 +178,7 @@ extension SettingsViewController: UITableViewDelegate {
             alert.addAction(Alert.makeCancelAction())
             present(alert, animated: true)
         default:
-            break
+            return
         }
-        return
     }
 }

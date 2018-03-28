@@ -9,23 +9,22 @@ class ConvoDetailViewController: UIViewController {
     private var proxy: Proxy?
     private var shouldClose = false
 
-    init(convo: Convo,
-         convoObserver: ConvoObserving = ConvoObserver(),
+    init(convoObserver: ConvoObserving = ConvoObserver(),
          database: Database = Shared.database,
-         proxyObserver: ProxyObsering = ProxyObserver()) {
-        self.convo = convo
+         proxyObserver: ProxyObsering = ProxyObserver(),
+         convo: Convo) {
         self.convoObserver = convoObserver
         self.database = database
         self.proxyObserver = proxyObserver
+        self.convo = convo
 
         super.init(nibName: nil, bundle: nil)
-
-        let activityIndicatorView = UIActivityIndicatorView(view)
 
         convoObserver.observe(convoKey: convo.key, convoSenderId: convo.senderId) { [weak self] convo in
             self?.convo = convo
         }
 
+        let activityIndicatorView = UIActivityIndicatorView(view)
         proxyObserver.observe(proxyKey: convo.senderProxyKey, proxyOwnerId: convo.senderId) { [weak self] proxy in
             activityIndicatorView.removeFromSuperview()
             self?.proxy = proxy
@@ -40,6 +39,10 @@ class ConvoDetailViewController: UIViewController {
         tableView.delegate = self
         tableView.delaysContentTouches = false
         tableView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
+        tableView.register(
+            UINib(nibName: String(describing: BasicTableViewCell.self), bundle: nil),
+            forCellReuseIdentifier: String(describing: BasicTableViewCell.self)
+        )
         tableView.register(
             UINib(nibName: String(describing: ConvoDetailReceiverProxyTableViewCell.self), bundle: nil),
             forCellReuseIdentifier: String(describing: ConvoDetailReceiverProxyTableViewCell.self)
@@ -86,10 +89,7 @@ extension ConvoDetailViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.section {
         case 0:
-            guard let convo = convo else {
-                return ConvoDetailReceiverProxyTableViewCell()
-            }
-            guard let cell = tableView.dequeueReusableCell(
+            guard let convo = convo, let cell = tableView.dequeueReusableCell(
                 withIdentifier: String(describing: ConvoDetailReceiverProxyTableViewCell.self)
                 ) as? ConvoDetailReceiverProxyTableViewCell else {
                     return ConvoDetailReceiverProxyTableViewCell()
@@ -98,10 +98,7 @@ extension ConvoDetailViewController: UITableViewDataSource {
             cell.nicknameButton.addTarget(self, action: #selector(showEditReceiverNicknameAlert), for: .touchUpInside)
             return cell
         case 1:
-            guard let proxy = proxy else {
-                return SenderProxyTableViewCell()
-            }
-            guard let cell = tableView.dequeueReusableCell(
+            guard let proxy = proxy, let cell = tableView.dequeueReusableCell(
                 withIdentifier: Constant.convoDetailSenderProxyTableViewCell
                 ) as? SenderProxyTableViewCell else {
                     return SenderProxyTableViewCell()
@@ -112,16 +109,23 @@ extension ConvoDetailViewController: UITableViewDataSource {
             cell.nicknameButton.addTarget(self, action: #selector(showEditSenderNicknameAlert), for: .touchUpInside)
             return cell
         case 2:
-            let cell = UITableViewCell()
+            guard let convo = convo, let cell = tableView.dequeueReusableCell(
+                withIdentifier: String(describing: BasicTableViewCell.self)
+                ) as? BasicTableViewCell else {
+                    return BasicTableViewCell()
+            }
             switch indexPath.row {
             case 0:
-                cell.textLabel?.font = .systemFont(ofSize: 17, weight: UIFont.Weight.regular)
-                cell.textLabel?.text = "Delete Proxy"
-                cell.textLabel?.textColor = .red
-                return cell
+                cell.load(icon: "blockUser")
+                cell.titleLabel.text = convo.receiverIsBlocked ? "Unblock User" : "Block User"
+                cell.titleLabel.textColor = convo.receiverIsBlocked ? .black : .red
+            case 1:
+                cell.load(icon: "delete", title: "Delete Proxy")
+                cell.titleLabel.textColor = .red
             default:
                 break
             }
+            return cell
         default:
             break
         }
@@ -130,14 +134,10 @@ extension ConvoDetailViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
-        case 0:
-            return 1
-        case 1:
-            return 1
         case 2:
-            return 1
+            return 2
         default:
-            return 0
+            return 1
         }
     }
 
@@ -193,7 +193,7 @@ extension ConvoDetailViewController: UITableViewDataSource {
 extension ConvoDetailViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        guard let proxy = proxy else {
+        guard let convo = convo, let proxy = proxy else {
             return
         }
         switch indexPath.section {
@@ -202,6 +202,41 @@ extension ConvoDetailViewController: UITableViewDelegate {
         case 2:
             switch indexPath.row {
             case 0:
+                if convo.receiverIsBlocked {
+                    let blockedUser = BlockedUser(convo: convo)
+                    database.unblock(blockedUser) { error in
+                        if let error = error {
+                            StatusBar.showErrorStatusBarBanner(error)
+                        } else {
+                            StatusBar.showSuccessStatusBarBanner(
+                                "The owner for \(convo.receiverProxyName) has been unblocked."
+                            )
+                        }
+                    }
+                } else {
+                    let alert = Alert.make(
+                        title: "Block User?",
+                        message: "They will not be able to message you."
+                    )
+                    alert.addAction(Alert.makeDestructiveAction(title: "Block") { [weak self] _ in
+                        guard let convo = self?.convo else {
+                            return
+                        }
+                        let blockedUser = BlockedUser(convo: convo)
+                        self?.database.block(blockedUser) { error in
+                            if let error = error {
+                                StatusBar.showErrorStatusBarBanner(error)
+                            } else {
+                                StatusBar.showSuccessStatusBarBanner(
+                                    "The owner for \(convo.receiverProxyName) has been blocked."
+                                )
+                            }
+                        }
+                    })
+                    alert.addAction(Alert.makeCancelAction())
+                    present(alert, animated: true)
+                }
+            case 1:
                 let alert = Alert.make(
                     title: Alert.deleteProxyMessage.title,
                     message: Alert.deleteProxyMessage.message

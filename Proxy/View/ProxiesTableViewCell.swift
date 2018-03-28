@@ -8,15 +8,10 @@ class ProxiesTableViewCell: UITableViewCell {
 
     func load(proxy: Proxy, accessoryType: UITableViewCellAccessoryType) {
         self.accessoryType = accessoryType
-        iconImageView.image = nil
         iconImageView.image = UIImage(named: proxy.icon)
         nameLabel.text = proxy.name
         nicknameLabel.text = proxy.nickname
-        unreadMessagesIndicatorImageView.image = nil
-        if proxy.hasUnreadMessage {
-            unreadMessagesIndicatorImageView.image = Image.makeCircle(
-                diameter: unreadMessagesIndicatorImageView.frame.width
-            )
-        }
+        unreadMessagesIndicatorImageView.image = proxy.hasUnreadMessage ?
+            Image.makeCircle(diameter: unreadMessagesIndicatorImageView.frame.width) : nil
     }
 }

@@ -68,6 +68,15 @@ extension DataSnapshot {
         }
     }
 
+    var asBlockedUsersArray: [BlockedUser] {
+        return children.flatMap {
+            guard let data = $0 as? DataSnapshot, let blockedUser = try? BlockedUser(data) else {
+                return nil
+            }
+            return blockedUser
+        }
+    }
+
     func asConvosArray(proxyKey: String?) -> [Convo] {
         return children.flatMap {
             guard let data = $0 as? DataSnapshot, let convo = try? Convo(data) else {

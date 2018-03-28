@@ -1,8 +1,8 @@
 ![logo](/logo.png)
 
-- [x] Create unlimited, anonymous identities (Proxy's) with just one tap
-- [x] Use your Proxy to chat with any other Proxy
-- [x] Delete your Proxy when you're done
+- [x] Create unlimited, anonymous identities (Proxies) with just one tap
+- [x] Use your Proxies to chat with any other Proxy
+- [x] Delete a Proxy when you're done with it. It can no longer be contacted!
 - [x] Never share your real contact info with strangers again
 
 #### Development
@@ -19,9 +19,10 @@
   - Twitter-like animated launch screen with [RevealingSplashView](https://github.com/PiXeL16/RevealingSplashView)
   - Onboarding with [paper-onboarding](https://github.com/Ramotion/paper-onboarding)
   - Chat UI built on [MessageKit](https://cocoapods.org/pods/MessageKit)
-  - Implemented an efficient [SearchTextField](https://github.com/apasccon/SearchTextField) that makes it fast, easy, and intuitive to pick the recipient of your message
+  - Implemented an efficient [SearchTextField](https://github.com/apasccon/SearchTextField) that makes it fast, easy, and intuitive to search and select the recipient of your message
   - Expressive and responsive UI:
     - Wrote [WQNetworkActivityIndicator](https://github.com/quanvo87/WQNetworkActivityIndicator) to manage network activity indicator
+    - Display loading indicator for network requests
     - Animate button taps with [Spring](https://cocoapods.org/pods/Spring)
     - Success/error notifications with [NotificationBannerSwift](https://github.com/Daltron/NotificationBanner) and [SwiftMessages](https://github.com/SwiftKickMobile/SwiftMessages)
     - Sound and haptics

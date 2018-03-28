@@ -6,6 +6,7 @@ enum ProxyError: LocalizedError {
     case inputTooLong
     case missingCredentials
     case receiverDeletedProxy
+    case receiverIsBlocking
     case receiverMissing
     case receiverNotFound
     case senderMissing
@@ -24,6 +25,8 @@ enum ProxyError: LocalizedError {
             return "Invalid email/password."
         case .receiverDeletedProxy:
             return "The receiver no longer exists."
+        case .receiverIsBlocking:
+            return "The receiver is blocking messages at this time."
         case .receiverMissing:
             return "Pick a receiver for the message."
         case .receiverNotFound:
