@@ -1,43 +1,65 @@
 import FirebaseDatabase
 
 struct BlockedUser {
+    let blockee: String
+    let blockeeProxyName: String
+    let blocker: String
+    let convoKey: String
     let dateBlocked: Double
-    let proxyName: String
-    let uid: String
 
     var asDictionary: Any {
         return [
-            "dateBlocked": dateBlocked,
-            "proxyName": proxyName,
-            "uid": uid
+            "blockee": blockee,
+            "blockeeProxyName": blockeeProxyName,
+            "blocker": blocker,
+            "convoKey": convoKey,
+            "dateBlocked": dateBlocked
         ]
     }
 
-    init(dateBlocked: Double = Date().timeIntervalSince1970,
-         proxyName: String,
-         uid: String) {
+    init(convo: Convo, dateBlocked: Double = Date().timeIntervalSince1970) {
+        self.blockee = convo.receiverId
+        self.blockeeProxyName = convo.receiverProxyName
+        self.blocker = convo.senderId
+        self.convoKey = convo.key
         self.dateBlocked = dateBlocked
-        self.proxyName = proxyName
-        self.uid = uid
+    }
+
+    init(blockee: String,
+         blockeeProxyName: String,
+         blocker: String,
+         convoKey: String,
+         dateBlocked: Double = Date().timeIntervalSince1970) {
+        self.blockee = blockee
+        self.blockeeProxyName = blockeeProxyName
+        self.blocker = blocker
+        self.convoKey = convoKey
+        self.dateBlocked = dateBlocked
     }
 
     init(_ data: DataSnapshot) throws {
         let dictionary = data.value as AnyObject
-        guard let dateBlocked = dictionary["dateBlocked"] as? Double,
-            let proxyName = dictionary["proxyName"] as? String,
-            let uid = dictionary["uid"] as? String else {
+        guard let blockee = dictionary["blockee"] as? String,
+            let blockeeProxyName = dictionary["blockeeProxyName"] as? String,
+            let blocker = dictionary["blocker"] as? String,
+            let convoKey = dictionary["convoKey"] as? String,
+            let dateBlocked = dictionary["dateBlocked"] as? Double else {
                 throw ProxyError.unknown
         }
+        self.blockee = blockee
+        self.blockeeProxyName = blockeeProxyName
+        self.blocker = blocker
+        self.convoKey = convoKey
         self.dateBlocked = dateBlocked
-        self.proxyName = proxyName
-        self.uid = uid
     }
 }
 
 extension BlockedUser: Equatable {
     static func == (_ lhs: BlockedUser, _ rhs: BlockedUser) -> Bool {
-        return lhs.dateBlocked.isWithinRangeOf(rhs.dateBlocked) &&
-            lhs.proxyName == rhs.proxyName &&
-            lhs.uid == rhs.uid
+        return lhs.blockee == rhs.blockee &&
+            lhs.blockeeProxyName == rhs.blockeeProxyName &&
+            lhs.blocker == rhs.blocker &&
+            lhs.convoKey == rhs.convoKey &&
+            lhs.dateBlocked.isWithinRangeOf(rhs.dateBlocked)
     }
 }

@@ -50,12 +50,21 @@
                             <constraint firstAttribute="height" constant="10" id="Mmx-zg-GmX"/>
                         </constraints>
                     </imageView>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="bdD-6t-5qk">
+                        <rect key="frame" x="0.0" y="0.0" width="25" height="25"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="25" id="1UC-yX-gl8"/>
+                            <constraint firstAttribute="height" constant="25" id="M7b-d4-mZJ"/>
+                        </constraints>
+                    </imageView>
                 </subviews>
                 <constraints>
                     <constraint firstItem="w2k-F5-bLY" firstAttribute="baseline" secondItem="AUb-Mi-txn" secondAttribute="baseline" id="1bp-tf-GGU"/>
                     <constraint firstItem="ARQ-Ic-t8U" firstAttribute="centerY" secondItem="fZw-eS-pyO" secondAttribute="centerY" id="H5A-Zo-wc6"/>
                     <constraint firstItem="AUb-Mi-txn" firstAttribute="top" secondItem="5WO-li-iEk" secondAttribute="top" id="MZM-1u-eX3"/>
                     <constraint firstItem="5WO-li-iEk" firstAttribute="centerY" secondItem="fZw-eS-pyO" secondAttribute="centerY" id="NW8-34-UOd"/>
+                    <constraint firstItem="bdD-6t-5qk" firstAttribute="leading" secondItem="fZw-eS-pyO" secondAttribute="leading" id="Nap-QE-NO8"/>
+                    <constraint firstItem="bdD-6t-5qk" firstAttribute="top" secondItem="fZw-eS-pyO" secondAttribute="top" id="PaO-Gz-qCH"/>
                     <constraint firstAttribute="trailingMargin" secondItem="w2k-F5-bLY" secondAttribute="trailing" id="T7f-Av-Rx9"/>
                     <constraint firstItem="5WO-li-iEk" firstAttribute="leading" secondItem="ARQ-Ic-t8U" secondAttribute="trailing" constant="5" id="VYz-FH-1t5"/>
                     <constraint firstItem="AUb-Mi-txn" firstAttribute="leading" secondItem="5WO-li-iEk" secondAttribute="trailing" constant="5" id="a0o-PZ-vFE"/>
@@ -67,6 +76,7 @@
                 </constraints>
             </tableViewCellContentView>
             <connections>
+                <outlet property="blockedIndicatorImageView" destination="bdD-6t-5qk" id="bd3-lO-4kh"/>
                 <outlet property="iconImageView" destination="5WO-li-iEk" id="9oA-bE-nQE"/>
                 <outlet property="lastMessageLabel" destination="z2m-eW-yEp" id="0Ud-er-InN"/>
                 <outlet property="timestampLabel" destination="w2k-F5-bLY" id="oLd-tY-wSd"/>

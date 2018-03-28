@@ -69,7 +69,7 @@ class SettingsViewController: UIViewController {
 // MARK: - UITableViewDataSource
 extension SettingsViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 5
+        return 3
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -104,16 +104,21 @@ extension SettingsViewController: UITableViewDataSource {
                 break
             }
         case 1:
-            cell.accessoryView = soundSwitchManager.soundSwitch
-            cell.load(icon: "sound", title: "Sound")
-            cell.selectionStyle = .none
+            switch indexPath.row {
+            case 0:
+                cell.accessoryView = soundSwitchManager.soundSwitch
+                cell.load(icon: "sound", title: "Sound")
+                cell.selectionStyle = .none
+            case 1:
+                cell.accessoryType = .disclosureIndicator
+                cell.load(icon: "blockUser", title: "Blocked Users")
+            case 2:
+                cell.accessoryType = .disclosureIndicator
+                cell.load(icon: "info", title: "About")
+            default:
+                break
+            }
         case 2:
-            cell.accessoryType = .disclosureIndicator
-            cell.load(icon: "blockUser", title: "Blocked Users")
-        case 3:
-            cell.accessoryType = .disclosureIndicator
-            cell.load(icon: "info", title: "About")
-        case 4:
             cell.load(icon: "logout", title: "Log Out")
         default:
             break
@@ -125,8 +130,12 @@ extension SettingsViewController: UITableViewDataSource {
         switch section {
         case 0:
             return 3
-        default:
+        case 1:
+            return 3
+        case 2:
             return 1
+        default:
+            return 0
         }
     }
 }
@@ -136,17 +145,22 @@ extension SettingsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         switch indexPath.section {
-        case 2:
-            let blockedUsersViewController = BlockedUsersViewController(uid: uid)
-            navigationController?.pushViewController(blockedUsersViewController, animated: true)
-        case 3:
-            guard let aboutViewController = Shared.storyboard.instantiateViewController(
-                withIdentifier: String(describing: AboutViewController.self)
-                ) as? AboutViewController else {
-                    return
+        case 1:
+            switch indexPath.row {
+            case 1:
+                let blockedUsersViewController = BlockedUsersViewController(uid: uid)
+                navigationController?.pushViewController(blockedUsersViewController, animated: true)
+            case 2:
+                guard let aboutViewController = Shared.storyboard.instantiateViewController(
+                    withIdentifier: String(describing: AboutViewController.self)
+                    ) as? AboutViewController else {
+                        return
+                }
+                navigationController?.pushViewController(aboutViewController, animated: true)
+            default:
+                return
             }
-            navigationController?.pushViewController(aboutViewController, animated: true)
-        case 4:
+        case 2:
             let alert = Alert.make(
                 title: "Log Out",
                 message: "Are you sure you want to log out?"
@@ -164,8 +178,7 @@ extension SettingsViewController: UITableViewDelegate {
             alert.addAction(Alert.makeCancelAction())
             present(alert, animated: true)
         default:
-            break
+            return
         }
-        return
     }
 }

@@ -6,6 +6,8 @@ enum SettableConvoProperty {
     case lastMessage(String)
     case receiverDeletedProxy(Bool)
     case receiverIcon(String)
+    case receiverIsBlocked(Bool)
+    case receiverIsBlocking(Bool)
     case receiverNickname(String)
     case senderIcon(String)
     case senderNickname(String)
@@ -21,6 +23,10 @@ enum SettableConvoProperty {
             return ("receiverDeletedProxy", value)
         case .receiverIcon(let value):
             return ("receiverIcon", value)
+        case .receiverIsBlocked(let value):
+            return ("receiverIsBlocked", value)
+        case .receiverIsBlocking(let value):
+            return ("receiverIsBlocking", value)
         case .receiverNickname(let value):
             return ("receiverNickname", value)
         case .senderIcon(let value):
@@ -40,6 +46,8 @@ struct Convo {
     let receiverDeletedProxy: Bool
     let receiverIcon: String
     let receiverId: String
+    let receiverIsBlocked: Bool
+    let receiverIsBlocking: Bool
     let receiverNickname: String
     let receiverProxyKey: String
     let receiverProxyName: String
@@ -58,6 +66,8 @@ struct Convo {
             "receiverDeletedProxy": receiverDeletedProxy,
             "receiverIcon": receiverIcon,
             "receiverId": receiverId,
+            "receiverIsBlocked": receiverIsBlocked,
+            "receiverIsBlocking": receiverIsBlocking,
             "receiverNickname": receiverNickname,
             "receiverProxyKey": receiverProxyKey,
             "receiverProxyName": receiverProxyName,
@@ -116,6 +126,8 @@ struct Convo {
          receiverDeletedProxy: Bool = false,
          receiverIcon: String = "",
          receiverId: String,
+         receiverIsBlocked: Bool = false,
+         receiverIsBlocking: Bool = false,
          receiverNickname: String = "",
          receiverProxyKey: String,
          receiverProxyName: String,
@@ -131,6 +143,8 @@ struct Convo {
         self.receiverDeletedProxy = receiverDeletedProxy
         self.receiverIcon = receiverIcon
         self.receiverId = receiverId
+        self.receiverIsBlocked = receiverIsBlocked
+        self.receiverIsBlocking = receiverIsBlocking
         self.receiverNickname = receiverNickname
         self.receiverProxyKey = receiverProxyKey
         self.receiverProxyName = receiverProxyName
@@ -150,6 +164,8 @@ struct Convo {
             let receiverDeletedProxy = dictionary["receiverDeletedProxy"] as? Bool,
             let receiverIcon = dictionary["receiverIcon"] as? String,
             let receiverId = dictionary["receiverId"] as? String,
+            let receiverIsBlocked = dictionary["receiverIsBlocked"] as? Bool,
+            let receiverIsBlocking = dictionary["receiverIsBlocking"] as? Bool,
             let receiverNickname = dictionary["receiverNickname"] as? String,
             let receiverProxyKey = dictionary["receiverProxyKey"] as? String,
             let receiverProxyName = dictionary["receiverProxyName"] as? String,
@@ -167,6 +183,8 @@ struct Convo {
         self.receiverDeletedProxy = receiverDeletedProxy
         self.receiverIcon = receiverIcon
         self.receiverId = receiverId
+        self.receiverIsBlocked = receiverIsBlocked
+        self.receiverIsBlocking = receiverIsBlocking
         self.receiverNickname = receiverNickname
         self.receiverProxyKey = receiverProxyKey
         self.receiverProxyName = receiverProxyName
@@ -187,6 +205,8 @@ extension Convo: Equatable {
             lhs.receiverDeletedProxy == rhs.receiverDeletedProxy &&
             lhs.receiverIcon == rhs.receiverIcon &&
             lhs.receiverId == rhs.receiverId &&
+            lhs.receiverIsBlocked == rhs.receiverIsBlocked &&
+            lhs.receiverIsBlocking == rhs.receiverIsBlocking &&
             lhs.receiverNickname == rhs.receiverNickname &&
             lhs.receiverProxyKey == rhs.receiverProxyKey &&
             lhs.receiverProxyName == rhs.receiverProxyName &&

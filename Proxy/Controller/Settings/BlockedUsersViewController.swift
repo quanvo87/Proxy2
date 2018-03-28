@@ -63,7 +63,7 @@ extension BlockedUsersViewController: UITableViewDataSource {
         let blockedUser = blockedUsers[indexPath.row]
         let cell = UITableViewCell()
         cell.selectionStyle = .none
-        cell.textLabel?.text = blockedUser.proxyName
+        cell.textLabel?.text = blockedUser.blockeeProxyName
         return cell
     }
 
@@ -90,11 +90,13 @@ extension BlockedUsersViewController: UITableViewDelegate {
                    forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             let blockedUser = blockedUsers[indexPath.row]
-            database.unblock(blockedUser, for: uid) { error in
+            database.unblock(blockedUser) { error in
                 if let error = error {
                     StatusBar.showErrorStatusBarBanner(error)
                 } else {
-                    StatusBar.showSuccessStatusBarBanner("The owner of \(blockedUser.proxyName) has been unblocked.")
+                    StatusBar.showSuccessStatusBarBanner(
+                        "The owner of \(blockedUser.blockeeProxyName) has been unblocked."
+                    )
                 }
             }
         }

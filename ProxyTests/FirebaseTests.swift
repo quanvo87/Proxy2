@@ -19,6 +19,9 @@ class FirebaseTests: XCTestCase {
         super.setUp()
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
+        guard Constant.isRunningTests else {
+            fatalError()
+        }
         Shared.testDatabaseReference.removeValue { error, _ in
             XCTAssertNil(error, String(describing: error))
             expectation.fulfill()
@@ -66,22 +69,17 @@ extension FirebaseTests {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        let blockedUser = BlockedUser(proxyName: "proxyName", uid: FirebaseTests.uid2)
-        Shared.database.block(blockedUser, for: FirebaseTests.uid) { error in
-            XCTAssertNil(error)
-            Shared.firebaseHelper.get(
-                Child.users,
-                FirebaseTests.uid,
-                Child.blockedUsers,
-                FirebaseTests.uid2) { result in
-                    switch result {
-                    case .failure(let error):
-                        XCTFail(String(describing: error))
-                        expectation.fulfill()
-                    case .success(let data):
-                        XCTAssertEqual(try? BlockedUser(data), blockedUser)
-                        expectation.fulfill()
-                    }
+        FirebaseTests.sendMessage { _, convo, _, _ in
+            let blockedUser = BlockedUser(convo: convo)
+            Shared.database.block(blockedUser) { error in
+                XCTAssertNil(error, String(describing: error))
+                let work = GroupWork()
+                work.checkBlockedUserSet(blockedUser)
+                work.check(.receiverIsBlocked(true), uid: blockedUser.blocker, convoKey: blockedUser.convoKey)
+                work.check(.receiverIsBlocking(true), uid: blockedUser.blockee, convoKey: blockedUser.convoKey)
+                work.allDone {
+                    expectation.fulfill()
+                }
             }
         }
     }
@@ -90,12 +88,22 @@ extension FirebaseTests {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        let blockedUser1 = BlockedUser(proxyName: "name1", uid: "uid1")
-        let blockedUser2 = BlockedUser(proxyName: "name2", uid: "uid2")
-        Shared.database.block(blockedUser1, for: FirebaseTests.uid) { error in
-            XCTAssertNil(error)
-            Shared.database.block(blockedUser2, for: FirebaseTests.uid) { error in
-                XCTAssertNil(error)
+        let blockedUser1 = BlockedUser(
+            blockee: "blockee1",
+            blockeeProxyName: "proxyName1",
+            blocker: FirebaseTests.uid,
+            convoKey: "convoKey1"
+        )
+        let blockedUser2 = BlockedUser(
+            blockee: "blockee2",
+            blockeeProxyName: "proxyName2",
+            blocker: FirebaseTests.uid,
+            convoKey: "convoKey2"
+        )
+        Shared.database.block(blockedUser1) { error in
+            XCTAssertNil(error, String(describing: error))
+            Shared.database.block(blockedUser2) { error in
+                XCTAssertNil(error, String(describing: error))
                 Shared.firebaseHelper.get(Child.users, FirebaseTests.uid, Child.blockedUsers) { result in
                     switch result {
                     case .failure(let error):
@@ -206,9 +214,9 @@ extension FirebaseTests {
         let userProperty = SettableUserProperty.registrationToken(registrationToken)
 
         Shared.database.set(userProperty, for: FirebaseTests.uid) { error in
-            XCTAssertNil(error)
+            XCTAssertNil(error, String(describing: error))
             Shared.database.delete(userProperty, for: FirebaseTests.uid) { error in
-                XCTAssertNil(error)
+                XCTAssertNil(error, String(describing: error))
                 let work = GroupWork()
                 work.checkDeleted(.registrationToken(registrationToken), for: FirebaseTests.uid)
                 work.allDone {
@@ -307,7 +315,7 @@ extension FirebaseTests {
         defer { waitForExpectations(timeout: 10) }
 
         Shared.database.set(.soundOn(true), for: FirebaseTests.uid) { error in
-            XCTAssertNil(error)
+            XCTAssertNil(error, String(describing: error))
             Shared.database.get(.soundOn(Bool()), for: FirebaseTests.uid) { result in
                 switch result {
                 case .failure(let error):
@@ -332,8 +340,8 @@ extension FirebaseTests {
                 expectation.fulfill()
             case .success(let proxy):
                 let work = GroupWork()
-                work.checkProxyCreated(proxy)
-                work.checkProxyKeyCreated(forProxy: proxy)
+                work.checkProxySet(proxy)
+                work.checkProxyKeySet(proxy)
                 work.allDone {
                     expectation.fulfill()
                 }
@@ -393,7 +401,7 @@ extension FirebaseTests {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        FirebaseTests.sendMessage { (message, convo, _, receiver) in
+        FirebaseTests.sendMessage { message, convo, _, receiver in
             Shared.database.sendMessage(convo: convo, text: FirebaseTests.text) { result in
                 switch result {
                 case .failure(let error):
@@ -423,16 +431,16 @@ extension FirebaseTests {
             // Check convo updates
             work.check(.proxiesInteractedWith(1), equals: 1, uid: receiver.ownerId)
             work.check(.proxiesInteractedWith(1), equals: 1, uid: sender.ownerId)
-            work.checkConvoCreated(convo, asSender: true)
-            work.checkConvoCreated(convo, asSender: false)
+            work.checkConvoSet(convo, asSender: true)
+            work.checkConvoSet(convo, asSender: false)
 
             // Check message updates
-            work.checkMessageCreated(message)
+            work.checkMessageSet(message)
 
             // Check receiver updates
             work.check(.contact(sender.ownerId), for: receiver.ownerId)
             work.check(.messagesReceived(1), equals: 1, uid: convo.receiverId)
-            work.checkUnreadMessageCreated(message)
+            work.checkUnreadMessageSet(message)
             work.check(.hasUnreadMessage(true), for: convo, asSender: false)
             work.check(.hasUnreadMessage(true), for: receiver)
             work.check(.timestamp(convo.timestamp), for: convo, asSender: false)
@@ -493,11 +501,42 @@ extension FirebaseTests {
         }
     }
 
+    func testSendMessageAfterReceiverIsBlocking() {
+        let expectation = self.expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
+
+        FirebaseTests.sendMessage { _, convo, sender, receiver in
+            let blockedUser = BlockedUser(
+                blockee: convo.senderId,
+                blockeeProxyName: convo.senderProxyName,
+                blocker: convo.receiverId,
+                convoKey: convo.key
+            )
+            Shared.database.block(blockedUser) { error in
+                XCTAssertNil(error, String(describing: error))
+                Shared.database.sendMessage(sender: sender, receiver: receiver, text: FirebaseTests.text) { result in
+                    switch result {
+                    case .failure(let error):
+                        if case ProxyError.receiverIsBlocking = error {
+                            expectation.fulfill()
+                        } else {
+                            XCTFail(String(describing: error))
+                            expectation.fulfill()
+                        }
+                    case .success:
+                        XCTFail()
+                        expectation.fulfill()
+                    }
+                }
+            }
+        }
+    }
+
     func testSendMessageWhileAlreadyChattingWithUser() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        FirebaseTests.sendMessage { (_, convo, _, _) in
+        FirebaseTests.sendMessage { _, convo, _, _ in
             Shared.database.sendMessage(convo: convo, text: FirebaseTests.text) { result in
                 switch result {
                 case .failure(let error):
@@ -514,7 +553,7 @@ extension FirebaseTests {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        FirebaseTests.sendMessage { (_, _, _, receiver) in
+        FirebaseTests.sendMessage { _, _, _, receiver in
             FirebaseTests.makeProxy { sender2 in
                 Shared.database.sendMessage(sender: sender2, receiver: receiver, text: FirebaseTests.text) { result in
                     switch result {
@@ -613,9 +652,9 @@ extension FirebaseTests {
         let registrationToken2 = "registrationToken2"
 
         Shared.database.set(.registrationToken(registrationToken1), for: FirebaseTests.uid) { error in
-            XCTAssertNil(error)
+            XCTAssertNil(error, String(describing: error))
             Shared.database.set(.registrationToken(registrationToken2), for: FirebaseTests.uid) { error in
-                XCTAssertNil(error)
+                XCTAssertNil(error, String(describing: error))
                 Shared.firebaseHelper.get(Child.users, FirebaseTests.uid, Child.registrationTokens) { result in
                     switch result {
                     case .failure(let error):
@@ -638,7 +677,7 @@ extension FirebaseTests {
         defer { waitForExpectations(timeout: 10) }
 
         Shared.database.set(.soundOn(true), for: FirebaseTests.uid) { error in
-            XCTAssertNil(error)
+            XCTAssertNil(error, String(describing: error))
             Shared.database.get(.soundOn(Bool()), for: FirebaseTests.uid) { result in
                 switch result {
                 case .failure(let error):
@@ -656,15 +695,19 @@ extension FirebaseTests {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        let blockedUser = BlockedUser(proxyName: "proxyName", uid: FirebaseTests.uid2)
-        Shared.database.block(blockedUser, for: FirebaseTests.uid) { error in
-            XCTAssertNil(error)
-            Shared.database.unblock(blockedUser, for: FirebaseTests.uid) { error in
-                XCTAssertNil(error)
-                let work = GroupWork()
-                work.checkDeleted(Child.users, FirebaseTests.uid, Child.blockedUsers, blockedUser.uid)
-                work.allDone {
-                    expectation.fulfill()
+        FirebaseTests.sendMessage { _, convo, _, _ in
+            let blockedUser = BlockedUser(convo: convo)
+            Shared.database.block(blockedUser) { error in
+                XCTAssertNil(error, String(describing: error))
+                Shared.database.unblock(blockedUser) { error in
+                    XCTAssertNil(error, String(describing: error))
+                    let work = GroupWork()
+                    work.check(.receiverIsBlocked(false), uid: blockedUser.blocker, convoKey: blockedUser.convoKey)
+                    work.check(.receiverIsBlocking(false), uid: blockedUser.blockee, convoKey: blockedUser.convoKey)
+                    work.checkDeleted(Child.users, blockedUser.blocker, Child.blockedUsers, blockedUser.blockee)
+                    work.allDone {
+                        expectation.fulfill()
+                    }
                 }
             }
         }
@@ -837,7 +880,20 @@ extension GroupWork {
         }
     }
 
-    func checkConvoCreated(_ convo: Convo, asSender: Bool) {
+    func checkBlockedUserSet(_ blockedUser: BlockedUser) {
+        start()
+        Shared.firebaseHelper.get(Child.users, blockedUser.blocker, Child.blockedUsers, blockedUser.blockee) { result in
+            switch result {
+            case .failure(let error):
+                XCTFail(String(describing: error))
+            case .success(let data):
+                XCTAssertEqual(try? BlockedUser(data), blockedUser)
+            }
+            self.finish(withResult: true)
+        }
+    }
+
+    func checkConvoSet(_ convo: Convo, asSender: Bool) {
         let (uid, _) = GroupWork.getOwnerIdAndProxyKey(convo: convo, asSender: asSender)
         start()
         Shared.firebaseHelper.get(Child.convos, uid, convo.key) { result in
@@ -851,7 +907,7 @@ extension GroupWork {
         }
     }
 
-    func checkMessageCreated(_ message: Message) {
+    func checkMessageSet(_ message: Message) {
         start()
         Shared.firebaseHelper.get(Child.messages, message.parentConvoKey, message.messageId) { result in
             switch result {
@@ -864,7 +920,7 @@ extension GroupWork {
         }
     }
 
-    func checkProxyCreated(_ proxy: Proxy) {
+    func checkProxySet(_ proxy: Proxy) {
         start()
         Shared.firebaseHelper.get(Child.proxies, FirebaseTests.uid, proxy.key) { result in
             switch result {
@@ -877,7 +933,7 @@ extension GroupWork {
         }
     }
 
-    func checkProxyKeyCreated(forProxy proxy: Proxy) {
+    func checkProxyKeySet(_ proxy: Proxy) {
         start()
         Shared.firebaseHelper.get(Child.proxyKeys, proxy.key) { result in
             let testProxy = Proxy(icon: proxy.icon, name: proxy.name, ownerId: proxy.ownerId)
@@ -891,7 +947,7 @@ extension GroupWork {
         }
     }
 
-    func checkUnreadMessageCreated(_ message: Message) {
+    func checkUnreadMessageSet(_ message: Message) {
         start()
         Shared.firebaseHelper.get(
             Child.users,

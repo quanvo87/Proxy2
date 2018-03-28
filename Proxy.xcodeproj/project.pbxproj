@@ -13,7 +13,6 @@
 		590441EB1F98351E0015CE16 /* ConvosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 590441EA1F98351E0015CE16 /* ConvosViewController.swift */; };
 		590823C31F9EED6A00A3B6A9 /* IconPickerCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 590823C21F9EED6A00A3B6A9 /* IconPickerCollectionViewCell.xib */; };
 		590823C51F9EF6DA00A3B6A9 /* ProxyPropertyGenerating.swift in Sources */ = {isa = PBXBuildFile; fileRef = 590823C41F9EF6DA00A3B6A9 /* ProxyPropertyGenerating.swift */; };
-		592AF4F2206A905F006950B4 /* BlockedUserObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592AF4F1206A905F006950B4 /* BlockedUserObserving.swift */; };
 		5932BA18200963AC0041BD7B /* ConvoObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5932BA17200963AC0041BD7B /* ConvoObserving.swift */; };
 		5932BA1A20096FD60041BD7B /* ConvosObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5932BA1920096FD60041BD7B /* ConvosObserving.swift */; };
 		5932BA1E2009837D0041BD7B /* MessagesObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5932BA1D2009837D0041BD7B /* MessagesObserving.swift */; };
@@ -116,7 +115,6 @@
 		590823C21F9EED6A00A3B6A9 /* IconPickerCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IconPickerCollectionViewCell.xib; sourceTree = "<group>"; };
 		590823C41F9EF6DA00A3B6A9 /* ProxyPropertyGenerating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyPropertyGenerating.swift; sourceTree = "<group>"; };
 		59172E492048CCBE002672CA /* Proxy.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Proxy.entitlements; sourceTree = "<group>"; };
-		592AF4F1206A905F006950B4 /* BlockedUserObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedUserObserving.swift; sourceTree = "<group>"; };
 		5932BA17200963AC0041BD7B /* ConvoObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoObserving.swift; sourceTree = "<group>"; };
 		5932BA1920096FD60041BD7B /* ConvosObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvosObserving.swift; sourceTree = "<group>"; };
 		5932BA1D2009837D0041BD7B /* MessagesObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesObserving.swift; sourceTree = "<group>"; };
@@ -287,7 +285,6 @@
 				59BF62ED20629DBE00DBD722 /* ApplicationStateObserving.swift */,
 				595CC10E205F6F8A0019589D /* AudioPlaying.swift */,
 				59FF373C1F97984200FA1AF0 /* AuthObserving.swift */,
-				592AF4F1206A905F006950B4 /* BlockedUserObserving.swift */,
 				59FE349D2069EA0A0024BB5D /* BlockedUsersObserving.swift */,
 				593C938C205494D600931F2B /* ButtonAnimating.swift */,
 				5932BA17200963AC0041BD7B /* ConvoObserving.swift */,
@@ -944,7 +941,6 @@
 				5973C86C1F608A2200647492 /* LoginManaging.swift in Sources */,
 				59B90C211FF3411E00449569 /* UnreadMessagesObserving.swift in Sources */,
 				599885002063EA0500D2BD50 /* Constant.swift in Sources */,
-				592AF4F2206A905F006950B4 /* BlockedUserObserving.swift in Sources */,
 				5973C8761F608A2200647492 /* SettingsViewController.swift in Sources */,
 				59BF62EE20629DBE00DBD722 /* ApplicationStateObserving.swift in Sources */,
 				59FE349C2069D88A0024BB5D /* BlockedUser.swift in Sources */,
