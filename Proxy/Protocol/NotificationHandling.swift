@@ -6,24 +6,14 @@ protocol NotificationHandling {
 }
 
 class NotificationHandler: NotificationHandling {
-    private let convoPresenceObserver: ConvoPresenceObserving
-    private let database: Database
-    private let incomingMessageAudioPlayer: AudioPlaying
-
-    init(convoPresenceObserver: ConvoPresenceObserving = ConvoPresenceObserver(),
-         database: Database = Shared.database,
-         incomingMessageAudioPlayer: AudioPlaying = Audio.incomingMessageAudioPlayer) {
-        self.convoPresenceObserver = convoPresenceObserver
-        self.database = database
-        self.incomingMessageAudioPlayer = incomingMessageAudioPlayer
-    }
+    private let convoPresenceObserver = ConvoPresenceObserver()
 
     func sendShouldShowConvoNotification(uid: String, userInfo: [AnyHashable: Any], completion: @escaping () -> Void) {
         guard let convoKey = userInfo.parentConvoKey, convoKey != convoPresenceObserver.currentConvoKey else {
             completion()
             return
         }
-        database.getConvo(convoKey: convoKey, ownerId: uid) { result in
+        Shared.database.getConvo(ownerId: uid, convoKey: convoKey) { result in
             switch result {
             case .failure(let error):
                 StatusBar.showErrorStatusBarBanner(error)
@@ -47,12 +37,12 @@ class NotificationHandler: NotificationHandling {
             completion()
             return
         }
-        database.getConvo(convoKey: convoKey, ownerId: uid) { [weak self] result in
+        Shared.database.getConvo(ownerId: uid, convoKey: convoKey) { result in
             switch result {
             case .failure(let error):
                 StatusBar.showErrorStatusBarBanner(error)
             case .success(let convo):
-                self?.incomingMessageAudioPlayer.play()
+                Audio.incomingMessageAudioPlayer.play()
                 StatusBar.showNewMessageBanner(convo)
             }
             completion()

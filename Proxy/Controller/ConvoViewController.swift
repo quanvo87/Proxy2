@@ -45,7 +45,7 @@ class ConvoViewController: MessagesViewController {
             self?.shouldPlaySounds = false
         }
 
-        convoObserver.observe(convoKey: convo.key, convoSenderId: convo.senderId) { [weak self] convo in
+        convoObserver.observe(convoSenderId: convo.senderId, convoKey: convo.key) { [weak self] convo in
             self?.convo = convo
         }
 

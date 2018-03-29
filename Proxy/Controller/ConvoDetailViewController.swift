@@ -20,12 +20,12 @@ class ConvoDetailViewController: UIViewController {
 
         super.init(nibName: nil, bundle: nil)
 
-        convoObserver.observe(convoKey: convo.key, convoSenderId: convo.senderId) { [weak self] convo in
+        convoObserver.observe(convoSenderId: convo.senderId, convoKey: convo.key) { [weak self] convo in
             self?.convo = convo
         }
 
         let activityIndicatorView = UIActivityIndicatorView(view)
-        proxyObserver.observe(proxyKey: convo.senderProxyKey, proxyOwnerId: convo.senderId) { [weak self] proxy in
+        proxyObserver.observe(proxyOwnerId: convo.senderId, proxyKey: convo.senderProxyKey) { [weak self] proxy in
             activityIndicatorView.removeFromSuperview()
             self?.proxy = proxy
             if proxy == nil {

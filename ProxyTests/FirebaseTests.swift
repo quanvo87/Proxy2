@@ -48,7 +48,7 @@ class FirebaseTests: XCTestCase {
                     case .failure(let error):
                         XCTFail(String(describing: error))
                     case .success(let tuple):
-                        Shared.database.getConvo(convoKey: tuple.convo.key, ownerId: tuple.convo.senderId) { result in
+                        Shared.database.getConvo(ownerId: tuple.convo.senderId, convoKey: tuple.convo.key) { result in
                             switch result {
                             case .failure(let error):
                                 XCTFail(String(describing: error))
@@ -75,8 +75,8 @@ extension FirebaseTests {
                 XCTAssertNil(error, String(describing: error))
                 let work = GroupWork()
                 work.checkBlockedUserSet(blockedUser)
-                work.check(.receiverIsBlocked(true), uid: blockedUser.blocker, convoKey: blockedUser.convoKey)
-                work.check(.receiverIsBlocking(true), uid: blockedUser.blockee, convoKey: blockedUser.convoKey)
+                work.check(.receiverIsBlocked(true), ownerId: blockedUser.blocker, convoKey: blockedUser.convoKey)
+                work.check(.receiverIsBlocking(true), ownerId: blockedUser.blockee, convoKey: blockedUser.convoKey)
                 work.allDone {
                     expectation.fulfill()
                 }
@@ -230,7 +230,7 @@ extension FirebaseTests {
         defer { waitForExpectations(timeout: 10) }
 
         FirebaseTests.sendMessage { _, convo, _, _ in
-            Shared.database.getConvo(convoKey: convo.key, ownerId: convo.senderId) { result in
+            Shared.database.getConvo(ownerId: convo.senderId, convoKey: convo.key) { result in
                 switch result {
                 case .failure(let error):
                     XCTFail(String(describing: error))
@@ -281,7 +281,7 @@ extension FirebaseTests {
         defer { waitForExpectations(timeout: 10) }
 
         FirebaseTests.makeProxy { proxy in
-            Shared.database.getProxy(proxyKey: proxy.key, ownerId: proxy.ownerId) { result in
+            Shared.database.getProxy(ownerId: proxy.ownerId, proxyKey: proxy.key) { result in
                 switch result {
                 case .failure(let error):
                     XCTFail(String(describing: error))
@@ -298,7 +298,7 @@ extension FirebaseTests {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
 
-        Shared.database.getProxy(proxyKey: "invalid key", ownerId: FirebaseTests.uid) { result in
+        Shared.database.getProxy(ownerId: FirebaseTests.uid, proxyKey: "invalid key") { result in
             switch result {
             case .failure:
                 expectation.fulfill()
@@ -387,7 +387,7 @@ extension FirebaseTests {
                 let work = GroupWork()
                 work.checkDeleted(Child.users, message.receiverId, Child.unreadMessages, message.messageId)
                 work.check(.dateRead(date), for: message)
-                work.check(.hasUnreadMessage(false), uid: message.receiverId, convoKey: message.parentConvoKey)
+                work.check(.hasUnreadMessage(false), ownerId: message.receiverId, convoKey: message.parentConvoKey)
                 work.check(.hasUnreadMessage(false), for: receiver)
                 work.allDone {
                     expectation.fulfill()
@@ -468,7 +468,7 @@ extension FirebaseTests {
         FirebaseTests.sendMessage { _, senderConvo, _, receiverProxy in
             Shared.database.delete(receiverProxy) { error in
                 XCTAssertNil(error, String(describing: error))
-                Shared.database.getConvo(convoKey: senderConvo.key, ownerId: senderConvo.senderId) { result in
+                Shared.database.getConvo(ownerId: senderConvo.senderId, convoKey: senderConvo.key) { result in
                     switch result {
                     case .failure(let error):
                         XCTFail(String(describing: error))
@@ -701,8 +701,8 @@ extension FirebaseTests {
                 Shared.database.unblock(blockedUser) { error in
                     XCTAssertNil(error, String(describing: error))
                     let work = GroupWork()
-                    work.check(.receiverIsBlocked(false), uid: blockedUser.blocker, convoKey: blockedUser.convoKey)
-                    work.check(.receiverIsBlocking(false), uid: blockedUser.blockee, convoKey: blockedUser.convoKey)
+                    work.check(.receiverIsBlocked(false), ownerId: blockedUser.blocker, convoKey: blockedUser.convoKey)
+                    work.check(.receiverIsBlocking(false), ownerId: blockedUser.blockee, convoKey: blockedUser.convoKey)
                     work.checkDeleted(Child.users, blockedUser.blocker, Child.blockedUsers, blockedUser.blockee)
                     work.allDone {
                         expectation.fulfill()
@@ -740,16 +740,16 @@ extension GroupWork {
                function: String = #function,
                line: Int = #line) {
         let (uid, _) = GroupWork.getOwnerIdAndProxyKey(convo: convo, asSender: asSender)
-        check(property, uid: uid, convoKey: convo.key, function: function, line: line)
+        check(property, ownerId: uid, convoKey: convo.key, function: function, line: line)
     }
 
     func check(_ property: SettableConvoProperty,
-               uid: String,
+               ownerId: String,
                convoKey: String,
                function: String = #function,
                line: Int = #line) {
         start()
-        Shared.firebaseHelper.get(Child.convos, uid, convoKey, property.properties.name) { result in
+        Shared.firebaseHelper.get(Child.convos, ownerId, convoKey, property.properties.name) { result in
             switch result {
             case .failure(let error):
                 XCTFail(String(describing: error))
@@ -784,7 +784,7 @@ extension GroupWork {
     }
 
     func check(_ property: SettableProxyProperty, for proxy: Proxy, function: String = #function, line: Int = #line) {
-        check(property, uid: proxy.ownerId, proxyKey: proxy.key, function: function, line: line)
+        check(property, ownerId: proxy.ownerId, proxyKey: proxy.key, function: function, line: line)
     }
 
     func check(_ property: SettableProxyProperty,
@@ -793,16 +793,16 @@ extension GroupWork {
                function: String = #function,
                line: Int = #line) {
         let (uid, proxyKey) = GroupWork.getOwnerIdAndProxyKey(convo: convo, asSender: asSender)
-        check(property, uid: uid, proxyKey: proxyKey, function: function, line: line)
+        check(property, ownerId: uid, proxyKey: proxyKey, function: function, line: line)
     }
 
     func check(_ property: SettableProxyProperty,
-               uid: String,
+               ownerId: String,
                proxyKey: String,
                function: String = #function,
                line: Int = #line) {
         start()
-        Shared.firebaseHelper.get(Child.proxies, uid, proxyKey, property.properties.name) { result in
+        Shared.firebaseHelper.get(Child.proxies, ownerId, proxyKey, property.properties.name) { result in
             switch result {
             case .failure(let error):
                 XCTFail(String(describing: error))
