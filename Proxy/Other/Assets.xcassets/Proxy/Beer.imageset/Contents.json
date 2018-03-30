@@ -7,10 +7,12 @@
     },
     {
       "idiom" : "universal",
+      "filename" : "icons8-beer-192.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
+      "filename" : "icons8-beer-288.png",
       "scale" : "3x"
     }
   ],

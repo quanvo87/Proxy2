@@ -2,15 +2,17 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "Sailing Ship.png",
+      "filename" : "icons8-sailing-boat-96.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
+      "filename" : "icons8-sailing-boat-288.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
+      "filename" : "icons8-sailing-boat-192.png",
       "scale" : "3x"
     }
   ],
