@@ -31,7 +31,7 @@ class ProxyTests: XCTestCase {
 
     func testIcons() {
         let iconNames = ProxyPropertyGenerator().iconNames
-        XCTAssertEqual(iconNames.count, 145)
+        XCTAssertEqual(iconNames.count, 168)
         iconNames.forEach {
             XCTAssertNotNil(UIImage(named: $0))
         }

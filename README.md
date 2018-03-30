@@ -46,6 +46,7 @@
   - Data is indexed on server for performance
   - Pagination load: load some initial data, load more when user scrolls up
   - Email and Facebook authentication
+  - Proxy name generating algorithm uses handpicked adjectives and nouns for over half a billion possibilities
 
 - Notifications
   - Apple Push Notifications using [Cloud Messaging](https://firebase.google.com/docs/cloud-messaging/)
@@ -70,9 +71,10 @@
 
 #### Todo
 
+- UI tests
 - Refactor view controllers:
-  - Extract elements
-  - Decouple view and model
+  - Extract elements (UITableViewDatasource, UITableViewDelegate, etc.)
+  - More decoupling of view and model
 
 #### Acknowledgements
 
