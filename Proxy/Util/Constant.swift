@@ -218,6 +218,10 @@ enum Image {
     static let makeNewMessage = UIImage(named: "makeNewMessage")
     static let makeNewProxy = UIImage(named: "makeNewProxy")
 
+    static func make(_ icon: String) -> UIImage {
+        return UIImage(named: icon) ?? UIImage(named: "Confused Face") ?? UIImage()
+    }
+
     static func make(_ fontAwesome: FontAwesome) -> UIImage {
         return UIImage.fontAwesomeIcon(name: fontAwesome, textColor: .white, size: CGSize(width: 100, height: 100))
     }

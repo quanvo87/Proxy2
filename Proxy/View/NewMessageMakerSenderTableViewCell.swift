@@ -7,7 +7,7 @@ class NewMessageMakerSenderTableViewCell: UITableViewCell {
     func load(_ proxy: Proxy?) {
         if let proxy = proxy {
             nameLabel.attributedText = proxy.label
-            iconImageView.image = UIImage(named: proxy.icon)
+            iconImageView.image = Image.make(proxy.icon)
         } else {
             nameLabel.text = "Pick Your Sender"
         }

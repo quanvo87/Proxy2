@@ -172,8 +172,8 @@ private extension ConvoViewController {
         if convo.receiverIsBlocked {
             navigationItem.title?.append(" 🚫")
         }
-        icons[convo.receiverProxyKey] = UIImage(named: convo.receiverIcon)
-        icons[convo.senderProxyKey] = UIImage(named: convo.senderIcon)
+        icons[convo.receiverProxyKey] = Image.make(convo.receiverIcon)
+        icons[convo.senderProxyKey] = Image.make(convo.senderIcon)
         messagesCollectionView.reloadDataAndKeepOffset()
     }
 }

@@ -7,7 +7,7 @@ class ConvoDetailReceiverProxyTableViewCell: UITableViewCell {
 
     func load(_ convo: Convo) {
         selectionStyle = .none
-        iconImageView.image = UIImage(named: convo.receiverIcon)
+        iconImageView.image = Image.make(convo.receiverIcon)
         nameLabel.text = convo.receiverIsBlocked ? convo.receiverProxyName + " 🚫" : convo.receiverProxyName
         nicknameButton.setTitle(
             convo.receiverNickname == "" ? "Enter A Nickname" : convo.receiverNickname, for: .normal

@@ -247,7 +247,7 @@ extension UIBarButtonItem {
 extension UIImageView {
     convenience init(_ iconName: String, frame: CGRect = CGRect(x: 0, y: 0, width: 30, height: 30)) {
         self.init(frame: frame)
-        image = UIImage(named: iconName)
+        image = Image.make(iconName)
     }
 }
 

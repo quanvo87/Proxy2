@@ -7,7 +7,7 @@ class SenderProxyTableViewCell: UITableViewCell {
     @IBOutlet weak var nicknameButton: UIButton!
 
     func load(_ proxy: Proxy) {
-        iconImageView.image = UIImage(named: proxy.icon)
+        iconImageView.image = Image.make(proxy.icon)
         nameLabel.text = proxy.name
         nicknameButton.setTitle(proxy.nickname == "" ? "Enter A Nickname" : proxy.nickname, for: .normal)
         if DeviceInfo.size == .small {

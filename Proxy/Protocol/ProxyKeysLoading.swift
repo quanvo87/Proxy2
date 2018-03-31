@@ -26,7 +26,7 @@ class ProxyKeysLoader: ProxyKeysLoading {
                         return SearchTextFieldItem(
                             title: proxy.name,
                             subtitle: nil,
-                            image: UIImage(named: proxy.icon)
+                            image: Image.make(proxy.icon)
                         )
                     })
             }
