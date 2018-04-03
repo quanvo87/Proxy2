@@ -42,7 +42,6 @@ class NotificationHandler: NotificationHandling {
             case .failure(let error):
                 StatusBar.showErrorStatusBarBanner(error)
             case .success(let convo):
-                Audio.incomingMessageAudioPlayer.play()
                 StatusBar.showNewMessageBanner(convo)
             }
             completion()

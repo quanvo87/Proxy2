@@ -216,7 +216,8 @@ extension ConvoDetailViewController: UITableViewDelegate {
                 } else {
                     let alert = Alert.make(
                         title: "Block User?",
-                        message: "They will not be able to message you."
+                        message: "They will not be able to message you.",
+                        playWarningSound: true
                     )
                     alert.addAction(Alert.makeDestructiveAction(title: "Block") { [weak self] _ in
                         guard let convo = self?.convo else {
@@ -228,7 +229,8 @@ extension ConvoDetailViewController: UITableViewDelegate {
                                 StatusBar.showErrorStatusBarBanner(error)
                             } else {
                                 StatusBar.showSuccessStatusBarBanner(
-                                    "The owner for \(convo.receiverProxyName) has been blocked."
+                                    "The owner for \(convo.receiverProxyName) has been blocked.",
+                                    forBlockUser: true
                                 )
                             }
                         }
@@ -239,7 +241,8 @@ extension ConvoDetailViewController: UITableViewDelegate {
             case 1:
                 let alert = Alert.make(
                     title: Alert.deleteProxyMessage.title,
-                    message: Alert.deleteProxyMessage.message
+                    message: Alert.deleteProxyMessage.message,
+                    playWarningSound: true
                 )
                 alert.addAction(Alert.makeDestructiveAction(title: "Delete") { [weak self] _ in
                     self?.database.delete(proxy) { error in

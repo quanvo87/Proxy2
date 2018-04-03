@@ -23,7 +23,11 @@ enum Alert {
         preferredStyle: CFAlertViewController.CFAlertControllerStyle = .alert,
         headerView: UIView? = nil,
         footerView: UIView? = nil,
-        handler: CFAlertViewController.CFAlertViewControllerDismissBlock? = nil) -> CFAlertViewController {
+        handler: CFAlertViewController.CFAlertViewControllerDismissBlock? = nil,
+        playWarningSound: Bool = false) -> CFAlertViewController {
+        if playWarningSound {
+            Sound.soundsPlayer.playWarning()
+        }
         return CFAlertViewController(
             title: title,
             titleColor: titleColor,
@@ -81,11 +85,6 @@ enum Alert {
             handler: handler
         )
     }
-}
-
-enum Audio {
-    static let incomingMessageAudioPlayer = AudioPlayer(soundFileName: "incomingMessage")
-    static let outgoingMessageAudioPlayer = AudioPlayer(soundFileName: "outgoingMessage")
 }
 
 enum Child {
@@ -273,11 +272,16 @@ enum Shared {
     static let storyboard = UIStoryboard(name: "Main", bundle: nil)
 }
 
+enum Sound {
+    static let soundsPlayer = SoundsPlayer()
+}
+
 enum StatusBar {
     private static let queue = ProxyNotificationBannerQueue()
 
     static func showErrorBanner(title: String = "Error 😵", subtitle: String) {
         Haptic.playError()
+        Sound.soundsPlayer.playError()
         queue.currentBanner = NotificationBanner(
             title: title,
             subtitle: subtitle,
@@ -288,6 +292,7 @@ enum StatusBar {
 
     static func showErrorStatusBarBanner(_ error: Error) {
         Haptic.playError()
+        Sound.soundsPlayer.playError()
         let view = MessageView.viewFromNib(layout: .statusLine)
         view.configureTheme(.error)
         view.configureContent(body: "⚠️ " + error.localizedDescription)
@@ -295,6 +300,7 @@ enum StatusBar {
     }
 
     static func showNewMessageBanner(_ convo: Convo) {
+        Sound.soundsPlayer.playNewMessage()
         let notificationBanner = NotificationBanner(
             title: convo.receiverDisplayName + " -> " + convo.senderDisplayName,
             subtitle: convo.lastMessage,
@@ -310,6 +316,7 @@ enum StatusBar {
 
     static func showSuccessBanner(title: String, subtitle: String) {
         Haptic.playSuccess()
+        Sound.soundsPlayer.playSuccess()
         queue.currentBanner = NotificationBanner(
             title: title,
             subtitle: subtitle,
@@ -318,8 +325,15 @@ enum StatusBar {
         )
     }
 
-    static func showSuccessStatusBarBanner(_ title: String) {
+    static func showSuccessStatusBarBanner(_ title: String, forBlockUser: Bool = false) {
         Haptic.playSuccess()
+
+        if forBlockUser {
+            Sound.soundsPlayer.playBlock()
+        } else {
+            Sound.soundsPlayer.playSuccess()
+        }
+
         NotificationBannerQueue.default.removeAll()
         let statusBarNotificationBanner = StatusBarNotificationBanner(
             title: title,

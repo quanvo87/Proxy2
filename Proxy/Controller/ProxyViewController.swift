@@ -103,7 +103,8 @@ private extension ProxyViewController {
     @objc func deleteProxy() {
         let alert = Alert.make(
             title: Alert.deleteProxyMessage.title,
-            message: Alert.deleteProxyMessage.message
+            message: Alert.deleteProxyMessage.message,
+            playWarningSound: true
         )
         alert.addAction(Alert.makeDestructiveAction(title: "Delete") { [weak self] _ in
             guard let proxy = self?.proxy else {
