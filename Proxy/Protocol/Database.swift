@@ -239,21 +239,10 @@ class Firebase: Database {
 
     func setIcon(to icon: String, for proxy: Proxy, completion: @escaping ErrorCallback) {
         WQNetworkActivityIndicator.shared.show()
-        Firebase.getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { result in
-            switch result {
-            case .failure(let error):
-                completion(error)
-                WQNetworkActivityIndicator.shared.hide()
-            case .success(let convos):
-                let work = GroupWork()
-                work.set(.icon(icon), for: proxy)
-                work.set(.receiverIcon(icon), for: convos, asSender: false)
-                work.set(.senderIcon(icon), for: convos, asSender: true)
-                work.allDone {
-                    completion(Firebase.getError(work.result))
-                    WQNetworkActivityIndicator.shared.hide()
-                }
-            }
+        Firebase._setIcon(to: icon, for: proxy) { error in
+            WQNetworkActivityIndicator.shared.hide()
+            Firebase.render(error)
+            completion(error)
         }
     }
 
@@ -332,6 +321,23 @@ private extension Firebase {
         }
     }
 
+    static func _setIcon(to icon: String, for proxy: Proxy, completion: @escaping ErrorCallback) {
+        Firebase.getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { result in
+            switch result {
+            case .failure(let error):
+                completion(error)
+            case .success(let convos):
+                let work = GroupWork()
+                work.set(.icon(icon), for: proxy)
+                work.set(.receiverIcon(icon), for: convos, asSender: false)
+                work.set(.senderIcon(icon), for: convos, asSender: true)
+                work.allDone {
+                    completion(Firebase.getError(work.result))
+                }
+            }
+        }
+    }
+
     static func getConvosForProxy(key: String,
                                   ownerId: String,
                                   completion: @escaping (Result<[Convo], Error>) -> Void) {
@@ -383,7 +389,6 @@ private extension Firebase {
             }
         } else {
             Haptic.playSuccess()
-
             switch successSound {
             case .block:
                 Sound.soundsPlayer.playBlock()
@@ -392,7 +397,6 @@ private extension Firebase {
             case .standard:
                 Sound.soundsPlayer.playSuccess()
             }
-
             if let successMessage = successMessage {
                 StatusBar.showSuccessStatusBarBanner(successMessage)
             }
