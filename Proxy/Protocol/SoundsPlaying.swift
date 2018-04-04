@@ -37,23 +37,21 @@ private class SoundPlayer: SoundPlaying {
 protocol SoundsPlaying {
     func playBlock()
     func playError()
-    func playIncomingMessage()
     func playMakeProxy()
+    func playMessageIn()
+    func playMessageOut()
     func playNewMessage()
-    func playOutgoingMessage()
     func playSuccess()
-    func playWarning()
 }
 
 struct SoundsPlayer: SoundsPlaying {
     private let blockSoundPlayer = SoundPlayer(soundFileName: "block")
     private let errorSoundPlayer = SoundPlayer(soundFileName: "error")
-    private let incomingMessageSoundPlayer = SoundPlayer(soundFileName: "incomingMessage")
     private let makeProxySoundPlayer = SoundPlayer(soundFileName: "makeProxy")
+    private let messageInSoundPlayer = SoundPlayer(soundFileName: "messageIn")
+    private let messageOutSoundPlayer = SoundPlayer(soundFileName: "messageOut")
     private let newMessageSoundPlayer = SoundPlayer(soundFileName: "newMessage")
-    private let outgoingMessageSoundPlayer = SoundPlayer(soundFileName: "incomingMessage")
     private let successSoundPlayer = SoundPlayer(soundFileName: "success")
-    private let warningSoundPlayer = SoundPlayer(soundFileName: "warning")
 
     func playBlock() {
         blockSoundPlayer.play()
@@ -63,27 +61,23 @@ struct SoundsPlayer: SoundsPlaying {
         errorSoundPlayer.play()
     }
 
-    func playIncomingMessage() {
-        incomingMessageSoundPlayer.play()
-    }
-
     func playMakeProxy() {
         makeProxySoundPlayer.play()
+    }
+
+    func playMessageIn() {
+        messageInSoundPlayer.play()
+    }
+
+    func playMessageOut() {
+        messageOutSoundPlayer.play()
     }
 
     func playNewMessage() {
         newMessageSoundPlayer.play()
     }
 
-    func playOutgoingMessage() {
-        outgoingMessageSoundPlayer.play()
-    }
-
     func playSuccess() {
         successSoundPlayer.play()
-    }
-
-    func playWarning() {
-        warningSoundPlayer.play()
     }
 }

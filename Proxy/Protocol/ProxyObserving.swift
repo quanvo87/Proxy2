@@ -15,7 +15,7 @@ class ProxyObserver: ProxyObsering {
             do {
                 completion(try Proxy(data))
             } catch {
-                Shared.database.getProxy(ownerId: proxyOwnerId, proxyKey: proxyKey) { result in
+                Firebase.getProxy(ownerId: proxyOwnerId, proxyKey: proxyKey) { result in
                     switch result {
                     case .success(let proxy):
                         completion(proxy)

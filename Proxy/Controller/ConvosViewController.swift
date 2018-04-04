@@ -74,7 +74,7 @@ class ConvosViewController: UIViewController, NewMessageMakerDelegate {
             if let shouldPlaySounds = self?.shouldPlaySounds, shouldPlaySounds {
                 if let isPresent = self?.isPresent, isPresent,
                     let mostRecentConvo = convos.first, mostRecentConvo.hasUnreadMessage {
-                    self?.soundsPlayer.playIncomingMessage()
+                    self?.soundsPlayer.playMessageIn()
                 }
             } else {
                 self?.shouldPlaySounds = true

@@ -61,7 +61,7 @@ class ConvoViewController: MessagesViewController {
             if let shouldPlaySounds = self?.shouldPlaySounds, shouldPlaySounds,
                 newMessage.sender.id != self?.convo?.senderId,
                 !newMessage.hasBeenRead {
-                self?.soundsPlayer.playIncomingMessage()
+                self?.soundsPlayer.playMessageIn()
             }
             if newMessage.hasBeenRead {
                 self?.shouldPlaySounds = true
@@ -187,7 +187,7 @@ extension ConvoViewController: MessageInputBarDelegate {
             case .failure(let error):
                 StatusBar.showErrorStatusBarBanner(error)
             case .success:
-                self?.soundsPlayer.playOutgoingMessage()
+                self?.soundsPlayer.playMessageOut()
             }
         }
     }

@@ -103,20 +103,13 @@ private extension ProxyViewController {
     @objc func deleteProxy() {
         let alert = Alert.make(
             title: Alert.deleteProxyMessage.title,
-            message: Alert.deleteProxyMessage.message,
-            playWarningSound: true
+            message: Alert.deleteProxyMessage.message
         )
         alert.addAction(Alert.makeDestructiveAction(title: "Delete") { [weak self] _ in
             guard let proxy = self?.proxy else {
                 return
             }
-            self?.database.delete(proxy) { error in
-                if let error = error {
-                    StatusBar.showErrorStatusBarBanner(error)
-                } else {
-                    StatusBar.showSuccessStatusBarBanner("\(proxy.name) has been deleted.")
-                }
-            }
+            self?.database.delete(proxy) { _ in }
             self?.navigationController?.popViewController(animated: true)
         })
         alert.addAction(Alert.makeCancelAction())

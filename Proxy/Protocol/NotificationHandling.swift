@@ -13,7 +13,7 @@ class NotificationHandler: NotificationHandling {
             completion()
             return
         }
-        Shared.database.getConvo(ownerId: uid, convoKey: convoKey) { result in
+        Firebase.getConvo(ownerId: uid, convoKey: convoKey) { result in
             switch result {
             case .failure(let error):
                 StatusBar.showErrorStatusBarBanner(error)
@@ -37,11 +37,12 @@ class NotificationHandler: NotificationHandling {
             completion()
             return
         }
-        Shared.database.getConvo(ownerId: uid, convoKey: convoKey) { result in
+        Firebase.getConvo(ownerId: uid, convoKey: convoKey) { result in
             switch result {
             case .failure(let error):
                 StatusBar.showErrorStatusBarBanner(error)
             case .success(let convo):
+                Sound.soundsPlayer.playNewMessage()
                 StatusBar.showNewMessageBanner(convo)
             }
             completion()
