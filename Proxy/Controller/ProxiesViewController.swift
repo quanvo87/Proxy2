@@ -155,13 +155,7 @@ private extension ProxiesViewController {
     @objc func makeNewProxy() {
         makeNewProxyButton.animate()
         makeNewProxyButton.isEnabled = false
-        database.makeProxy(currentProxyCount: proxies.count, ownerId: uid) { [weak self] result in
-            switch result {
-            case .failure(let error):
-                StatusBar.showErrorStatusBarBanner(error)
-            case .success:
-                break
-            }
+        database.makeProxy(currentProxyCount: proxies.count, ownerId: uid) { [weak self] _ in
             self?.makeNewProxyButton.isEnabled = true
         }
     }

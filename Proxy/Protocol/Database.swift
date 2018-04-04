@@ -159,14 +159,10 @@ class Firebase: Database {
     }
 
     func delete(_ userProperty: SettableUserProperty, for uid: String, completion: @escaping ErrorCallback) {
-        WQNetworkActivityIndicator.shared.show()
         let work = GroupWork()
         work.delete(userProperty, for: uid)
         work.allDone {
-            WQNetworkActivityIndicator.shared.hide()
-            let error = Firebase.getError(work.result)
-            Firebase.render(error, successSound: .none)
-            completion(error)
+            completion(Firebase.getError(work.result))
         }
     }
 
@@ -183,19 +179,16 @@ class Firebase: Database {
     }
 
     func makeProxy(currentProxyCount: Int, ownerId: String, completion: @escaping ProxyCallback) {
-        Haptic.playSuccess()
-        guard !isMakingProxy else {
-            return
-        }
-        guard currentProxyCount < maxProxyCount else {
-            completion(.failure(ProxyError.tooManyProxies))
-            return
-        }
-        isMakingProxy = true
         WQNetworkActivityIndicator.shared.show()
-        makeProxy(ownerId: ownerId, attempt: 0) { [weak self] result in
-            self?.isMakingProxy = false
+        _makeProxy(currentProxyCount: currentProxyCount, ownerId: ownerId) { result in
             WQNetworkActivityIndicator.shared.hide()
+            switch result {
+            case .failure(let error):
+                Firebase.render(error)
+            case .success:
+                Haptic.playSuccess()
+                Sound.soundsPlayer.playMakeProxy()
+            }
             completion(result)
         }
     }
@@ -382,7 +375,12 @@ private extension Firebase {
         if let error = error {
             Haptic.playError()
             Sound.soundsPlayer.playError()
-            StatusBar.showErrorStatusBarBanner(error)
+            switch error {
+            case ProxyError.alreadyChattingWithUser:
+                StatusBar.showErrorBanner(subtitle: error.localizedDescription)
+            default:
+                StatusBar.showErrorStatusBarBanner(error)
+            }
         } else {
             Haptic.playSuccess()
 
@@ -398,6 +396,21 @@ private extension Firebase {
             if let successMessage = successMessage {
                 StatusBar.showSuccessStatusBarBanner(successMessage)
             }
+        }
+    }
+
+    func _makeProxy(currentProxyCount: Int, ownerId: String, completion: @escaping ProxyCallback) {
+        guard !isMakingProxy else {
+            return
+        }
+        guard currentProxyCount < maxProxyCount else {
+            completion(.failure(ProxyError.tooManyProxies))
+            return
+        }
+        isMakingProxy = true
+        makeProxy(ownerId: ownerId, attempt: 0) { [weak self] result in
+            self?.isMakingProxy = false
+            completion(result)
         }
     }
 

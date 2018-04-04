@@ -161,13 +161,7 @@ private extension ConvosViewController {
         makeNewProxyButton.animate()
         makeNewProxyButton.isEnabled = false
         tabBarController?.selectedIndex = 1
-        database.makeProxy(currentProxyCount: currentProxyCount, ownerId: uid) { [weak self] result in
-            switch result {
-            case .failure(let error):
-                StatusBar.showErrorStatusBarBanner(error)
-            case .success:
-                break
-            }
+        database.makeProxy(currentProxyCount: currentProxyCount, ownerId: uid) { [weak self] _ in
             self?.makeNewProxyButton.isEnabled = true
         }
     }

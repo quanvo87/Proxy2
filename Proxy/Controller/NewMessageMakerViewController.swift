@@ -147,10 +147,7 @@ private extension NewMessageMakerViewController {
         makeNewProxyButton.animate()
         setButtons(false)
         database.makeProxy(currentProxyCount: proxies.count, ownerId: uid) { [weak self] result in
-            switch result {
-            case .failure(let error):
-                StatusBar.showErrorStatusBarBanner(error)
-            case .success(let newProxy):
+            if case let .success(newProxy) = result {
                 self?.sender = newProxy
             }
             self?.setButtons(true)
