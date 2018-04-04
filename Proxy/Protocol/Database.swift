@@ -273,14 +273,16 @@ class Firebase: Database {
     }
 
     func unblock(_ blockedUser: BlockedUser, completion: @escaping ErrorCallback) {
-        let work = GroupWork()
         WQNetworkActivityIndicator.shared.show()
+        let work = GroupWork()
         work.set(.receiverIsBlocked(false), uid: blockedUser.blocker, convoKey: blockedUser.convoKey)
         work.set(.receiverIsBlocking(false), uid: blockedUser.blockee, convoKey: blockedUser.convoKey)
         work.unblock(blockedUser)
         work.allDone {
-            completion(Firebase.getError(work.result))
             WQNetworkActivityIndicator.shared.hide()
+            let error = Firebase.getError(work.result)
+            Firebase.render(error, successMessage: "\(blockedUser.blockeeProxyName) has been unblocked!")
+            completion(error)
         }
     }
 }

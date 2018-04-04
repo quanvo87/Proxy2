@@ -200,15 +200,7 @@ extension ConvoDetailViewController: UITableViewDelegate {
             case 0:
                 if convo.receiverIsBlocked {
                     let blockedUser = BlockedUser(convo: convo)
-                    database.unblock(blockedUser) { error in
-                        if let error = error {
-                            StatusBar.showErrorStatusBarBanner(error)
-                        } else {
-                            StatusBar.showSuccessStatusBarBanner(
-                                "The owner for \(convo.receiverProxyName) has been unblocked."
-                            )
-                        }
-                    }
+                    database.unblock(blockedUser) { _ in }
                 } else {
                     let alert = Alert.make(
                         title: "Block User?",
