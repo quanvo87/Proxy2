@@ -16,11 +16,7 @@ class ConvosViewController: UIViewController, NewMessageMakerDelegate {
     private var currentProxyCount = 0
     private var isPresent = false
     private var shouldPlaySounds = false
-    private var unreadMessageCount = 0 {
-        didSet {
-            UIApplication.shared.applicationIconBadgeNumber = unreadMessageCount
-        }
-    }
+    private var unreadMessageCount = 0 { didSet { didSetUnreadMessageCount() } }
     private lazy var makeNewMessageButton = UIBarButtonItem(
         target: self,
         action: #selector(showNewMessageMakerViewController),
@@ -171,6 +167,10 @@ private extension ConvosViewController {
         makeNewMessageButton.isEnabled = false
         showNewMessageMakerViewController(sender: nil, uid: uid)
         makeNewMessageButton.isEnabled = true
+    }
+
+    func didSetUnreadMessageCount() {
+        UIApplication.shared.applicationIconBadgeNumber = unreadMessageCount
     }
 }
 

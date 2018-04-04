@@ -170,7 +170,7 @@ extension SettingsViewController: UITableViewDelegate {
                     self?.database.delete(.registrationToken(registrationToken), for: uid) { _ in }
                 }
                 do {
-                    try self?.loginManager.logOut()
+                    try self?.loginManager.logOut() // todo: fix
                 } catch {
                     StatusBar.showErrorBanner(subtitle: error.localizedDescription)
                 }

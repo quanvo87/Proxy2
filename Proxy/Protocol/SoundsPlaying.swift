@@ -34,6 +34,7 @@ private class SoundPlayer: SoundPlaying {
     }
 }
 
+// todo: warning sound?
 protocol SoundsPlaying {
     func playBlock()
     func playError()
