@@ -317,7 +317,7 @@ extension UIViewController {
 
     func showEditProxyNicknameAlert(_ proxy: Proxy, database: Database = Shared.database) {
         let alert = UIAlertController(title: "Edit Nickname",
-                                      message: "Only you see your nickname.",
+                                      message: "ONLY YOU see your nickname.",
                                       preferredStyle: .alert)
         alert.addTextField { textField in
             textField.autocapitalizationType = .sentences

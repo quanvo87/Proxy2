@@ -6,9 +6,8 @@ class IconPickerViewController: UIViewController {
     private let iconNames: [String]
     private let proxy: Proxy
 
-    // todo: make ProxyPropertyGenerator singleton instance
     init(database: Database = Shared.database,
-         iconNames: [String] = ProxyPropertyGenerator().iconNames,
+         iconNames: [String] = Shared.proxyPropertyGenerator.iconNames,
          proxy: Proxy) {
         self.database = database
         self.iconNames = iconNames

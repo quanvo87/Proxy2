@@ -9,7 +9,7 @@ protocol LoginManaging {
     func emailSignUp(email: String, password: String, completion: @escaping Callback)
     func facebookLogIn(completion: @escaping Callback)
     func sendPasswordReset(_ email: String, completion: @escaping Callback)
-    func logOut() throws
+    func logOut()
 }
 
 class LoginManager: LoginManaging {
@@ -95,9 +95,14 @@ class LoginManager: LoginManaging {
         }
     }
 
-    func logOut() throws {
-        WQNetworkActivityIndicator.shared.show()
-        try Shared.auth.signOut()
-        WQNetworkActivityIndicator.shared.hide()
+    func logOut() {
+        do {
+            WQNetworkActivityIndicator.shared.show()
+            try Shared.auth.signOut()
+            WQNetworkActivityIndicator.shared.hide()
+        } catch {
+            WQNetworkActivityIndicator.shared.hide()
+            StatusBar.showErrorBanner(subtitle: error.localizedDescription)
+        }
     }
 }

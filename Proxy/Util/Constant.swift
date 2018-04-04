@@ -23,7 +23,11 @@ enum Alert {
         preferredStyle: CFAlertViewController.CFAlertControllerStyle = .alert,
         headerView: UIView? = nil,
         footerView: UIView? = nil,
-        handler: CFAlertViewController.CFAlertViewControllerDismissBlock? = nil) -> CFAlertViewController {
+        handler: CFAlertViewController.CFAlertViewControllerDismissBlock? = nil,
+        playWarnSound: Bool = false) -> CFAlertViewController {
+        if playWarnSound {
+            Sound.soundsPlayer.playWarn()
+        }
         return CFAlertViewController(
             title: title,
             titleColor: titleColor,
@@ -140,7 +144,7 @@ enum Constant {
 }
 
 enum DatabaseOption {
-    static let generator = (name: "generator", value: ProxyPropertyGenerator())
+    static let generator = (name: "generator", value: Shared.proxyPropertyGenerator)
     static let makeProxyRetries = (name: "makeProxyRetries", value: 50)
     static let maxMessageSize = (name: "maxMessageSize", value: 20000)
     static let maxNameSize = (name: "maxNameSize", value: 50)
@@ -264,6 +268,7 @@ enum Shared {
     static let firebaseHelper = Constant.isRunningTests ?
         FirebaseHelper(Shared.testDatabaseReference) :
         FirebaseHelper(FirebaseDatabase.Database.database().reference())
+    static let proxyPropertyGenerator = ProxyPropertyGenerator()
     static let testDatabaseReference = FirebaseDatabase.Database.database(url: Constant.URL.testDatabase).reference()
     static let storyboard = UIStoryboard(name: "Main", bundle: nil)
 }

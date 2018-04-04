@@ -136,7 +136,8 @@ private extension ProxiesViewController {
         }
         let alert = Alert.make(
             title: "Delete Proxies?",
-            message: "Their conversations will also be deleted."
+            message: "Their conversations will also be deleted.",
+            playWarnSound: true
         )
         alert.addAction(Alert.makeDestructiveAction(title: "Delete") { [weak self] _ in
             self?.proxiesToDelete.forEach {

@@ -269,6 +269,9 @@ class Firebase: Database {
         let work = GroupWork()
         work.set(property, for: uid)
         work.allDone {
+            if case let .soundOn(soundOn) = property, soundOn {
+                Sound.soundsPlayer.playSuccess()
+            }
             completion(Firebase.getError(work.result))
         }
     }

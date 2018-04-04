@@ -38,7 +38,7 @@ class ButtonAnimator: ButtonAnimating {
         isAnimating = false
     }
 
-    func resume() {
+    private func resume() {
         if isAnimating {
             animate()
         }

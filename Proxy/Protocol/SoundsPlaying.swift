@@ -34,7 +34,6 @@ private class SoundPlayer: SoundPlaying {
     }
 }
 
-// todo: warning sound?
 protocol SoundsPlaying {
     func playBlock()
     func playError()
@@ -43,6 +42,7 @@ protocol SoundsPlaying {
     func playMessageOut()
     func playNewMessage()
     func playSuccess()
+    func playWarn()
 }
 
 struct SoundsPlayer: SoundsPlaying {
@@ -53,6 +53,7 @@ struct SoundsPlayer: SoundsPlaying {
     private let messageOutSoundPlayer = SoundPlayer(soundFileName: "messageOut")
     private let newMessageSoundPlayer = SoundPlayer(soundFileName: "newMessage")
     private let successSoundPlayer = SoundPlayer(soundFileName: "success")
+    private let warnSoundPlayer = SoundPlayer(soundFileName: "warn")
 
     func playBlock() {
         blockSoundPlayer.play()
@@ -80,5 +81,9 @@ struct SoundsPlayer: SoundsPlaying {
 
     func playSuccess() {
         successSoundPlayer.play()
+    }
+
+    func playWarn() {
+        warnSoundPlayer.play()
     }
 }

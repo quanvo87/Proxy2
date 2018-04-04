@@ -147,7 +147,7 @@ extension ConvoDetailViewController: UITableViewDataSource {
         }
         let alert = UIAlertController(
             title: "Edit Receiver's Nickname",
-            message: "Only you see this nickname.",
+            message: "ONLY YOU see this nickname.",
             preferredStyle: .alert
         )
         alert.addTextField { textField in
@@ -204,7 +204,8 @@ extension ConvoDetailViewController: UITableViewDelegate {
                 } else {
                     let alert = Alert.make(
                         title: "Block User?",
-                        message: "They will not be able to message you."
+                        message: "They will not be able to message you.",
+                        playWarnSound: true
                     )
                     alert.addAction(Alert.makeDestructiveAction(title: "Block") { [weak self] _ in
                         guard let convo = self?.convo else {
@@ -219,7 +220,8 @@ extension ConvoDetailViewController: UITableViewDelegate {
             case 1:
                 let alert = Alert.make(
                     title: Alert.deleteProxyMessage.title,
-                    message: Alert.deleteProxyMessage.message
+                    message: Alert.deleteProxyMessage.message,
+                    playWarnSound: true
                 )
                 alert.addAction(Alert.makeDestructiveAction(title: "Delete") { [weak self] _ in
                     self?.database.delete(proxy) { _ in }
