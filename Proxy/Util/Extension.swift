@@ -332,11 +332,7 @@ extension UIViewController {
             }
             let trimmed = nickname.trimmed
             if !(nickname != "" && trimmed == "") {
-                database.setNickname(to: nickname, for: proxy) { error in
-                    if let error = error {
-                        StatusBar.showErrorStatusBarBanner(error)
-                    }
-                }
+                database.setNickname(to: nickname, for: proxy) { _ in }
             }
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))

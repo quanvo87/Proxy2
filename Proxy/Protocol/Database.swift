@@ -248,20 +248,10 @@ class Firebase: Database {
 
     func setNickname(to nickname: String, for proxy: Proxy, completion: @escaping ErrorCallback) {
         WQNetworkActivityIndicator.shared.show()
-        Firebase.getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { result in
-            switch result {
-            case .failure(let error):
-                completion(error)
-                WQNetworkActivityIndicator.shared.hide()
-            case .success(let convos):
-                let work = GroupWork()
-                work.set(.nickname(nickname), for: proxy)
-                work.set(.senderNickname(nickname), for: convos, asSender: true)
-                work.allDone {
-                    completion(Firebase.getError(work.result))
-                    WQNetworkActivityIndicator.shared.hide()
-                }
-            }
+        Firebase._setNickname(to: nickname, for: proxy) { error in
+            WQNetworkActivityIndicator.shared.hide()
+            Firebase.render(error)
+            completion(error)
         }
     }
 
@@ -331,6 +321,22 @@ private extension Firebase {
                 work.set(.icon(icon), for: proxy)
                 work.set(.receiverIcon(icon), for: convos, asSender: false)
                 work.set(.senderIcon(icon), for: convos, asSender: true)
+                work.allDone {
+                    completion(Firebase.getError(work.result))
+                }
+            }
+        }
+    }
+
+    static func _setNickname(to nickname: String, for proxy: Proxy, completion: @escaping ErrorCallback) {
+        Firebase.getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { result in
+            switch result {
+            case .failure(let error):
+                completion(error)
+            case .success(let convos):
+                let work = GroupWork()
+                work.set(.nickname(nickname), for: proxy)
+                work.set(.senderNickname(nickname), for: convos, asSender: true)
                 work.allDone {
                     completion(Firebase.getError(work.result))
                 }
