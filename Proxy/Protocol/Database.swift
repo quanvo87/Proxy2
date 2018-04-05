@@ -49,7 +49,6 @@ enum SettableUserProperty {
     }
 }
 
-// todo: make callbacks optional with nil default value
 protocol Database {
     typealias ConvoCallback = (Result<Convo, Error>) -> Void
     typealias DataCallback = (Result<DataSnapshot, Error>) -> Void

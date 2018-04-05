@@ -258,7 +258,6 @@ extension ConvoDetailViewController: UITableViewDelegate {
         }
     }
 
-    // todo: make views class instances?
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         switch section {
         case 0:
