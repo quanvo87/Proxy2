@@ -6,8 +6,8 @@ class ConvosViewController: UIViewController, NewMessageMakerDelegate {
     private let buttonAnimator: ButtonAnimating
     private let convosObserver: ConvosObsering
     private let database: Database
-    private let incomingMessageAudioPlayer: AudioPlaying
     private let proxiesObserver: ProxiesObserving
+    private let soundsPlayer: SoundsPlaying
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let tableViewRefresher: TableViewRefreshing
     private let uid: String
@@ -16,11 +16,7 @@ class ConvosViewController: UIViewController, NewMessageMakerDelegate {
     private var currentProxyCount = 0
     private var isPresent = false
     private var shouldPlaySounds = false
-    private var unreadMessageCount = 0 {
-        didSet {
-            UIApplication.shared.applicationIconBadgeNumber = unreadMessageCount
-        }
-    }
+    private var unreadMessageCount = 0 { didSet { didSetUnreadMessageCount() } }
     private lazy var makeNewMessageButton = UIBarButtonItem(
         target: self,
         action: #selector(showNewMessageMakerViewController),
@@ -36,8 +32,8 @@ class ConvosViewController: UIViewController, NewMessageMakerDelegate {
          buttonAnimator: ButtonAnimating = ButtonAnimator(),
          convosObserver: ConvosObsering = ConvosObserver(),
          database: Database = Shared.database,
-         incomingMessageAudioPlayer: AudioPlaying = Audio.incomingMessageAudioPlayer,
          proxiesObserver: ProxiesObserving = ProxiesObserver(),
+         soundsPlayer: SoundsPlaying = SoundsPlayer(),
          tableViewRefresher: TableViewRefreshing = TableViewRefresher(),
          uid: String,
          unreadMessagesObserver: UnreadMessagesObserving = UnreadMessagesObserver()) {
@@ -45,8 +41,8 @@ class ConvosViewController: UIViewController, NewMessageMakerDelegate {
         self.buttonAnimator = buttonAnimator
         self.convosObserver = convosObserver
         self.database = database
-        self.incomingMessageAudioPlayer = incomingMessageAudioPlayer
         self.proxiesObserver = proxiesObserver
+        self.soundsPlayer = soundsPlayer
         self.tableViewRefresher = tableViewRefresher
         self.uid = uid
         self.unreadMessagesObserver = unreadMessagesObserver
@@ -74,7 +70,7 @@ class ConvosViewController: UIViewController, NewMessageMakerDelegate {
             if let shouldPlaySounds = self?.shouldPlaySounds, shouldPlaySounds {
                 if let isPresent = self?.isPresent, isPresent,
                     let mostRecentConvo = convos.first, mostRecentConvo.hasUnreadMessage {
-                    self?.incomingMessageAudioPlayer.play()
+                    self?.soundsPlayer.playMessageIn()
                 }
             } else {
                 self?.shouldPlaySounds = true
@@ -161,13 +157,7 @@ private extension ConvosViewController {
         makeNewProxyButton.animate()
         makeNewProxyButton.isEnabled = false
         tabBarController?.selectedIndex = 1
-        database.makeProxy(currentProxyCount: currentProxyCount, ownerId: uid) { [weak self] result in
-            switch result {
-            case .failure(let error):
-                StatusBar.showErrorStatusBarBanner(error)
-            case .success:
-                break
-            }
+        database.makeProxy(currentProxyCount: currentProxyCount, ownerId: uid) { [weak self] _ in
             self?.makeNewProxyButton.isEnabled = true
         }
     }
@@ -177,6 +167,10 @@ private extension ConvosViewController {
         makeNewMessageButton.isEnabled = false
         showNewMessageMakerViewController(sender: nil, uid: uid)
         makeNewMessageButton.isEnabled = true
+    }
+
+    func didSetUnreadMessageCount() {
+        UIApplication.shared.applicationIconBadgeNumber = unreadMessageCount
     }
 }
 

@@ -16,7 +16,7 @@ enum ProxyError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .alreadyChattingWithUser:
-            return "You are already chatting with this user with another Proxy."
+            return "You are already chatting with this user through another Proxy."
         case .blankMessage:
             return "Cannot send blank message."
         case .inputTooLong:

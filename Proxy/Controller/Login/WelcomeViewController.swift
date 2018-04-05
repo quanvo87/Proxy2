@@ -46,7 +46,7 @@ class WelcomeViewController: UIViewController {
         super.viewDidLoad()
 
         let revealingSplashView = RevealingSplashView(
-            iconImage: UIImage(named: "icon white")!,
+            iconImage: UIImage(named: "icon white") ?? UIImage(),
             iconInitialSize: CGSize(width: 96, height: 96),
             backgroundColor: Color.mainThemeDarkBlue
         )

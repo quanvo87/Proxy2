@@ -147,7 +147,7 @@ extension ConvoDetailViewController: UITableViewDataSource {
         }
         let alert = UIAlertController(
             title: "Edit Receiver's Nickname",
-            message: "Only you see this nickname.",
+            message: "ONLY YOU see this nickname.",
             preferredStyle: .alert
         )
         alert.addTextField { textField in
@@ -163,11 +163,7 @@ extension ConvoDetailViewController: UITableViewDataSource {
             }
             let trimmed = nickname.trimmed
             if !(nickname != "" && trimmed == "") {
-                self?.database.setReceiverNickname(to: nickname, for: convo) { error in
-                    if let error = error {
-                        StatusBar.showErrorStatusBarBanner(error)
-                    }
-                }
+                self?.database.setReceiverNickname(to: nickname, for: convo) { _ in }
             }
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
@@ -204,34 +200,19 @@ extension ConvoDetailViewController: UITableViewDelegate {
             case 0:
                 if convo.receiverIsBlocked {
                     let blockedUser = BlockedUser(convo: convo)
-                    database.unblock(blockedUser) { error in
-                        if let error = error {
-                            StatusBar.showErrorStatusBarBanner(error)
-                        } else {
-                            StatusBar.showSuccessStatusBarBanner(
-                                "The owner for \(convo.receiverProxyName) has been unblocked."
-                            )
-                        }
-                    }
+                    database.unblock(blockedUser) { _ in }
                 } else {
                     let alert = Alert.make(
                         title: "Block User?",
-                        message: "They will not be able to message you."
+                        message: "They will not be able to message you.",
+                        playWarnSound: true
                     )
                     alert.addAction(Alert.makeDestructiveAction(title: "Block") { [weak self] _ in
                         guard let convo = self?.convo else {
                             return
                         }
                         let blockedUser = BlockedUser(convo: convo)
-                        self?.database.block(blockedUser) { error in
-                            if let error = error {
-                                StatusBar.showErrorStatusBarBanner(error)
-                            } else {
-                                StatusBar.showSuccessStatusBarBanner(
-                                    "The owner for \(convo.receiverProxyName) has been blocked."
-                                )
-                            }
-                        }
+                        self?.database.block(blockedUser) { _ in }
                     })
                     alert.addAction(Alert.makeCancelAction())
                     present(alert, animated: true)
@@ -239,16 +220,11 @@ extension ConvoDetailViewController: UITableViewDelegate {
             case 1:
                 let alert = Alert.make(
                     title: Alert.deleteProxyMessage.title,
-                    message: Alert.deleteProxyMessage.message
+                    message: Alert.deleteProxyMessage.message,
+                    playWarnSound: true
                 )
                 alert.addAction(Alert.makeDestructiveAction(title: "Delete") { [weak self] _ in
-                    self?.database.delete(proxy) { error in
-                        if let error = error {
-                            StatusBar.showErrorStatusBarBanner(error)
-                        } else {
-                            StatusBar.showSuccessStatusBarBanner("\(proxy.name) has been deleted.")
-                        }
-                    }
+                    self?.database.delete(proxy) { _ in }
                 })
                 alert.addAction(Alert.makeCancelAction())
                 present(alert, animated: true)

@@ -53,7 +53,7 @@ struct Message: MessageType {
     init(sender: Sender,
          messageId: String,
          data: MessageData,
-         dateRead: Date,
+         dateRead: Date = Date.distantPast,
          parentConvoKey: String,
          receiverId: String,
          receiverProxyKey: String,

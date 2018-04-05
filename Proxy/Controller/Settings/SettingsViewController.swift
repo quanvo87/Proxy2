@@ -169,11 +169,7 @@ extension SettingsViewController: UITableViewDelegate {
                 if let registrationToken = Messaging.messaging().fcmToken, let uid = self?.uid {
                     self?.database.delete(.registrationToken(registrationToken), for: uid) { _ in }
                 }
-                do {
-                    try self?.loginManager.logOut()
-                } catch {
-                    StatusBar.showErrorBanner(subtitle: error.localizedDescription)
-                }
+                self?.loginManager.logOut()
             })
             alert.addAction(Alert.makeCancelAction())
             present(alert, animated: true)

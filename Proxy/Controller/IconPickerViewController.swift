@@ -7,7 +7,7 @@ class IconPickerViewController: UIViewController {
     private let proxy: Proxy
 
     init(database: Database = Shared.database,
-         iconNames: [String] = ProxyPropertyGenerator().iconNames,
+         iconNames: [String] = Shared.proxyPropertyGenerator.iconNames,
          proxy: Proxy) {
         self.database = database
         self.iconNames = iconNames

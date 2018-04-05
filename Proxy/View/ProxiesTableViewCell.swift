@@ -8,7 +8,7 @@ class ProxiesTableViewCell: UITableViewCell {
 
     func load(proxy: Proxy, accessoryType: UITableViewCellAccessoryType) {
         self.accessoryType = accessoryType
-        iconImageView.image = UIImage(named: proxy.icon)
+        iconImageView.image = Image.make(proxy.icon)
         nameLabel.text = proxy.name
         nicknameLabel.text = proxy.nickname
         unreadMessagesIndicatorImageView.image = proxy.hasUnreadMessage ?

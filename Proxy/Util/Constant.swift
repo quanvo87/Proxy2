@@ -23,7 +23,11 @@ enum Alert {
         preferredStyle: CFAlertViewController.CFAlertControllerStyle = .alert,
         headerView: UIView? = nil,
         footerView: UIView? = nil,
-        handler: CFAlertViewController.CFAlertViewControllerDismissBlock? = nil) -> CFAlertViewController {
+        handler: CFAlertViewController.CFAlertViewControllerDismissBlock? = nil,
+        playWarnSound: Bool = false) -> CFAlertViewController {
+        if playWarnSound {
+            Sound.soundsPlayer.playWarn()
+        }
         return CFAlertViewController(
             title: title,
             titleColor: titleColor,
@@ -83,11 +87,6 @@ enum Alert {
     }
 }
 
-enum Audio {
-    static let incomingMessageAudioPlayer = AudioPlayer(soundFileName: "incomingMessage")
-    static let outgoingMessageAudioPlayer = AudioPlayer(soundFileName: "outgoingMessage")
-}
-
 enum Child {
     static let blockedUsers = "blockedUsers"
     static let convos = "convos"
@@ -145,7 +144,7 @@ enum Constant {
 }
 
 enum DatabaseOption {
-    static let generator = (name: "generator", value: ProxyPropertyGenerator())
+    static let generator = (name: "generator", value: Shared.proxyPropertyGenerator)
     static let makeProxyRetries = (name: "makeProxyRetries", value: 50)
     static let maxMessageSize = (name: "maxMessageSize", value: 20000)
     static let maxNameSize = (name: "maxNameSize", value: 50)
@@ -218,6 +217,10 @@ enum Image {
     static let makeNewMessage = UIImage(named: "makeNewMessage")
     static let makeNewProxy = UIImage(named: "makeNewProxy")
 
+    static func make(_ icon: String) -> UIImage {
+        return UIImage(named: icon) ?? UIImage(named: "Confused Face") ?? UIImage()
+    }
+
     static func make(_ fontAwesome: FontAwesome) -> UIImage {
         return UIImage.fontAwesomeIcon(name: fontAwesome, textColor: .white, size: CGSize(width: 100, height: 100))
     }
@@ -265,15 +268,19 @@ enum Shared {
     static let firebaseHelper = Constant.isRunningTests ?
         FirebaseHelper(Shared.testDatabaseReference) :
         FirebaseHelper(FirebaseDatabase.Database.database().reference())
+    static let proxyPropertyGenerator = ProxyPropertyGenerator()
     static let testDatabaseReference = FirebaseDatabase.Database.database(url: Constant.URL.testDatabase).reference()
     static let storyboard = UIStoryboard(name: "Main", bundle: nil)
+}
+
+enum Sound {
+    static let soundsPlayer = SoundsPlayer()
 }
 
 enum StatusBar {
     private static let queue = ProxyNotificationBannerQueue()
 
     static func showErrorBanner(title: String = "Error 😵", subtitle: String) {
-        Haptic.playError()
         queue.currentBanner = NotificationBanner(
             title: title,
             subtitle: subtitle,
@@ -283,7 +290,6 @@ enum StatusBar {
     }
 
     static func showErrorStatusBarBanner(_ error: Error) {
-        Haptic.playError()
         let view = MessageView.viewFromNib(layout: .statusLine)
         view.configureTheme(.error)
         view.configureContent(body: "⚠️ " + error.localizedDescription)
@@ -305,7 +311,6 @@ enum StatusBar {
     }
 
     static func showSuccessBanner(title: String, subtitle: String) {
-        Haptic.playSuccess()
         queue.currentBanner = NotificationBanner(
             title: title,
             subtitle: subtitle,
@@ -315,7 +320,6 @@ enum StatusBar {
     }
 
     static func showSuccessStatusBarBanner(_ title: String) {
-        Haptic.playSuccess()
         NotificationBannerQueue.default.removeAll()
         let statusBarNotificationBanner = StatusBarNotificationBanner(
             title: title,

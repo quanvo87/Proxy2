@@ -16,7 +16,7 @@ class NewMessageMakerViewController: UIViewController, SenderPickerDelegate {
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let uid: String
     private var firstResponder = FirstResponder.receiverTextField
-    private var isSending = false
+    private var isSendingMessage = false
     private var keyboardWillHideObserver: NSObjectProtocol?
     private var lockKeyboard = true
     private var proxies = [Proxy]()
@@ -147,10 +147,7 @@ private extension NewMessageMakerViewController {
         makeNewProxyButton.animate()
         setButtons(false)
         database.makeProxy(currentProxyCount: proxies.count, ownerId: uid) { [weak self] result in
-            switch result {
-            case .failure(let error):
-                StatusBar.showErrorStatusBarBanner(error)
-            case .success(let newProxy):
+            if case let .success(newProxy) = result {
                 self?.sender = newProxy
             }
             self?.setButtons(true)
@@ -184,7 +181,7 @@ private extension NewMessageMakerViewController {
 
     func setSendButton() {
         messageInputBar.sendButton.isEnabled =
-            !isSending &&
+            !isSendingMessage &&
             sender != nil &&
             receiverCell?.receiverTextField.text?.withoutWhiteSpacesAndNewLines.count ?? 0 > 1 &&
             messageInputBar.inputTextView.text.withoutWhiteSpacesAndNewLines.count > 0
@@ -195,53 +192,21 @@ private extension NewMessageMakerViewController {
 extension NewMessageMakerViewController: MessageInputBarDelegate {
     func messageInputBar(_ inputBar: MessageInputBar, didPressSendButtonWith text: String) {
         inputBar.inputTextView.text = ""
-        isSending = true
+        isSendingMessage = true
         setButtons(false)
-        sendMessage(text) { [weak self] result in
-            switch result {
-            case .failure(let error):
-                if case ProxyError.alreadyChattingWithUser = error {
-                    StatusBar.showErrorBanner(subtitle: error.localizedDescription)
-                } else {
-                    StatusBar.showErrorStatusBarBanner(error)
+        database.sendMessage(
+            sender: sender,
+            receiverProxyKey: receiverCell?.receiverTextField.text,
+            text: text) { [weak self] result in
+                switch result {
+                case .failure:
+                    self?.messageInputBar.inputTextView.text = text
+                    self?.isSendingMessage = false
+                    self?.setButtons(true)
+                case .success(let tuple):
+                    self?.newMessageMakerDelegate?.newConvo = tuple.convo
+                    self?.navigationController?.dismiss(animated: false)
                 }
-                self?.messageInputBar.inputTextView.text = text
-                self?.isSending = false
-                self?.setButtons(true)
-            case .success(let convo):
-                self?.newMessageMakerDelegate?.newConvo = convo
-                self?.navigationController?.dismiss(animated: false)
-            }
-        }
-    }
-
-    private func sendMessage(_ text: String, completion: @escaping (Result<Convo, Error>) -> Void) {
-        guard text != "" else {
-            completion(.failure(ProxyError.blankMessage))
-            return
-        }
-        guard let sender = sender else {
-            completion(.failure(ProxyError.senderMissing))
-            return
-        }
-        guard let receiverName = receiverCell?.receiverTextField.text, receiverName != "" else {
-            completion(.failure(ProxyError.receiverMissing))
-            return
-        }
-        database.getProxy(proxyKey: receiverName) { [weak self] result in
-            switch result {
-            case .failure:
-                completion(.failure(ProxyError.receiverNotFound))
-            case .success(let receiver):
-                self?.database.sendMessage(sender: sender, receiver: receiver, text: text) { result in
-                    switch result {
-                    case .failure(let error):
-                        completion(.failure(error))
-                    case .success(let tuple):
-                        completion(.success(tuple.convo))
-                    }
-                }
-            }
         }
     }
 

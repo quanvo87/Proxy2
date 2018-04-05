@@ -247,7 +247,7 @@ extension UIBarButtonItem {
 extension UIImageView {
     convenience init(_ iconName: String, frame: CGRect = CGRect(x: 0, y: 0, width: 30, height: 30)) {
         self.init(frame: frame)
-        image = UIImage(named: iconName)
+        image = Image.make(iconName)
     }
 }
 
@@ -317,7 +317,7 @@ extension UIViewController {
 
     func showEditProxyNicknameAlert(_ proxy: Proxy, database: Database = Shared.database) {
         let alert = UIAlertController(title: "Edit Nickname",
-                                      message: "Only you see your nickname.",
+                                      message: "ONLY YOU see your nickname.",
                                       preferredStyle: .alert)
         alert.addTextField { textField in
             textField.autocapitalizationType = .sentences
@@ -332,11 +332,7 @@ extension UIViewController {
             }
             let trimmed = nickname.trimmed
             if !(nickname != "" && trimmed == "") {
-                database.setNickname(to: nickname, for: proxy) { error in
-                    if let error = error {
-                        StatusBar.showErrorStatusBarBanner(error)
-                    }
-                }
+                database.setNickname(to: nickname, for: proxy) { _ in }
             }
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))

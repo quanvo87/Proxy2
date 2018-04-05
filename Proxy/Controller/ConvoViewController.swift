@@ -2,12 +2,11 @@ import MessageKit
 
 class ConvoViewController: MessagesViewController {
     private let applicationStateObserver: ApplicationStateObserving
-    private let incomingMessageAudioPlayer: AudioPlaying
-    private let outgoingMessageAudioPlayer: AudioPlaying
     private let convoObserver: ConvoObserving
     private let database: Database
     private let messagesObserver: MessagesObserving
     private let querySize: UInt
+    private let soundsPlayer: SoundsPlaying
     private let unreadMessagesObserver: UnreadMessagesObserving
     private var convo: Convo? { didSet { didSetConvo() } }
     private var icons = [String: UIImage]()
@@ -17,21 +16,19 @@ class ConvoViewController: MessagesViewController {
     private var shouldPlaySounds = false
 
     init(applicationStateObserver: ApplicationStateObserving = ApplicationStateObserver(),
-         incomingMessageAudioPlayer: AudioPlaying = Audio.incomingMessageAudioPlayer,
-         outgoingMessageAudioPlayer: AudioPlaying = Audio.outgoingMessageAudioPlayer,
          convoObserver: ConvoObserving = ConvoObserver(),
          database: Database = Shared.database,
          messagesObserver: MessagesObserving = MessagesObserver(),
          querySize: UInt = DatabaseOption.querySize,
+         soundsPlayer: SoundsPlaying = SoundsPlayer(),
          unreadMessagesObserver: UnreadMessagesObserving = UnreadMessagesObserver(),
          convo: Convo) {
         self.applicationStateObserver = applicationStateObserver
-        self.incomingMessageAudioPlayer = incomingMessageAudioPlayer
-        self.outgoingMessageAudioPlayer = outgoingMessageAudioPlayer
         self.convoObserver = convoObserver
         self.database = database
         self.messagesObserver = messagesObserver
         self.querySize = querySize
+        self.soundsPlayer = soundsPlayer
         self.unreadMessagesObserver = unreadMessagesObserver
         self.convo = convo
 
@@ -64,7 +61,7 @@ class ConvoViewController: MessagesViewController {
             if let shouldPlaySounds = self?.shouldPlaySounds, shouldPlaySounds,
                 newMessage.sender.id != self?.convo?.senderId,
                 !newMessage.hasBeenRead {
-                self?.incomingMessageAudioPlayer.play()
+                self?.soundsPlayer.playMessageIn()
             }
             if newMessage.hasBeenRead {
                 self?.shouldPlaySounds = true
@@ -172,8 +169,8 @@ private extension ConvoViewController {
         if convo.receiverIsBlocked {
             navigationItem.title?.append(" 🚫")
         }
-        icons[convo.receiverProxyKey] = UIImage(named: convo.receiverIcon)
-        icons[convo.senderProxyKey] = UIImage(named: convo.senderIcon)
+        icons[convo.receiverProxyKey] = Image.make(convo.receiverIcon)
+        icons[convo.senderProxyKey] = Image.make(convo.senderIcon)
         messagesCollectionView.reloadDataAndKeepOffset()
     }
 }
@@ -185,14 +182,7 @@ extension ConvoViewController: MessageInputBarDelegate {
         guard text.count > 0, let convo = convo else {
             return
         }
-        database.sendMessage(convo: convo, text: text) { [weak self] result in
-            switch result {
-            case .failure(let error):
-                StatusBar.showErrorStatusBarBanner(error)
-            case .success:
-                self?.outgoingMessageAudioPlayer.play()
-            }
-        }
+        database.sendMessage(convo: convo, text: text) { _ in }
     }
 }
 

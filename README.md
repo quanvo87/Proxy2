@@ -41,9 +41,9 @@
   - Built chat backend from scratch on top of [Firebase](https://firebase.google.com/)
   - Wrote [FirebaseHelper](https://github.com/quanvo87/FirebaseHelper), for safe and easy wrappers around common database functions
   - Flat data structure for performant queries
-  - [Cloud Functions](https://firebase.google.com/docs/functions/) watch for "zombie" data as a result of race conditions and clean them up
-  - All data that is no longer needed is cleaned up when appropriate
   - Data is indexed on server for performance
+  - All data that is no longer needed is cleaned up when appropriate
+  - [Cloud Functions](https://firebase.google.com/docs/functions/) watch for "zombie" data as a result of race conditions and clean them up
   - Pagination load: load some initial data, load more when user scrolls up
   - Email and Facebook authentication
   - Proxy name generating algorithm uses handpicked adjectives and nouns for over half a billion possibilities

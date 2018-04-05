@@ -10,7 +10,7 @@ class ConvosTableViewCell: UITableViewCell {
 
     func load(_ convo: Convo) {
         blockedIndicatorImageView.image = convo.receiverIsBlocked ? UIImage(named: "blockUser") : nil
-        iconImageView.image = UIImage(named: convo.receiverIcon)
+        iconImageView.image = Image.make(convo.receiverIcon)
         lastMessageLabel.text = convo.lastMessage
         timestampLabel.text = convo.timestamp.asTimeAgo
         titleLabel.attributedText = convo.label

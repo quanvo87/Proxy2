@@ -90,15 +90,7 @@ extension BlockedUsersViewController: UITableViewDelegate {
                    forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             let blockedUser = blockedUsers[indexPath.row]
-            database.unblock(blockedUser) { error in
-                if let error = error {
-                    StatusBar.showErrorStatusBarBanner(error)
-                } else {
-                    StatusBar.showSuccessStatusBarBanner(
-                        "The owner of \(blockedUser.blockeeProxyName) has been unblocked."
-                    )
-                }
-            }
+            database.unblock(blockedUser) { _ in }
         }
     }
 

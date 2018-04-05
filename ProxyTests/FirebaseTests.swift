@@ -16,52 +16,17 @@ class FirebaseTests: XCTestCase {
     static let uid2 = "uid2"
 
     override func setUp() {
-        super.setUp()
-        let expectation = self.expectation(description: #function)
-        defer { waitForExpectations(timeout: 10) }
         guard Constant.isRunningTests else {
             fatalError()
         }
+        super.setUp()
+        let expectation = self.expectation(description: #function)
+        defer { waitForExpectations(timeout: 10) }
         Shared.testDatabaseReference.removeValue { error, _ in
             XCTAssertNil(error, String(describing: error))
             expectation.fulfill()
         }
     }
-
-    static func makeProxy(ownerId: String = FirebaseTests.uid, completion: @escaping (Proxy) -> Void) {
-        Shared.database.makeProxy(currentProxyCount: 0, ownerId: ownerId) { result in
-            switch result {
-            case .failure:
-                XCTFail()
-            case .success(let proxy):
-                completion(proxy)
-            }
-        }
-    }
-
-    // swiftlint:disable line_length
-    static func sendMessage(completion: @escaping (_ message: Message, _ convo: Convo, _ sender: Proxy, _ receiver: Proxy) -> Void) {
-        makeProxy { sender in
-            makeProxy (ownerId: uid2) { receiver in
-                Shared.database.sendMessage(sender: sender, receiver: receiver, text: text) { result in
-                    switch result {
-                    case .failure(let error):
-                        XCTFail(String(describing: error))
-                    case .success(let tuple):
-                        Shared.database.getConvo(ownerId: tuple.convo.senderId, convoKey: tuple.convo.key) { result in
-                            switch result {
-                            case .failure(let error):
-                                XCTFail(String(describing: error))
-                            case .success(let convo):
-                                completion(tuple.message, convo, sender, receiver)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    // swiftlint:enable line_length
 }
 
 extension FirebaseTests {
@@ -225,90 +190,6 @@ extension FirebaseTests {
         }
     }
 
-    func testGetConvo() {
-        let expectation = self.expectation(description: #function)
-        defer { waitForExpectations(timeout: 10) }
-
-        FirebaseTests.sendMessage { _, convo, _, _ in
-            Shared.database.getConvo(ownerId: convo.senderId, convoKey: convo.key) { result in
-                switch result {
-                case .failure(let error):
-                    XCTFail(String(describing: error))
-                    expectation.fulfill()
-                case .success(let retrievedConvo):
-                    XCTAssertEqual(retrievedConvo, convo)
-                    expectation.fulfill()
-                }
-            }
-        }
-    }
-
-    func testGetProxy() {
-        let expectation = self.expectation(description: #function)
-        defer { waitForExpectations(timeout: 10) }
-
-        FirebaseTests.makeProxy { proxy in
-            Shared.database.getProxy(proxyKey: proxy.key) { result in
-                switch result {
-                case .failure(let error):
-                    XCTFail(String(describing: error))
-                    expectation.fulfill()
-                case .success(let retrievedProxy):
-                    XCTAssertEqual(retrievedProxy, proxy)
-                    expectation.fulfill()
-                }
-            }
-        }
-    }
-
-    func testGetProxyNotFound() {
-        let expectation = self.expectation(description: #function)
-        defer { waitForExpectations(timeout: 10) }
-
-        Shared.database.getProxy(proxyKey: "invalid key") { result in
-            switch result {
-            case .failure:
-                expectation.fulfill()
-            case .success:
-                XCTFail()
-                expectation.fulfill()
-            }
-        }
-    }
-
-    func testGetProxyWithOwnerId() {
-        let expectation = self.expectation(description: #function)
-        defer { waitForExpectations(timeout: 10) }
-
-        FirebaseTests.makeProxy { proxy in
-            Shared.database.getProxy(ownerId: proxy.ownerId, proxyKey: proxy.key) { result in
-                switch result {
-                case .failure(let error):
-                    XCTFail(String(describing: error))
-                    expectation.fulfill()
-                case .success(let retrievedProxy):
-                    XCTAssertEqual(retrievedProxy, proxy)
-                    expectation.fulfill()
-                }
-            }
-        }
-    }
-
-    func testGetProxyWithOwnerIdNotFound() {
-        let expectation = self.expectation(description: #function)
-        defer { waitForExpectations(timeout: 10) }
-
-        Shared.database.getProxy(ownerId: FirebaseTests.uid, proxyKey: "invalid key") { result in
-            switch result {
-            case .failure:
-                expectation.fulfill()
-            case .success:
-                XCTFail()
-                expectation.fulfill()
-            }
-        }
-    }
-
     func testGetUserPropertySound() {
         let expectation = self.expectation(description: #function)
         defer { waitForExpectations(timeout: 10) }
@@ -468,7 +349,7 @@ extension FirebaseTests {
         FirebaseTests.sendMessage { _, senderConvo, _, receiverProxy in
             Shared.database.delete(receiverProxy) { error in
                 XCTAssertNil(error, String(describing: error))
-                Shared.database.getConvo(ownerId: senderConvo.senderId, convoKey: senderConvo.key) { result in
+                Firebase.getConvo(ownerId: senderConvo.senderId, convoKey: senderConvo.key) { result in
                     switch result {
                     case .failure(let error):
                         XCTFail(String(describing: error))
@@ -513,19 +394,22 @@ extension FirebaseTests {
             )
             Shared.database.block(blockedUser) { error in
                 XCTAssertNil(error, String(describing: error))
-                Shared.database.sendMessage(sender: sender, receiver: receiver, text: FirebaseTests.text) { result in
-                    switch result {
-                    case .failure(let error):
-                        if case ProxyError.receiverIsBlocking = error {
-                            expectation.fulfill()
-                        } else {
-                            XCTFail(String(describing: error))
+                Shared.database.sendMessage(
+                    sender: sender,
+                    receiverProxyKey: receiver.key,
+                    text: FirebaseTests.text) { result in
+                        switch result {
+                        case .failure(let error):
+                            if case ProxyError.receiverIsBlocking = error {
+                                expectation.fulfill()
+                            } else {
+                                XCTFail(String(describing: error))
+                                expectation.fulfill()
+                            }
+                        case .success:
+                            XCTFail()
                             expectation.fulfill()
                         }
-                    case .success:
-                        XCTFail()
-                        expectation.fulfill()
-                    }
                 }
             }
         }
@@ -554,19 +438,22 @@ extension FirebaseTests {
 
         FirebaseTests.sendMessage { _, _, _, receiver in
             FirebaseTests.makeProxy { sender2 in
-                Shared.database.sendMessage(sender: sender2, receiver: receiver, text: FirebaseTests.text) { result in
-                    switch result {
-                    case .failure(let error):
-                        if case ProxyError.alreadyChattingWithUser = error {
-                            expectation.fulfill()
-                        } else {
-                            XCTFail(String(describing: error))
+                Shared.database.sendMessage(
+                    sender: sender2,
+                    receiverProxyKey: receiver.key,
+                    text: FirebaseTests.text) { result in
+                        switch result {
+                        case .failure(let error):
+                            if case ProxyError.alreadyChattingWithUser = error {
+                                expectation.fulfill()
+                            } else {
+                                XCTFail(String(describing: error))
+                                expectation.fulfill()
+                            }
+                        case .success:
+                            XCTFail()
                             expectation.fulfill()
                         }
-                    case .success:
-                        XCTFail()
-                        expectation.fulfill()
-                    }
                 }
             }
         }
@@ -711,6 +598,43 @@ extension FirebaseTests {
             }
         }
     }
+}
+
+private extension FirebaseTests {
+    static func makeProxy(ownerId: String = FirebaseTests.uid, completion: @escaping (Proxy) -> Void) {
+        Shared.database.makeProxy(currentProxyCount: 0, ownerId: ownerId) { result in
+            switch result {
+            case .failure:
+                XCTFail()
+            case .success(let proxy):
+                completion(proxy)
+            }
+        }
+    }
+
+    // swiftlint:disable line_length
+    static func sendMessage(completion: @escaping (_ message: Message, _ convo: Convo, _ sender: Proxy, _ receiver: Proxy) -> Void) {
+        makeProxy { sender in
+            makeProxy (ownerId: uid2) { receiver in
+                Shared.database.sendMessage(sender: sender, receiverProxyKey: receiver.key, text: text) { result in
+                    switch result {
+                    case .failure(let error):
+                        XCTFail(String(describing: error))
+                    case .success(let tuple):
+                        Firebase.getConvo(ownerId: tuple.convo.senderId, convoKey: tuple.convo.key) { result in
+                            switch result {
+                            case .failure(let error):
+                                XCTFail(String(describing: error))
+                            case .success(let convo):
+                                completion(tuple.message, convo, sender, receiver)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    // swiftlint:enable line_length
 }
 
 extension GroupWork {
