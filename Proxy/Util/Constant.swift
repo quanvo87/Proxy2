@@ -87,6 +87,15 @@ enum Alert {
     }
 }
 
+enum StringAttributes {
+    static let blue = [NSAttributedStringKey.foregroundColor: Color.iOSBlue]
+    static let gray = [NSAttributedStringKey.foregroundColor: UIColor.gray]
+    static let redAndStrikethrough = [
+        NSAttributedStringKey.foregroundColor: UIColor.red,
+        NSAttributedStringKey.strikethroughStyle: NSUnderlineStyle.styleSingle.rawValue
+        ] as [NSAttributedStringKey: Any]
+}
+
 enum Child {
     static let blockedUsers = "blockedUsers"
     static let convos = "convos"

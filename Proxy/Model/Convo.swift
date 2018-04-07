@@ -81,34 +81,26 @@ struct Convo {
     }
 
     var label: NSAttributedString {
-        let blue = [NSAttributedStringKey.foregroundColor: Color.iOSBlue]
-        let gray = [NSAttributedStringKey.foregroundColor: UIColor.gray]
-        let redAndStrikethrough = [
-            NSAttributedStringKey.foregroundColor: UIColor.red,
-            NSAttributedStringKey.strikethroughStyle: NSUnderlineStyle.styleSingle.rawValue
-            ] as [NSAttributedStringKey: Any]
-
         let receiver: NSMutableAttributedString
         if receiverDeletedProxy {
-            receiver = NSMutableAttributedString(string: receiverDisplayName, attributes: redAndStrikethrough)
+            receiver = NSMutableAttributedString(
+                string: receiverDisplayName,
+                attributes: StringAttributes.redAndStrikethrough
+            )
         } else if receiverNickname != "" {
-            receiver = NSMutableAttributedString(string: receiverNickname, attributes: blue)
+            receiver = NSMutableAttributedString(string: receiverNickname, attributes: StringAttributes.blue)
         } else {
             receiver = NSMutableAttributedString(string: receiverProxyName)
         }
-
         let sender: NSAttributedString
         if senderNickname != "" {
-            sender = NSAttributedString(string: senderNickname, attributes: blue)
+            sender = NSAttributedString(string: senderNickname, attributes: StringAttributes.blue)
         } else {
-            sender = NSAttributedString(string: senderProxyName, attributes: gray)
+            sender = NSAttributedString(string: senderProxyName, attributes: StringAttributes.gray)
         }
-
-        let comma = NSAttributedString(string: ", ", attributes: gray)
-
+        let comma = NSAttributedString(string: ", ", attributes: StringAttributes.gray)
         receiver.append(comma)
         receiver.append(sender)
-
         return receiver
     }
 
@@ -128,12 +120,12 @@ struct Convo {
          receiverId: String,
          receiverIsBlocked: Bool = false,
          receiverIsBlocking: Bool = false,
-         receiverNickname: String = "",
+         receiverNickname: String,
          receiverProxyKey: String,
          receiverProxyName: String,
          senderIcon: String,
          senderId: String,
-         senderNickname: String = "",
+         senderNickname: String,
          senderProxyKey: String,
          senderProxyName: String,
          timestamp: Double = Date().timeIntervalSince1970) {

@@ -297,7 +297,7 @@ private extension Firebase {
     }
 
     static func _delete(_ proxy: Proxy, completion: @escaping ErrorCallback) {
-        Firebase.getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { result in
+        Firebase.getConvosForProxy(ownerId: proxy.ownerId, proxyKey: proxy.key) { result in
             switch result {
             case .failure(let error):
                 completion(error)
@@ -316,13 +316,24 @@ private extension Firebase {
     }
 
     static func _setIcon(to icon: String, for proxy: Proxy, completion: @escaping ErrorCallback) {
-        Firebase.getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { result in
+        Firebase.getConvosForProxy(ownerId: proxy.ownerId, proxyKey: proxy.key) { result in
             switch result {
             case .failure(let error):
                 completion(error)
             case .success(let convos):
+                let proxyKey = Proxy(
+                    dateCreated: proxy.dateCreated,
+                    firstWrite: false,
+                    hasUnreadMessage: proxy.hasUnreadMessage,
+                    icon: icon,
+                    lastMessage: proxy.lastMessage,
+                    name: proxy.name,
+                    nickname: proxy.nickname,
+                    ownerId: proxy.ownerId,
+                    timestamp: proxy.timestamp)
                 let work = GroupWork()
                 work.set(.icon(icon), for: proxy)
+                work.setProxyKey(proxyKey)
                 work.set(.receiverIcon(icon), for: convos, asSender: false)
                 work.set(.senderIcon(icon), for: convos, asSender: true)
                 work.allDone {
@@ -333,7 +344,7 @@ private extension Firebase {
     }
 
     static func _setNickname(to nickname: String, for proxy: Proxy, completion: @escaping ErrorCallback) {
-        Firebase.getConvosForProxy(key: proxy.key, ownerId: proxy.ownerId) { result in
+        Firebase.getConvosForProxy(ownerId: proxy.ownerId, proxyKey: proxy.key) { result in
             switch result {
             case .failure(let error):
                 completion(error)
@@ -348,15 +359,15 @@ private extension Firebase {
         }
     }
 
-    static func getConvosForProxy(key: String,
-                                  ownerId: String,
+    static func getConvosForProxy(ownerId: String,
+                                  proxyKey: String,
                                   completion: @escaping (Result<[Convo], Error>) -> Void) {
         Shared.firebaseHelper.get(Child.convos, ownerId) { result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))
             case .success(let data):
-                completion(.success(data.asConvosArray(proxyKey: key)))
+                completion(.success(data.asConvosArray(proxyKey: proxyKey)))
             }
         }
     }
@@ -535,10 +546,12 @@ private extension Firebase {
                     key: convoKey,
                     receiverIcon: receiver.icon,
                     receiverId: receiver.ownerId,
+                    receiverNickname: "",
                     receiverProxyKey: receiver.key,
                     receiverProxyName: receiver.name,
                     senderIcon: sender.icon,
                     senderId: sender.ownerId,
+                    senderNickname: sender.nickname,
                     senderProxyKey: sender.key,
                     senderProxyName: sender.name
                 )
@@ -546,10 +559,12 @@ private extension Firebase {
                     key: convoKey,
                     receiverIcon: sender.icon,
                     receiverId: sender.ownerId,
+                    receiverNickname: "",
                     receiverProxyKey: sender.key,
                     receiverProxyName: sender.name,
                     senderIcon: receiver.icon,
                     senderId: receiver.ownerId,
+                    senderNickname: receiver.nickname,
                     senderProxyKey: receiver.key,
                     senderProxyName: receiver.name
                 )

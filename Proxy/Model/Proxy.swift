@@ -26,6 +26,7 @@ enum SettableProxyProperty {
 
 struct Proxy {
     let dateCreated: Double
+    let firstWrite: Bool
     let hasUnreadMessage: Bool
     let icon: String
     let key: String
@@ -38,6 +39,7 @@ struct Proxy {
     var asDictionary: Any {
         return [
             "dateCreated": dateCreated,
+            "firstWrite": firstWrite,
             "hasUnreadMessage": hasUnreadMessage,
             "icon": icon,
             "key": key,
@@ -62,6 +64,7 @@ struct Proxy {
     }
 
     init(dateCreated: Double = Date().timeIntervalSince1970,
+         firstWrite: Bool = true,
          hasUnreadMessage: Bool = false,
          icon: String,
          lastMessage: String = "",
@@ -70,6 +73,7 @@ struct Proxy {
          ownerId: String,
          timestamp: Double = Date().timeIntervalSince1970) {
         self.dateCreated = dateCreated
+        self.firstWrite = firstWrite
         self.hasUnreadMessage = hasUnreadMessage
         self.icon = icon
         self.key = name.lowercased()
@@ -83,6 +87,7 @@ struct Proxy {
     init(_ data: DataSnapshot) throws {
         let dictionary = data.value as AnyObject
         guard let dateCreated = dictionary["dateCreated"] as? Double,
+            let firstWrite = dictionary["firstWrite"] as? Bool,
             let hasUnreadMessage = dictionary["hasUnreadMessage"] as? Bool,
             let icon = dictionary["icon"] as? String,
             let key = dictionary["key"] as? String,
@@ -94,6 +99,7 @@ struct Proxy {
                 throw ProxyError.unknown
         }
         self.dateCreated = dateCreated
+        self.firstWrite = firstWrite
         self.hasUnreadMessage = hasUnreadMessage
         self.icon = icon
         self.key = key
@@ -108,6 +114,7 @@ struct Proxy {
 extension Proxy: Equatable {
     static func == (_ lhs: Proxy, _ rhs: Proxy) -> Bool {
         return lhs.dateCreated.isWithinRangeOf(rhs.dateCreated) &&
+        lhs.firstWrite == rhs.firstWrite &&
             lhs.hasUnreadMessage == rhs.hasUnreadMessage &&
             lhs.icon == rhs.icon &&
             lhs.key == rhs.key &&
