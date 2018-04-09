@@ -20,7 +20,7 @@ class SoundSwitchManager: SoundSwitchManaging {
             if case let .success(data) = result, let soundOnFromDatabase = data.value as? Bool {
                 soundOn = soundOnFromDatabase
             } else {
-                Shared.database.set(.soundOn(true), for: uid) { _ in }
+                Shared.database.set(.soundOn(true), for: uid, playSound: false) { _ in }
             }
             _self.soundSwitch.setOn(soundOn, animated: false)
             UserDefaults.standard.set(soundOn, forKey: SettableUserProperty.Name.soundOn.rawValue)

@@ -51,6 +51,8 @@ class LoginManager: LoginManaging {
             if let error = error {
                 StatusBar.showErrorBanner(subtitle: error.localizedDescription)
             } else {
+                Haptic.playSuccess()
+                Sound.soundsPlayer.playSuccess()
                 StatusBar.showSuccessStatusBarBanner("Sign up successful. Welcome! 🎉")
             }
         }

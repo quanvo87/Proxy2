@@ -66,7 +66,12 @@ protocol Database {
     func setIcon(to icon: String, for proxy: Proxy, completion: @escaping ErrorCallback)
     func setNickname(to nickname: String, for proxy: Proxy, completion: @escaping ErrorCallback)
     func setReceiverNickname(to nickname: String, for convo: Convo, completion: @escaping ErrorCallback)
-    func set(_ userProperty: SettableUserProperty, for uid: String, completion: @escaping ErrorCallback)
+    func set(
+        _ userProperty: SettableUserProperty,
+        for uid: String,
+        playSound: Bool,
+        completion: @escaping ErrorCallback
+    )
     func unblock(_ blockedUser: BlockedUser, completion: @escaping ErrorCallback)
 }
 
@@ -264,11 +269,14 @@ class Firebase: Database {
         }
     }
 
-    func set(_ property: SettableUserProperty, for uid: String, completion: @escaping ErrorCallback) {
+    func set(_ property: SettableUserProperty,
+             for uid: String,
+             playSound: Bool = false,
+             completion: @escaping ErrorCallback) {
         let work = GroupWork()
         work.set(property, for: uid)
         work.allDone {
-            if case let .soundOn(soundOn) = property, soundOn {
+            if case let .soundOn(soundOn) = property, soundOn, playSound {
                 Haptic.playSuccess()
                 Sound.soundsPlayer.playSuccess()
             }
