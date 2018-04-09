@@ -35,6 +35,8 @@ class LoginManager: LoginManaging {
             if let error = error {
                 StatusBar.showErrorBanner(subtitle: error.localizedDescription)
             } else {
+                Haptic.playSuccess()
+                Sound.soundsPlayer.playSuccess()
                 StatusBar.showSuccessStatusBarBanner("Log in successful. Welcome! 🎉")
             }
         }
@@ -69,6 +71,8 @@ class LoginManager: LoginManaging {
                     if let error = error {
                         StatusBar.showErrorBanner(subtitle: error.localizedDescription)
                     } else {
+                        Haptic.playSuccess()
+                        Sound.soundsPlayer.playSuccess()
                         StatusBar.showSuccessStatusBarBanner("Log in successful. Welcome! 🎉")
                     }
                 }
@@ -87,6 +91,8 @@ class LoginManager: LoginManaging {
             if let error = error {
                 StatusBar.showErrorBanner(subtitle: error.localizedDescription)
             } else {
+                Haptic.playSuccess()
+                Sound.soundsPlayer.playSuccess()
                 StatusBar.showSuccessBanner(
                     title: "Password reset email sent!",
                     subtitle: "Check your email to reset your password 📧."

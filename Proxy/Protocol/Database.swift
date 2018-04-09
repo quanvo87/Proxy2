@@ -269,6 +269,7 @@ class Firebase: Database {
         work.set(property, for: uid)
         work.allDone {
             if case let .soundOn(soundOn) = property, soundOn {
+                Haptic.playSuccess()
                 Sound.soundsPlayer.playSuccess()
             }
             completion(Firebase.getError(work.result))
