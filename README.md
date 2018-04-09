@@ -41,7 +41,9 @@
   - Built chat backend from scratch on top of [Firebase](https://firebase.google.com/)
   - Wrote [FirebaseHelper](https://github.com/quanvo87/FirebaseHelper), for safe and easy wrappers around common database functions
   - Flat data structure for performant queries
-  - Data is indexed on server for performance
+  - Database rules:
+    - Index data on server for performance
+    - Data validation
   - All data that is no longer needed is cleaned up when appropriate
   - [Cloud Functions](https://firebase.google.com/docs/functions/) watch for "zombie" data as a result of race conditions and clean them up
   - Pagination load: load some initial data, load more when user scrolls up
@@ -51,21 +53,21 @@
 - Notifications
   - Apple Push Notifications using [Cloud Messaging](https://firebase.google.com/docs/cloud-messaging/)
   - Open conversation when tap new message notification, play sound, update badge count, etc.
-  - Serverless [Cloud Function](https://firebase.google.com/docs/functions/) in Javascript triggers on certain database events, processes, and sends the notification
+  - Serverless [Cloud Function](https://firebase.google.com/docs/functions/) (Javascript) triggers on certain database events, processes, and sends the notification
 
 - Memory management
   - Weak references in closure capture lists
-  - Use Instruments for memory profiling
+  - Profile in Instruments
 
 - Concurrency:
   - Wrote [GroupWork](https://github.com/quanvo87/GroupWork) to manage asynchronous tasks in a clean and easily debuggable way
 
 - Testing
-  - Tests against development database using XCTest
+  - XCTest
+  - TestFlight
 
 - Consistent style
-  - Function and property naming
-  - Function and property ordering
+  - Function/property naming/ordering
   - Spacing
   - [SwiftLint](https://github.com/realm/SwiftLint)
 
@@ -75,6 +77,7 @@
 - Refactor view controllers:
   - Extract elements (UITableViewDatasource, UITableViewDelegate, etc.)
   - More decoupling of view and model
+- Explore other backends (AWS)
 
 #### Acknowledgements
 

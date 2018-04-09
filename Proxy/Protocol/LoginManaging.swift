@@ -105,11 +105,8 @@ class LoginManager: LoginManaging {
 
     func logOut() {
         do {
-            WQNetworkActivityIndicator.shared.show()
             try Shared.auth.signOut()
-            WQNetworkActivityIndicator.shared.hide()
         } catch {
-            WQNetworkActivityIndicator.shared.hide()
             StatusBar.showErrorBanner(subtitle: error.localizedDescription)
         }
     }
