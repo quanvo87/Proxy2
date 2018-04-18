@@ -1,6 +1,6 @@
 import AVKit
 import Firebase
-import FBSDKCoreKit
+import FacebookCore
 import SwiftMessages
 import UserNotifications
 
@@ -12,6 +12,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private let notificationHandler = NotificationHandler()
     private var launchScreenFinishedObserver: NSObjectProtocol?
     private var uid: String?
+
+    func applicationDidBecomeActive(_ application: UIApplication) {
+        AppEventsLogger.activate()
+    }
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
@@ -76,13 +80,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         SwiftMessages.defaultConfig.presentationContext = .window(windowLevel: UIWindowLevelStatusBar)
         SwiftMessages.defaultConfig.duration = .seconds(seconds: 4)
 
-        return FBSDKApplicationDelegate.sharedInstance().application(
+        return SDKApplicationDelegate.shared.application(
             application,
             didFinishLaunchingWithOptions: launchOptions
         )
     }
 
-    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any],
+    func application(_ application: UIApplication,
+                     didReceiveRemoteNotification userInfo: [AnyHashable: Any],
                      fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         guard let uid = uid else {
             completionHandler(.noData)
@@ -102,23 +107,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
-        return FBSDKApplicationDelegate.sharedInstance().application(
-            application,
-            open: url,
-            sourceApplication: sourceApplication,
-            annotation: annotation
-        )
-    }
-
-    func applicationDidBecomeActive(_ application: UIApplication) {
-        FBSDKAppEvents.activateApp()
-    }
-
-    deinit {
-        if let launchScreenFinishedObserver = launchScreenFinishedObserver {
-            NotificationCenter.default.removeObserver(launchScreenFinishedObserver)
-        }
+    func application(_ app: UIApplication,
+                     open url: URL,
+                     options: [UIApplicationOpenURLOptionsKey: Any] = [:]) -> Bool {
+        return SDKApplicationDelegate.shared.application(app, open: url, options: options)
     }
 }
 
@@ -141,7 +133,6 @@ extension AppDelegate: MessagingDelegate {
     }
 }
 
-@available(iOS 10, *)
 extension AppDelegate: UNUserNotificationCenterDelegate {
     // swiftlint:disable line_length
     func userNotificationCenter(_ center: UNUserNotificationCenter,

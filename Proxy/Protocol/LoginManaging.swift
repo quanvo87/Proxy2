@@ -1,5 +1,4 @@
 import FacebookLogin
-import FBSDKCoreKit
 import FirebaseAuth
 import WQNetworkActivityIndicator
 
@@ -62,27 +61,39 @@ class LoginManager: LoginManaging {
         facebookButton?.showActivityIndicator()
         WQNetworkActivityIndicator.shared.show()
         facebookLoginManager.logIn(readPermissions: [.publicProfile]) { [weak self] result in
-            self?.facebookButton?.hideActivityIndicator()
-            WQNetworkActivityIndicator.shared.hide()
-            switch result {
-            case .success:
-                let credential = FacebookAuthProvider.credential(
-                    withAccessToken: FBSDKAccessToken.current().tokenString
-                )
-                Shared.auth.signIn(with: credential) { _, error in
-                    if let error = error {
-                        StatusBar.showErrorBanner(subtitle: error.localizedDescription)
-                    } else {
-                        Haptic.playSuccess()
-                        Sound.soundsPlayer.playSuccess()
-                        StatusBar.showSuccessStatusBarBanner("Log in successful. Welcome! 🎉")
-                    }
+            self?.firebaseFacebookLogIn(facebookLoginResult: result) { firebaseFacebookLoginResult in
+                WQNetworkActivityIndicator.shared.hide()
+                switch firebaseFacebookLoginResult {
+                case .success:
+                    Haptic.playSuccess()
+                    Sound.soundsPlayer.playSuccess()
+                    StatusBar.showSuccessStatusBarBanner("Log in successful. Welcome! 🎉")
+                case .failure(let error):
+                    StatusBar.showErrorBanner(subtitle: error.localizedDescription)
+                    self?.facebookButton?.hideActivityIndicator()
+                case .cancelled:
+                    self?.facebookButton?.hideActivityIndicator()
                 }
-            case .failed(let error):
-                StatusBar.showErrorBanner(subtitle: error.localizedDescription)
-            case .cancelled:
-                return
             }
+        }
+    }
+
+    private func firebaseFacebookLogIn(facebookLoginResult: LoginResult,
+                                       completion: @escaping (FirebaseFacebookLoginResult) -> Void) {
+        switch facebookLoginResult {
+        case .success(_, _, let token):
+            let credential = FacebookAuthProvider.credential(withAccessToken: token.authenticationToken)
+            Shared.auth.signIn(with: credential) { _, error in
+                if let error = error {
+                    completion(.failure(error))
+                } else {
+                    completion(.success)
+                }
+            }
+        case .failed(let error):
+            completion(.failure(error))
+        case .cancelled:
+            completion(.cancelled)
         }
     }
 
@@ -109,5 +120,13 @@ class LoginManager: LoginManaging {
         } catch {
             StatusBar.showErrorBanner(subtitle: error.localizedDescription)
         }
+    }
+}
+
+private extension LoginManager {
+    enum FirebaseFacebookLoginResult {
+        case success
+        case failure(Error)
+        case cancelled
     }
 }

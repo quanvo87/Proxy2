@@ -134,6 +134,7 @@ class ConvosViewController: UIViewController, NewMessageMakerDelegate {
             showConvoViewController(newConvo)
             self.newConvo = nil
         }
+        didSetUnreadMessageCount()
         NotificationCenter.default.post(
             name: .willEnterConvo,
             object: nil,

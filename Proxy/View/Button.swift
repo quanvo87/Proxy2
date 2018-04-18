@@ -74,7 +74,6 @@ class Button: CustomPressableButton {
     func showActivityIndicator() {
         isEnabled = false
         centerLabel?.isHidden = true
-
         contentView.addSubview(activityIndicator)
         activityIndicator.autoCenterInSuperview()
         activityIndicator.startAnimating()
@@ -83,7 +82,6 @@ class Button: CustomPressableButton {
     func hideActivityIndicator() {
         isEnabled = true
         centerLabel?.isHidden = false
-
         activityIndicator.removeFromSuperview()
         activityIndicator.stopAnimating()
     }
