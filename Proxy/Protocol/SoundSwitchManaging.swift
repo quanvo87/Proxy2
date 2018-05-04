@@ -12,17 +12,17 @@ class SoundSwitchManager: SoundSwitchManaging {
         self.uid = uid
 
         Shared.database.get(.soundOn(Bool()), for: uid) { [weak self] result in
-            guard let _self = self else {
+            guard let strongSelf = self else {
                 return
             }
-            _self.soundSwitch.addTarget(self, action: #selector(_self.toggleSound), for: .valueChanged)
+            strongSelf.soundSwitch.addTarget(self, action: #selector(strongSelf.toggleSound), for: .valueChanged)
             var soundOn = true
             if case let .success(data) = result, let soundOnFromDatabase = data.value as? Bool {
                 soundOn = soundOnFromDatabase
             } else {
                 Shared.database.set(.soundOn(true), for: uid, playSound: false) { _ in }
             }
-            _self.soundSwitch.setOn(soundOn, animated: false)
+            strongSelf.soundSwitch.setOn(soundOn, animated: false)
             UserDefaults.standard.set(soundOn, forKey: SettableUserProperty.Name.soundOn.rawValue)
         }
     }

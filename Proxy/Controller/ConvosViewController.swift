@@ -16,7 +16,7 @@ class ConvosViewController: UIViewController, NewMessageMakerDelegate {
     private var currentProxyCount = 0
     private var isPresent = false
     private var shouldPlaySounds = false
-    private var unreadMessageCount = 0 { didSet { didSetUnreadMessageCount() } }
+    private var unreadMessageCount = 0
     private lazy var makeNewMessageButton = UIBarButtonItem(
         target: self,
         action: #selector(showNewMessageMakerViewController),
@@ -102,17 +102,18 @@ class ConvosViewController: UIViewController, NewMessageMakerDelegate {
         tableViewRefresher.refresh(tableView)
 
         unreadMessagesObserver.observe(uid: uid) { [weak self] update in
-            guard let _self = self else {
+            guard let strongSelf = self else {
                 return
             }
             switch update {
             case .added:
-                _self.unreadMessageCount += 1
+                strongSelf.unreadMessageCount += 1
             case .removed:
-                _self.unreadMessageCount -= 1
+                strongSelf.unreadMessageCount -= 1
             }
-            _self.navigationItem.title = "Messages" +  _self.unreadMessageCount.asStringWithParens
-            _self.tabBarController?.tabBar.items?.first?.badgeValue = _self.unreadMessageCount.asBadgeValue
+            strongSelf.navigationItem.title = "Messages" +  strongSelf.unreadMessageCount.asStringWithParens
+            strongSelf.tabBarController?.tabBar.items?.first?.badgeValue = strongSelf.unreadMessageCount.asBadgeValue
+            UIApplication.shared.applicationIconBadgeNumber = strongSelf.unreadMessageCount
         }
 
         view.addSubview(tableView)
@@ -134,7 +135,6 @@ class ConvosViewController: UIViewController, NewMessageMakerDelegate {
             showConvoViewController(newConvo)
             self.newConvo = nil
         }
-        didSetUnreadMessageCount()
         NotificationCenter.default.post(
             name: .willEnterConvo,
             object: nil,
@@ -168,10 +168,6 @@ private extension ConvosViewController {
         makeNewMessageButton.isEnabled = false
         showNewMessageMakerViewController(sender: nil, uid: uid)
         makeNewMessageButton.isEnabled = true
-    }
-
-    func didSetUnreadMessageCount() {
-        UIApplication.shared.applicationIconBadgeNumber = unreadMessageCount
     }
 }
 
