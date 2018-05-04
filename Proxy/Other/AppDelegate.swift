@@ -1,6 +1,6 @@
 import AVKit
-import Firebase
 import FacebookCore
+import Firebase
 import SwiftMessages
 import UserNotifications
 

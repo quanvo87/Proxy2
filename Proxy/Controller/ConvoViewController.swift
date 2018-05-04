@@ -83,21 +83,21 @@ class ConvoViewController: MessagesViewController {
         )
 
         unreadMessagesObserver.observe(uid: convo.senderId) { [weak self] update in
-            guard let _self = self else {
+            guard let strongSelf = self else {
                 return
             }
             switch update {
             case .added(let message):
-                if message.parentConvoKey == _self.convo?.key {
-                    if _self.isPresent {
-                        _self.database.read(message, at: Date()) { _ in }
+                if message.parentConvoKey == strongSelf.convo?.key {
+                    if strongSelf.isPresent {
+                        strongSelf.database.read(message, at: Date()) { _ in }
                     } else {
-                        _self.messagesToRead.update(with: message)
+                        strongSelf.messagesToRead.update(with: message)
                     }
                 }
             case .removed(let message):
-                if message.parentConvoKey == _self.convo?.key {
-                    _self.messagesToRead.remove(message)
+                if message.parentConvoKey == strongSelf.convo?.key {
+                    strongSelf.messagesToRead.remove(message)
                 }
             }
         }

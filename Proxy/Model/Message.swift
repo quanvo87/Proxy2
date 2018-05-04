@@ -27,8 +27,8 @@ struct Message: MessageType {
     var asDictionary: Any {
         var text: String
         switch data {
-        case .text(let _text):
-            text = _text
+        case .text(let textFromData):
+            text = textFromData
         default:
             text = ""
         }

@@ -1,10 +1,5 @@
 import MessageKit
 
-private enum FirstResponder {
-    case receiverTextField
-    case newMessageTextView
-}
-
 class NewMessageMakerViewController: UIViewController, SenderPickerDelegate {
     var sender: Proxy? { didSet { didSetSender() } }
     override var inputAccessoryView: UIView? { return messageInputBar }
@@ -128,6 +123,11 @@ class NewMessageMakerViewController: UIViewController, SenderPickerDelegate {
 }
 
 private extension NewMessageMakerViewController {
+    enum FirstResponder {
+        case receiverTextField
+        case newMessageTextView
+    }
+
     var receiverCell: NewMessageMakerReceiverTableViewCell? {
         if let receiverCell = tableView.cellForRow(
             at: IndexPath(row: 1, section: 0)
@@ -245,19 +245,20 @@ extension NewMessageMakerViewController: UITableViewDataSource {
                 self?.setSendButton()
             }
             cell.receiverTextField.userStoppedTypingHandler = { [weak self] in
-                guard let _self = self, let query = cell.receiverTextField.text, query.count > 0 else {
+                guard let strongSelf = self, let query = cell.receiverTextField.text, query.count > 0 else {
                     return
                 }
                 cell.iconImageView.image = nil
                 cell.receiverTextField.showLoadingIndicator()
-                self?.proxyKeysLoader.load(query: query, senderId: _self.uid) { items in
+                self?.proxyKeysLoader.load(query: query, senderId: strongSelf.uid) { items in
                     cell.receiverTextField.filterItems(items)
                     cell.receiverTextField.stopLoadingIndicator()
                 }
             }
             let fontSize: CGFloat = DeviceInfo.size == .small ? 14 : 17
-            cell.receiverTextField.highlightAttributes =
-                [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: fontSize)]
+            cell.receiverTextField.highlightAttributes = [
+                NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: fontSize)
+            ]
             cell.receiverTextField.theme.font = .systemFont(ofSize: fontSize)
             cell.receiverTextField.comparisonOptions = [.caseInsensitive]
             cell.receiverTextField.delegate = self

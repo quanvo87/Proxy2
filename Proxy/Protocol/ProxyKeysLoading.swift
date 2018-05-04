@@ -17,7 +17,7 @@ class ProxyKeysLoader: ProxyKeysLoading {
                 .queryOrderedByKey()
                 .queryStarting(atValue: query)
                 .observeSingleEvent(of: .value) { data in
-                    completion(data.children.flatMap {
+                    completion(data.children.compactMap {
                         guard let data = $0 as? DataSnapshot,
                             let proxy = try? Proxy(data),
                             proxy.ownerId != senderId else {

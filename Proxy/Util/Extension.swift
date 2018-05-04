@@ -69,7 +69,7 @@ extension DataSnapshot {
     }
 
     var asBlockedUsersArray: [BlockedUser] {
-        return children.flatMap {
+        return children.compactMap {
             guard let data = $0 as? DataSnapshot, let blockedUser = try? BlockedUser(data) else {
                 return nil
             }
@@ -78,7 +78,7 @@ extension DataSnapshot {
     }
 
     func asConvosArray(proxyKey: String?) -> [Convo] {
-        return children.flatMap {
+        return children.compactMap {
             guard let data = $0 as? DataSnapshot, let convo = try? Convo(data) else {
                 return nil
             }
@@ -95,7 +95,7 @@ extension DataSnapshot {
     }
 
     var asMessagesArray: [Message] {
-        return children.flatMap {
+        return children.compactMap {
             guard let data = $0 as? DataSnapshot, let message = try? Message(data) else {
                 return nil
             }
@@ -104,7 +104,7 @@ extension DataSnapshot {
     }
 
     var asProxiesArray: [Proxy] {
-        return children.flatMap {
+        return children.compactMap {
             guard let data = $0 as? DataSnapshot, let proxy = try? Proxy(data) else {
                 return nil
             }
