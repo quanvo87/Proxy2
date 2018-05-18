@@ -33,10 +33,17 @@ class ConvosObserver: ConvosObsering {
             return
         }
         loading = true
-        ref?.queryEnding(atValue: timestamp)
+        var tempHandle: DatabaseHandle?
+        tempHandle = ref?.queryEnding(atValue: timestamp)
             .queryLimited(toLast: DatabaseOption.querySize)
             .queryOrdered(byChild: Child.timestamp)
-            .observeSingleEvent(of: .value) { [weak self] data in
+            .observe(.value) { [weak self] data in
+                guard let handle = tempHandle, let `self` = self else {
+                    return
+                }
+                defer {
+                    self.ref?.removeObserver(withHandle: handle)
+                }
                 var convos = data.asConvosArray(proxyKey: proxyKey)
                 guard convos.count > 1 else {
                     completion([])
@@ -44,7 +51,7 @@ class ConvosObserver: ConvosObsering {
                 }
                 convos.removeLast(1)
                 completion(convos.reversed())
-                self?.loading = false
+                self.loading = false
         }
     }
 

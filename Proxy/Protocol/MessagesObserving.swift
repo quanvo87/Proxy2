@@ -30,10 +30,17 @@ class MessagesObserver: MessagesObserving {
             return
         }
         loading = true
-        ref?.queryEnding(atValue: id)
+        var tempHandle: DatabaseHandle?
+        tempHandle = ref?.queryEnding(atValue: id)
             .queryLimited(toLast: DatabaseOption.querySize)
             .queryOrderedByKey()
-            .observeSingleEvent(of: .value) { [weak self] data in
+            .observe(.value) { [weak self] data in
+                guard let handle = tempHandle, let `self` = self else {
+                    return
+                }
+                defer {
+                    self.ref?.removeObserver(withHandle: handle)
+                }
                 var messages = data.asMessagesArray
                 guard messages.count > 1 else {
                     completion([])
@@ -41,7 +48,7 @@ class MessagesObserver: MessagesObserving {
                 }
                 messages.removeLast(1)
                 completion(messages)
-                self?.loading = false
+                self.loading = false
         }
     }
 

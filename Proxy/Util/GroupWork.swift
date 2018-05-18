@@ -1,3 +1,4 @@
+import FirebaseDatabase
 import GroupWork
 
 extension GroupWork {
@@ -170,11 +171,18 @@ private extension GroupWork {
                                           proxyKey: String,
                                           completion: @escaping (Result<[Message], Error>) -> Void) {
         do {
-            try Shared.firebaseHelper.makeReference(Child.users, ownerId, Child.unreadMessages)
+            let ref = try Shared.firebaseHelper.makeReference(Child.users, ownerId, Child.unreadMessages)
                 .queryEqual(toValue: proxyKey)
                 .queryOrdered(byChild: Child.receiverProxyKey)
-                .observeSingleEvent(of: .value) { data in
-                    completion(.success(data.asMessagesArray))
+            var tempHandle: DatabaseHandle?
+            tempHandle = ref.observe(.value) { data in
+                guard let handle = tempHandle else {
+                    return
+                }
+                defer {
+                    ref.removeObserver(withHandle: handle)
+                }
+                completion(.success(data.asMessagesArray))
             }
         } catch {
             completion(.failure(error))
