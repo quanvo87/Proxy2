@@ -51,7 +51,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
 
-//        Database.database().isPersistenceEnabled = true
+        FirebaseDatabase.Database.database().isPersistenceEnabled = true
 
         launchScreenFinishedObserver = NotificationCenter.default.addObserver(
             forName: .launchScreenFinished,
