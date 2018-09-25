@@ -17,9 +17,9 @@ PODS:
     - FacebookCore (~> 0.3)
     - FBSDKCoreKit (~> 4.27)
     - FBSDKLoginKit (~> 4.27)
-  - FBSDKCoreKit (4.32.0):
+  - FBSDKCoreKit (4.33.0):
     - Bolts (~> 1.7)
-  - FBSDKLoginKit (4.32.0):
+  - FBSDKLoginKit (4.33.0):
     - FBSDKCoreKit
   - Firebase (4.13.0):
     - Firebase/Core (= 4.13.0)
@@ -32,14 +32,14 @@ PODS:
   - FirebaseAnalytics (4.2.0):
     - FirebaseCore (~> 4.0)
     - FirebaseInstanceID (~> 2.0)
-    - GoogleToolboxForMac/NSData+zlib (~> 2.1)
+    - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
     - nanopb (~> 0.3)
   - FirebaseAuth (4.6.1):
     - FirebaseAnalytics (~> 4.2)
-    - GoogleToolboxForMac/NSDictionary+URLArguments (~> 2.1)
+    - "GoogleToolboxForMac/NSDictionary+URLArguments (~> 2.1)"
     - GTMSessionFetcher/Core (~> 1.1)
   - FirebaseCore (4.0.20):
-    - GoogleToolboxForMac/NSData+zlib (~> 2.1)
+    - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
   - FirebaseDatabase (4.1.5):
     - FirebaseAnalytics (~> 4.1)
     - FirebaseCore (~> 4.0)
@@ -60,13 +60,13 @@ PODS:
   - GoogleToolboxForMac/Defines (2.1.4)
   - GoogleToolboxForMac/Logger (2.1.4):
     - GoogleToolboxForMac/Defines (= 2.1.4)
-  - GoogleToolboxForMac/NSData+zlib (2.1.4):
+  - "GoogleToolboxForMac/NSData+zlib (2.1.4)":
     - GoogleToolboxForMac/Defines (= 2.1.4)
-  - GoogleToolboxForMac/NSDictionary+URLArguments (2.1.4):
+  - "GoogleToolboxForMac/NSDictionary+URLArguments (2.1.4)":
     - GoogleToolboxForMac/DebugUtils (= 2.1.4)
     - GoogleToolboxForMac/Defines (= 2.1.4)
-    - GoogleToolboxForMac/NSString+URLArguments (= 2.1.4)
-  - GoogleToolboxForMac/NSString+URLArguments (2.1.4)
+    - "GoogleToolboxForMac/NSString+URLArguments (= 2.1.4)"
+  - "GoogleToolboxForMac/NSString+URLArguments (2.1.4)"
   - GroupWork (0.0.6)
   - GTMSessionFetcher/Core (1.1.15)
   - leveldb-library (1.20)
@@ -80,7 +80,7 @@ PODS:
   - NotificationBannerSwift (1.6.2):
     - MarqueeLabel/Swift
     - SnapKit (~> 4.0)
-  - paper-onboarding (4.0.2)
+  - paper-onboarding (4.1.0)
   - Piano (1.7)
   - Protobuf (3.5.0)
   - PureLayout (3.0.2)
@@ -124,6 +124,49 @@ DEPENDENCIES:
   - SwiftyButton (~> 0.8)
   - WQNetworkActivityIndicator (~> 0.1)
 
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - Bolts
+    - CFAlertViewController
+    - Device
+    - DynamicColor
+    - ESOpenSourceLicensesKit
+    - FacebookCore
+    - FacebookLogin
+    - FBSDKCoreKit
+    - FBSDKLoginKit
+    - Firebase
+    - FirebaseAnalytics
+    - FirebaseAuth
+    - FirebaseCore
+    - FirebaseDatabase
+    - FirebaseHelper
+    - FirebaseInstanceID
+    - FirebaseMessaging
+    - FontAwesome.swift
+    - GoogleToolboxForMac
+    - GroupWork
+    - GTMSessionFetcher
+    - leveldb-library
+    - MarqueeLabel
+    - MessageKit
+    - nanopb
+    - NotificationBannerSwift
+    - paper-onboarding
+    - Piano
+    - Protobuf
+    - PureLayout
+    - RevealingSplashView
+    - SearchTextField
+    - SkyFloatingLabelTextField
+    - SnapKit
+    - Spring
+    - SwiftLint
+    - SwiftMessages
+    - SwiftVideoBackground
+    - SwiftyButton
+    - WQNetworkActivityIndicator
+
 SPEC CHECKSUMS:
   Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
   CFAlertViewController: 460bb12b42b500bb0838e5595ca144a18344765f
@@ -132,8 +175,8 @@ SPEC CHECKSUMS:
   ESOpenSourceLicensesKit: 6fde2f56b9a7a52cc298b594786d369ac1602ce0
   FacebookCore: 3ffa190a3f1f96cec0e44d3fc221bc322c595ffa
   FacebookLogin: 0af839ea858faef99550d16596b87b4a8e8906e6
-  FBSDKCoreKit: 55d7f2ac45d9c4b9b6119f4e43900fe84b9b7b1b
-  FBSDKLoginKit: 32ac05c2a59952c363c2e85aafa8f73ba93bcbad
+  FBSDKCoreKit: 572b047a7e029bc44542bcf8a59414e7ff2b543e
+  FBSDKLoginKit: 88cb456349cfb3b554427ce4f8b43729d85dfb40
   Firebase: 5ec5e863d269d82d66b4bf56856726f8fb8f0fb3
   FirebaseAnalytics: 7ef69e76a5142f643aeb47c780e1cdce4e23632e
   FirebaseAuth: bf22cacf22c60ab454bf2636f556d8892b10b53f
@@ -151,7 +194,7 @@ SPEC CHECKSUMS:
   MessageKit: c4bd50e285a0f0761bc23a2e982aa7840873c4f5
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
   NotificationBannerSwift: 4eceb2add9d5eaa0596c63d49690b4d6476e74ec
-  paper-onboarding: e6e2778c4e8de8db1d798bb7e3b4922e91fb7f99
+  paper-onboarding: 344780cbb0bfc229cd1862f5b9bba446b23c5185
   Piano: 857bf066ad5c42298127ebd0936115bc7f5ec89d
   Protobuf: 8a9838fba8dae3389230e1b7f8c104aa32389c03
   PureLayout: 4d550abe49a94f24c2808b9b95db9131685fe4cd
@@ -168,4 +211,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 29f447eb4056dbc923a74b8b31422814fca78310
 
-COCOAPODS: 1.4.0
+COCOAPODS: 1.5.2
